@@ -17,9 +17,9 @@ dcm2xml [options] dcmfile-in [xmlfile-out]
 The \b dcm2xml utility converts the contents of a DICOM file (file format or
 raw data set) to XML (Extensible Markup Language).  There are two output
 formats.  The first one is specific to DCMTK with its DTD (Document Type
-Definition) described in the file <em>dcm2xml.dtd</em>.  The second one is
-refers to the "Native DICOM Model" which is specified for the DICOM
-Application Hosting service found in DICOM part 19.
+Definition) described in the file <em>dcm2xml.dtd</em>.  The second one refers
+to the "Native DICOM Model" which is specified for the DICOM Application
+Hosting service found in DICOM part 19.
 
 If \b dcm2xml reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -41,140 +41,140 @@ xmlfile-out  XML output filename (default: stdout)
 
 \subsection general_options general options
 \verbatim
-  -h   --help
-         print this help text and exit
+  -h    --help
+          print this help text and exit
 
-       --version
-         print version information and exit
+        --version
+          print version information and exit
 
-       --arguments
-         print expanded command line arguments
+        --arguments
+          print expanded command line arguments
 
-  -q   --quiet
-         quiet mode, print no warnings and errors
+  -q    --quiet
+          quiet mode, print no warnings and errors
 
-  -v   --verbose
-         verbose mode, print processing details
+  -v    --verbose
+          verbose mode, print processing details
 
-  -d   --debug
-         debug mode, print debug information
+  -d    --debug
+          debug mode, print debug information
 
-  -ll  --log-level  [l]evel: string constant
-         (fatal, error, warn, info, debug, trace)
-         use level l for the logger
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
 
-  -lc  --log-config  [f]ilename: string
-         use config file f for the logger
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 \endverbatim
 
 \subsection input_options input options
 \verbatim
 input file format:
 
-  +f   --read-file
-         read file format or data set (default)
+  +f    --read-file
+          read file format or data set (default)
 
-  +fo  --read-file-only
-         read file format only
+  +fo   --read-file-only
+          read file format only
 
-  -f   --read-dataset
-         read data set without file meta information
+  -f    --read-dataset
+          read data set without file meta information
 
 input transfer syntax:
 
-  -t=  --read-xfer-auto
-         use TS recognition (default)
+  -t=   --read-xfer-auto
+          use TS recognition (default)
 
-  -td  --read-xfer-detect
-         ignore TS specified in the file meta header
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
-  -te  --read-xfer-little
-         read with explicit VR little endian TS
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
 
-  -tb  --read-xfer-big
-         read with explicit VR big endian TS
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
 
-  -ti  --read-xfer-implicit
-         read with implicit VR little endian TS
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
 
 long tag values:
 
-  +M   --load-all
-         load very long tag values (e.g. pixel data)
+  +M    --load-all
+          load very long tag values (e.g. pixel data)
 
-  -M   --load-short
-         do not load very long values (default)
+  -M    --load-short
+          do not load very long values (default)
 
-  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
-         set threshold for long values to k kbytes
+  +R    --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+          set threshold for long values to k kbytes
 \endverbatim
 
 \subsection processing_options processing options
 \verbatim
 specific character set:
 
-  +Cr  --charset-require
-         require declaration of extended charset (default)
+  +Cr   --charset-require
+          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset: string
-         assume charset c if no extended charset declared
+  +Ca   --charset-assume  [c]harset: string
+          assume charset c if no extended charset declared
 
-  +Cc  --charset-check-all
-         check all data elements with string values
-         (default: only PN, LO, LT, SH, ST and UT)
+  +Cc   --charset-check-all
+          check all data elements with string values
+          (default: only PN, LO, LT, SH, ST and UT)
 
-         # this option is only used for the mapping to an appropriate
-         # XML character encoding, but not for the conversion to UTF-8
+          # this option is only used for the mapping to an appropriate
+          # XML character encoding, but not for the conversion to UTF-8
 
-  +U8  --convert-to-utf8
-         convert all element values that are affected
-         by Specific Character Set (0008,0005) to UTF-8
+  +U8   --convert-to-utf8
+          convert all element values that are affected
+          by Specific Character Set (0008,0005) to UTF-8
 
-         # requires support from the libiconv toolkit
+          # requires support from the libiconv toolkit
 \endverbatim
 
 \subsection output_options output options
 \verbatim
 general XML format:
 
-  -dtk --dcmtk-format
-         output in DCMTK-specific format (default)
+  -dtk  --dcmtk-format
+          output in DCMTK-specific format (default)
 
-  -nat --native-format
-         output in Native DICOM Model format
+  -nat  --native-format
+          output in Native DICOM Model format (part 19)
 
-  +Xn  --use-xml-namespace
-         add XML namespace declaration to root element
+  +Xn   --use-xml-namespace
+          add XML namespace declaration to root element
 
-DCMTK format (not with -nat):
+DCMTK-specific format (not with --native-format):
 
-  +Xd  --add-dtd-reference
-         add reference to document type definition (DTD)
+  +Xd   --add-dtd-reference
+          add reference to document type definition (DTD)
 
-  +Xe  --embed-dtd-content
-         embed document type definition into XML document
+  +Xe   --embed-dtd-content
+          embed document type definition into XML document
 
-  +Xf  --use-dtd-file   [f]ilename: string
-         use specified DTD file (only with +Xe)
-         (default: /usr/local/share/dcmtk/dcm2xml.dtd)
+  +Xf   --use-dtd-file  [f]ilename: string
+          use specified DTD file (only with +Xe)
+          (default: /usr/local/share/dcmtk/dcm2xml.dtd)
 
-DICOM data elements (not with -nat):
+DICOM data elements (not with --native-format):
 
-  +Wn  --write-element-name
-         write name of the DICOM data elements (default)
+  +Wn   --write-element-name
+          write name of the DICOM data elements (default)
 
-  -Wn  --no-element-name
-         do not write name of the DICOM data elements
+  -Wn   --no-element-name
+          do not write name of the DICOM data elements
 
-  +Wb  --write-binary-data
-         write binary data of OB and OW elements
-         (default: off, be careful with --load-all)
+  +Wb   --write-binary-data
+          write binary data of OB and OW elements
+          (default: off, be careful with --load-all)
 
-  +Eh  --encode-hex
-         encode binary data as hex numbers (default)
+  +Eh   --encode-hex
+          encode binary data as hex numbers (default)
 
-  +Eb  --encode-base64
-         encode binary data as Base64 (RFC 2045, MIME)
+  +Eb   --encode-base64
+          encode binary data as Base64 (RFC 2045, MIME)
 \endverbatim
 
 \section dcmtk_format DCMTK Format
@@ -246,21 +246,32 @@ length e.g. because of non-significant padding that has been removed.  If this
 attribute is missing in "sequence" or "item" start tags, the corresponding
 DICOM element has been stored with undefined length.
 
-\section native_format Native DICOM Model format
+\section native_format Native DICOM Model Format
 
 The description of the Native DICOM Model format can be found in the DICOM
 standard, part 19 ("Application Hosting").
 
-\subsection binary_data Binary Data
+\subsection bulk_data Bulk Data
 
-Binary data, i.e. DICOM element values with Value Representations of OB or OW
-are not written to the XML output.  Instead, for each element, a new Unique
-Identifier (UID) is being generated and written as a \<BulkData\> XML element.
-This conforms to the format specification in DICOM's part 19.  So far, there
-is possibility to write an additional file to hold the binary data for each
-of the binary data chunks.  This is not required by the standard, however,
-might be useful for implementing an Application Hosting interface; thus this
+Binary data, i.e. DICOM element values with Value Representations (VR) of OB
+or OW, as well as OF values are not written to the XML output because of their
+size.  Instead, for each element, a new Unique Identifier (UID) is being
+generated and written as an attribute of a \<BulkData\> XML element.  So far,
+there is no possibility to write an additional file to hold the binary data for
+each of the binary data chunks.  This is not required by the standard, however,
+it might be useful for implementing an Application Hosting interface; thus this
 feature may be available in future versions of \b dcm2xml.
+
+\subsection known_issues Known Issues
+
+In addition to what is written in the above section on "Bulk Data", there are
+further known issues with the current implementation of the Native DICOM Model
+format.  First of all, the DICOM standard requires that a UUID using the
+hexadecimal representation defined in ITU-T Recommendation X.667 has to be used
+as an identifier of bulk data - not a UID.  Furthermore, large element values
+with a VR other than OB, OW or OF are currently never written als bulk data,
+although it might be useful, e.g. for very long text elements (especially UT)
+or very long numeric fields (of various VRs).
 
 \section notes NOTES
 

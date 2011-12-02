@@ -17,9 +17,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:00 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:46 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ extern OFLogger DCM_dcmdataLogger;
 /// XML namespace URI for the dcmtk
 #define DCMTK_XML_NAMESPACE_URI "http://dicom.offis.de/dcmtk"
 /// XML namespace URI for Native DICOM Model (see DICOM part 19)
-#define DICOM_NATIVE_MODEL_XML_NAMESPACE_URI "http://dicom.nema.org/PS3.19/models/NativeDICOM"
+#define NATIVE_DICOM_MODEL_XML_NAMESPACE_URI "http://dicom.nema.org/PS3.19/models/NativeDICOM"
 
 // ANSI escape codes for color output of the print() method
 #define DCMDATA_ANSI_ESCAPE_CODE_RESET      "\033[0m"
@@ -210,7 +210,7 @@ struct DCMTypes
     /// encode binary data as Base64 (MIME)
     static const size_t XF_encodeBase64;
 
-    /// XML namespace URI
+    /// use XML namespace URI (value depends on output format)
     static const size_t XF_useXMLNamespace;
 
     /// embed content of document type definition
@@ -222,7 +222,7 @@ struct DCMTypes
     /// convert non-ASCII characters to numeric values
     static const size_t XF_convertNonASCII;
 
-    /// write data in "DICOM Native Model" format as defined for Application Hosting (Supplement 118)
+    /// write data in "DICOM Native Model" format as defined for Application Hosting (DICOM part 19)
     static const size_t XF_useNativeModel;
 
     //@}
@@ -239,6 +239,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.41  2011-12-02 11:02:46  joergr
+ * Various fixes after first commit of the Native DICOM Model format support.
+ *
  * Revision 1.40  2011-12-01 13:14:00  onken
  * Added support for Application Hosting's Native DICOM Model xml format
  * to dcm2xml.

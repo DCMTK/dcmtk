@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:02 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,32 +177,37 @@ void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream &out,
                                   const size_t flags)
 {
     if (flags & DCMTypes::XF_useNativeModel)
-        return EC_IllegalCall; // TODO: Dedicated error code
-
-    OFString xmlString;
-    DcmXfer xfer(Xfer);
-    /* XML start tag for "meta-header" */
-    out << "<meta-header xfer=\"" << xfer.getXferID() << "\"";
-    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << OFendl;
-    if (!elementList->empty())
     {
-        /* write content of all children */
-        DcmObject *dO;
-        elementList->seek(ELP_first);
-        do
+        /* in Native DICOM Model, there is no concept of a "file format" */
+        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+            "Cannot convert File Meta Information to Native DICOM Model");
+    } else {
+        OFString xmlString;
+        DcmXfer xfer(Xfer);
+        /* XML start tag for "meta-header" */
+        out << "<meta-header xfer=\"" << xfer.getXferID() << "\"";
+        out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << OFendl;
+        /* write content of file meta information */
+        if (!elementList->empty())
         {
-            dO = elementList->get();
-            dO->writeXML(out, flags);
-        } while (elementList->seek(ELP_next));
+            /* write content of all children */
+            DcmObject *dO;
+            elementList->seek(ELP_first);
+            do
+            {
+                dO = elementList->get();
+                dO->writeXML(out, flags);
+            } while (elementList->seek(ELP_next));
+        }
+        /* XML end tag for "meta-header" */
+        out << "</meta-header>" << OFendl;
+        /* always report success */
+        return EC_Normal;
     }
-    /* XML end tag for "meta-header" */
-    out << "</meta-header>" << OFendl;
-    /* always report success */
-    return EC_Normal;
 }
 
 
@@ -629,6 +634,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.63  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.62  2011-12-01 13:14:02  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

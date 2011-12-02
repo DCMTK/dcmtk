@@ -3,6 +3,25 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.02 (riesmeier)
 
+- Various fixes after first commit of the Native DICOM Model format support.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.man
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tvrpn.cc
+
 - Added dedicated writeXML() method for OF elements because the VM is always 1.
   Affects: dcmdata/include/dcmtk/dcmdata/dcvrof.h
            dcmdata/libsrc/Makefile.dep

@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:13:58 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:43 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,7 +221,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
 }
 
 
-#define SHORTCOL 3
+#define SHORTCOL 4
 #define LONGCOL 20
 
 
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
                                                         "set threshold for long values to k kbytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("specific character set:");
-        cmd.addOption("--charset-require",    "+Cr",    "require declaration of extended charset (default)");
+        cmd.addOption("--charset-require",    "+Cr",    "require declaration of extended charset (def.)");
         cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset: string",
                                                         "assume charset c if no extended charset declared");
         cmd.addOption("--charset-check-all",  "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
@@ -281,17 +281,17 @@ int main(int argc, char *argv[])
     cmd.addGroup("output options:");
       cmd.addSubGroup("general XML format:");
         cmd.addOption("--dcmtk-format",       "-dtk",   "output in DCMTK-specific format (default)");
-        cmd.addOption("--native-format",      "-nat",   "output in Native DICOM Model format");
+        cmd.addOption("--native-format",      "-nat",   "output in Native DICOM Model format (part 19)");
         cmd.addOption("--use-xml-namespace",  "+Xn",    "add XML namespace declaration to root element");
-      cmd.addSubGroup("DCMTK format options (not with -nat):");
-        cmd.addOption("--add-dtd-reference",  "+Xd",    "add reference to document type definition (DTD)\n");
-        cmd.addOption("--embed-dtd-content",  "+Xe",    "embed document type definition into XML document\n");
+      cmd.addSubGroup("DCMTK-specific format (not with --native-format):");
+        cmd.addOption("--add-dtd-reference",  "+Xd",    "add reference to document type definition (DTD)");
+        cmd.addOption("--embed-dtd-content",  "+Xe",    "embed document type definition into XML document");
         optStr = "use specified DTD file (only with +Xe)\n(default: ";
         optStr += opt_dtdFilename;
         optStr += ")";
         cmd.addOption("--use-dtd-file",       "+Xf", 1, "[f]ilename: string",
                                                         optStr.c_str());
-      cmd.addSubGroup("DICOM data elements (not with -nat):");
+      cmd.addSubGroup("DICOM data elements (not with --native-format):");
         cmd.addOption("--write-element-name", "+Wn",    "write name of the DICOM data elements (default)");
         cmd.addOption("--no-element-name",    "-Wn",    "do not write name of the DICOM data elements");
         cmd.addOption("--write-binary-data",  "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
@@ -396,54 +396,54 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--add-dtd-reference"))
         {
-            opt_writeFlags |= DCMTypes::XF_addDocumentType;
             app.checkConflict("--add-dtd-reference", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            opt_writeFlags |= DCMTypes::XF_addDocumentType;
         }
         if (cmd.findOption("--embed-dtd-content"))
         {
-            opt_writeFlags |= DCMTypes::XF_addDocumentType | DCMTypes::XF_embedDocumentType;
             app.checkConflict("--embed-dtd-content", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            opt_writeFlags |= DCMTypes::XF_addDocumentType | DCMTypes::XF_embedDocumentType;
         }
         cmd.endOptionBlock();
 
         if (cmd.findOption("--use-dtd-file"))
         {
+            app.checkConflict("--use-dtd-file", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
             app.checkDependence("--use-dtd-file", "--embed-dtd-content", (opt_writeFlags & DCMTypes::XF_embedDocumentType) > 0);
             app.checkValue(cmd.getValue(opt_dtdFilename));
-            app.checkConflict("--use-dtd-file", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
         }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--write-element-name"))
         {
-            opt_writeFlags &= ~DCMTypes::XF_omitDataElementName;
             app.checkConflict("--write-element-name", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            opt_writeFlags &= ~DCMTypes::XF_omitDataElementName;
         }
         if (cmd.findOption("--no-element-name"))
         {
-            opt_writeFlags |= DCMTypes::XF_omitDataElementName;
             app.checkConflict("--no-element-name", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            opt_writeFlags |= DCMTypes::XF_omitDataElementName;
         }
         cmd.endOptionBlock();
 
         if (cmd.findOption("--write-binary-data"))
         {
-            opt_writeFlags |= DCMTypes::XF_writeBinaryData;
             app.checkConflict("--write-element-name", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            opt_writeFlags |= DCMTypes::XF_writeBinaryData;
         }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--encode-hex"))
         {
+            app.checkConflict("--encode-hex", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
             app.checkDependence("--encode-hex", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
             opt_writeFlags &= ~DCMTypes::XF_encodeBase64;
-            app.checkConflict("--encode-hex", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
         }
         if (cmd.findOption("--encode-base64"))
         {
+            app.checkConflict("--encode-base64", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
             app.checkDependence("--encode-base64", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
             opt_writeFlags |= DCMTypes::XF_encodeBase64;
-            app.checkConflict("--encode-base64", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
         }
         cmd.endOptionBlock();
     }
@@ -572,6 +572,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.47  2011-12-02 11:02:43  joergr
+ * Various fixes after first commit of the Native DICOM Model format support.
+ *
  * Revision 1.46  2011-12-01 13:13:58  onken
  * Added support for Application Hosting's Native DICOM Model xml format
  * to dcm2xml.

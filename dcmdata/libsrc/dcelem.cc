@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:02 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1290,25 +1290,26 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                                   const char *attrText)
 {
     OFString xmlString;
-    OFBool isPrivate = OFFalse;
     DcmVR vr(getTag().getVR());
     DcmTag tag = getTag();
+    const OFBool isPrivate = tag.isPrivate();
 
-    /* write start XML tag for attribute */
+    /* write XML start tag for attribute */
     if (flags & DCMTypes::XF_useNativeModel)
     {
         out << "<DicomAttribute";
-        // write attribute keyword if known
-        OFString tagname = getTagName();
-        if (tagname != DcmTag_ERROR_TagName)
+        if (!isPrivate)
         {
-            out << " keyword=\"" << getTagName() << "\"";
+            /* write attribute keyword if known (and the official name is used in the data dictionary) */
+            const OFString tagName = getTagName();
+            if ((tagName != DcmTag_ERROR_TagName) &&
+                /* check for DCMTK-specific name prefixes used for retired tags */
+                (tagName.substr(0, 8) != "RETIRED_") && (tagName.substr(0, 9) != "ACR_NEMA_"))
+            {
+                out << " keyword=\"" << OFStandard::convertToMarkupString(tagName, xmlString) << "\"";
+            }
         }
-        isPrivate = tag.isPrivate();
-    }
-    else // DCMTK-style XML
-    {
-        /* write standardized XML start tag for all element types */
+    } else {
         out << "<element";
     }
 
@@ -1316,46 +1317,46 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
     out << " tag=\"";
     out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
         << STD_NAMESPACE setw(4) << tag.getGTag();
-    // In DCMTK-style, write gggg,eeee
-    if (!(flags & DCMTypes::XF_useNativeModel))
+    /* in Native DICOM Model, write "ggggeeee" (no comma) */
+    if (flags & DCMTypes::XF_useNativeModel)
     {
-        out << "," << STD_NAMESPACE setw(4) << tag.getETag() << "\""
-            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
-    }
-    else  // native dicom model: do write ggggeeee (no comma)
-    {
-        // for private element numbers, zero out 2 first element digits
+        /* for private element numbers, zero out 2 first element digits */
         if (isPrivate)
         {
-            out << STD_NAMESPACE setw(4) << (tag.getETag() & 0x00FF) << "\" "
+            out << STD_NAMESPACE setw(4) << (tag.getETag() & 0x00FF) << "\""
                 << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
             if (!tag.isPrivateReservation())
             {
-                const char* creator = tag.getPrivateCreator();
+                const char *creator = tag.getPrivateCreator();
                 if (creator != NULL)
                 {
-                    out << "privateCreator=\"";
+                    out << " privateCreator=\"";
                     out << creator << "\"";
-                }
-                else
-                {
-                    DCMDATA_WARN("Cannot write private creator to XML stream: Not present in dataset");
+                } else {
+                    DCMDATA_WARN("Cannot write private creator to XML output: Not present in dataset");
                 }
             }
         }
-        else // output full element number (eeee)
+        else  /* output full element number "eeee" */
         {
             out << STD_NAMESPACE setw(4) << tag.getETag() << "\""
-            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
         }
+    }
+    else  /* in DCMTK-specific format, write "gggg,eeee" */
+    {
+        out << "," << STD_NAMESPACE setw(4) << tag.getETag() << "\""
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     }
 
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
 
-    // DCMTK-style XML markup
-    if ( !(flags & DCMTypes::XF_useNativeModel) )
+    if (flags & DCMTypes::XF_useNativeModel)
     {
+        /* close XML start tag */
+        out << ">" << OFendl;
+    } else {
         /* value multiplicity = 1..n */
         out << " vm=\"" << getVM() << "\"";
         /* value length in bytes = 0..max */
@@ -1369,11 +1370,9 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
         /* write additional attributes (if any) */
         if ((attrText != NULL) && (attrText[0] != '\0'))
             out << " " << attrText;
+        /* close XML start tag */
+        out << ">";
     }
-    // close DicomAttribute/element start tag
-    out << ">";
-    if (flags & DCMTypes::XF_useNativeModel)
-        out << OFendl;
 }
 
 
@@ -1382,22 +1381,16 @@ void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream &out,
 {
     /* write standardized XML end tag for all element types */
     if (flags & DCMTypes::XF_useNativeModel)
-    {
         out << "</DicomAttribute>" << OFendl;
-    }
     else
-    {
         out << "</element>" << OFendl;
-    }
 }
 
 
 OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags)
 {
-    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> or corresponding
-     * tags in Native DICOM Model mode
-     */
+    /* write XML start tag */
     writeXMLStartTag(out, flags);
     /* write element value (if loaded) */
     if (valueLoaded())
@@ -1406,23 +1399,21 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
         const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
         if (flags & DCMTypes::XF_useNativeModel)
         {
-          unsigned long vm = getVM();
-          for (unsigned long valno=0; valno < vm; valno++)
-          {
-              if (getOFString(value, valno).good())
-              {
-                out << "<Value number=\"" << (valno +1) << "\">";
-                /* check whether conversion to XML markup string is required */
-                if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
-                    OFStandard::convertToMarkupStream(out, value, convertNonASCII);
-                else
-                    out << value;
-                out << "</Value>" << OFendl;
-              }
-          }
-        }
-        else
-        {
+            const unsigned long vm = getVM();
+            for (unsigned long valNo = 0; valNo < vm; valNo++)
+            {
+                if (getOFString(value, valNo).good())
+                {
+                    out << "<Value number=\"" << (valNo + 1) << "\">";
+                    /* check whether conversion to XML markup string is required */
+                    if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
+                        OFStandard::convertToMarkupStream(out, value, convertNonASCII);
+                    else
+                        out << value;
+                    out << "</Value>" << OFendl;
+                }
+            }
+        } else {
             if (getOFStringArray(value).good())
             {
                 /* check whether conversion to XML markup string is required */
@@ -1433,7 +1424,7 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
             }
         }
     }
-    /* XML end tag: </element> or </DicomAttribute> in Native Dicom Model mode*/
+    /* write XML end tag  */
     writeXMLEndTag(out, flags);
     /* always report success */
     return EC_Normal;
@@ -1927,6 +1918,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.100  2011-12-02 11:02:49  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.99  2011-12-01 13:14:02  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

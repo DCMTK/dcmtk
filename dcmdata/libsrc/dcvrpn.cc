@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmPersonName
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:03 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,73 +112,68 @@ OFCondition DcmPersonName::getOFString(OFString &stringVal,
 OFCondition DcmPersonName::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
 {
-    /* Person names require special handling in the Native DICOM Model format.
-     * For the DCMTK-style format the common DcmElement::writeXML() method
-     * can be used.
-     */
-
+    /* PN requires special handling in the Native DICOM Model format */
     if (flags & DCMTypes::XF_useNativeModel)
     {
-        // Write normal start tag
+        /* write normal XML start tag */
         DcmElement::writeXMLStartTag(out, flags);
-        // If the value is zero lenght, we do not need to insert any PersonName attribute at all
-        if (getLength() == 0)
+        /* if the value is empty, we do not need to insert any PersonName attribute at all */
+        if (!isEmpty())
         {
-            DcmElement::writeXMLEndTag(out, flags);
-            return EC_Normal;
-        }
-
-        OFCondition result;
-        // Iterate over multiple Person Names if necessary
-        unsigned long vm = getVM();
-        // strings to hold family, first, and middle name as well as prefix and suffix component
-        OFString components[5];
-        // arrays in order to permit looping while creating the output
-        const char* compGroupNames[3] = { "SingleByte", "Ideographic", "Phonetic" };
-        const char* compNames[5] = { "FamilyName", "GivenName", "MiddleName", "NamePrefix", "NameSuffix" };
-        for (unsigned int it = 0; it < vm; it++)
-        {
-            out << "<PersonName number=\"" << it+1 << "\">" << OFendl;
-            OFString allGroups, oneCompGroup;
-            result = getOFString(allGroups, it);
-            if (result.good())
+            /* condition variable, not meant to be used as a result of this method */
+            OFCondition result;
+            /* iterate over multiple Person Names if necessary */
+            const unsigned long vm = getVM();
+            /* strings to hold family, first, and middle name as well as prefix and suffix component */
+            OFString components[5];
+            /* arrays in order to permit looping while creating the output */
+            const char* compGroupNames[3] = { "SingleByte", "Ideographic", "Phonetic" };
+            const char* compNames[5] = { "FamilyName", "GivenName", "MiddleName", "NamePrefix", "NameSuffix" };
+            for (unsigned int it = 0; it < vm; it++)
             {
-                // process alphabetic, ideographic and phonetic encoding, as available
-                for (unsigned int cg = 0; cg < 3; cg++)
+                out << "<PersonName number=\"" << (it + 1) << "\">" << OFendl;
+                OFString allGroups, oneCompGroup;
+                result = getOFString(allGroups, it);
+                if (result.good())
                 {
-                    // get one component group (more efficient to check for non-zero length on whole group later)
-                    result = getComponentGroup(allGroups, cg, oneCompGroup);
-                    if (result.good() && !oneCompGroup.empty())
+                    /* process alphabetic, ideographic and phonetic encoding, as available */
+                    for (unsigned int cg = 0; cg < 3; cg++)
                     {
-                      /* get all name components from current group, i.e. last, first, middle name, prefix, suffix.
-                       * uses single group, so the component group parameter is always 0
-                       */
-                      result = getNameComponentsFromString(oneCompGroup, components[0], components[1], components[2], components[3], components[4], 0);
-                    }
-                    // output one component group, e.g. <SingleByte> <FamilyName>Onken</FamilyName> </SingleByte>
-                    if (result.good())
-                    {
-                        out << "<" << compGroupNames[cg] << ">" << OFendl; // e.g. outputs '<SingleByte>'
-                        // go through components (last name, first name, ...)
-                        for (unsigned short c=0; c < 5; c++)
+                        /* get one component group (more efficient to check for non-zero length on whole group later) */
+                        result = getComponentGroup(allGroups, cg, oneCompGroup);
+                        if (result.good() && !oneCompGroup.empty())
                         {
-                            if (components[c].length() > 0)
-                            {
-                              // output name component, e.g. "<FamilyName>Onken</FamilyName>"
-                              out << "<" << compNames[c] << ">" << components[c] << "</" << compNames[c] << ">" << OFendl;
-                            }
+                            /* get all name components from current group, i.e. last, first, middle name, prefix, suffix.
+                             * uses single group, so the component group parameter is always 0
+                             */
+                            result = getNameComponentsFromString(oneCompGroup, components[0], components[1], components[2], components[3], components[4], 0);
                         }
-                        out << "</" << compGroupNames[cg] << ">" << OFendl; // e.g. outputs '</SingleByte>'
+                        /* output one component group, e.g. <SingleByte> <FamilyName>Onken</FamilyName> </SingleByte> */
+                        if (result.good())
+                        {
+                            out << "<" << compGroupNames[cg] << ">" << OFendl; // e.g. <SingleByte>
+                            /* go through components (last name, first name, ...) */
+                            for (unsigned short c = 0; c < 5; c++)
+                            {
+                                if (!components[c].empty())
+                                {
+                                    /* output name component, e.g. <FamilyName>Onken</FamilyName> */
+                                    out << "<" << compNames[c] << ">" << components[c] << "</" << compNames[c] << ">" << OFendl;
+                                }
+                            }
+                            out << "</" << compGroupNames[cg] << ">" << OFendl; // e.g. </SingleByte>
+                        }
                     }
                 }
+                out << "</PersonName>" << OFendl;
             }
-            out << "</PersonName>" << OFendl;
         }
+        /* write normal XML end tag */
         DcmElement::writeXMLEndTag(out, flags);
+        /* always report success */
         return EC_Normal;
-    }
-    else
-    {
+    } else  {
+        /* DCMTK-specific format does not require anything special */
         return DcmElement::writeXML(out, flags);
     }
 }
@@ -227,19 +222,16 @@ OFCondition DcmPersonName::getNameComponentsFromString(const OFString &dicomName
     middleName.clear();
     namePrefix.clear();
     nameSuffix.clear();
-    if (dicomName.length() > 0)
+    if (!dicomName.empty())
     {
         /* Excerpt from DICOM part 5:
            "For the purpose of writing names in ideographic characters and in
             phonetic characters, up to 3 groups of components may be used."
         */
         OFString name;
-        if (getComponentGroup(dicomName, componentGroup, name).bad())
-        {
-            return EC_IllegalCall;
-        }
+        l_error = getComponentGroup(dicomName, componentGroup, name);
         /* check whether component group is valid (= non-empty) */
-        if (name.length() > 0)
+        if (l_error.good() && !name.empty())
         {
             /* find caret separators */
             /* (tbd: add more sophisticated heuristics for comma and space separated names) */
@@ -291,12 +283,12 @@ OFCondition DcmPersonName::getFormattedName(OFString &formattedName,
 }
 
 
-OFCondition DcmPersonName::getComponentGroup(const OFString& allCmpGroups,
+OFCondition DcmPersonName::getComponentGroup(const OFString &allCmpGroups,
                                              const unsigned int groupNo,
-                                             OFString& cmpGroup)
+                                             OFString &cmpGroup)
 {
+    OFCondition l_error = EC_IllegalParameter;
     cmpGroup.clear();
-
     /* Excerpt from DICOM part 5:
        "For the purpose of writing names in ideographic characters and in
         phonetic characters, up to 3 groups of components may be used."
@@ -316,26 +308,26 @@ OFCondition DcmPersonName::getComponentGroup(const OFString& allCmpGroups,
                         cmpGroup = allCmpGroups.substr(posA + 1, posB - posA - 1);
                     else /* groupNo == 2 */
                         cmpGroup = allCmpGroups.substr(posB + 1);
-                } else if (groupNo == 1)
+                    l_error = EC_Normal;
+                }
+                else if (groupNo == 1)
                 {
                     cmpGroup = allCmpGroups.substr(posA + 1);
+                    l_error = EC_Normal;
                 }
-                else
-                {
-                    return EC_IllegalCall;
-                }
-            } else /* groupNo == 0 */
+            } else {
+                /* groupNo == 0 */
                 cmpGroup = allCmpGroups.substr(0, posA);
-        } else if (groupNo == 0)
+                l_error = EC_Normal;
+            }
+        }
+        else if (groupNo == 0)
+        {
             cmpGroup = allCmpGroups;
-        else
-          return EC_IllegalCall; // only component 1 available but > 1 requested
+            l_error = EC_Normal;
+        }
     }
-    else
-    {
-        return EC_IllegalCall;
-    }
-    return EC_Normal;
+    return l_error;
 }
 
 
@@ -362,29 +354,29 @@ OFCondition DcmPersonName::getFormattedNameFromComponents(const OFString &lastNa
 {
     formattedName.clear();
     /* concatenate name components */
-    if (namePrefix.length() > 0)
+    if (!namePrefix.empty())
         formattedName += namePrefix;
-    if (firstName.length() > 0)
+    if (!firstName.empty())
     {
-        if (formattedName.length() > 0)
+        if (!formattedName.empty())
             formattedName += ' ';
         formattedName += firstName;
     }
-    if (middleName.length() > 0)
+    if (!middleName.empty())
     {
-        if (formattedName.length() > 0)
+        if (!formattedName.empty())
             formattedName += ' ';
         formattedName += middleName;
     }
-    if (lastName.length() > 0)
+    if (!lastName.empty())
     {
-        if (formattedName.length() > 0)
+        if (!formattedName.empty())
             formattedName += ' ';
         formattedName += lastName;
     }
-    if (nameSuffix.length() > 0)
+    if (!nameSuffix.empty())
     {
-        if (formattedName.length() > 0)
+        if (!formattedName.empty())
             formattedName += ", ";
         formattedName += nameSuffix;
     }
@@ -482,6 +474,9 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
+** Revision 1.29  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.28  2011-12-01 13:14:03  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

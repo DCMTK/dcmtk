@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:03 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcuid.h" // for UID generation
+#include "dcmtk/dcmdata/dcuid.h"      /* for UID generation */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTDLIB
@@ -677,71 +677,74 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 {
     if (flags & DCMTypes::XF_useNativeModel)
     {
+        /* OB/OW data requires special handling in the Native DICOM Model format */
         writeXMLStartTag(out, flags);
         char uid[100];
+        /* generate a new UID but the binary data is not (yet) written. */
+        /* actually, it should be a UUID in hexadecimal representation. */
         dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
-        out << "<BulkData UUID=\" " << uid << "\"/>" << OFendl;
+        out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
         writeXMLEndTag(out, flags);
-        return EC_Normal;
-    }
-    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
-    if (!(flags & DCMTypes::XF_writeBinaryData))
-        writeXMLStartTag(out, flags, "binary=\"hidden\"");
-    else if (flags & DCMTypes::XF_encodeBase64)
-        writeXMLStartTag(out, flags, "binary=\"base64\"");
-    else
-        writeXMLStartTag(out, flags, "binary=\"yes\"");
-    /* write element value (if loaded) */
-    if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
-    {
-        const DcmEVR evr = getTag().getEVR();
-        /* encode binary data as Base64 */
-        if (flags & DCMTypes::XF_encodeBase64)
+    } else {
+        /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+        if (!(flags & DCMTypes::XF_writeBinaryData))
+            writeXMLStartTag(out, flags, "binary=\"hidden\"");
+        else if (flags & DCMTypes::XF_encodeBase64)
+            writeXMLStartTag(out, flags, "binary=\"base64\"");
+        else
+            writeXMLStartTag(out, flags, "binary=\"yes\"");
+        /* write element value (if loaded) */
+        if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
         {
-            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-            if ((evr == EVR_OW) || (evr == EVR_lt))
+            const DcmEVR evr = getTag().getEVR();
+            /* encode binary data as Base64 */
+            if (flags & DCMTypes::XF_encodeBase64)
             {
-                /* Base64 encoder requires big endian input data */
-                swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint16));
-                /* update the byte order indicator variable correspondingly */
-                setByteOrder(EBO_BigEndian);
-            }
-            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
-        } else {
-            if ((evr == EVR_OW) || (evr == EVR_lt))
-            {
-                /* get and check 16 bit data */
-                Uint16 *wordValues = NULL;
-                if (getUint16Array(wordValues).good() && (wordValues != NULL))
+                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
+                if ((evr == EVR_OW) || (evr == EVR_lt))
                 {
-                    const unsigned long count = getLengthField() / 2;
-                    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
-                    /* print word values in hex mode */
-                    out << STD_NAMESPACE setw(4) << (*(wordValues++));
-                    for (unsigned long i = 1; i < count; i++)
-                        out << "\\" << STD_NAMESPACE setw(4) << (*(wordValues++));
-                    /* reset i/o manipulators */
-                    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                    /* Base64 encoder requires big endian input data */
+                    swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint16));
+                    /* update the byte order indicator variable correspondingly */
+                    setByteOrder(EBO_BigEndian);
                 }
+                OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
             } else {
-                /* get and check 8 bit data */
-                Uint8 *byteValues = NULL;
-                if (getUint8Array(byteValues).good() && (byteValues != NULL))
+                if ((evr == EVR_OW) || (evr == EVR_lt))
                 {
-                    const unsigned long count = getLengthField();
-                    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
-                    /* print byte values in hex mode */
-                    out << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
-                    for (unsigned long i = 1; i < count; i++)
-                        out << "\\" << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
-                    /* reset i/o manipulators */
-                    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                    /* get and check 16 bit data */
+                    Uint16 *wordValues = NULL;
+                    if (getUint16Array(wordValues).good() && (wordValues != NULL))
+                    {
+                        const unsigned long count = getLengthField() / sizeof(Uint16);
+                        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                        /* print word values in hex mode */
+                        out << STD_NAMESPACE setw(4) << (*(wordValues++));
+                        for (unsigned long i = 1; i < count; i++)
+                            out << "\\" << STD_NAMESPACE setw(4) << (*(wordValues++));
+                        /* reset i/o manipulators */
+                        out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                    }
+                } else {
+                    /* get and check 8 bit data */
+                    Uint8 *byteValues = NULL;
+                    if (getUint8Array(byteValues).good() && (byteValues != NULL))
+                    {
+                        const unsigned long count = getLengthField();
+                        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                        /* print byte values in hex mode */
+                        out << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                        for (unsigned long i = 1; i < count; i++)
+                            out << "\\" << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                        /* reset i/o manipulators */
+                        out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                    }
                 }
             }
         }
+        /* XML end tag: </element> */
+        writeXMLEndTag(out, flags);
     }
-    /* XML end tag: </element> */
-    writeXMLEndTag(out, flags);
     /* always report success */
     return EC_Normal;
 }
@@ -750,6 +753,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.68  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.67  2011-12-01 13:14:03  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

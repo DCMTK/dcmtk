@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:02 $
- *  CVS/RCS Revision: $Revision: 1.162 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.163 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -439,7 +439,7 @@ void DcmItem::print(STD_NAMESPACE ostream &out,
 OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
                               const size_t flags)
 {
-    if  (!(flags & DCMTypes::XF_useNativeModel))
+    if (!(flags & DCMTypes::XF_useNativeModel))
     {
         /* XML start tag for "item" */
         out << "<item";
@@ -450,7 +450,6 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
             out << " len=\"" << getLengthField() << "\"";
         out << ">" << OFendl;
     }
-
     /* write item content */
     if (!elementList->empty())
     {
@@ -462,13 +461,11 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
             dO->writeXML(out, flags);
         } while (elementList->seek(ELP_next));
     }
-
-    /* XML end tag for "item" */
-    if  (!(flags & DCMTypes::XF_useNativeModel))
+    if (!(flags & DCMTypes::XF_useNativeModel))
     {
+        /* XML end tag for "item" */
         out << "</item>" << OFendl;
     }
-
     /* always report success */
     return EC_Normal;
 }
@@ -3960,6 +3957,9 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.163  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.162  2011-12-01 13:14:02  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

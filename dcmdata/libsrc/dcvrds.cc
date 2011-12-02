@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDecimalString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:03 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,36 +190,37 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
                                        const size_t flags)
 {
-    // For the Native DICOM Model output, we do not need specific DS handling
     if (flags & DCMTypes::XF_useNativeModel)
     {
+        /* for the Native DICOM Model output, we do not need any specific DS handling */
         return DcmElement::writeXML(out, flags);
-    }
-    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
-    writeXMLStartTag(out, flags);
-    /* write element value (if loaded) */
-    if (valueLoaded())
-    {
-        /* get string data (without normalization) */
-        char *value = NULL;
-        Uint32 length = 0;
-        getString(value, length);
-        if ((value != NULL) && (length > 0))
+    } else {
+        /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+        writeXMLStartTag(out, flags);
+        /* write element value (if loaded) */
+        if (valueLoaded())
         {
-            /* explicitly convert to OFString because of possible NULL bytes */
-            OFString stringVal(value, length);
-            const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
-            /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(stringVal, convertNonASCII))
-                OFStandard::convertToMarkupStream(out, stringVal, convertNonASCII);
-            else
-                out << value;
+            /* get string data (without normalization) */
+            char *value = NULL;
+            Uint32 length = 0;
+            getString(value, length);
+            if ((value != NULL) && (length > 0))
+            {
+                /* explicitly convert to OFString because of possible NULL bytes */
+                OFString stringVal(value, length);
+                const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
+                /* check whether conversion to XML markup string is required */
+                if (OFStandard::checkForMarkupConversion(stringVal, convertNonASCII))
+                    OFStandard::convertToMarkupStream(out, stringVal, convertNonASCII);
+                else
+                    out << value;
+            }
         }
+        /* XML end tag: </element> */
+        writeXMLEndTag(out, flags);
+        /* always report success */
+        return EC_Normal;
     }
-    /* XML end tag: </element> */
-    writeXMLEndTag(out, flags);
-    /* always report success */
-    return EC_Normal;
 }
 
 
@@ -236,6 +237,9 @@ OFCondition DcmDecimalString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.33  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.32  2011-12-01 13:14:03  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:02 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,64 +250,62 @@ OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
 {
     if (flags & DCMTypes::XF_useNativeModel)
     {
-        // use common method from DcmElement to write start tag
+        /* use common method from DcmElement to write start tag */
         DcmElement::writeXMLStartTag(out, flags);
         /* write sequence content */
         if (!itemList->empty())
         {
-            unsigned long itemno = 1;
+            unsigned long itemNo = 1;
             /* write content of all children */
             DcmObject *dO;
             itemList->seek(ELP_first);
             do
             {
-                out << "<Item number=\"" << itemno << "\">" << OFendl;
+                out << "<Item number=\"" << (itemNo++) << "\">" << OFendl;
                 dO = itemList->get();
                 dO->writeXML(out, flags);
-                itemno++;
                 out << "</Item>" << OFendl;
             } while (itemList->seek(ELP_next));
         }
-        // use common method from DcmElement to write end tag
+        /* use common method from DcmElement to write end tag */
         DcmElement::writeXMLEndTag(out, flags);
-        return EC_Normal;
-    }
-
-    OFString xmlString;
-    DcmVR vr(getTag().getVR());
-    /* XML start tag for "sequence" */
-    out << "<sequence";
-    /* attribute tag = (gggg,eeee) */
-    out << " tag=\"";
-    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << getTag().getGTag() << ","
-        << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
-        << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
-    /* value representation = VR */
-    out << " vr=\"" << vr.getVRName() << "\"";
-    /* cardinality (number of items) = 1..n */
-    out << " card=\"" << card() << "\"";
-    /* value length in bytes = 0..max (if not undefined) */
-    if (getLengthField() != DCM_UndefinedLength)
-        out << " len=\"" << getLengthField() << "\"";
-    /* tag name (if known and not suppressed) */
-    if (!(flags & DCMTypes::XF_omitDataElementName))
-        out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
-    out << ">" << OFendl;
-    /* write sequence content */
-    if (!itemList->empty())
-    {
-        /* write content of all children */
-        DcmObject *dO;
-        itemList->seek(ELP_first);
-        do
+    } else {
+        OFString xmlString;
+        DcmVR vr(getTag().getVR());
+        /* XML start tag for "sequence" */
+        out << "<sequence";
+        /* attribute tag = (gggg,eeee) */
+        out << " tag=\"";
+        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+            << STD_NAMESPACE setw(4) << getTag().getGTag() << ","
+            << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+        /* value representation = VR */
+        out << " vr=\"" << vr.getVRName() << "\"";
+        /* cardinality (number of items) = 1..n */
+        out << " card=\"" << card() << "\"";
+        /* value length in bytes = 0..max (if not undefined) */
+        if (getLengthField() != DCM_UndefinedLength)
+            out << " len=\"" << getLengthField() << "\"";
+        /* tag name (if known and not suppressed) */
+        if (!(flags & DCMTypes::XF_omitDataElementName))
+            out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
+        out << ">" << OFendl;
+        /* write sequence content */
+        if (!itemList->empty())
         {
-            dO = itemList->get();
-            dO->writeXML(out, flags);
-        } while (itemList->seek(ELP_next));
+            /* write content of all children */
+            DcmObject *dO;
+            itemList->seek(ELP_first);
+            do
+            {
+                dO = itemList->get();
+                dO->writeXML(out, flags);
+            } while (itemList->seek(ELP_next));
+        }
+        /* XML end tag for "sequence" */
+        out << "</sequence>" << OFendl;
     }
-    /* XML end tag for "sequence" */
-    out << "</sequence>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -1356,6 +1354,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.100  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.99  2011-12-01 13:14:02  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

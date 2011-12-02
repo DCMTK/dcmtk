@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:01 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:48 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -298,25 +298,26 @@ void DcmDataset::print(STD_NAMESPACE ostream&out,
 OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags)
 {
-    // DICOM native model as defined for Application Hosting needs special handling
+    /* the Native DICOM Model as defined for Application Hosting needs special handling */
     if (flags & DCMTypes::XF_useNativeModel)
     {
+        /* write XML start tag */
         out << "<NativeDicomModel xml:space=\"preserve\"";
         if (flags & DCMTypes::XF_useXMLNamespace)
-            out << " xmlns=\"" << DICOM_NATIVE_MODEL_XML_NAMESPACE_URI << "\"";
+            out << " xmlns=\"" << NATIVE_DICOM_MODEL_XML_NAMESPACE_URI << "\"";
         out << ">" << OFendl;
-    }
-    else
-    {
+    } else {
+        /* DCMTK-specific output format (default) */
         OFString xmlString;
         DcmXfer xfer(CurrentXfer);
-        /* XML start tag for "data-set" */
+        /* write XML start tag */
         out << "<data-set xfer=\"" << xfer.getXferID() << "\"";
         out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\"";
         if (flags & DCMTypes::XF_useXMLNamespace)
             out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
         out << ">" << OFendl;
     }
+    /* write dataset content */
     if (!elementList->empty())
     {
         /* write content of all children */
@@ -327,16 +328,14 @@ OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream&out,
             dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
         } while (elementList->seek(ELP_next));
     }
+    /* write XML end tag (depending on output format) */
     if (flags & DCMTypes::XF_useNativeModel)
     {
         out << "</NativeDicomModel>" << OFendl;
-    }
-    else
-    {
-        /* XML end tag for "data-set" */
+    } else {
         out << "</data-set>" << OFendl;
-        /* always report success */
     }
+    /* always report success */
     return EC_Normal;
 }
 
@@ -765,6 +764,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.62  2011-12-02 11:02:48  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.61  2011-12-01 13:14:01  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

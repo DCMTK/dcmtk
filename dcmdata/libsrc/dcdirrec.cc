@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:02 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1148,7 +1148,7 @@ OFCondition DcmDirectoryRecord::convertCharacterSet(DcmSpecificCharacterSet &con
         << getFileOffset());
     // handle special case of DICOMDIR: the Specific Character Set (0008,0005)
     // can be specified individually for each directory record (i.e. item)
-    OFCondition status;
+    OFCondition status = EC_Normal;
     OFString fromCharset;
     const OFString toCharset = converter.getDestinationCharacterSet();
     // determine value of Specific Character Set (0008,0005) if present in this item
@@ -1256,39 +1256,43 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmDirectoryRecord::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmDirectoryRecord::writeXML(STD_NAMESPACE ostream &out,
                                          const size_t flags)
 {
     if (flags & DCMTypes::XF_useNativeModel)
-        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error, "Cannot convert DICOMDIR record to Native DICOM Model");
-
-    /* XML start tag for "item" */
-    out << "<item";
-    /* cardinality (number of attributes) = 1..n */
-    out << " card=\"" << card() << "\"";
-    /* value length in bytes = 0..max (if not undefined) */
-    if (getLengthField() != DCM_UndefinedLength)
-        out << " len=\"" << getLengthField() << "\"";
-    /* byte offset of the record */
-    out << " offset=\"" << getFileOffset() << "\"";
-    out << ">" << OFendl;
-    /* write item content */
-    if (!elementList->empty())
     {
-        /* write content of all children */
-        DcmObject *dO;
-        elementList->seek(ELP_first);
-        do {
-            dO = elementList->get();
-            dO->writeXML(out, flags);
-        } while (elementList->seek(ELP_next));
+        /* in Native DICOM Model, there is no concept of a DICOMDIR */
+        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+            "Cannot convert Directory Record to Native DICOM Model");
+    } else {
+        /* XML start tag for "item" */
+        out << "<item";
+        /* cardinality (number of attributes) = 1..n */
+        out << " card=\"" << card() << "\"";
+        /* value length in bytes = 0..max (if not undefined) */
+        if (getLengthField() != DCM_UndefinedLength)
+            out << " len=\"" << getLengthField() << "\"";
+        /* byte offset of the record */
+        out << " offset=\"" << getFileOffset() << "\"";
+        out << ">" << OFendl;
+        /* write item content */
+        if (!elementList->empty())
+        {
+            /* write content of all children */
+            DcmObject *dO;
+            elementList->seek(ELP_first);
+            do {
+                dO = elementList->get();
+                dO->writeXML(out, flags);
+            } while (elementList->seek(ELP_next));
+        }
+        if (lowerLevelList->card() > 0)
+            lowerLevelList->writeXML(out, flags);
+        /* XML end tag for "item" */
+        out << "</item>" << OFendl;
+        /* always report success */
+        return EC_Normal;
     }
-    if (lowerLevelList->card() > 0)
-        lowerLevelList->writeXML(out, flags);
-    /* XML end tag for "item" */
-    out << "</item>" << OFendl;
-    /* always report success */
-    return EC_Normal;
 }
 
 
@@ -1624,6 +1628,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.88  2011-12-02 11:02:49  joergr
+ * Various fixes after first commit of the Native DICOM Model format support.
+ *
  * Revision 1.87  2011-12-01 13:14:02  onken
  * Added support for Application Hosting's Native DICOM Model xml format
  * to dcm2xml.

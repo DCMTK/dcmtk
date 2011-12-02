@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:02 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-02 11:02:50 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,32 +176,39 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
 {
     if (flags & DCMTypes::XF_useNativeModel)
     {
+        /* in Native DICOM Model, there is no concept of a "file format" */
         DcmDataset *dset = getDataset();
-        if (dset == NULL)
-            return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error, "No dataset present");
-        return dset->writeXML(out, flags);
+        if (dset != NULL)
+        {
+            /* write content of dataset */
+            return dset->writeXML(out, flags);
+        } else {
+            return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+                "Cannot convert to Native DICOM Model: No dataset present");
+        }
+    } else {
+        OFCondition result = EC_CorruptedData;
+        /* XML start tag for "file-format" */
+        out << "<file-format";
+        if (flags & DCMTypes::XF_useXMLNamespace)
+            out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
+        out << ">" << OFendl;
+        /* write content of file meta information and dataset */
+        if (!itemList->empty())
+        {
+            /* write content of all children */
+            DcmObject *dO;
+            itemList->seek(ELP_first);
+            do {
+                dO = itemList->get();
+                dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
+            } while (itemList->seek(ELP_next));
+            result = EC_Normal;
+        }
+        /* XML end tag for "file-format" */
+        out << "</file-format>" << OFendl;
+        return result;
     }
-
-    OFCondition result = EC_CorruptedData;
-    /* XML start tag for "file-format" */
-    out << "<file-format";
-    if (flags & DCMTypes::XF_useXMLNamespace)
-        out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
-    out << ">" << OFendl;
-    if (!itemList->empty())
-    {
-        /* write content of all children */
-        DcmObject *dO;
-        itemList->seek(ELP_first);
-        do {
-            dO = itemList->get();
-            dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
-        } while (itemList->seek(ELP_next));
-        result = EC_Normal;
-    }
-    /* XML end tag for "file-format" */
-    out << "</file-format>" << OFendl;
-    return result;
 }
 
 
@@ -1019,6 +1026,9 @@ OFCondition DcmFileFormat::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.71  2011-12-02 11:02:50  joergr
+** Various fixes after first commit of the Native DICOM Model format support.
+**
 ** Revision 1.70  2011-12-01 13:14:02  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.
