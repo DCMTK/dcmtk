@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.02 (riesmeier)
+
+- Added dedicated writeXML() method for OF elements because the VM is always 1.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrof.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcvrof.cc
 
 **** Changes from 2011.12.01 (onken)
 

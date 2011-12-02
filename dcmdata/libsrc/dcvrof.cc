@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmOtherFloat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-12-02 09:54:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcvrfl.h"
+#include "dcmtk/dcmdata/dcuid.h"      /* for UID generation */
 
 
 // ********************************
@@ -71,6 +72,7 @@ OFCondition DcmOtherFloat::copyFrom(const DcmObject& rhs)
   return EC_Normal;
 }
 
+
 // ********************************
 
 
@@ -95,9 +97,56 @@ unsigned long DcmOtherFloat::getVM()
 }
 
 
+// ********************************
+
+
+OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
+                                    const size_t flags)
+{
+    /* write XML start tag */
+    writeXMLStartTag(out, flags);
+    /* OF data requires special handling in the Native DICOM Model format*/
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        char uid[100];
+        /* generate a new UID but the binary data is not (yet) written. */
+        /* actually, it should be a UUID in hexadecimal representation. */
+        dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
+        out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+    } else {
+        /* write element value (if loaded) */
+        if (valueLoaded())
+        {
+            Float32 *floatValues = NULL;
+            /* get and check 32 bit float data */
+            if (getFloat32Array(floatValues).good() && (floatValues != NULL))
+            {
+                /* increase default precision - see DcmFloatingPointSingle::print() */
+                const int oldPrecision = out.precision(8);
+                /* we cannot use getVM() since it always returns 1 */
+                const size_t count = getLengthField() / sizeof(Float32);
+                /* print float values with separators */
+                out << (*(floatValues++));
+                for (unsigned long i = 1; i < count; i++)
+                    out << "\\" << (*(floatValues++));
+                /* reset i/o manipulators */
+                out.precision(oldPrecision);
+            }
+        }
+    }
+    /* write XML end tag */
+    writeXMLEndTag(out, flags);
+    /* always report success */
+    return EC_Normal;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
+ * Revision 1.8  2011-12-02 09:54:18  joergr
+ * Added dedicated writeXML() method for OF elements because the VM is always 1.
+ *
  * Revision 1.7  2010-10-20 16:44:17  joergr
  * Use type cast macros (e.g. OFstatic_cast) where appropriate.
  *

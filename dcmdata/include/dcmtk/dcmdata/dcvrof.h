@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmOtherFloat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:43 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-12-02 09:54:16 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,6 +105,14 @@ class DcmOtherFloat
      *  @return always returns 1 (according to the DICOM standard)
      */
     virtual unsigned long getVM();
+
+    /** write object in XML format to a stream
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+                                 const size_t flags = 0);
 };
 
 
@@ -114,6 +122,9 @@ class DcmOtherFloat
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.h,v $
+ * Revision 1.10  2011-12-02 09:54:16  joergr
+ * Added dedicated writeXML() method for OF elements because the VM is always 1.
+ *
  * Revision 1.9  2010-10-14 13:15:43  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
