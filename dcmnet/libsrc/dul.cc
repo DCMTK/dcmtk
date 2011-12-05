@@ -67,8 +67,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: uli $, $Date: 2011-09-20 07:45:52 $
-** Revision:      $Revision: 1.97 $
+** Last Update:   $Author: joergr $, $Date: 2011-12-05 13:21:37 $
+** Revision:      $Revision: 1.98 $
 ** Status:        $State: Exp $
 */
 
@@ -776,23 +776,50 @@ DUL_RejectAssociationRQ(
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     localParams = *params;
-    localParams.source = 0x01;
+    /* check "Source" field */
     {
-        unsigned char diagtable[] = {0x01, 0x02, 0x03, 0x07};
+        unsigned char sourcetable[] = {0x01, 0x02, 0x03};
         int l_index;
         OFBool found = OFFalse;
-        for (l_index = 0; l_index < (int) DIM_OF(diagtable) && !found; l_index++)
-            found = (localParams.reason == diagtable[l_index]);
+        for (l_index = 0; l_index < (int) DIM_OF(sourcetable) && !found; l_index++)
+            found = (localParams.source == sourcetable[l_index]);
+
+        if (!found)
+        {
+            OFOStringStream stream;
+            stream << "DUL Illegal source for rejecting Association: "
+                   << localParams.source << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_ILLEGALREJECTSOURCE, OF_error, msg.c_str());
+        }
+    }
+    /* check "Reason/Diag." field */
+    {
+        OFBool found = OFFalse;
+        switch (localParams.source)
+        {
+            case ASC_SOURCE_SERVICEUSER:                            /* 0x01 */
+                found = (localParams.reason == 0x01) || (localParams.reason == 0x02) ||
+                        (localParams.reason == 0x03) || (localParams.reason == 0x07);
+                break;
+            case ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED:           /* 0x02 */
+                found = (localParams.reason == 0x01) || (localParams.reason == 0x02);
+                break;
+            case ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED:   /* 0x03 */
+                found = (localParams.reason == 0x01) || (localParams.reason == 0x02);
+                break;
+        }
 
         if (!found)
         {
             OFOStringStream stream;
             stream << "DUL Illegal reason for rejecting Association: "
-                   << STD_NAMESPACE hex << localParams.reason << OFStringStream_ends;
+                   << localParams.reason << OFStringStream_ends;
             OFSTRINGSTREAM_GETOFSTRING(stream, msg)
             return makeDcmnetCondition(DULC_ILLEGALREJECTREASON, OF_error, msg.c_str());
         }
     }
+    /* check "Result" field */
     {
         unsigned char resulttable[] = {0x01, 0x02};
         int l_index;
@@ -804,7 +831,7 @@ DUL_RejectAssociationRQ(
         {
             OFOStringStream stream;
             stream << "DUL Illegal result for rejecting Association: "
-                   << STD_NAMESPACE hex << localParams.result << OFStringStream_ends;
+                   << localParams.result << OFStringStream_ends;
             OFSTRINGSTREAM_GETOFSTRING(stream, msg)
             return makeDcmnetCondition(DULC_ILLEGALREJECTRESULT, OF_error, msg.c_str());
         }
@@ -2743,6 +2770,10 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.98  2011-12-05 13:21:37  joergr
+** Fixed a bug in DUL_RejectAssociationRQ() which always set the "Source" field
+** of the ASSOCIATE-RJ PDU to 0x01 (DICOM UL service-user).
+**
 ** Revision 1.97  2011-09-20 07:45:52  uli
 ** Fixed a badly choosen timeout when accepting a new association.
 **

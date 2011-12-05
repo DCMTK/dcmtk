@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.05 (riesmeier)
+
+- Fixed a bug in DUL_RejectAssociationRQ() which always set the "Source" field
+  of the ASSOCIATE-RJ PDU to 0x01 (DICOM UL service-user).
+  Thanks to Thomas Puckett <puckett_thomas@hotmail.com> for the report.
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/dul.cc
+
 **** Changes from 2011.12.02 (riesmeier)
 
 - Made sure that the BulkData XML element is not written for empty values.

@@ -17,9 +17,9 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 14:01:29 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-05 13:21:35 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,7 @@ const unsigned short DULC_WRONGDATATYPE                    = 0x323;
 const unsigned short DULC_TCPWRAPPER                       = 0x324;
 const unsigned short DULC_FORKEDCHILD                      = 0x325;
 const unsigned short DULC_CANNOTFORK                       = 0x326;
+const unsigned short DULC_ILLEGALREJECTSOURCE              = 0x327;
 
 // condition constants used in the DUL module
 extern const OFCondition DUL_ASSOCIATIONREJECTED;       /* DUL Association Rejected */
@@ -296,6 +297,10 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.22  2011-12-05 13:21:35  joergr
+ * Fixed a bug in DUL_RejectAssociationRQ() which always set the "Source" field
+ * of the ASSOCIATE-RJ PDU to 0x01 (DICOM UL service-user).
+ *
  * Revision 1.21  2011-10-10 14:01:29  uli
  * Moved SCU-specific error condition to the correct place.
  *
