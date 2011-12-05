@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.05 (riesmeier)
 
+- Added workaround that treats the non-standard VR "OX" as "OW" when reading a
+  DICOM dataset, since it seems to be used by some products out there.
+  Thanks to Brad Jascob <bjascob@msn.com> for pointing this out.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 - Fixed a bug in DUL_RejectAssociationRQ() which always set the "Source" field
   of the ASSOCIATE-RJ PDU to 0x01 (DICOM UL service-user).
   Thanks to Thomas Puckett <puckett_thomas@hotmail.com> for the report.

@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:50 $
- *  CVS/RCS Revision: $Revision: 1.163 $
+ *  Update Date:      $Date: 2011-12-05 16:09:32 $
+ *  CVS/RCS Revision: $Revision: 1.164 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -935,6 +935,14 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
                     << " byte length field");
             }
             OFSTRINGSTREAM_FREESTR(tmpString)
+
+            /* workaround: handle known issue with non-standard VR "OX" for PixelData element */
+            if ((newTag == DCM_PixelData) && (strncmp(vrstr, "OX", 2) == 0))
+            {
+                DCMDATA_WARN("DcmItem: Non-standard VR 'OX' is known to be wrongly used for PixelData " << newTag
+                    << ", setting VR to 'OW'");
+                vr.setVR(EVR_OW);
+            }
         }
 
         /* the VR in the dataset might be wrong, so the user can decide to ignore it */
@@ -3957,6 +3965,10 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.164  2011-12-05 16:09:32  joergr
+** Added workaround that treats the non-standard VR "OX" as "OW" when reading a
+** DICOM dataset, since it seems to be used by some products out there.
+**
 ** Revision 1.163  2011-12-02 11:02:50  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **
