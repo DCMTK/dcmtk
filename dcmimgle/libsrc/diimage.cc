@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2011-12-06 09:28:44 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,11 +125,17 @@ DiImage::DiImage(const DiDocument *docu,
                 HighBit = BitsStored - 1;
                 DCMIMGLE_WARN("missing value for 'HighBit' ... assuming " << HighBit);
             }
-            ok &= (Document->getValue(DCM_PixelRepresentation, us) > 0);
             BitsPerSample = BitsStored;
-            hasSignedRepresentation = (us == 1);
-            if ((us != 0) && (us != 1))
-                DCMIMGLE_WARN("invalid value for 'PixelRepresentation' (" << us << ") ... assuming 'unsigned' (0)");
+            if (Document->getValue(DCM_PixelRepresentation, us) > 0)
+            {
+                hasSignedRepresentation = (us == 1);
+                if ((us != 0) && (us != 1))
+                    DCMIMGLE_WARN("invalid value for 'PixelRepresentation' (" << us << ") ... assuming 'unsigned' (0)");
+            } else {
+                ok = 0;
+                /* pixel representation is mandatory, the error status is set below */
+                DCMIMGLE_ERROR("mandatory attribute 'PixelRepresentation' is missing");
+            }
             if (!(Document->getFlags() & CIF_UsePresentationState))
             {
                 hasPixelSpacing = (Document->getValue(DCM_PixelSpacing, PixelHeight, 0) > 0);
@@ -847,6 +853,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.47  2011-12-06 09:28:44  joergr
+ * Enhanced handling and logging of some missing mandatory data elements.
+ *
  * Revision 1.46  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.06 (riesmeier)
+
+- Enhanced handling and logging of some missing mandatory data elements.
+  Affects: dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/dimomod.cc
+
 **** Changes from 2011.12.05 (riesmeier)
 
 - Added workaround that treats the non-standard VR "OX" as "OW" when reading a

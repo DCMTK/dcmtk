@@ -18,8 +18,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-11 11:37:55 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2011-12-06 09:28:44 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,10 +211,12 @@ int DiMonoModality::Init(const DiDocument *docu,
         AbsMinimum = pixel->getAbsMinimum();
         AbsMaximum = pixel->getAbsMaximum();
         Uint16 us;
-        if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
+        if (docu->getValue(DCM_SamplesPerPixel, us) > 0)
         {
-            DCMIMGLE_WARN("invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1");
-        }
+            if (us != 1)
+                DCMIMGLE_WARN("invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1");
+        } else
+            DCMIMGLE_WARN("missing value for 'SamplesPerPixel' ... assuming 1");
         return 1;
     }
     return 0;
@@ -289,6 +291,9 @@ void DiMonoModality::determineRepresentation(const DiDocument *docu)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
+ * Revision 1.32  2011-12-06 09:28:44  joergr
+ * Enhanced handling and logging of some missing mandatory data elements.
+ *
  * Revision 1.31  2011-11-11 11:37:55  joergr
  * Added support for retrieving Rescale Slope/Intercept from the Shared
  * Functional Groups Sequence (as used in many Enhanced Image IODs).
