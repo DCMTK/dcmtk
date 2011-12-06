@@ -17,9 +17,9 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:58 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-06 16:57:03 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,16 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
+/*--------------------*
+ *  global variables  *
+ *--------------------*/
+
+OFLogger DCM_dcmimgleLogger = OFLog::getLogger("dcmtk.dcmimgle");
+
+
 /*------------------------*
  *  function definitions  *
  *------------------------*/
-
-OFLogger DCM_dcmimgleLogger = OFLog::getLogger("dcmtk.dcmimgle");
 
 unsigned int DicomImageClass::rangeToBits(double minvalue,
                                           double maxvalue)
@@ -144,6 +149,10 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.24  2011-12-06 16:57:03  joergr
+ * Updated outdated comment after the module's logger has been changed from a
+ * global function with a static variable to a global variable.
+ *
  * Revision 1.23  2011-04-18 07:00:58  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

@@ -9,6 +9,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.06 (riesmeier)
 
+- Updated outdated comment after the module's logger has been changed from a
+  global function with a static variable to a global variable.
+  Affects: dcmimage/libsrc/dilogger.cc
+           dcmimgle/libsrc/diutils.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 - Enhanced handling and logging of some missing mandatory data elements.
   Affects: dcmimgle/libsrc/diimage.cc
            dcmimgle/libsrc/dimomod.cc

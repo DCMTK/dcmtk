@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 11:47:57 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2011-12-06 16:57:03 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -435,6 +435,13 @@ static const S_CharacterSetNameMap CharacterSetNameMap[] =
     {DSRTypes::CS_Thai,     "ISO_IR 166", "?",          "?"},  /* TIS-620 ? */
     {DSRTypes::CS_UTF8,     "ISO_IR 192", "UTF-8",      "UTF-8"}
 };
+
+
+/*--------------------*
+ *  global variables  *
+ *--------------------*/
+
+OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
 
 
 /*------------------*
@@ -1629,12 +1636,14 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
     return result;
 }
 
-OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
-
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.81  2011-12-06 16:57:03  joergr
+ *  Updated outdated comment after the module's logger has been changed from a
+ *  global function with a static variable to a global variable.
+ *
  *  Revision 1.80  2011-11-24 11:47:57  joergr
  *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
  *  now return a status code, the get methods provide a "pos" and the set methods
