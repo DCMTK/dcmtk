@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-23 13:02:26 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-12-06 16:28:17 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,7 +281,7 @@ public:
   *  @param sopInstanceUID SOP Instance UID to search for
   *  @return OFTrue if SOP Class and SOP Instance UIDs are found. otherwise return OFFalse.
   */
-  OFBool findSOPInstance(char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID);
+  OFBool findSOPInstance(const char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID);
     
   /** deletes the given file only if the quota mechanism is enabled.
    *  The image is not de-registered from the database by this routine.
@@ -451,6 +451,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
+ * Revision 1.11  2011-12-06 16:28:17  ogazzar
+ * Added const declaration to a parameter of findSOPInstance().
+ *
  * Revision 1.10  2011-05-23 13:02:26  ogazzar
  * Added a function to search for a SOP instance in INDEX.DAT file.
  *

@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 13:50:07 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-12-06 16:28:17 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3215,7 +3215,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
  *      Search in index file for SOP Class UID and SOP Instance UID. Used for the storage commitment server
  */
 
-OFBool DcmQueryRetrieveIndexDatabaseHandle::findSOPInstance(char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID)
+OFBool DcmQueryRetrieveIndexDatabaseHandle::findSOPInstance(const char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID)
 {
     int j ;
     IdxRecord           idxRec ;
@@ -3468,6 +3468,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.35  2011-12-06 16:28:17  ogazzar
+ * Added const declaration to a parameter of findSOPInstance().
+ *
  * Revision 1.34  2011-10-10 13:50:07  uli
  * Slightly improved the error condition names and definition.
  *

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.06 (elgazzar)
+
+- Added const declaration to a parameter of findSOPInstance().
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2011.12.06 (riesmeier)
 
 - Enhanced handling and logging of some missing mandatory data elements.
@@ -80,7 +86,7 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.30 (elgazzar)
 
-- Added functions front() and back() to return const reference
+- Added functions front() and back() to return const reference.
   Affects: ofstd/include/dcmtk/ofstd/oflist.h
 
 **** Changes from 2011.11.30 (schlachter)
