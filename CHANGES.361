@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.07 (schlachter)
 
+- Could someone please hand me a brown paper bag?
+  Affects: ofstd/include/dcmtk/ofstd/ofuuid.h
+           ofstd/libsrc/ofuuid.cc
+           ofstd/tests/tuuid.cc
+
 - Added a new class for generating Universally Unique Identifiers.
   Added:   ofstd/include/dcmtk/ofstd/ofuuid.h
            ofstd/libsrc/ofuuid.cc

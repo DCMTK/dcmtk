@@ -18,8 +18,8 @@
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:16:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-12-07 14:25:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,7 +259,7 @@ STD_NAMESPACE ostream& OFUUID::print(STD_NAMESPACE ostream& stream, E_Representa
 {
     switch (representation) {
     case ER_RepresentationOID:
-        stream << "2.15.";
+        stream << "2.25.";
         /* Fall through */
     case ER_RepresentationInteger:
         printInteger(stream);
@@ -370,6 +370,9 @@ OFBool OFUUID::operator==(const OFUUID& o) const
  *
  * CVS/RCS Log:
  * $Log: ofuuid.cc,v $
+ * Revision 1.2  2011-12-07 14:25:53  uli
+ * Could someone please hand me a brown paper bag?
+ *
  * Revision 1.1  2011-12-07 14:16:28  uli
  * Added a new class for generating Universally Unique Identifiers.
  *

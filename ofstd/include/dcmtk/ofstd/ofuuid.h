@@ -18,8 +18,8 @@
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:16:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-12-07 14:25:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ public:
         ER_RepresentationInteger,
         /** The UUID is printed in hex with hypens (-) seperating groups */
         ER_RepresentationHex,
-        /** The UUID is printed as a single integer with the prefix "2.15." */
+        /** The UUID is printed as a single integer with the prefix "2.25." */
         ER_RepresentationOID,
         /** The UUID is printed as hex with the prefix "urn:uuid:" */
         ER_RepresentationURN,
@@ -153,6 +153,9 @@ static inline STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& stream, 
 /*
  * CVS/RCS Log:
  * $Log: ofuuid.h,v $
+ * Revision 1.2  2011-12-07 14:25:53  uli
+ * Could someone please hand me a brown paper bag?
+ *
  * Revision 1.1  2011-12-07 14:16:28  uli
  * Added a new class for generating Universally Unique Identifiers.
  *

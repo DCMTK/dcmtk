@@ -18,8 +18,8 @@
  *  Purpose: test program for OFUUID
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:16:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-12-07 14:25:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ OFTEST(ofstd_OFUUID_2)
 
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationInteger), "248067283583015040850042404479733813759");
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationHex), "baa0055e-20d4-01e1-804a-67c6697351ff");
-    OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationOID), "2.15.248067283583015040850042404479733813759");
+    OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationOID), "2.25.248067283583015040850042404479733813759");
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationURN), "urn:uuid:baa0055e-20d4-01e1-804a-67c6697351ff");
 
     /* This example comes from the ITU-T X.667 and is mentioned in Section 8.
@@ -114,7 +114,7 @@ OFTEST(ofstd_OFUUID_2)
 
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationInteger), "329800735698586629295641978511506172918");
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationHex), "f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
-    OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationOID), "2.15.329800735698586629295641978511506172918");
+    OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationOID), "2.25.329800735698586629295641978511506172918");
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationURN), "urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
 }
 
@@ -122,6 +122,9 @@ OFTEST(ofstd_OFUUID_2)
 /*
  * CVS/RCS Log:
  * $Log: tuuid.cc,v $
+ * Revision 1.2  2011-12-07 14:25:53  uli
+ * Could someone please hand me a brown paper bag?
+ *
  * Revision 1.1  2011-12-07 14:16:28  uli
  * Added a new class for generating Universally Unique Identifiers.
  *
