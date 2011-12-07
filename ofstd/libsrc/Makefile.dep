@@ -117,7 +117,15 @@ oftimer.o: oftimer.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftimer.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofcast.h
-ofxml.o: ofxml.cc ../include/dcmtk/ofstd/ofxml.h \
-  ../include/dcmtk/ofstd/ofstdinc.h \
+ofuuid.o: ofuuid.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofuuid.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../include/dcmtk/ofstd/ofstdinc.h
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofstring.h \
+  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofdefine.h \
+  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/ofcond.h
+ofxml.o: ofxml.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofxml.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstdinc.h

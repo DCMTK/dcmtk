@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.07 (schlachter)
+
+- Added a new class for generating Universally Unique Identifiers.
+  Added:   ofstd/include/dcmtk/ofstd/ofuuid.h
+           ofstd/libsrc/ofuuid.cc
+           ofstd/tests/tuuid.cc
+  Affects: ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.dep
+           ofstd/tests/Makefile.in
+           ofstd/tests/tests.cc
+
 **** Changes from 2011.12.07 (riesmeier)
 
 - Changed order of attributes for XML element "DicomAttribute" in order to be

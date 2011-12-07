@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:06:27 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-07 14:16:28 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,20 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_1);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_2);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_3);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_6);
 OFTEST_REGISTER(ofstd_OFDate);
-OFTEST_REGISTER(ofstd_OFTime);
 OFTEST_REGISTER(ofstd_OFDateTime);
 OFTEST_REGISTER(ofstd_OFList_1);
 OFTEST_REGISTER(ofstd_OFList_2);
 OFTEST_REGISTER(ofstd_OFList_splice);
 OFTEST_REGISTER(ofstd_OFMap);
 OFTEST_REGISTER(ofstd_OFStack);
+OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
 OFTEST_REGISTER(ofstd_OFString_compare);
 OFTEST_REGISTER(ofstd_OFString_concatenate);
 OFTEST_REGISTER(ofstd_OFString_constructor);
@@ -47,26 +53,22 @@ OFTEST_REGISTER(ofstd_OFString_identity_2);
 OFTEST_REGISTER(ofstd_OFString_identity_3);
 OFTEST_REGISTER(ofstd_OFString_reserve);
 OFTEST_REGISTER(ofstd_OFString_substr);
+OFTEST_REGISTER(ofstd_OFTime);
+OFTEST_REGISTER(ofstd_OFUUID_1);
+OFTEST_REGISTER(ofstd_OFUUID_2);
 OFTEST_REGISTER(ofstd_OFVector);
 OFTEST_REGISTER(ofstd_atof);
 OFTEST_REGISTER(ofstd_base64_1);
 OFTEST_REGISTER(ofstd_base64_2);
 OFTEST_REGISTER(ofstd_base64_3);
 OFTEST_REGISTER(ofstd_ftoa);
-OFTEST_REGISTER(ofstd_thread);
-OFTEST_REGISTER(ofstd_testPaths);
-OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
 OFTEST_REGISTER(ofstd_markup_1);
 OFTEST_REGISTER(ofstd_markup_2);
 OFTEST_REGISTER(ofstd_markup_3);
 OFTEST_REGISTER(ofstd_markup_4);
 OFTEST_REGISTER(ofstd_markup_5);
-OFTEST_REGISTER(ofstd_OFCharacterEncoding_1);
-OFTEST_REGISTER(ofstd_OFCharacterEncoding_2);
-OFTEST_REGISTER(ofstd_OFCharacterEncoding_3);
-OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
-OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
-OFTEST_REGISTER(ofstd_OFCharacterEncoding_6);
+OFTEST_REGISTER(ofstd_testPaths);
+OFTEST_REGISTER(ofstd_thread);
 OFTEST_REGISTER(ofstd_xmlParser);
 OFTEST_MAIN("ofstd")
 
@@ -74,6 +76,9 @@ OFTEST_MAIN("ofstd")
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.8  2011-12-07 14:16:28  uli
+ * Added a new class for generating Universally Unique Identifiers.
+ *
  * Revision 1.7  2011-11-29 16:06:27  joergr
  * Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
  *

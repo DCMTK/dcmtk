@@ -128,6 +128,15 @@ tthread.o: tthread.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/ofcond.h
+tuuid.o: tuuid.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/oftest.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/ofstd/ofuuid.h
 tvec.o: tvec.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
