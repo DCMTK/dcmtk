@@ -30,6 +30,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.07 (riesmeier)
 
+- Various minor fixes to API documentation and other comments.
+  Affects: ofstd/include/dcmtk/ofstd/ofuuid.h
+
 - Added explicit type cast to keep VisualStudio 2008 from moaning. Other fixes.
   Affects: ofstd/libsrc/ofuuid.cc
 

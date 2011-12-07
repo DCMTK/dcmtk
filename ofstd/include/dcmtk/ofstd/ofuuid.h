@@ -17,9 +17,9 @@
  *
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:25:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-07 16:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,13 +44,13 @@ public:
 
     /** The possible ways to represent a UUID */
     enum E_Representation {
-        /** The UUID is printed as one, long integer in base 10 */
+        /** The UUID is printed as one, long integer in base 10 (up to 39 digits long) */
         ER_RepresentationInteger,
-        /** The UUID is printed in hex with hypens (-) seperating groups */
+        /** The UUID is printed in hexadecimal notation with hypens (-) separating groups */
         ER_RepresentationHex,
-        /** The UUID is printed as a single integer with the prefix "2.25." */
+        /** The UUID is printed as one, long integer with the prefix "2.25." */
         ER_RepresentationOID,
-        /** The UUID is printed as hex with the prefix "urn:uuid:" */
+        /** The UUID is printed in hexadecimal notation with the prefix "urn:uuid:" */
         ER_RepresentationURN,
         /** The default representation that is used when none is given */
         ER_RepresentationDefault = ER_RepresentationHex
@@ -77,7 +77,7 @@ public:
     /** Get the string representation of this UUID.
      *  @param result string instance to save the result in
      *  @param representation the representation to use
-     *  @return ret
+     *  @return result
      */
     OFString& toString(OFString& result, E_Representation representation = ER_RepresentationDefault) const;
 
@@ -110,21 +110,21 @@ public:
 
 private:
 
-    /** Print the ER_RepresentationInteger representation to the given stream.
+    /** Print the integer representation to the given stream.
      *  @param stream stream to print to.
      */
     void printInteger(STD_NAMESPACE ostream& stream) const;
 
-    /** Print the ER_RepresentationHex representation to the given stream.
+    /** Print the hexadecimal representation to the given stream.
      *  @param stream stream to print to.
      */
     void printHex(STD_NAMESPACE ostream& stream) const;
 
     /* The fields of an UUID, as defined by ITU-T X.667 */
 
-    /** Octects 0-3 of the time field */
+    /** Octets 0-3 of the time field */
     Uint32 time_low;
-    /** Octects 4-5 of the time field */
+    /** Octets 4-5 of the time field */
     Uint16 time_mid;
     /** 4 bits for the version and the 12 highest bits of the time */
     Uint16 version_and_time_high;
@@ -153,6 +153,9 @@ static inline STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& stream, 
 /*
  * CVS/RCS Log:
  * $Log: ofuuid.h,v $
+ * Revision 1.3  2011-12-07 16:51:39  joergr
+ * Various minor fixes to API documentation and other comments.
+ *
  * Revision 1.2  2011-12-07 14:25:53  uli
  * Could someone please hand me a brown paper bag?
  *
