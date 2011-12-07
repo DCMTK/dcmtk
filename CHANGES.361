@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.07 (riesmeier)
+
+- Changed order of attributes for XML element "DicomAttribute" in order to be
+  consistent with the XML Schema given in the DICOM standard.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2011.12.06 (elgazzar)
 
 - Added const declaration to a parameter of findSOPInstance().

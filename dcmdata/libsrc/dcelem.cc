@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:49 $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  Update Date:      $Date: 2011-12-07 13:20:10 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1296,22 +1296,9 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
 
     /* write XML start tag for attribute */
     if (flags & DCMTypes::XF_useNativeModel)
-    {
         out << "<DicomAttribute";
-        if (!isPrivate)
-        {
-            /* write attribute keyword if known (and the official name is used in the data dictionary) */
-            const OFString tagName = getTagName();
-            if ((tagName != DcmTag_ERROR_TagName) &&
-                /* check for DCMTK-specific name prefixes used for retired tags */
-                (tagName.substr(0, 8) != "RETIRED_") && (tagName.substr(0, 9) != "ACR_NEMA_"))
-            {
-                out << " keyword=\"" << OFStandard::convertToMarkupString(tagName, xmlString) << "\"";
-            }
-        }
-    } else {
+    else
         out << "<element";
-    }
 
     /* write attribute tag */
     out << " tag=\"";
@@ -1325,17 +1312,6 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
         {
             out << STD_NAMESPACE setw(4) << (tag.getETag() & 0x00FF) << "\""
                 << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
-            if (!tag.isPrivateReservation())
-            {
-                const char *creator = tag.getPrivateCreator();
-                if (creator != NULL)
-                {
-                    out << " privateCreator=\"";
-                    out << creator << "\"";
-                } else {
-                    DCMDATA_WARN("Cannot write private creator to XML output: Not present in dataset");
-                }
-            }
         }
         else  /* output full element number "eeee" */
         {
@@ -1354,8 +1330,30 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
 
     if (flags & DCMTypes::XF_useNativeModel)
     {
-        /* close XML start tag */
-        out << ">" << OFendl;
+        if (isPrivate)
+        {
+            /* output the creator of this private tag (but not for the creator tag itself) */
+            if (!tag.isPrivateReservation())
+            {
+                const char *creator = tag.getPrivateCreator();
+                if (creator != NULL)
+                {
+                    out << " privateCreator=\"";
+                    out << creator << "\"";
+                } else {
+                    DCMDATA_WARN("Cannot write private creator to XML output: Not present in dataset");
+                }
+            }
+        } else {
+            /* write attribute keyword if known (and the official name is used in the data dictionary) */
+            const OFString tagName = getTagName();
+            if ((tagName != DcmTag_ERROR_TagName) &&
+                /* check for DCMTK-specific name prefixes used for old ACR NEMA and retired tags */
+                (tagName.substr(0, 8) != "RETIRED_") && (tagName.substr(0, 9) != "ACR_NEMA_"))
+            {
+                out << " keyword=\"" << OFStandard::convertToMarkupString(tagName, xmlString) << "\"";
+            }
+        }
     } else {
         /* value multiplicity = 1..n */
         out << " vm=\"" << getVM() << "\"";
@@ -1370,9 +1368,9 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
         /* write additional attributes (if any) */
         if ((attrText != NULL) && (attrText[0] != '\0'))
             out << " " << attrText;
-        /* close XML start tag */
-        out << ">";
     }
+    /* close XML start tag */
+    out << ">" << OFendl;
 }
 
 
@@ -1918,6 +1916,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.101  2011-12-07 13:20:10  joergr
+** Changed order of attributes for XML element "DicomAttribute" in order to be
+** consistent with the XML Schema given in the DICOM standard.
+**
 ** Revision 1.100  2011-12-02 11:02:49  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **
