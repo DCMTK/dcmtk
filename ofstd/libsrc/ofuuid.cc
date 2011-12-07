@@ -17,9 +17,9 @@
  *
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:25:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-07 16:43:26 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,13 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
+END_EXTERN_C
+
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
-END_EXTERN_C
+
 
 static OFMutex UUIDMutex;
 static Uint32 last_time[2];
@@ -51,6 +53,7 @@ static int uuids_this_tick;
 static Uint16 last_clock_sequence;
 static Uint8 last_node[6];
 static OFBool initialized = OFFalse;
+
 
 static void get_random(void *dest, size_t num)
 {
@@ -83,11 +86,12 @@ static void get_system_time(Uint32 *out)
     GetSystemTimeAsFileTime(OFreinterpret_cast(FILETIME *, &tm));
 
     /* tm is number of 100ns ticks since Jan 01 1601, but we want the number of
-     * ticks since Oct 15 1582 (no, I don't know why we want that).
+     * ticks since Oct 15 1582 (since a new calendar system has been introduced
+     * at that time).
      */
     tm.QuadPart += OFstatic_cast(unsigned __int64, 1000 * 1000 * 10) // seconds
         * OFstatic_cast(unsigned __int64, 60 * 60 * 24) // days
-        * OFstatic_cast(unsigned __int64, 17+30+31+365*18+5); // number of days
+        * OFstatic_cast(unsigned __int64, 17 + 30 + 31 + 365 * 18 + 5); // number of days
     out[0] = tm.LowPart;
     out[1] = tm.HighPart;
 }
@@ -348,7 +352,7 @@ void OFUUID::printInteger(STD_NAMESPACE ostream& stream) const
         divide_by(data[3], 10, data[3], rem);
 
         assert(rem <= 9);
-        buffer[--idx] = rem + '0';
+        buffer[--idx] = OFstatic_cast(char, rem + '0');
     }
     assert(idx >= 0);
     buffer[sizeof(buffer) - 1] = '\0';
@@ -370,6 +374,9 @@ OFBool OFUUID::operator==(const OFUUID& o) const
  *
  * CVS/RCS Log:
  * $Log: ofuuid.cc,v $
+ * Revision 1.3  2011-12-07 16:43:26  joergr
+ * Added explicit type cast to keep VisualStudio 2008 from moaning. Other fixes.
+ *
  * Revision 1.2  2011-12-07 14:25:53  uli
  * Could someone please hand me a brown paper bag?
  *

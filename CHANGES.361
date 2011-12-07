@@ -30,6 +30,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.07 (riesmeier)
 
+- Added explicit type cast to keep VisualStudio 2008 from moaning. Other fixes.
+  Affects: ofstd/libsrc/ofuuid.cc
+
 - Changed order of attributes for XML element "DicomAttribute" in order to be
   consistent with the XML Schema given in the DICOM standard.
   Affects: dcmdata/libsrc/dcelem.cc
