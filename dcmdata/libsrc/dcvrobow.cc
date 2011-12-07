@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 15:46:29 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-07 14:37:59 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofuuid.h"
 
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
@@ -683,11 +684,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
         /* for an empty value field, we do not need to do anything */
         if (getLengthField() > 0)
         {
-            char uid[100];
             /* generate a new UID but the binary data is not (yet) written. */
-            /* actually, it should be a UUID in hexadecimal representation. */
-            dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
-            out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+            OFUUID uuid;
+            out << "<BulkData UUID=\"";
+            uuid.print(out, OFUUID::ER_RepresentationHex);
+            out << "\"/>" << OFendl;
         }
         /* write XML end tag */
         writeXMLEndTag(out, flags);
@@ -759,6 +760,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.70  2011-12-07 14:37:59  uli
+** Use an UUID instead of an UID for the BulkData XML output.
+**
 ** Revision 1.69  2011-12-02 15:46:29  joergr
 ** Made sure that the BulkData XML element is not written for empty values.
 **

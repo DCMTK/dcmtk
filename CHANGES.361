@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.07 (schlachter)
 
+- Use an UUID instead of an UID for the BulkData XML output.
+  Affects: dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrof.cc
+
 - Could someone please hand me a brown paper bag?
   Affects: ofstd/include/dcmtk/ofstd/ofuuid.h
            ofstd/libsrc/ofuuid.cc

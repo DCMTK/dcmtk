@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherFloat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 15:46:29 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-07 14:37:59 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,6 +28,8 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/ofstd/ofuuid.h"
 
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcvrfl.h"
@@ -111,11 +113,11 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
         /* for an empty value field, we do not need to do anything */
         if (getLengthField() > 0)
         {
-            char uid[100];
             /* generate a new UID but the binary data is not (yet) written. */
-            /* actually, it should be a UUID in hexadecimal representation. */
-            dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
-            out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+            OFUUID uuid;
+            out << "<BulkData UUID=\"";
+            uuid.print(out, OFUUID::ER_RepresentationHex);
+            out << "\"/>" << OFendl;
         }
     } else {
         /* write XML start tag */
@@ -150,6 +152,9 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
+ * Revision 1.10  2011-12-07 14:37:59  uli
+ * Use an UUID instead of an UID for the BulkData XML output.
+ *
  * Revision 1.9  2011-12-02 15:46:29  joergr
  * Made sure that the BulkData XML element is not written for empty values.
  *
