@@ -255,23 +255,21 @@ standard, part 19 ("Application Hosting").
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
 or OW, as well as OF values are not written to the XML output because of their
-size.  Instead, for each element, a new Unique Identifier (UID) is being
-generated and written as an attribute of a \<BulkData\> XML element.  So far,
-there is no possibility to write an additional file to hold the binary data for
-each of the binary data chunks.  This is not required by the standard, however,
-it might be useful for implementing an Application Hosting interface; thus this
-feature may be available in future versions of \b dcm2xml.
+size.  Instead, for each element, a new Universally Unique Identifier (UUID) is
+being generated and written as an attribute of a \<BulkData\> XML element.
+So far, there is no possibility to write an additional file to hold the binary
+data for each of the binary data chunks.  This is not required by the standard,
+however, it might be useful for implementing an Application Hosting interface;
+thus this feature may be available in future versions of \b dcm2xml.
 
 \subsection known_issues Known Issues
 
 In addition to what is written in the above section on "Bulk Data", there are
 further known issues with the current implementation of the Native DICOM Model
-format.  First of all, the DICOM standard requires that a UUID using the
-hexadecimal representation defined in ITU-T Recommendation X.667 has to be used
-as an identifier of bulk data - not a UID.  Furthermore, large element values
-with a VR other than OB, OW or OF are currently never written als bulk data,
-although it might be useful, e.g. for very long text elements (especially UT)
-or very long numeric fields (of various VRs).
+format.  For example, large element values with a VR other than OB, OW or OF
+are currently never written als bulk data, although it might be useful, e.g. for
+very long text elements (especially UT) or very long numeric fields (of various
+VRs).
 
 \section notes NOTES
 
