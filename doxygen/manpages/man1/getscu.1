@@ -1,7 +1,7 @@
-.TH "getscu" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "getscu" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-getscu \- DICOM retrieve (C-GET) SCU
+getscu \- DICOM retrieve (C-GET) SCU 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ getscu [options] peer port [dcmfile-in...]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBgetscu\fP application implements an SCU for the Query/Retrieve Service Class. \fBgetscu\fP supports retrieve functionality using the C-GET message. It sends query keys to an SCP and waits for responses with images or other DICOM objects sent via C-STORE. As the DICOM service demands, C-GET and the accompanying C-STORE messages are handled on the same association. Therefore, objects can only be received by \fBgetscu\fP itself and cannot be sent to a third party (\fBmovescu\fP would be the right tool for this task).
+The \fBgetscu\fP application implements an SCU for the Query/Retrieve Service Class\&. \fBgetscu\fP supports retrieve functionality using the C-GET message\&. It sends query keys to an SCP and waits for responses with images or other DICOM objects sent via C-STORE\&. As the DICOM service demands, C-GET and the accompanying C-STORE messages are handled on the same association\&. Therefore, objects can only be received by \fBgetscu\fP itself and cannot be sent to a third party (\fBmovescu\fP would be the right tool for this task)\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -37,9 +37,6 @@ dcmfile-in  DICOM query file(s)
         --version
           print version information and exit
 
-  +v    --verbose-pc
-          show presentation contexts in verbose mode
-
         --arguments
           print expanded command line arguments
 
@@ -58,6 +55,9 @@ dcmfile-in  DICOM query file(s)
 
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
+
+  +v    --verbose-pc
+          show presentation contexts in verbose mode
 .fi
 .PP
 .SS "network options"
@@ -204,7 +204,7 @@ storage mode:
 .PP
 .SH "NOTES"
 .PP
-Each file supplied on the command line will be sent to the SCP as part of a C-GET request. The query file must be a valid DICOM data set containing the dataset part of a C-GET-RQ message. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
+Each file supplied on the command line will be sent to the SCP as part of a C-GET request\&. The query file must be a valid DICOM data set containing the dataset part of a C-GET-RQ message\&. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
 .PP
 .PP
 .nf
@@ -215,7 +215,7 @@ Each file supplied on the command line will be sent to the SCP as part of a C-GE
 .fi
 .PP
 .PP
-Another possibility is to use the \fBdcmodify\fP tool to create a file from scratch using the option \fI--create-file\fP with successive calls to the \fI--insert\fP option. Individual attributes can be modified or supplemented using the \fI-k\fP (or \fI--key\fP) option. For example the command:
+Another possibility is to use the \fBdcmodify\fP tool to create a file from scratch using the option \fI--create-file\fP with successive calls to the \fI--insert\fP option\&. Individual attributes can be modified or supplemented using the \fI-k\fP (or \fI--key\fP) option\&. For example the command:
 .PP
 .PP
 .nf
@@ -224,15 +224,16 @@ getscu -k "0010,0020=PAT002" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID attribute in patqry.dcm to have the value 'PAT002'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length. It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option. In these cases, a special 'path' notation has to be used. Details can be found in the \fBdcmodify\fP documentation.
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID attribute in patqry\&.dcm to have the value 'PAT002'\&. If such an attribute is present it will be replaced, if absent it will be inserted\&. The \fI-k\fP option can be present more than once\&. The value part (after the '=') may be absent causing the attribute to be sent with zero length\&. It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option\&. In these cases, a special 'path' notation has to be used\&. Details can be found in the \fBdcmodify\fP documentation\&.
 .PP
-If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options.
+If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options\&. If multiple query files are provided, \fBgetscu\fP will send multiple C-GET requests to the SCP\&.
 .SS "Known Problems"
-\fBgetscu\fP is intended to be used as a testing tool for DICOM software developers. The query keys file must be created by hand based upon the contents of the SCP.
+\fBgetscu\fP is intended to be used as a testing tool for DICOM software developers\&. The query keys file must be created by hand based upon the contents of the SCP\&.
 .PP
-C-GET is not supported by all Query/Retrieve SCPs. The C-MOVE protocol which is implemented by the \fBmovescu\fP tool is more commonly found in practice.
+C-GET is not supported by all Query/Retrieve SCPs\&. The C-MOVE protocol which is implemented by the \fBmovescu\fP tool is more commonly found in practice\&.
 .PP
-The \fBgetscu\fP application makes no attempt to prevent incorrect queries. In particular, the query keys of a C-MOVE request should only contain the QueryRetrieveLevel attribute and one or more of the so-called 'unique key attributes' (PatientID, StudyInstanceUID, SeriesInstanceUID and SOPInstanceUID).
+The \fBgetscu\fP application makes no attempt to prevent incorrect queries\&. In particular, the query keys of a C-MOVE request should only contain the QueryRetrieveLevel attribute and one or more of the so-called 'unique key
+attributes' (PatientID, StudyInstanceUID, SeriesInstanceUID and SOPInstanceUID)\&.
 .SS "DICOM Conformance"
 .SS "SCU Conformance"
 The \fBgetscu\fP application supports the following SOP Classes as an SCU:
@@ -246,7 +247,7 @@ GETPatientStudyOnlyQueryRetrieveInformationModel     1.2.840.10008.5.1.4.1.2.3.3
 .fi
 .PP
 .PP
-The \fBgetscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, or \fI-O\fP). For outgoing associations, the following transfer syntaxes are supported:
+The \fBgetscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, or \fI-O\fP)\&. For outgoing associations, the following transfer syntaxes are supported:
 .PP
 .PP
 .nf
@@ -260,7 +261,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .PP
 (*) if compiled with zlib support enabled (see \fI--version\fP output)
 .PP
-Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options.
+Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options\&.
 .SS "Storage Conformance"
 The \fBgetscu\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -403,7 +404,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-When acting as a storage SCP, the \fBgetscu\fP application will prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBgetscu\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above). Depending on the \fI--prefer\fP option actually used, a combination of the following transfer syntaxes is supported:
+When acting as a storage SCP, the \fBgetscu\fP application will prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax\&. If \fBgetscu\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa)\&. This behaviour can be changed with the \fI--prefer\fP options (see above)\&. Depending on the \fI--prefer\fP option actually used, a combination of the following transfer syntaxes is supported:
 .PP
 .PP
 .nf
@@ -429,7 +430,7 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .PP
 (*) if compiled with zlib support enabled (see \fI--version\fP output)
 .PP
-The \fBgetscu\fP application does not support extended negotiation.
+The \fBgetscu\fP application does not support extended negotiation\&.
 .SH "EXAMPLES"
 .PP
 .PP
@@ -439,29 +440,29 @@ getscu --patient --call ARCHIVE caesar 104 q.dcm
 .fi
 .PP
 .PP
-sends the attributes contained in the DICOM file 'q.dcm' as part of a C-GET request to application entity ARCHIVE on the host caesar at port 104 using the Patient Root query model. \fBgetscu\fP itself uses the default AE title GETSCU.
+sends the attributes contained in the DICOM file 'q\&.dcm' as part of a C-GET request to application entity ARCHIVE on the host caesar at port 104 using the Patient Root query model\&. \fBgetscu\fP itself uses the default AE title GETSCU\&.
 .PP
-In contrast to C-MOVE-based Query/Retrieve SOP Classes, the C-GET-based SOP Classes utilized by \fBgetscu\fP only permit retrieving the desired objects on the same connection, i.e. \fBgetscu\fP will receive the objects itself. Thus, it is not possible to tell the SCP to transmit the objects to a third party. This is a limitation of the DICOM protocol and not of the \fBgetscu\fP tool.
+In contrast to C-MOVE-based Query/Retrieve SOP Classes, the C-GET-based SOP Classes utilized by \fBgetscu\fP only permit retrieving the desired objects on the same connection, i\&.e\&. \fBgetscu\fP will receive the objects itself\&. Thus, it is not possible to tell the SCP to transmit the objects to a third party\&. This is a limitation of the DICOM protocol and not of the \fBgetscu\fP tool\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBgetscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBgetscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
 \fBfindscu\fP(1), \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

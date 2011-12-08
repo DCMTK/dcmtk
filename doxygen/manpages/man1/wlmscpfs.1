@@ -1,7 +1,7 @@
-.TH "wlmscpfs" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
+wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files) 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ wlmscpfs [options] port
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBwlmscpfs\fP application implements a Service Class Provider (SCP) for the Basic Worklist Management Service. The application will listen on a specified TCP/IP port for incoming association requests from a Worklist Management SCU. In case an association was acknowledged and a worklist query was received, the \fBwlmscpfs\fP application will query particular files in a certain directory (which can be specified through corresponding program options) on the file system for corresponding worklist information, and it will send this information back to the calling Worklist Management SCU. Aside from dealing with Worklist Management queries, the \fBwlmscpfs\fP application also supports the Verification Service Class as an SCP.
+The \fBwlmscpfs\fP application implements a Service Class Provider (SCP) for the Basic Worklist Management Service\&. The application will listen on a specified TCP/IP port for incoming association requests from a Worklist Management SCU\&. In case an association was acknowledged and a worklist query was received, the \fBwlmscpfs\fP application will query particular files in a certain directory (which can be specified through corresponding program options) on the file system for corresponding worklist information, and it will send this information back to the calling Worklist Management SCU\&. Aside from dealing with Worklist Management queries, the \fBwlmscpfs\fP application also supports the Verification Service Class as an SCP\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -181,15 +181,15 @@ other network options:
 .PP
 .SH "NOTES"
 .PP
-The semantic impacts of the above mentioned options is clear for the majority of options. Some particular options, however, are so specific that they need detailed descriptions which will be given in this passage.
+The semantic impacts of the above mentioned options is clear for the majority of options\&. Some particular options, however, are so specific that they need detailed descriptions which will be given in this passage\&.
 .PP
-The returned character set options are intended for situations in which the \fBwlmscpfs\fP application will return attribute values which are not composed of characters from the DICOM default character repertoire. In such cases, for example option \fI--return-iso-ir-100\fP can be used to specify that a response to a modality's worklist management C-FIND request shall contain DICOM's Specific Character Set attribute (0008,0005) with a corresponding value, indicating the character repertoire from which the characters of returned attribute values were taken (in this example the repertoire ISO IR 100). Please note that the \fBwlmscpfs\fP application will not make sure that all returned values are actually made up of this character repertoire; the application expects this to be the case.
+The returned character set options are intended for situations in which the \fBwlmscpfs\fP application will return attribute values which are not composed of characters from the DICOM default character repertoire\&. In such cases, for example option \fI--return-iso-ir-100\fP can be used to specify that a response to a modality's worklist management C-FIND request shall contain DICOM's Specific Character Set attribute (0008,0005) with a corresponding value, indicating the character repertoire from which the characters of returned attribute values were taken (in this example the repertoire ISO IR 100)\&. Please note that the \fBwlmscpfs\fP application will not make sure that all returned values are actually made up of this character repertoire; the application expects this to be the case\&.
 .PP
-In general, the Specific Character Set attribute (0008,0005) will only be included in the C-FIND response if it contains any attributes that are affected by the character set, i.e. for value representations PN, LO, LT, SH, ST and UT.
+In general, the Specific Character Set attribute (0008,0005) will only be included in the C-FIND response if it contains any attributes that are affected by the character set, i\&.e\&. for value representations PN, LO, LT, SH, ST and UT\&.
 .PP
-Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started.
+Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching\&. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started\&.
 .PP
-The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-FIND response message. Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type').
+The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process\&. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-FIND response message\&. Table K\&.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type')\&.
 .SS "DICOM Conformance"
 The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -212,9 +212,9 @@ BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-The default behaviour of the \fBwlmscpfs\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
+The default behaviour of the \fBwlmscpfs\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax\&. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa)\&. This behaviour can be changed with the \fI--prefer\fP options (see above)\&.
 .PP
-If compiled with zlib support enabled (see \fI--version\fP output) and if option \fI--prefer-deflated\fP is used, also the following transfer syntax is accepted.
+If compiled with zlib support enabled (see \fI--version\fP output) and if option \fI--prefer-deflated\fP is used, also the following transfer syntax is accepted\&.
 .PP
 .PP
 .nf
@@ -223,7 +223,7 @@ DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99 (*)
 .fi
 .PP
 .PP
-The \fBwlmscpfs\fP application does not support extended negotiation.
+The \fBwlmscpfs\fP application does not support extended negotiation\&.
 .PP
 Currently, the \fBwlmscpfs\fP application supports the following attributes as matching keys:
 .PP
@@ -340,26 +340,26 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 .fi
 .PP
 .PP
-The attribute (0008,0005) SpecificCharacterSet is a special case and its support by \fBwlmscpfs\fP is discussed in the NOTES section above.
+The attribute (0008,0005) SpecificCharacterSet is a special case and its support by \fBwlmscpfs\fP is discussed in the NOTES section above\&.
 .SS "Access Control"
-When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBwlmscpfs\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
+When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option\&. In this case the access control rules defined in the system's host access control tables for \fBwlmscpfs\fP are enforced\&. The default locations of the host access control tables are \fI/etc/hosts\&.allow\fP and \fI/etc/hosts\&.deny\fP\&. Further details are described in \fBhosts_access\fP(5)\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

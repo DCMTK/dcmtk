@@ -1,7 +1,7 @@
-.TH "dconvlum" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dconvlum" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dconvlum \- Convert VeriLUM files to DCMTK display files
+dconvlum \- Convert VeriLUM files to DCMTK display files 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ dconvlum in-file out-file [ambient]
 .PP
 .SH "DESCRIPTION"
 .PP
-Command line program that converts VeriLUM file with characteristic curve data (\fICCx_xx.dat\fP) to a format used for the Barten transformation in this toolkit. VeriLUM is a calibration package from ImageSmiths consisting of a photometer (with serial RS232 connector) and a Windows NT software.
+Command line program that converts VeriLUM file with characteristic curve data (\fICCx_xx\&.dat\fP) to a format used for the Barten transformation in this toolkit\&. VeriLUM is a calibration package from ImageSmiths consisting of a photometer (with serial RS232 connector) and a Windows NT software\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -27,12 +27,12 @@ ambient   ambient light (cd/m^2, floating point value)
 .PP
 .SH "NOTES"
 .PP
-The output file describing the characteristic curve of a display system (monitor) is a simple text file. Lines starting with a '#' are treated as comments and therefore skipped as well as blank lines. This conversion program creates such a file automatically (including some comment lines) by transforming the information stored in the VeriLUM file. The number following the magic word 'max' defines the maximum DDL value (e.g. 255 for 8 bit displays). This definition is required before the luminance data can be defined. Optionally the ambient light value can be specified in this file too. The floating point value (in candela per square meter) must follow the word 'amb'. Finally the luminance values are defined for each corresponding DDL (device driving level) value. The entries do not necessarily have to be ordered or complete, i.e. there can be less than 'max' + 1 entries. Missing values are calculated by cubic spline interpolation.
+The output file describing the characteristic curve of a display system (monitor) is a simple text file\&. Lines starting with a '#' are treated as comments and therefore skipped as well as blank lines\&. This conversion program creates such a file automatically (including some comment lines) by transforming the information stored in the VeriLUM file\&. The number following the magic word 'max' defines the maximum DDL value (e\&.g\&. 255 for 8 bit displays)\&. This definition is required before the luminance data can be defined\&. Optionally the ambient light value can be specified in this file too\&. The floating point value (in candela per square meter) must follow the word 'amb'\&. Finally the luminance values are defined for each corresponding DDL (device driving level) value\&. The entries do not necessarily have to be ordered or complete, i\&.e\&. there can be less than 'max' + 1 entries\&. Missing values are calculated by cubic spline interpolation\&.
 .PP
-See DICOM standard part 14 for more details on display calibration and Barten's model (including GSDF).
+See DICOM standard part 14 for more details on display calibration and Barten's model (including GSDF)\&.
 .SH "SEE ALSO"
 .PP
 \fBdcmdspfn\fP(1), \fBdcm2pnm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1999-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

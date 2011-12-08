@@ -1,7 +1,7 @@
-.TH "findscu" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-findscu \- DICOM query (C-FIND) SCU
+findscu \- DICOM query (C-FIND) SCU 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ findscu [options] peer port [dcmfile-in...]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBfindscu\fP application implements an SCU for the Query/Retrieve Service Class and the Basic Worklist Management Service Class. \fBfindscu\fP only supports query functionality using the C-FIND message. It sends query keys to an SCP and awaits responses. The application can be used to test SCPs of the Query/Retrieve and Basic Worklist Management Service Classes.
+The \fBfindscu\fP application implements an SCU for the Query/Retrieve Service Class and the Basic Worklist Management Service Class\&. \fBfindscu\fP only supports query functionality using the C-FIND message\&. It sends query keys to an SCP and awaits responses\&. The application can be used to test SCPs of the Query/Retrieve and Basic Worklist Management Service Classes\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -242,7 +242,7 @@ C-FIND responses:
 .PP
 .SH "NOTES"
 .PP
-Each file supplied on the command line will be sent to the SCP as part of a C-FIND request. The query file must be a valid DICOM data set containing the dataset part of a C-FIND-RQ message. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
+Each file supplied on the command line will be sent to the SCP as part of a C-FIND request\&. The query file must be a valid DICOM data set containing the dataset part of a C-FIND-RQ message\&. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
 .PP
 .PP
 .nf
@@ -254,7 +254,7 @@ Each file supplied on the command line will be sent to the SCP as part of a C-FI
 .fi
 .PP
 .PP
-Individual attributes of each file sent can be modified or supplemented using the \fI-k\fP option. For example the command:
+Individual attributes of each file sent can be modified or supplemented using the \fI-k\fP option\&. For example the command:
 .PP
 .PP
 .nf
@@ -263,11 +263,11 @@ findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length.
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientName attribute in patqry\&.dcm to have the value 'HEWETT*'\&. If such an attribute is present it will be replaced, if absent it will be inserted\&. The \fI-k\fP option can be present more than once\&. The value part (after the '=') may be absent causing the attribute to be sent with zero length\&.
 .PP
-In earlier versions of \fBfindscu\fP, the tag keys were specified without braces around group and element number, e. g. '0010,0010' instead of '(0010,0010)'. It is recommended switching to the new syntax; however, the old syntax is still working.
+In earlier versions of \fBfindscu\fP, the tag keys were specified without braces around group and element number, e\&. g\&. '0010,0010' instead of '(0010,0010)'\&. It is recommended switching to the new syntax; however, the old syntax is still working\&.
 .PP
-Also \fI-k\fP accepts dictionary names instead of element tags for specifying DICOM elements. For example, the \fBfindscu\fP call above then reads like this:
+Also \fI-k\fP accepts dictionary names instead of element tags for specifying DICOM elements\&. For example, the \fBfindscu\fP call above then reads like this:
 .PP
 .PP
 .nf
@@ -276,7 +276,7 @@ findscu -P -k PatientName="HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
-It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option. In these cases, a special 'path' notation has to be used, e. g.
+It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option\&. In these cases, a special 'path' notation has to be used, e\&. g\&.
 .PP
 .PP
 .nf
@@ -285,11 +285,12 @@ findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
 .fi
 .PP
 .PP
-This call queries a worklist server at host caesar for any planned procedures for CT modalities by specifing tag (0040,0100) 'Scheduled Procedure Step Sequence' and an attribute 'Modality' in the first item of this sequence with value 'CT'. Details on this path notation can be found in the documentation of \fBdcmodify\fP.
+This call queries a worklist server at host caesar for any planned procedures for CT modalities by specifing tag (0040,0100) 'Scheduled Procedure Step
+Sequence' and an attribute 'Modality' in the first item of this sequence with value 'CT'\&. Details on this path notation can be found in the documentation of \fBdcmodify\fP\&.
 .PP
-If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options.
+If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options\&. If multiple query files are provided, \fBfindscu\fP will send multiple C-FIND requests to the SCP\&.
 .PP
-Each set of response identifiers received will be output to the logger unless option \fI--hide-responses\fP, \fI--extract\fP, \fI--quiet\fP or an appropriate logger configuration is used. Option \fI--show-responses\fP can be used to force the output to the logger.
+Each set of response identifiers received will be output to the logger unless option \fI--hide-responses\fP, \fI--extract\fP, \fI--quiet\fP or an appropriate logger configuration is used\&. Option \fI--show-responses\fP can be used to force the output to the logger\&.
 .SS "DICOM Conformance"
 The \fBfindscu\fP application supports the following SOP Classes as an SCU:
 .PP
@@ -303,7 +304,7 @@ FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
 .fi
 .PP
 .PP
-The \fBfindscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, \fI-O\fP or \fI-W\fP). Basically, the following transfer syntaxes are supported:
+The \fBfindscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, \fI-O\fP or \fI-W\fP)\&. Basically, the following transfer syntaxes are supported:
 .PP
 .PP
 .nf
@@ -317,29 +318,29 @@ BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
 .PP
 (*) if compiled with zlib support enabled (see \fI--version\fP output)
 .PP
-Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options.
+Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options\&.
 .PP
-The \fBfindscu\fP application does not support extended negotiation.
+The \fBfindscu\fP application does not support extended negotiation\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBfindscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBfindscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

@@ -1,7 +1,7 @@
-.TH "dcmsign" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmsign \- Sign and Verify DICOM Files
+dcmsign \- Sign and Verify DICOM Files 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ dcmsign [options] dcmfile-in [dcmfile-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmsign\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs a digital signature operation and, if any modification has taken place, writes the DICOM object to an output file (\fIdcmfile-out\fP).
+The \fBdcmsign\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs a digital signature operation and, if any modification has taken place, writes the DICOM object to an output file (\fIdcmfile-out\fP)\&.
 .PP
 Five digital signature operations are supported:
 .PP
@@ -26,7 +26,7 @@ creation of a new digital signature in an item of a sequence embedded within the
 .IP "\(bu" 2
 removal of a single digital signature from the DICOM file, and 
 .IP "\(bu" 2
-removal of all digital signatures from the DICOM file.
+removal of all digital signatures from the DICOM file\&.
 .PP
 .SH "PARAMETERS"
 .PP
@@ -227,13 +227,13 @@ other output options:
 .SH "NOTES"
 .PP
 .SS "Files and Parameters"
-The \fBdcmsign\fP utility reads and writes a number of files and file formats which are described in this section.
+The \fBdcmsign\fP utility reads and writes a number of files and file formats which are described in this section\&.
 .PP
-Public Key Certificates are expected in X.509v3 format, either with PEM or DER encoding. The dcmsign utility currently supports RSA and DSA public keys, although only RSA keys are defines in the Security Profiles of the DICOM standard.
+Public Key Certificates are expected in X\&.509v3 format, either with PEM or DER encoding\&. The dcmsign utility currently supports RSA and DSA public keys, although only RSA keys are defines in the Security Profiles of the DICOM standard\&.
 .PP
-Private Keys are expected in PEM or DER encoding. PEM is recommended (and default) because this allows to keep private keys in encrypted form. Command line options control the behaviour of \fBdcmsign\fP when an encrypted PEM key is opened (see above). In general it is not recommended to specify the encryption password in the command line because the command line may be visible to other processes in the system, e.g. 'ps -ef'.
+Private Keys are expected in PEM or DER encoding\&. PEM is recommended (and default) because this allows to keep private keys in encrypted form\&. Command line options control the behaviour of \fBdcmsign\fP when an encrypted PEM key is opened (see above)\&. In general it is not recommended to specify the encryption password in the command line because the command line may be visible to other processes in the system, e\&.g\&. 'ps -ef'\&.
 .PP
-The list of data elements to sign can either be read from a file or specified on the command line or both (in this case the keys are combined).
+The list of data elements to sign can either be read from a file or specified on the command line or both (in this case the keys are combined)\&.
 .PP
 On the command line, attribute keys are specified as
 .PP
@@ -247,9 +247,9 @@ On the command line, attribute keys are specified as
 .fi
 .PP
 .PP
-When attribute tags are read from file with the \fI--tag-file\fP option, a plain text file of max. 64 kbyte is expected. Tags within the file are either symbolic names from the data dictionary or have the format (gggg,eeee) (with braces). Tags are separated by one or more whitespace characters.
+When attribute tags are read from file with the \fI--tag-file\fP option, a plain text file of max\&. 64 kbyte is expected\&. Tags within the file are either symbolic names from the data dictionary or have the format (gggg,eeee) (with braces)\&. Tags are separated by one or more whitespace characters\&.
 .PP
-The \fI--sign-item\fP operation requires a location string that describes in which sequence item a signature is to be created. The location string has the following format:
+The \fI--sign-item\fP operation requires a location string that describes in which sequence item a signature is to be created\&. The location string has the following format:
 .PP
 .PP
 .nf
@@ -258,7 +258,7 @@ SequenceName[index].SequenceName[index].SequenceName[index](...)
 .fi
 .PP
 .PP
-where SequenceName is either a symbolic attribute name from the data dictionary or a numeric tag in the format (gggg,eeee) and index is an unsigned decimal integer for the item number, starting with zero for the first item in a sequence. As an example, the following location string
+where SequenceName is either a symbolic attribute name from the data dictionary or a numeric tag in the format (gggg,eeee) and index is an unsigned decimal integer for the item number, starting with zero for the first item in a sequence\&. As an example, the following location string
 .PP
 .PP
 .nf
@@ -267,24 +267,24 @@ ReferencedSeriesSequence[0].ReferencedImageSequence[1]
 .fi
 .PP
 .PP
-would cause a digital signature to be created in the second item of the ReferencedImageSequence (0008,1140) which is located in the first item of the ReferencedSeriesSequence (0008,1115) which is located in the main DICOM dataset.
+would cause a digital signature to be created in the second item of the ReferencedImageSequence (0008,1140) which is located in the first item of the ReferencedSeriesSequence (0008,1115) which is located in the main DICOM dataset\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2000-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

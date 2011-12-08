@@ -1,7 +1,7 @@
-.TH "xml2dcm" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dcm" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-xml2dcm \- Convert XML document to DICOM file or data set
+xml2dcm \- Convert XML document to DICOM file or data set 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ xml2dcm [options] xmlfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBxml2dcm\fP utility converts the contents of an XML (Extensible Markup Language) document to DICOM file or data set. The XML document is expected to validate against the DTD (Document Type Definition) which is described in file \fIdcm2xml.dtd\fP. An appropriate XML file can be created using the \fBdcm2xml\fP tool (option \fI+Wb\fP recommended to include binary data).
+The \fBxml2dcm\fP utility converts the contents of an XML (Extensible Markup Language) document to DICOM file or data set\&. The XML document is expected to validate against the DTD (Document Type Definition) which is described in file \fIdcm2xml\&.dtd\fP\&. An appropriate XML file can be created using the \fBdcm2xml\fP tool (option \fI+Wb\fP recommended to include binary data)\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -215,14 +215,14 @@ The basic structure of the XML input expected looks like the following:
 .fi
 .PP
 .PP
-The 'file-format' and 'meta-header' tags may be absent for DICOM data sets.
+The 'file-format' and 'meta-header' tags may be absent for DICOM data sets\&.
 .SS "Character Encoding"
-The DICOM character encoding is determined automatically from the element with tag '0008,0005' (Specific Character Set) - if present. The following character sets are currently supported (requires \fBlibxml2\fP to include \fBiconv\fP support):
+The DICOM character encoding is determined automatically from the element with tag '0008,0005' (Specific Character Set) - if present\&. The following character sets are currently supported (requires \fBlibxml\fP to include \fBiconv\fP support, see \fI--version\fP output):
 .PP
 .PP
 .nf
 
-ASCII         "ISO_IR 6"    (UTF-8)
+ASCII         (ISO_IR 6)    (UTF-8)
 UTF-8         "ISO_IR 192"  (UTF-8)
 ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
 ISO Latin 2   "ISO_IR 101"  (ISO-8859-2)
@@ -236,11 +236,11 @@ Hebrew        "ISO_IR 138"  (ISO-8859-8)
 .fi
 .PP
 .PP
-Multiple character sets are not supported (only the first value of the 'Specific Character Set' is used for the character encoding in case of value multiplicity).
+Multiple character sets are not supported (only the first value of the 'Specific Character Set' is used for the character encoding in case of value multiplicity)\&.
 .PP
-See \fBdcm2xml\fP documentation for more details on the XML structure.
+See \fBdcm2xml\fP documentation for more details on the XML structure\&.
 .SS "Binary Data"
-Binary data can be encoded either as a sequence of hex numbers separated by a backslash '\\' or in Base64 format (binary='base64'). In addition, binary data can also be read from file (binary='file'). In this case, the filename has to be specified as the element value, e.g.
+Binary data can be encoded either as a sequence of hex numbers separated by a backslash '\\' or in Base64 format (binary='base64')\&. In addition, binary data can also be read from file (binary='file')\&. In this case, the filename has to be specified as the element value, e\&.g\&.
 .PP
 .PP
 .nf
@@ -249,32 +249,36 @@ Binary data can be encoded either as a sequence of hex numbers separated by a ba
 .fi
 .PP
 .PP
-Please note that the contents of the file will be read as is. OW data is expected to be little endian ordered and will be swapped if necessary. No checks will be made to ensure that the amount of data is reasonable in terms of other attributes such as Rows or Columns.
+Please note that the contents of the file will be read as is\&. OW data is expected to be little endian ordered and will be swapped if necessary\&. No checks will be made to ensure that the amount of data is reasonable in terms of other attributes such as Rows or Columns\&.
+.SS "Compression"
+If libxml is compiled with zlib support, the input file (\fIxmlfile-in\fP) can also be compressed with ZIP, which usually results in much smaller files\&. See output of option \fI--version\fP in order to check whether zlib support is available\&.
 .SS "Limitations"
-Please note that \fBxml2dcm\fP currently does not fully support DICOMDIR files. Specifically, the value of the various offset data elements is not updated automatically by this tool.
+Different versions of libxml might have different limits for the maximum length of an XML element value\&. Therefore, it should be avoided to use very long element values (e\&.g\&. for pixel data)\&.
+.PP
+Please note that \fBxml2dcm\fP currently does not fully support DICOMDIR files\&. Specifically, the value of the various offset data elements is not updated automatically by this tool\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBxml2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBxml2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/dcm2xml.dtd\fP - Document Type Definition (DTD) file
+\fI<datadir>/dcm2xml\&.dtd\fP - Document Type Definition (DTD) file
 .SH "SEE ALSO"
 .PP
 \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2003-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

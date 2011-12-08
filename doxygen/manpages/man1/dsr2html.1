@@ -1,7 +1,7 @@
-.TH "dsr2html" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2html" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dsr2html \- Render DICOM SR file and data set to HTML/XHTML
+dsr2html \- Render DICOM SR file and data set to HTML/XHTML 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,9 +12,9 @@ dsr2html [options] dsrfile-in [htmlfile-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdsr2html\fP utility renders the contents of a DICOM Structured Reporting (SR) document (file format or raw data set) to HTML (Hyper Text Markup Language) version 3.2 or 4.01 as well as to XHTML (Extensible Hyper Text Markup Language) version 1.1.
+The \fBdsr2html\fP utility renders the contents of a DICOM Structured Reporting (SR) document (file format or raw data set) to HTML (Hyper Text Markup Language) version 3\&.2 or 4\&.01 as well as to XHTML (Extensible Hyper Text Markup Language) version 1\&.1\&.
 .PP
-If \fBdsr2html\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdsr2html\fP to read a dataset with a particular transfer syntax.
+If \fBdsr2html\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file\&. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility)\&. It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdsr2html\fP to read a dataset with a particular transfer syntax\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -90,7 +90,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 .fi
 .PP
-.SS "parsing options"
+.SS "processing options"
 .PP
 .nf
 
@@ -118,14 +118,27 @@ error handling:
   -Ei  --skip-invalid-items
          skip invalid content items (incl. sub-tree)
 
-character set:
+specific character set:
 
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset: string constant
-         (latin-1 to -5, greek, cyrillic, arabic, hebrew)
-         assume c if undeclared extended charset found
+  +Ca  --charset-assume  [c]harset: string
+         assume charset c if no extended charset declared
+
+       --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
+
+         # this option is only used for the mapping to an appropriate
+         # HTML/XHTML character encoding, but not for the conversion
+         # to UTF-8
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
 .fi
 .PP
 .SS "output options"
@@ -228,29 +241,52 @@ ColonCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage           1.2.840.10008.5.1.4.1.1.88.70
 .fi
 .PP
+.SS "Character Encoding"
+The HTML/XHTML encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' using the following mapping:
+.PP
+.PP
+.nf
+
+ASCII         (ISO_IR 6)    =>  (none)
+UTF-8         "ISO_IR 192"  =>  "UTF-8"
+ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
+ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
+ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"
+ISO Latin 4   "ISO_IR 110"  =>  "ISO-8859-4"
+ISO Latin 5   "ISO_IR 148"  =>  "ISO-8859-9"
+Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
+Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
+Greek         "ISO_IR 126"  =>  "ISO-8859-7"
+Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
+.fi
+.PP
+.PP
+If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&.
+.PP
+Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity)\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the rendering to HTML/XHTML format\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdsr2html\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdsr2html\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/report.css\fP - Sample Cascading Stylesheet file for HTML \fI<datadir>/reportx.css\fP - Sample Cascading Stylesheet file for XHTML
+\fI<datadir>/report\&.css\fP - Sample Cascading Stylesheet file for HTML \fI<datadir>/reportx\&.css\fP - Sample Cascading Stylesheet file for XHTML
 .SH "SEE ALSO"
 .PP
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2000-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

@@ -1,7 +1,7 @@
-.TH "dcmqrti" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrti" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmqrti \- The Terminal Initiator Telnet Client Program
+dcmqrti \- The Terminal Initiator Telnet Client Program 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,9 +12,9 @@ dcmqrti [options] peer...
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmqrti\fP program (telnet initiator) is an interactive character based program intended to be used for examining the dcmqrscp image databases and sending images contained within these databases to Vendor nodes. During a DICOM Demonstration the \fBdcmqrti\fP program can be activated by a Vendor by logging onto the computer running the \fBdcmqrscp\fP program. Each vendor will have their own login account and the \fBdcmqrti\fP program will be started instead of a normal shell when they login.
+The \fBdcmqrti\fP program (telnet initiator) is an interactive character based program intended to be used for examining the dcmqrscp image databases and sending images contained within these databases to Vendor nodes\&. During a DICOM Demonstration the \fBdcmqrti\fP program can be activated by a Vendor by logging onto the computer running the \fBdcmqrscp\fP program\&. Each vendor will have their own login account and the \fBdcmqrti\fP program will be started instead of a normal shell when they login\&.
 .PP
-The \fBdcmqrti\fP program takes one main argument, the hostname or vendor symbolic name (from the VendorTable in the configuration file) of a Vendor. It then searches in the configuration file for all AE titles associated with this hostname or vendor name, and all storage areas accessable to these AE titles. Thus only the accessable databases and peer applications discovered in the configuration file are available as choices within the \fBdcmqrti\fP user interface.
+The \fBdcmqrti\fP program takes one main argument, the hostname or vendor symbolic name (from the VendorTable in the configuration file) of a Vendor\&. It then searches in the configuration file for all AE titles associated with this hostname or vendor name, and all storage areas accessable to these AE titles\&. Thus only the accessable databases and peer applications discovered in the configuration file are available as choices within the \fBdcmqrti\fP user interface\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -97,9 +97,9 @@ peer  peer host name or symbolic name from cfg file
 .SH "NOTES"
 .PP
 .SS "Commands"
-All commands can be abbreviated. An abbreviation is allowed if it does not conflict with another command.
+All commands can be abbreviated\&. An abbreviation is allowed if it does not conflict with another command\&.
 .SS "'help' Command"
-The 'help' command gives a summary of all available commands. Its output is shown underneath. In order to separate the examples from surrounding text, all examples are bracketted by dashed lines. These lines do not appear when running the program.
+The 'help' command gives a summary of all available commands\&. Its output is shown underneath\&. In order to separate the examples from surrounding text, all examples are bracketted by dashed lines\&. These lines do not appear when running the program\&.
 .PP
 .PP
 .nf
@@ -124,7 +124,7 @@ exit                synonym for quit
 .fi
 .PP
 .SS "'title' Command"
-The 'title' command without an argument allows the user to list the known remote Application Entities (AE). An example output might look like:
+The 'title' command without an argument allows the user to list the known remote Application Entities (AE)\&. An example output might look like:
 .PP
 .PP
 .nf
@@ -140,11 +140,11 @@ Peer AE Titles:
 .fi
 .PP
 .PP
-The current peer AE is marked with an asterisk (*). Each peer AE has an index (second column) which can be used as an argument to the 'title' command in order to set the current peer AE. The third column gives the AE title of the peer AE. The fourth column shows the hostname and TCP/IP port number of the peer AE.
+The current peer AE is marked with an asterisk (*)\&. Each peer AE has an index (second column) which can be used as an argument to the 'title' command in order to set the current peer AE\&. The third column gives the AE title of the peer AE\&. The fourth column shows the hostname and TCP/IP port number of the peer AE\&.
 .PP
-When invoked with an argument index, the 'title' command will set the current peer AE. The \fBdcmqrti\fP program will attempt to initate an association to the current peer AE when asked to send a study/series/image or to send an echo.
+When invoked with an argument index, the 'title' command will set the current peer AE\&. The \fBdcmqrti\fP program will attempt to initate an association to the current peer AE when asked to send a study/series/image or to send an echo\&.
 .SS "'database' Command"
-The 'database' command without an argument allows the user to list the know local databases (these correspond to dcmqrscp's Application Entity Titles). An example output might look like:
+The 'database' command without an argument allows the user to list the know local databases (these correspond to dcmqrscp's Application Entity Titles)\&. An example output might look like:
 .PP
 .PP
 .nf
@@ -160,11 +160,11 @@ Database Titles:
 .fi
 .PP
 .PP
-The current database is marked with an asterisk (*). Each database has an index (second column) which can be used as an argument to the 'database' command in order to set the current database. The third column shows the name of the database (i.e. the dcmqrscp Application Entity title for the particular storage area).
+The current database is marked with an asterisk (*)\&. Each database has an index (second column) which can be used as an argument to the 'database' command in order to set the current database\&. The third column shows the name of the database (i\&.e\&. the dcmqrscp Application Entity title for the particular storage area)\&.
 .PP
-When invoked with an argument index, the 'database' command will set the current database. The current database is used as the basis for further database specific actions.
+When invoked with an argument index, the 'database' command will set the current database\&. The current database is used as the basis for further database specific actions\&.
 .SS "'study' Command"
-The 'study' command with no argument lists the studies in the current database. An example output might look like:
+The 'study' command with no argument lists the studies in the current database\&. An example output might look like:
 .PP
 .PP
 .nf
@@ -182,11 +182,11 @@ The 'study' command with no argument lists the studies in the current database. 
 .fi
 .PP
 .PP
-The current study is marked with an asterisk (*). Each study has an index (second column) which can be used as an argument to the 'study' command in order to set the current study. The third column shows the patient name, the fourth column the patient ID and the fifth column the study ID.
+The current study is marked with an asterisk (*)\&. Each study has an index (second column) which can be used as an argument to the 'study' command in order to set the current study\&. The third column shows the patient name, the fourth column the patient ID and the fifth column the study ID\&.
 .PP
-When invoked with an argument index, the 'study' command will set the current study. The current study is used as the basis for further study specific actions.
+When invoked with an argument index, the 'study' command will set the current study\&. The current study is used as the basis for further study specific actions\&.
 .SS "'series' Command"
-The 'series' command with no argument lists the series in the current study. An example output might look like:
+The 'series' command with no argument lists the series in the current study\&. An example output might look like:
 .PP
 .PP
 .nf
@@ -205,11 +205,11 @@ The 'series' command with no argument lists the series in the current study. An 
 .fi
 .PP
 .PP
-The current series is marked with an asterisk (*). Each series has an index (second column) which can be used as an argument to the 'series' command in order to set the current series. The third column shows the series number, the fourth column the series modality, and the fifth column the series instance UID.
+The current series is marked with an asterisk (*)\&. Each series has an index (second column) which can be used as an argument to the 'series' command in order to set the current series\&. The third column shows the series number, the fourth column the series modality, and the fifth column the series instance UID\&.
 .PP
-When invoked with an argument index, the 'series' command will set the current series. The current series is used as the basis for further series specific actions.
+When invoked with an argument index, the 'series' command will set the current series\&. The current series is used as the basis for further series specific actions\&.
 .SS "'image' Command"
-The 'image' command with no argument lists the images in the current series. An example output might look like:
+The 'image' command with no argument lists the images in the current series\&. An example output might look like:
 .PP
 .PP
 .nf
@@ -236,13 +236,13 @@ The 'image' command with no argument lists the images in the current series. An 
 .fi
 .PP
 .PP
-The current image is marked with an asterisk (*). Each image has an index (second column) which can be used as an argument to the 'image' command in order to set the current image. The third column shows the image number, and the fourth column the image instance UID (SOP Instance UID).
+The current image is marked with an asterisk (*)\&. Each image has an index (second column) which can be used as an argument to the 'image' command in order to set the current image\&. The third column shows the image number, and the fourth column the image instance UID (SOP Instance UID)\&.
 .PP
-When invoked with an argument index, the 'image' command will set the current image. The current image is used as the basis for further image specific actions.
+When invoked with an argument index, the 'image' command will set the current image\&. The current image is used as the basis for further image specific actions\&.
 .SS "'display' Command"
-The display command serves no purpose in the current version of DCMTK. It was used in prior releases to request the CTN Display Program to display an image.
+The display command serves no purpose in the current version of DCMTK\&. It was used in prior releases to request the CTN Display Program to display an image\&.
 .SS "'send' Command"
-The 'send' command allows a complete study/series or individual image to be stored on a remote AE. When this command is invoked, the \fBdcmqrti\fP program will operate as a SCU of the DICOM Storage Service Class and attempt to initiate an association with the current peer AE (defined via the 'title' command). Presentation contexts for all relevant Storage SOP Classes will be proposed. An attempt will be made to store all specified images. If no association could be negotiated an error message will be printed. If an storage operation fails or if no appropriate presentation context is available and error message will be printed.
+The 'send' command allows a complete study/series or individual image to be stored on a remote AE\&. When this command is invoked, the \fBdcmqrti\fP program will operate as a SCU of the DICOM Storage Service Class and attempt to initiate an association with the current peer AE (defined via the 'title' command)\&. Presentation contexts for all relevant Storage SOP Classes will be proposed\&. An attempt will be made to store all specified images\&. If no association could be negotiated an error message will be printed\&. If an storage operation fails or if no appropriate presentation context is available and error message will be printed\&.
 .PP
 .PP
 .nf
@@ -255,7 +255,7 @@ The "send" command exists in three forms:
 .fi
 .PP
 .PP
-The 'study' keyword means send all images in the current study. When invoked with an argument index, the specified study in the current database will be stored. The 'series' keyword means send all images in the current series. When invoked with an argument index, the specified series in the current study will be stored. The 'image' keyword means send the current image. When invoked with an argument index, the specified image in the current series will be stored.
+The 'study' keyword means send all images in the current study\&. When invoked with an argument index, the specified study in the current database will be stored\&. The 'series' keyword means send all images in the current series\&. When invoked with an argument index, the specified series in the current study will be stored\&. The 'image' keyword means send the current image\&. When invoked with an argument index, the specified image in the current series will be stored\&.
 .PP
 When an image is stored, a message will be printed of the form: 
 .PP
@@ -276,9 +276,9 @@ Released Association (swallow:2001,ACME1)
 .fi
 .PP
 .SS "'echo' Command"
-The 'echo' command allows the user to verify connectivity with the current peer AE (defined via the 'title' command). When invoked, the \fBdcmqrti\fP program acts as an SCU of the Verification Service Class.
+The 'echo' command allows the user to verify connectivity with the current peer AE (defined via the 'title' command)\&. When invoked, the \fBdcmqrti\fP program acts as an SCU of the Verification Service Class\&.
 .PP
-When invoked without an argument, only one C-ECHO message is generated. When invoked with an argument, the specified number of C-ECHO messages will be sent. A message will be printed of the form:
+When invoked without an argument, only one C-ECHO message is generated\&. When invoked with an argument, the specified number of C-ECHO messages will be sent\&. A message will be printed of the form:
 .PP
 .PP
 .nf
@@ -291,9 +291,9 @@ Released Association (localhost:2001,CMOVE)
 .fi
 .PP
 .SS "'quit', 'exit' Commands"
-The 'quit' and 'exit' commands have the same effect. They terminate the \fBdcmqrti\fP program.
+The 'quit' and 'exit' commands have the same effect\&. They terminate the \fBdcmqrti\fP program\&.
 .SS "DICOM Conformance"
-The \fBdcmqrti\fP application supports the same set of SOP Classes as an SCU as the \fBdcmqrscp\fP application - see dcmqrscp documentation.
+The \fBdcmqrti\fP application supports the same set of SOP Classes as an SCU as the \fBdcmqrscp\fP application - see dcmqrscp documentation\&.
 .PP
 The \fBdcmqrti\fP application will propose presentation contexts for all of the abovementioned supported SOP Classes using the transfer syntaxes:
 .PP
@@ -306,36 +306,36 @@ BigEndianExplicitTransferSyntax     1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-The \fBdcmqrti\fP application does not support extended negotiation.
+The \fBdcmqrti\fP application does not support extended negotiation\&.
 .SS "Configuration"
-The \fBdcmqrti\fP program uses the same configuration file as the \fBdcmqrscp\fP program. See the documentation on configuration for more information (\fIdcmqrcnf.txt\fP and the example configuration file \fIdcmqrscp.cfg\fP).
+The \fBdcmqrti\fP program uses the same configuration file as the \fBdcmqrscp\fP program\&. See the documentation on configuration for more information (\fIdcmqrcnf\&.txt\fP and the example configuration file \fIdcmqrscp\&.cfg\fP)\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmqrti\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmqrti\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/dcmqrcnf.txt\fP - configuration information 
+\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information 
 .br
-\fI<docdir>/dcmqrset.txt\fP - setup information 
+\fI<docdir>/dcmqrset\&.txt\fP - setup information 
 .br
-\fI<etcdir>/dcmqrscp.cfg\fP - example configuration file
+\fI<etcdir>/dcmqrscp\&.cfg\fP - example configuration file
 .SH "SEE ALSO"
 .PP
 \fBdcmqrscp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1993-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

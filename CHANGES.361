@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.08 (riesmeier)
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2011.12.07 (schlachter)
 
 - Updated the man page of dcm2xml.

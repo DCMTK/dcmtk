@@ -1,7 +1,7 @@
-.TH "dcmprscu" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmprscu" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmprscu \- Print spooler for presentation state viewer
+dcmprscu \- Print spooler for presentation state viewer 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,13 +12,13 @@ dcmprscu [options] [dcmfile-in...]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmprscu\fP utility implements the DICOM Basic Grayscale Print Management Service Class as SCU. It also supports the optional Basic Annotation Box and Presentation LUT SOP Classes. The utility is intended for use within the DICOMscope viewer.
+The \fBdcmprscu\fP utility implements the DICOM Basic Grayscale Print Management Service Class as SCU\&. It also supports the optional Basic Annotation Box and Presentation LUT SOP Classes\&. The utility is intended for use within the DICOMscope viewer\&.
 .PP
-The \fBdcmprscu\fP utility takes complete print jobs consisting of a Stored Print object and one or more Hardcopy Grayscale objects and spools them to the printer. No attempt is made to check whether the attributes defined in the Stored Print object are supported by the Print SCP. However, the print spooler will not attempt to use the optional Annotation or Presentation LUT services if they are not successfully negotiated with the Print SCP.
+The \fBdcmprscu\fP utility takes complete print jobs consisting of a Stored Print object and one or more Hardcopy Grayscale objects and spools them to the printer\&. No attempt is made to check whether the attributes defined in the Stored Print object are supported by the Print SCP\&. However, the print spooler will not attempt to use the optional Annotation or Presentation LUT services if they are not successfully negotiated with the Print SCP\&.
 .PP
-The \fBdcmprscu\fP utility reads the characteristics of the printer to communicate with from the configuration file. Depending on the printer's support for Presentation LUT, any Presentation LUT present in the print job will be rendered into the hardcopy images before they are spooled to the printer if necessary. If the printer does not support image transmission with 12 bits/pixel (as per the configuration file), the grayscale hardcopy images are down-sampled to 8 bits/pixel before transmission to the printer.
+The \fBdcmprscu\fP utility reads the characteristics of the printer to communicate with from the configuration file\&. Depending on the printer's support for Presentation LUT, any Presentation LUT present in the print job will be rendered into the hardcopy images before they are spooled to the printer if necessary\&. If the printer does not support image transmission with 12 bits/pixel (as per the configuration file), the grayscale hardcopy images are down-sampled to 8 bits/pixel before transmission to the printer\&.
 .PP
-The \fBdcmprscu\fP utility can be run either in 'printer mode', in which case the file name of a Stored Print object must be passed, or in 'spool mode', in which case commands are read periodically from a spool directory.
+The \fBdcmprscu\fP utility can be run either in 'printer mode', in which case the file name of a Stored Print object must be passed, or in 'spool mode', in which case commands are read periodically from a spool directory\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -131,27 +131,27 @@ dcmfile-in  stored print file(s) to be spooled
 .PP
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmprscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmprscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<etcdir>/dcmpstat.cfg\fP, \fI<etcdir>/printers.cfg\fP - sample configuration files
+\fI<etcdir>/dcmpstat\&.cfg\fP, \fI<etcdir>/printers\&.cfg\fP - sample configuration files
 .SH "SEE ALSO"
 .PP
 \fBdcmprscp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1999-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

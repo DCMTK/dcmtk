@@ -1,7 +1,7 @@
-.TH "dcm2xml" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "Thu Dec 8 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2xml \- Convert DICOM file and data set to XML
+dcm2xml \- Convert DICOM file and data set to XML 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,9 +12,9 @@ dcm2xml [options] dcmfile-in [xmlfile-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcm2xml\fP utility converts the contents of a DICOM file (file format or raw data set) to XML (Extensible Markup Language). The DTD (Document Type Definition) is described in the file \fIdcm2xml.dtd\fP.
+The \fBdcm2xml\fP utility converts the contents of a DICOM file (file format or raw data set) to XML (Extensible Markup Language)\&. There are two output formats\&. The first one is specific to DCMTK with its DTD (Document Type Definition) described in the file \fIdcm2xml\&.dtd\fP\&. The second one refers to the 'Native DICOM Model' which is specified for the DICOM Application Hosting service found in DICOM part 19\&.
 .PP
-If \fBdcm2xml\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcm2xml\fP to read a data set with a particular transfer syntax.
+If \fBdcm2xml\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file\&. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility)\&. It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcm2xml\fP to read a data set with a particular transfer syntax\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -31,30 +31,30 @@ xmlfile-out  XML output filename (default: stdout)
 .PP
 .nf
 
-  -h   --help
-         print this help text and exit
+  -h    --help
+          print this help text and exit
 
-       --version
-         print version information and exit
+        --version
+          print version information and exit
 
-       --arguments
-         print expanded command line arguments
+        --arguments
+          print expanded command line arguments
 
-  -q   --quiet
-         quiet mode, print no warnings and errors
+  -q    --quiet
+          quiet mode, print no warnings and errors
 
-  -v   --verbose
-         verbose mode, print processing details
+  -v    --verbose
+          verbose mode, print processing details
 
-  -d   --debug
-         debug mode, print debug information
+  -d    --debug
+          debug mode, print debug information
 
-  -ll  --log-level  [l]evel: string constant
-         (fatal, error, warn, info, debug, trace)
-         use level l for the logger
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
 
-  -lc  --log-config  [f]ilename: string
-         use config file f for the logger
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 .fi
 .PP
 .SS "input options"
@@ -63,103 +63,119 @@ xmlfile-out  XML output filename (default: stdout)
 
 input file format:
 
-  +f   --read-file
-         read file format or data set (default)
+  +f    --read-file
+          read file format or data set (default)
 
-  +fo  --read-file-only
-         read file format only
+  +fo   --read-file-only
+          read file format only
 
-  -f   --read-dataset
-         read data set without file meta information
+  -f    --read-dataset
+          read data set without file meta information
 
 input transfer syntax:
 
-  -t=  --read-xfer-auto
-         use TS recognition (default)
+  -t=   --read-xfer-auto
+          use TS recognition (default)
 
-  -td  --read-xfer-detect
-         ignore TS specified in the file meta header
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
-  -te  --read-xfer-little
-         read with explicit VR little endian TS
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
 
-  -tb  --read-xfer-big
-         read with explicit VR big endian TS
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
 
-  -ti  --read-xfer-implicit
-         read with implicit VR little endian TS
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
 
 long tag values:
 
-  +M   --load-all
-         load very long tag values (e.g. pixel data)
+  +M    --load-all
+          load very long tag values (e.g. pixel data)
 
-  -M   --load-short
-         do not load very long values (default)
+  -M    --load-short
+          do not load very long values (default)
 
-  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
-         set threshold for long values to k kbytes
+  +R    --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+          set threshold for long values to k kbytes
 .fi
 .PP
 .SS "processing options"
 .PP
 .nf
 
-character set:
+specific character set:
 
-  +Cr  --charset-require
-         require declaration of extended charset (default)
+  +Cr   --charset-require
+          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset: string constant
-         (latin-1 to -5, cyrillic, arabic, greek, hebrew)
-         assume charset c if no extended charset declared
+  +Ca   --charset-assume  [c]harset: string
+          assume charset c if no extended charset declared
 
-  +Cc  --charset-check-all
-         check all data elements with string values
-         (default: only PN, LO, LT, SH, ST and UT)
+  +Cc   --charset-check-all
+          check all data elements with string values
+          (default: only PN, LO, LT, SH, ST and UT)
+
+          # this option is only used for the mapping to an appropriate
+          # XML character encoding, but not for the conversion to UTF-8
+
+  +U8   --convert-to-utf8
+          convert all element values that are affected
+          by Specific Character Set (0008,0005) to UTF-8
+
+          # requires support from the libiconv toolkit
 .fi
 .PP
 .SS "output options"
 .PP
 .nf
 
-XML structure:
+general XML format:
 
-  +Xd  --add-dtd-reference
-         add reference to document type definition (DTD)
+  -dtk  --dcmtk-format
+          output in DCMTK-specific format (default)
 
-  +Xe  --embed-dtd-content
-         embed document type definition into XML document
+  -nat  --native-format
+          output in Native DICOM Model format (part 19)
 
-  +Xf  --use-dtd-file   [f]ilename: string
-         use specified DTD file (only with +Xe)
-         (default: /usr/local/share/dcmtk/dcm2xml.dtd)
+  +Xn   --use-xml-namespace
+          add XML namespace declaration to root element
 
-  +Xn  --use-xml-namespace
-         add XML namespace declaration to root element
+DCMTK-specific format (not with --native-format):
 
-DICOM data elements:
+  +Xd   --add-dtd-reference
+          add reference to document type definition (DTD)
 
-  +Wn  --write-element-name
-         write name of the DICOM data elements (default)
+  +Xe   --embed-dtd-content
+          embed document type definition into XML document
 
-  -Wn  --no-element-name
-         do not write name of the DICOM data elements
+  +Xf   --use-dtd-file  [f]ilename: string
+          use specified DTD file (only with +Xe)
+          (default: /usr/local/share/dcmtk/dcm2xml.dtd)
 
-  +Wb  --write-binary-data
-         write binary data of OB and OW elements
-         (default: off, be careful with --load-all)
+DICOM data elements (not with --native-format):
 
-  +Eh  --encode-hex
-         encode binary data as hex numbers (default)
+  +Wn   --write-element-name
+          write name of the DICOM data elements (default)
 
-  +Eb  --encode-base64
-         encode binary data as Base64 (RFC 2045, MIME)
+  -Wn   --no-element-name
+          do not write name of the DICOM data elements
+
+  +Wb   --write-binary-data
+          write binary data of OB and OW elements
+          (default: off, be careful with --load-all)
+
+  +Eh   --encode-hex
+          encode binary data as hex numbers (default)
+
+  +Eb   --encode-base64
+          encode binary data as Base64 (RFC 2045, MIME)
 .fi
 .PP
-.SH "NOTES"
+.SH "DCMTK Format"
 .PP
-The basic structure of the XML output created from a DICOM image file looks like the following:
+The basic structure of the DCMTK-specific XML output created from a DICOM file looks like the following:
 .PP
 .PP
 .nf
@@ -203,14 +219,29 @@ The basic structure of the XML output created from a DICOM image file looks like
 .fi
 .PP
 .PP
-The 'file-format' and 'meta-header' tags are absent for DICOM data sets.
+The 'file-format' and 'meta-header' tags are absent for DICOM data sets\&.
+.SS "XML Encoding"
+Attributes with very large value fields (e\&.g\&. pixel data) are not loaded by default\&. They can be identified by the additional attribute 'loaded' with a value of 'no' (see example above)\&. The command line option \fI--load-all\fP forces to load all value fields including the very long ones\&.
+.PP
+Furthermore, binary information of OB and OW attributes are not written to the XML output file by default\&. These elements can be identified by the additional attribute 'binary' with a value of 'hidden' (default is 'no')\&. The command line option \fI--write-binary-data\fP causes also binary value fields to be printed (attribute value is 'yes' or 'base64')\&. But, be careful when using this option together with \fI--load-all\fP because of the large amounts of pixel data that might be printed to the output\&.
+.PP
+Multiple values (i\&.e\&. where the DICOM value multiplicity is greater than 1) are separated by a backslash '\\' (except for Base64 encoded data)\&. The 'len' attribute indicates the number of bytes for the particular value field as stored in the DICOM data set, i\&.e\&. it might deviate from the XML encoded value length e\&.g\&. because of non-significant padding that has been removed\&. If this attribute is missing in 'sequence' or 'item' start tags, the corresponding DICOM element has been stored with undefined length\&.
+.SH "Native DICOM Model Format"
+.PP
+The description of the Native DICOM Model format can be found in the DICOM standard, part 19 ('Application Hosting')\&.
+.SS "Bulk Data"
+Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OF values are not written to the XML output because of their size\&. Instead, for each element, a new Universally Unique Identifier (UUID) is being generated and written as an attribute of a <BulkData> XML element\&. So far, there is no possibility to write an additional file to hold the binary data for each of the binary data chunks\&. This is not required by the standard, however, it might be useful for implementing an Application Hosting interface; thus this feature may be available in future versions of \fBdcm2xml\fP\&.
+.SS "Known Issues"
+In addition to what is written in the above section on 'Bulk Data', there are further known issues with the current implementation of the Native DICOM Model format\&. For example, large element values with a VR other than OB, OW or OF are currently never written als bulk data, although it might be useful, e\&.g\&. for very long text elements (especially UT) or very long numeric fields (of various VRs)\&.
+.SH "NOTES"
+.PP
 .SS "Character Encoding"
-The XML encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' (if present) using the following mapping:
+The XML encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' using the following mapping:
 .PP
 .PP
 .nf
 
-ASCII         "ISO_IR 6"    =>  "UTF-8"
+ASCII         (ISO_IR 6)    =>  "UTF-8"
 UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
 ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
@@ -224,36 +255,32 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 .fi
 .PP
 .PP
-Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity).
-.SS "XML Encoding"
-Attributes with very large value fields (e.g. pixel data) are not loaded by default. They can be identified by the additional attribute 'loaded' with a value of 'no' (see example above). The command line option \fI--load-all\fP forces to load all value fields including the very long ones.
+If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&.
 .PP
-Furthermore, binary information of OB and OW attributes are not written to the XML output file by default. These elements can be identified by the additional attribute 'binary' with a value of 'hidden' (default is 'no'). The command line option \fI--write-binary-data\fP causes also binary value fields to be printed (attribute value is 'yes' or 'base64'). But, be careful when using this option together with \fI--load-all\fP because of the large amounts of pixel data that might be printed to the output.
-.PP
-Multiple values (i.e. where the DICOM value multiplicity is greater than 1) are separated by a backslash '\\' (except for Base64 encoded data). The 'len' attribute indicates the number of bytes for the particular value field as stored in the DICOM data set, i.e. it might deviate from the XML encoded value length e.g. because of non-significant padding that has been removed. If this attribute is missing in 'sequence' or 'item' start tags, the corresponding DICOM element has been stored with undefined length.
+Multiple character sets using code extension techniques are not supported\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&. This is also useful for DICOMDIR files where each directory record can have a different character set\&.
 .SH "LOGGING"
 .PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
 .SH "COMMAND LINE"
 .PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdcm2xml\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcm2xml\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/dcm2xml.dtd\fP - Document Type Definition (DTD) file
+\fI<datadir>/dcm2xml\&.dtd\fP - Document Type Definition (DTD) file
 .SH "SEE ALSO"
 .PP
 \fBxml2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2002-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
