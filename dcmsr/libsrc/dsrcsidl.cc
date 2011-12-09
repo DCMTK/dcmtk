@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,16 +11,16 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-12-09 16:11:14 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,7 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset) const
     const OFListConstIterator(ItemStruct *) last = ItemList.end();
     while ((iter != last) && result.good())
     {
-        ItemStruct *item = OFstatic_cast(ItemStruct *, *iter);
+        ItemStruct *item = *iter;
         /* check whether list item really exists and is valid */
         if ((item != NULL) && !item->CodingSchemeDesignator.empty())
         {
@@ -208,7 +208,7 @@ OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream &s
     const OFListConstIterator(ItemStruct *) last = ItemList.end();
     while (iter != last)
     {
-        ItemStruct *item = OFstatic_cast(ItemStruct *, *iter);
+        ItemStruct *item = *iter;
         /* check whether list item really exists */
         if (item != NULL)
         {
@@ -274,7 +274,7 @@ OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSch
             DCMSR_WARN("CodingSchemeDesignator \"" << codingSchemeDesignator
                 << "\" already exists in CodingSchemeIdentificationSequence ... overwriting");
             /* gotoItem() was successful, set item pointer */
-            item = OFstatic_cast(ItemStruct *, *Iterator);
+            item = *Iterator;
         }
     } else
         item = NULL;
@@ -330,7 +330,7 @@ OFCondition DSRCodingSchemeIdentificationList::gotoItem(const OFString &codingSc
         /* search for given item */
         while ((Iterator != last) && result.bad())
         {
-            if ((*Iterator != NULL) && (OFstatic_cast(ItemStruct *, *Iterator)->CodingSchemeDesignator == codingSchemeDesignator))
+            if ((*Iterator != NULL) && ((*Iterator)->CodingSchemeDesignator == codingSchemeDesignator))
                 result = EC_Normal;
             else
                 ++Iterator;
@@ -343,7 +343,7 @@ OFCondition DSRCodingSchemeIdentificationList::gotoItem(const OFString &codingSc
 OFCondition DSRCodingSchemeIdentificationList::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
-    /* check for empty study list */
+    /* check for empty item list */
     if (!ItemList.empty())
     {
         /* set cursor to first list item */
@@ -375,9 +375,8 @@ DSRCodingSchemeIdentificationList::ItemStruct *DSRCodingSchemeIdentificationList
     ItemStruct *item = NULL;
     /* check whether current item is valid */
     OFListConstIterator(ItemStruct *) it = Iterator;
-
     if (it != ItemList.end())
-        item = OFstatic_cast(ItemStruct *, *Iterator);
+        item = *Iterator;
     return item;
 }
 
@@ -566,6 +565,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.18  2011-12-09 16:11:14  joergr
+ *  Removed numerous explicit typecasts because they are not needed any longer.
+ *
  *  Revision 1.17  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

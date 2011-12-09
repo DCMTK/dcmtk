@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.09 (riesmeier)
 
+- Removed numerous explicit typecasts because they are not needed any longer.
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+
 - Fixed various comments (Doxygen documentation).
   Affects: dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
 
