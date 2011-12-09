@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-12-09 15:05:36 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,10 +133,8 @@ OFCondition DSRCompositeReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
     if ((flags & DSRTypes::XF_writeEmptyTags) || !isEmpty())
     {
         stream << "<sopclass uid=\"" << SOPClassUID << "\">";
-        /* retrieve name of SOP class */
-        const char *sopClass = dcmFindNameOfUID(SOPClassUID.c_str());
-        if (sopClass != NULL)
-            stream << sopClass;
+        /* retrieve name of SOP class (if known) */
+        stream << dcmFindNameOfUID(SOPClassUID.c_str(), "" /* empty value as default */);
         stream << "</sopclass>" << OFendl;
         stream << "<instance uid=\"" << SOPInstanceUID << "\"/>" << OFendl;
     }
@@ -222,11 +220,8 @@ OFCondition DSRCompositeReferenceValue::renderHTML(STD_NAMESPACE ostream &docStr
     /* render reference */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
     docStream << "?composite=" << SOPClassUID << "+" << SOPInstanceUID << "\">";
-    const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
-    if (className != NULL)
-        docStream << className;
-    else
-        docStream << "unknown composite object";
+    /* retrieve name of SOP class (if known) */
+    docStream << dcmFindNameOfUID(SOPClassUID.c_str(), "unknown composite object");
     docStream << "</a>";
     return EC_Normal;
 }
@@ -299,6 +294,9 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
+ *  Revision 1.21  2011-12-09 15:05:36  joergr
+ *  Use "defaultValue" parameter of dcmFindNameOfUID() where appropriate.
+ *
  *  Revision 1.20  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
