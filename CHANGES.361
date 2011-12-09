@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.09 (riesmeier)
+
+- Output a warning message to the logger in case an offset cannot be resolved.
+  Slightly modified the output of the DcmDicomDir::print() method.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2011.12.08 (riesmeier)
 
 - Updated man pages for new development snapshot.

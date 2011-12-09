@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 14:59:15 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2011-12-09 08:22:05 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,9 @@ DcmDicomDir::DcmDicomDir()
     OFCondition cond = DirFile->loadFile(dicomDirFileName);
     if (cond.bad())
     {
-      delete DirFile; // clean up file format object
-      DirFile = new DcmFileFormat();
-      mustCreateNewDir = OFTrue;
+        delete DirFile; // clean up file format object
+        DirFile = new DcmFileFormat();
+        mustCreateNewDir = OFTrue;
     }
 
     createNewElements( "" );      // create missing data elements
@@ -297,38 +297,41 @@ OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
                                               const OFMap<Uint32, DcmDirectoryRecord *> &itOffsets,
                                               const DcmTagKey &offsetTag )
 {
-  OFCondition l_error = EC_Normal;
-  if ( startPoint != NULL )
-  {
-      DcmStack stack;
-      Uint32 offset;
-      for (;;)
-      {
-          l_error = startPoint->nextObject(stack, OFTrue);
-          if (l_error.bad())
-              break;
+    OFCondition l_error = EC_Normal;
+    if ( startPoint != NULL )
+    {
+        DcmStack stack;
+        Uint32 offset;
+        for (;;)
+        {
+            l_error = startPoint->nextObject(stack, OFTrue);
+            if (l_error.bad())
+                break;
 
-          DcmObject *cur = stack.top();
-          if (cur->ident() != EVR_up || cur->getTag() != offsetTag)
-              continue;
+            DcmObject *cur = stack.top();
+            if (cur->ident() != EVR_up || cur->getTag() != offsetTag)
+                continue;
 
-          DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, cur);
-          l_error = offElem->getUint32(offset);
+            DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, cur);
+            l_error = offElem->getUint32(offset);
 
-          if (l_error.good())
-          {
-              OFMap<Uint32, DcmDirectoryRecord *>::const_iterator it = itOffsets.find(offset);
-              if (it != itOffsets.end())
-              {
-                  offElem->setNextRecord(it->second);
-              } else {
-                  l_error = EC_InvalidOffset;
-              }
-          }
-      }
-  }
+            /* an offset of 0 means that no directory record is referenced */
+            if (l_error.good() && (offset > 0))
+            {
+                OFMap<Uint32, DcmDirectoryRecord *>::const_iterator it = itOffsets.find(offset);
+                if (it != itOffsets.end())
+                {
+                    offElem->setNextRecord(it->second);
+                } else {
+                    DCMDATA_WARN("DcmDicomDir::resolveGivenOffsets() Cannot resolve offset " << offset);
+                    /* FIXME: obviously, this error code is never returned but always ignored!? */
+                    l_error = EC_InvalidOffset;
+                }
+            }
+        }
+    }
 
-  return l_error;
+    return l_error;
 }
 
 
@@ -507,6 +510,7 @@ OFCondition DcmDicomDir::convertLinearToTree()
 // ********************************
 // ********************************
 
+
 Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
                                   E_TransferSyntax oxfer,
                                   E_EncodingType enctype )
@@ -572,7 +576,8 @@ OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
     if ( startPoint != NULL )
     {
         DcmStack stack;
-        for (;;) {
+        for (;;)
+        {
             l_error = startPoint->nextObject(stack, OFTrue);
             if (l_error.bad())
                 break;
@@ -795,24 +800,24 @@ void DcmDicomDir::print(STD_NAMESPACE ostream&out,
 {
     int i;
     for ( i=0; i<level; i++)
-        out << "    ";
-    out << "# Dicom DIR" << OFendl;
+        out << "  ";
+    out << "# Dicom Directory" << OFendl;
 
     for ( i=0; i<level; i++)
-        out << "    ";
+        out << "  ";
     out << "# Meta-Info and General Directory Information" << OFendl;
     getDirFileFormat().print(out, flags, 0, pixelFileName, pixelCounter);
 
     out << OFendl;
     for ( i=0; i<level; i++)
-        out << "    ";
-    out << "# Item Hierarchy (root Record not shown)" << OFendl;
+        out << "  ";
+    out << "# Item Hierarchy (Root Record not shown)" << OFendl;
     getRootRecord().lowerLevelList->print(out, flags, 1, pixelFileName, pixelCounter);  // friend class
 
     out << OFendl;
     for ( i=0; i<level; i++)
-        out << "    ";
-    out << "# used Multi Referenced Directory Records" << OFendl;
+        out << "  ";
+    out << "# Used Multi Referenced Directory Records" << OFendl;
     getMRDRSequence().print(out, flags, 1, pixelFileName, pixelCounter);
 }
 
@@ -1158,11 +1163,13 @@ OFCondition DcmDicomDir::countMRDRRefs( DcmDirectoryRecord *startRec,
             {
                 unsigned long j;
                 for ( j = 0; j < numCounters; j++ )
+                {
                     if ( refMRDR == refCounter[ j ].item )
                     {
                         ++refCounter[ j ].fileOffset;       // Reference counter
                         break;
                     }
+                }
                 DCMDATA_DEBUG("DcmDicomDir::countMRDRRefs() MRDR p=" << OFstatic_cast(void *, refMRDR)
                     << " found, which is " << refMRDR->numberOfReferences << " times referenced and "
                     << j << " times counted");
@@ -1196,11 +1203,13 @@ OFCondition DcmDicomDir::checkMRDRRefCounter( DcmDirectoryRecord *startRec,
             {
                 unsigned long j;
                 for ( j = 0; j < numCounters; j++ )
+                {
                     if ( refMRDR == refCounter[ j ].item )
                     {
                         ++refCounter[ j ].fileOffset;       // reference counter
                         break;
                     }
+                }
                 DCMDATA_DEBUG("DcmDicomDir::checkMRDRRefCounter() MRDR p=" << OFstatic_cast(void *, refMRDR)
                     << " found, which is " << refMRDR->numberOfReferences << " times referenced and "
                     << j << " times counted");
@@ -1308,6 +1317,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.72  2011-12-09 08:22:05  joergr
+** Output a warning message to the logger in case an offset cannot be resolved.
+** Slightly modified the output of the DcmDicomDir::print() method.
+**
 ** Revision 1.71  2011-11-17 14:59:15  joergr
 ** Slightly modified code in order to avoid the use of the OFCondition default
 ** constructor.
