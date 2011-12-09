@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.09 (riesmeier)
 
+- Fixed wrong checkConflict() call for option --add-schema-reference.
+  Affects: dcmsr/apps/dsr2xml.cc
+
 - Output a warning message to the logger in case an offset cannot be resolved.
   Slightly modified the output of the DcmDicomDir::print() method.
   Affects: dcmdata/libsrc/dcdicdir.cc

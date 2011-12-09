@@ -19,8 +19,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 11:47:53 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2011-12-09 13:27:45 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -295,7 +295,7 @@ int main(int argc, char *argv[])
         /* check conflicts and dependencies */
         if (opt_writeFlags & DSRTypes::XF_addSchemaReference)
         {
-            app.checkConflict("--add-schema-reference", "--attr-all", (opt_writeFlags & DSRTypes::XF_encodeEverythingAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--attr-all", (opt_writeFlags & DSRTypes::XF_encodeEverythingAsAttribute) == DSRTypes::XF_encodeEverythingAsAttribute);
             app.checkConflict("--add-schema-reference", "--attr-code", (opt_writeFlags & DSRTypes::XF_codeComponentsAsAttribute) > 0);
             app.checkConflict("--add-schema-reference", "--attr-relationship", (opt_writeFlags & DSRTypes::XF_relationshipTypeAsAttribute) > 0);
             app.checkConflict("--add-schema-reference", "--attr-value-type", (opt_writeFlags & DSRTypes::XF_valueTypeAsAttribute) > 0);
@@ -410,6 +410,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.47  2011-12-09 13:27:45  joergr
+ * Fixed wrong checkConflict() call for option --add-schema-reference.
+ *
  * Revision 1.46  2011-11-24 11:47:53  joergr
  * Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
  * now return a status code, the get methods provide a "pos" and the set methods
