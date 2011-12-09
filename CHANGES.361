@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.09 (riesmeier)
 
+- Fixed various comments (Doxygen documentation).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+
 - Changed "module name" when checking an element value (now using the default).
   Affects: dcmsr/libsrc/dsrcodvl.cc
 

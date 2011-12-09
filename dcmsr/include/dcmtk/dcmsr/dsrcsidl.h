@@ -19,8 +19,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:31 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-12-09 16:09:50 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,19 +81,19 @@ class DSRCodingSchemeIdentificationList
             ResponsibleOrganization.clear();
         }
 
-        /// Coding Scheme Designator  (VR=SH, VM=1, Type=1)
+        /// Coding Scheme Designator (VR=SH, VM=1, Type=1)
         const OFString CodingSchemeDesignator;
-        /// Coding Scheme Registry    (VR=LO, VM=1, Type=1C)
+        /// Coding Scheme Registry (VR=LO, VM=1, Type=1C)
         OFString CodingSchemeRegistry;
-        /// Coding Scheme UID         (VR=UI, VM=1, Type=1C)
+        /// Coding Scheme UID (VR=UI, VM=1, Type=1C)
         OFString CodingSchemeUID;
         /// Coding Scheme External ID (VR=ST, VM=1, Type=2C)
         OFString CodingSchemeExternalID;
-        /// Coding Scheme Name        (VR=ST, VM=1, Type=3)
+        /// Coding Scheme Name (VR=ST, VM=1, Type=3)
         OFString CodingSchemeName;
-        /// Coding Scheme Version     (VR=SH, VM=1, Type=3)
+        /// Coding Scheme Version (VR=SH, VM=1, Type=3)
         OFString CodingSchemeVersion;
-        /// Responsible Organization  (VR=ST, VM=1, Type=3)
+        /// Responsible Organization (VR=ST, VM=1, Type=3)
         OFString ResponsibleOrganization;
     };
 
@@ -169,13 +169,13 @@ class DSRCodingSchemeIdentificationList
     OFCondition addItem(const OFString &codingSchemeDesignator);
 
     /** remove the current item from the list.
-     *  After sucessful removal the cursor is set to the next valid position.
+     *  After successful removal the cursor is set to the next valid position.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition removeItem();
 
     /** remove the specified item from the list.
-     *  After sucessful removal the cursor is set to the next valid position.
+     *  After successful removal the cursor is set to the next valid position.
      ** @param  codingSchemeDesignator  coding scheme designator of the item to be removed
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -322,6 +322,9 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
+ *  Revision 1.14  2011-12-09 16:09:50  joergr
+ *  Fixed various comments (Doxygen documentation).
+ *
  *  Revision 1.13  2011-08-02 06:26:31  joergr
  *  Fixed typos and/or minor formatting issues.
  *
