@@ -3,6 +3,20 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.09 (riesmeier)
 
+- Added support for the Referenced Instance Sequence (0008,114A) introduced
+  with CP-670 (Reference rendering of SR), which allows for referencing an
+  equivalent CDA document or a rendering as an Encapsulated PDF document.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrrefin.h
+           dcmsr/libsrc/dsrrefin.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/tests/Makefile.dep
+
 - Fixed wrong checkConflict() call for option --add-schema-reference.
   Affects: dcmsr/apps/dsr2xml.cc
 

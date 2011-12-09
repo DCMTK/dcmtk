@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 14:17:14 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2011-12-09 15:00:08 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 
 #include "dcmtk/dcmsr/dsrdoctr.h"
 #include "dcmtk/dcmsr/dsrsoprf.h"
+#include "dcmtk/dcmsr/dsrrefin.h"
 #include "dcmtk/dcmsr/dsrcsidl.h"
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -334,6 +335,17 @@ class DSRDocument
      ** @return reference to list object
      */
     virtual DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
+
+    /** get list of referenced SOP instances significantly related to the current SOP instance.
+     *  The DICOM standard states: "Such referenced Instances may include equivalent documents or
+     *  renderings of this document. [...] Required if the identity of a CDA Document equivalent
+     *  to the current SOP Instance is known at the time of creation of this SOP instance. May be
+     *  present otherwise."  Note: An equivalent rendering of the document might be provided as an
+     *  "Encapsulated PDF" DICOM object.
+     *  Not applicable to Key Object Selection Documents.
+     *  @return reference to list object
+     */
+    virtual DSRReferencedInstanceList &getReferencedInstances();
 
     /** get list of coding schemes used (Coding Scheme Identification).
      *  The Coding Scheme Identification Sequence maps Coding Scheme Designators to an external coding
@@ -812,7 +824,9 @@ class DSRDocument
      *  the verification flag is set to UNVERIFIED, the completion flag is set to PARTIAL
      *  (i.e. not complete), the completion flag description is deleted, all digital
      *  signatures contained in the document tree are deleted and the finalized flag is
-     *  reset (OFFalse).  The preliminary flag is not modified by this method.
+     *  reset (OFFalse).  The preliminary flag is not modified by this method.  Also the
+     *  various lists of referenced instances remain unchanged, i.e. they have to be
+     *  adapted manually if needed.
      *  Not applicable to Key Object Selection Documents.
      *  @param clearList clear list of predecessor documents before adding the current
      *    document if OFTrue. Append current document to existing list otherwise.
@@ -999,6 +1013,15 @@ class DSRDocument
                                  DSRSOPInstanceReferenceList &refList,
                                  const size_t flags);
 
+    /** render list of referenced SOP instances in HTML/XHTML format
+     ** @param  stream   output stream to which the HTML/XHTML document is written
+     *  @param  refList  list of referenced SOP instances to be rendered
+     *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
+     */
+    void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
+                                 DSRReferencedInstanceList &refList,
+                                 const size_t flags);
+
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
      *  and modality.  Any incorrectness regarding these two attributes is reported to the log stream
@@ -1154,6 +1177,8 @@ class DSRDocument
     DSRSOPInstanceReferenceList CurrentRequestedProcedureEvidence;
     /// Pertinent Other Evidence Sequence: (SQ, 1, 1C)
     DSRSOPInstanceReferenceList PertinentOtherEvidence;
+    /// Referenced Instance Sequence: (SQ, 1, 1C)
+    DSRReferencedInstanceList ReferencedInstances;
 
  // --- declaration of copy constructor and assignment operator ---
 
@@ -1168,6 +1193,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.56  2011-12-09 15:00:08  joergr
+ *  Added support for the Referenced Instance Sequence (0008,114A) introduced
+ *  with CP-670 (Reference rendering of SR), which allows for referencing an
+ *  equivalent CDA document or a rendering as an Encapsulated PDF document.
+ *
  *  Revision 1.55  2011-11-29 14:17:14  joergr
  *  Added optional "check" parameter to some further methods (not only "set").
  *  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.

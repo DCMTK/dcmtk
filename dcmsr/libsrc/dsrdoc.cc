@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-30 09:07:24 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2011-12-09 15:00:11 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,8 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     IdenticalDocuments(DCM_IdenticalDocumentsSequence),
     PerformedProcedureCode(DCM_PerformedProcedureCodeSequence),
     CurrentRequestedProcedureEvidence(DCM_CurrentRequestedProcedureEvidenceSequence),
-    PertinentOtherEvidence(DCM_PertinentOtherEvidenceSequence)
+    PertinentOtherEvidence(DCM_PertinentOtherEvidenceSequence),
+    ReferencedInstances()
 {
     /* set initial values for a new SOP instance */
     updateAttributes();
@@ -168,6 +169,7 @@ void DSRDocument::clear()
     IdenticalDocuments.clear();
     CurrentRequestedProcedureEvidence.clear();
     PertinentOtherEvidence.clear();
+    ReferencedInstances.clear();
 }
 
 
@@ -296,6 +298,13 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             {
                 DCMSR_PRINT_HEADER_FIELD_START("Identical Docs     ", " : ")
                 stream << IdenticalDocuments.getNumberOfInstances();
+                DCMSR_PRINT_HEADER_FIELD_END
+            }
+            /* referenced instances */
+            if (!ReferencedInstances.empty())
+            {
+                DCMSR_PRINT_HEADER_FIELD_START("References Objects ", " : ")
+                stream << ReferencedInstances.getNumberOfItems();
                 DCMSR_PRINT_HEADER_FIELD_END
             }
             if (getDocumentType() != DT_KeyObjectSelectionDocument)
@@ -494,6 +503,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             searchCond = getElementFromDataset(dataset, PerformedProcedureCode);
             checkElementValue(PerformedProcedureCode, "1", "2", searchCond, "SRDocumentGeneralModule");
             PertinentOtherEvidence.read(dataset);
+            ReferencedInstances.read(dataset);
         }
         IdenticalDocuments.read(dataset);
         CurrentRequestedProcedureEvidence.read(dataset);
@@ -626,12 +636,15 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag), "1", "1", "SRDocumentGeneralModule");
             if (VerificationFlagEnum == VF_Verified)
                 addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver), "1-n", "1", "SRDocumentGeneralModule");
-            PredecessorDocuments.write(dataset);        /* optional */
+            if (result.good())
+                PredecessorDocuments.write(dataset);    /* optional */
             /* always write empty sequence since not yet fully supported */
             PerformedProcedureCode.clear();
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode), "1", "2", "SRDocumentGeneralModule");
             if (result.good())
                 result = PertinentOtherEvidence.write(dataset);
+            if (result.good())
+                result = ReferencedInstances.write(dataset);
         }
 
         if (result.good())
@@ -765,6 +778,12 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                         doc.printUnexpectedNodeWarning(cursor);
                 } else // none of the standard defined evidence types
                     printUnknownValueWarningMessage("Evidence type", typeString.c_str());
+            }
+            else if (doc.matchNode(cursor, "reference"))
+            {
+                const DSRXMLCursor childNode = cursor.getChild();
+                if (childNode.valid())
+                    result = ReferencedInstances.readXML(doc, childNode, flags);
             }
             else if (doc.matchNode(cursor, "document"))
                 result = readXMLDocumentData(doc, cursor.getChild(), flags);
@@ -1128,10 +1147,8 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         // --- write some general document information ---
 
         stream << "<sopclass uid=\"" << getMarkupStringFromElement(SOPClassUID, tmpString) << "\">";
-        /* retrieve name of SOP class */
-        const char *sopClass = dcmFindNameOfUID(tmpString.c_str());
-        if (sopClass != NULL)
-            stream << sopClass;
+        /* retrieve name of SOP class (if known) */
+        stream << dcmFindNameOfUID(tmpString.c_str(), "" /* empty value as default */);
         stream << "</sopclass>" << OFendl;
         writeStringFromElementToXML(stream, SpecificCharacterSet, "charset", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, Modality, "modality", (flags & XF_writeEmptyTags) > 0);
@@ -1223,6 +1240,12 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
                 stream << "<evidence type=\"Pertinent Other\">" << OFendl;
                 PertinentOtherEvidence.writeXML(stream, flags);
                 stream << "</evidence>" << OFendl;
+            }
+            if ((flags & XF_writeEmptyTags) || !ReferencedInstances.empty())
+            {
+                stream << "<reference>" << OFendl;
+                ReferencedInstances.writeXML(stream, flags);
+                stream << "</reference>" << OFendl;
             }
         }
 
@@ -1359,10 +1382,50 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
             {
                 stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
                 stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
-                stream << documentTypeToDocumentTitle(sopClassUIDToDocumentType(sopClass), tmpString);
+                /* check whether referenced object has a well-known SOP class */
+                stream << dcmFindNameOfUID(sopClass.c_str(), "unknown composite object");
                 stream << "</a></td>" << OFendl;
             } else
-                stream << "<td><i>invalid document reference</i></td>" << OFendl;
+                stream << "<td><i>invalid object reference</i></td>" << OFendl;
+            i++;
+        } while (refList.gotoNextItem().good());
+    }
+}
+
+
+void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
+                                          DSRReferencedInstanceList &refList,
+                                          const size_t flags)
+{
+    /* goto first list item (if not empty) */
+    if (refList.gotoFirstItem().good())
+    {
+        OFString tmpString;
+        DSRCodedEntryValue codeValue;
+        unsigned int i = 0;
+        /* iterate over all list items */
+        do {
+            if (i > 0)
+            {
+                stream << "</tr>" << OFendl;
+                stream << "<tr>" << OFendl;
+                stream << "<td></td>" << OFendl;
+            }
+            /* hyperlink to composite object */
+            OFString sopClass, sopInstance;
+            if (!refList.getSOPClassUID(sopClass).empty() && !refList.getSOPInstanceUID(sopInstance).empty())
+            {
+                stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+                stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
+                /* retrieve name of SOP class (if known) */
+                stream << dcmFindNameOfUID(sopClass.c_str(), "unknown composite object");
+                stream << "</a>";
+                /* try to get the purpose of reference code (at least the code meaning) */
+                if (refList.getPurposeOfReference(codeValue).good() && !codeValue.getCodeMeaning().empty())
+                    stream << " (" << DSRTypes::convertToHTMLString(codeValue.getCodeMeaning(), tmpString, flags) << ")";
+                stream << "</td>" << OFendl;
+            } else
+                stream << "<td><i>invalid reference</i></td>" << OFendl;
             i++;
         } while (refList.gotoNextItem().good());
     }
@@ -1591,6 +1654,14 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Identical Docs:</b></td>" << OFendl;
                 renderHTMLReferenceList(stream, IdenticalDocuments, flags);
+                stream << "</tr>" << OFendl;
+            }
+            /* referenced instances */
+            if (!ReferencedInstances.empty())
+            {
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Referenced Objects:</b></td>" << OFendl;
+                renderHTMLReferenceList(stream, ReferencedInstances, flags);
                 stream << "</tr>" << OFendl;
             }
             if (getDocumentType() != DT_KeyObjectSelectionDocument)
@@ -1835,6 +1906,12 @@ DSRSOPInstanceReferenceList &DSRDocument::getCurrentRequestedProcedureEvidence()
 DSRSOPInstanceReferenceList &DSRDocument::getPertinentOtherEvidence()
 {
     return PertinentOtherEvidence;
+}
+
+
+DSRReferencedInstanceList &DSRDocument::getReferencedInstances()
+{
+    return ReferencedInstances;
 }
 
 
@@ -2554,6 +2631,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.81  2011-12-09 15:00:11  joergr
+ *  Added support for the Referenced Instance Sequence (0008,114A) introduced
+ *  with CP-670 (Reference rendering of SR), which allows for referencing an
+ *  equivalent CDA document or a rendering as an Encapsulated PDF document.
+ *
  *  Revision 1.80  2011-11-30 09:07:24  joergr
  *  Output date and time values in general header of print() method in a more
  *  readable way by using separators for the date and time components.

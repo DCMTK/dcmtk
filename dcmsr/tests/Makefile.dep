@@ -152,12 +152,13 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
   ../include/dcmtk/dcmsr/dsrtlist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../include/dcmtk/dcmsr/dsrsc3vl.h ../include/dcmtk/dcmsr/dsrsc3gr.h \
   ../include/dcmtk/dcmsr/dsrtcovl.h ../include/dcmtk/dcmsr/dsrtcodt.h \
   ../include/dcmtk/dcmsr/dsrtcosp.h ../include/dcmtk/dcmsr/dsrtcoto.h \
   ../include/dcmtk/dcmsr/dsrcomvl.h ../include/dcmtk/dcmsr/dsrimgvl.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrwavvl.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrsoprf.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../include/dcmtk/dcmsr/dsrcsidl.h \
+  ../include/dcmtk/dcmsr/dsrrefin.h ../include/dcmtk/dcmsr/dsrcsidl.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h

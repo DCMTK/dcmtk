@@ -37,6 +37,7 @@
       <xsd:element name="instance" type="dsr:Instance"/>
       <xsd:element name="coding" type="dsr:Coding" minOccurs="0"/>
       <xsd:element name="evidence" type="dsr:Evidence" minOccurs="0" maxOccurs="2"/>
+      <xsd:element name="reference" type="dsr:Reference" minOccurs="0"/>
       <xsd:element name="document" type="dsr:Document"/>
     </xsd:sequence>
     <xsd:attribute name="type" type="dsr:ReportType" use="required"/>
@@ -144,6 +145,22 @@
   <xsd:complexType name="Evidence">
     <xsd:group ref="dsr:ReferencedSOPInstancesGroup"/>
     <xsd:attribute name="type" type="dsr:EvidenceType" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Reference">
+    <xsd:sequence>
+      <xsd:element name="value" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="dsr:ReferencedSOP">
+              <xsd:sequence>
+                <xsd:element name="purpose" type="dsr:Code"/>
+              </xsd:sequence>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="Document">
