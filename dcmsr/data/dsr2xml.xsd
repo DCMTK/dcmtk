@@ -304,7 +304,17 @@
                       </xsd:simpleContent>
                     </xsd:complexType>
                   </xsd:element>
-                  <xsd:element name="value" type="dsr:ReferencedSOP" minOccurs="1" maxOccurs="unbounded"/>
+                  <xsd:element name="value" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                      <xsd:complexContent>
+                        <xsd:extension base="dsr:ReferencedSOP">
+                          <xsd:sequence>
+                            <xsd:element name="purpose" type="dsr:Code" minOccurs="0"/>
+                          </xsd:sequence>
+                        </xsd:extension>
+                      </xsd:complexContent>
+                    </xsd:complexType>
+                  </xsd:element>
                 </xsd:sequence>
                 <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
               </xsd:complexType>

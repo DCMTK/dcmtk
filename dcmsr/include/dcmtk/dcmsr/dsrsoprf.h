@@ -20,8 +20,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:32 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-12-09 16:04:42 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "dcmtk/dcmdata/dctagkey.h"
 
 #include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrcodvl.h"
 
 
 /*---------------------*
@@ -67,10 +68,16 @@ class DSRSOPInstanceReferenceList
         InstanceStruct(const OFString &sopClassUID,
                        const OFString &instanceUID);
 
-        /// SOP class UID (VR=UI, VM=1)
+        /** clear additional information
+         */
+        void clear();
+
+        /// SOP Class UID (VR=UI, VM=1, Type=1)
         const OFString SOPClassUID;
-        /// SOP instance UID (VR=UI, VM=1)
+        /// SOP Instance UID (VR=UI, VM=1, Type=1)
         const OFString InstanceUID;
+        /// Purpose of Reference Code Sequence (VR=SQ, VM=1, Type=3)
+        DSRCodedEntryValue PurposeOfReference;
     };
 
     /** Internal structure defining the series list items
@@ -147,18 +154,18 @@ class DSRSOPInstanceReferenceList
                             const OFString &instanceUID);
 
         /** remove the current item from the list of instances.
-         *  After sucessful removal the cursor is set to the next valid position.
+         *  After successful removal the cursor is set to the next valid position.
          ** @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition removeItem();
 
-        /// series instance UID (VR=UI, VM=1)
+        /// Series Instance UID (VR=UI, VM=1, Type=1)
         const OFString SeriesUID;
-        /// optional: retrieve application entity title (VR=AE, VM=1-n)
+        /// Retrieve Application Entity Title (VR=AE, VM=1-n, Type=3)
         OFString RetrieveAETitle;
-        /// optional: storage media file set ID (VR=SH, VM=1)
+        /// Storage Media File Set ID (VR=SH, VM=1, Type=3)
         OFString StorageMediaFileSetID;
-        /// optional: storage media file set UID (VR=UI, VM=1)
+        /// Storage Media File Set UID (VR=UI, VM=1, Type=3)
         OFString StorageMediaFileSetUID;
 
         /// list of referenced instances
@@ -250,7 +257,7 @@ class DSRSOPInstanceReferenceList
                             const OFString &instanceUID);
 
         /** remove the current item from the list of series and instances.
-         *  After sucessful removal the cursors are set to the next valid position.
+         *  After successful removal the cursors are set to the next valid position.
          ** @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition removeItem();
@@ -261,7 +268,7 @@ class DSRSOPInstanceReferenceList
          */
         void removeIncompleteItems();
 
-        /// study instance UID (VR=UI, VM=1)
+        /// Study Instance UID (VR=UI, VM=1, Type=1)
         const OFString StudyUID;
 
         /// list of referenced series
@@ -358,13 +365,13 @@ class DSRSOPInstanceReferenceList
     OFCondition addItem(DcmItem &dataset);
 
     /** remove the current item from the list of referenced SOP instances.
-     *  After sucessful removal the cursor is set to the next valid position.
+     *  After successful removal the cursor is set to the next valid position.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition removeItem();
 
     /** remove the specified item from the list of references.
-     *  After sucessful removal the cursor is set to the next valid position.
+     *  After successful removal the cursor is set to the next valid position.
      ** @param  sopClassUID  SOP class UID of the item to be removed
      *  @param  instanceUID  SOP instance UID of the item to be removed
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -373,7 +380,7 @@ class DSRSOPInstanceReferenceList
                            const OFString &instanceUID);
 
     /** remove the specified item from the list of references.
-     *  After sucessful removal the cursor is set to the next valid position.
+     *  After successful removal the cursor is set to the next valid position.
      ** @param  studyUID     study instance UID of the item to be removed
      *  @param  seriesUID    series instance UID of the item to be removed
      *  @param  instanceUID  SOP instance UID of the item to be removed
@@ -462,6 +469,12 @@ class DSRSOPInstanceReferenceList
      */
     const OFString &getStorageMediaFileSetUID(OFString &stringValue) const;
 
+    /** get purpose of reference code of the currently selected entry (optional)
+     ** @param  codeValue  variable where a copy of the code should be stored
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getPurposeOfReference(DSRCodedEntryValue &codeValue) const;
+
     /** set the retrieve application entity title of the currently selected entry.
      *  Multiple values are to be separated by a backslash ("\").
      ** @param  value  string value to be set (use empty string to omit optional attribute)
@@ -480,6 +493,12 @@ class DSRSOPInstanceReferenceList
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setStorageMediaFileSetUID(const OFString &value);
+
+    /** set purpose of reference code of the currently selected entry
+     ** @param  codeValue  value to be set (use empty code to omit optional attribute)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPurposeOfReference(const DSRCodedEntryValue &codeValue);
 
 
   protected:
@@ -537,6 +556,10 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
+ *  Revision 1.17  2011-12-09 16:04:42  joergr
+ *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
+ *  class DSRSOPInstanceReferenceList.
+ *
  *  Revision 1.16  2011-08-02 06:26:32  joergr
  *  Fixed typos and/or minor formatting issues.
  *

@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 15:00:11 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2011-12-09 16:04:43 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1361,12 +1361,13 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
 
 void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                           DSRSOPInstanceReferenceList &refList,
-                                          const size_t /*flags*/)
+                                          const size_t flags)
 {
     /* goto first list item (if not empty) */
     if (refList.gotoFirstItem().good())
     {
         OFString tmpString;
+        DSRCodedEntryValue codeValue;
         unsigned int i = 0;
         /* iterate over all list items */
         do {
@@ -1384,7 +1385,11 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                 stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
                 /* check whether referenced object has a well-known SOP class */
                 stream << dcmFindNameOfUID(sopClass.c_str(), "unknown composite object");
-                stream << "</a></td>" << OFendl;
+                stream << "</a>";
+                /* try to get the purpose of reference code, which is optional */
+                if (refList.getPurposeOfReference(codeValue).good() && !codeValue.getCodeMeaning().empty())
+                    stream << " (" << DSRTypes::convertToHTMLString(codeValue.getCodeMeaning(), tmpString, flags) << ")";
+                stream << "</td>" << OFendl;
             } else
                 stream << "<td><i>invalid object reference</i></td>" << OFendl;
             i++;
@@ -2631,6 +2636,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.82  2011-12-09 16:04:43  joergr
+ *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
+ *  class DSRSOPInstanceReferenceList.
+ *
  *  Revision 1.81  2011-12-09 15:00:11  joergr
  *  Added support for the Referenced Instance Sequence (0008,114A) introduced
  *  with CP-670 (Reference rendering of SR), which allows for referencing an

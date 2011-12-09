@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.09 (riesmeier)
 
+- Added support for optional Purpose of Reference Code Sequence (0040,A170) to
+  class DSRSOPInstanceReferenceList.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrsoprf.cc
+
 - Use "defaultValue" parameter of dcmFindNameOfUID() where appropriate.
   Affects: dcmsr/libsrc/dsrcomvl.cc
            dcmsr/libsrc/dsrwavvl.cc
