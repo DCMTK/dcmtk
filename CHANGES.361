@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.09 (riesmeier)
 
+- Rebuilt Makefile dependencies.
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+
 - Added support for optional Purpose of Reference Code Sequence (0040,A170) to
   class DSRSOPInstanceReferenceList.
   Affects: dcmsr/data/dsr2xml.xsd
