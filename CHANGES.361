@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.12 (riesmeier)
+
+- Added missing header file for memcmp(), needed by gcc 4.4.3 on Linux. Thanks
+  to Markus Mertens <markus.mertens@evkb.de> for the original issue report.
+  Affects: ofstd/tests/Makefile.dep
+           ofstd/tests/tuuid.cc
+
 **** Changes from 2011.12.09 (riesmeier)
 
 - Removed numerous explicit typecasts because they are not needed any longer.

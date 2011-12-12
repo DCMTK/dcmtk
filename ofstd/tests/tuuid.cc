@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for OFUUID
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:25:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-12 13:41:24 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,10 +33,13 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofuuid.h"
 
+#define INCLUDE_CSTRING
+#include "dcmtk/ofstd/ofstdinc.h"     /* needed for memcmp() */
+
 
 OFTEST(ofstd_OFUUID_1)
 {
-    /* Verify that two UUIDs are different and a UUID is equal to itself*/
+    /* Verify that two UUIDs are different and a UUID is equal to itself */
     OFUUID::BinaryRepresentation rep_a, rep_b;
     OFUUID a, b;
 
@@ -122,6 +125,9 @@ OFTEST(ofstd_OFUUID_2)
 /*
  * CVS/RCS Log:
  * $Log: tuuid.cc,v $
+ * Revision 1.3  2011-12-12 13:41:24  joergr
+ * Added missing header file for memcmp(), needed by gcc 4.4.3 on Linux.
+ *
  * Revision 1.2  2011-12-07 14:25:53  uli
  * Could someone please hand me a brown paper bag?
  *
