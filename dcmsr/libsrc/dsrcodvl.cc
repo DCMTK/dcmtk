@@ -19,8 +19,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 16:08:17 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-12-14 15:45:12 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,13 @@ DSRCodedEntryValue::DSRCodedEntryValue()
   : CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
-    CodeMeaning()
+    CodeMeaning(),
+    ContextIdentifier(),
+    ContextUID(),
+    MappingResource(),
+    ContextGroupVersion(),
+    ContextGroupLocalVersion(),
+    ContextGroupExtensionCreatorUID()
 {
 }
 
@@ -50,7 +56,13 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
   : CodeValue(codeValue),
     CodingSchemeDesignator(codingSchemeDesignator),
     CodingSchemeVersion(),
-    CodeMeaning(codeMeaning)
+    CodeMeaning(codeMeaning),
+    ContextIdentifier(),
+    ContextUID(),
+    MappingResource(),
+    ContextGroupVersion(),
+    ContextGroupLocalVersion(),
+    ContextGroupExtensionCreatorUID()
 {
     /* check code */
     setCode(codeValue, codingSchemeDesignator, codeMeaning);
@@ -64,7 +76,13 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
   : CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
-    CodeMeaning()
+    CodeMeaning(),
+    ContextIdentifier(),
+    ContextUID(),
+    MappingResource(),
+    ContextGroupVersion(),
+    ContextGroupLocalVersion(),
+    ContextGroupExtensionCreatorUID()
 {
     /* check code */
     setCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning);
@@ -75,7 +93,13 @@ DSRCodedEntryValue::DSRCodedEntryValue(const DSRCodedEntryValue &codedEntryValue
   : CodeValue(codedEntryValue.CodeValue),
     CodingSchemeDesignator(codedEntryValue.CodingSchemeDesignator),
     CodingSchemeVersion(codedEntryValue.CodingSchemeVersion),
-    CodeMeaning(codedEntryValue.CodeMeaning)
+    CodeMeaning(codedEntryValue.CodeMeaning),
+    ContextIdentifier(codedEntryValue.ContextIdentifier),
+    ContextUID(codedEntryValue.ContextUID),
+    MappingResource(codedEntryValue.MappingResource),
+    ContextGroupVersion(codedEntryValue.ContextGroupVersion),
+    ContextGroupLocalVersion(codedEntryValue.ContextGroupLocalVersion),
+    ContextGroupExtensionCreatorUID(codedEntryValue.ContextGroupExtensionCreatorUID)
 {
     /* do not check since this would unexpected to the user */
 }
@@ -93,6 +117,12 @@ DSRCodedEntryValue &DSRCodedEntryValue::operator=(const DSRCodedEntryValue &code
     CodingSchemeDesignator = codedEntryValue.CodingSchemeDesignator;
     CodingSchemeVersion = codedEntryValue.CodingSchemeVersion;
     CodeMeaning = codedEntryValue.CodeMeaning;
+    ContextIdentifier = codedEntryValue.ContextIdentifier;
+    ContextUID = codedEntryValue.ContextUID;
+    MappingResource = codedEntryValue.MappingResource;
+    ContextGroupVersion = codedEntryValue.ContextGroupVersion;
+    ContextGroupLocalVersion = codedEntryValue.ContextGroupLocalVersion;
+    ContextGroupExtensionCreatorUID = codedEntryValue.ContextGroupExtensionCreatorUID;
     return *this;
 }
 
@@ -111,6 +141,12 @@ void DSRCodedEntryValue::clear()
     CodingSchemeDesignator.clear();
     CodingSchemeVersion.clear();
     CodeMeaning.clear();
+    ContextIdentifier.clear();
+    ContextUID.clear();
+    MappingResource.clear();
+    ContextGroupVersion.clear();
+    ContextGroupLocalVersion.clear();
+    ContextGroupExtensionCreatorUID.clear();
 }
 
 
@@ -152,30 +188,70 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
 OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
                                          const char *moduleName)
 {
-    /* read BasicCodedEntryAttributes only */
+    /* read "Basic Coded Entry Attributes" */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", moduleName);
     if (result.good())
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", moduleName);
-    if (result.good())                                             /* conditional (type 1C) */
+    if (result.good())                                              /* conditional (type 1C) */
         DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", moduleName);
     if (result.good())
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", moduleName);
+    /* read "Enhanced Encoding Mode" */
+    if (result.good())                                              /* optional or conditional */
+    {
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextIdentifier, ContextIdentifier, "1", "3", moduleName);
+        if (!ContextIdentifier.empty())
+        {
+            OFString extensionFlag;
+            /* check for a common error: Context Group Identifier includes "CID" prefix */
+            if ((ContextIdentifier.find_first_not_of("0123456789") != OFString_npos) || (ContextIdentifier.at(0) == '0'))
+                DCMSR_WARN("ContextIdentifier shall be a string of digits without leading zeros");
+            DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_MappingResource, MappingResource, "1", "1" /* was 1C */, moduleName);
+            DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextGroupVersion, ContextGroupVersion, "1", "1" /* was 1C */, moduleName);
+            DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextGroupExtensionFlag, extensionFlag, "1", "3", moduleName);
+            if (extensionFlag == "Y")
+            {
+                DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextGroupLocalVersion, ContextGroupLocalVersion, "1", "1" /* was 1C */, moduleName);
+                DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextGroupExtensionCreatorUID, ContextGroupExtensionCreatorUID, "1", "1" /* was 1C */, moduleName);
+            } else {
+                /* ignore Context Group Local Version and/or Context Group Extension Creator UID */
+            }
+        }
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextUID, ContextUID, "1", "3", moduleName);
+    }
     /* tbd: might add check for correct code */
-
     return result;
 }
 
 
 OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset) const
 {
-    /* write BasicCodedEntryAttributes only */
+    /* write "Basic Coded Entry Attributes" */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeValue, CodeValue);
     if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator);
-    if (result.good() && !CodingSchemeVersion.empty())                /* conditional (type 1C) */
-        result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion);
+    if (result.good())                                              /* conditional (type 1C) */
+        result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, OFFalse /*allowEmpty*/);
     if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeMeaning, CodeMeaning);
+    /* write "Enhanced Encoding Mode" */
+    if (result.good())                                              /* optional or conditional */
+    {
+        if (!ContextIdentifier.empty())
+        {
+            DSRTypes::putStringValueToDataset(dataset, DCM_ContextIdentifier, ContextIdentifier);
+            DSRTypes::putStringValueToDataset(dataset, DCM_ContextUID, ContextUID, OFFalse /*allowEmpty*/);
+            DSRTypes::putStringValueToDataset(dataset, DCM_MappingResource, MappingResource, OFFalse /*allowEmpty*/);
+            DSRTypes::putStringValueToDataset(dataset, DCM_ContextGroupVersion, ContextGroupVersion, OFFalse /*allowEmpty*/);
+            if (!ContextGroupLocalVersion.empty() && !ContextGroupExtensionCreatorUID.empty())
+            {
+                DSRTypes::putStringValueToDataset(dataset, DCM_ContextGroupExtensionFlag, "Y");
+                DSRTypes::putStringValueToDataset(dataset, DCM_ContextGroupLocalVersion, ContextGroupLocalVersion);
+                DSRTypes::putStringValueToDataset(dataset, DCM_ContextGroupExtensionCreatorUID, ContextGroupExtensionCreatorUID);
+            }
+        }
+        DSRTypes::putStringValueToDataset(dataset, DCM_ContextUID, ContextUID, OFFalse /*allowEmpty*/);
+    }
     return result;
 }
 
@@ -353,8 +429,31 @@ OFCondition DSRCodedEntryValue::getValue(DSRCodedEntryValue &codedEntryValue) co
 
 OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryValue)
 {
-    return setCode(codedEntryValue.CodeValue, codedEntryValue.CodingSchemeDesignator,
-        codedEntryValue.CodingSchemeVersion, codedEntryValue.CodeMeaning);
+    /* first set "Basic Coded Entry Attributes" */
+    OFCondition result = setCode(codedEntryValue.CodeValue,
+                                 codedEntryValue.CodingSchemeDesignator,
+                                 codedEntryValue.CodingSchemeVersion,
+                                 codedEntryValue.CodeMeaning);
+    /* then handle "Enhanced Encoding Mode" */
+    if (result.good())
+    {
+        if (!codedEntryValue.ContextIdentifier.empty())
+        {
+            /* specify details for a non-private context group */
+            result = setEnhancedEncodingMode(codedEntryValue.ContextIdentifier,
+                                             codedEntryValue.MappingResource,
+                                             codedEntryValue.ContextGroupVersion,
+                                             codedEntryValue.ContextUID,
+                                             codedEntryValue.ContextGroupLocalVersion,
+                                             codedEntryValue.ContextGroupExtensionCreatorUID);
+        }
+        else if (!codedEntryValue.ContextUID.empty())
+        {
+            /* specify details for a private context group */
+            result = setEnhancedEncodingMode(codedEntryValue.ContextUID);
+        }
+    }
+    return result;
 }
 
 
@@ -374,11 +473,13 @@ OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
     OFCondition result = EC_Normal;
     if (checkCode(codeValue, codingSchemeDesignator, codeMeaning))
     {
-        /* copy attributes */
+        /* copy "Basic Coded Entry Attributes" */
         CodeValue = codeValue;
         CodingSchemeDesignator = codingSchemeDesignator;
         CodingSchemeVersion = codingSchemeVersion;
         CodeMeaning = codeMeaning;
+        /* clear attributes from "Enhanced Encoding Mode" */
+        removeEnhancedEncodingMode();
     } else
         result = SR_EC_InvalidValue;
     return result;
@@ -394,9 +495,74 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 }
 
 
+OFBool DSRCodedEntryValue::usesEnhancedEncodingMode() const
+{
+    /* this is currently a very simple check */
+    return !ContextIdentifier.empty() || !ContextUID.empty();
+}
+
+
+void DSRCodedEntryValue::removeEnhancedEncodingMode()
+{
+    ContextIdentifier.clear();
+    ContextUID.clear();
+    MappingResource.clear();
+    ContextGroupVersion.clear();
+    ContextGroupLocalVersion.clear();
+    ContextGroupExtensionCreatorUID.clear();
+}
+
+
+OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextUID)
+{
+    OFCondition result = EC_Normal;
+    /* check whether a non-empty value is passed */
+    if (!contextUID.empty())
+    {
+        ContextUID = contextUID;
+        /* clear all other attributes */
+        ContextIdentifier.clear();
+        MappingResource.clear();
+        ContextGroupVersion.clear();
+        ContextGroupLocalVersion.clear();
+        ContextGroupExtensionCreatorUID.clear();
+    } else
+        result = SR_EC_InvalidValue;
+    return result;
+}
+
+
+OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextIdentifier,
+                                                        const OFString &mappingResource,
+                                                        const OFString &contextGroupVersion,
+                                                        const OFString &contextUID,
+                                                        const OFString &localVersion,
+                                                        const OFString &extensionCreatorUID)
+{
+    OFCondition result = EC_Normal;
+    /* check whether the main attributes are non-empty (and some basic conditions are met) */
+    if (!contextIdentifier.empty() && !mappingResource.empty() && !contextGroupVersion.empty() &&
+        (localVersion.empty() == extensionCreatorUID.empty() /* both empty or non-empty */ ))
+    {
+        ContextIdentifier = contextIdentifier;
+        MappingResource = mappingResource;
+        ContextGroupVersion = contextGroupVersion;
+        ContextUID = contextUID;
+        ContextGroupLocalVersion = localVersion;
+        ContextGroupExtensionCreatorUID = extensionCreatorUID;
+    } else
+        result = SR_EC_InvalidValue;
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
+ *  Revision 1.29  2011-12-14 15:45:12  joergr
+ *  Added intitial support for the "Enhanced Encoding Mode", which comprises some
+ *  optional attributes that further describe a code value.
+ *
  *  Revision 1.28  2011-12-09 16:08:17  joergr
  *  Changed "module name" when checking an element value (now using the default).
  *

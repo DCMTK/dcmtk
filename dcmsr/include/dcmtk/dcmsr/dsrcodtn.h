@@ -19,8 +19,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:31 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-12-14 15:45:09 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ class DSRCodeTreeNode
 
     /** print content item.
      *  A typical output looks like this: has concept mod CODE:(,,"Code")=(1234,99_OFFIS_DCMTK,
-     *  "Code Meaning")
+     *  "Code Meaning").  Also see DSRCodedEntryValue::print() method for some more details.
      ** @param  stream  output stream to which the content item should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -144,6 +144,10 @@ class DSRCodeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.h,v $
+ *  Revision 1.18  2011-12-14 15:45:09  joergr
+ *  Added intitial support for the "Enhanced Encoding Mode", which comprises some
+ *  optional attributes that further describe a code value.
+ *
  *  Revision 1.17  2011-08-02 06:26:31  joergr
  *  Fixed typos and/or minor formatting issues.
  *

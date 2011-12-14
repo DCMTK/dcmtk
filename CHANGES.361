@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (riesmeier)
 
+- Added intitial support for the "Enhanced Encoding Mode", which comprises some
+  optional attributes that further describe a code value.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/libsrc/dsrcodvl.cc
+
 - Fixed wrong definition of value representation Date Time (DT): All trailing
   components can be omitted, i.e. the shortest DT value consists of "YYYY".
   Affects: dcmdata/libsrc/vrscanl.c
