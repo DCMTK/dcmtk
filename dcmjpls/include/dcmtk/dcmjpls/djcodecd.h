@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2010, OFFIS e.V.
+ *  Copyright (C) 2007-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:19 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:44:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@ class DJLSCodecParameter;
  *  This class only supports decompression, it neither implements
  *  encoding nor transcoding.
  */
-class DJLSDecoderBase: public DcmCodec
+class DCMTK_DCMJPLS_EXPORT DJLSDecoderBase: public DcmCodec
 {
 public:
 
@@ -318,7 +318,7 @@ private:
 
 /** codec class for JPEG-LS lossless only TS decoding
  */
-class DJLSLosslessDecoder : public DJLSDecoderBase
+class DCMTK_DCMJPLS_EXPORT DJLSLosslessDecoder : public DJLSDecoderBase
 {
   /** returns the transfer syntax that this particular codec
    *  is able to Decode
@@ -329,7 +329,7 @@ class DJLSLosslessDecoder : public DJLSDecoderBase
 
 /** codec class for JPEG-LS lossy and lossless TS decoding
  */
-class DJLSNearLosslessDecoder : public DJLSDecoderBase
+class DCMTK_DCMJPLS_EXPORT DJLSNearLosslessDecoder : public DJLSDecoderBase
 {
   /** returns the transfer syntax that this particular codec
    *  is able to encode
@@ -343,6 +343,9 @@ class DJLSNearLosslessDecoder : public DJLSDecoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.h,v $
+ * Revision 1.7  2011-12-14 10:44:08  uli
+ * Make it possible to rightly build dcmjpls as a DLL
+ *
  * Revision 1.6  2010-10-14 13:17:19  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

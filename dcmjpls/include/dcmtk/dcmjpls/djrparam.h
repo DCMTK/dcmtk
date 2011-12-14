@@ -18,8 +18,8 @@
  *  Purpose: representation parameters for JPEG-LS
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-03-08 10:38:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2011-12-14 10:44:09 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 
 /** representation parameter for JPEG-LS
  */
-class DJLSRepresentationParameter: public DcmRepresentationParameter
+class DCMTK_DCMJPLS_EXPORT DJLSRepresentationParameter: public DcmRepresentationParameter
 {
 public:
 
@@ -105,6 +105,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djrparam.h,v $
+ * Revision 1.6  2011-12-14 10:44:09  uli
+ * Make it possible to rightly build dcmjpls as a DLL
+ *
  * Revision 1.5  2011-03-08 10:38:27  uli
  * Fixed crash in dcmjpls if no representation parameter is given.
  *

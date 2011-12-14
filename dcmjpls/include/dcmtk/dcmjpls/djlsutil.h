@@ -18,8 +18,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:59 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-12-14 10:44:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 
 // global definitions for logging mechanism provided by the oflog module
 
-extern OFLogger DCM_dcmjplsLogger;
+extern DCMTK_DCMJPLS_EXPORT OFLogger DCM_dcmjplsLogger;
 
 #define DCMJPLS_TRACE(msg) OFLOG_TRACE(DCM_dcmjplsLogger, msg)
 #define DCMJPLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjplsLogger, msg)
@@ -110,55 +110,58 @@ enum JLS_CompressionBitDepth
 // CONDITION CONSTANTS
 
 /// error condition constant: Too small buffer used for image data (internal error)
-extern const OFCondition EC_JLSUncompressedBufferTooSmall;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUncompressedBufferTooSmall;
 
 /// error condition constant: Too small buffer used for compressed image data (internal error)
-extern const OFCondition EC_JLSCompressedBufferTooSmall;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCompressedBufferTooSmall;
 
 /// error condition constant: The image uses some features which the codec does not support
-extern const OFCondition EC_JLSCodecUnsupportedImageType;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCodecUnsupportedImageType;
 
 /// error condition constant: The codec was fed with invalid parameters (e.g. height = -1)
-extern const OFCondition EC_JLSCodecInvalidParameters;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCodecInvalidParameters;
 
 /// error condition constant: The codec was fed with unsupported parameters (e.g. 32 bit per sample)
-extern const OFCondition EC_JLSCodecUnsupportedValue;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCodecUnsupportedValue;
 
 /// error condition constant: The compressed image is invalid
-extern const OFCondition EC_JLSInvalidCompressedData;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSInvalidCompressedData;
 
 /// error condition constant: The images' color transformation is not supported in this bit depth
-extern const OFCondition EC_JLSUnsupportedBitDepthForTransform;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedBitDepthForTransform;
 
 /// error condition constant: The images' color transformation is not supported
-extern const OFCondition EC_JLSUnsupportedColorTransform;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedColorTransform;
 
 /// error condition constant: Unsupported bit depth in JPEG-LS transfer syntax
-extern const OFCondition EC_JLSUnsupportedBitDepth;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedBitDepth;
 
 /// error condition constant: Cannot compute number of fragments for JPEG-LS frame
-extern const OFCondition EC_JLSCannotComputeNumberOfFragments;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCannotComputeNumberOfFragments;
 
 /// error condition constant: Image data mismatch between DICOM header and JPEG-LS bitstream
-extern const OFCondition EC_JLSImageDataMismatch;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSImageDataMismatch;
 
 /// error condition constant: Unsupported photometric interpretation for near-lossless JPEG-LS compression
-extern const OFCondition EC_JLSUnsupportedPhotometricInterpretation;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedPhotometricInterpretation;
 
 /// error condition constant: Unsupported pixel representation for near-lossless JPEG-LS compression
-extern const OFCondition EC_JLSUnsupportedPixelRepresentation;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedPixelRepresentation;
 
 /// error condition constant: Unsupported type of image for JPEG-LS compression
-extern const OFCondition EC_JLSUnsupportedImageType;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedImageType;
 
 /// error condition constant: Trailing data after image
-extern const OFCondition EC_JLSTooMuchCompressedData;
+extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSTooMuchCompressedData;
 
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.9  2011-12-14 10:44:09  uli
+ * Make it possible to rightly build dcmjpls as a DLL
+ *
  * Revision 1.8  2011-04-18 07:00:59  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

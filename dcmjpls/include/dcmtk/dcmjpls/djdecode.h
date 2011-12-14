@@ -18,8 +18,8 @@
  *  Purpose: singleton class that registers the decoder for all supported JPEG-LS processes.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-25 11:54:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-12-14 10:44:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@ class DJLSNearLosslessDecoder;
 
 /** singleton class that registers decoders for all supported JPEG-LS processes.
  */
-class DJLSDecoderRegistration
+class DCMTK_DCMJPLS_EXPORT DJLSDecoderRegistration
 {
 public:
 
@@ -91,6 +91,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djdecode.h,v $
+ * Revision 1.7  2011-12-14 10:44:08  uli
+ * Make it possible to rightly build dcmjpls as a DLL
+ *
  * Revision 1.6  2011-02-25 11:54:03  uli
  * Move the CharLS version string to a central place.
  *

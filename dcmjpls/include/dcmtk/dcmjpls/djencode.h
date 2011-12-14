@@ -18,8 +18,8 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG-LS processes.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-25 11:54:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-12-14 10:44:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@ class DJLSNearLosslessEncoder;
 
 /** singleton class that registers encoders for all supported JPEG-LS processes.
  */
-class DJLSEncoderRegistration
+class DCMTK_DCMJPLS_EXPORT DJLSEncoderRegistration
 {
 public:
 
@@ -109,6 +109,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djencode.h,v $
+ * Revision 1.7  2011-12-14 10:44:09  uli
+ * Make it possible to rightly build dcmjpls as a DLL
+ *
  * Revision 1.6  2011-02-25 11:54:03  uli
  * Move the CharLS version string to a central place.
  *

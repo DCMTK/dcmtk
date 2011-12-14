@@ -9,6 +9,19 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Make it possible to rightly build dcmjpls as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmjpls/include/dcmtk/dcmjpls/dldefine.h
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+
 - Make it possible to decently build dcmjpeg as a DLL. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for making this possible.
   Added:   dcmjpeg/include/dcmtk/dcmjpeg/djdefine.h
