@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:29 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,8 @@
 #include "dcmtk/ofstd/ofstring.h"
 
 #include "dcmtk/dcmimgle/diplugin.h"
+
+#include "dcmtk/dcmimage/dicdefin.h"
 
 
 /*------------------------*
@@ -82,7 +84,7 @@ enum DiPNGMetainfo
 
 /** Implementation of a PNG plugin for the dcmimgle/dcmimage library
  */
-class DiPNGPlugin
+class DCMTK_DCMIMAGE_EXPORT DiPNGPlugin
   : public DiPluginFormat
 {
 
@@ -139,6 +141,9 @@ class DiPNGPlugin
 /*
  * CVS/RCS Log:
  * $Log: dipipng.h,v $
+ * Revision 1.8  2011-12-14 10:13:19  uli
+ * Make it possible to nicely build dcmimage as a DLL.
+ *
  * Revision 1.7  2010-10-14 13:16:29  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

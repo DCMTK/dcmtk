@@ -18,8 +18,8 @@
  *  Purpose: Logger (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:58 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-12-14 10:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,9 @@
 
 #include "dcmtk/oflog/oflog.h"
 
-extern OFLogger DCM_dcmimageLogger;
+#include "dcmtk/dcmimage/dicdefin.h"
+
+extern DCMTK_DCMIMAGE_EXPORT OFLogger DCM_dcmimageLogger;
 
 #define DCMIMAGE_TRACE(msg) OFLOG_TRACE(DCM_dcmimageLogger, msg)
 #define DCMIMAGE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimageLogger, msg)
@@ -50,6 +52,9 @@ extern OFLogger DCM_dcmimageLogger;
  *
  * CVS/RCS Log:
  * $Log: dilogger.h,v $
+ * Revision 1.4  2011-12-14 10:13:19  uli
+ * Make it possible to nicely build dcmimage as a DLL.
+ *
  * Revision 1.3  2011-04-18 07:00:58  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

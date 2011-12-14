@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:29 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ class DcmItem;
 /** this class implements a color table that can either be
  *  a look-up table or an image color histogram.
  */
-class DcmQuantColorTable
+class DCMTK_DCMIMAGE_EXPORT DcmQuantColorTable
 {
 public:
 
@@ -242,6 +242,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtctab.h,v $
+ * Revision 1.8  2011-12-14 10:13:19  uli
+ * Make it possible to nicely build dcmimage as a DLL.
+ *
  * Revision 1.7  2010-10-14 13:16:29  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

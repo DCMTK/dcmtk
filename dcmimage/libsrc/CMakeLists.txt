@@ -1,5 +1,10 @@
 # create library from source files
-ADD_LIBRARY(dcmimage ${STATIC_ON_WINDOWS} diargimg dicmyimg dicoimg dicoopx dicopx dihsvimg dilogger dipalimg dipipng dipitiff diqtctab diqtfs diqthash diqthitl diqtpbox diquant diregist dirgbimg diybrimg diyf2img diyp2img)
+ADD_LIBRARY(dcmimage diargimg dicmyimg dicoimg dicoopx dicopx dihsvimg dilogger dipalimg dipipng dipitiff diqtctab diqtfs diqthash diqthitl diqtpbox diquant diregist dirgbimg diybrimg diyf2img diyp2img)
+
+TARGET_LINK_LIBRARIES(dcmimage oflog dcmdata dcmimgle)
 
 # declare installation files
-INSTALL(TARGETS dcmimage DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)
+INSTALL(TARGETS dcmimage
+        RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})

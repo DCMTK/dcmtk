@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQuantPixel
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-29 16:33:43 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
  *  used by the color quantization classes. For efficiency considerations,
  *  all methods are declared inline.
  */
-class DcmQuantPixel
+class DCMTK_DCMIMAGE_EXPORT DcmQuantPixel
 {
 public:
 
@@ -175,6 +175,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtpix.h,v $
+ * Revision 1.6  2011-12-14 10:13:19  uli
+ * Make it possible to nicely build dcmimage as a DLL.
+ *
  * Revision 1.5  2011-06-29 16:33:43  joergr
  * Fixed various issues that are reported when compiled with "gcc -Weffc++".
  *

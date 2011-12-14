@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQuantScaleTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:30 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
  *  contains a look-up table that maps image pixel values to scaled-down
  *  image pixel values.
  */
-class DcmQuantScaleTable
+class DCMTK_DCMIMAGE_EXPORT DcmQuantScaleTable
 {
 public:
 
@@ -125,6 +125,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtstab.h,v $
+ * Revision 1.6  2011-12-14 10:13:19  uli
+ * Make it possible to nicely build dcmimage as a DLL.
+ *
  * Revision 1.5  2010-10-14 13:16:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

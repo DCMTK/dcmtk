@@ -3,6 +3,37 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Make it possible to nicely build dcmimage as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmimage/include/dcmtk/dcmimage/dicdefin.h
+  Affects: dcmimage/include/dcmtk/dcmimage/diargimg.h
+           dcmimage/include/dcmtk/dcmimage/dicmyimg.h
+           dcmimage/include/dcmtk/dcmimage/dicoimg.h
+           dcmimage/include/dcmtk/dcmimage/dicoopx.h
+           dcmimage/include/dcmtk/dcmimage/dicopx.h
+           dcmimage/include/dcmtk/dcmimage/dihsvimg.h
+           dcmimage/include/dcmtk/dcmimage/dilogger.h
+           dcmimage/include/dcmtk/dcmimage/dipalimg.h
+           dcmimage/include/dcmtk/dcmimage/dipipng.h
+           dcmimage/include/dcmtk/dcmimage/dipitiff.h
+           dcmimage/include/dcmtk/dcmimage/diqtctab.h
+           dcmimage/include/dcmtk/dcmimage/diqtfs.h
+           dcmimage/include/dcmtk/dcmimage/diqthash.h
+           dcmimage/include/dcmtk/dcmimage/diqthitl.h
+           dcmimage/include/dcmtk/dcmimage/diqthitm.h
+           dcmimage/include/dcmtk/dcmimage/diqtid.h
+           dcmimage/include/dcmtk/dcmimage/diqtpbox.h
+           dcmimage/include/dcmtk/dcmimage/diqtpix.h
+           dcmimage/include/dcmtk/dcmimage/diqtstab.h
+           dcmimage/include/dcmtk/dcmimage/diqttype.h
+           dcmimage/include/dcmtk/dcmimage/diquant.h
+           dcmimage/include/dcmtk/dcmimage/diregist.h
+           dcmimage/include/dcmtk/dcmimage/dirgbimg.h
+           dcmimage/include/dcmtk/dcmimage/diybrimg.h
+           dcmimage/include/dcmtk/dcmimage/diyf2img.h
+           dcmimage/include/dcmtk/dcmimage/diyp2img.h
+           dcmimage/libsrc/CMakeLists.txt
+
 - Make it possible to properly build dcmimgle as a DLL. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for making this possible.
   Added:   dcmimgle/include/dcmtk/dcmimgle/didefine.h

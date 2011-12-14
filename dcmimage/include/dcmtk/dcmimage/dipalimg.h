@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomPaletteImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 08:55:45 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ class DiLookupTable;
 
 /** Class for PALETTE COLOR images
  */
-class DiPaletteImage
+class DCMTK_DCMIMAGE_EXPORT DiPaletteImage
   : public DiColorImage
 {
 
@@ -101,6 +101,9 @@ class DiPaletteImage
  *
  * CVS/RCS Log:
  * $Log: dipalimg.h,v $
+ * Revision 1.13  2011-12-14 10:13:19  uli
+ * Make it possible to nicely build dcmimage as a DLL.
+ *
  * Revision 1.12  2010-10-21 08:55:45  joergr
  * Added private undefined copy constructor and assignment operator in order to
  * avoid compiler warnings (reported by gcc with additional flags).
