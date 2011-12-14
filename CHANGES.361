@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.14 (riesmeier)
+
+- Report a warning if the value of Template Identifier (0040,DB00) does not
+  follow the rules for DICOM template identifiers.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
 **** Changes from 2011.12.14 (schlachter)
 
 - Make it possible to nicely build dcmimage as a DLL. Thanks to

@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:19:12 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2011-12-14 10:21:19 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -399,8 +399,7 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
 {
     OFCondition result = SR_EC_InvalidValue;
     /* check for valid value pair */
-    if ((TemplateIdentifier.empty() && MappingResource.empty()) ||
-        (!TemplateIdentifier.empty() && !MappingResource.empty()))
+    if (TemplateIdentifier.empty() == MappingResource.empty())
     {
         templateIdentifier = TemplateIdentifier;
         mappingResource = MappingResource;
@@ -415,8 +414,7 @@ OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templ
 {
     OFCondition result = EC_IllegalParameter;
     /* check for valid value pair */
-    if ((templateIdentifier.empty() && mappingResource.empty()) ||
-        (!templateIdentifier.empty() && !mappingResource.empty()))
+    if (templateIdentifier.empty() == mappingResource.empty())
     {
         TemplateIdentifier = templateIdentifier;
         MappingResource = mappingResource;
@@ -507,6 +505,13 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     {
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", "ContentTemplateSequence");
+        /* check for a common error: Template Identifier includes "TID" prefix */
+        if ((MappingResource == "DCMR") && !TemplateIdentifier.empty())
+        {
+            if ((TemplateIdentifier.find_first_not_of("0123456789") != OFString_npos) || (TemplateIdentifier.at(0) == '0'))
+                DCMSR_WARN("TemplateIdentifier shall be a string of digits without leading zeros");
+        }
+        /* check whether the expected template (if known) has been used */
         if (!expectedTemplateIdentifier.empty())
         {
             /* check for DICOM Content Mapping Resource */
@@ -1142,6 +1147,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.59  2011-12-14 10:21:19  joergr
+ *  Report a warning if the value of Template Identifier (0040,DB00) does not
+ *  follow the rules for DICOM template identifiers.
+ *
  *  Revision 1.58  2011-11-29 16:19:12  joergr
  *  Added support for optional time zone to XML read/write methods of DT values.
  *
