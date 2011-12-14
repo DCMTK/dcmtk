@@ -17,9 +17,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 07:37:03 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:57:20 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 /** simple wrapper around the "low-level" Logger object to make it easier to
  *  switch to a different system
  */
-class OFLogger : private dcmtk::log4cplus::Logger
+class DCMTK_LOG4CPLUS_EXPORT OFLogger : private dcmtk::log4cplus::Logger
 {
 public:
     /** copy constructor
@@ -111,7 +111,7 @@ public:
 
 /** functions for initializing the logging system
  */
-class OFLog
+class DCMTK_LOG4CPLUS_EXPORT OFLog
 {
  private:
 
@@ -169,6 +169,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.17  2011-12-14 08:57:20  uli
+ * Make it possible to successfully build oflog as a DLL.
+ *
  * Revision 1.16  2011-08-19 07:37:03  joergr
  * Passed log4cplus's internal log level OFF_LOG_LEVEL to OFLogger and added
  * new method for setting the log level directly.

@@ -39,10 +39,13 @@
 #endif
 
 // log4cplus_EXPORTS is used by the CMake build system.  DLL_EXPORT is
-// used by the autotools build system.
-#if defined (DCMTK_log4cplus_EXPORTS) || defined (DLL_EXPORT)
+// used by the autotools build system.  DCMTK_SHARED really is used by cmake.
+#if defined (DCMTK_log4cplus_EXPORTS) || defined (DLL_EXPORT) || defined(DCMTK_SHARED)
 #  undef DCMTK_LOG4CPLUS_BUILD_DLL
 #  define DCMTK_LOG4CPLUS_BUILD_DLL
+#endif
+#ifdef oflog_EXPORTS
+#  define DCMTK_INSIDE_LOG4CPLUS
 #endif
 
 #if ! defined (DCMTK_LOG4CPLUS_BUILD_DLL)
