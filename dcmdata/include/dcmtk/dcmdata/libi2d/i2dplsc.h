@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for conversion of image file into DICOM SC Image Storage
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:46 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
-class I2DOutputPlugSC : public I2DOutputPlug
+class DCMTK_I2D_EXPORT I2DOutputPlugSC : public I2DOutputPlug
 {
 
 public:
@@ -80,6 +80,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.h,v $
+ * Revision 1.6  2011-12-14 09:04:16  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.5  2010-10-14 13:15:46  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

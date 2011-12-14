@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DcmTagKey;
  *  describes the settings (modes of operations) for one
  *  particular codec (DcmCodec) object.
  */
-class DcmCodecParameter
+class DCMTK_DCMDATA_EXPORT DcmCodecParameter
 {
 public:
     /// default constructor
@@ -82,7 +82,7 @@ public:
  *  to create the desired transfer syntax.  If no suitable codec
  *  is found, the write operation fails.
  */
-class DcmCodec
+class DCMTK_DCMDATA_EXPORT DcmCodec
 {
 public:
   /// default constructor
@@ -296,7 +296,7 @@ public:
  *  All operations on the list are protected by a read/write lock
  *  and, therefore, are safe for multi-thread applications.
  */
-class DcmCodecList
+class DCMTK_DCMDATA_EXPORT DcmCodecList
 {
 
 public:
@@ -525,6 +525,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
+** Revision 1.25  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.24  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

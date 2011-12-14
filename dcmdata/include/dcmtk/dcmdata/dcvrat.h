@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmAttributeTag
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:10 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Attribute Tag' (AT)
  */
-class DcmAttributeTag
+class DCMTK_DCMDATA_EXPORT DcmAttributeTag
   : public DcmElement
 {
 
@@ -220,6 +220,9 @@ class DcmAttributeTag
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
+** Revision 1.33  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.32  2011-10-18 14:00:10  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

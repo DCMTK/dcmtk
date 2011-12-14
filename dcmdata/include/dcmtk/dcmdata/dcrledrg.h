@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: singleton class that registers RLE decoder.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,16 +30,17 @@
 #define DCRLEDRG_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"  /* for OFBool */
+#include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
+#include "dcmtk/dcmdata/dcdefine.h"
 
 class DcmRLECodecParameter;
 class DcmRLECodecDecoder;
 
 /** singleton class that registers an RLE decoder.
  */
-class DcmRLEDecoderRegistration 
+class DCMTK_DCMDATA_EXPORT DcmRLEDecoderRegistration
 {
-public: 
+public:
   /** registers RLE decoder.
    *  If already registered, call is ignored unless cleanup() has
    *  been performed before.
@@ -48,7 +49,7 @@ public:
    *  @param pReverseDecompressionByteOrder flag indicating whether the byte order should
    *    be reversed upon decompression. Needed to correctly decode some incorrectly encoded
    *    images with more than one byte per sample.
-   */   
+   */
   static void registerCodecs(
     OFBool pCreateSOPInstanceUID = OFFalse,
     OFBool pReverseDecompressionByteOrder = OFFalse);
@@ -57,14 +58,14 @@ public:
    *  Attention: Must not be called while other threads might still use
    *  the registered codecs, e.g. because they are currently decoding
    *  DICOM data sets through dcmdata.
-   */  
+   */
   static void cleanup();
 
 private:
 
   /// private undefined copy constructor
   DcmRLEDecoderRegistration(const DcmRLEDecoderRegistration&);
-  
+
   /// private undefined copy assignment operator
   DcmRLEDecoderRegistration& operator=(const DcmRLEDecoderRegistration&);
 
@@ -73,7 +74,7 @@ private:
 
   /// pointer to codec parameter
   static DcmRLECodecParameter *cp;
-  
+
   /// pointer to RLE decoder
   static DcmRLECodecDecoder *codec;
 
@@ -88,6 +89,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrledrg.h,v $
+ * Revision 1.9  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.8  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

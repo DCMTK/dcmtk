@@ -18,9 +18,9 @@
  *  Purpose: Class declarations for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-28 08:05:39 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
   * when having only a pointer to a DcmItem there is no way to find out
   * at which position the item actually has in the surrounding sequence.
   */
-class DcmPathNode
+class DCMTK_DCMDATA_EXPORT DcmPathNode
 {
 
 public:
@@ -89,7 +89,7 @@ private:
  *  should be well-formed, but if it is created manually (e.g. using append())
  *  there is no corresponding checking.
  */
-class DcmPath
+class DCMTK_DCMDATA_EXPORT DcmPath
 {
 
 public:
@@ -216,7 +216,7 @@ private:
 };
 
 
-class DcmPathProcessor
+class DCMTK_DCMDATA_EXPORT DcmPathProcessor
 {
 
 public:
@@ -512,6 +512,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.12  2011-12-14 09:04:13  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.11  2011-10-28 08:05:39  joergr
 ** Minor stylistic changes regarding parameter declaration and documentation.
 **

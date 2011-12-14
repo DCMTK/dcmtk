@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmShortString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Short String' (SH)
  */
-class DcmShortString
+class DCMTK_DCMDATA_EXPORT DcmShortString
   : public DcmCharString
 {
 
@@ -132,6 +132,9 @@ class DcmShortString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.h,v $
+** Revision 1.25  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.24  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Base Class for plugins extracting pixel data from standard
  *           image files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,9 @@
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/libi2d/i2define.h"
 
-class I2DImgSource
+class DCMTK_I2D_EXPORT I2DImgSource
 {
 
 public:
@@ -127,6 +128,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
+ * Revision 1.10  2011-12-14 09:04:16  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.9  2010-10-14 13:15:46  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -163,4 +167,3 @@ protected:
  *
  *
  */
-

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDate
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 14:46:36 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Date' (DA)
  */
-class DcmDate
+class DCMTK_DCMDATA_EXPORT DcmDate
   : public DcmByteString
 {
 
@@ -224,6 +224,9 @@ class DcmDate
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.h,v $
+** Revision 1.26  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.25  2011-11-24 14:46:36  joergr
 ** Handle an empty element/input value as a special case in the "convert to ISO
 ** format" methods, i.e. the resulting string is cleared and no error reported.

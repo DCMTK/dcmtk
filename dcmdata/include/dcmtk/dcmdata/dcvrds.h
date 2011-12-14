@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDecimalString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 /** a class representing the DICOM value representation 'Decimal String' (DS)
  */
-class DcmDecimalString
+class DCMTK_DCMDATA_EXPORT DcmDecimalString
   : public DcmByteString
 {
 
@@ -160,6 +160,9 @@ class DcmDecimalString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
+** Revision 1.29  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.28  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

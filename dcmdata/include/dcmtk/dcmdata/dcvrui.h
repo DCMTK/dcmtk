@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 11:21:58 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 /** a class representing the DICOM value representation 'Unique Identifier' (UI)
  */
-class DcmUniqueIdentifier
+class DCMTK_DCMDATA_EXPORT DcmUniqueIdentifier
   : public DcmByteString
 {
 
@@ -185,6 +185,9 @@ class DcmUniqueIdentifier
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
+** Revision 1.34  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.33  2011-11-02 11:21:58  joergr
 ** Fixed issue with UI values not being properly normalized in getOFString().
 **

@@ -17,9 +17,9 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-22 10:17:29 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 /*
 ** Defines
@@ -43,7 +44,7 @@
 
 /** class maintaining a attribute tag (group and element number)
  */
-class DcmTagKey
+class DCMTK_DCMDATA_EXPORT DcmTagKey
 {
 public:
 
@@ -182,7 +183,7 @@ public:
      */
     int operator >= (const DcmTagKey& key) const;
 
-    friend STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
+    friend DCMTK_DCMDATA_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
     /** convert tag key to string having the form "(gggg,eeee)".
      *  @return the string representation of this tag key
@@ -229,7 +230,7 @@ private:
  *  @param k tag key
  *  @return reference to output stream
  */
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
+DCMTK_DCMDATA_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
 /*
 ** inline versions of functions
@@ -428,6 +429,9 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
+** Revision 1.26  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.25  2011-08-22 10:17:29  joergr
 ** Fixed misleading documentation for hasValidGroup() method.
 **

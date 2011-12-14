@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
  *  @param valWidth size of each value in the data block, in bytes
  *  @return EC_Normal if successful, an error code otherwise
  */
-OFCondition swapIfNecessary(
+DCMTK_DCMDATA_EXPORT OFCondition swapIfNecessary(
   const E_ByteOrder newByteOrder, 
   const E_ByteOrder oldByteOrder,
   void * value, 
@@ -53,7 +53,7 @@ OFCondition swapIfNecessary(
  *  @param byteLength size of data block in bytes
  *  @param valWidth size of each value in the data block, in bytes
  */
-void swapBytes(
+DCMTK_DCMDATA_EXPORT void swapBytes(
   void * value, 
   const Uint32 byteLength, 
   const size_t valWidth);
@@ -62,7 +62,7 @@ void swapBytes(
  *  @param toSwap number to be swapped
  *  @return swapped number
  */
-Uint16 swapShort(const Uint16 toSwap);
+DCMTK_DCMDATA_EXPORT Uint16 swapShort(const Uint16 toSwap);
 
 /** swap a sequence of two bytes from big-endian to little-endian or back
  *  @param toSwap pointer to object to swap
@@ -94,6 +94,9 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
+ * Revision 1.20  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.19  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

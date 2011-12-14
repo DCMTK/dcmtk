@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Interface of class DcmUnlimitedText
  *           Value Representation UT is defined in Correction Proposal 101
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:43 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 
 /** a class representing the DICOM value representation 'Unlimited Text' (UT)
  */
-class DcmUnlimitedText
+class DCMTK_DCMDATA_EXPORT DcmUnlimitedText
   : public DcmCharString
 {
 
@@ -144,6 +144,9 @@ class DcmUnlimitedText
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
+** Revision 1.17  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.16  2010-10-14 13:15:43  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

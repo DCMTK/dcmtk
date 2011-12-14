@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmAgeString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Age String' (AS)
  */
-class DcmAgeString
+class DCMTK_DCMDATA_EXPORT DcmAgeString
   : public DcmByteString
 {
 
@@ -122,6 +122,9 @@ class DcmAgeString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvras.h,v $
+** Revision 1.21  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.20  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

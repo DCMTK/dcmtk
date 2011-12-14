@@ -19,9 +19,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-08 12:40:44 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_UNISTD
@@ -45,14 +46,14 @@
  *  @param defaultValue default to return if UID not known
  *  @return name string or defaultValue if UID is unknown
  */
-const char* dcmFindNameOfUID(const char* uid, const char* defaultValue = NULL);
+DCMTK_DCMDATA_EXPORT const char* dcmFindNameOfUID(const char* uid, const char* defaultValue = NULL);
 
 /** return the UID of a name.
  *  Performs a table lookup and returns a pointer to a read-only string.
  *  @param name name string for which the corresponding UID is to be looked up
  *  @return UID string or NULL if name is unknown
  */
-const char* dcmFindUIDFromName(const char * name);
+DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char * name);
 
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
@@ -64,10 +65,10 @@ const char* dcmFindUIDFromName(const char * name);
  *  a Storage SCU that always proposes two presentation contexts for each
  *  SOP class.
  */
-extern const char* dcmAllStorageSOPClassUIDs[];
+extern DCMTK_DCMDATA_EXPORT const char* dcmAllStorageSOPClassUIDs[];
 
 /// number of entries in dcmAllStorageSOPClassUIDs.
-extern const int numberOfAllDcmStorageSOPClassUIDs;
+extern DCMTK_DCMDATA_EXPORT const int numberOfAllDcmStorageSOPClassUIDs;
 
 /** an array of const strings containing all storage SOP classes that
  *  are proposed by default by those Storage SCU components in DCMTK
@@ -75,10 +76,10 @@ extern const int numberOfAllDcmStorageSOPClassUIDs;
  *  e.g. movescu or dcmqrdb. This list is guaranteed to have at most
  *  120 entries (to leave room for FIND/MOVE presentation contexts).
  */
-extern const char* dcmLongSCUStorageSOPClassUIDs[];
+extern DCMTK_DCMDATA_EXPORT const char* dcmLongSCUStorageSOPClassUIDs[];
 
 /// number of entries in dcmLongSCUStorageSOPClassUIDs.
-extern const int numberOfDcmLongSCUStorageSOPClassUIDs;
+extern DCMTK_DCMDATA_EXPORT const int numberOfDcmLongSCUStorageSOPClassUIDs;
 
 /** an array of const strings containing all storage SOP classes that
  *  are proposed by default by those Storage SCU components in DCMTK
@@ -86,17 +87,17 @@ extern const int numberOfDcmLongSCUStorageSOPClassUIDs;
  *  e.g. storescu. This list is guaranteed to have at most
  *  64 entries.
  */
-extern const char* dcmShortSCUStorageSOPClassUIDs[];
+extern DCMTK_DCMDATA_EXPORT const char* dcmShortSCUStorageSOPClassUIDs[];
 
 /// number of entries in dcmShortSCUStorageSOPClassUIDs.
-extern const int numberOfDcmShortSCUStorageSOPClassUIDs;
+extern DCMTK_DCMDATA_EXPORT const int numberOfDcmShortSCUStorageSOPClassUIDs;
 
 /** returns true if the uid is one of the Storage SOP Classes.
  *  Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
  *  @param uid UID string
  *  @return true if UID is a known Storage SOP Class, false otherwise
  */
-OFBool dcmIsaStorageSOPClassUID(const char* uid);
+DCMTK_DCMDATA_EXPORT OFBool dcmIsaStorageSOPClassUID(const char* uid);
 
 /** a global constant array of
  *  string pointers containing the UIDs of all known Image SOP
@@ -104,10 +105,10 @@ OFBool dcmIsaStorageSOPClassUID(const char* uid);
  *  defines the size of the array.
  *  NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
  */
-extern const char* dcmImageSOPClassUIDs[];
+extern DCMTK_DCMDATA_EXPORT const char* dcmImageSOPClassUIDs[];
 
 /// number of entries in dcmImageSOPClassUIDs
-extern const int numberOfDcmImageSOPClassUIDs;
+extern DCMTK_DCMDATA_EXPORT const int numberOfDcmImageSOPClassUIDs;
 
 /** creates a Unique Identifer in uid and returns uid.
  *  uid must be at least 65 bytes. Care is taken to make sure
@@ -125,7 +126,7 @@ extern const int numberOfDcmImageSOPClassUIDs;
  *  @param prefix prefix for UID creation
  *  @return pointer to UID, identical to uid parameter
  */
-char *dcmGenerateUniqueIdentifier(char *uid, const char* prefix=NULL);
+DCMTK_DCMDATA_EXPORT char *dcmGenerateUniqueIdentifier(char *uid, const char* prefix=NULL);
 
 /** performs a table lookup and returns a short modality identifier
  *  that can be used for building file names etc.
@@ -135,7 +136,7 @@ char *dcmGenerateUniqueIdentifier(char *uid, const char* prefix=NULL);
  *  @param defaultValue default to return if UID not known
  *  @return modality string for modality UID, or defaultValue if not found
  */
-const char *dcmSOPClassUIDToModality(const char *sopClassUID, const char *defaultValue = NULL);
+DCMTK_DCMDATA_EXPORT const char *dcmSOPClassUIDToModality(const char *sopClassUID, const char *defaultValue = NULL);
 
 /** performs a table lookup and returns a guessed average
  *  file size for the given SOP class.
@@ -143,7 +144,7 @@ const char *dcmSOPClassUIDToModality(const char *sopClassUID, const char *defaul
  *  @param sopClassUID UID string
  *  @return estimated everage size for objects of this SOP class
  */
-unsigned long dcmGuessModalityBytes(const char *sopClassUID);
+DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 /*
 ** String Constants
@@ -738,6 +739,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.97  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.96  2011-09-08 12:40:44  joergr
 ** Added support for new SOP Class UID from Supplement 152 (Ophthalmic Thickness
 ** Map Storage SOP Class).

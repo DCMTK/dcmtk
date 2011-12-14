@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: singleton class that registers RLE encoder.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,17 +30,17 @@
 #define DCRLEERG_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"  /* for OFBool */
-#include "dcmtk/ofstd/oftypes.h"  /* for Uint32 */
+#include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
+#include "dcmtk/dcmdata/dcdefine.h"
 
 class DcmRLECodecParameter;
 class DcmRLECodecEncoder;
 
 /** singleton class that registers an RLE encoder.
  */
-class DcmRLEEncoderRegistration 
+class DCMTK_DCMDATA_EXPORT DcmRLEEncoderRegistration
 {
-public: 
+public:
 
   /** registers RLE encoder.
    *  If already registered, call is ignored unless cleanup() has
@@ -49,7 +49,7 @@ public:
    *    a new SOP Instance UID should be assigned upon compression.
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @param pCreateOffsetTable create offset table during image compression?
-   *  @param pConvertToSC flag indicating whether image should be converted to 
+   *  @param pConvertToSC flag indicating whether image should be converted to
    *    Secondary Capture upon compression
    */
   static void registerCodecs(
@@ -62,14 +62,14 @@ public:
    *  Attention: Must not be called while other threads might still use
    *  the registered codecs, e.g. because they are currently encoding
    *  DICOM data sets through dcmdata.
-   */  
+   */
   static void cleanup();
 
 private:
 
   /// private undefined copy constructor
   DcmRLEEncoderRegistration(const DcmRLEEncoderRegistration&);
-  
+
   /// private undefined copy assignment operator
   DcmRLEEncoderRegistration& operator=(const DcmRLEEncoderRegistration&);
 
@@ -78,14 +78,14 @@ private:
 
   /// pointer to codec parameter
   static DcmRLECodecParameter *cp;
-  
+
   /// pointer to RLE encoder
   static DcmRLECodecEncoder *codec;
 
   // dummy friend declaration to prevent gcc from complaining
   // that this class only defines private constructors and has no friends.
   friend class DcmRLEEncoderRegistrationDummyFriend;
-  
+
 };
 
 #endif
@@ -93,6 +93,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleerg.h,v $
+ * Revision 1.8  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.7  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

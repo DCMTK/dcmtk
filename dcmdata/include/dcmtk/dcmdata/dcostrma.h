@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: base classes for output streams
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 /** pure virtual abstract base class for consumers, i.e. the final node
  *  of a filter chain in an output stream.
  */
-class DcmConsumer
+class DCMTK_DCMDATA_EXPORT DcmConsumer
 {
 public:
 
@@ -94,7 +94,7 @@ public:
 /** pure virtual abstract base class for output filters, i.e.
  *  intermediate nodes of a filter chain in an output stream.
  */
-class DcmOutputFilter: public DcmConsumer
+class DCMTK_DCMDATA_EXPORT DcmOutputFilter: public DcmConsumer
 {
 public:
 
@@ -116,7 +116,7 @@ public:
 /** base class for output streams.
  *  This class cannot be instantiated since the constructor is protected.
  */
-class DcmOutputStream
+class DCMTK_DCMDATA_EXPORT DcmOutputStream
 {
 public:
 
@@ -214,6 +214,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrma.h,v $
+ * Revision 1.6  2011-12-14 09:04:12  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.5  2010-10-14 13:15:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

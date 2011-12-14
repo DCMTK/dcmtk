@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-12-01 13:14:00 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
+#include "dcmtk/dcmdata/dcdefine.h"
 
 /*
  *  DCMTK module numbers for modules which create their own error codes.
@@ -68,70 +69,70 @@ const unsigned short OFM_dcmqrdbx = 26;
 // condition constants
 
 /// invalid tag
-extern const OFCondition EC_InvalidTag;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidTag;
 /// tag not found
-extern const OFCondition EC_TagNotFound;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_TagNotFound;
 /// invalid VR
-extern const OFCondition EC_InvalidVR;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidVR;
 /// invalid stream
-extern const OFCondition EC_InvalidStream;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidStream;
 /// end of stream
-extern const OFCondition EC_EndOfStream;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_EndOfStream;
 /// corrupted data
-extern const OFCondition EC_CorruptedData;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_CorruptedData;
 /// illegal call, perhaps wrong parameters
-extern const OFCondition EC_IllegalCall;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_IllegalCall;
 /// sequence end
-extern const OFCondition EC_SequEnd;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_SequEnd;
 /// doubled tag
-extern const OFCondition EC_DoubledTag;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_DoubledTag;
 /// I/O suspension or premature end of stream
-extern const OFCondition EC_StreamNotifyClient;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_StreamNotifyClient;
 /// stream mode (R/W, random/sequence) is wrong
-extern const OFCondition EC_WrongStreamMode;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_WrongStreamMode;
 /// item end
-extern const OFCondition EC_ItemEnd;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ItemEnd;
 /// compressed/uncompressed pixel representation not found
-extern const OFCondition EC_RepresentationNotFound;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_RepresentationNotFound;
 /// Pixel representation cannot be changed to requested transfer syntax
-extern const OFCondition EC_CannotChangeRepresentation;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_CannotChangeRepresentation;
 /// Unsupported compression or encryption
-extern const OFCondition EC_UnsupportedEncoding;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_UnsupportedEncoding;
 /// Parser failure: Putback operation failed
-extern const OFCondition EC_PutbackFailed;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_PutbackFailed;
 /// Too many compression filters
-extern const OFCondition EC_DoubleCompressionFilters;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_DoubleCompressionFilters;
 /// Storage media application profile violated
-extern const OFCondition EC_ApplicationProfileViolated;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ApplicationProfileViolated;
 /// Invalid offset
-extern const OFCondition EC_InvalidOffset;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidOffset;
 /// Too many bytes requested
-extern const OFCondition EC_TooManyBytesRequested;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_TooManyBytesRequested;
 // Invalid basic offset table
-extern const OFCondition EC_InvalidBasicOffsetTable;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidBasicOffsetTable;
 /// Element length is larger than (explicit) length of surrounding item
-extern const OFCondition EC_ElemLengthLargerThanItem;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ElemLengthLargerThanItem;
 /// File meta information header missing
-extern const OFCondition EC_FileMetaInfoHeaderMissing;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_FileMetaInfoHeaderMissing;
 /// Item or sequence content larger than explicit 32-bit length field permits
-extern const OFCondition EC_SeqOrItemContentOverflow;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_SeqOrItemContentOverflow;
 /// Value Representation (VR) violated
-extern const OFCondition EC_ValueRepresentationViolated;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ValueRepresentationViolated;
 /// Value Multiplicity (VM) violated
-extern const OFCondition EC_ValueMultiplicityViolated;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ValueMultiplicityViolated;
 /// Maximum VR length violated
-extern const OFCondition EC_MaximumLengthViolated;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_MaximumLengthViolated;
 /// Element length is larger than 16-bit length field permits
-extern const OFCondition EC_ElemLengthExceeds16BitField;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ElemLengthExceeds16BitField;
 /// Missing Delimitation Item while reading a sequence
-extern const OFCondition EC_DelimitationItemMissing;
+extern DCMTK_DCMDATA_EXPORT const OFCondition EC_DelimitationItemMissing;
 
 // status code constants
 
 /// error, cannot select specific character set
-extern const unsigned short EC_CODE_CannotSelectCharacterSet;
+extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotSelectCharacterSet;
 /// error, cannot convert specific character set
-extern const unsigned short EC_CODE_CannotConvertCharacterSet;
+extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertCharacterSet;
 
 /// error, cannot convert to XML
 extern const unsigned short EC_CODE_CannotConvertToXML;
@@ -155,6 +156,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.43  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.42  2011-12-01 13:14:00  onken
 ** Added support for Application Hosting's Native DICOM Model xml format
 ** to dcm2xml.

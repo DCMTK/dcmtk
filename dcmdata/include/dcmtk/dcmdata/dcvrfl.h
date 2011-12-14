@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:10 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Floating Point Single' (FL)
  */
-class DcmFloatingPointSingle
+class DCMTK_DCMDATA_EXPORT DcmFloatingPointSingle
   : public DcmElement
 {
 
@@ -200,6 +200,9 @@ class DcmFloatingPointSingle
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.h,v $
+** Revision 1.31  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.30  2011-10-18 14:00:10  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

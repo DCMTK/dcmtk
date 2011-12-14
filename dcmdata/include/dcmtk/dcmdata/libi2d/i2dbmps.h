@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-15 13:58:43 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 /** This is a I2DImgSource implementation that can parse BMP files and convert
  *  them into DICOM images.
  */
-class I2DBmpSource : public I2DImgSource
+class DCMTK_I2D_EXPORT I2DBmpSource : public I2DImgSource
 {
 
 public:
@@ -240,6 +240,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.10  2011-12-14 09:04:16  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.9  2010-11-15 13:58:43  uli
  * Fixed some errors in doxygen comments.
  *
@@ -270,4 +273,3 @@ protected:
  *
  *
  */
-

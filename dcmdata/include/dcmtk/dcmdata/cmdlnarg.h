@@ -18,9 +18,9 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,8 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/dcmdata/dcdefine.h"
+
 /** this function is used on certain operating systems (in particular, classic MacOS)
  *  and allows command line arguments to be input from stdin.
  *  MT level: Thread unsafe!
@@ -39,13 +41,16 @@
  *  @param argv the argv parameter of main() is passed in this parameter
  *  @param progname program name
  */
-void prepareCmdLineArgs(int& argc, char** argv, const char* progname = "aProgram");
+DCMTK_DCMDATA_EXPORT void prepareCmdLineArgs(int& argc, char** argv, const char* progname = "aProgram");
 
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.h,v $
+** Revision 1.11  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.10  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
@@ -92,4 +97,3 @@ void prepareCmdLineArgs(int& argc, char** argv, const char* progname = "aProgram
 **
 **
 */
-

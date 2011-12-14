@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:37 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ class DcmRepresentationParameter;
 
 /** a class handling the DICOM dataset format (files without meta header)
  */
-class DcmDataset
+class DCMTK_DCMDATA_EXPORT DcmDataset
   : public DcmItem
 {
 
@@ -351,6 +351,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.44  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.43  2011-11-08 15:51:37  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

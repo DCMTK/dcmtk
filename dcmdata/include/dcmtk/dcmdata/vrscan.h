@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface to the VR scanner.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:43 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,9 @@
 
 #include "dcmtk/ofstd/ofstring.h"
 
-class vrscan
+#include "dcmtk/dcmdata/dcdefine.h"
+
+class DCMTK_DCMDATA_EXPORT vrscan
 {
 public:
     static int scan(const OFString& vr, const OFString& value);
@@ -48,6 +50,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: vrscan.h,v $
+** Revision 1.6  2011-12-14 09:04:16  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.5  2010-10-14 13:15:43  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

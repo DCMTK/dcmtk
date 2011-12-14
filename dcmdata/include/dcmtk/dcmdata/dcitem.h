@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-14 11:11:42 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ class DcmSpecificCharacterSet;
  *  element has a different tag and elements are maintained in
  *  increasing order of tags. In particular, a sequence item.
  */
-class DcmItem
+class DCMTK_DCMDATA_EXPORT DcmItem
   : public DcmObject
 {
   public:
@@ -1281,7 +1281,7 @@ class DcmItem
  *    must be read in implicit VR little endian; updated upon return
  *  @return EC_Normal upon success, an error code otherwise
  */
-OFCondition newDicomElement(DcmElement *&newElement,
+DCMTK_DCMDATA_EXPORT OFCondition newDicomElement(DcmElement *&newElement,
                             DcmTag &tag,
                             const Uint32 length,
                             DcmPrivateTagCache *privateCreatorCache,
@@ -1294,7 +1294,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
  *  @param length attribute value length of the element to be created
  *  @return EC_Normal upon success, an error code otherwise
  */
-OFCondition newDicomElement(DcmElement *&newElement,
+DCMTK_DCMDATA_EXPORT OFCondition newDicomElement(DcmElement *&newElement,
                             const DcmTag &tag,
                             const Uint32 length = 0);
 
@@ -1304,7 +1304,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
  *  @return pointer to newly created element returned in this parameter upon success,
  *    NULL pointer otherwise
  */
-DcmElement *newDicomElement(const DcmTag &tag,
+DCMTK_DCMDATA_EXPORT DcmElement *newDicomElement(const DcmTag &tag,
                             const Uint32 length = 0);
 
 /** helper function for DcmElement::nextObject.
@@ -1312,7 +1312,7 @@ DcmElement *newDicomElement(const DcmTag &tag,
  *  @param st stack
  *  @return EC_Normal upon success, an error code otherwise
  */
-OFCondition nextUp(DcmStack &st);
+DCMTK_DCMDATA_EXPORT OFCondition nextUp(DcmStack &st);
 
 
 #endif // DCITEM_H
@@ -1321,6 +1321,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.91  2011-12-14 09:04:12  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.90  2011-11-14 11:11:42  joergr
 ** Slightly improved API documentation on containsExtendedCharacters() and
 ** isAffectedBySpecificCharacterSet().

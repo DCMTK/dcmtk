@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:46 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ enum E_JPGMARKER { E_JPGMARKER_SOF0 = 0xC0, E_JPGMARKER_SOF1 = 0xC1, E_JPGMARKER
  * Struct that represents a marker in a JPEG file, i.e. it consists
  * of the byte position of the marker and the marker code itself
  */
-struct JPEGFileMapEntry {
+struct DCMTK_I2D_EXPORT JPEGFileMapEntry {
   /// The byte position of the marker
   offile_off_t bytePos;
   /// The marker byte itself
@@ -77,7 +77,7 @@ struct JPEGFileMapEntry {
 };
 
 
-class I2DJpegSource : public I2DImgSource
+class DCMTK_I2D_EXPORT I2DJpegSource : public I2DImgSource
 {
 
 public:
@@ -352,6 +352,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
+ * Revision 1.9  2011-12-14 09:04:16  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.8  2010-10-14 13:15:46  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -385,4 +388,3 @@ protected:
  *
  *
  */
-

@@ -17,9 +17,9 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:15:12 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,20 +31,21 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofglobal.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 /** Global flag to enable/disable the generation of VR=UN
  */
-extern OFGlobal<OFBool> dcmEnableUnknownVRGeneration; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnknownVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=UT
  */
-extern OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the automatic re-conversion of defined
  *  length UN elements read in an explicit VR transfer syntax, if the real
  *  VR is defined in the data dictionary.
  */
-extern OFGlobal<OFBool> dcmEnableUnknownVRConversion; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnknownVRConversion; /* default OFFalse */
 
 /*
 ** VR Enumerations.
@@ -189,7 +190,7 @@ enum DcmEVR
 
 /** a class representing a DICOM Value Representation
  */
-class DcmVR
+class DCMTK_DCMDATA_EXPORT DcmVR
 {
 public:
 
@@ -346,6 +347,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
+ * Revision 1.31  2011-12-14 09:04:14  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.30  2011-10-18 14:15:12  joergr
  * Removed global helper functions that were replaced in a previously commit.
  *

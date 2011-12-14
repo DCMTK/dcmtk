@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: DcmInputBufferStream and related classes,
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 /** producer class that reads data from a buffer provided by the caller.
  *  Used for DICOM network communication.
  */
-class DcmBufferProducer: public DcmProducer
+class DCMTK_DCMDATA_EXPORT DcmBufferProducer: public DcmProducer
 {
 public:
   /** constructor
@@ -150,7 +150,7 @@ private:
 /** input stream that reads from a buffer of fixed length
  *  which must be provided by the caller.
  */
-class DcmInputBufferStream: public DcmInputStream
+class DCMTK_DCMDATA_EXPORT DcmInputBufferStream: public DcmInputStream
 {
 public:
   /** constructor
@@ -210,6 +210,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.h,v $
+ * Revision 1.7  2011-12-14 09:04:12  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.6  2010-10-14 13:15:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

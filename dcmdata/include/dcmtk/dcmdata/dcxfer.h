@@ -17,9 +17,9 @@
  *
  *  Purpose: Handling of transfer syntaxes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 14:47:48 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,7 +162,7 @@ typedef enum
 
 /** a class that allows for a lookup of Transfer Syntax properties and readable descriptions
  */
-class DcmXfer
+class DCMTK_DCMDATA_EXPORT DcmXfer
 {
 public:
     /** constructor
@@ -320,13 +320,16 @@ private:
  *  is currently executing on. This is runtime and not compile time information
  *  because of "fat" binaries that can be executed on multiple CPU types (e.g. NeXTStep)
  */
-extern const E_ByteOrder gLocalByteOrder;
+extern DCMTK_DCMDATA_EXPORT const E_ByteOrder gLocalByteOrder;
 
 #endif // DCXFER_H
 
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.28  2011-12-14 09:04:15  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.27  2011-09-28 14:47:48  joergr
  * Introduced new isLossy() and isLossless() methods in order to check whether
  * a transfer syntax uses a lossy or lossless compression (if any at all).

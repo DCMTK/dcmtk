@@ -18,8 +18,8 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-12 08:01:10 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@
 
 /** this class implements a loadable DICOM Data Dictionary
  */
-class DcmDataDictionary
+class DCMTK_DCMDATA_EXPORT DcmDataDictionary
 {
 public:
 
@@ -220,7 +220,7 @@ private:
  *  This allows parallel read-only access by multiple threads, which is
  *  the most common case.
  */
-class GlobalDcmDataDictionary
+class DCMTK_DCMDATA_EXPORT GlobalDcmDataDictionary
 {
 public:
   /** constructor.
@@ -298,7 +298,7 @@ private:
  *  is likely to cause unexpected behaviour in the dcmdata
  *  toolkit classes.
  */
-extern GlobalDcmDataDictionary dcmDataDict;
+extern DCMTK_DCMDATA_EXPORT GlobalDcmDataDictionary dcmDataDict;
 
 #endif
 
@@ -306,6 +306,9 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
+** Revision 1.26  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.25  2011-04-12 08:01:10  uli
 ** Delay loading of the data dictionary until its first use.
 **

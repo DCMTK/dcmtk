@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ class DcmRepresentationParameter;
 
 /** a class handling the DICOM file format (with meta header)
  */
-class DcmFileFormat
+class DCMTK_DCMDATA_EXPORT DcmFileFormat
   : public DcmSequenceOfItems
 {
 
@@ -455,6 +455,9 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.41  2011-12-14 09:04:12  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.40  2011-11-08 15:51:38  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmCharString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-14 11:11:42 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 
 /** base class for DICOM elements with value representation LO, LT, PN, SH, ST, UT
  */
-class DcmCharString
+class DCMTK_DCMDATA_EXPORT DcmCharString
   : public DcmByteString
 {
 
@@ -157,6 +157,9 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.22  2011-12-14 09:04:11  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.21  2011-11-14 11:11:42  joergr
  * Slightly improved API documentation on containsExtendedCharacters() and
  * isAffectedBySpecificCharacterSet().

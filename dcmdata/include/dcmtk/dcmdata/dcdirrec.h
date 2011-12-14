@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-23 10:03:17 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ class DcmDicomDir;
 
 /** a class representing a directory record dataset in a DICOMDIR.
  */
-class DcmDirectoryRecord : public DcmItem
+class DCMTK_DCMDATA_EXPORT DcmDirectoryRecord : public DcmItem
 {
 
     friend class DcmDicomDir;
@@ -528,6 +528,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.54  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.53  2011-11-23 10:03:17  uli
 ** Remove a Latin-1 encoded umlaut from the source.
 **

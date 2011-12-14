@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmPersonName
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:46 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Person Name' (PN)
  */
-class DcmPersonName
+class DCMTK_DCMDATA_EXPORT DcmPersonName
   : public DcmCharString
 {
 
@@ -303,6 +303,9 @@ class DcmPersonName
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
+** Revision 1.30  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.29  2011-12-02 11:02:46  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **

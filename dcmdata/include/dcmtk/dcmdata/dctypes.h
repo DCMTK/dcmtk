@@ -17,9 +17,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:46 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -47,7 +48,7 @@ END_EXTERN_C
 ** Logging
 */
 
-extern OFLogger DCM_dcmdataLogger;
+extern DCMTK_DCMDATA_EXPORT OFLogger DCM_dcmdataLogger;
 
 #define DCMDATA_TRACE(msg) OFLOG_TRACE(DCM_dcmdataLogger, msg)
 #define DCMDATA_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataLogger, msg)
@@ -168,7 +169,7 @@ typedef enum {
 
 /** General purpose class hiding constants from the global namespace.
  */
-struct DCMTypes
+struct DCMTK_DCMDATA_EXPORT DCMTypes
 {
   public:
 
@@ -239,6 +240,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.42  2011-12-14 09:04:14  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.41  2011-12-02 11:02:46  joergr
  * Various fixes after first commit of the Native DICOM Model format support.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmOtherFloat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 09:54:16 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Other Float String' (OF)
  */
-class DcmOtherFloat
+class DCMTK_DCMDATA_EXPORT DcmOtherFloat
   : public DcmFloatingPointSingle
 {
 
@@ -122,6 +122,9 @@ class DcmOtherFloat
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.h,v $
+ * Revision 1.11  2011-12-14 09:04:15  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.10  2011-12-02 09:54:16  joergr
  * Added dedicated writeXML() method for OF elements because the VM is always 1.
  *

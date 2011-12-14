@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-18 14:24:08 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 class DcmDictEntry;
 class DcmTagKey;
@@ -42,7 +43,7 @@ typedef OFListConstIterator(DcmDictEntry *) DcmDictEntryListConstIterator;
 
 /** an ordered list of pointers to DcmDictEntry objects
  */
-class DcmDictEntryList
+class DCMTK_DCMDATA_EXPORT DcmDictEntryList
 {
 public:
 
@@ -118,7 +119,7 @@ private:
 
 /** iterator class for traversing a DcmHashDict
  */
-class DcmHashDictIterator
+class DCMTK_DCMDATA_EXPORT DcmHashDictIterator
 {
 public:
 
@@ -195,7 +196,7 @@ private:
 
 /** a hash table of pointers to DcmDictEntry objects
  */
-class DcmHashDict
+class DCMTK_DCMDATA_EXPORT DcmHashDict
 {
 
 public:
@@ -313,6 +314,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
+** Revision 1.26  2011-12-14 09:04:12  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.25  2011-08-18 14:24:08  joergr
 ** Fixed API documentation (required after last commit).
 **

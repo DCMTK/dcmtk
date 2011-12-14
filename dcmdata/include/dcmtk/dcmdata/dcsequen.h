@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-14 11:11:42 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
  *  all APIs in class DcmItem and class DcmDataset accept DcmElements.
  *  This is ugly and causes some DcmElement API methods to be useless with DcmSequence.
  */
-class DcmSequenceOfItems : public DcmElement
+class DCMTK_DCMDATA_EXPORT DcmSequenceOfItems : public DcmElement
 {
 public:
 
@@ -595,6 +595,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.64  2011-12-14 09:04:13  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.63  2011-11-14 11:11:42  joergr
 ** Slightly improved API documentation on containsExtendedCharacters() and
 ** isAffectedBySpecificCharacterSet().

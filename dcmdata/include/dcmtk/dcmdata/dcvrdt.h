@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDateTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:11:35 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Date Time' (DT)
  */
-class DcmDateTime
+class DCMTK_DCMDATA_EXPORT DcmDateTime
   : public DcmByteString
 {
 
@@ -280,6 +280,9 @@ class DcmDateTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
+** Revision 1.33  2011-12-14 09:04:14  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.32  2011-11-29 16:11:35  joergr
 ** Added support for optional "timeZoneSeparator" parameter to some get methods.
 ** Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.

@@ -18,8 +18,8 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:58 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,9 +33,10 @@
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmdata/libi2d/i2define.h"
 
 
-extern OFLogger DCM_dcmdataLibi2dLogger;
+extern DCMTK_I2D_EXPORT OFLogger DCM_dcmdataLibi2dLogger;
 
 #define DCMDATA_LIBI2D_TRACE(msg) OFLOG_TRACE(DCM_dcmdataLibi2dLogger, msg)
 #define DCMDATA_LIBI2D_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataLibi2dLogger, msg)
@@ -45,7 +46,7 @@ extern OFLogger DCM_dcmdataLibi2dLogger;
 #define DCMDATA_LIBI2D_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLibi2dLogger, msg)
 
 
-class I2DOutputPlug
+class DCMTK_I2D_EXPORT I2DOutputPlug
 {
 
 public:
@@ -230,6 +231,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.13  2011-12-14 09:04:16  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.12  2011-04-18 07:00:58  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.
@@ -277,4 +281,3 @@ protected:
  *
  *
  */
-

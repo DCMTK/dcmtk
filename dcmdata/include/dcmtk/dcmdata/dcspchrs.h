@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "dcmtk/ofstd/ofchrenc.h"
 #include "dcmtk/ofstd/ofmap.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 
 // forward declaration
@@ -47,7 +48,7 @@ class DcmItem;
  *        i.e. a Specific Character Set (0008,0005) element with multiple values
  *        cannot be selected.
  */
-class DcmSpecificCharacterSet
+class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 {
 
   public:
@@ -323,6 +324,9 @@ class DcmSpecificCharacterSet
  *
  * CVS/RCS Log:
  * $Log: dcspchrs.h,v $
+ * Revision 1.4  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.3  2011-11-08 15:51:38  joergr
  * Added support for converting files, datasets and element values to any DICOM
  * character set that does not require code extension techniques (if compiled

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmUnsignedLong
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:10 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** a class representing the DICOM value representation 'Unsigned Long' (UL)
  */
-class DcmUnsignedLong
+class DCMTK_DCMDATA_EXPORT DcmUnsignedLong
   : public DcmElement
 {
 
@@ -197,6 +197,9 @@ class DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
+** Revision 1.30  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.29  2011-10-18 14:00:10  joergr
 ** Added support for embedded NULL bytes in string element values.
 **
@@ -307,5 +310,3 @@ class DcmUnsignedLong
 ** - merged read / write methods for block and file transfer
 **
 */
-
-

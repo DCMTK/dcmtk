@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 08:59:51 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@ class DcmItem;
 
 /** abstract base class for all DICOM elements
  */
-class DcmElement
+class DCMTK_DCMDATA_EXPORT DcmElement
   : public DcmObject
 {
 
@@ -859,6 +859,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.53  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.52  2011-11-24 08:59:51  joergr
 ** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
 **

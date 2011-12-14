@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
  *  This class only supports decompression, it neither implements
  *  encoding nor transcoding.
  */
-class DcmRLECodecDecoder: public DcmCodec
+class DCMTK_DCMDATA_EXPORT DcmRLECodecDecoder: public DcmCodec
 {
 public:
 
@@ -189,6 +189,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.h,v $
+ * Revision 1.9  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.8  2010-10-14 13:15:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:46 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 
-class Image2Dcm
+class DCMTK_I2D_EXPORT Image2Dcm
 {
 
 public:
@@ -274,6 +274,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.14  2011-12-14 09:04:16  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.13  2010-10-14 13:15:46  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

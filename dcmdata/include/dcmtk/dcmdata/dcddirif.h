@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 10:23:55 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@
  *  images from the DicomDirInterface.  The implementation can be found
  *  in dcmjpeg/libsrc/ddpiimpl.cc (incl. JPEG support).
  */
-class DicomDirImagePlugin
+class DCMTK_DCMDATA_EXPORT DicomDirImagePlugin
 {
   public:
 
@@ -108,7 +108,7 @@ class DicomDirImagePlugin
 
 /** An interface class for simplified creation of a DICOMDIR
  */
-class DicomDirInterface
+class DCMTK_DCMDATA_EXPORT DicomDirInterface
 {
 
   public:
@@ -1528,6 +1528,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.29  2011-12-14 09:04:11  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.28  2011-08-08 10:23:55  joergr
  * Fixed various minor issues related to the Doxygen documentation.
  *

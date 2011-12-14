@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Make it possible to accurately build dcmdata and libi2d as DLLs. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for his work.
+  Added:   dcmdata/include/dcmtk/dcmdata/dcdefine.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2define.h
+  Affects: dcmdata/include/dcmtk/dcmdata/*
+           dcmdata/include/dcmtk/dcmdata/libi2d/*
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+
 - Make it possible to successfully build oflog as a DLL. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for his work.
   Affects: oflog/include/dcmtk/oflog/oflog.h

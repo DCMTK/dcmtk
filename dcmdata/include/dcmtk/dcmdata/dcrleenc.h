@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,8 @@
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#include "dcmtk/dcmdata/dcdefine.h"
+
 #define DcmRLEEncoder_BLOCKSIZE 16384
 
 
@@ -42,7 +44,7 @@
  *  encoder classes (such as DcmRLEEncoder) may export their
  *  encoded data
  */
-class DcmEncoderOutputStream
+class DCMTK_DCMDATA_EXPORT DcmEncoderOutputStream
 {
 public:
   /** write the given buffer into the output stream
@@ -61,7 +63,7 @@ public:
 /** this class implements an RLE compressor conforming to the DICOM standard.
  *  The class is loosely based on an implementation by Phil Norman.
  */
-class DcmRLEEncoder
+class DCMTK_DCMDATA_EXPORT DcmRLEEncoder
 {
 public:
 
@@ -424,6 +426,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
+ * Revision 1.14  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.13  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

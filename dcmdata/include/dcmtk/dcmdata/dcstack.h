@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,13 +31,14 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/dcmdata/dcdefine.h"
 
 class DcmObject;    // forward declaration
 
 
 /** helper class used by DcmStack.  Maintains a single stack entry.
  */
-class DcmStackNode
+class DCMTK_DCMDATA_EXPORT DcmStackNode
 {
 public:
     /** constructor.
@@ -74,7 +75,7 @@ private:
 /** this class manages a stack of pointers to DcmObject instances.
  *  The objects pointed to are never touched, e.g. deleted.
  */
-class DcmStack
+class DCMTK_DCMDATA_EXPORT DcmStack
 {
 public:
     /// default constructor, creates empty stack
@@ -161,6 +162,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcstack.h,v $
+ * Revision 1.15  2011-12-14 09:04:13  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.14  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

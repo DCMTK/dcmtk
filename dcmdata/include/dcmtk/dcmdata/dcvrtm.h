@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 14:46:36 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 /** a class representing the DICOM value representation 'Time' (TM)
  */
-class DcmTime
+class DCMTK_DCMDATA_EXPORT DcmTime
   : public DcmByteString
 {
 
@@ -283,6 +283,9 @@ class DcmTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
+** Revision 1.29  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.28  2011-11-24 14:46:36  joergr
 ** Handle an empty element/input value as a special case in the "convert to ISO
 ** format" methods, i.e. the resulting string is cleared and no error reported.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2010-11-17 15:17:51 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ enum DcmDictRangeRestriction
 /** each object of this class manages one entry of the
  *  global DICOM data dictionary.
  */
-class DcmDictEntry: public DcmTagKey
+class DCMTK_DCMDATA_EXPORT DcmDictEntry: public DcmTagKey
 {
 public:
 
@@ -364,7 +364,7 @@ public:
     }
 
     /// friend operator<<
-    friend STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& e);
+    friend DCMTK_DCMDATA_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& e);
 
 private:
 
@@ -410,6 +410,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
+** Revision 1.27  2011-12-14 09:04:11  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.26  2010-11-17 15:17:51  meichel
 ** Fixed issue with data dictionary causing private tags with group number
 **   range and flexible element number not to be found in the dictionary.

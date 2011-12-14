@@ -19,9 +19,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ const Uint32 DCM_OptPrintAttributeNameLength = 35;
  *  data (e.g. stripping of padding blanks, removal of blanks in UIDs, etc).
  *  Default is enabled.
  */
-extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
 /** This flag defines the handling of illegal odd-length attributes: If flag is
  *  true, odd lengths are respected (i.e. an odd number of bytes is read from
@@ -79,7 +79,7 @@ extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue
  *  If flag is false, old (pre DCMTK 3.5.2) behaviour applies: The length field
  *  implicitly incremented and an even number of bytes is read from the stream.
  */
-extern OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
 
 /** This flag defines how UN attributes with undefined length are treated
  *  by the parser when reading. The default is to expect the content of the
@@ -93,7 +93,7 @@ extern OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
  *  Note that the flag only affects the read behaviour but not the write
  *  behaviour - DCMTK will never write UN elements with undefined length.
  */
-extern OFGlobal<OFBool> dcmEnableCP246Support; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableCP246Support; /* default OFTrue */
 
 /** DCMTK releases up to 3.5.3 created a non-conforming byte stream
  *  as input to the MAC algorithm when creating or verifying digital signatures
@@ -103,21 +103,21 @@ extern OFGlobal<OFBool> dcmEnableCP246Support; /* default OFTrue */
  *  in order to create or verify signatures that are compatible with older
  *  releases. Default is "off" (OFFalse).
  */
-extern OFGlobal<OFBool> dcmEnableOldSignatureFormat; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOldSignatureFormat; /* default OFFalse */
 
 /** This flag defines whether the transfer syntax for uncompressed datasets
  *  is detected automatically.  The automatic detection has been introduced
  *  since there are (incorrectly encoded) DICOM dataset stored with a
  *  different transfer syntax than specified in the meta header.
  */
-extern OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
 
 /** This flag defines how non-standard VRs are treated by the parser when
  *  reading. The default is to treat data element with non-standard VR as
  *  unknown. If this flag is enabled, the parser will try to read the data
  *  element with Implicit VR Little Endian transfer syntax.
  */
-extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse */
 
 /** This flag defines how the element's VR is treated by the parser when
  *  reading from a dataset with explicit VR encoding. By default, the
@@ -126,7 +126,7 @@ extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse 
  *  the data dictionary (and ignore the one from the dataset). This flag is,
  *  therefore, useful for reading incorrectly encoded DICOM datasets.
  */
-extern OFGlobal<OFBool> dcmPreferVRFromDataDictionary; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmPreferVRFromDataDictionary; /* default OFFalse */
 
 /** This flag indicates, whether private attributes with implicit transfer
  *  syntax having a maximum length should be handled as sequences (ignoring
@@ -137,7 +137,7 @@ extern OFGlobal<OFBool> dcmPreferVRFromDataDictionary; /* default OFFalse */
  *  length, which would lead to an error. The default behaviour is to
  *  rely on the dictionary.
  */
-extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse */
 
 /** This flag indicates, whether parsing errors during reading
  *  should be ignored, ie whether the parser should try to recover and
@@ -145,7 +145,7 @@ extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse *
  *  This flag does not work for all parsing errors (at this time)
  *  making sense but was introduced afterwards.
  */
-extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
 
 /** This flag indicates, whether parsing should stop after a certain
  *  element in the stream was parsed. This is especially useful for
@@ -160,7 +160,7 @@ extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
  *  Default is (0xffff,0xffff), which means that the feature is
  *  disabled.
  */
-extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<DcmTagKey> dcmStopParsingAfterElement; /* default OFTrue */
 
 /** This flag influences behaviour when writing a dataset with items
  *  and sequences set to be encoded with explicit length. It is possible
@@ -172,21 +172,21 @@ extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement; /* default OFTrue */
  *  Default is OFTrue, i.e. encoding is switched to implicit if maximum
  *  size of length field is exceeded.
  */
-extern OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined; /* default OFTrue */
 
 /** This flag allows for ignoring the value of (0002,0000) File Meta Information
  *  Group Length which is useful in cases where this value is incorrect.  If the
  *  header length is ignored, the behavior is identical to the case when no value
  *  is available (i.e. all elements are read as long as the group number is 0x0002).
  */
-extern OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength; /* default OFFalse */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength; /* default OFFalse */
 
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM
  *  attribute tag is derived from class DcmObject.
  */
-class DcmObject
+class DCMTK_DCMDATA_EXPORT DcmObject
 {
  public:
 
@@ -651,7 +651,7 @@ class DcmObject
 
     /** helper class to print a DcmObject to an ostream using operator<<
      */
-    class PrintHelper
+    class DCMTK_DCMDATA_EXPORT PrintHelper
     {
       private:
         /** Undefined assignment operator. This is needed to work around a
@@ -714,6 +714,9 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.75  2011-12-14 09:04:12  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.74  2011-11-08 15:51:38  joergr
  * Added support for converting files, datasets and element values to any DICOM
  * character set that does not require code extension techniques (if compiled

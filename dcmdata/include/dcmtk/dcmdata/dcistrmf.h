@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 /** producer class that reads data from a plain file.
  */
-class DcmFileProducer: public DcmProducer
+class DCMTK_DCMDATA_EXPORT DcmFileProducer: public DcmProducer
 {
 public:
   /** constructor
@@ -114,7 +114,7 @@ private:
 
 /** input stream factory for plain files
  */
-class DcmInputFileStreamFactory: public DcmInputStreamFactory
+class DCMTK_DCMDATA_EXPORT DcmInputFileStreamFactory: public DcmInputStreamFactory
 {
 public:
 
@@ -159,7 +159,7 @@ private:
 
 /** input stream that reads from a plain file
  */
-class DcmInputFileStream: public DcmInputStream
+class DCMTK_DCMDATA_EXPORT DcmInputFileStream: public DcmInputStream
 {
 public:
   /** constructor
@@ -202,7 +202,7 @@ private:
  *  is decreased to zero, unlinks (deletes) the file and then the handler
  *  object itself.
  */
-class DcmTempFileHandler
+class DCMTK_DCMDATA_EXPORT DcmTempFileHandler
 {
 public:
 
@@ -265,7 +265,7 @@ private:
 
 /** input stream factory for temporary file handlers
  */
-class DcmInputTempFileStreamFactory: public DcmInputStreamFactory
+class DCMTK_DCMDATA_EXPORT DcmInputTempFileStreamFactory: public DcmInputStreamFactory
 {
 public:
 
@@ -306,6 +306,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
+ * Revision 1.10  2011-12-14 09:04:12  uli
+ * Make it possible to accurately build dcmdata and libi2d as DLLs.
+ *
  * Revision 1.9  2010-10-14 13:15:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmIntegerString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 /** a class representing the DICOM value representation 'Integer String' (IS)
  */
-class DcmIntegerString
+class DCMTK_DCMDATA_EXPORT DcmIntegerString
   : public DcmByteString
 {
 
@@ -139,6 +139,9 @@ class DcmIntegerString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
+** Revision 1.27  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.26  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

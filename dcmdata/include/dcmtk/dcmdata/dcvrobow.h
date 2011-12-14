@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:10 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 /** a class representing the DICOM value representations 'Other Byte String' (OB)
  *  and 'Other Word String' (OW)
  */
-class DcmOtherByteOtherWord
+class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
   : public DcmElement
 {
 
@@ -337,6 +337,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
+** Revision 1.37  2011-12-14 09:04:15  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.36  2011-10-18 14:00:10  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

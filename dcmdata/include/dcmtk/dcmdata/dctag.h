@@ -17,9 +17,9 @@
  *
  *  Purpose: Definition of the class DcmTag
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-23 07:34:35 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@
  *  than creation of simple DcmTagKey objects unless the VR is passed
  *  in the constructor.
  */
-class DcmTag: public DcmTagKey
+class DCMTK_DCMDATA_EXPORT DcmTag: public DcmTagKey
 {
 public:
     /// default constructor
@@ -224,6 +224,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
+** Revision 1.26  2011-12-14 09:04:13  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.25  2011-08-23 07:34:35  joergr
 ** Added optional parameter for the private creator to the DcmTag constructor
 ** in order to better support private tag definitions.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmOverlayData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 08:21:13 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 
 /** a class used to represent overlay data (60xx,3000)
  */
-class DcmOverlayData : public DcmPolymorphOBOW
+class DCMTK_DCMDATA_EXPORT DcmOverlayData : public DcmPolymorphOBOW
 {
 public:
 
@@ -118,6 +118,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcovlay.h,v $
+** Revision 1.14  2011-12-14 09:04:13  uli
+** Make it possible to accurately build dcmdata and libi2d as DLLs.
+**
 ** Revision 1.13  2010-10-21 08:21:13  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 ** Added missing API documentation and slightly reformatted source code.
