@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomOverlayPlane (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-03 09:27:32 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:50:22 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ class DiDocument;
 
 /** Class to handle a single overlay plane
  */
-class DiOverlayPlane
+class DCMTK_DCMIMGLE_EXPORT DiOverlayPlane
 {
 
  public:
@@ -571,6 +571,9 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
+ * Revision 1.34  2011-12-14 09:50:22  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.33  2011-03-03 09:27:32  joergr
  * Fixed possible issue with overlay planes in multi-frame images. Also enhanced
  * log output (trace mode) in order to make it easier to analyze such problems.

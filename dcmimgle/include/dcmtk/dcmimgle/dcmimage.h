@@ -17,9 +17,9 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 10:42:37 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:50:21 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ class DiPluginFormat;
 /** Interface class for dcmimgle/dcmimage module.
  *  The main purpose of these modules is image display.
  */
-class DicomImage
+class DCMTK_DCMIMGLE_EXPORT DicomImage
 {
 
  public:
@@ -1889,6 +1889,9 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.68  2011-12-14 09:50:21  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.67  2011-10-24 10:42:37  joergr
  * Removed outdated comment that the "implementation of sigmoid transformation
  * is still missing".

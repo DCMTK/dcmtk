@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomCIELABLUT (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:25 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:50:21 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 
 /** Class to compute and store the CIELAB lookup table
  */
-class DiCIELABLUT
+class DCMTK_DCMIMGLE_EXPORT DiCIELABLUT
   : public DiDisplayLUT
 {
 
@@ -119,6 +119,9 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
+ * Revision 1.13  2011-12-14 09:50:21  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.12  2010-10-14 13:16:25  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -3,6 +3,38 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Make it possible to properly build dcmimgle as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmimgle/include/dcmtk/dcmimgle/didefine.h
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/dibaslut.h
+           dcmimgle/include/dcmtk/dcmimgle/diciefn.h
+           dcmimgle/include/dcmtk/dcmimgle/dicielut.h
+           dcmimgle/include/dcmtk/dcmimgle/didislut.h
+           dcmimgle/include/dcmtk/dcmimgle/didispfn.h
+           dcmimgle/include/dcmtk/dcmimgle/didocu.h
+           dcmimgle/include/dcmtk/dcmimgle/digsdfn.h
+           dcmimgle/include/dcmtk/dcmimgle/digsdlut.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpx.h
+           dcmimgle/include/dcmtk/dcmimgle/diluptab.h
+           dcmimgle/include/dcmtk/dcmimgle/dimo1img.h
+           dcmimgle/include/dcmtk/dcmimgle/dimo2img.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmimgle/include/dcmtk/dcmimgle/dimomod.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopx.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopx.h
+           dcmimgle/include/dcmtk/dcmimgle/diobjcou.h
+           dcmimgle/include/dcmtk/dcmimgle/diovdat.h
+           dcmimgle/include/dcmtk/dcmimgle/diovlay.h
+           dcmimgle/include/dcmtk/dcmimgle/diovlimg.h
+           dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+           dcmimgle/include/dcmtk/dcmimgle/dipixel.h
+           dcmimgle/include/dcmtk/dcmimgle/diplugin.h
+           dcmimgle/include/dcmtk/dcmimgle/diregbas.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/CMakeLists.txt
+
 - Make it possible to accurately build dcmdata and libi2d as DLLs. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for his work.
   Added:   dcmdata/include/dcmtk/dcmdata/dcdefine.h

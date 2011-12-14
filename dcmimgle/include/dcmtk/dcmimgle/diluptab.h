@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomLookupTable (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-11 11:05:51 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:50:22 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ class DcmItem;
 
 /** Class to handle color palette look-up tables
  */
-class DiLookupTable
+class DCMTK_DCMIMGLE_EXPORT DiLookupTable
   : public DiBaseLUT,
     public DiObjectCounter
 {
@@ -262,6 +262,9 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
+ * Revision 1.28  2011-12-14 09:50:22  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.27  2011-11-11 11:05:51  joergr
  * Changed optional DcmObject* parameter into DcmItem* and added this optional
  * parameter to some further getValue() methods.

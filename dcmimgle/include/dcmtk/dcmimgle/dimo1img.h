@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomMonochrome1Image (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:26 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:50:22 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 
 /** Class for MONOCHROME1 images
  */
-class DiMono1Image
+class DCMTK_DCMIMGLE_EXPORT DiMono1Image
   : public DiMonoImage
 {
 
@@ -238,6 +238,9 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
+ * Revision 1.18  2011-12-14 09:50:22  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.17  2010-10-14 13:16:26  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

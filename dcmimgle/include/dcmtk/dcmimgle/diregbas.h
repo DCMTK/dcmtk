@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomRegisterBase (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 09:50:22 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ class DiRegisterBase;
 
 /** Abstract base class to register additional libraries
  */
-class DiRegisterBase
+class DCMTK_DCMIMGLE_EXPORT DiRegisterBase
 {
 
  public:
@@ -107,6 +107,9 @@ class DiRegisterBase
  *
  * CVS/RCS Log:
  * $Log: diregbas.h,v $
+ * Revision 1.9  2011-12-14 09:50:22  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.8  2010-10-14 13:16:27  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -18,8 +18,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:58 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2011-12-14 09:50:22 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,9 @@
 
 #include "dcmtk/oflog/oflog.h"
 
-extern OFLogger DCM_dcmimgleLogger;
+#include "dcmtk/dcmimgle/didefine.h"
+
+extern DCMTK_DCMIMGLE_EXPORT OFLogger DCM_dcmimgleLogger;
 
 #define DCMIMGLE_TRACE(msg) OFLOG_TRACE(DCM_dcmimgleLogger, msg)
 #define DCMIMGLE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimgleLogger, msg)
@@ -138,7 +140,7 @@ enum EP_Interpretation
 
 /** structure for photometric string and related constant
  */
-struct SP_Interpretation
+struct DCMTK_DCMIMGLE_EXPORT SP_Interpretation
 {
     /// string (name of the color model without spaces and underscores)
     const char *Name;
@@ -151,7 +153,7 @@ struct SP_Interpretation
 
 /** structure for BMP bitmap file header
  */
-struct SB_BitmapFileHeader
+struct DCMTK_DCMIMGLE_EXPORT SB_BitmapFileHeader
 {
     /// signature, must always be 'BM'
     char bfType[2];
@@ -168,7 +170,7 @@ struct SB_BitmapFileHeader
 
 /** structure for BMP bitmap info header
  */
-struct SB_BitmapInfoHeader
+struct DCMTK_DCMIMGLE_EXPORT SB_BitmapInfoHeader
 {
     /// size of the BitmapInfoHeader, usually '40'
     Uint32 biSize;
@@ -358,7 +360,7 @@ const SP_Interpretation PhotometricInterpretationNames[] =
 /** Class comprising several global functions and constants.
  *  introduced to avoid problems with naming convention
  */
-class DicomImageClass
+class DCMTK_DCMIMGLE_EXPORT DicomImageClass
 {
 
  public:
@@ -444,6 +446,9 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.44  2011-12-14 09:50:22  uli
+ * Make it possible to properly build dcmimgle as a DLL.
+ *
  * Revision 1.43  2011-04-18 07:00:58  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.
