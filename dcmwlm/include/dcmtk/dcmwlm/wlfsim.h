@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for managing file system interaction.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:39 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:13 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
+#include "dcmtk/dcmwlm/wldefine.h"
 
 template <class T> class OFOrderedSet;
 struct WlmSuperiorSequenceInfoType;
@@ -45,7 +46,7 @@ class DcmItem;
  *  data base interaction in the framework of the DICOM basic worklist
  *  management service.
  */
-class WlmFileSystemInteractionManager
+class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 {
   private:
       /** Privately defined copy constructor.
@@ -453,6 +454,9 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.19  2011-12-14 12:14:13  uli
+** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+**
 ** Revision 1.18  2010-10-14 13:16:39  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

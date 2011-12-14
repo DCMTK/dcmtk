@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:24 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ class SiTimeStamp;
  *  helper functions that allow to locate and attach the sub-items 
  *  separately.
  */
-class DcmSignature
+class DCMTK_DCMSIGN_EXPORT DcmSignature
 {
 public:
   /** initializes the dcmsign library including the underlying OpenSSL library.
@@ -271,6 +271,9 @@ private:
 
 /*
  *  $Log: dcsignat.h,v $
+ *  Revision 1.5  2011-12-14 12:14:12  uli
+ *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+ *
  *  Revision 1.4  2010-10-14 13:17:24  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -302,4 +305,3 @@ private:
  *
  *
  */
-

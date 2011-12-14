@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: SiPrivateKey
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2011-02-22 15:43:57 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ typedef struct evp_pkey_st EVP_PKEY;
 
 /** a class representing a private key.
  */
-class SiPrivateKey
+class DCMTK_DCMSIGN_EXPORT SiPrivateKey
 {     
 public:
   /// default constructor
@@ -122,6 +122,9 @@ private:
 
 /*
  *  $Log: siprivat.h,v $
+ *  Revision 1.8  2011-12-14 12:14:12  uli
+ *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+ *
  *  Revision 1.7  2011-02-22 15:43:57  meichel
  *  Added new method SiPrivateKey::getRawPrivateKey()
  *
@@ -146,4 +149,3 @@ private:
  *
  *
  */
-

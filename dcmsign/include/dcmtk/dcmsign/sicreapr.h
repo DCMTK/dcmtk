@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: SiCreatorProfile
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:24 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 /** Creator RSA Digital Signature Profile
  */
-class SiCreatorProfile: public SiBaseRSAProfile
+class DCMTK_DCMSIGN_EXPORT SiCreatorProfile: public SiBaseRSAProfile
 { 
 public:
 
@@ -61,6 +61,9 @@ public:
 
 /*
  *  $Log: sicreapr.h,v $
+ *  Revision 1.7  2011-12-14 12:14:12  uli
+ *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+ *
  *  Revision 1.6  2010-10-14 13:17:24  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -82,4 +85,3 @@ public:
  *
  *
  */
-

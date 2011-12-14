@@ -1,5 +1,10 @@
 # create library from source files
-ADD_LIBRARY(dcmwlm ${STATIC_ON_WINDOWS} wlds wldsfs wlfsim wlmactmg)
+ADD_LIBRARY(dcmwlm wlds wldsfs wlfsim wlmactmg)
+
+TARGET_LINK_LIBRARIES(dcmwlm ofstd dcmdata dcmnet)
 
 # declare installation files
-INSTALL(TARGETS dcmwlm DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)
+INSTALL(TARGETS dcmwlm
+        RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})

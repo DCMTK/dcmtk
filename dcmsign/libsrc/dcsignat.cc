@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:38 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -819,12 +819,17 @@ OFCondition DcmSignature::getCurrentDataElementsSigned(DcmAttributeTag& desig)
 
 #else /* WITH_OPENSSL */
 
-int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
+#include "dcmtk/dcmsign/sidefine.h"
+
+DCMTK_DCMSIGN_EXPORT int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
 /*
  *  $Log: dcsignat.cc,v $
+ *  Revision 1.7  2011-12-14 12:14:12  uli
+ *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+ *
  *  Revision 1.6  2010-10-14 13:14:38  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

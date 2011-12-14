@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: SiMACConstructor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ class DcmAttributeTag;
 
 /** a class that allows to feed selected parts of a DICOM dataset into the MAC generation code
  */
-class SiMACConstructor
+class DCMTK_DCMSIGN_EXPORT SiMACConstructor
 {
 public:
 
@@ -172,6 +172,9 @@ private:
 
 /*
  *  $Log: simaccon.h,v $
+ *  Revision 1.11  2011-12-14 12:14:12  uli
+ *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+ *
  *  Revision 1.10  2010-10-14 13:17:25  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -206,4 +209,3 @@ private:
  *
  *
  */
-

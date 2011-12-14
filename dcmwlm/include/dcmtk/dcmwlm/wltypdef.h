@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:41 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-12-14 12:14:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmnet/dicom.h"     /* for DIC_AE and DIC_NODENAME */
+#include "dcmtk/dcmwlm/wldefine.h"
 
   /// Data source status types
 enum WlmDataSourceStatusType
@@ -72,7 +73,7 @@ enum WlmReturnedCharacterSetType
 #define LOCKFILENAME "lockfile"
 
   /// structure for non-single process mode
-struct WlmProcessSlotType
+struct DCMTK_DCMWLM_EXPORT WlmProcessSlotType
 {
   /// name of peer
   DIC_NODENAME peerName;
@@ -125,7 +126,7 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_Can
 #define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 15
 
   /// structure for handling arbitrary types of superior sequences in query result datasets
-struct WlmSuperiorSequenceInfoType
+struct DCMTK_DCMWLM_EXPORT WlmSuperiorSequenceInfoType
 {
   WlmSuperiorSequenceInfoType() : sequenceTag(), numOfItems(0), currentItem(0)
   { }
@@ -144,6 +145,9 @@ struct WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
+** Revision 1.17  2011-12-14 12:14:13  uli
+** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+**
 ** Revision 1.16  2011-02-04 12:57:41  uli
 ** Made sure all members are initialized in the constructor (-Weffc++).
 **

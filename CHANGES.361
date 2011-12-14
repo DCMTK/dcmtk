@@ -15,7 +15,22 @@ Changes between releases are documented here.
   Affects: dcmsr/libsrc/dsrdoctn.cc
 
 **** Changes from 2011.12.14 (schlachter)
-- Make it possible to perfectly build dcmnet and dcmtls a DLLs. Thanks to
+
+- Make it possible to precisely build dcmsign and dcmwlm as DLLs. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for doing the hard work.
+  Added:   dcmsign/include/dcmtk/dcmsign/sidefine.h
+           dcmwlm/include/dcmtk/dcmwlm/wldefine.h
+  Affects: dcmsign/include/dcmtk/dcmsign/*
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsign/libsrc/dcsignat.cc
+           dcmwlm/include/dcmtk/dcmwlm/wlds.h
+           dcmwlm/include/dcmtk/dcmwlm/wldsfs.h
+           dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+           dcmwlm/libsrc/CMakeLists.txt
+
+- Make it possible to perfectly build dcmnet and dcmtls as DLLs. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for making this possible.
   Added:   dcmnet/include/dcmtk/dcmnet/dndefine.h
            dcmtls/include/dcmtk/dcmtls/tlsdefin.h

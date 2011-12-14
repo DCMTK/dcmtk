@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: SiMD5
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:25 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,27 +42,27 @@ typedef struct MD5state_st MD5_CTX;
 /**
  * a class implementing the hash function MD5
  */
-class SiMD5 : public SiMAC 
-{    
+class DCMTK_DCMSIGN_EXPORT SiMD5 : public SiMAC
+{
 public:
   /// default constructor
   SiMD5();
 
   /// destructor
   virtual ~SiMD5();
-  
+
   /** initializes the MAC algorithm.
    *  @return status code
    */
   virtual OFCondition initialize();
-  
+
   /** feeds data into the MAC algorithm
    *  @param data pointer to raw data to be fed into the MAC, must not be NULL
    *  @param length number of bytes in raw data array
    *  @return status code
    */
   virtual OFCondition digest(const unsigned char *data, unsigned long length);
-  
+
   /** finalizes the MAC and writes it to the given output array,
    *  which must be at least getSize() bytes large.
    *  After a call to finalize, the MAC algorithm must be initialized
@@ -80,7 +80,7 @@ public:
   /** returns the type of MAC algorithm computed by this object
    *  @return type of MAC algorithm
    */
-  virtual E_MACType macType() const;    
+  virtual E_MACType macType() const;
 
   /** returns the DICOM identifier for this MAC algorithm
    *  @return DICOM defined term for algorithm
@@ -96,7 +96,7 @@ private:
   SiMD5& operator=(SiMD5& arg);
 
   /// OpenSSL MD5 context
-  MD5_CTX *ctx;    
+  MD5_CTX *ctx;
 };
 
 #endif
@@ -104,6 +104,9 @@ private:
 
 /*
  *  $Log: simd5.h,v $
+ *  Revision 1.7  2011-12-14 12:14:12  uli
+ *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+ *
  *  Revision 1.6  2010-10-14 13:17:25  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -125,4 +128,3 @@ private:
  *
  *
  */
-

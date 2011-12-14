@@ -18,8 +18,8 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-12-14 12:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/oflog/oflog.h"
 
-extern OFLogger DCM_dcmwlmLogger;
+extern DCMTK_DCMWLM_EXPORT OFLogger DCM_dcmwlmLogger;
 
 #define DCMWLM_TRACE(msg) OFLOG_TRACE(DCM_dcmwlmLogger, msg)
 #define DCMWLM_DEBUG(msg) OFLOG_DEBUG(DCM_dcmwlmLogger, msg)
@@ -49,7 +49,7 @@ class DcmLongString;
 /** This class encapsulates data structures and operations for connecting to an arbitrary
  *  data source in the framework of the DICOM basic worklist management service.
  */
-class WlmDataSource
+class DCMTK_DCMWLM_EXPORT WlmDataSource
 {
   protected:
 
@@ -527,6 +527,9 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
+** Revision 1.30  2011-12-14 12:14:12  uli
+** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
+**
 ** Revision 1.29  2011-04-18 07:01:05  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.
