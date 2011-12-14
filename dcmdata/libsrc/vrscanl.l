@@ -18,13 +18,17 @@
  *  Purpose:
  *    These are the regular expressions for the value representations
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-21 08:53:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-14 11:17:48 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.9  2011-12-14 11:17:48  joergr
+ *  Fixed wrong definition of value representation Date Time (DT): All trailing
+ *  components can be omitted, i.e. the shortest DT value consists of "YYYY".
+ *
  *  Revision 1.8  2011-10-21 08:53:44  uli
  *  Don't define a static version of isatty() since it seems to be not needed.
  *
@@ -150,8 +154,8 @@ normalized-da-dub   {da_year_dub}{da_month}{da_day}
 normalized-tm       {tm_hour}({tm_minute}({tm_second}(\.[0-9]{1,6})?)?)?
 normalized-tm-old   {tm_hour}:{tm_minute}:{tm_second}\.[0-9]{6}
 normalized-ds       ([\-\+]?[0-9]*[\.]?[0-9]+)|([\-\+]?[0-9]+[\.]?[0-9]*)|([\-\+]?[0-9]*[\.]?[0-9]+[Ee][\+\-]?[0-9]+)|([\-\+]?[0-9]+[\.]?[0-9]*[Ee][\+\-]?[0-9]+)
-normalized-dt       {normalized-da}{normalized-tm}{dt_offset}?
-normalized-dt-dub   {da_year_dub}{da_month}{da_day}{normalized-tm}{dt_offset}?
+normalized-dt       {da_year}({da_month}({da_day}({normalized-tm}{dt_offset}?)?)?)?
+normalized-dt-dub   {da_year_dub}({da_month}({da_day}({normalized-tm}{dt_offset}?)?)?)?
 normalized-is       {is_positive}|{is_negative}
 normalized-ui       (([0-9]\.)|([1-9][0-9]+\.))*(([0-9])|([1-9][0-9]+))
 normalized-cs       [0-9A-Z _]+

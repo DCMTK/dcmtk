@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for checkStringValue() methods
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:55 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-14 11:17:50 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "DT-01", DcmDateTime::checkStringValue("200907311230", "1") )
   CHECK_GOOD( "DT-02", DcmDateTime::checkStringValue("18200101000000", "1") )
   CHECK_GOOD( "DT-03", DcmDateTime::checkStringValue("21001231235959.000001", "1") )
-  CHECK_BAD ( "DT-04", DcmDateTime::checkStringValue("20090731", "1") )
+  CHECK_GOOD( "DT-04", DcmDateTime::checkStringValue("20090731", "1") )
   CHECK_BAD ( "DT-05", DcmDateTime::checkStringValue("200907312400", "1") )
   CHECK_BAD ( "DT-06", DcmDateTime::checkStringValue("20090731 1200") )
   CHECK_GOOD( "DT-07", DcmDateTime::checkStringValue("2009073100\\1820010112", "2-2n") )
@@ -113,6 +113,10 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_BAD ( "DT-11", DcmDateTime::checkStringValue("200907311230+1900", "1") )
   CHECK_GOOD( "DT-12", DcmDateTime::checkStringValue("20090731123000.123456+0100", "1") )
   CHECK_BAD ( "DT-13", DcmDateTime::checkStringValue("20090731123000.123456+0100 ", "1") )
+  CHECK_GOOD( "DT-14", DcmDateTime::checkStringValue("200907311230", "1") )
+  CHECK_GOOD( "DT-15", DcmDateTime::checkStringValue("200907", "1") )
+  CHECK_GOOD( "DT-16", DcmDateTime::checkStringValue("2009", "1") )
+  CHECK_BAD ( "DT-17", DcmDateTime::checkStringValue("20091", "1") )
 
   /* test "Decimal String" */
   CHECK_GOOD( "DS-01", DcmDecimalString::checkStringValue(" 0", "1") )
@@ -237,6 +241,10 @@ OFTEST(dcmdata_checkStringValue)
  *
  * CVS/RCS Log:
  * $Log: tchval.cc,v $
+ * Revision 1.2  2011-12-14 11:17:50  joergr
+ * Fixed wrong definition of value representation Date Time (DT): All trailing
+ * components can be omitted, i.e. the shortest DT value consists of "YYYY".
+ *
  * Revision 1.1  2011-05-25 10:05:55  uli
  * Imported oftest and converted existing tests to oftest.
  *
