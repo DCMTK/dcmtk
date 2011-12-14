@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,12 @@
 #define OFCRC32_H
 
 
+#include "dcmtk/ofstd/ofdefine.h"
+
+
 /** general-purpose 32-bit CRC algorithm.
  */
-class OFCRC32
+class DCMTK_OFSTD_EXPORT OFCRC32
 {
 public:
 
@@ -88,6 +91,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: ofcrc32.h,v $
+ * Revision 1.5  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.4  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

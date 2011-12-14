@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 07:13:04 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ END_EXTERN_C
 /** A class for various helper functions.
  *  This class is used to comprise a number of "global" helper functions.
  */
-class OFStandard
+class DCMTK_OFSTD_EXPORT OFStandard
 {
 
  public:
@@ -671,6 +671,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.49  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.48  2011-11-01 07:13:04  joergr
  * Fixed wrong comment on return value of method convertToOctalString().
  *

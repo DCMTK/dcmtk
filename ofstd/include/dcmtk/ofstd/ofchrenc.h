@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for character encoding conversion (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-07 07:45:40 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 /** A class for managing and converting between different character encodings.
  *  The implementation relies on the libiconv toolkit (if available).
  */
-class OFCharacterEncoding
+class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 {
 
   // allow the DICOM-specific character set class to access protected methods
@@ -285,6 +285,9 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.9  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.8  2011-11-07 07:45:40  joergr
  * Fixed problematical typo in a comment ("get" -> "set").
  *

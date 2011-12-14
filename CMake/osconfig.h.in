@@ -12,6 +12,9 @@
 #define END_EXTERN_C
 #endif
 
+/* Define when building a shared library */
+#cmakedefine DCMTK_SHARED @DCMTK_SHARED@
+
 #ifdef _WIN32
   /* Define if you have the <windows.h> header file. */
   #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@

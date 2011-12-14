@@ -170,6 +170,17 @@ IF(WIN32)   # special handling for Windows systems
 
   SET(STATIC_ON_WINDOWS STATIC)
 
+  # Add a define when we are building shared libs
+  IF(BUILD_SHARED_LIBS)
+    SET(DCMTK_SHARED ON)
+    IF(MSVC)
+      # Templates and DLLs cause lots of problems:
+      # http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+      # (The short version: We have to disable this warning)
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251")
+    ENDIF(MSVC)
+  ENDIF(BUILD_SHARED_LIBS)
+
   IF(MINGW)
     # Avoid auto-importing warnings on MinGW
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-auto-import")

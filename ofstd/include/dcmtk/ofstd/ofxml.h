@@ -17,9 +17,9 @@
  *
  *  Purpose: Simple non-validating XML parser
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 10:38:32 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:01 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,6 +149,14 @@
 // DCMTK: we want to use our own standard include wrappers
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
+
+// DCMTK: Make DLLs work correctly
+#if defined(DCMTK_SHARED) && defined(_WIN32)
+#define _USE_XMLPARSER_DLL
+#ifdef ofstd_EXPORTS
+#define _DLL_EXPORTS_
+#endif
+#endif
 
 #ifdef _UNICODE
 // If you comment the next "define" line then the library will never "switch to" _UNICODE (wchar_t*) mode (16/32 bits per characters).
@@ -823,6 +831,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: ofxml.h,v $
+ * Revision 1.3  2011-12-14 08:54:01  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.2  2011-11-24 10:38:32  joergr
  * Minor fixes to also compile with VisualStudio 2008 on Windows systems.
  *

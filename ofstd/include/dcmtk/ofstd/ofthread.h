@@ -21,9 +21,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-01-04 14:47:09 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:01 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ extern "C"
  *  This class is abstract. Deriving classes must implement the run()
  *  method which contains the code executed by the thread.
  */
-class OFThread
+class DCMTK_OFSTD_EXPORT OFThread
 {
 public:
 
@@ -189,7 +189,7 @@ private:
 #ifdef HAVE_WINDOWS_H
   friend unsigned int __stdcall thread_stub(void *arg);
 #else
-  friend void *thread_stub(void *arg);
+  friend DCMTK_OFSTD_EXPORT void *thread_stub(void *arg);
 #endif
 };
 
@@ -203,7 +203,7 @@ private:
   * Threads must ensure on their own that the data pointed to by the thread
   * specific data key is freed upon termination of the thread.
   */
-class OFThreadSpecificData
+class DCMTK_OFSTD_EXPORT OFThreadSpecificData
 {
 public:
 
@@ -274,7 +274,7 @@ private:
  *  If a thread calls wait() while the counter is zero, the thread
  *  is blocked until another thread has increased the counter using post().
  */
-class OFSemaphore
+class DCMTK_OFSTD_EXPORT OFSemaphore
 {
 public:
 
@@ -349,7 +349,7 @@ private:
  *  trying to lock the same mutex to block until the owner thread unlocks
  *  it by way of unlock().
  */
-class OFMutex
+class DCMTK_OFSTD_EXPORT OFMutex
 {
 public:
 
@@ -424,7 +424,7 @@ private:
  *  read/write locks, which are generally used to protect data that is
  *  frequently searched.
  */
-class OFReadWriteLock
+class DCMTK_OFSTD_EXPORT OFReadWriteLock
 {
 public:
 
@@ -511,7 +511,7 @@ private:
  *  instance of this class and lock the OFReadWriteLock through it. When it
  *  is destructed it will make sure that the lock is unlocked if necessary.
  */
-class OFReadWriteLocker {
+class DCMTK_OFSTD_EXPORT OFReadWriteLocker {
 public:
   /** constructor
    *  @param lock the lock to associate this instance with
@@ -573,6 +573,9 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
+ * Revision 1.13  2011-12-14 08:54:01  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.12  2011-01-04 14:47:09  onken
  * Disable and hide OFSemaphore class on Mac OS X since implementation is
  * broken on that OS (needs named semaphores instead).

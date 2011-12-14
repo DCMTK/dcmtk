@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: common defines for configuration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,27 @@
 
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
+
+
+// Defines needed for building DLLs on windows
+#if defined(DCMTK_SHARED) && defined(_WIN32)
+#define DCMTK_DECL_EXPORT __declspec(dllexport)
+#define DCMTK_DECL_IMPORT __declspec(dllimport)
+#endif
+
+#ifndef DCMTK_DECL_EXPORT
+#define DCMTK_DECL_EXPORT
+#endif
+
+#ifndef DCMTK_DECL_IMPORT
+#define DCMTK_DECL_IMPORT
+#endif
+
+#ifdef ofstd_EXPORTS
+#define DCMTK_OFSTD_EXPORT DCMTK_DECL_EXPORT
+#else
+#define DCMTK_OFSTD_EXPORT DCMTK_DECL_IMPORT
+#endif
 
 
 #ifdef HAVE_BZERO
@@ -103,6 +124,9 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofdefine.h,v $
+ * Revision 1.3  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.2  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

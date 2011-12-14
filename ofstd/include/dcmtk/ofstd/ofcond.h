@@ -17,9 +17,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-28 11:15:45 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ enum OFStatus
 
 /** abstract base class for condition codes
  */
-class OFConditionBase
+class DCMTK_OFSTD_EXPORT OFConditionBase
 {
 public:
 
@@ -143,7 +143,7 @@ private:
  *  OFError instances may keep multiple aliased pointers to an instance of
  *  this class. Therefore, instances should be global constants.
  */
-class OFConditionConst: public OFConditionBase
+class DCMTK_OFSTD_EXPORT OFConditionConst: public OFConditionBase
 {
 public:
 
@@ -221,7 +221,7 @@ private:
 /** this class is used to declare condition codes with
  *  user defined error messages.
  */
-class OFConditionString: public OFConditionBase
+class DCMTK_OFSTD_EXPORT OFConditionString: public OFConditionBase
 {
 public:
 
@@ -294,7 +294,7 @@ private:
 
 
 // global constant used by OFCondition default constructor.
-extern const OFConditionConst ECC_Normal;
+extern DCMTK_OFSTD_EXPORT const OFConditionConst ECC_Normal;
 
 
 /** General purpose class for condition codes. Objects of this class can be
@@ -302,7 +302,7 @@ extern const OFConditionConst ECC_Normal;
  *  no virtual methods. The condition code is maintained by the object of class
  *  OFConditionBase pointed to.
  */
-class OFCondition
+class DCMTK_OFSTD_EXPORT OFCondition
 {
 public:
 
@@ -451,30 +451,30 @@ private:
  */
 
 /// condition constant: successful completion
-extern const OFCondition EC_Normal;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_Normal;
 /// condition constant: error, function called with illegal parameters
-extern const OFCondition EC_IllegalParameter;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_IllegalParameter;
 /// condition constant: failure, memory exhausted
-extern const OFCondition EC_MemoryExhausted;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_MemoryExhausted;
 
 /// condition constant: error, no character encoding library available
-extern const OFCondition EC_NoEncodingLibrary;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_NoEncodingLibrary;
 /// condition constant: error, no character encoding selected
-extern const OFCondition EC_NoEncodingSelected;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_NoEncodingSelected;
 
 /// condition constant: error, could not create temporary file
-extern const OFCondition EC_CouldNotCreateTemporaryFile;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_CouldNotCreateTemporaryFile;
 /// condition constant: error, invalid filename
-extern const OFCondition EC_InvalidFilename;
+extern DCMTK_OFSTD_EXPORT const OFCondition EC_InvalidFilename;
 
 /// status code constant: error, cannot open character encoding
-extern const unsigned short EC_CODE_CannotOpenEncoding;
+extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotOpenEncoding;
 /// status code constant: error, cannot close character encoding
-extern const unsigned short EC_CODE_CannotCloseEncoding;
+extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCloseEncoding;
 /// status code constant: error, cannot convert character encoding
-extern const unsigned short EC_CODE_CannotConvertEncoding;
+extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotConvertEncoding;
 /// status code constant: error, cannot control character encoding converter
-extern const unsigned short EC_CODE_CannotControlConverter;
+extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
 
 /** this macro is a shortcut for creating user-specific error messages.
  */
@@ -488,6 +488,9 @@ extern const unsigned short EC_CODE_CannotControlConverter;
  *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.16  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.15  2011-11-28 11:15:45  joergr
  * Added general condition constant for invalid filenames.
  *

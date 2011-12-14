@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: OFConfigFile
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ typedef OFConfigFileNode *OFPConfigFileNode;
  *  and the links that comprise the configuration file tree structure.
  *  Internal use only.
  */
-class OFConfigFileNode
+class DCMTK_OFSTD_EXPORT OFConfigFileNode
 {
 public:
   /** constructor.
@@ -191,7 +191,7 @@ typedef OFConfigFileNode *OFConfigFileNodePtr;
 /** structure used by class OFConfigFile to store a cursor pointing
  *  to the currently selected section and entry in the config data
  */
-class OFConfigFileCursor
+class DCMTK_OFSTD_EXPORT OFConfigFileCursor
 {
 public:
   /** default constructor
@@ -339,7 +339,7 @@ private:
  *  config file and offers methods allowing to browse the
  *  configuration data
  */
-class OFConfigFile
+class DCMTK_OFSTD_EXPORT OFConfigFile
 {
 public:
 
@@ -559,6 +559,9 @@ private:
 
 /*
  *  $Log: ofconfig.h,v $
+ *  Revision 1.9  2011-12-14 08:54:00  uli
+ *  Make it possible to correctly build ofstd as a DLL.
+ *
  *  Revision 1.8  2010-10-14 13:15:50  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -590,4 +593,3 @@ private:
  *
  *
  */
-

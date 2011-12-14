@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for measurement of time (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-10 09:25:56 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:01 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofdefine.h"
 
 
 /*---------------------*
@@ -40,9 +41,9 @@
  *---------------------*/
 
 /** A class for measurement of time.
- *  Timer intervalls are represented as floating point values of seconds.
+ *  Timer intervals are represented as floating point values of seconds.
  */
-class OFTimer
+class DCMTK_OFSTD_EXPORT OFTimer
 {
 
  public:
@@ -94,7 +95,7 @@ class OFTimer
  *  @param timer OFTimer object to print
  *  @return reference to the output stream
  */
-STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &timer);
+DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &timer);
 
 
 #endif
@@ -104,6 +105,9 @@ STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
+ * Revision 1.16  2011-12-14 08:54:01  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.15  2011-10-10 09:25:56  joergr
  * Added output stream operator in order to use different time units depending
  * on the value range, i.e. "ms", "s", "m" and "h".

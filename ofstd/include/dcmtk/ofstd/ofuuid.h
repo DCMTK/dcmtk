@@ -17,9 +17,9 @@
  *
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-07 16:51:39 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:01 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
  *  A UUID is an Universally Unique IDentifier. If UUIDs are generated
  *  correctly, it's almost impossible that the same UUID is generated twice.
  */
-class OFUUID {
+class DCMTK_OFSTD_EXPORT OFUUID {
 public:
 
     /** The possible ways to represent a UUID */
@@ -153,6 +153,9 @@ static inline STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& stream, 
 /*
  * CVS/RCS Log:
  * $Log: ofuuid.h,v $
+ * Revision 1.4  2011-12-14 08:54:01  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.3  2011-12-07 16:51:39  joergr
  * Various minor fixes to API documentation and other comments.
  *

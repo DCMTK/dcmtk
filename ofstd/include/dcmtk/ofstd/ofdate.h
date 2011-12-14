@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for date functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ END_EXTERN_C
 
 /** This class provides a collection of date functions
  */
-class OFDate
+class DCMTK_OFSTD_EXPORT OFDate
 {
     // allow class OFDateTime to access protected class members
     friend class OFDateTime;
@@ -263,7 +263,7 @@ class OFDate
  *  @param dateVal OFDate object to print
  *  @return reference to the output stream
  */
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDate &dateVal);
+DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDate &dateVal);
 
 
 #endif
@@ -273,6 +273,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDate &d
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
+ * Revision 1.10  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.9  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

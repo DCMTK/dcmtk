@@ -19,8 +19,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 10:57:29 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 /** A class for automatically creating unique pseudo-random filenames.
  */  
-class OFFilenameCreator
+class DCMTK_OFSTD_EXPORT OFFilenameCreator
 {
 public:
   /// default constructor
@@ -84,6 +84,9 @@ private:
 
 /*
  *  $Log: offname.h,v $
+ *  Revision 1.12  2011-12-14 08:54:00  uli
+ *  Make it possible to correctly build ofstd as a DLL.
+ *
  *  Revision 1.11  2011-10-11 10:57:29  uli
  *  Made sure that makeFilename() influences the caller's seed.
  *
@@ -121,4 +124,3 @@ private:
  *
  *
  */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *      Defines a template stack class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdefine.h"
 
 #if defined(HAVE_STL) || defined(HAVE_STL_STACK)
 // It is possible to use the standard template library list class since the 
@@ -83,7 +84,7 @@ private:
 /** non-template base class for OFStack.
  *  Implicitly used by OFStack, should not be called by users.
  */
-class OFStackBase
+class DCMTK_OFSTD_EXPORT OFStackBase
 {
 public:
     /// default constructor
@@ -280,6 +281,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
+** Revision 1.19  2011-12-14 08:54:00  uli
+** Make it possible to correctly build ofstd as a DLL.
+**
 ** Revision 1.18  2010-10-14 13:15:50  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

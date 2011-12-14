@@ -18,9 +18,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-11-30 15:35:20 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdefine.h"
 
 #ifndef HAVE_CLASS_TEMPLATE
 #error Your C++ compiler cannot handle class templates:
@@ -115,7 +116,7 @@ struct OFListLinkBase
 /* non-template list. Base class fo OFList.
  * Implicitly used by OFList, should not be called by users.
  */
-class OFListBase
+class DCMTK_OFSTD_EXPORT OFListBase
 {
 protected:
     OFListLinkBase * afterLast;
@@ -578,6 +579,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.31  2011-12-14 08:54:00  uli
+** Make it possible to correctly build ofstd as a DLL.
+**
 ** Revision 1.30  2011-11-30 15:35:20  ogazzar
 ** Added functions front() and back() to return const reference.
 **

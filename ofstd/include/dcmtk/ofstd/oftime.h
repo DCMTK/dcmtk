@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for time functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-30 08:35:11 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:01 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ END_EXTERN_C
 
 /** This class provides a collection of time functions
  */
-class OFTime
+class DCMTK_OFSTD_EXPORT OFTime
 {
     // allow class OFDateTime to access protected class members
     friend class OFDateTime;
@@ -435,7 +435,7 @@ class OFTime
  *  @param timeVal OFTime object to print
  *  @return reference to the output stream
  */
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &timeVal);
+DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &timeVal);
 
 
 #endif
@@ -445,6 +445,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
+ * Revision 1.14  2011-12-14 08:54:01  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.13  2011-11-30 08:35:11  joergr
  * Made setISOFormattedeTime() more robust with regard to input values. Fixed
  * an issue with determining the local time zone (introduced with last commit).

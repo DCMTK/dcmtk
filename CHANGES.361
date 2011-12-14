@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.12 (schlachter)
 
+- Make it possible to correctly build ofstd as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for his work.
+
 - Always build static libraries on windows (for now).
   Affects: CMakeLists.txt
            dcmdata/libi2d/CMakeLists.txt

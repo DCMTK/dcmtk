@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ struct OFCmdParamPos;
 /** Internal structure to store valid command line parameters.
  *  Parameters are all command line arguments which are no options (e.g. file names).
  */
-struct OFCmdParam
+struct DCMTK_OFSTD_EXPORT OFCmdParam
 {
 
     /** mode specifying parameter's cardinality
@@ -126,7 +126,7 @@ private:
  *  This class is the interface to this module.
  *  All methods which can be used from outside are defined here.
  */
-class OFCommandLine
+class DCMTK_OFSTD_EXPORT OFCommandLine
 {
 
  public:
@@ -985,6 +985,9 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
+ * Revision 1.44  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.43  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

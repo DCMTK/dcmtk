@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,9 +47,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@
  *  Use of the singleton prior to start of main (i.e. from global constructors)
  *  is allowed, but any use after the end of main is undefined.
  */
-class OFConsole
+class DCMTK_OFSTD_EXPORT OFConsole
 {
 public:
 
@@ -259,8 +259,8 @@ private:
 
 #ifdef DCMTK_GUI
 
-extern OFOStringStream COUT;
-extern OFOStringStream CERR;
+extern DCMTK_OFSTD_EXPORT OFOStringStream COUT;
+extern DCMTK_OFSTD_EXPORT OFOStringStream CERR;
 
 #else /* DCMTK_GUI */
 
@@ -276,6 +276,9 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
+ * Revision 1.22  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.21  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

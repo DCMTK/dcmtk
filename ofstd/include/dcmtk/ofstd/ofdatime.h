@@ -17,9 +17,9 @@
  *
  *  Purpose: Combined class for date and time functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:01:13 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** This class is a combination of OFDate and OFTime
  */
-class OFDateTime
+class DCMTK_OFSTD_EXPORT OFDateTime
 {
 
  public:
@@ -242,7 +242,7 @@ class OFDateTime
  *  @param time OFDateTime object to print
  *  @return reference to the output stream
  */
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTime &dateTime);
+DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTime &dateTime);
 
 
 #endif
@@ -252,6 +252,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTim
  *
  * CVS/RCS Log:
  * $Log: ofdatime.h,v $
+ * Revision 1.12  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.11  2011-11-29 16:01:13  joergr
  * Added support for the optional time zone to setISOFormattedDateTime().
  * Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.

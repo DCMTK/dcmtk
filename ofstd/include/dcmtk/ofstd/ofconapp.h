@@ -17,9 +17,9 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-03 15:29:10 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
  *  behaviour for all DCMTK console applications.
  *  Performs console output operations and error checking.
  */
-class OFConsoleApplication
+class DCMTK_OFSTD_EXPORT OFConsoleApplication
 {
 
  public:
@@ -214,6 +214,9 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
+ * Revision 1.28  2011-12-14 08:54:00  uli
+ * Make it possible to correctly build ofstd as a DLL.
+ *
  * Revision 1.27  2011-11-03 15:29:10  joergr
  * Output the current locale's character encoding together with the host type.
  * This info is shown when calling a command line tool with option --version.
