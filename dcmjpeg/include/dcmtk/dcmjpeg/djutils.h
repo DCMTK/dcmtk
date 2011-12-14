@@ -18,8 +18,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:58 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-12-14 10:33:21 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,11 +33,12 @@
 #include "dcmtk/ofstd/ofcond.h"      /* for class OFCondition */
 #include "dcmtk/dcmimgle/diutils.h"  /* for EP_Interpretation */
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmjpeg/djdefine.h"
 
 
 // global definitions for logging mechanism provided by the oflog module
 
-extern OFLogger DCM_dcmjpegLogger;
+extern DCMTK_DCMJPEG_EXPORT OFLogger DCM_dcmjpegLogger;
 
 #define DCMJPEG_TRACE(msg) OFLOG_TRACE(DCM_dcmjpegLogger, msg)
 #define DCMJPEG_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjpegLogger, msg)
@@ -181,17 +182,17 @@ enum E_DecompressionColorSpaceConversion
 // CONDITION CONSTANTS
 
 /// IJG codec suspension return
-extern const OFCondition EJ_Suspension;
+extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_Suspension;
 /// Buffer for decompressed image (8 bits/sample) too small
-extern const OFCondition EJ_IJG8_FrameBufferTooSmall;
+extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_IJG8_FrameBufferTooSmall;
 /// Buffer for decompressed image (12 bits/sample) too small
-extern const OFCondition EJ_IJG12_FrameBufferTooSmall;
+extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_IJG12_FrameBufferTooSmall;
 /// Buffer for decompressed image (16 bits/sample) too small
-extern const OFCondition EJ_IJG16_FrameBufferTooSmall;
+extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_IJG16_FrameBufferTooSmall;
 /// Codec does not support this PhotometricInterpretation
-extern const OFCondition EJ_UnsupportedPhotometricInterpretation;
+extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_UnsupportedPhotometricInterpretation;
 /// Codec does not support this kind of color conversion
-extern const OFCondition EJ_UnsupportedColorConversion;
+extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_UnsupportedColorConversion;
 
 // reserved condition codes for IJG error messages
 const unsigned short EJCode_IJG8_Compression    = 0x0100;
@@ -204,7 +205,7 @@ const unsigned short EJCode_IJG16_Decompression = 0x0105;
 /** helper class with static methods used from different dcmjpeg classes
  *  (in particular from the encoder and the decoder part).
  */
-class DcmJpegHelper
+class DCMTK_DCMJPEG_EXPORT DcmJpegHelper
 {
 public:
 
@@ -221,6 +222,9 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djutils.h,v $
+ * Revision 1.8  2011-12-14 10:33:21  uli
+ * Make it possible to decently build dcmjpeg as a DLL.
+ *
  * Revision 1.7  2011-04-18 07:00:58  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

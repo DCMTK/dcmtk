@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:17 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,9 +43,9 @@ class DJDecoderSpectralSelection;
 
 /** singleton class that registers decoders for all supported JPEG processes.
  */
-class DJDecoderRegistration 
+class DCMTK_DCMJPEG_EXPORT DJDecoderRegistration
 {
-public: 
+public:
   /** registers decoders for all supported JPEG processes.
    *  If already registered, call is ignored unless cleanup() has
    *  been performed before.
@@ -55,7 +55,7 @@ public:
    *    of color images should be encoded upon decompression.
    *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
    *           overflow in predictor 6 for images with 16 bits/pixel
-   */   
+   */
   static void registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion = EDC_photometricInterpretation,
     E_UIDCreation pCreateSOPInstanceUID = EUC_default,
@@ -66,7 +66,7 @@ public:
    *  Attention: Must not be called while other threads might still use
    *  the registered codecs, e.g. because they are currently decoding
    *  DICOM data sets through dcmdata.
-   */  
+   */
   static void cleanup();
 
 private:
@@ -76,7 +76,7 @@ private:
 
   /// pointer to codec parameter shared by all decoders
   static DJCodecParameter *cp;
-  
+
   /// pointer to decoder for baseline JPEG
   static DJDecoderBaseline *decbas;
 
@@ -94,7 +94,7 @@ private:
 
   /// pointer to decoder for lossless JPEG
   static DJDecoderLossless *declol;
-  
+
 };
 
 #endif
@@ -102,6 +102,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djdecode.h,v $
+ * Revision 1.7  2011-12-14 10:33:20  uli
+ * Make it possible to decently build dcmjpeg as a DLL.
+ *
  * Revision 1.6  2010-10-14 13:17:17  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

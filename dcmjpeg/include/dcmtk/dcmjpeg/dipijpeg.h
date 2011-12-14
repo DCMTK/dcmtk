@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:16 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ class DiImage;
 
 /** Implementation of a JPEG plugin for the dcmimgle/dcmimage library
  */
-class DiJPEGPlugin
+class DCMTK_DCMJPEG_EXPORT DiJPEGPlugin
   : public DiPluginFormat
 {
 
@@ -115,6 +115,9 @@ class DiJPEGPlugin
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.h,v $
+ * Revision 1.6  2011-12-14 10:33:20  uli
+ * Make it possible to decently build dcmjpeg as a DLL.
+ *
  * Revision 1.5  2010-10-14 13:17:16  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

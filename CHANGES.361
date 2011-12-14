@@ -9,6 +9,15 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Make it possible to decently build dcmjpeg as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmjpeg/include/dcmtk/dcmjpeg/djdefine.h
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/*
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+
 - Make it possible to nicely build dcmimage as a DLL. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for making this possible.
   Added:   dcmimage/include/dcmtk/dcmimage/dicdefin.h

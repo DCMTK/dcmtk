@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Codec class for encoding JPEG Extended Sequential (lossy, 8/12-bit)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:17 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 10:33:21 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 
 /** Encoder class for JPEG Extended Sequential (lossy, 8/12-bit)
  */
-class DJEncoderExtended : public DJCodecEncoder
+class DCMTK_DCMJPEG_EXPORT DJEncoderExtended : public DJCodecEncoder
 {
 public: 
 
@@ -95,6 +95,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djencext.h,v $
+ * Revision 1.4  2011-12-14 10:33:21  uli
+ * Make it possible to decently build dcmjpeg as a DLL.
+ *
  * Revision 1.3  2010-10-14 13:17:17  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
