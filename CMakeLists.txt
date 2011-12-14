@@ -168,6 +168,8 @@ ENDIF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
 
 IF(WIN32)   # special handling for Windows systems
 
+  SET(STATIC_ON_WINDOWS STATIC)
+
   IF(MINGW)
     # Avoid auto-importing warnings on MinGW
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-auto-import")

@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.12 (schlachter)
+
+- Always build static libraries on windows (for now).
+  Affects: CMakeLists.txt
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmqrdb/libsrc/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
 **** Changes from 2011.12.12 (riesmeier)
 
 - Added missing header file for memcmp(), needed by gcc 4.4.3 on Linux. Thanks

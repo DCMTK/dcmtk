@@ -2,7 +2,7 @@
 INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/libcharls ${ofstd_SOURCE_DIR}/include )
 
 # create library from source files
-ADD_LIBRARY(charls header intrface jpegls)
+ADD_LIBRARY(charls ${STATIC_ON_WINDOWS} header intrface jpegls)
 
 # declare installation files
 INSTALL(TARGETS charls DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)
