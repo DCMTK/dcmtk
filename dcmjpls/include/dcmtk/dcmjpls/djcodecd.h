@@ -18,8 +18,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:44:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-12-14 10:55:34 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dccodec.h"  /* for class DcmCodec */
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmjpls/dldefine.h"
 
 /* forward declaration */
 class DJLSCodecParameter;
@@ -343,6 +344,9 @@ class DCMTK_DCMJPLS_EXPORT DJLSNearLosslessDecoder : public DJLSDecoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.h,v $
+ * Revision 1.8  2011-12-14 10:55:34  uli
+ * Add some changes which were missing in the previous commit.
+ *
  * Revision 1.7  2011-12-14 10:44:08  uli
  * Make it possible to rightly build dcmjpls as a DLL
  *

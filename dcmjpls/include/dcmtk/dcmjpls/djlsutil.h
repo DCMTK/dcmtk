@@ -18,8 +18,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:44:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-12-14 10:55:35 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmjpls/dldefine.h"
 
 
 #define DCMJPLS_CHARLS_VERSION_STRING "CharLS, Revision 55020 (modified)"
@@ -159,6 +160,9 @@ extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSTooMuchCompressedData;
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.10  2011-12-14 10:55:35  uli
+ * Add some changes which were missing in the previous commit.
+ *
  * Revision 1.9  2011-12-14 10:44:09  uli
  * Make it possible to rightly build dcmjpls as a DLL
  *

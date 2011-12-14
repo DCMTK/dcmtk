@@ -9,6 +9,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Add some changes which were missing in the previous commit.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+
 - Make it possible to rightly build dcmjpls as a DLL. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for making this possible.
   Added:   dcmjpls/include/dcmtk/dcmjpls/dldefine.h

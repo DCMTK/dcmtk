@@ -18,8 +18,8 @@
  *  Purpose: representation parameters for JPEG-LS
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:44:09 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-12-14 10:55:35 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcpixel.h" /* for class DcmRepresentationParameter */
+#include "dcmtk/dcmjpls/dldefine.h"
 
 /** representation parameter for JPEG-LS
  */
@@ -105,6 +106,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djrparam.h,v $
+ * Revision 1.7  2011-12-14 10:55:35  uli
+ * Add some changes which were missing in the previous commit.
+ *
  * Revision 1.6  2011-12-14 10:44:09  uli
  * Make it possible to rightly build dcmjpls as a DLL
  *
