@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveFindContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmqrdb/qrdefine.h"
 
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
@@ -38,7 +39,7 @@ class DcmQueryRetrieveOptions;
 /** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_findProvider.
  */
-class DcmQueryRetrieveFindContext
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveFindContext
 {
 public:
     /** constructor
@@ -102,6 +103,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbf.h,v $
+ * Revision 1.5  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.4  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

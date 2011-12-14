@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: enums and structures used for the database index file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ enum DB_KEY_CLASS
 /** this class provides a primitive interface for handling a flat DICOM element,
  *  similar to DcmElement, but only for use within the database module
  */
-struct DB_SmallDcmElmt
+struct DCMTK_DCMQRDB_EXPORT DB_SmallDcmElmt
 {
 public:
     /// default constructor
@@ -158,7 +158,7 @@ private:
 /** this class provides a primitive interface for handling a list of flat DICOM elements,
  *  similar to DcmItem, but only for use within the database module
  */
-struct DB_ElementList
+struct DCMTK_DCMQRDB_EXPORT DB_ElementList
 {
     /// default constructor
     DB_ElementList(): elem(), next(NULL) {}
@@ -176,7 +176,7 @@ private:
     DB_ElementList& operator=(const DB_ElementList& copy);
 };
 
-struct DB_UidList
+struct DCMTK_DCMQRDB_EXPORT DB_UidList
 {
     char *patient ;
     char *study ;
@@ -185,13 +185,13 @@ struct DB_UidList
     struct DB_UidList *next ;
 };
 
-struct DB_CounterList
+struct DCMTK_DCMQRDB_EXPORT DB_CounterList
 {
     int idxCounter ;
     struct DB_CounterList *next ;
 };
 
-struct DB_FindAttr
+struct DCMTK_DCMQRDB_EXPORT DB_FindAttr
 {
     DcmTagKey tag ;
     DB_LEVEL level ;
@@ -203,7 +203,7 @@ struct DB_FindAttr
         : tag(t), level(l), keyAttr(kt), keyClass(kc) { }
 };
 
-struct DB_Private_Handle
+struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 {
     int pidx ;
     DB_ElementList *findRequestList ;
@@ -241,7 +241,7 @@ struct DB_Private_Handle
  *  file maintained by this module. A Study Record is a direct binary copy
  *  of an instance of this struct.
  */
-struct StudyDescRecord
+struct DCMTK_DCMQRDB_EXPORT StudyDescRecord
 {
     /// Study Instance UID of the study described by this record
     char StudyInstanceUID [UI_MAX_LENGTH] ;
@@ -256,7 +256,7 @@ struct StudyDescRecord
     int NumberofRegistratedImages ;
 };
 
-struct ImagesofStudyArray
+struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 {
     int idxCounter ;
     double RecordedDate ;
@@ -323,7 +323,7 @@ struct ImagesofStudyArray
  *  Each instance/image record within the index.dat file is
  *  a direct (binary) copy of this structure.
  */
-struct IdxRecord
+struct DCMTK_DCMQRDB_EXPORT IdxRecord
 {
     /// default constructor
     IdxRecord();
@@ -398,6 +398,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqridx.h,v $
+ * Revision 1.7  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.6  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

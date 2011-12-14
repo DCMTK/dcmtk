@@ -16,6 +16,24 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.14 (schlachter)
 
+- Make it possible to build dcmqrdb as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmqrdb/include/dcmtk/dcmqrdb/qrdefine.h
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbg.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbs.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbs.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrptb.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrsrv.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrtis.h
+           dcmqrdb/libsrc/CMakeLists.txt
+
 - Make it possible to precisely build dcmsign and dcmwlm as DLLs. Thanks to
   Thomas Sondergaard <ts@medical-insight.com> for doing the hard work.
   Added:   dcmsign/include/dcmtk/dcmsign/sidefine.h

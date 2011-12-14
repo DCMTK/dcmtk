@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:24:40 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmqrdb/qrdefine.h"
 
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
@@ -40,7 +41,7 @@ class DcmQueryRetrieveDatabaseStatus;
 /** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_moveProvider.
  */
-class DcmQueryRetrieveMoveContext
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveMoveContext
 {
 public:
     /** constructor
@@ -190,6 +191,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbm.h,v $
+ * Revision 1.10  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.9  2011-02-04 11:24:40  uli
  * Added private undefined functions where gcc's -Weffc++ warns otherwise.
  *

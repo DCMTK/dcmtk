@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-12-06 16:28:17 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ enum DVIFhierarchyStatus
  *  A database handle maintains a connection to a database and encapsulates database support for
  *  store, find and move/get operations.
  */
-class DcmQueryRetrieveIndexDatabaseHandle: public DcmQueryRetrieveDatabaseHandle
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveIndexDatabaseHandle: public DcmQueryRetrieveDatabaseHandle
 {
 private:
   /// private undefined copy constructor
@@ -408,7 +408,7 @@ private:
 /** Index database factory class. Instances of this class are able to create database
  *  handles for a given called application entity title.
  */
-class DcmQueryRetrieveIndexDatabaseHandleFactory: public DcmQueryRetrieveDatabaseHandleFactory
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveIndexDatabaseHandleFactory: public DcmQueryRetrieveDatabaseHandleFactory
 {
 private:
   /// private undefined copy constructor
@@ -451,6 +451,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
+ * Revision 1.12  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.11  2011-12-06 16:28:17  ogazzar
  * Added const declaration to a parameter of findSOPInstance().
  *

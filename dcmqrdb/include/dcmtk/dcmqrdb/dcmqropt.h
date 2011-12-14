@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 13:50:07 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,13 +40,13 @@
 #include "dcmtk/dcmnet/dimse.h"
 
 /// invalid peer for move operation
-extern const OFCondition QR_EC_InvalidPeer;
-extern const OFCondition QR_EC_IndexDatabaseError;
+extern DCMTK_DCMQRDB_EXPORT const OFCondition QR_EC_InvalidPeer;
+extern DCMTK_DCMQRDB_EXPORT const OFCondition QR_EC_IndexDatabaseError;
 
 /** this class encapsulates all the various options that affect the
  *  operation of the SCP, in addition to those defined in the config file
  */
-class DcmQueryRetrieveOptions
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveOptions
 {
 private:
   /// private undefined copy constructor
@@ -175,6 +175,9 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
+ * Revision 1.11  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.10  2011-10-10 13:50:07  uli
  * Slightly improved the error condition names and definition.
  *

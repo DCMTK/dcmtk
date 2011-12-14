@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveProcessTable
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmqrdb/qrdefine.h"
 
 #define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -51,7 +52,7 @@ class DcmQueryRetrieveProcessSlot;
  *  certain key parameters such as the peer hostname, AE titles, read/write access
  *  are stored along with the process ID.
  */
-class DcmQueryRetrieveProcessTable
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveProcessTable
 {
 public:
   /// default constructor
@@ -104,6 +105,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrptb.h,v $
+ * Revision 1.7  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.6  2011-02-04 12:57:41  uli
  * Made sure all members are initialized in the constructor (-Weffc++).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: TI Common Constants, Types, Globals and Functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,14 +54,14 @@ class DcmQueryRetrieveDatabaseHandle;
  * Type definitions
  */
 
-struct TI_ImageEntry
+struct DCMTK_DCMQRDB_EXPORT TI_ImageEntry
 {
     DIC_UI  sopInstanceUID;
     DIC_IS  imageNumber;
     int   intImageNumber;
 } ;
 
-struct TI_SeriesEntry
+struct DCMTK_DCMQRDB_EXPORT TI_SeriesEntry
 {
     DIC_UI  seriesInstanceUID;
     DIC_IS  seriesNumber;
@@ -73,7 +73,7 @@ struct TI_SeriesEntry
     time_t lastQueryTime; /* time we last queried db */
 };
 
-struct TI_StudyEntry
+struct DCMTK_DCMQRDB_EXPORT TI_StudyEntry
 {
     DIC_UI  studyInstanceUID;
     DIC_CS  studyID;
@@ -85,7 +85,7 @@ struct TI_StudyEntry
 };
 
 
-struct TI_DBEntry
+struct DCMTK_DCMQRDB_EXPORT TI_DBEntry
 {
     const char *title;  /* the CTN AE Title associated with this DB */
 
@@ -107,7 +107,7 @@ struct TI_DBEntry
     OFBool isRemoteDB;  /* true if DB is remote */
 };
 
-struct TI_GenericCallbackStruct
+struct DCMTK_DCMQRDB_EXPORT TI_GenericCallbackStruct
 {
     TI_DBEntry *db;
     TI_StudyEntry *study;
@@ -118,7 +118,7 @@ typedef OFBool (*TI_GenericEntryCallbackFunction)(TI_GenericCallbackStruct *cbst
 
 /** this class provides the functionality of the telnet initiator application
  */
-class DcmQueryRetrieveTelnetInitiator
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveTelnetInitiator
 {
 public:
 
@@ -304,6 +304,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrtis.h,v $
+ * Revision 1.9  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.8  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

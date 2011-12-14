@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-09 15:32:03 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-12-14 12:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,8 +35,9 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmqrdb/qrdefine.h"
 
-extern OFLogger DCM_dcmqrdbLogger;
+extern DCMTK_DCMQRDB_EXPORT OFLogger DCM_dcmqrdbLogger;
 
 #define DCMQRDB_TRACE(msg) OFLOG_TRACE(DCM_dcmqrdbLogger, msg)
 #define DCMQRDB_DEBUG(msg) OFLOG_DEBUG(DCM_dcmqrdbLogger, msg)
@@ -47,7 +48,7 @@ extern OFLogger DCM_dcmqrdbLogger;
 
 /** this class describes configuration settings for the quota of a storage area
  */
-struct DcmQueryRetrieveConfigQuota
+struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfigQuota
 {
     /// maximum number of studies
     int  maxStudies;
@@ -57,7 +58,7 @@ struct DcmQueryRetrieveConfigQuota
 
 /** this class describes configuration settings for a remote SCP peer
  */
-struct DcmQueryRetrieveConfigPeer
+struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfigPeer
 {
     /// remote peer AE title
     const char *ApplicationTitle;
@@ -71,7 +72,7 @@ struct DcmQueryRetrieveConfigPeer
 
 /** this class describes configuration settings for a single storage area
  */
-struct DcmQueryRetrieveConfigAEEntry
+struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfigAEEntry
 {
     /// application entity title
     const char *ApplicationTitle;
@@ -94,7 +95,7 @@ struct DcmQueryRetrieveConfigAEEntry
 
 /** this class describes configuration settings for a list of storage areas
  */
-struct DcmQueryRetrieveConfigConfiguration
+struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfigConfiguration
 {
     /// number of storage areas (aetitles)
     int noOfAEEntries;
@@ -105,7 +106,7 @@ struct DcmQueryRetrieveConfigConfiguration
 
 /** this class describes configuration settings for one symbolic host or vendor
  */
-struct DcmQueryRetrieveConfigHostEntry
+struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfigHostEntry
 {
     /// symbolic name of host
     const char *SymbolicName;
@@ -119,7 +120,7 @@ struct DcmQueryRetrieveConfigHostEntry
 
 /** this class describes configuration settings for a list of symbolic hosts or vendors
  */
-struct DcmQueryRetrieveConfigHostTable
+struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfigHostTable
 {
     /// number of entries
     int noOfHostEntries;
@@ -130,7 +131,7 @@ struct DcmQueryRetrieveConfigHostTable
 
 /** this class describes configuration settings for a Query/Retrieve SCP Service
  */
-class DcmQueryRetrieveConfig
+class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfig
 {
 
 public:
@@ -452,6 +453,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
+ * Revision 1.11  2011-12-14 12:58:34  uli
+ * Make it possible to build dcmqrdb as a DLL.
+ *
  * Revision 1.10  2011-11-09 15:32:03  uli
  * Added a destructor to DcmQueryRetrieveConfig.
  *
