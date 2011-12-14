@@ -18,9 +18,9 @@
  * Purpose:
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
- * Last Update:         $Author: onken $
- * Update Date:         $Date: 2011-08-08 12:27:46 $
- * CVS/RCS Revision:    $Revision: 1.10 $
+ * Last Update:         $Author: uli $
+ * Update Date:         $Date: 2011-12-14 11:45:14 $
+ * CVS/RCS Revision:    $Revision: 1.11 $
  * Status:              $State: Exp $
  *
  * CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/dcmnet/dndefine.h"
 
 /// User Identity Negotiation always identifies with 0x58
 #define DUL_TYPENEGOTIATIONOFUSERIDENTITY (unsigned char)0x58
@@ -50,7 +51,7 @@ enum T_ASC_UserIdentityNegotiationMode
 
 /** Abstract base class for User Identity Negotiation user items
  */
-class UserIdentityNegotiationSubItem {
+class DCMTK_DCMNET_EXPORT UserIdentityNegotiationSubItem {
 
 public:
 
@@ -141,7 +142,7 @@ private:
 
 /** Class for User Identity Negotiation request user item
  */
-class UserIdentityNegotiationSubItemRQ : public UserIdentityNegotiationSubItem {
+class DCMTK_DCMNET_EXPORT UserIdentityNegotiationSubItemRQ : public UserIdentityNegotiationSubItem {
 
 public:
 
@@ -281,7 +282,7 @@ private:
 };
 
 
-class UserIdentityNegotiationSubItemAC : public UserIdentityNegotiationSubItem {
+class DCMTK_DCMNET_EXPORT UserIdentityNegotiationSubItemAC : public UserIdentityNegotiationSubItem {
 
 public:
 
@@ -374,6 +375,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.11  2011-12-14 11:45:14  uli
+** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+**
 ** Revision 1.10  2011-08-08 12:27:46  onken
 ** Added further doxygen documentation.
 **
@@ -407,4 +411,3 @@ private:
 ** Reworked and extended User Identity Negotiation code.
 **
 */
-

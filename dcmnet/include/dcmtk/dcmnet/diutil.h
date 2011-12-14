@@ -73,9 +73,9 @@
 **
 ** Module Prefix: DU_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2011-09-28 14:07:26 $
-** CVS/RCS Revision:    $Revision: 1.16 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-12-14 11:45:14 $
+** CVS/RCS Revision:    $Revision: 1.17 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -92,7 +92,7 @@
 #include "dcmtk/oflog/oflog.h"
 
 
-extern OFLogger DCM_dcmnetLogger;
+extern DCMTK_DCMNET_EXPORT OFLogger DCM_dcmnetLogger;
 
 #define DCMNET_LOGGER_NAME "dcmtk.dcmnet"
 
@@ -104,45 +104,48 @@ extern OFLogger DCM_dcmnetLogger;
 #define DCMNET_FATAL(msg) OFLOG_FATAL(DCM_dcmnetLogger, msg)
 
 
-void DU_stripTrailingSpaces(char *s);
-void DU_stripLeadingSpaces(char *s);
-void DU_stripLeadingAndTrailingSpaces(char *s);
+DCMTK_DCMNET_EXPORT void DU_stripTrailingSpaces(char *s);
+DCMTK_DCMNET_EXPORT void DU_stripLeadingSpaces(char *s);
+DCMTK_DCMNET_EXPORT void DU_stripLeadingAndTrailingSpaces(char *s);
 
-OFBool DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
-OFBool DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
-OFBool DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
-OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
+DCMTK_DCMNET_EXPORT OFBool DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
+DCMTK_DCMNET_EXPORT OFBool DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
+DCMTK_DCMNET_EXPORT OFBool DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
+DCMTK_DCMNET_EXPORT OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
 
-OFBool DU_findSOPClassAndInstanceInDataSet(
+DCMTK_DCMNET_EXPORT OFBool DU_findSOPClassAndInstanceInDataSet(
   DcmItem *obj,
   char* sopClass,
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
-OFBool DU_findSOPClassAndInstanceInFile(
+DCMTK_DCMNET_EXPORT OFBool DU_findSOPClassAndInstanceInFile(
   const char *fname,
   char* sopClass,
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
-const char *DU_cechoStatusString(Uint16 statusCode);
-const char *DU_cstoreStatusString(Uint16 statusCode);
-const char *DU_cfindStatusString(Uint16 statusCode);
-const char *DU_cmoveStatusString(Uint16 statusCode);
-const char *DU_cgetStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_cechoStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_cstoreStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_cfindStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_cmoveStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_cgetStatusString(Uint16 statusCode);
 
-const char *DU_ncreateStatusString(Uint16 statusCode);
-const char *DU_ngetStatusString(Uint16 statusCode);
-const char *DU_nsetStatusString(Uint16 statusCode);
-const char *DU_nactionStatusString(Uint16 statusCode);
-const char *DU_ndeleteStatusString(Uint16 statusCode);
-const char *DU_neventReportStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_ncreateStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_ngetStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_nsetStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_nactionStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_ndeleteStatusString(Uint16 statusCode);
+DCMTK_DCMNET_EXPORT const char *DU_neventReportStatusString(Uint16 statusCode);
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.17  2011-12-14 11:45:14  uli
+** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+**
 ** Revision 1.16  2011-09-28 14:07:26  joergr
 ** Added function that converts the status of a C-ECHO response to a string.
 **

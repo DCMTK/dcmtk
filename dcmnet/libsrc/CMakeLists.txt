@@ -1,5 +1,10 @@
 # create library from source files
-ADD_LIBRARY(dcmnet ${STATIC_ON_WINDOWS} assoc cond dcasccff dcasccfg dccfenmp dccfpcmp dccfprmp dccfrsmp dccftsmp dccfuidh dcmlayer dcmtrans dcompat dimcancl dimcmd dimdump dimecho dimfind dimget dimmove dimse dimstore diutil dul dulconst dulextra dulfsm dulparse dulpres extneg lst dfindscu dstorscu dcuserid scu scp)
+ADD_LIBRARY(dcmnet assoc cond dcasccff dcasccfg dccfenmp dccfpcmp dccfprmp dccfrsmp dccftsmp dccfuidh dcmlayer dcmtrans dcompat dimcancl dimcmd dimdump dimecho dimfind dimget dimmove dimse dimstore diutil dul dulconst dulextra dulfsm dulparse dulpres extneg lst dfindscu dstorscu dcuserid scu scp)
+
+TARGET_LINK_LIBRARIES(dcmnet ofstd oflog dcmdata ${WIN32_STD_LIBRARIES})
 
 # declare installation files
-INSTALL(TARGETS dcmnet DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)
+INSTALL(TARGETS dcmnet
+        RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})

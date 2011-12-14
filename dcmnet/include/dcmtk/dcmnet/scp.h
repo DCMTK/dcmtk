@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-10 17:00:48 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 
 /** Structure representing single process in multi-process mode
  */
-struct DcmProcessSlotType
+struct DCMTK_DCMNET_EXPORT DcmProcessSlotType
 {
   /// Name of peer
   DIC_NODENAME peerName;
@@ -98,7 +98,7 @@ enum DcmRefuseReasonType
  *  not included from DUL_PRESENTATIONCONTEXT, which served as the blueprint for this
  *  structure.
  */
-struct DcmPresentationContextInfo
+struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
 {
   DcmPresentationContextInfo()
     : presentationContextID(0)
@@ -131,7 +131,7 @@ struct DcmPresentationContextInfo
  *  (Verification SOP Class).
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
-class DcmSCP
+class DCMTK_DCMNET_EXPORT DcmSCP
 {
 
 public:
@@ -847,6 +847,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.19  2011-12-14 11:45:15  uli
+ *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  *  Revision 1.18  2011-11-10 17:00:48  joergr
  *  Fixed a couple of typos in comments and made some parameters "const".
  *

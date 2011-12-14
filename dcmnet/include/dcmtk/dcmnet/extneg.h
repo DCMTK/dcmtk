@@ -7,9 +7,9 @@
 ** Purpose:
 **   Extended Negotiation for A-ASSOCIATE
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-10-14 13:17:22 $
-** CVS/RCS Revision:    $Revision: 1.4 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-12-14 11:45:15 $
+** CVS/RCS Revision:    $Revision: 1.5 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -23,11 +23,12 @@
 
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/dcmnet/dndefine.h"
 
 #define DUL_TYPESOPCLASSEXTENDEDNEGOTIATION (unsigned char)0x56
 
 
-struct SOPClassExtendedNegotiationSubItem {
+struct DCMTK_DCMNET_EXPORT SOPClassExtendedNegotiationSubItem {
     unsigned char itemType;
     unsigned char reserved1;
     unsigned short itemLength;
@@ -55,15 +56,18 @@ private:
 
 typedef OFList<SOPClassExtendedNegotiationSubItem*> SOPClassExtendedNegotiationSubItemList;
 
-void appendList(const SOPClassExtendedNegotiationSubItemList& from, SOPClassExtendedNegotiationSubItemList& to);
+DCMTK_DCMNET_EXPORT void appendList(const SOPClassExtendedNegotiationSubItemList& from, SOPClassExtendedNegotiationSubItemList& to);
 
-void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst);
+DCMTK_DCMNET_EXPORT void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst);
 
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: extneg.h,v $
+** Revision 1.5  2011-12-14 11:45:15  uli
+** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+**
 ** Revision 1.4  2010-10-14 13:17:22  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

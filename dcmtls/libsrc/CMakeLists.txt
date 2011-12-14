@@ -1,5 +1,10 @@
 # create library from source files
-ADD_LIBRARY(dcmtls ${STATIC_ON_WINDOWS} tlslayer tlstrans tlsscu)
+ADD_LIBRARY(dcmtls tlslayer tlstrans tlsscu)
+
+TARGET_LINK_LIBRARIES(dcmtls ofstd dcmdata)
 
 # declare installation files
-INSTALL(TARGETS dcmtls DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)
+INSTALL(TARGETS dcmtls
+        RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:27 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmtls/tlslayer.h"
+#include "dcmtk/dcmtls/tlsdefin.h"
 
 
 /** Base class for implementing DICOM TLS-enabled Service Class User functionality. This
@@ -42,7 +43,7 @@
  *  capabilities.
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
-class DcmTLSSCU : public DcmSCU
+class DCMTK_DCMTLS_EXPORT DcmTLSSCU : public DcmSCU
 {
 
 public:
@@ -246,6 +247,9 @@ private:
 /*
 ** CVS Log
 ** $Log: tlsscu.h,v $
+** Revision 1.5  2011-12-14 11:45:15  uli
+** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+**
 ** Revision 1.4  2010-10-14 13:17:27  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

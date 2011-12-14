@@ -17,9 +17,9 @@
  *
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-28 14:16:40 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@
  *        datasets is not supported.  Nevertheless, depending on the options used, the default
  *        transfer syntax for the uncompressed case is always proposed (if possible).
  */
-class DcmStorageSCU
+class DCMTK_DCMNET_EXPORT DcmStorageSCU
   : public DcmSCU
 {
 
@@ -346,7 +346,7 @@ class DcmStorageSCU
 
     /** internal class/struct for a single transfer entry
      */
-    struct TransferEntry
+    struct DCMTK_DCMNET_EXPORT TransferEntry
     {
         /** constructor. Initializes member variables with reasonable values.
          *  @param  filename           filename of the SOP instance to be transferred
@@ -541,6 +541,9 @@ class DcmStorageSCU
 /*
  * CVS Log
  * $Log: dstorscu.h,v $
+ * Revision 1.5  2011-12-14 11:45:15  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.4  2011-11-28 14:16:40  joergr
  * Added new option/mode that allows for sending all DICOM files referenced
  * from a DICOMDIR without accessing the files for association negotiation.

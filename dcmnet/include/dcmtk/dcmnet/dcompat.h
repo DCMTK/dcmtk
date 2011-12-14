@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -74,9 +74,9 @@
 **
 ** Module Prefix: none
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:10 $
-** CVS/RCS Revision:    $Revision: 1.26 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-12-14 11:45:14 $
+** CVS/RCS Revision:    $Revision: 1.27 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -88,6 +88,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofbmanip.h"    /* for bzero workaround */
+#include "dcmtk/dcmnet/dndefine.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CTIME
@@ -181,7 +182,7 @@ END_EXTERN_C
 #ifndef HAVE_PROTOTYPE_FLOCK
 #ifdef HAVE_FLOCK
 BEGIN_EXTERN_C
-int flock(int fd, int operation);
+DCMTK_DCMNET_EXPORT int flock(int fd, int operation);
 END_EXTERN_C
 #define dcmtk_flock flock
 #define dcmtk_plockerr perror
@@ -196,8 +197,8 @@ END_EXTERN_C
 #define   LOCK_NB   4    /* don't block when locking */
 #define   LOCK_UN   8    /* unlock */
 
-int dcmtk_flock(int fd, int operation);
-void dcmtk_plockerr(const char *s);
+DCMTK_DCMNET_EXPORT int dcmtk_flock(int fd, int operation);
+DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s);
 
 #endif /* !HAVE_FLOCK */
 #endif
@@ -212,11 +213,11 @@ void dcmtk_plockerr(const char *s);
 #ifdef HAVE_GETHOSTNAME
 /* gethostname is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int gethostname(char* name, int namelen);
+DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
 END_EXTERN_C
 #else
 /* define gethostname ourselves */
-int gethostname(char* name, int namelen);
+DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
 #endif
 #endif
 
@@ -235,7 +236,7 @@ END_EXTERN_C
 #ifdef HAVE_GETSOCKOPT
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int getsockopt(int s, int level, int optname, char *optval, int *optlen);
+DCMTK_DCMNET_EXPORT int getsockopt(int s, int level, int optname, char *optval, int *optlen);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -246,7 +247,7 @@ END_EXTERN_C
 #ifdef HAVE_SETSOCKOPT
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int setsockopt(int s, int level, int optname, const char *optval, int optlen);
+DCMTK_DCMNET_EXPORT int setsockopt(int s, int level, int optname, const char *optval, int optlen);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -257,7 +258,7 @@ END_EXTERN_C
 #ifdef HAVE_LISTEN
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int listen(int s, int backlog);
+DCMTK_DCMNET_EXPORT int listen(int s, int backlog);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -268,7 +269,7 @@ END_EXTERN_C
 #ifdef HAVE_SOCKET
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int socket(int domain, int type, int protocol);
+DCMTK_DCMNET_EXPORT int socket(int domain, int type, int protocol);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -279,7 +280,7 @@ END_EXTERN_C
 #ifdef HAVE_CONNECT
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int connect(int s, struct sockaddr *name, int namelen);
+DCMTK_DCMNET_EXPORT int connect(int s, struct sockaddr *name, int namelen);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -290,7 +291,7 @@ END_EXTERN_C
 #ifdef HAVE_SELECT
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int select(int nfds, fd_set *readfds, fd_set *writefds,
+DCMTK_DCMNET_EXPORT int select(int nfds, fd_set *readfds, fd_set *writefds,
 	   fd_set *exceptfds, struct timeval *timeout);
 END_EXTERN_C
 #else
@@ -302,7 +303,7 @@ END_EXTERN_C
 #ifdef HAVE_BIND
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int bind(int s, const struct sockaddr *name, int namelen);
+DCMTK_DCMNET_EXPORT int bind(int s, const struct sockaddr *name, int namelen);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -313,7 +314,7 @@ END_EXTERN_C
 #ifdef HAVE_ACCEPT
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int accept(int s, struct sockaddr *addr, int *addrlen);
+DCMTK_DCMNET_EXPORT int accept(int s, struct sockaddr *addr, int *addrlen);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -324,7 +325,7 @@ END_EXTERN_C
 #ifdef HAVE_GETSOCKNAME
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int getsockname(int s, struct sockaddr *name, int *namelen);
+DCMTK_DCMNET_EXPORT int getsockname(int s, struct sockaddr *name, int *namelen);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -335,7 +336,7 @@ END_EXTERN_C
 #ifdef HAVE_WAITPID
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int waitpid(pid_t pid, int *statusp, int options);
+DCMTK_DCMNET_EXPORT int waitpid(pid_t pid, int *statusp, int options);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -346,7 +347,7 @@ END_EXTERN_C
 #ifdef HAVE_WAIT3
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
-int wait3(int *statusp, int options, struct rusage *rusage);
+DCMTK_DCMNET_EXPORT int wait3(int *statusp, int options, struct rusage *rusage);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
@@ -362,7 +363,7 @@ END_EXTERN_C
 #define F_OK 0x08
 #endif
 
-int access(const char* path, int amode);
+DCMTK_DCMNET_EXPORT int access(const char* path, int amode);
 #else /* HAVE_ACCESS */
 
 #ifdef _WIN32
@@ -378,11 +379,11 @@ int access(const char* path, int amode);
 #endif /* HAVE_ACCESS */
 
 #ifndef HAVE_STRERROR
-char *strerror(int e);
+DCMTK_DCMNET_EXPORT char *strerror(int e);
 #endif
 
 #ifndef HAVE_TEMPNAM
-char *tempnam(char *dir, char *pfx);
+DCMTK_DCMNET_EXPORT char *tempnam(char *dir, char *pfx);
 #endif
 
 #ifdef _WIN32
@@ -397,6 +398,9 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
+** Revision 1.27  2011-12-14 11:45:14  uli
+** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+**
 ** Revision 1.26  2010-12-01 08:26:10  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

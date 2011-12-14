@@ -15,6 +15,17 @@ Changes between releases are documented here.
   Affects: dcmsr/libsrc/dsrdoctn.cc
 
 **** Changes from 2011.12.14 (schlachter)
+- Make it possible to perfectly build dcmnet and dcmtls a DLLs. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmnet/include/dcmtk/dcmnet/dndefine.h
+           dcmtls/include/dcmtk/dcmtls/tlsdefin.h
+  Affects: dcmnet/include/dcmtk/dcmnet/*
+           dcmnet/libsrc/CMakeLists.txt
+           dcmtls/include/dcmtk/dcmtls/tlslayer.h
+           dcmtls/include/dcmtk/dcmtls/tlsscu.h
+           dcmtls/include/dcmtk/dcmtls/tlstrans.h
+           dcmtls/libsrc/CMakeLists.txt
+           dcmtls/libsrc/tlslayer.cc
 
 - Add some changes which were missing in the previous commit.
   Affects: dcmjpls/include/dcmtk/dcmjpls/djcodecd.h

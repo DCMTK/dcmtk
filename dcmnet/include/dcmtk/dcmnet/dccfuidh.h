@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: 
  *    class DcmUIDHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstring.h" /* for class OFString */
+#include "dcmtk/dcmnet/dndefine.h"
 
 /** helper class that manages a single DICOM UID.
  *  Unlike class DcmUniqueIdentifier, this class does not manage an 
@@ -45,7 +46,7 @@
  *  order and the opposite byte order of the system the application is 
  *  running on.
  */
-class DcmUIDHandler
+class DCMTK_DCMNET_EXPORT DcmUIDHandler
 {
 public:
   /// default constructor
@@ -123,6 +124,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dccfuidh.h,v $
+ * Revision 1.4  2011-12-14 11:45:14  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.3  2010-10-14 13:17:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:27 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dcmtrans.h"    /* for DcmTransportConnection */
 #include "dcmtk/ofstd/ofstream.h"    /* for ostream */
+#include "dcmtk/dcmtls/tlsdefin.h"
 
 #ifdef WITH_OPENSSL
 
@@ -44,7 +45,7 @@ END_EXTERN_C
 /** this class represents a TLS (Transport Layer Security) V1 based secure
  *  transport connection.
  */
-class DcmTLSConnection: public DcmTransportConnection
+class DCMTK_DCMTLS_EXPORT DcmTLSConnection: public DcmTransportConnection
 {
 public:
 
@@ -164,6 +165,9 @@ private:
 
 /*
  *  $Log: tlstrans.h,v $
+ *  Revision 1.10  2011-12-14 11:45:15  uli
+ *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  *  Revision 1.9  2010-10-14 13:17:27  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -195,4 +199,3 @@ private:
  *
  *
  */
-

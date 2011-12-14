@@ -18,8 +18,8 @@
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-03 09:16:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +32,12 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/dcmnet/dndefine.h"
 
 
 /** general purpose list class for use with dcmnet module.
  */
-class LST_HEAD
+class DCMTK_DCMNET_EXPORT LST_HEAD
 {
 public:
   /// default constructor
@@ -103,56 +104,59 @@ typedef void LST_NODE;
 
 /** creates a new list head and returns your handle to it.
  */
-LST_HEAD *LST_Create();
+DCMTK_DCMNET_EXPORT LST_HEAD *LST_Create();
 
 /** destroys list. The list must be empty.
  *  The list handle is set to NULL as a side-effect.
  */
-void LST_Destroy(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT void LST_Destroy(LST_HEAD **lst);
 
 /** Adds a new node to the tail of the list and returns status.
  */
-void LST_Enqueue(LST_HEAD **lst, void *node);
+DCMTK_DCMNET_EXPORT void LST_Enqueue(LST_HEAD **lst, void *node);
 
 /** Removes a node from the head of the list and returns
  *  a pointer to it.
  */
-void *LST_Dequeue(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT void *LST_Dequeue(LST_HEAD **lst);
 
 /** alias for LST_Dequeue()
  */
-void *LST_Pop(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT void *LST_Pop(LST_HEAD **lst);
 
 /** Returns the number of nodes in the list.
  */
-unsigned long LST_Count(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT unsigned long LST_Count(LST_HEAD **lst);
 
 /** Returns a pointer to the node at the head of the list.
  *  It does NOT remove the node from the list.
  */
-void *LST_Head(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT void *LST_Head(LST_HEAD **lst);
 
 /** Returns a pointer to the current node.
  */
-void *LST_Current(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT void *LST_Current(LST_HEAD **lst);
 
 /** Returns a pointer to the next node in the list and
  *  makes it current.
  */
-void *LST_Next(LST_HEAD **lst);
+DCMTK_DCMNET_EXPORT void *LST_Next(LST_HEAD **lst);
 
 /** Make a node current and return the argument.
  *  Note:  node = lst_position(list, lst_head(list));
  *         makes the node at the head of the list current
  *         and returns a pointer to it.
  */
-void *LST_Position(LST_HEAD **lst, void *node);
+DCMTK_DCMNET_EXPORT void *LST_Position(LST_HEAD **lst, void *node);
 
 #endif
 
 /*
  * CVS Log
  * $Log: lst.h,v $
+ * Revision 1.8  2011-12-14 11:45:15  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.7  2011-05-03 09:16:55  uli
  * Remove a pointless return value from some function. This helps in static code
  * analysis to ensure memory is never lost.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *    class DcmPresentationContextMap
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:07:46 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2011-12-14 11:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 /** this helper class is a presentation context list entry.
  *  Not intended for use by the end user.
  */
-class DcmPresentationContextItem
+class DCMTK_DCMNET_EXPORT DcmPresentationContextItem
 {
 public:
   /** constructor
@@ -117,7 +117,7 @@ typedef OFList<DcmPresentationContextItem> DcmPresentationContextList;
 /** this helper class maintains a map of presentation context lists.
  *  Not intended for use by the end user.
  */
-class DcmPresentationContextMap
+class DCMTK_DCMNET_EXPORT DcmPresentationContextMap
 {
 public:
   /// constructor
@@ -176,6 +176,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dccfpcmp.h,v $
+ * Revision 1.6  2011-12-14 11:45:14  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.5  2011-02-04 12:07:46  uli
  * Made sure we only save assignable classes in STL containers.
  *

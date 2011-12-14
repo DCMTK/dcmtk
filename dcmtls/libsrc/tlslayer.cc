@@ -19,8 +19,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,6 +28,8 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/dcmtls/tlsdefin.h"
 
 #ifdef WITH_OPENSSL
 
@@ -469,7 +471,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
 /* make sure that the object file is not completely empty if compiled
  * without OpenSSL because some linkers might fail otherwise.
  */
-void tlslayer_dummy_function()
+DCMTK_DCMTLS_EXPORT void tlslayer_dummy_function()
 {
   return;
 }
@@ -478,6 +480,9 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.21  2011-12-14 11:45:15  uli
+ *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  *  Revision 1.20  2011-04-18 07:01:05  uli
  *  Use global variables for the logger objects. This removes the thread-unsafe
  *  static local variables which were used before.

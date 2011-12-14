@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 14:01:29 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ enum DcmStorageMode
 
 /** Base class for C-FIND, C-MOVE and C-GET responses
  */
-class QRResponse
+class DCMTK_DCMNET_EXPORT QRResponse
 {
   public:
 
@@ -128,7 +128,7 @@ private:
 
 
 /// Base class representing for single C-GET or C-MOVE response
-class RetrieveResponse : public QRResponse
+class DCMTK_DCMNET_EXPORT RetrieveResponse : public QRResponse
 {
 public:
   /** Standard constructor
@@ -187,7 +187,7 @@ private:
  *  implement that capability on their own.
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
-class DcmSCU
+class DCMTK_DCMNET_EXPORT DcmSCU
 {
 
 public:
@@ -902,7 +902,7 @@ private:
 
   /// Defines presentation context, consisting of one abstract syntax name
   /// and a list of transfer syntaxes for this abstract syntax
-  struct DcmSCUPresContext {
+  struct DCMTK_DCMNET_EXPORT DcmSCUPresContext {
     /** Default constructor
      */
     DcmSCUPresContext()
@@ -982,6 +982,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.40  2011-12-14 11:45:15  uli
+** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+**
 ** Revision 1.39  2011-10-10 14:01:29  uli
 ** Moved SCU-specific error condition to the correct place.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: 
  *    class DcmAssociationConfigurationFile
  * 
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:21 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
+#include "dcmtk/dcmnet/dndefine.h"
 
 class DcmAssociationConfiguration;
 class OFConfigFile;
@@ -39,7 +40,7 @@ class OFConfigFile;
 /** helper class that encapsulated methods for filling 
  *  a DcmAssociationConfiguration object from a config file
  */
-class DcmAssociationConfigurationFile
+class DCMTK_DCMNET_EXPORT DcmAssociationConfigurationFile
 {
 public:
 
@@ -107,6 +108,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcasccff.h,v $
+ * Revision 1.4  2011-12-14 11:45:14  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.3  2010-10-14 13:17:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

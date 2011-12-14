@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 09:35:45 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ struct T_DIMSE_C_FindRSP;
  *  may provide their own callbacks, which must be derived from this base
  *  class.
  */
-class DcmFindSCUCallback
+class DCMTK_DCMNET_EXPORT DcmFindSCUCallback
 {
 public:
 
@@ -113,7 +113,7 @@ private:
 /** Default implementation of FindSCU callback class. This implementation is
  *  used when no explicit callback is passed by the user, e.g. in the findscu tool.
  */
-class DcmFindSCUDefaultCallback: public DcmFindSCUCallback
+class DCMTK_DCMNET_EXPORT DcmFindSCUDefaultCallback: public DcmFindSCUCallback
 {
 public:
   /** constructor
@@ -161,7 +161,7 @@ private:
  *  incoming C-FIND-RSP messages will be displayed on console and, optionally, also stored in files.
  *  By providing a user-defined callback, other types of processing are possible.
  */
-class DcmFindSCU
+class DCMTK_DCMNET_EXPORT DcmFindSCU
 {
 public:
 
@@ -336,6 +336,9 @@ private:
 /*
  * CVS Log
  * $Log: dfindscu.h,v $
+ * Revision 1.8  2011-12-14 11:45:14  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.7  2011-08-19 09:35:45  joergr
  * Added support for specifying the directory where the response messages are
  * stored. Also output the name of the created file to the logger.

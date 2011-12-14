@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
  *  which can be a transparent TCP/IP socket communication or a
  *  secure transport protocol such as TLS.
  */
-class DcmTransportConnection
+class DCMTK_DCMNET_EXPORT DcmTransportConnection
 {
 public:
 
@@ -227,7 +227,7 @@ private:
 
 /** this class represents a TCP/IP based transport connection.
  */
-class DcmTCPConnection: public DcmTransportConnection
+class DCMTK_DCMNET_EXPORT DcmTCPConnection: public DcmTransportConnection
 {
 public:
 
@@ -339,6 +339,9 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
+ *  Revision 1.12  2011-12-14 11:45:14  uli
+ *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  *  Revision 1.11  2010-10-14 13:17:22  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

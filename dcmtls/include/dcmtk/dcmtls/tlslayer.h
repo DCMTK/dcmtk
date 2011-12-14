@@ -19,8 +19,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-12-14 11:45:15 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,13 +34,14 @@
 #include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayer */
 #include "dcmtk/ofstd/ofstream.h"    /* for ostream */
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmtls/tlsdefin.h"
 
 #ifdef WITH_OPENSSL
 BEGIN_EXTERN_C
 #include <openssl/ssl.h>
 END_EXTERN_C
 
-extern OFLogger DCM_dcmtlsLogger;
+extern DCMTK_DCMTLS_EXPORT OFLogger DCM_dcmtlsLogger;
 
 #define DCMTLS_TRACE(msg) OFLOG_TRACE(DCM_dcmtlsLogger, msg)
 #define DCMTLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmtlsLogger, msg)
@@ -76,7 +77,7 @@ enum DcmCertificateVerification
  *  ciphersuite to be used for association negotiation.
  */
 
-class DcmTLSTransportLayer: public DcmTransportLayer
+class DCMTK_DCMTLS_EXPORT DcmTLSTransportLayer: public DcmTransportLayer
 {
 public:
 
@@ -256,6 +257,9 @@ private:
 
 /*
  *  $Log: tlslayer.h,v $
+ *  Revision 1.11  2011-12-14 11:45:15  uli
+ *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  *  Revision 1.10  2011-04-18 07:01:05  uli
  *  Use global variables for the logger objects. This removes the thread-unsafe
  *  static local variables which were used before.
@@ -291,4 +295,3 @@ private:
  *
  *
  */
-

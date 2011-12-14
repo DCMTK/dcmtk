@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: 
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-12-14 11:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 /** this class maintains a list of association negotiation profiles
  *  that can be addressed by symbolic keys.
  */
-class DcmAssociationConfiguration
+class DCMTK_DCMNET_EXPORT DcmAssociationConfiguration
 {
 public:
   /// default constructor
@@ -189,6 +189,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcasccfg.h,v $
+ * Revision 1.5  2011-12-14 11:45:14  uli
+ * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
+ *
  * Revision 1.4  2010-10-14 13:17:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
