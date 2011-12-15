@@ -501,7 +501,7 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="relationship" type="dsr:RelationshipType"/>
-            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
             <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="data" type="dsr:FloatPairList"/>
@@ -519,7 +519,7 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="relationship" type="dsr:RelationshipType"/>
-            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
             <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="data">
@@ -545,7 +545,7 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="relationship" type="dsr:RelationshipType"/>
-            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
             <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="data">

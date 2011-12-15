@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.15 (riesmeier)
 
+- Fixed issue in XML Schema: The concept name is optional/conditional for
+  SCOORD, SCOORD3D and TCOORD content items.
+  Affects: dcmsr/data/dsr2xml.xsd
+
 - Added support for optional series-related attributes (Series Date and Series
   Time). Also improved handling of other study/series-related attributes.
   Affects: dcmsr/data/dsr2xml.xsd
