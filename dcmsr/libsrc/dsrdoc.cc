@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 16:04:43 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2011-12-15 16:24:13 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,8 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
+    SeriesDate(DCM_SeriesDate),
+    SeriesTime(DCM_SeriesTime),
     SeriesDescription(DCM_SeriesDescription),
     ReferencedPerformedProcedureStep(DCM_ReferencedPerformedProcedureStepSequence),
     InstanceNumber(DCM_InstanceNumber),
@@ -153,6 +155,8 @@ void DSRDocument::clear()
     Modality.clear();
     SeriesInstanceUID.clear();
     SeriesNumber.clear();
+    SeriesDate.clear();
+    SeriesTime.clear();
     SeriesDescription.clear();
     ReferencedPerformedProcedureStep.clear();
     InstanceNumber.clear();
@@ -237,13 +241,22 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 stream << getPrintStringFromElement(ReferringPhysicianName, tmpString);
                 DCMSR_PRINT_HEADER_FIELD_END
              }
-            /* study related information  */
+            /* study-related information */
             if (!StudyDescription.isEmpty())
             {
                 DCMSR_PRINT_HEADER_FIELD_START("Study              ", " : ")
                 stream << getPrintStringFromElement(StudyDescription, tmpString);
                 if (!StudyID.isEmpty())
                     stream << " (#" << getPrintStringFromElement(StudyID, tmpString) << ")";
+                DCMSR_PRINT_HEADER_FIELD_END
+            }
+            /* series-related information */
+            if (!SeriesDescription.isEmpty())
+            {
+                DCMSR_PRINT_HEADER_FIELD_START("Series             ", " : ")
+                stream << getPrintStringFromElement(SeriesDescription, tmpString);
+                if (!SeriesNumber.isEmpty())
+                    stream << " (#" << getPrintStringFromElement(SeriesNumber, tmpString) << ")";
                 DCMSR_PRINT_HEADER_FIELD_END
             }
             /* manufacturer and device */
@@ -467,6 +480,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         {
             getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "KeyObjectDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "KeyObjectDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesDate, "1", "3", "KeyObjectDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesTime, "1", "3", "KeyObjectDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "KeyObjectDocumentSeriesModule");
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
@@ -474,6 +489,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         } else {
             getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "SRDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "SRDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesDate, "1", "3", "SRDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesTime, "1", "3", "SRDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "SRDocumentSeriesModule");
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
@@ -606,6 +623,8 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "1", "KeyObjectDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmDate(SeriesDate), "1", "3", "KeyObjectDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmTime(SeriesTime), "1", "3", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "KeyObjectDocumentSeriesModule");
             /* always write empty sequence since not yet fully supported */
             ReferencedPerformedProcedureStep.clear();
@@ -614,6 +633,8 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "SRDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "SRDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "1", "SRDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmDate(SeriesDate), "1", "3", "SRDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmTime(SeriesTime), "1", "3", "SRDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "SRDocumentSeriesModule");
             /* always write empty sequence since not yet fully supported */
             ReferencedPerformedProcedureStep.clear();
@@ -897,6 +918,7 @@ OFCondition DSRDocument::readXMLSeriesData(const DSRXMLDocument &doc,
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
+        OFString tmpString;
         /* get Series Instance UID from XML attribute */
         result = doc.getElementFromAttribute(cursor, SeriesInstanceUID, "uid");
         /* goto first sub-element */
@@ -905,7 +927,17 @@ OFCondition DSRDocument::readXMLSeriesData(const DSRXMLDocument &doc,
         while (cursor.valid())
         {
             /* check for known element tags */
-            if (doc.getElementFromNodeContent(cursor, SeriesNumber, "number").bad() &&
+            if (doc.matchNode(cursor, "date"))
+            {
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, cursor, tmpString);
+                SeriesDate.putOFStringArray(tmpString);
+            }
+            else if (doc.matchNode(cursor, "time"))
+            {
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, cursor, tmpString);
+                SeriesTime.putOFStringArray(tmpString);
+            }
+            else if (doc.getElementFromNodeContent(cursor, SeriesNumber, "number").bad() &&
                 doc.getElementFromNodeContent(cursor, SeriesDescription, "description", OFTrue /*encoding*/).bad())
             {
                 doc.printUnexpectedNodeWarning(cursor);
@@ -1201,6 +1233,10 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
 
         stream << "<series uid=\"" << getMarkupStringFromElement(SeriesInstanceUID, tmpString) << "\">" << OFendl;
         writeStringFromElementToXML(stream, SeriesNumber, "number", (flags & XF_writeEmptyTags) > 0);
+        SeriesDate.getISOFormattedDate(tmpString);
+        writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
+        SeriesTime.getISOFormattedTime(tmpString);
+        writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, SeriesDescription, "description", (flags & XF_writeEmptyTags) > 0);
         stream << "</series>" << OFendl;
 
@@ -1588,7 +1624,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
-            /* study related information */
+            /* study-related information */
             if (!StudyDescription.isEmpty())
             {
                 stream << "<tr>" << OFendl;
@@ -1596,6 +1632,17 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "<td>" << convertToHTMLString(getStringValueFromElement(StudyDescription, tmpString), htmlString, newFlags);
                 if (!StudyID.isEmpty())
                     stream << " (#" << convertToHTMLString(getStringValueFromElement(StudyID, tmpString), htmlString, newFlags) << ")";
+                stream << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
+            }
+            /* series-related information */
+            if (!SeriesDescription.isEmpty())
+            {
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Series:</b></td>" << OFendl;
+                stream << "<td>" << convertToHTMLString(getStringValueFromElement(SeriesDescription, tmpString), htmlString, newFlags);
+                if (!SeriesNumber.isEmpty())
+                    stream << " (#" << convertToHTMLString(getStringValueFromElement(SeriesNumber, tmpString), htmlString, newFlags) << ")";
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -2068,6 +2115,20 @@ OFCondition DSRDocument::getStudyTime(OFString &value,
 }
 
 
+OFCondition DSRDocument::getSeriesDate(OFString &value,
+                                       const signed long pos) const
+{
+    return getStringValueFromElement(SeriesDate, value, pos);
+}
+
+
+OFCondition DSRDocument::getSeriesTime(OFString &value,
+                                       const signed long pos) const
+{
+    return getStringValueFromElement(SeriesTime, value, pos);
+}
+
+
 OFCondition DSRDocument::getInstanceCreationDate(OFString &value,
                                                  const signed long pos) const
 {
@@ -2283,6 +2344,46 @@ OFCondition DSRDocument::setContentTime(const OFString &value,
 }
 
 
+OFCondition DSRDocument::setStudyDate(const OFString &value,
+                                      const OFBool check)
+{
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = StudyDate.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setStudyTime(const OFString &value,
+                                      const OFBool check)
+{
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = StudyTime.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setSeriesDate(const OFString &value,
+                                       const OFBool check)
+{
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesDate.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setSeriesTime(const OFString &value,
+                                       const OFBool check)
+{
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesTime.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DSRDocument::setStudyID(const OFString &value,
                                     const OFBool check)
 {
@@ -2337,7 +2438,14 @@ OFCondition DSRDocument::setAccessionNumber(const OFString &value,
 
 void DSRDocument::createNewStudy()
 {
+    /* clear all study-related attributes */
     StudyInstanceUID.clear();
+    StudyDate.clear();
+    StudyTime.clear();
+    ReferringPhysicianName.clear();
+    StudyID.clear();
+    AccessionNumber.clear();
+    StudyDescription.clear();
     /* also creates new study (since UID is empty) and SOP instance */
     createNewSeries();
 }
@@ -2345,7 +2453,12 @@ void DSRDocument::createNewStudy()
 
 void DSRDocument::createNewSeries()
 {
+    /* clear all series-related attributes */
     SeriesInstanceUID.clear();
+    SeriesNumber.clear();
+    SeriesDate.clear();
+    SeriesTime.clear();
+    SeriesDescription.clear();
     /* also creates new series (since UID is empty) */
     createNewSOPInstance();
 }
@@ -2636,6 +2749,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.83  2011-12-15 16:24:13  joergr
+ *  Added support for optional series-related attributes (Series Date and Series
+ *  Time). Also improved handling of other study/series-related attributes.
+ *
  *  Revision 1.82  2011-12-09 16:04:43  joergr
  *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
  *  class DSRSOPInstanceReferenceList.

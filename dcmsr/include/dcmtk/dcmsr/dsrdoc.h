@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 15:00:08 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2011-12-15 16:24:11 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -518,6 +518,22 @@ class DSRDocument
     virtual OFCondition getStudyTime(OFString &value,
                                      const signed long pos = 0) const;
 
+    /** get series date
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSeriesDate(OFString &value,
+                                      const signed long pos = 0) const;
+
+    /** get series time
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSeriesTime(OFString &value,
+                                      const signed long pos = 0) const;
+
     /** get instance creation date
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -713,6 +729,38 @@ class DSRDocument
     virtual OFCondition setContentTime(const OFString &value,
                                        const OFBool check = OFTrue);
 
+    /** set study date
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (DA) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setStudyDate(const OFString &value,
+                                     const OFBool check = OFTrue);
+
+    /** set study time
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (TM) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setStudyTime(const OFString &value,
+                                     const OFBool check = OFTrue);
+
+    /** set series date
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (DA) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setSeriesDate(const OFString &value,
+                                      const OFBool check = OFTrue);
+
+    /** set series time
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (TM) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setSeriesTime(const OFString &value,
+                                      const OFBool check = OFTrue);
+
     /** set study ID
      ** @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
@@ -763,14 +811,14 @@ class DSRDocument
     /** create new study.
      *  After generating a new study instance UID the method createNewSeries() is called,
      *  i.e. also a new series instance UID and SOP instance UID are generated.  This is
-     *  a requirement of the DICOM standard.
+     *  a requirement of the DICOM standard.  All other study-related attributes are
+     *  cleared.
      */
     virtual void createNewStudy();
 
     /** create a new series.
      *  After generating a new series instance UID the method createNewSOPInstance() is
-     *  called, i.e. also a SOP instance UID is generated.  This is a requirement of the
-     *  DICOM standard.
+     *  called, i.e. also a SOP series-related attributes are cleared.
      */
     virtual void createNewSeries();
 
@@ -778,6 +826,8 @@ class DSRDocument
      *  After generating a new series instance UID within the given study the method
      *  createNewSOPInstance() is called, i.e. also a SOP instance UID is generated.
      *  This is a requirement of the DICOM standard.
+     *  NB: There is no mechanism that makes sure that the study-related attributes are
+     *      consistent for all series of a study.  This has to be done manually.
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      *  @param  check     check 'studyUID' for conformance with VR and VM if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -1142,6 +1192,10 @@ class DSRDocument
     DcmUniqueIdentifier SeriesInstanceUID;
     /// Series Number: (IS, 1, 1)
     DcmIntegerString    SeriesNumber;
+    /// Series Date: (DA, 1, 3)
+    DcmDate             SeriesDate;
+    /// Series Time: (TM, 1, 3)
+    DcmTime             SeriesTime;
     /// Series Description: (LO, 1, 3)
     DcmLongString       SeriesDescription;
     /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)
@@ -1193,6 +1247,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.57  2011-12-15 16:24:11  joergr
+ *  Added support for optional series-related attributes (Series Date and Series
+ *  Time). Also improved handling of other study/series-related attributes.
+ *
  *  Revision 1.56  2011-12-09 15:00:08  joergr
  *  Added support for the Referenced Instance Sequence (0008,114A) introduced
  *  with CP-670 (Reference rendering of SR), which allows for referencing an

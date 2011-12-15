@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.15 (riesmeier)
 
+- Added support for optional series-related attributes (Series Date and Series
+  Time). Also improved handling of other study/series-related attributes.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
 - Added support for additional representations of a numeric value according to
   CP-1064 (Float VR in numeric SR content items).
   Affects: dcmsr/data/dsr2xml.xsd

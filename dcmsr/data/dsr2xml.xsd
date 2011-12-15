@@ -103,6 +103,8 @@
   <xsd:complexType name="Series">
     <xsd:sequence>
       <xsd:element name="number" type="dsr:IntegerString" minOccurs="0"/>
+      <xsd:element name="date" type="dsr:Date" minOccurs="0"/>
+      <xsd:element name="time" type="dsr:Time" minOccurs="0"/>
       <xsd:element name="description" type="dsr:LongString" minOccurs="0"/>
     </xsd:sequence>
     <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
