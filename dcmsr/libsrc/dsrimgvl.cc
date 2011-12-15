@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 08:32:36 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-12-15 16:30:18 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &ref
     PresentationState(referenceValue.PresentationState),
     FrameList(referenceValue.FrameList)
 {
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
 }
 
 
@@ -96,7 +96,7 @@ DSRImageReferenceValue::~DSRImageReferenceValue()
 DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenceValue &referenceValue)
 {
     DSRCompositeReferenceValue::operator=(referenceValue);
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
     PresentationState = referenceValue.PresentationState;
     FrameList = referenceValue.FrameList;
     return *this;
@@ -358,6 +358,9 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.24  2011-12-15 16:30:18  joergr
+ *  Fixed typo in comments.
+ *
  *  Revision 1.23  2011-08-02 08:32:36  joergr
  *  Added more general support for softcopy presentation states (not only GSPS).
  *

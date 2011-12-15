@@ -19,8 +19,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 15:05:36 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-12-15 16:30:18 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ DSRWaveformReferenceValue::DSRWaveformReferenceValue(const DSRWaveformReferenceV
   : DSRCompositeReferenceValue(referenceValue),
     ChannelList(referenceValue.ChannelList)
 {
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
 }
 
 
@@ -67,7 +67,7 @@ DSRWaveformReferenceValue::~DSRWaveformReferenceValue()
 DSRWaveformReferenceValue &DSRWaveformReferenceValue::operator=(const DSRWaveformReferenceValue &referenceValue)
 {
     DSRCompositeReferenceValue::operator=(referenceValue);
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
     ChannelList = referenceValue.ChannelList;
     return *this;
 }
@@ -260,6 +260,9 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
+ *  Revision 1.23  2011-12-15 16:30:18  joergr
+ *  Fixed typo in comments.
+ *
  *  Revision 1.22  2011-12-09 15:05:36  joergr
  *  Use "defaultValue" parameter of dcmFindNameOfUID() where appropriate.
  *

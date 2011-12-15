@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-12-15 16:30:18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ DSRStringValue::DSRStringValue(const OFString &stringValue)
 DSRStringValue::DSRStringValue(const DSRStringValue &stringValue)
   : Value(stringValue.Value)
 {
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
 }
 
 
@@ -62,7 +62,7 @@ DSRStringValue::~DSRStringValue()
 
 DSRStringValue &DSRStringValue::operator=(const DSRStringValue &stringValue)
 {
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
     Value = stringValue.Value;
     return *this;
 }
@@ -169,6 +169,9 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
+ *  Revision 1.19  2011-12-15 16:30:18  joergr
+ *  Fixed typo in comments.
+ *
  *  Revision 1.18  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

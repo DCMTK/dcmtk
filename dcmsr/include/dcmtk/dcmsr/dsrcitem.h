@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-30 14:21:33 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-12-15 16:30:16 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -442,23 +442,23 @@ class DSRContentItem
     DSRDocumentTreeNode *TreeNode;
 
     /// empty string value. Used as default return value for getStringValue()
-    static const OFString                    EmptyString;
+    static const OFString                     EmptyString;
     /// empty coded entry value. Used as default return value for getCodeValue() and getConceptName()
-    static const DSRCodedEntryValue          EmptyCodedEntry;
+    static const DSRCodedEntryValue           EmptyCodedEntry;
     /// empty numberic measurement value. Used as default return value for getNumericValue()
-    static const DSRNumericMeasurementValue  EmptyNumericMeasurement;
+    static const DSRNumericMeasurementValue   EmptyNumericMeasurement;
     /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
-    static const DSRSpatialCoordinatesValue  EmptySpatialCoordinates;
+    static const DSRSpatialCoordinatesValue   EmptySpatialCoordinates;
     /// empty spatial coordinates 3D value. Used as default return value for getSpatialCoordinates3D()
     static const DSRSpatialCoordinates3DValue EmptySpatialCoordinates3D;
     /// empty temporal coordinates value. Used as default return value for getTemporalCoordinates()
-    static const DSRTemporalCoordinatesValue EmptyTemporalCoordinates;
+    static const DSRTemporalCoordinatesValue  EmptyTemporalCoordinates;
     /// empty composite reference value. Used as default return value for getCompositeReference()
-    static const DSRCompositeReferenceValue  EmptyCompositeReference;
+    static const DSRCompositeReferenceValue   EmptyCompositeReference;
     /// empty image reference value. Used as default return value for getImageReference()
-    static const DSRImageReferenceValue      EmptyImageReference;
+    static const DSRImageReferenceValue       EmptyImageReference;
     /// empty waveform reference value. Used as default return value for getWaveformReference()
-    static const DSRWaveformReferenceValue   EmptyWaveformReference;
+    static const DSRWaveformReferenceValue    EmptyWaveformReference;
 
 
  // --- declaration of copy constructor and assignment operator
@@ -474,6 +474,9 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
+ *  Revision 1.21  2011-12-15 16:30:16  joergr
+ *  Fixed typo in comments.
+ *
  *  Revision 1.20  2011-11-30 14:21:33  joergr
  *  Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
  *
