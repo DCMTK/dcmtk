@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-06 16:57:03 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2011-12-15 14:47:52 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,6 +267,7 @@ const OFConditionConst ECC_SOPInstanceNotFound              (OFM_dcmsr, 11, OF_e
 const OFConditionConst ECC_DifferentSOPClassesForAnInstance (OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
 const OFConditionConst ECC_CodingSchemeNotFound             (OFM_dcmsr, 13, OF_error, "Coding Scheme Designator not found");
 const OFConditionConst ECC_CorruptedXMLStructure            (OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
+const OFConditionConst ECC_RepresentationNotAvailable       (OFM_dcmsr, 15, OF_error, "Representation not available");
 
 const OFCondition SR_EC_UnknownDocumentType                 (ECC_UnknownDocumentType);
 const OFCondition SR_EC_InvalidDocument                     (ECC_InvalidDocument);
@@ -282,6 +283,7 @@ const OFCondition SR_EC_SOPInstanceNotFound                 (ECC_SOPInstanceNotF
 const OFCondition SR_EC_DifferentSOPClassesForAnInstance    (ECC_DifferentSOPClassesForAnInstance);
 const OFCondition SR_EC_CodingSchemeNotFound                (ECC_CodingSchemeNotFound);
 const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStructure);
+const OFCondition SR_EC_RepresentationNotAvailable          (ECC_RepresentationNotAvailable);
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
@@ -1640,6 +1642,10 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.82  2011-12-15 14:47:52  joergr
+ *  Added support for additional representations of a numeric value according to
+ *  CP-1064 (Float VR in numeric SR content items).
+ *
  *  Revision 1.81  2011-12-06 16:57:03  joergr
  *  Updated outdated comment after the module's logger has been changed from a
  *  global function with a static variable to a global variable.

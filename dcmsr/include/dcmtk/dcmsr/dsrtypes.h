@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 11:47:55 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2011-12-15 14:47:50 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,9 @@ extern const OFCondition SR_EC_CodingSchemeNotFound;
 
 /// error: the XML structure is corrupted (XML parser error)
 extern const OFCondition SR_EC_CorruptedXMLStructure;
+
+/// error: the requested representation is not available
+extern const OFCondition SR_EC_RepresentationNotAvailable;
 //@}
 
 
@@ -1377,6 +1380,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.75  2011-12-15 14:47:50  joergr
+ *  Added support for additional representations of a numeric value according to
+ *  CP-1064 (Float VR in numeric SR content items).
+ *
  *  Revision 1.74  2011-11-24 11:47:55  joergr
  *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
  *  now return a status code, the get methods provide a "pos" and the set methods

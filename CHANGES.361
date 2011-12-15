@@ -1,9 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.15 (riesmeier)
+
+- Added support for additional representations of a numeric value according to
+  CP-1064 (Float VR in numeric SR content items).
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2011.12.14 (riesmeier)
 
-- Added intitial support for the "Enhanced Encoding Mode", which comprises some
+- Added initial support for the "Enhanced Encoding Mode", which comprises some
   optional attributes that further describe a code value.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrcodtn.h
            dcmsr/include/dcmtk/dcmsr/dsrcodvl.h

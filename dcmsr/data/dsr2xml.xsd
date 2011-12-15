@@ -282,6 +282,15 @@
   <xsd:group name="NumericGroup">
     <xsd:sequence>
       <xsd:element name="value" type="dsr:DecimalString"/>
+      <xsd:element name="float" type="dsr:FloatingPointDouble" minOccurs="0"/>
+      <xsd:element name="rational" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="numerator" type="dsr:SignedLong"/>
+            <xsd:element name="denominator" type="dsr:UnsignedLong"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="unit" type="dsr:Code"/>
     </xsd:sequence>
   </xsd:group>
@@ -797,6 +806,18 @@
   </xsd:simpleType>
 
   <!-- Value Representations -->
+
+  <xsd:simpleType name="SignedLong">
+    <xsd:restriction base="xsd:int"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="UnsignedLong">
+    <xsd:restriction base="xsd:unsignedInt"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="FloatingPointDouble">
+    <xsd:restriction base="xsd:double"/>
+  </xsd:simpleType>
 
   <xsd:simpleType name="IntegerString">
     <xsd:restriction base="xsd:integer">

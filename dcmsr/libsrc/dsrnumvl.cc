@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-12-15 14:47:52 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,10 @@
 DSRNumericMeasurementValue::DSRNumericMeasurementValue()
   : NumericValue(),
     MeasurementUnit(),
-    ValueQualifier()
+    ValueQualifier(),
+    FloatingPointValue(DCM_FloatingPointValue),
+    RationalNumeratorValue(DCM_RationalNumeratorValue),
+    RationalDenominatorValue(DCM_RationalDenominatorValue)
 {
 }
 
@@ -47,7 +50,10 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericVa
                                                        const DSRCodedEntryValue &measurementUnit)
   : NumericValue(),
     MeasurementUnit(),
-    ValueQualifier()
+    ValueQualifier(),
+    FloatingPointValue(DCM_FloatingPointValue),
+    RationalNumeratorValue(DCM_RationalNumeratorValue),
+    RationalDenominatorValue(DCM_RationalDenominatorValue)
 {
     /* use the set methods for checking purposes */
     setValue(numericValue, measurementUnit);
@@ -59,7 +65,10 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericVa
                                                        const DSRCodedEntryValue &valueQualifier)
   : NumericValue(),
     MeasurementUnit(),
-    ValueQualifier()
+    ValueQualifier(),
+    FloatingPointValue(DCM_FloatingPointValue),
+    RationalNumeratorValue(DCM_RationalNumeratorValue),
+    RationalDenominatorValue(DCM_RationalDenominatorValue)
 {
     /* use the set methods for checking purposes */
     setValue(numericValue, measurementUnit, valueQualifier);
@@ -69,9 +78,12 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericVa
 DSRNumericMeasurementValue::DSRNumericMeasurementValue(const DSRNumericMeasurementValue &numericMeasurement)
   : NumericValue(numericMeasurement.NumericValue),
     MeasurementUnit(numericMeasurement.MeasurementUnit),
-    ValueQualifier(numericMeasurement.ValueQualifier)
+    ValueQualifier(numericMeasurement.ValueQualifier),
+    FloatingPointValue(numericMeasurement.FloatingPointValue),
+    RationalNumeratorValue(numericMeasurement.RationalNumeratorValue),
+    RationalDenominatorValue(numericMeasurement.RationalDenominatorValue)
 {
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
 }
 
 
@@ -82,10 +94,13 @@ DSRNumericMeasurementValue::~DSRNumericMeasurementValue()
 
 DSRNumericMeasurementValue &DSRNumericMeasurementValue::operator=(const DSRNumericMeasurementValue &numericMeasurement)
 {
-    /* do not check since this would unexpected to the user */
+    /* do not check since this would be unexpected to the user */
     NumericValue = numericMeasurement.NumericValue;
     MeasurementUnit = numericMeasurement.MeasurementUnit;
     ValueQualifier = numericMeasurement.ValueQualifier;
+    FloatingPointValue = numericMeasurement.FloatingPointValue;
+    RationalNumeratorValue = numericMeasurement.RationalNumeratorValue;
+    RationalDenominatorValue = numericMeasurement.RationalDenominatorValue;
     return *this;
 }
 
@@ -95,6 +110,9 @@ void DSRNumericMeasurementValue::clear()
     NumericValue.clear();
     MeasurementUnit.clear();
     ValueQualifier.clear();
+    FloatingPointValue.clear();
+    RationalNumeratorValue.clear();
+    RationalDenominatorValue.clear();
 }
 
 
@@ -138,6 +156,14 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
         /* get "value" element (might be absent since "Measured Value Sequence" is type 2) */
         if (!doc.getStringFromNodeContent(doc.getNamedNode(cursor, "value", OFFalse /*required*/), NumericValue).empty())
         {
+            /* get additional representations of the numeric value (if any) */
+            doc.getElementFromNodeContent(doc.getNamedNode(cursor, "float", OFFalse /*required*/), FloatingPointValue);
+            const DSRXMLCursor childNode = doc.getNamedNode(cursor, "rational", OFFalse /*required*/).getChild();
+            if (childNode.valid())
+            {
+                doc.getElementFromNodeContent(doc.getNamedNode(childNode, "numerator"), RationalNumeratorValue);
+                doc.getElementFromNodeContent(doc.getNamedNode(childNode, "denominator"), RationalDenominatorValue);
+            }
             /* get "unit" element (only if "value" present) */
             result = MeasurementUnit.readXML(doc, doc.getNamedNode(cursor, "unit"));
         } else
@@ -157,10 +183,41 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
 OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
                                                  const size_t flags) const
 {
+    /* write numeric value */
     DSRTypes::writeStringValueToXML(stream, NumericValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+    /* write floating point representation */
+    Float64 floatValue;
+    const OFBool hasFloating = getFloatingPointRepresentation(floatValue).good();
+    if (hasFloating || (flags & DSRTypes::XF_writeEmptyTags))
+    {
+        stream << "<float>";
+        if (hasFloating)
+        {
+            /* increase default precision */
+            const int oldPrecision = stream.precision(8);
+            stream << floatValue;
+            /* reset i/o manipulators */
+            stream.precision(oldPrecision);
+        }
+        stream << "</float>" << OFendl;
+    }
+    /* write rational representation */
+    Sint32 numeratorValue;
+    Uint32 denominatorValue;
+    const OFBool hasRational = getRationalRepresentation(numeratorValue, denominatorValue).good();
+    if (hasRational || (flags & DSRTypes::XF_writeEmptyTags))
+    {
+        stream << "<rational>" << OFendl;
+        if (hasRational)
+        {
+            stream << "<numerator>" << numeratorValue << "</numerator>" << OFendl;
+            stream << "<denominator>" << denominatorValue << "</denominator>" << OFendl;
+        }
+        stream << "</rational>" << OFendl;
+    }
+    /* write measurement unit */
     if (!MeasurementUnit.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
     {
-        /* write measurement unit */
         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
             stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
         else
@@ -168,9 +225,9 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
         MeasurementUnit.writeXML(stream, flags);
         stream << "</unit>" << OFendl;
     }
+    /* write value qualifier */
     if (!ValueQualifier.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
     {
-        /* write value qualifier */
         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
             stream << "<qualifier";     // bracket ">" is closed in the next writeXML() routine
         else
@@ -188,6 +245,10 @@ OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset)
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", "MeasuredValueSequence");
     if (result.good())
     {
+        /* read some optional attributes */
+        DSRTypes::getAndCheckElementFromDataset(dataset, FloatingPointValue, "1", "1C", "MeasuredValueSequence");
+        if (DSRTypes::getAndCheckElementFromDataset(dataset, RationalNumeratorValue, "1", "1C", "MeasuredValueSequence").good())
+            DSRTypes::getAndCheckElementFromDataset(dataset, RationalDenominatorValue, "1", "1" /* was 1C */, "MeasuredValueSequence");
         /* read MeasurementUnitsCodeSequence */
         result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /*type*/);
     }
@@ -199,6 +260,10 @@ OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset) const
 {
     /* write NumericValue */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_NumericValue, NumericValue);
+    /* write some optional attributes */
+    DSRTypes::addElementToDataset(result, dataset, new DcmFloatingPointDouble(FloatingPointValue), "1", "1C", "MeasuredValueSequence");
+    DSRTypes::addElementToDataset(result, dataset, new DcmSignedLong(RationalNumeratorValue), "1", "1C", "MeasuredValueSequence");
+    DSRTypes::addElementToDataset(result, dataset, new DcmUnsignedLong(RationalDenominatorValue), "1", "1C", "MeasuredValueSequence");
     /* write MeasurementUnitsCodeSequence */
     if (result.good())
         result = MeasurementUnit.writeSequence(dataset, DCM_MeasurementUnitsCodeSequence);
@@ -332,9 +397,53 @@ OFCondition DSRNumericMeasurementValue::getMeasurementUnit(DSRCodedEntryValue &m
 }
 
 
+OFCondition DSRNumericMeasurementValue::getFloatingPointRepresentation(Float64 &floatingPoint) const
+{
+    OFCondition result = SR_EC_RepresentationNotAvailable;
+    /* cast away the const specifier (yes, this is ugly) */
+    DcmFloatingPointDouble &floatElement = OFconst_cast(DcmFloatingPointDouble &, FloatingPointValue);
+    if (!floatElement.isEmpty())
+        result = floatElement.getFloat64(floatingPoint);
+    return result;
+}
+
+
+OFCondition DSRNumericMeasurementValue::getRationalRepresentation(Sint32 &rationalNumerator,
+                                                                  Uint32 &rationalDenominator) const
+{
+    OFCondition result = SR_EC_RepresentationNotAvailable;
+    /* cast away the const specifier (yes, this is ugly) */
+    DcmSignedLong &signedElement = OFconst_cast(DcmSignedLong &, RationalNumeratorValue);
+    DcmUnsignedLong &unsignedElement = OFconst_cast(DcmUnsignedLong &, RationalDenominatorValue);
+    if (!signedElement.isEmpty())
+        result = signedElement.getSint32(rationalNumerator);
+    if (result.good() && !unsignedElement.isEmpty())
+        result = unsignedElement.getUint32(rationalDenominator);
+    return result;
+}
+
+
 OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
 {
-    return setValue(numericMeasurement.NumericValue, numericMeasurement.MeasurementUnit, numericMeasurement.ValueQualifier);
+    /* first set the basic parameters */
+    OFCondition result = setValue(numericMeasurement.NumericValue,
+                                  numericMeasurement.MeasurementUnit,
+                                  numericMeasurement.ValueQualifier);
+    /* then the additional representations */
+    if (result.good())
+    {
+        Float64 floatValue;
+        if (numericMeasurement.getFloatingPointRepresentation(floatValue).good())
+            result = setFloatingPointRepresentation(floatValue);
+        if (result.good())
+        {
+            Sint32 numeratorValue;
+            Uint32 denominatorValue;
+            if (numericMeasurement.getRationalRepresentation(numeratorValue, denominatorValue).good())
+                result = setRationalRepresentation(numeratorValue, denominatorValue);
+        }
+    }
+    return result;
 }
 
 
@@ -347,6 +456,10 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
     {
         NumericValue = numericValue;
         MeasurementUnit = measurementUnit;
+        /* clear additional representations */
+        FloatingPointValue.clear();
+        RationalNumeratorValue.clear();
+        RationalDenominatorValue.clear();
         result = EC_Normal;
     }
     return result;
@@ -365,6 +478,10 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
         NumericValue = numericValue;
         MeasurementUnit = measurementUnit;
         ValueQualifier = valueQualifier;
+        /* clear additional representations */
+        FloatingPointValue.clear();
+        RationalNumeratorValue.clear();
+        RationalDenominatorValue.clear();
         result = EC_Normal;
     }
     return result;
@@ -377,6 +494,10 @@ OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericV
     if (checkNumericValue(numericValue))
     {
         NumericValue = numericValue;
+        /* clear additional representations */
+        FloatingPointValue.clear();
+        RationalNumeratorValue.clear();
+        RationalDenominatorValue.clear();
         result = EC_Normal;
     }
     return result;
@@ -407,6 +528,28 @@ OFCondition DSRNumericMeasurementValue::setNumericValueQualifier(const DSRCodedE
 }
 
 
+OFCondition DSRNumericMeasurementValue::setFloatingPointRepresentation(const Float64 floatingPoint)
+{
+    /* make sure that only a single value is stored */
+    return FloatingPointValue.putFloat64Array(&floatingPoint, 1);
+}
+
+
+OFCondition DSRNumericMeasurementValue::setRationalRepresentation(const Sint32 rationalNumerator,
+                                                                  const Uint32 rationalDenominator)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (checkRationalRepresentation(rationalNumerator, rationalDenominator))
+    {
+        /* make sure that only a single value is stored */
+        RationalNumeratorValue.putSint32Array(&rationalNumerator, 1);
+        RationalDenominatorValue.putUint32Array(&rationalDenominator, 1);
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 OFBool DSRNumericMeasurementValue::checkNumericValue(const OFString &numericValue) const
 {
     return !numericValue.empty();
@@ -425,9 +568,21 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 }
 
 
+OFBool DSRNumericMeasurementValue::checkRationalRepresentation(const Sint32 /*rationalNumerator*/,
+                                                               const Uint32 rationalDenominator) const
+{
+    /* avoid "division by zero" */
+    return (rationalDenominator != 0);
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
+ *  Revision 1.28  2011-12-15 14:47:52  joergr
+ *  Added support for additional representations of a numeric value according to
+ *  CP-1064 (Float VR in numeric SR content items).
+ *
  *  Revision 1.27  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

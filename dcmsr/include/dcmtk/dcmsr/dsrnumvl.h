@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:31 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-12-15 14:47:50 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,8 @@ class DSRNumericMeasurementValue
 
     /** check whether the current numeric measurement value is valid.
      *  The value is valid if isEmpty() is true or all three values (numeric value, measurement
-     *  unit and value qualifier) do contain valid values (see checkXXX() methods).
+     *  unit and value qualifier) do contain valid values (see checkXXX() methods).  The
+     *  possibly available additional representations of the numeric value are never checked.
      ** @return OFTrue if value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -111,7 +112,8 @@ class DSRNumericMeasurementValue
     /** print numeric measurement value.
      *  The output of a typical numeric measurement value looks like this:
      *  "3" (cm,99_OFFIS_DCMTK,"Length Unit").  If the value is empty the text "empty" is
-     *  printed instead.  The numeric value qualifier is never printed.
+     *  printed instead.  The numeric value qualifier and the possibly available additional
+     *  representations of the numeric value are never printed.
      ** @param  stream  output stream to which the numeric measurement value should be printed
      *  @param  flags   flag used to customize the output (not used)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -209,8 +211,25 @@ class DSRNumericMeasurementValue
      */
     OFCondition getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const;
 
+    /** get floating point representation of the numeric value (optional)
+     ** @param  floatingPoint  reference to variable in which the floating point representation
+     *                         should be stored
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getFloatingPointRepresentation(Float64 &floatingPoint) const;
+
+    /** get rational representation of the numeric value (optional)
+     ** @param  rationalNumerator    reference to variable in which the integer numerator of
+     *                               the rational representation should be stored
+     ** @param  rationalDenominator  reference to variable in which the integer denominator of
+     *                               the rational representation should be stored
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getRationalRepresentation(Sint32 &rationalNumerator,
+                                          Uint32 &rationalDenominator) const;
+
     /** set numeric measurement value.
-     *  Before setting the value it is checked (see checkXXX()).  If the value is invalid
+     *  Before setting the value, it is checked (see checkXXX()).  If the value is invalid
      *  the current value is not replaced and remains unchanged.
      ** @param  numericMeasurement  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -218,8 +237,10 @@ class DSRNumericMeasurementValue
     OFCondition setValue(const DSRNumericMeasurementValue &numericMeasurement);
 
     /** set numeric value and measurement unit.
-     *  Before setting the values they are checked (see checkXXX()).  If the value pair is
-     *  invalid the current value pair is not replaced and remains unchanged.
+     *  Before setting the values, they are checked (see checkXXX()).  If the value pair is
+     *  invalid the current value pair is not replaced and remains unchanged.  If the
+     *  value pair is replaced, the optional floating point and rational representations are
+     *  cleared, i.e. they have to be set manually if needed.
      ** @param  numericValue     numeric value to be set
      *  @param  measurementUnit  measurement unit to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -228,9 +249,10 @@ class DSRNumericMeasurementValue
                          const DSRCodedEntryValue &measurementUnit);
 
     /** set numeric value, measurement unit and numeric value qualifier.
-     *  Before setting the values they are checked (see checkXXX()).  If one of the three
+     *  Before setting the values, they are checked (see checkXXX()).  If one of the three
      *  values is invalid the current numeric measurement value is not replaced and remains
-     *  unchanged.
+     *  unchanged.  If the values are replaced, the optional floating point and rational
+     *  representations are cleared, i.e. they have to be set manually if needed.
      ** @param  numericValue     numeric value to be set
      *  @param  measurementUnit  measurement unit to be set
      *  @param  valueQualifier   numeric value qualifier to be set
@@ -241,15 +263,17 @@ class DSRNumericMeasurementValue
                          const DSRCodedEntryValue &valueQualifier);
 
     /** set numeric value.
-     *  Before setting the value it is checked (see checkNumericValue()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.
+     *  Before setting the value, it is checked (see checkNumericValue()).  If the value is
+     *  invalid the current value is not replaced and remains unchanged.  If the value is
+     *  replaced, the optional floating point and rational representations are cleared, i.e.
+     *  they have to be set manually if needed.
      ** @param  numericValue     numeric value to be set (VR=DS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setNumericValue(const OFString &numericValue);
 
     /** set measurement unit.
-     *  Before setting the code it is checked (see checkMeasurementUnit()).  If the code is
+     *  Before setting the code, it is checked (see checkMeasurementUnit()).  If the code is
      *  invalid the current code is not replaced and remains unchanged.
      ** @param  measurementUnit  measurement unit to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -259,12 +283,37 @@ class DSRNumericMeasurementValue
     /** set numeric value qualifier.
      *  This optional code specifies the qualification of the Numeric Value in the Measured
      *  Value Sequence, or the reason for the absence of the Measured Value Sequence Item.
-     *  Before setting the code it is checked (see checkNumericValueQualifier()).  If the
+     *  Before setting the code, it is checked (see checkNumericValueQualifier()).  If the
      *  code is invalid the current code is not replaced and remains unchanged.
      ** @param  valueQualifier  numeric value qualifier to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setNumericValueQualifier(const DSRCodedEntryValue &valueQualifier);
+
+    /** set floating point representation of the numeric value.
+     *  According to the DICOM standard, this value is "required if the numeric value has
+     *  insufficient precision to represent the value as a string.  May be present otherwise."
+     *  Please note that it is not checked whether this representation is consistent with the
+     *  numeric value stored as a string.
+     ** @param  floatingPoint  floating point representation of the numeric value
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setFloatingPointRepresentation(const Float64 floatingPoint);
+
+    /** set rational representation of the numeric value.
+     *  According to the DICOM standard, this value is "required if the numeric value has
+     *  insufficient precision to represent a rational value as a string.  May be present
+     *  otherwise."  Please note that it is not checked whether this representation is
+     *  consistent with the numeric value stored as a string.
+     ** @param  rationalNumerator    integer numerator of a rational representation of the
+     *                               numeric value (encoded as a signed integer value)
+     *  @param  rationalDenominator  integer denominator of a rational representation of the
+     *                               numeric value (encoded as a non-zero unsigned integer
+     *                               value)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setRationalRepresentation(const Sint32 rationalNumerator,
+                                          const Uint32 rationalDenominator);
 
 
   protected:
@@ -313,15 +362,30 @@ class DSRNumericMeasurementValue
      */
     virtual OFBool checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const;
 
+    /** check the specified rational representation for validity.
+     *  The only check that is performed is that the 'rationalDenominator' is not zero.
+     ** @param  rationalNumerator    numerator of the rational representation to be checked
+     *  @param  rationalDenominator  denominator of a rational representation to be checked
+     ** @return OFTrue if rational representation is valid, OFFalse otherwise
+     */
+    virtual OFBool checkRationalRepresentation(const Sint32 rationalNumerator,
+                                               const Uint32 rationalDenominator) const;
+
 
   private:
 
-    /// numeric value (VR=DS, type 1)
-    OFString           NumericValue;
-    /// measurement unit (type 2)
-    DSRCodedEntryValue MeasurementUnit;
-    /// numeric value qualifier (type 3)
-    DSRCodedEntryValue ValueQualifier;
+    /// Numeric Value (VR=DS, type 1)
+    OFString               NumericValue;
+    /// Measurement Unit (type 2)
+    DSRCodedEntryValue     MeasurementUnit;
+    /// Numeric Value Qualifier (type 3)
+    DSRCodedEntryValue     ValueQualifier;
+    /// Floating Point Value (VR=FD, type 1C)
+    DcmFloatingPointDouble FloatingPointValue;
+    /// Rational Numerator Value (VR=SL, type 1C)
+    DcmSignedLong          RationalNumeratorValue;
+    /// Rational Denominator Value (VR=UL, type 1C)
+    DcmUnsignedLong        RationalDenominatorValue;
 };
 
 
@@ -331,6 +395,10 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
+ *  Revision 1.17  2011-12-15 14:47:50  joergr
+ *  Added support for additional representations of a numeric value according to
+ *  CP-1064 (Float VR in numeric SR content items).
+ *
  *  Revision 1.16  2011-08-02 06:26:31  joergr
  *  Fixed typos and/or minor formatting issues.
  *
