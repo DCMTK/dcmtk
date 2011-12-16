@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,16 +11,16 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRSpatialCoordinates3DValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-12-16 16:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,8 @@
 DSRSpatialCoordinates3DValue::DSRSpatialCoordinates3DValue()
   : GraphicType(DSRTypes::GT3_invalid),
     GraphicDataList(),
-    FrameOfReferenceUID()
+    FrameOfReferenceUID(),
+    FiducialUID()
 {
 }
 
@@ -45,7 +46,8 @@ DSRSpatialCoordinates3DValue::DSRSpatialCoordinates3DValue()
 DSRSpatialCoordinates3DValue::DSRSpatialCoordinates3DValue(const DSRTypes::E_GraphicType3D graphicType)
   : GraphicType(graphicType),
     GraphicDataList(),
-    FrameOfReferenceUID()
+    FrameOfReferenceUID(),
+    FiducialUID()
 {
 }
 
@@ -53,7 +55,8 @@ DSRSpatialCoordinates3DValue::DSRSpatialCoordinates3DValue(const DSRTypes::E_Gra
 DSRSpatialCoordinates3DValue::DSRSpatialCoordinates3DValue(const DSRSpatialCoordinates3DValue &coordinatesValue)
   : GraphicType(coordinatesValue.GraphicType),
     GraphicDataList(coordinatesValue.GraphicDataList),
-    FrameOfReferenceUID(coordinatesValue.FrameOfReferenceUID)
+    FrameOfReferenceUID(coordinatesValue.FrameOfReferenceUID),
+    FiducialUID(coordinatesValue.FiducialUID)
 {
 }
 
@@ -68,6 +71,7 @@ DSRSpatialCoordinates3DValue &DSRSpatialCoordinates3DValue::operator=(const DSRS
     GraphicType = coordinatesValue.GraphicType;
     GraphicDataList = coordinatesValue.GraphicDataList;
     FrameOfReferenceUID = coordinatesValue.FrameOfReferenceUID;
+    FiducialUID = coordinatesValue.FiducialUID;
     return *this;
 }
 
@@ -77,6 +81,7 @@ void DSRSpatialCoordinates3DValue::clear()
     GraphicType = DSRTypes::GT3_invalid;
     GraphicDataList.clear();
     FrameOfReferenceUID.clear();
+    FiducialUID.clear();
 }
 
 
@@ -118,16 +123,21 @@ OFCondition DSRSpatialCoordinates3DValue::readXML(const DSRXMLDocument &doc,
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
     {
-        /* graphic data (required) */
-        cursor = doc.getNamedNode(cursor.getChild(), "data");
-        if (cursor.valid())
+        cursor.gotoChild();
+        /* GraphicData (required) */
+        const DSRXMLCursor dataNode = doc.getNamedNode(cursor, "data");
+        if (dataNode.valid())
         {
             OFString tmpString;
-            /* referenced frame of reference UID (required) */
-            doc.getStringFromAttribute(cursor, FrameOfReferenceUID, "uid");
+            /* ReferencedFrameOfReferenceUID (required) */
+            doc.getStringFromAttribute(dataNode, FrameOfReferenceUID, "uid");
             /* put value to the graphic data list */
-            result = GraphicDataList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+            result = GraphicDataList.putString(doc.getStringFromNodeContent(dataNode, tmpString).c_str());
         }
+        /* FiducialUID (optional) */
+        const DSRXMLCursor fiducialNode = doc.getNamedNode(cursor, "fiducial", OFFalse /*required*/);
+        if (fiducialNode.valid())
+            doc.getStringFromAttribute(fiducialNode, FiducialUID, "uid");
     }
     return result;
 }
@@ -143,6 +153,8 @@ OFCondition DSRSpatialCoordinates3DValue::writeXML(STD_NAMESPACE ostream &stream
         GraphicDataList.print(stream);
         stream << "</data>" << OFendl;
     }
+    if ((flags & DSRTypes::XF_writeEmptyTags) || !FiducialUID.empty())
+        stream << "<fiducial uid=\"" << FiducialUID << "\"/>" << OFendl;
     return EC_Normal;
 }
 
@@ -163,6 +175,9 @@ OFCondition DSRSpatialCoordinates3DValue::read(DcmItem &dataset)
             DSRTypes::printUnknownValueWarningMessage("GraphicType", tmpString.c_str());
         /* read GraphicData */
         result = GraphicDataList.read(dataset);
+        /* read optional attributes */
+        if (result.good())
+            DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_FiducialUID, FiducialUID, "1", "3", "SCOORD3D content item");
         /* check GraphicData and report warnings if any */
         checkData(GraphicType, GraphicDataList, FrameOfReferenceUID);
     }
@@ -183,6 +198,9 @@ OFCondition DSRSpatialCoordinates3DValue::write(DcmItem &dataset) const
         if (!GraphicDataList.isEmpty())
             result = GraphicDataList.write(dataset);
     }
+    /* write optional attributes */
+    if (result.good())
+        DSRTypes::putStringValueToDataset(dataset, DCM_FiducialUID, FiducialUID, OFFalse /*allowEmpty*/);
     /* check GraphicData and report warnings if any */
     checkData(GraphicType, GraphicDataList, FrameOfReferenceUID);
     return result;
@@ -221,6 +239,27 @@ OFCondition DSRSpatialCoordinates3DValue::renderHTML(STD_NAMESPACE ostream &docS
 }
 
 
+OFCondition DSRSpatialCoordinates3DValue::getValue(DSRSpatialCoordinates3DValue &coordinatesValue) const
+{
+    coordinatesValue = *this;
+    return EC_Normal;
+}
+
+
+OFCondition DSRSpatialCoordinates3DValue::setValue(const DSRSpatialCoordinates3DValue &coordinatesValue)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (checkData(coordinatesValue.GraphicType, coordinatesValue.GraphicDataList, coordinatesValue.FrameOfReferenceUID))
+    {
+        GraphicType = coordinatesValue.GraphicType;
+        GraphicDataList = coordinatesValue.GraphicDataList;
+        FrameOfReferenceUID = coordinatesValue.FrameOfReferenceUID;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 OFCondition DSRSpatialCoordinates3DValue::setGraphicType(const DSRTypes::E_GraphicType3D graphicType)
 {
     OFCondition result = EC_IllegalParameter;
@@ -246,24 +285,11 @@ OFCondition DSRSpatialCoordinates3DValue::setFrameOfReferenceUID(const OFString 
 }
 
 
-OFCondition DSRSpatialCoordinates3DValue::getValue(DSRSpatialCoordinates3DValue &coordinatesValue) const
+OFCondition DSRSpatialCoordinates3DValue::setFiducialUID(const OFString &fiducialUID)
 {
-    coordinatesValue = *this;
+    /* currently, no check is performed */
+    FiducialUID = fiducialUID;
     return EC_Normal;
-}
-
-
-OFCondition DSRSpatialCoordinates3DValue::setValue(const DSRSpatialCoordinates3DValue &coordinatesValue)
-{
-    OFCondition result = EC_IllegalParameter;
-    if (checkData(coordinatesValue.GraphicType, coordinatesValue.GraphicDataList, coordinatesValue.FrameOfReferenceUID))
-    {
-        GraphicType = coordinatesValue.GraphicType;
-        GraphicDataList = coordinatesValue.GraphicDataList;
-        FrameOfReferenceUID = coordinatesValue.FrameOfReferenceUID;
-        result = EC_Normal;
-    }
-    return result;
 }
 
 
@@ -344,6 +370,10 @@ OFBool DSRSpatialCoordinates3DValue::checkData(const DSRTypes::E_GraphicType3D g
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsc3vl.cc,v $
+ *  Revision 1.4  2011-12-16 16:58:34  joergr
+ *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
+ *  SCOORD3D content items.
+ *
  *  Revision 1.3  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

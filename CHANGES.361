@@ -10,6 +10,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.16 (riesmeier)
 
+- Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
+  SCOORD3D content items.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrsc3vl.h
+           dcmsr/include/dcmtk/dcmsr/dsrscovl.h
+           dcmsr/libsrc/dsrsc3vl.cc
+           dcmsr/libsrc/dsrscovl.cc
+
 - Added support for 16 bits per sample to PNG image export.
   Thanks to forum user "AlexanderLysenko" for the original idea.
   Affects: dcmimage/apps/dcm2pnm.cc

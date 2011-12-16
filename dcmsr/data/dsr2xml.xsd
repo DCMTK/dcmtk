@@ -505,6 +505,11 @@
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
             <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="data" type="dsr:FloatPairList"/>
+            <xsd:element name="fiducial" minOccurs="0">
+              <xsd:complexType>
+                <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+              </xsd:complexType>
+            </xsd:element>
           </xsd:sequence>
           <xsd:attribute name="type" type="dsr:SCoordType" use="required"/>
           <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
@@ -529,6 +534,11 @@
                     <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
                   </xsd:extension>
                 </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="fiducial" minOccurs="0">
+              <xsd:complexType>
+                <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
               </xsd:complexType>
             </xsd:element>
           </xsd:sequence>

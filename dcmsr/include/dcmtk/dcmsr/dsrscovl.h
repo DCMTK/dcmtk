@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-12-16 16:58:33 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,8 +136,9 @@ class DSRSpatialCoordinatesValue
     /** render spatial coordinates value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
      *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  annexNumber  reference to the variable where the current annex number is
+     *                       stored.  Value is increased automatically by 1 after a new entry
+     *                       has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -145,6 +146,12 @@ class DSRSpatialCoordinatesValue
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags) const;
+
+    /** get copy of spatial coordinates value
+     ** @param  coordinatesValue  reference to variable in which the value should be stored
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getValue(DSRSpatialCoordinatesValue &coordinatesValue) const;
 
     /** get reference to spatial coordinates value
      ** @return reference to spatial coordinates value
@@ -164,19 +171,25 @@ class DSRSpatialCoordinatesValue
         return GraphicType;
     }
 
-    /** set current graphic type.
-     *  The graphic type specifies the geometry of the coordinates stored in the graphic data
-     *  list.
-     ** @param  graphicType  graphic type to be set (GT_invalid is not allowed)
-     ** @return status, EC_Normal if successful, an error code otherwise
+    /** get reference to graphic data list.
+     *  This list contains an ordered set of (columns,rows) pairs that denote positions in an
+     *  image.  The allowed number of pairs is depending on the graphic type.
+     ** @return reference to graphic data list
      */
-    OFCondition setGraphicType(const DSRTypes::E_GraphicType graphicType);
+    inline DSRGraphicDataList &getGraphicDataList()
+    {
+        return GraphicDataList;
+    }
 
-    /** get copy of spatial coordinates value
-     ** @param  coordinatesValue  reference to variable in which the value should be stored
-     ** @return status, EC_Normal if successful, an error code otherwise
+    /** get fiducial UID.
+     *  Optional - This is the globally unique identifier for this fiducial item.  It can be
+     *  used to associate these spatial coordinates with other content items.
+     ** @return fiducial UID (might be invalid or an empty string)
      */
-    OFCondition getValue(DSRSpatialCoordinatesValue &coordinatesValue) const;
+    inline const OFString &getFiducialUID() const
+    {
+        return FiducialUID;
+    }
 
     /** set spatial coordinates value.
      *  Before setting the value the graphic type and data are checked (see checkData()).
@@ -186,15 +199,21 @@ class DSRSpatialCoordinatesValue
      */
     OFCondition setValue(const DSRSpatialCoordinatesValue &coordinatesValue);
 
-    /** get reference to graphic data list.
-     *  This list contains an ordered set of (columns,rows) pairs that denote positions in
-     *  an image.  The allowed number of pairs is depending on the graphic type.
-     ** @return reference to graphic data list
+    /** set current graphic type.
+     *  The graphic type specifies the geometry of the coordinates stored in the graphic data
+     *  list.
+     ** @param  graphicType  graphic type to be set (GT_invalid is not allowed)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    inline DSRGraphicDataList &getGraphicDataList()
-    {
-        return GraphicDataList;
-    }
+    OFCondition setGraphicType(const DSRTypes::E_GraphicType graphicType);
+
+    /** set current fiducial UID.
+     *  Globally unique identifier that can be used to associate these spatial coordinates
+     *  with other content items.
+     ** @param  fiducialUID  value to be set (VR=UI, optional)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setFiducialUID(const OFString &fiducialUID);
 
 
   protected:
@@ -221,10 +240,12 @@ class DSRSpatialCoordinatesValue
 
   private:
 
-    /// graphic type (associated DICOM VR=CS, type 1)
+    /// Graphic Type (associated DICOM VR=CS, type 1)
     DSRTypes::E_GraphicType GraphicType;
-    /// graphic data (associated DICOM VR=FL, VM=2-n, type 1)
+    /// Graphic Data (associated DICOM VR=FL, VM=2-n, type 1)
     DSRGraphicDataList      GraphicDataList;
+    /// Fiducial UID (VR=UI, VM=1, type 3)
+    OFString                FiducialUID;
 };
 
 
@@ -234,6 +255,10 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
+ *  Revision 1.16  2011-12-16 16:58:33  joergr
+ *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
+ *  SCOORD3D content items.
+ *
  *  Revision 1.15  2010-10-14 13:16:33  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

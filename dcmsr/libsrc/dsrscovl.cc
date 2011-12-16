@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,16 +11,16 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-12-16 16:58:34 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,21 +36,24 @@
 
 DSRSpatialCoordinatesValue::DSRSpatialCoordinatesValue()
   : GraphicType(DSRTypes::GT_invalid),
-    GraphicDataList()
+    GraphicDataList(),
+    FiducialUID()
 {
 }
 
 
 DSRSpatialCoordinatesValue::DSRSpatialCoordinatesValue(const DSRTypes::E_GraphicType graphicType)
   : GraphicType(graphicType),
-    GraphicDataList()
+    GraphicDataList(),
+    FiducialUID()
 {
 }
 
 
 DSRSpatialCoordinatesValue::DSRSpatialCoordinatesValue(const DSRSpatialCoordinatesValue &coordinatesValue)
   : GraphicType(coordinatesValue.GraphicType),
-    GraphicDataList(coordinatesValue.GraphicDataList)
+    GraphicDataList(coordinatesValue.GraphicDataList),
+    FiducialUID(coordinatesValue.FiducialUID)
 {
 }
 
@@ -64,6 +67,7 @@ DSRSpatialCoordinatesValue &DSRSpatialCoordinatesValue::operator=(const DSRSpati
 {
     GraphicType = coordinatesValue.GraphicType;
     GraphicDataList = coordinatesValue.GraphicDataList;
+    FiducialUID = coordinatesValue.FiducialUID;
     return *this;
 }
 
@@ -72,6 +76,7 @@ void DSRSpatialCoordinatesValue::clear()
 {
     GraphicType = DSRTypes::GT_invalid;
     GraphicDataList.clear();
+    FiducialUID.clear();
 }
 
 
@@ -109,14 +114,19 @@ OFCondition DSRSpatialCoordinatesValue::readXML(const DSRXMLDocument &doc,
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
     {
-        /* graphic data (required) */
-        cursor = doc.getNamedNode(cursor.getChild(), "data");
-        if (cursor.valid())
+        cursor.gotoChild();
+        /* GraphicData (required) */
+        const DSRXMLCursor dataNode = doc.getNamedNode(cursor, "data");
+        if (dataNode.valid())
         {
             OFString tmpString;
             /* put value to the graphic data list */
-            result = GraphicDataList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+            result = GraphicDataList.putString(doc.getStringFromNodeContent(dataNode, tmpString).c_str());
         }
+        /* FiducialUID (optional) */
+        const DSRXMLCursor fiducialNode = doc.getNamedNode(cursor, "fiducial", OFFalse /*required*/);
+        if (fiducialNode.valid())
+            doc.getStringFromAttribute(fiducialNode, FiducialUID, "uid");
     }
     return result;
 }
@@ -132,6 +142,8 @@ OFCondition DSRSpatialCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
         GraphicDataList.print(stream);
         stream << "</data>" << OFendl;
     }
+    if ((flags & DSRTypes::XF_writeEmptyTags) || !FiducialUID.empty())
+        stream << "<fiducial uid=\"" << FiducialUID << "\"/>" << OFendl;
     return EC_Normal;
 }
 
@@ -149,6 +161,9 @@ OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset)
             DSRTypes::printUnknownValueWarningMessage("GraphicType", tmpString.c_str());
         /* read GraphicData */
         result = GraphicDataList.read(dataset);
+        /* read optional attributes */
+        if (result.good())
+            DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_FiducialUID, FiducialUID, "1", "3", "SCOORD content item");
         /* check GraphicData and report warnings if any */
         checkData(GraphicType, GraphicDataList);
     }
@@ -166,6 +181,9 @@ OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset) const
         if (!GraphicDataList.isEmpty())
             result = GraphicDataList.write(dataset);
     }
+    /* write optional attributes */
+    if (result.good())
+        DSRTypes::putStringValueToDataset(dataset, DCM_FiducialUID, FiducialUID, OFFalse /*allowEmpty*/);
     /* check GraphicData and report warnings if any */
     checkData(GraphicType, GraphicDataList);
     return result;
@@ -204,18 +222,6 @@ OFCondition DSRSpatialCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docStr
 }
 
 
-OFCondition DSRSpatialCoordinatesValue::setGraphicType(const DSRTypes::E_GraphicType graphicType)
-{
-    OFCondition result = EC_IllegalParameter;
-    if (graphicType != DSRTypes::GT_invalid)
-    {
-        GraphicType = graphicType;
-        result = EC_Normal;
-    }
-    return result;
-}
-
-
 OFCondition DSRSpatialCoordinatesValue::getValue(DSRSpatialCoordinatesValue &coordinatesValue) const
 {
     coordinatesValue = *this;
@@ -230,9 +236,30 @@ OFCondition DSRSpatialCoordinatesValue::setValue(const DSRSpatialCoordinatesValu
     {
         GraphicType = coordinatesValue.GraphicType;
         GraphicDataList = coordinatesValue.GraphicDataList;
+        FiducialUID = coordinatesValue.FiducialUID;
         result = EC_Normal;
     }
     return result;
+}
+
+
+OFCondition DSRSpatialCoordinatesValue::setGraphicType(const DSRTypes::E_GraphicType graphicType)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (graphicType != DSRTypes::GT_invalid)
+    {
+        GraphicType = graphicType;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
+OFCondition DSRSpatialCoordinatesValue::setFiducialUID(const OFString &fiducialUID)
+{
+    /* currently, no check is performed */
+    FiducialUID = fiducialUID;
+    return EC_Normal;
 }
 
 
@@ -298,6 +325,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
+ *  Revision 1.23  2011-12-16 16:58:34  joergr
+ *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
+ *  SCOORD3D content items.
+ *
  *  Revision 1.22  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
