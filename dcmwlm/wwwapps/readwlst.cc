@@ -19,9 +19,9 @@
  *   Program to read a DICOM worklist file and pass (nearly) all tags
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:49 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2011-12-16 16:36:45 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,11 +159,15 @@ int main(int argc, char *argv[])
     } else {
       printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
     }
+    return 0;
 }
 
 /*
  * CVS/RCS Log
  *   $Log: readwlst.cc,v $
+ *   Revision 1.7  2011-12-16 16:36:45  meichel
+ *   Minor changes for MSVC6 compatibility
+ *
  *   Revision 1.6  2011-07-06 11:08:49  uli
  *   Fixed various compiler warnings.
  *

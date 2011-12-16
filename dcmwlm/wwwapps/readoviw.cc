@@ -20,9 +20,9 @@
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *   Used to display an "overview" of available worklist files.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:48 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2011-12-16 16:36:44 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,12 +134,16 @@ int main(int argc, char *argv[])
         } else printf("\\\\\\");
       }
     } /* for */
+    return 0;
 }
 
 
 /*
  * CVS/RCS Log
  *   $Log: readoviw.cc,v $
+ *   Revision 1.6  2011-12-16 16:36:44  meichel
+ *   Minor changes for MSVC6 compatibility
+ *
  *   Revision 1.5  2011-07-06 11:08:48  uli
  *   Fixed various compiler warnings.
  *

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.16 (eichelberg)
+
+- Minor changes for MSVC6 compatibility
+  Affects: dcmnet/apps/getscu.cc
+           dcmwlm/wwwapps/readoviw.cc
+           dcmwlm/wwwapps/readwlst.cc
+
 **** Changes from 2011.12.16 (riesmeier)
 
 - Added support for 16 bits per sample to PNG image export.

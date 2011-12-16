@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-26 08:13:53 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2011-12-16 16:36:44 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -393,9 +393,9 @@ main(int argc, char *argv[])
   // Add storage presentation contexts (long list of storage SOP classes, uncompressed)
   syntaxes.clear();
   prepareTS(opt_store_networkTransferSyntax, syntaxes);
-  for (Uint16 i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs; i++)
+  for (Uint16 j = 0; j < numberOfDcmLongSCUStorageSOPClassUIDs; j++)
   {
-    scu.addPresentationContext(dcmLongSCUStorageSOPClassUIDs[i], syntaxes, ASC_SC_ROLE_SCP);
+    scu.addPresentationContext(dcmLongSCUStorageSOPClassUIDs[j], syntaxes, ASC_SC_ROLE_SCP);
   }
 
   // Set the storage mode
@@ -618,6 +618,9 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.9  2011-12-16 16:36:44  meichel
+** Minor changes for MSVC6 compatibility
+**
 ** Revision 1.8  2011-09-26 08:13:53  joergr
 ** Moved --verbose-pc option to the end of the "general options" section.
 **
