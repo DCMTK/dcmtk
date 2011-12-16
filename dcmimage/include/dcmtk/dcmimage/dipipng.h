@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-16 11:45:48 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,7 @@
 #ifdef WITH_LIBPNG
 
 #include "dcmtk/ofstd/ofstring.h"
-
 #include "dcmtk/dcmimgle/diplugin.h"
-
 #include "dcmtk/dcmimage/dicdefin.h"
 
 
@@ -118,6 +116,11 @@ class DCMTK_DCMIMAGE_EXPORT DiPNGPlugin
      */
     void setMetainfoType(DiPNGMetainfo minfo);
 
+    /* set bits per sample for PNG creation
+     * @param bpp bits per sample (8 or 16)
+     */
+    void setBitsPerSample(const int bpp);
+
     /** get version information of the PNG library.
      *  Typical output format: "LIBPNG, Version 3.5.7"
      *  @return name and version number of the PNG library
@@ -132,6 +135,9 @@ class DCMTK_DCMIMAGE_EXPORT DiPNGPlugin
 
     /// PNG metainfo type
     DiPNGMetainfo metainfoType;
+
+    /// bits per sample (8 or 16, default: 8)
+    int bitsPerSample;
 };
 
 #endif
@@ -141,6 +147,9 @@ class DCMTK_DCMIMAGE_EXPORT DiPNGPlugin
 /*
  * CVS/RCS Log:
  * $Log: dipipng.h,v $
+ * Revision 1.9  2011-12-16 11:45:48  joergr
+ * Added support for 16 bits per sample to PNG image export.
+ *
  * Revision 1.8  2011-12-14 10:13:19  uli
  * Make it possible to nicely build dcmimage as a DLL.
  *

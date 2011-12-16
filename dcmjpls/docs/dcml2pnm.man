@@ -386,6 +386,9 @@ image format:
 
   +on   --write-png
           write 8-bit (monochrome) or 24-bit (color) PNG
+
+  +on2  --write-16-bit-png
+          write 16-bit (monochrome) or 48-bit (color) PNG
 \endverbatim
 
 \section notes NOTES

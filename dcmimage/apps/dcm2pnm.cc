@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-21 09:49:14 $
- *  CVS/RCS Revision: $Revision: 1.105 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-16 11:45:44 $
+ *  CVS/RCS Revision: $Revision: 1.106 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,8 @@ enum E_FileType
     EFT_32bitBMP,
     EFT_JPEG,
     EFT_TIFF,
-    EFT_PNG
+    EFT_PNG,
+    EFT_16bitPNG
 #ifdef PASTEL_COLOR_OUTPUT
    ,EFT_PastelPNM
 #endif
@@ -409,6 +410,7 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_LIBPNG
       cmd.addOption("--write-png",          "+on",     "write 8-bit (monochrome) or 24-bit (color) PNG");
+      cmd.addOption("--write-16-bit-png",   "+on2",    "write 16-bit (monochrome) or 48-bit (color) PNG");
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
       cmd.addOption("--write-jpeg",         "+oj",     "write 8-bit lossy JPEG (baseline)");
@@ -882,6 +884,8 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBPNG
         if (cmd.findOption("--write-png"))
             opt_fileType = EFT_PNG;
+        if (cmd.findOption("--write-16-bit-png"))
+            opt_fileType = EFT_16bitPNG;
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
         if (cmd.findOption("--write-pastel-pnm"))
@@ -1395,6 +1399,7 @@ int main(int argc, char *argv[])
             ofext = "tif";
             break;
           case EFT_PNG:
+          case EFT_16bitPNG:
             ofext = "png";
             break;
           default:
@@ -1495,11 +1500,14 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_LIBPNG
                 case EFT_PNG:
+                case EFT_16bitPNG:
                     {
                         /* initialize PNG plugin */
                         DiPNGPlugin pngPlugin;
                         pngPlugin.setInterlaceType(opt_interlace);
                         pngPlugin.setMetainfoType(opt_metainfo);
+                        if (opt_fileType == EFT_16bitPNG)
+                            pngPlugin.setBitsPerSample(16);
                         result = di->writePluginFormat(&pngPlugin, ofile, frame);
                     }
                     break;
@@ -1551,6 +1559,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.106  2011-12-16 11:45:44  joergr
+ * Added support for 16 bits per sample to PNG image export.
+ *
  * Revision 1.105  2011-06-21 09:49:14  uli
  * Use OFBool for a variable which is already used as a boolean.
  *

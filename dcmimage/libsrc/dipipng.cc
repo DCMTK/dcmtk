@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implements PNG interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:14 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-12-16 11:45:49 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@ DiPNGPlugin::DiPNGPlugin()
 : DiPluginFormat()
 , interlaceType(E_pngInterlaceAdam7)
 , metainfoType(E_pngFileMetainfo)
+, bitsPerSample(8)
 {
 }
 
@@ -66,8 +67,9 @@ int DiPNGPlugin::write(
   volatile int result = 0;  // gcc -W requires volatile here because of longjmp
   if ((image != NULL) && (stream != NULL))
   {
-    /* create bitmap with 8 bits per sample */
-    const void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
+    /* create bitmap with 8 or 16 bits per sample */
+    const int bit_depth = bitsPerSample;
+    const void *data = image->getOutputData(frame, bit_depth /*bits*/, 0 /*planar*/);
     if (data != NULL)
     {
       png_struct *png_ptr = NULL;
@@ -78,11 +80,10 @@ int DiPNGPlugin::write(
       volatile png_textp  text_ptr = NULL;
       png_time ptime;
 
-      int width  = image->getColumns();
-      int height = image->getRows();
+      const int width  = image->getColumns();
+      const int height = image->getRows();
       int color_type;
       int bpp;            // bytesperpixel
-      int bit_depth = 8;
 
       int row;
 
@@ -107,13 +108,14 @@ int DiPNGPlugin::write(
         return 0;
       }
 
-      if((image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2))
+      if( (image->getInternalColorModel() == EPI_Monochrome1) ||
+          (image->getInternalColorModel() == EPI_Monochrome2) )
       {
         color_type = PNG_COLOR_TYPE_GRAY;
-        bpp = 1;
+        bpp = bit_depth / 8;
       } else {
         color_type = PNG_COLOR_TYPE_RGB;
-        bpp = 3;
+        bpp = 3 * bit_depth / 8;
       }
 
       int opt_interlace = 0;
@@ -175,6 +177,10 @@ int DiPNGPlugin::write(
         row_ptr[row] = pix_ptr;
       }
 
+      // swap bytes (if needed)
+      if ( (bit_depth == 16) && (gLocalByteOrder != EBO_BigEndian) )
+        png_set_swap( png_ptr );
+
       // write image
       png_write_image( png_ptr, row_ptr );
 
@@ -204,21 +210,29 @@ void DiPNGPlugin::setMetainfoType(DiPNGMetainfo minfo)
   metainfoType = minfo;
 }
 
+
+void DiPNGPlugin::setBitsPerSample(const int bpp)
+{
+  if( (bpp == 8) || (bpp == 16) )
+    bitsPerSample = bpp;
+}
+
+
 OFString DiPNGPlugin::getLibraryVersionString()
 {
-    OFString versionStr = "LIBPNG, Version ";
-    char cver[10];
-    png_uint_32 ver = png_access_version_number();
-    if( ver < 999999 ) {
-        sprintf( cver, "%li.%li.%li",
-                        OFstatic_cast(long int, (ver/10000)%100),
-                        OFstatic_cast(long int, (ver/100)%100),
-                        OFstatic_cast(long int, ver%100) );
-    }else{
-        sprintf( cver, "unknown" );
-    }
-    versionStr.append( cver );
-    return versionStr;
+  OFString versionStr = "LIBPNG, Version ";
+  char cver[10];
+  png_uint_32 ver = png_access_version_number();
+  if( ver < 999999 ) {
+    sprintf( cver, "%li.%li.%li",
+                   OFstatic_cast(long int, (ver/10000)%100),
+                   OFstatic_cast(long int, (ver/100)%100),
+                   OFstatic_cast(long int, ver%100) );
+  }else{
+    sprintf( cver, "unknown" );
+  }
+  versionStr.append( cver );
+  return versionStr;
 }
 
 #else /* WITH_LIBPNG */
@@ -231,6 +245,9 @@ int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
  * CVS/RCS Log:
  * $Log: dipipng.cc,v $
+ * Revision 1.9  2011-12-16 11:45:49  joergr
+ * Added support for 16 bits per sample to PNG image export.
+ *
  * Revision 1.8  2010-10-14 13:14:14  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

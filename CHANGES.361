@@ -1,7 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.16 (riesmeier)
+
+- Added support for 16 bits per sample to PNG image export.
+  Thanks to forum user "AlexanderLysenko" for the original idea.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/include/dcmtk/dcmimage/dipipng.h
+           dcmimage/libsrc/dipipng.cc
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpls/docs/dcml2pnm.man
+
 **** Changes from 2011.12.15 (riesmeier)
+
+- Fixed typo in comments.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrwavvl.cc
 
 - Fixed issue in XML Schema: The concept name is optional/conditional for
   SCOORD, SCOORD3D and TCOORD content items.
