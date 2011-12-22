@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.12.22 (riesmeier)
+
+- Fixed issue with user-defined modality LUT transformation in combination with
+  the processNextFrames() method.
+  Thanks to forum user "jacobscolin" for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimopx.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimopx.cc
+
 **** Changes from 2011.12.16 (eichelberg)
 
 - Minor changes for MSVC6 compatibility

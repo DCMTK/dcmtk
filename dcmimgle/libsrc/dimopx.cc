@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomMonochromePixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-12-22 14:52:39 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,10 +92,25 @@ DiMonoPixel::~DiMonoPixel()
 }
 
 
+/*********************************************************************/
+
+
+DiMonoModality *DiMonoPixel::addReferenceToModality()
+{
+    if (Modality != NULL)
+        Modality->addReference();
+    return Modality;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
+ * Revision 1.14  2011-12-22 14:52:39  joergr
+ * Fixed issue with user-defined modality LUT transformation in combination with
+ * the processNextFrames() method.
+ *
  * Revision 1.13  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

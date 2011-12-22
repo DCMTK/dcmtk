@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomMonochromePixel (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:50:22 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-12-22 14:52:37 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,6 +197,12 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoPixel
         return (Modality != NULL) ? Modality->getExplanation() : OFstatic_cast(const char *, NULL);
     }
 
+    /** add a reference to the internally managed modality transform object
+     *
+     ** @return pointer to modality transform object (might be NULL)
+     */
+    DiMonoModality *addReferenceToModality();
+
     /** check whether pixel data is 'potentially' signed.
      *  This check is necessary to interpret possibly folowing LUT descriptors correctly
      *  (see supplement 33)
@@ -247,6 +253,10 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
+ * Revision 1.22  2011-12-22 14:52:37  joergr
+ * Fixed issue with user-defined modality LUT transformation in combination with
+ * the processNextFrames() method.
+ *
  * Revision 1.21  2011-12-14 09:50:22  uli
  * Make it possible to properly build dcmimgle as a DLL.
  *

@@ -18,8 +18,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2011-12-22 14:52:39 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -657,11 +657,15 @@ int DiMonoImage::processNextFrames(const unsigned long fcount)
 {
     if (DiImage::processNextFrames(fcount))
     {
-        delete InterData;
-        InterData = NULL;
-        DiMonoModality *modality = new DiMonoModality(Document, InputData);
-        Init(modality, OFTrue /* reuse */);
-        return (ImageStatus == EIS_Normal);
+        if (InterData != NULL)
+        {
+            /* do not create a new object but reference the existing one */
+            DiMonoModality *modality = InterData->addReferenceToModality();
+            delete InterData;
+            InterData = NULL;
+            Init(modality, OFTrue /* reuse */);
+            return (ImageStatus == EIS_Normal);
+        }
     }
     return 0;
 }
@@ -2173,6 +2177,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.85  2011-12-22 14:52:39  joergr
+ * Fixed issue with user-defined modality LUT transformation in combination with
+ * the processNextFrames() method.
+ *
  * Revision 1.84  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
