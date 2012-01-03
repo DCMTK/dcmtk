@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.03 (riesmeier)
 
+- Also link "dcmimage" library, which is now required by the "dcmsr" library.
+  Affects: dcmpstat/apps/CMakeLists.txt
+           dcmpstat/apps/Makefile.in
+
 - Added support for icon image to IMAGE content item (introduced with CP-217).
   Affects: dcmsr/CMakeLists.txt
            dcmsr/apps/CMakeLists.txt
