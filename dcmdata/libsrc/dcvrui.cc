@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 11:22:00 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2012-01-03 14:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,11 +183,15 @@ OFCondition DcmUniqueIdentifier::putString(const char *stringVal,
                                            const Uint32 stringLen)
 {
     const char *uid = stringVal;
+    Uint32 uidLen = stringLen;
     /* check whether parameter contains a UID name instead of a UID number */
     if ((stringVal != NULL) && (stringVal[0] == '='))
+    {
         uid = dcmFindUIDFromName(stringVal + 1);
+        uidLen = (uid != NULL) ? strlen(uid) : 0;
+    }
     /* call inherited method to set the UID string */
-    return DcmByteString::putString(uid, stringLen);
+    return DcmByteString::putString(uid, uidLen);
 }
 
 
@@ -254,6 +258,9 @@ OFCondition DcmUniqueIdentifier::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.38  2012-01-03 14:35:28  joergr
+** Fixed bug in putString() method when a UID name is mapped to a UID number.
+**
 ** Revision 1.37  2011-11-02 11:22:00  joergr
 ** Fixed issue with UI values not being properly normalized in getOFString().
 **

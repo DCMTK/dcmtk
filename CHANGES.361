@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.03 (riesmeier)
 
+- Fixed bug in putString() method when a UID name is mapped to a UID number.
+  Thanks to Michal Spacek <tupinek@gmail.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/dcvrui.cc
+
 - Also link "dcmimage" library, which is now required by the "dcmsr" library.
   Affects: dcmpstat/apps/CMakeLists.txt
            dcmpstat/apps/Makefile.in
