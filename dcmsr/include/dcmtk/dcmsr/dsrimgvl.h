@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 08:32:34 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-01-03 10:58:04 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,13 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrimgfr.h"
+
+
+/*-----------------------*
+ *  forward declaration  *
+ *-----------------------*/
+
+class DicomImage;
 
 
 /*---------------------*
@@ -156,8 +163,9 @@ class DSRImageReferenceValue
     /** render image reference value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
      *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  annexNumber  reference to the variable where the current annex number is
+     *                       stored.  Value is increased automatically by 1 after a new entry
+     *                       has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -165,6 +173,86 @@ class DSRImageReferenceValue
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags) const;
+
+    /** create an icon image from the given DICOM image and associate it with this image
+     *  reference.  According to the DICOM standard, this icon image should be representative
+     *  of the referenced image and the size of the icon image "may be no greater than 128 rows
+     *  by 128 columns".  For monochrome images, either the first stored or an automatically
+     *  computed min-max VOI window is selected.
+     *  Please note that this icon image is only used in readItem() and writeItem() but not in
+     *  the other input/output methods.
+     ** @param  filename  name of the DICOM image file to be used to create the icon image
+     *  @param  frame     number of the frame to be used to create the icon image
+     *                    (0 = 1st frame)
+     *  @param  width     width of the icon image (in pixels).  If 0 this value will be
+     *                    calculated automatically based on the given 'height'.
+     *  @param  height    height of the icon image (in pixels).  If 0 this value will be
+     *                    calculated automatically based on the given 'width'.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition createIconImage(const OFString &filename,
+                                const unsigned long frame = 0,
+                                const unsigned long width = 64,
+                                const unsigned long height = 64);
+
+    /** create an icon image from the given DICOM image and associate it with this image
+     *  reference.  According to the DICOM standard, this icon image should be representative
+     *  of the referenced image and the size of the icon image "may be no greater than 128 rows
+     *  by 128 columns".  For monochrome images, either the first stored or an automatically
+     *  computed min-max VOI window is selected.
+     *  Please note that this icon image is only used in readItem() and writeItem() but not in
+     *  the other input/output methods.
+     ** @param  object  pointer to DICOM data structures (fileformat, dataset or item) that
+     *                  contain the DICOM image to be used to create the icon image
+     *  @param  xfer    transfer syntax of the 'object'.  In case of a fileformat or dataset,
+     *                  the value EXS_Unknown is also allowed.
+     *  @param  frame   number of the frame to be used to create the icon image (0 = 1st frame)
+     *  @param  width   width of the icon image (in pixels).  If 0 this value will be
+     *                  calculated automatically based on the given 'height'.
+     *  @param  height  height of the icon image (in pixels).  If 0 this value will be
+     *                  calculated automatically based on the given 'width'.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition createIconImage(DcmObject *object,
+                                const E_TransferSyntax xfer = EXS_Unknown,
+                                const unsigned long frame = 0,
+                                const unsigned long width = 64,
+                                const unsigned long height = 64);
+
+    /** create an icon image from the given DICOM image and associate it with this image
+     *  reference.  According to the DICOM standard, this icon image should be representative
+     *  of the referenced image and the size of the icon image "may be no greater than 128 rows
+     *  by 128 columns".
+     *  Please note that this icon image is only used in readItem() and writeItem() but not in
+     *  the other input/output methods.
+     ** @param  image   pointer to DICOM image to be used to create the icon image.  Only
+     *                  single frame images should be passed since only the first frame is
+     *                  used.
+     *  @param  width   width of the icon image (in pixels).  If 0 this value will be
+     *                  calculated automatically based on the given 'height'.
+     *  @param  height  height of the icon image (in pixels).  If 0 this value will be
+     *                  calculated automatically based on the given 'width'.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition createIconImage(const DicomImage *image,
+                                const unsigned long width = 64,
+                                const unsigned long height = 64);
+
+    /** delete the currently stored icon image, i.e.\ free the associated memory and "forget"
+     *  the internal reference to it
+     */
+    void deleteIconImage();
+
+    /** get reference to icon image associated with this image reference value (if any).
+     *  Please note that the icon image might be invalid even if the pointer is not NULL.
+     *  Therefore, the DicomImage::getStatus() method should always be called to check the
+     *  status of the image.
+     ** @return reference to icon image or NULL if none is present
+     */
+    const DicomImage *getIconImage() const
+    {
+        return IconImage;
+    }
 
     /** get reference to image reference value
      ** @return reference to image reference value
@@ -268,8 +356,8 @@ class DSRImageReferenceValue
     DSRCompositeReferenceValue PresentationState;
     /// list of referenced frame numbers (associated DICOM VR=IS, VM=1-n, type 1C)
     DSRImageFrameList FrameList;
-
-    /* IconImageSequence (Type 3) not yet supported */
+    /// icon image from Icon Image Sequence (optional)
+    DicomImage *IconImage;
 };
 
 
@@ -279,6 +367,9 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
+ *  Revision 1.20  2012-01-03 10:58:04  joergr
+ *  Added support for icon image to IMAGE content item (introduced with CP-217).
+ *
  *  Revision 1.19  2011-08-02 08:32:34  joergr
  *  Added more general support for softcopy presentation states (not only GSPS).
  *

@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.03 (riesmeier)
+
+- Added support for icon image to IMAGE content item (introduced with CP-217).
+  Affects: dcmsr/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/apps/Makefile.dep
+           dcmsr/apps/Makefile.in
+           dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/Makefile.in
+
 **** Changes from 2011.12.22 (riesmeier)
 
 - Fixed issue with user-defined modality LUT transformation in combination with

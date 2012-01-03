@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:30:18 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2012-01-03 10:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,16 @@
 
 #include "dcmtk/dcmsr/dsrimgvl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
+#include "dcmtk/dcmimgle/dcmimage.h"
+#include "dcmtk/dcmimgle/diutils.h"
+#include "dcmtk/dcmimage/diregist.h"  /* add support for color images */
 
 
 DSRImageReferenceValue::DSRImageReferenceValue()
   : DSRCompositeReferenceValue(),
     PresentationState(),
-    FrameList()
+    FrameList(),
+    IconImage(NULL)
 {
 }
 
@@ -46,7 +50,8 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &sopClassUID,
                                                const OFString &sopInstanceUID)
   : DSRCompositeReferenceValue(),
     PresentationState(),
-    FrameList()
+    FrameList(),
+    IconImage(NULL)
 {
     /* check for appropriate SOP class UID */
     setReference(sopClassUID, sopInstanceUID);
@@ -59,7 +64,8 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
                                                const OFString &pstateSOPInstanceUID)
   : DSRCompositeReferenceValue(),
     PresentationState(),
-    FrameList()
+    FrameList(),
+    IconImage(NULL)
 {
     /* check for appropriate SOP class UID */
     setReference(imageSOPClassUID, imageSOPInstanceUID);
@@ -70,9 +76,14 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
 DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &referenceValue)
   : DSRCompositeReferenceValue(referenceValue),
     PresentationState(referenceValue.PresentationState),
-    FrameList(referenceValue.FrameList)
+    FrameList(referenceValue.FrameList),
+    IconImage(NULL)
 {
-    /* do not check since this would be unexpected to the user */
+    /* do not check values since this would be unexpected to the user */
+
+    /* create copy of icon image (if any), first frame only */
+    if (referenceValue.IconImage != NULL)
+        IconImage = referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/);
 }
 
 
@@ -80,7 +91,8 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRCompositeReferenceValue 
                                                const DSRCompositeReferenceValue &pstateReferenceValue)
   : DSRCompositeReferenceValue(),
     PresentationState(),
-    FrameList()
+    FrameList(),
+    IconImage(NULL)
 {
     /* check for appropriate SOP class UID */
     DSRCompositeReferenceValue::setValue(imageReferenceValue);
@@ -90,6 +102,7 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRCompositeReferenceValue 
 
 DSRImageReferenceValue::~DSRImageReferenceValue()
 {
+    deleteIconImage();
 }
 
 
@@ -99,6 +112,8 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
     /* do not check since this would be unexpected to the user */
     PresentationState = referenceValue.PresentationState;
     FrameList = referenceValue.FrameList;
+    /* create copy of icon image (if any), first frame only */
+    IconImage = (referenceValue.IconImage != NULL) ? referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/) : NULL;
     return *this;
 }
 
@@ -108,6 +123,7 @@ void DSRImageReferenceValue::clear()
     DSRCompositeReferenceValue::clear();
     PresentationState.clear();
     FrameList.clear();
+    deleteIconImage();
 }
 
 
@@ -119,7 +135,7 @@ OFBool DSRImageReferenceValue::isValid() const
 
 OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 {
-    return (FrameList.isEmpty()) || !(flags & DSRTypes::HF_renderFullData);
+    return FrameList.isEmpty() || !(flags & DSRTypes::HF_renderFullData);
 }
 
 
@@ -207,6 +223,8 @@ OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
 {
+    /* be very careful, delete any previously created icon image (should never apply) */
+    deleteIconImage();
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
     OFCondition result = DSRCompositeReferenceValue::readItem(dataset);
     /* read ReferencedFrameNumber (conditional) */
@@ -215,6 +233,34 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
     /* read ReferencedSOPSequence (Presentation State, optional) */
     if (result.good())
         PresentationState.readSequence(dataset, "3" /*type*/);
+    /* read IconImageSequence (optional) */
+    if (result.good())
+    {
+        DcmSequenceOfItems dseq(DCM_IconImageSequence);
+        result = DSRTypes::getElementFromDataset(dataset, dseq);
+        DSRTypes::checkElementValue(dseq, "1", "3", result, "IMAGE content item");
+        if (result.good())
+        {
+            /* check for empty sequence (allowed!) */
+            if (dseq.card() > 0)
+            {
+                /* read first item */
+                DcmItem *ditem = dseq.getItem(0);
+                if ((ditem != NULL) && !ditem->isEmpty())
+                {
+                    /* try to load/process the icon image */
+                    IconImage = new DicomImage(ditem, EXS_LittleEndianExplicit);
+                    if (IconImage != NULL)
+                    {
+                        if (IconImage->getStatus() != EIS_Normal)
+                            result = SR_EC_CannotCreateIconImage;
+                    } else
+                        result = EC_MemoryExhausted;
+                } else
+                    result = SR_EC_InvalidDocumentTree;
+            }
+        }
+    }
     return result;
 }
 
@@ -234,6 +280,23 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
     {
         if (PresentationState.isValid())
             result = PresentationState.writeSequence(dataset);
+    }
+    /* write IconImageSequence (optional) */
+    if (result.good() && (IconImage != NULL))
+    {
+        DcmItem *ditem = NULL;
+        /* create sequence with a single item */
+        result = dataset.findOrCreateSequenceItem(DCM_IconImageSequence, ditem, 0 /*position*/);
+        if (result.good())
+        {
+            /* write icon image */
+            if (IconImage->writeFrameToDataset(*ditem))
+            {
+                /* delete unwanted element NumberOfFrames (0028,0008) */
+                ditem->findAndDeleteElement(DCM_NumberOfFrames);
+            } else
+                result = EC_CorruptedData;
+        }
     }
     return result;
 }
@@ -293,6 +356,119 @@ OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
         }
     }
     return EC_Normal;
+}
+
+
+OFCondition DSRImageReferenceValue::createIconImage(const OFString &filename,
+                                                    const unsigned long frame,
+                                                    const unsigned long width,
+                                                    const unsigned long height)
+{
+    /* delete old icon image (if any) */
+    deleteIconImage();
+    OFCondition result = EC_IllegalParameter;
+    if (!filename.empty())
+    {
+        /* try to load specified DICOM image */
+        const unsigned long flags = CIF_UsePartialAccessToPixelData | CIF_NeverAccessEmbeddedOverlays;
+        DicomImage *image = new DicomImage(filename.c_str(), flags, frame, 1 /*fcount*/);
+        if (image != NULL)
+        {
+            /* set VOI window (for monochrome images) */
+            if (image->isMonochrome() && !image->setWindow(0))
+                image->setMinMaxWindow();
+            /* do the real work: create a down-scaled version of the DICOM image */
+            result = createIconImage(image, width, height);
+            delete image;
+        } else
+            result = EC_MemoryExhausted;
+    }
+    return result;
+}
+
+
+OFCondition DSRImageReferenceValue::createIconImage(DcmObject *object,
+                                                    const E_TransferSyntax xfer,
+                                                    const unsigned long frame,
+                                                    const unsigned long width,
+                                                    const unsigned long height)
+{
+    /* delete old icon image (if any) */
+    deleteIconImage();
+    OFCondition result = EC_IllegalParameter;
+    if (object != NULL)
+    {
+        /* try to load specified DICOM image */
+        const unsigned long flags = CIF_UsePartialAccessToPixelData | CIF_NeverAccessEmbeddedOverlays;
+        DicomImage *image = new DicomImage(object, xfer, flags, frame, 1 /*fcount*/);
+        if (image != NULL)
+        {
+            /* set VOI window (for monochrome images) */
+            if (image->isMonochrome() && !image->setWindow(0))
+                image->setMinMaxWindow();
+            /* do the real work: create a down-scaled version of the DICOM image */
+            result = createIconImage(image, width, height);
+            delete image;
+        } else
+            result = EC_MemoryExhausted;
+    }
+    return result;
+}
+
+
+OFCondition DSRImageReferenceValue::createIconImage(const DicomImage *image,
+                                                    const unsigned long width,
+                                                    const unsigned long height)
+{
+    /* delete old icon image (if any) */
+    deleteIconImage();
+    OFCondition result = EC_IllegalParameter;
+    if (image != NULL)
+    {
+        const EI_Status imageStatus = image->getStatus();
+        /* check whether image loading/processing was successful */
+        switch (imageStatus)
+        {
+            case EIS_Normal:
+            {
+                if (image->getFrameCount() > 1)
+                    DCMSR_DEBUG("DICOM image passed for creating an icon image contains multiple frames");
+                /* create a down-scaled version of the DICOM image */
+                const int aspect = (width == 0) || (height == 0);
+                IconImage = image->createScaledImage(width, height, 1 /*interpolate*/, aspect);
+                result = (IconImage != NULL) ? EC_Normal : SR_EC_CannotCreateIconImage;
+                break;
+            }
+            case EIS_InvalidDocument:
+            case EIS_InvalidImage:
+                result = SR_EC_InvalidDocument;
+                break;
+            case EIS_MissingAttribute:
+                result = SR_EC_MandatoryAttributeMissing;
+                break;
+            case EIS_InvalidValue:
+                result = SR_EC_InvalidValue;
+                break;
+            case EIS_NotSupportedValue:
+                result = SR_EC_UnsupportedValue;
+                break;
+            case EIS_MemoryFailure:
+                result = EC_MemoryExhausted;
+                break;
+            default:
+                /* this is the fallback for all other kind of errors */
+                result = SR_EC_CannotCreateIconImage;
+                break;
+        }
+    }
+    return result;
+}
+
+
+void DSRImageReferenceValue::deleteIconImage()
+{
+    delete IconImage;
+    IconImage = NULL;
 }
 
 
@@ -358,6 +534,9 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.25  2012-01-03 10:58:08  joergr
+ *  Added support for icon image to IMAGE content item (introduced with CP-217).
+ *
  *  Revision 1.24  2011-12-15 16:30:18  joergr
  *  Fixed typo in comments.
  *

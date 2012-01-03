@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 14:47:50 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2012-01-03 10:58:04 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,6 +158,9 @@ extern const OFCondition SR_EC_CorruptedXMLStructure;
 
 /// error: the requested representation is not available
 extern const OFCondition SR_EC_RepresentationNotAvailable;
+
+/// error: an icon image could not be created from the given DICOM image
+extern const OFCondition SR_EC_CannotCreateIconImage;
 //@}
 
 
@@ -1380,6 +1383,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.76  2012-01-03 10:58:04  joergr
+ *  Added support for icon image to IMAGE content item (introduced with CP-217).
+ *
  *  Revision 1.75  2011-12-15 14:47:50  joergr
  *  Added support for additional representations of a numeric value according to
  *  CP-1064 (Float VR in numeric SR content items).
