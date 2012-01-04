@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.04 (riesmeier)
+
+- Updated information on latest CMake version that has been tested to "2.8.7".
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.01.03 (riesmeier)
 
 - Fixed bug in putString() method when a UID name is mapped to a UID number.
