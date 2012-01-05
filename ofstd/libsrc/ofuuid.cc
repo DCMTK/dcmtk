@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-07 16:43:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2012-01-05 13:52:27 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,9 +187,9 @@ void OFUUID::generate()
     /* Bits 0-31 of time (32 bits) */
     time_low = system_time[0];
     /* Bits 32-47 of time (16 bits) */
-    time_mid = system_time[1] & 0xffff;
+    time_mid = OFstatic_cast(Uint16, system_time[1] & 0xffff);
     /* Bits 48-59 of time (11 bits) */
-    version_and_time_high = (system_time[1] >> 16) & 0xeff;
+    version_and_time_high = OFstatic_cast(Uint16, (system_time[1] >> 16) & 0xeff);
     /* Version number, bits 15 to 12 of version_and_time_high */
     version_and_time_high |= 0x100;
     /* Sequence, lowest 8 bits of clock_sequence */
@@ -236,10 +236,10 @@ OFUUID::OFUUID(const struct BinaryRepresentation& rep)
 
 void OFUUID::getBinaryRepresentation(struct BinaryRepresentation& rep) const
 {
-    rep.value[0] = (time_low >> 24) & 0xff;
-    rep.value[1] = (time_low >> 16) & 0xff;
-    rep.value[2] = (time_low >>  8) & 0xff;
-    rep.value[3] = (time_low >>  0) & 0xff;
+    rep.value[0] = OFstatic_cast(Uint8, (time_low >> 24) & 0xff);
+    rep.value[1] = OFstatic_cast(Uint8, (time_low >> 16) & 0xff);
+    rep.value[2] = OFstatic_cast(Uint8, (time_low >>  8) & 0xff);
+    rep.value[3] = OFstatic_cast(Uint8, (time_low >>  0) & 0xff);
     rep.value[4] = (time_mid >>  8) & 0xff;
     rep.value[5] = (time_mid >>  0) & 0xff;
     rep.value[6] = (version_and_time_high >> 8) & 0xff;
@@ -374,6 +374,9 @@ OFBool OFUUID::operator==(const OFUUID& o) const
  *
  * CVS/RCS Log:
  * $Log: ofuuid.cc,v $
+ * Revision 1.4  2012-01-05 13:52:27  joergr
+ * Added explicit type casts to keep VisualStudio 2005 quiet.
+ *
  * Revision 1.3  2011-12-07 16:43:26  joergr
  * Added explicit type cast to keep VisualStudio 2008 from moaning. Other fixes.
  *

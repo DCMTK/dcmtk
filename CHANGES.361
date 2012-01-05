@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.05 (riesmeier)
+
+- Added explicit type casts to keep VisualStudio 2005 quiet.
+  Affects: ofstd/libsrc/ofuuid.cc
+
 **** Changes from 2012.01.04 (riesmeier)
 
 - Updated information on latest CMake version that has been tested to "2.8.7".
