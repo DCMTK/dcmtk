@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2012-01-05 16:25:38 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 #error DCMTK needs stringstream or strstream type
 #endif
 
-/* DCMTK by default does not anymore pollute the default namespace by 
+/* DCMTK by default does not anymore pollute the default namespace by
  * importing namespace std. Earlier releases did this to simplify compatibility
  * with older compilers where STL classes were not consistently defined
  * in namespace std. We now have configure macros which should care for this.
@@ -81,9 +81,7 @@ using namespace std;
 #endif
 #include <iomanip.h>
 
-#endif 
-
-#ifdef USE_STRINGSTREAM
+#endif /* USE_STD_CXX_INCLUDES */
 
 // define STD_NAMESPACE to std:: if the standard namespace exists
 #ifndef STD_NAMESPACE
@@ -96,13 +94,23 @@ using namespace std;
 
 #define OFendl STD_NAMESPACE endl
 
+#ifdef USE_STRINGSTREAM
+
 typedef STD_NAMESPACE stringstream OFStringStream;
 typedef STD_NAMESPACE ostringstream OFOStringStream;
 typedef STD_NAMESPACE istringstream OFIStringStream;
 
 #define OFStringStream_ends ""
-#define OFSTRINGSTREAM_GETOFSTRING(oss, string) \
-    OFString string((oss).str().c_str());
+
+#ifdef HAVE_STD_STRING
+#define OFSTRINGSTREAM_GETOFSTRING(oss, strng) \
+    OFString strng((oss).str());
+#else
+#define OFSTRINGSTREAM_GETOFSTRING(oss, strng) \
+    STD_NAMESPACE string strng##__((oss).str()); \
+    OFString strng(strng##__.c_str(), strng##__.length());
+#endif
+
 // The following two macros define a block structure. Please note that variables
 // declared between xxx_GETSTR and xxx_FREESTR are only valid within this scope.
 #define OFSTRINGSTREAM_GETSTR(oss, chptr) \
@@ -114,15 +122,15 @@ typedef STD_NAMESPACE istringstream OFIStringStream;
 
 #else /* USE_STRINGSTREAM */
 
-typedef strstream OFStringStream;
-typedef ostrstream OFOStringStream;
-typedef istrstream OFIStringStream;
+typedef STD_NAMESPACE strstream OFStringStream;
+typedef STD_NAMESPACE ostrstream OFOStringStream;
+typedef STD_NAMESPACE istrstream OFIStringStream;
 
-#define OFStringStream_ends ends
-#define OFSTRINGSTREAM_GETOFSTRING(oss, string) \
-    char * string##__ = (oss).str(); \
-    OFString string(string##__); \
-    delete[] string##__;
+#define OFStringStream_ends STD_NAMESPACE ends
+#define OFSTRINGSTREAM_GETOFSTRING(oss, strng) \
+    char *strng##__ = (oss).str(); \
+    OFString strng(strng##__, (oss).pcount()); \
+    delete[] strng##__;
 // The following two macros define a block structure. Please note that variables
 // declared between xxx_GETSTR and xxx_FREESTR are only valid within this scope.
 #define OFSTRINGSTREAM_GETSTR(oss, chptr) \
@@ -134,12 +142,16 @@ typedef istrstream OFIStringStream;
 
 #endif /* USE_STRINGSTREAM */
 
-#endif /* USE_STD_CXX_INCLUDES */
+#endif /* OFSTREAM_H */
 
 
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
+ * Revision 1.12  2012-01-05 16:25:38  joergr
+ * Fixed issue with output of strings with embedded NULL bytes to the logger.
+ * Fixed issue with old stringstream classes (reported by VisualStudio 2005).
+ *
  * Revision 1.11  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

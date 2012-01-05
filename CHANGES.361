@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.05 (riesmeier)
 
+- Fixed issue with output of strings with embedded NULL bytes to the logger.
+  Thanks to Michal Spacek <tupinek@gmail.com> for the original report.
+  Affects: ofstd/include/dcmtk/ofstd/ofstream.h
+
+- Fixed issue with old stringstream classes (reported by VisualStudio 2005).
+  Affects: ofstd/include/dcmtk/ofstd/ofstream.h
+
 - Added explicit type casts to keep VisualStudio 2005 quiet.
   Affects: ofstd/libsrc/ofuuid.cc
 
