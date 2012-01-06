@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 16:09:50 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:05 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
  *  system registration, or to a private or local coding scheme.
  *  Implementation of Coding Scheme Identification Sequence.
  */
-class DSRCodingSchemeIdentificationList
+class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
   : public DSRTypes
 {
 
@@ -54,7 +54,7 @@ class DSRCodingSchemeIdentificationList
 
     /** Internal structure defining the list items
      */
-    struct ItemStruct
+    struct DCMTK_DCMSR_EXPORT ItemStruct
     {
         /** constructor
          ** @param  codingSchemeDesignator  Coding Scheme Designator
@@ -322,6 +322,9 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
+ *  Revision 1.15  2012-01-06 09:13:05  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.14  2011-12-09 16:09:50  joergr
  *  Fixed various comments (Doxygen documentation).
  *

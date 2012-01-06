@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:18 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,14 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#define EXPLICIT_SPECIALIZATION template<>
+#else
+#define EXPLICIT_SPECIALIZATION
+#endif
 
 /* declared in class DSRListOfItems<T> */
-//const Uint32 DSRListOfItems<Uint32>::EmptyItem;
+EXPLICIT_SPECIALIZATION const Uint32 DSRListOfItems<Uint32>::EmptyItem = 0;
 
 
 DSRReferencedSamplePositionList::DSRReferencedSamplePositionList()
@@ -167,6 +172,9 @@ OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
+ *  Revision 1.18  2012-01-06 09:13:18  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.17  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

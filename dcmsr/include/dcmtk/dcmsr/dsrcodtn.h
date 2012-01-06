@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-14 15:45:09 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:03 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** Class for content item CODE
  */
-class DSRCodeTreeNode
+class DCMTK_DCMSR_EXPORT DSRCodeTreeNode
   : public DSRDocumentTreeNode,
     public DSRCodedEntryValue
 {
@@ -144,6 +144,9 @@ class DSRCodeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.h,v $
+ *  Revision 1.19  2012-01-06 09:13:03  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.18  2011-12-14 15:45:09  joergr
  *  Added intitial support for the "Enhanced Encoding Mode", which comprises some
  *  optional attributes that further describe a code value.

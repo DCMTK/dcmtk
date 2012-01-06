@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:32 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:12 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 
 /** Class for referenced datetime list
  */
-class DSRReferencedDatetimeList
+class DCMTK_DCMSR_EXPORT DSRReferencedDatetimeList
   : public DSRListOfItems<OFString>
 {
 
@@ -109,6 +109,9 @@ class DSRReferencedDatetimeList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.h,v $
+ *  Revision 1.14  2012-01-06 09:13:12  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.13  2011-08-02 06:26:32  joergr
  *  Fixed typos and/or minor formatting issues.
  *

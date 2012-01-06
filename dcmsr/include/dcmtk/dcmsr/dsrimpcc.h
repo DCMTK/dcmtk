@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRImplantationPlanSRDocumentConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-16 12:53:12 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 /** Class for checking the content relationship constraints of the
  *  Implantation Plan SR Document IOD
  */
-class DSRImplantationPlanSRDocumentConstraintChecker
+class DCMTK_DCMSR_EXPORT DSRImplantationPlanSRDocumentConstraintChecker
   : public DSRIODConstraintChecker
 {
 
@@ -98,6 +98,9 @@ class DSRImplantationPlanSRDocumentConstraintChecker
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimpcc.h,v $
+ *  Revision 1.3  2012-01-06 09:13:08  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.2  2011-06-16 12:53:12  joergr
  *  Updated copyright date.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRGraphicData3DItem, DSRGraphicData3DList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:11 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** Class for graphic data (3D) items
  */
-class DSRGraphicData3DItem
+class DCMTK_DCMSR_EXPORT DSRGraphicData3DItem
 {
   public:
 
@@ -92,7 +92,7 @@ class DSRGraphicData3DItem
 
 /** Class for graphic data (3D) lists
  */
-class DSRGraphicData3DList
+class DCMTK_DCMSR_EXPORT DSRGraphicData3DList
   : public DSRListOfItems<DSRGraphicData3DItem>
 {
 
@@ -185,6 +185,9 @@ class DSRGraphicData3DList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsc3gr.h,v $
+ *  Revision 1.3  2012-01-06 09:13:11  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.2  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

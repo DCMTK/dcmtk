@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRReferencedInstanceList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 15:00:08 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:10 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 /** Class that manages a list of SOP instances significantly related to the current
  *  SR document.  An implementation of the Referenced Instance Sequence.
  */
-class DSRReferencedInstanceList
+class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
   : public DSRTypes
 {
 
@@ -54,7 +54,7 @@ class DSRReferencedInstanceList
 
     /** Internal structure defining the list items
      */
-    struct ItemStruct
+    struct DCMTK_DCMSR_EXPORT ItemStruct
     {
         /** constructor
          ** @param  sopClassUID  SOP class UID
@@ -245,6 +245,9 @@ class DSRReferencedInstanceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefin.h,v $
+ *  Revision 1.2  2012-01-06 09:13:10  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.1  2011-12-09 15:00:08  joergr
  *  Added support for the Referenced Instance Sequence (0008,114A) introduced
  *  with CP-670 (Reference rendering of SR), which allows for referencing an

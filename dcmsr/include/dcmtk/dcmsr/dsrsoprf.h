@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,9 +19,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 16:04:42 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:11 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@
 
 /** Class for SOP instance reference lists
  */
-class DSRSOPInstanceReferenceList
+class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
   : public DSRTypes
 {
 
@@ -59,7 +59,7 @@ class DSRSOPInstanceReferenceList
 
     /** Internal structure defining the instance list items
      */
-    struct InstanceStruct
+    struct DCMTK_DCMSR_EXPORT InstanceStruct
     {
         /** constructor
          ** @param  sopClassUID  SOP class UID
@@ -82,7 +82,7 @@ class DSRSOPInstanceReferenceList
 
     /** Internal structure defining the series list items
      */
-    struct SeriesStruct
+    struct DCMTK_DCMSR_EXPORT SeriesStruct
     {
         /** constructor
          ** @param  seriesUID  series instance UID
@@ -176,7 +176,7 @@ class DSRSOPInstanceReferenceList
 
     /** Internal structure defining the study list items
      */
-    struct StudyStruct
+    struct DCMTK_DCMSR_EXPORT StudyStruct
     {
         /** constructor
          ** @param  studyUID  study instance UID
@@ -556,6 +556,9 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
+ *  Revision 1.18  2012-01-06 09:13:11  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.17  2011-12-09 16:04:42  joergr
  *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
  *  class DSRSOPInstanceReferenceList.

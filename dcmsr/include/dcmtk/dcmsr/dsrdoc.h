@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:24:11 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:06 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
  *  Structured Reporting (SR) documents.
  *  The list of supported SOP classes is available in file "dsrtypes.h".
  */
-class DSRDocument
+class DCMTK_DCMSR_EXPORT DSRDocument
   : protected DSRTypes
 {
 
@@ -1247,6 +1247,9 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.58  2012-01-06 09:13:06  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.57  2011-12-15 16:24:11  joergr
  *  Added support for optional series-related attributes (Series Date and Series
  *  Time). Also improved handling of other study/series-related attributes.

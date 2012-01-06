@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:32 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:13 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** Class for content item TEXT
  */
-class DSRTextTreeNode
+class DCMTK_DCMSR_EXPORT DSRTextTreeNode
   : public DSRDocumentTreeNode,
     public DSRStringValue
 {
@@ -160,6 +160,9 @@ class DSRTextTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.h,v $
+ *  Revision 1.18  2012-01-06 09:13:13  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.17  2011-08-02 06:26:32  joergr
  *  Fixed typos and/or minor formatting issues.
  *

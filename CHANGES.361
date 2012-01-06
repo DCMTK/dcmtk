@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.06 (riesmeier)
+
+- Make it possible to build dcmsr as a DLL. Thanks to
+  Thomas Sondergaard <ts@medical-insight.com> for making this possible.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsdefine.h
+  Affects: dcmsr/include/dcmtk/dcmsr/*.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+
 **** Changes from 2012.01.05 (riesmeier)
 
 - Fixed issue with output of strings with embedded NULL bytes to the logger.

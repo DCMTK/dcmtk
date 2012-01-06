@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:31 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:05 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 
 /** Class for content item CONTAINER
  */
-class DSRContainerTreeNode
+class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
   : public DSRDocumentTreeNode
 {
 
@@ -194,6 +194,9 @@ class DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
+ *  Revision 1.17  2012-01-06 09:13:05  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.16  2011-08-02 06:26:31  joergr
  *  Fixed typos and/or minor formatting issues.
  *

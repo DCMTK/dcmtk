@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-03 10:58:04 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:08 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ class DicomImage;
 
 /** Class for image reference values
  */
-class DSRImageReferenceValue
+class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
   : public DSRCompositeReferenceValue
 {
     // allow access to getValuePtr()
@@ -367,6 +367,9 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
+ *  Revision 1.21  2012-01-06 09:13:08  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.20  2012-01-03 10:58:04  joergr
  *  Added support for icon image to IMAGE content item (introduced with CP-217).
  *

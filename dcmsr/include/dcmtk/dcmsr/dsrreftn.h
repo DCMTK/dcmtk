@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:31 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:11 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** Class for by-reference relationships
  */
-class DSRByReferenceTreeNode
+class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
   : public DSRDocumentTreeNode
 {
     // allow access to private member variables
@@ -191,6 +191,9 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
+ *  Revision 1.16  2012-01-06 09:13:11  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.15  2011-08-02 06:26:31  joergr
  *  Fixed typos and/or minor formatting issues.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinates3DValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-16 16:58:32 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 09:13:11 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** Class for spatial coordinate (3D) values
  */
-class DSRSpatialCoordinates3DValue
+class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
 {
     // allow access to getValuePtr()
     friend class DSRContentItem;
@@ -277,6 +277,9 @@ class DSRSpatialCoordinates3DValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsc3vl.h,v $
+ *  Revision 1.4  2012-01-06 09:13:11  uli
+ *  Make it possible to build dcmsr as a DLL.
+ *
  *  Revision 1.3  2011-12-16 16:58:32  joergr
  *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
  *  SCOORD3D content items.
