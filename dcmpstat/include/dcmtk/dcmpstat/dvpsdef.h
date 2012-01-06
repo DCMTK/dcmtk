@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    definitions of constants and macros for pstat module
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:04 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2012-01-06 10:05:50 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +32,12 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/dcmpstat/dpdefine.h"
 #include "dcmtk/oflog/oflog.h"
 
-extern OFLogger DCM_dcmpstatLogger;
-extern OFLogger DCM_dcmpstatDumpLogger;
-extern OFLogger DCM_dcmpstatLogfileLogger;
+extern DCMTK_DCMPSTAT_EXPORT OFLogger DCM_dcmpstatLogger;
+extern DCMTK_DCMPSTAT_EXPORT OFLogger DCM_dcmpstatDumpLogger;
+extern DCMTK_DCMPSTAT_EXPORT OFLogger DCM_dcmpstatLogfileLogger;
 
 #define DCMPSTAT_TRACE(msg) OFLOG_TRACE(DCM_dcmpstatLogger, msg)
 #define DCMPSTAT_DEBUG(msg) OFLOG_DEBUG(DCM_dcmpstatLogger, msg)
@@ -193,6 +194,9 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
+ *  Revision 1.14  2012-01-06 10:05:50  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.13  2011-04-18 07:01:04  uli
  *  Use global variables for the logger objects. This removes the thread-unsafe
  *  static local variables which were used before.

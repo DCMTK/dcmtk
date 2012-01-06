@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:35 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:49 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,14 +67,14 @@ enum DVPSInstanceType
  *  Images are handled as well as presentation states. This class
  *  is used by DVSeriesCache.
  */
-class DVInstanceCache
+class DCMTK_DCMPSTAT_EXPORT DVInstanceCache
 {
 
  public:
 
     /** Internal structure defining the list items.
      */
-    struct ItemStruct
+    struct DCMTK_DCMPSTAT_EXPORT ItemStruct
     {
         /** Constructor.
          *  sets internal member variables.
@@ -406,14 +406,14 @@ class DVInstanceCache
  *  This class is used by DVStudyCache. The internal structure
  *  is a list of DVInstanceCache.
  */
-class DVSeriesCache
+class DCMTK_DCMPSTAT_EXPORT DVSeriesCache
 {
 
  public:
 
     /** Internal structure defining the list items.
      */
-    struct ItemStruct
+    struct DCMTK_DCMPSTAT_EXPORT ItemStruct
     {
         /** Constructor.
          *  sets internal member variables.
@@ -686,14 +686,14 @@ class DVSeriesCache
  *  This class is used by DVInterface. The internal structure
  *  is a list of DVSeriesCache.
  */
-class DVStudyCache
+class DCMTK_DCMPSTAT_EXPORT DVStudyCache
 {
 
  public:
 
     /** Internal structure defining the list items.
      */
-    struct ItemStruct
+    struct DCMTK_DCMPSTAT_EXPORT ItemStruct
     {
         /** Constructor.
          *  sets internal member variables.
@@ -908,6 +908,9 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
+ * Revision 1.21  2012-01-06 10:05:49  uli
+ * Make it possible to build dcmpstat as a DLL.
+ *
  * Revision 1.20  2010-10-14 13:16:35  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

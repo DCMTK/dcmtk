@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSAnnotationContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:35 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,15 +31,16 @@
 #define DVPSAB_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpstyp.h"   /* for enum types */
+#include "dcmtk/dcmpstat/dpdefine.h"
 #include "dcmtk/dcmdata/dcvrus.h"     /* for class DcmUnsignedShort */
 #include "dcmtk/dcmdata/dcvrlo.h"     /* for class DcmLongString */
 #include "dcmtk/dcmdata/dcvrui.h"     /* for class DcmUniqueIdentifier */
-#include "dcmtk/dcmpstat/dvpstyp.h"   /* for enum types */
 
 /** the representation of a Annotation Content SQ item for Stored Print
  */  
 
-class DVPSAnnotationContent
+class DCMTK_DCMPSTAT_EXPORT DVPSAnnotationContent
 {
 public:
  /// default constructor
@@ -130,6 +131,9 @@ private:
 
 /*
  *  $Log: dvpsab.h,v $
+ *  Revision 1.11  2012-01-06 10:05:49  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.10  2010-10-14 13:16:35  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

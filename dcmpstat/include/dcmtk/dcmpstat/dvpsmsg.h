@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSIPCMessage
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:36 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:50 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 #define DVPSMSG_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dpdefine.h"
 #include "dcmtk/dcmdata/dctypes.h"    /* for Uint32 */
 #include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
 
@@ -39,7 +40,7 @@ class DcmTransportConnection;
 /** class for IPC message exchange between different processes of the
  *  DICOMscope application
  */
-class DVPSIPCMessage
+class DCMTK_DCMPSTAT_EXPORT DVPSIPCMessage
 {
 public:
 
@@ -165,7 +166,7 @@ private:
 /** a client for IPC message exchange between different processes of the
  *  DICOMscope application
  */
-class DVPSIPCClient
+class DCMTK_DCMPSTAT_EXPORT DVPSIPCClient
 {
 public:
 
@@ -280,6 +281,9 @@ private:
 
 /*
  *  $Log: dvpsmsg.h,v $
+ *  Revision 1.8  2012-01-06 10:05:50  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.7  2010-10-14 13:16:36  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

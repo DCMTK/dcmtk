@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:36 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:51 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,8 +31,9 @@
 #define DVPSSVL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmpstat/dpdefine.h"
 #include "dcmtk/dcmpstat/dvpstyp.h"     /* for enum types */
+#include "dcmtk/dcmdata/dcitem.h"
 
 class DVPSSoftcopyVOI;
 class DVPSReferencedSeries_PList;
@@ -42,7 +43,7 @@ class DVPSReferencedSeries_PList;
  *  contained in a presentation state object.
  */
 
-class DVPSSoftcopyVOI_PList
+class DCMTK_DCMPSTAT_EXPORT DVPSSoftcopyVOI_PList
 {
 public:
   /// default constructor
@@ -171,6 +172,9 @@ private:
 
 /*
  *  $Log: dvpssvl.h,v $
+ *  Revision 1.13  2012-01-06 10:05:51  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.12  2010-10-14 13:16:36  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

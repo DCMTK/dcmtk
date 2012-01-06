@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:24:40 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2012-01-06 10:05:51 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@ class DiDisplayFunction;
  *  This class manages the data structures comprising a Presentation State object.
  *  Presentation states can be created, read, written, and modified.
  */
-class DVPresentationState: public DcmPresentationState
+class DCMTK_DCMPSTAT_EXPORT DVPresentationState: public DcmPresentationState
 {
 public:
   /** default constructor
@@ -1338,6 +1338,9 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
+ *  Revision 1.49  2012-01-06 10:05:51  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.48  2011-02-04 11:24:40  uli
  *  Added private undefined functions where gcc's -Weffc++ warns otherwise.
  *

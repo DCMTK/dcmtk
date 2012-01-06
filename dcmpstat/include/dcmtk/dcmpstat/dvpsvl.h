@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSVOILUT
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:37 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:51 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpstyp.h"
+#include "dcmtk/dcmpstat/dpdefine.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmdata/dctk.h"
 
@@ -40,7 +41,7 @@ class DVPSSoftcopyVOI;
 /** the representation of one VOI LUT in a DICOM image.
  */
 
-class DVPSVOILUT
+class DCMTK_DCMPSTAT_EXPORT DVPSVOILUT
 {
 public:
   /// default constructor
@@ -104,6 +105,9 @@ private:
 
 /*
  *  $Log: dvpsvl.h,v $
+ *  Revision 1.11  2012-01-06 10:05:51  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.10  2010-10-14 13:16:37  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

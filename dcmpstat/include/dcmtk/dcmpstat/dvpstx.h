@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSTextObject
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:37 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:51 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmpstat/dvpstyp.h"
+#include "dcmtk/dcmpstat/dpdefine.h"
 
 /** an item of the text object sequence in a presentation state (internal use only).
  *  This class manages the data structures comprising one item
@@ -40,7 +41,7 @@
  *  in the Graphic Annotation Sequence in a Presentation State object.
  */
 
-class DVPSTextObject
+class DCMTK_DCMPSTAT_EXPORT DVPSTextObject
 {
 public:
   /// default constructor
@@ -219,6 +220,9 @@ private:
 
 /*
  *  $Log: dvpstx.h,v $
+ *  Revision 1.12  2012-01-06 10:05:51  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.11  2010-10-14 13:16:37  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

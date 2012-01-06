@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:36 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-06 10:05:50 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,8 +31,9 @@
 #define DVPSIBL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmpstat/dvpstyp.h"     /* for enum types */
+#include "dcmtk/dcmpstat/dpdefine.h"
+#include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 
 class DVPSImageBoxContent;
@@ -43,7 +44,7 @@ class DVPSPresentationLUT_PList;
  *  Image Box Content Sequence in a Stored Print object.
  */
 
-class DVPSImageBoxContent_PList
+class DCMTK_DCMPSTAT_EXPORT DVPSImageBoxContent_PList
 {
 public:
 
@@ -395,6 +396,9 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
+ *  Revision 1.29  2012-01-06 10:05:50  uli
+ *  Make it possible to build dcmpstat as a DLL.
+ *
  *  Revision 1.28  2010-10-14 13:16:36  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
