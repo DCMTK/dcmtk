@@ -3,6 +3,7 @@ ADD_LIBRARY(ijg12 ${STATIC_ON_WINDOWS} jaricom jcapimin jcapistd jcarith jccoefc
 
 # declare installation files
 INSTALL(TARGETS ijg12
+        COMPONENT lib
         RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
         LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})

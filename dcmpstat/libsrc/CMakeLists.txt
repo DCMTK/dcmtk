@@ -5,6 +5,7 @@ TARGET_LINK_LIBRARIES(dcmpstat ofstd oflog dcmdata dcmimgle dcmimage dcmnet dcmd
 
 # declare installation files
 INSTALL(TARGETS dcmpstat
+        COMPONENT lib
         RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
         LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})

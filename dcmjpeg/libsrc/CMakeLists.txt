@@ -8,6 +8,7 @@ TARGET_LINK_LIBRARIES(dcmjpeg ofstd oflog dcmdata dcmimgle dcmimage ijg8 ijg12 i
 
 # declare installation files
 INSTALL(TARGETS dcmjpeg
+        COMPONENT lib
         RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
         LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})
