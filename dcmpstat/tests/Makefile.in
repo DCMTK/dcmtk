@@ -18,20 +18,22 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
 dcmqrdbdir = $(top_srcdir)/../dcmqrdb
 dcmimgledir = $(top_srcdir)/../dcmimgle
+dcmimagedir = $(top_srcdir)/../dcmimage
 dcmsigndir = $(top_srcdir)/../dcmsign
 dcmtlsdir = $(top_srcdir)/../dcmtls
 dcmsrdir = $(top_srcdir)/../dcmsr
 
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmsigndir)/include -I$(dcmtlsdir)/include \
-	-I$(dcmqrdbdir)/include -I$(dcmimgledir)/include -I$(dcmsrdir)/include
+	-I$(dcmqrdbdir)/include -I$(dcmimgledir)/include -I$(dcmimagedir)/include \
+	-I$(dcmsrdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmsigndir)/libsrc \
 	-L$(dcmtlsdir)/libsrc -L$(dcmqrdbdir)/libsrc -L$(dcmimgledir)/libsrc \
-	-L$(dcmsrdir)/libsrc
-LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmimgle -ldcmsr -ldcmqrdb -ldcmnet -ldcmtls \
-	-ldcmdata -loflog -lofstd $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
-	$(OPENSSLLIBS) $(ICONVLIBS)
+	-L$(dcmimagedir)/libsrc -L$(dcmsrdir)/libsrc
+LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmsr -ldcmimage -ldcmimgle -ldcmqrdb -ldcmnet \
+	-ldcmtls -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) \
+	$(TCPWRAPPERLIBS) $(OPENSSLLIBS) $(ICONVLIBS)
 
 objs = msgserv.o
 progs = msgserv

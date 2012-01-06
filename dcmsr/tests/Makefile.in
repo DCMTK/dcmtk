@@ -19,11 +19,11 @@ dcmimgledir = $(top_srcdir)/../dcmimgle
 dcmimagedir = $(top_srcdir)/../dcmimage
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include \
-	  -I$(dcmimgledir)/include -I$(dcmimagedir)/include
+	-I$(dcmimgledir)/include -I$(dcmimagedir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
-	  -L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmimagedir)/libsrc
-LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd \
-	  $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
+	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmimagedir)/libsrc
+LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
+	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
 objs = mkreport.o
 progs = mkreport
