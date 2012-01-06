@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.06 (schlachter)
 
+- Replace ${STATIC_ON_WINDOWS} with STATIC.
+  Affects: CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+
 - Reintroduce library components which were lost in the DLL commits.
   Affects: dcmdata/libi2d/CMakeLists.txt
            dcmdata/libsrc/CMakeLists.txt
