@@ -186,7 +186,7 @@ looks like the following:
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
 <file-format xmlns="http://dicom.offis.de/dcmtk">
-  <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
+  <meta-header xfer="1.2.840.10008.1.2.1" name="Little Endian Explicit">
     <element tag="0002,0000" vr="UL" vm="1" len="4"
              name="MetaElementGroupLength">
       166
@@ -197,7 +197,7 @@ looks like the following:
       OFFIS_DCMTK_353
     </element>
   </meta-header>
-  <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
+  <data-set xfer="1.2.840.10008.1.2" name="Little Endian Implicit">
     <element tag="0008,0005" vr="CS" vm="1" len="10"
              name="SpecificCharacterSet">
       ISO_IR 100
@@ -369,6 +369,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

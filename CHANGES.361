@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.10 (riesmeier)
+
+- Fixed inconsistent transfer syntax names in given example (added spaces).
+  Thanks to Detlev Hohmeier <detlev.hohmeier@meditec.zeiss.com> for the report.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/xml2dcm.man
+
 **** Changes from 2012.01.06 (riesmeier)
 
 - Make sure to link LIBTIFF and LIBPNG to programs that use the dcmsr library
