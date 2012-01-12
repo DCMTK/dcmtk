@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:06 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-01-12 12:02:30 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
 
     /** write current SR document tree to DICOM dataset
      ** @param  dataset      reference to DICOM dataset where the current tree should be
-     *                       written to
+     *                       written to.  The 'dataset' is not cleared before writing to it!
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
      *                       Can be used to digitally sign parts of the document tree.
@@ -343,6 +343,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
+ *  Revision 1.25  2012-01-12 12:02:30  joergr
+ *  Added note that the dataset passed to the write method is not cleared.
+ *
  *  Revision 1.24  2012-01-06 09:13:06  uli
  *  Make it possible to build dcmsr as a DLL.
  *

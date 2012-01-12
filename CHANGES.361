@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.12 (riesmeier)
+
+- Added note that the dataset passed to the write method is not cleared.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+
 **** Changes from 2012.01.10 (riesmeier)
 
 - Fixed inconsistent transfer syntax names in given example (added spaces).

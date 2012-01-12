@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:06 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-01-12 12:02:29 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  (see DSRDocumentTreeNode::setTemplateIdentification()).  This is because the template
      *  constraints cannot be checked yet.
      ** @param  dataset      reference to DICOM dataset to which the current document should be
-     *                       written
+     *                       written.  The 'dataset' is not cleared before writing to it!
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
      *                       Can be used to digitally sign parts of the document tree.
@@ -1247,6 +1247,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.59  2012-01-12 12:02:29  joergr
+ *  Added note that the dataset passed to the write method is not cleared.
+ *
  *  Revision 1.58  2012-01-06 09:13:06  uli
  *  Make it possible to build dcmsr as a DLL.
  *
