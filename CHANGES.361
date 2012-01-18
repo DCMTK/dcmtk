@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.18 (schlachter)
 
+- Don't use P_tmpdir because in MSC6 this define breaks OFTempFile.
+  Affects: ofstd/libsrc/oftempf.cc
+
 - Made it clearer that CMake also works on non-windows systems.
   Affects: INSTALL
 

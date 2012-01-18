@@ -17,9 +17,9 @@
  *
  *  Purpose: Defines a class which manages a temporary file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 11:43:02 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-01-18 14:58:23 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,12 +132,6 @@ OFCondition OFTempFile::createFile(OFString& fileName, int* fd_out, unsigned int
 void OFTempFile::getTempPath(OFString& sPath)
 {
     // We could also try getenv("TMPDIR"), if getenv() is available.
-#ifdef P_tmpdir
-    // Most likely this is just "/tmp", but it doesn't hurt to try.
-    sPath = P_tmpdir;
-    if (OFStandard::dirExists(sPath) && OFStandard::isWriteable(sPath))
-        return;
-#endif
 #ifdef _WIN32
     char buffer[1024];
     GetTempPath(sizeof(buffer), buffer);
@@ -151,6 +145,9 @@ void OFTempFile::getTempPath(OFString& sPath)
 /*
  * CVS/RCS Log:
  * $Log: oftempf.cc,v $
+ * Revision 1.4  2012-01-18 14:58:23  uli
+ * Don't use P_tmpdir because in MSC6 this define breaks OFTempFile.
+ *
  * Revision 1.3  2011-11-17 11:43:02  joergr
  * Made sure that the new OFTempFile class also compiles on Windows.
  *
