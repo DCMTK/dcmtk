@@ -891,6 +891,9 @@ typedef unsigned long ulong;
 #define HAVE_VSNPRINTF 1
 #endif /* _MSC_VER <= 1200 */
 
+#pragma warning( disable : 4251 )  // disable warnings about needed dll-interface
+               // http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+
 #if _MSC_VER >= 1400  /* Additional settings for Visual Studio 2005 and newer */
 #pragma warning( disable : 4996 )  // disable warnings about "deprecated" C runtime functions
 #pragma warning( disable : 4351 )  // disable warnings about "new behavior" when initializing the elements of an array

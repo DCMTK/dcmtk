@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.18 (schlachter)
 
+- Correctly disable warning 4251 with MSC6.
+  Affects: CMakeLists.txt
+           CMake/osconfig.h.in
+
 - Added support for building with hidden visibility.
   Affects: CMakeLists.txt
            CMake/osconfig.h.in

@@ -185,15 +185,6 @@ IF(BUILD_SHARED_LIBS)
 ENDIF(BUILD_SHARED_LIBS)
 
 IF(WIN32)   # special handling for Windows systems
-  # Add a define when we are building shared libs
-  IF(BUILD_SHARED_LIBS)
-    IF(MSVC)
-      # Templates and DLLs cause lots of problems:
-      # http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
-      # (The short version: We have to disable this warning)
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251")
-    ENDIF(MSVC)
-  ENDIF(BUILD_SHARED_LIBS)
 
   IF(MINGW)
     # Avoid auto-importing warnings on MinGW
