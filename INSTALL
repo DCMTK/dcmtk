@@ -194,16 +194,18 @@ for the underlying cryptographic routines and the TLS protocol implementation.
 This release of DCMTK is known to compile with the OpenSSL releases 0.9.8 to
 1.0.0, although other releases may work as well.
 
-On Unix platforms, if support for security enhancements is desired, a compiled
+When using autoconf, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
 compilation of DCMTK.  By default, DCMTK checks whether OpenSSL is installed
 in the standard path and enables support automatically if present.
 
-On Windows platforms, if support for security enhancements is desired, a
-compiled version of the OpenSSL libraries and include files must be available
-during compilation of DCMTK, and the OpenSSL support must be switched on
-explicitly (using CMake, see below).  By default, DCMTK compiles without
-OpenSSL support.
+When using CMake, if support for security enhancements is desired, a compiled
+version of the OpenSSL libraries and include files must be available during
+compilation of DCMTK, and the OpenSSL support must be switched on explicitly
+(using CMake, see below).  By default, DCMTK checks whether OpenSSL is installed
+and enables support automatically if present.  By default, DCMTK checks the
+standard paths on Unix platforms.  For Windows platforms, check the discussion
+on CMake below.
 
 
 ZLIB SUPPORT
@@ -215,12 +217,12 @@ storage.  DCMTK relies on the zlib toolkit (www.zlib.org) for the underlying
 compression routines.  This release of DCMTK is known to compile with the
 zlib releases 1.2.3 to 1.2.5, although other releases may work as well.
 
-On Unix platforms, if support for zlib compression is desired, a compiled
+When using autoconf, if support for zlib compression is desired, a compiled
 version of the zlib library and include files must be available during
 compilation of DCMTK.  By default, DCMTK checks whether zlib is installed
 in the standard path and enables support automatically if present.
 
-On Windows platforms, a compiled version of the zlib libraries and include
+When using CMake, a compiled version of the zlib libraries and include
 files must be available during compilation of DCMTK.  See discussion on CMake
 below.
 
@@ -236,13 +238,13 @@ releases prior to version 3.7.0 will not work since the TIFFCleanup() function
 was not yet available.  On Windows, libtiff 3.7.4 or higher is required due to
 incompatible API changes in libtiff.
 
-On Unix platforms, if support for TIFF export is desired, a compiled version
+When using autoconf, if support for TIFF export is desired, a compiled version
 of the libtiff libraries and include files must be available during compilation
 of DCMTK, and the libtiff support must be switched on explicitly.  By default,
 DCMTK checks whether libtiff is installed in the standard path and enables
 support automatically if present.
 
-On Windows platforms, a compiled version of the libtiff libraries and include
+When using CMake, a compiled version of the libtiff libraries and include
 files must be available during compilation of DCMTK.  See discussion on CMake
 below.
 
@@ -255,14 +257,14 @@ PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.
 This release of DCMTK is known to compile with the current libpng releases
 1.2.8 to 1.4.3, although other releases may work as well.
 
-On Unix platforms, if support for PNG export is desired, a compiled version of
+When using autoconf, if support for PNG export is desired, a compiled version of
 the libpng libraries and include files must be available during compilation of
 DCMTK, and the libpng support must be switched on explicitly.  By default,
 DCMTK checks whether libpng is installed in the standard path and enables
 support automatically if present.  It should be noted that libpng requires
 zlib.
 
-On Windows platforms, a compiled version of the libpng libraries and include
+When using CMake, a compiled version of the libpng libraries and include
 files must be available during compilation of DCMTK.  See discussion on CMake
 below.
 
@@ -275,16 +277,14 @@ DICOM files.  DCMTK relies on the libxml2 toolkit (www.libxml.org) for this
 purpose.  This release of DCMTK is known to compile with the libxml2 releases
 2.6.26 to 2.7.7, although other releases may work as well.
 
-On Unix platforms, if support for XML import is desired, a compiled version of
+When using autoconf, if support for XML import is desired, a compiled version of
 the libxml2 (and possibly iconv) libraries and include files must be available
 during compilation of DCMTK.  By default, DCMTK checks whether libxml2 is
 installed in the standard path and enables support automatically if present.
 
-On Windows platforms, if support for XML import is desired, a compiled version
+When using CMake, if support for XML import is desired, a compiled version
 of the libxml2 (and possibly iconv) libraries and include files must be
-available during compilation of DCMTK, and the libxml2 support must be switched
-on explicitly (using CMake, see below).  By default, DCMTK compiles without
-libxml2 support.
+available during compilation of DCMTK.  See discussion on CMake below.
 
 
 TCP WRAPPER (LIBWRAP) SUPPORT
@@ -297,7 +297,7 @@ allows to enforce host-based access control via the "/etc/hosts.deny" and
 "/etc/hosts.allow" configuration files.  See hosts_access(5) man page for
 details.
 
-On Unix platforms, if support for TCP wrappers is desired, a compiled version
+When using autoconf, if support for TCP wrappers is desired, a compiled version
 of the libwrap library and include file <tcpd.h> must be available during
 compilation of DCMTK.  By default, DCMTK checks whether libwrap is installed
 in the standard path and enables support automatically if present.
@@ -308,7 +308,7 @@ library is not ANSI C compatible and does not work with DCMTK (i.e. will not be
 recognized by DCMTK's configure script).  However, many current Linux and BSD
 distributions ship with an ANSI C compatible header file.
 
-On Windows platforms, TCP wrappers are currently not supported.
+When using CMake, TCP wrappers are currently not supported.
 
 
 LIBICONV SUPPORT
@@ -319,22 +319,23 @@ character encodings.  For this purpose, DCMTK relies on the libiconv toolkit
 (www.gnu.org/s/libiconv/).  This release of DCMTK is known to compile with the
 libiconv release 1.14, although other releases may work as well.
 
-On Unix platforms, if support for libiconv conversion is desired, a compiled
+When using autoconf, if support for libiconv conversion is desired, a compiled
 version of the libiconv library and include files must be available during
-compilation of DCMTK.  By default, DCMTK checks whether libiconv is installed
-in the standard path and enables support automatically if present.
+compilation of DCMTK.  Please note that DCMTK also needs the bundled copy of
+libcharset.  By default, DCMTK checks whether libiconv and libcharset are
+installed in the standard path and enables support automatically if present.
 
-On Windows platforms, a compiled version of the libiconv libraries and include
-files must be available during compilation of DCMTK.  See discussion on CMake
-below.
+When using CMake, a compiled version of the libiconv and libcharset libraries
+and include files must be available during compilation of DCMTK.  See discussion
+on CMake below.
 
 
-BUILDING (Unix)
-===============
+BUILDING (Unix with autoconf)
+=============================
 
 GNU autoconf is used to configure the software for the hardware / operating
 system you are using.  You do not need to obtain GNU autoconf to compile and
-install this software.  All the neccessary configure scripts are included in
+install this software.  All the necessary configure scripts are included in
 this distribution.  The configure scripts examine your system capabilities and
 automatically generate include files and Makefiles.
 
@@ -460,28 +461,29 @@ in the config directory.  See the "config/docs" directory for more information.
 
 See also the FAQ at http://forum.dcmtk.org/faq for more hints.
 
-NOTE: Starting with DCMTK 3.6.0, CMake can also be used for non-Windows
-      systems.  However, this is not (yet) the recommended way since this
-      mechanism is not as mature and stable as the above described approach
-      using GNU autoconf.  Please feel free to test it and report any issue.
+
+BUILDING (CMake in general)
+===========================
+
+CMake is a cross-platform, open-source make system which can be used to control
+the software compilation process using simple configuration files.  CMake can be
+obtained free of charge from http://www.cmake.org/.  For configuring the DCMTK,
+the toolkit contains corresponding "CMakeLists.txt" files in all necessary
+directories.  In detail, these "CMakeLists.txt" files will serve as an input to
+CMake which will generate suitable build files for all of DCMTK's projects from
+these files.
+
+More info about building the DCMTK with CMake can be found in DCMTK's wiki:
+
+  http://support.dcmtk.org/wiki/dcmtk/howto/cmakeconfiguration
 
 
-BUILDING (Windows)
-==================
+Microsoft Windows with CMake
+----------------------------
 
 Starting with DCMTK 3.5.4, no project files for Visual Studio are provided
 anymore.  Project files for all supported compilers can be generated with
 CMake.
-
-CMake is a cross-platform, open-source make system which can be used to control
-the software compilation process using simple configuration files.  CMake can be
-obtained free of charge from http://www.cmake.org/.  For configuring the support
-of external libraries in DCMTK on Windows platforms, the toolkit contains
-corresponding "CMakeLists.txt" files in all necessary directories.  In detail,
-these "CMakeLists.txt" files will serve as an input to CMake which will generate
-new ".dsp" and ".dsw" files (or ".sln" for Visual Studio) for all of DCMTK's
-projects from these files, depending on a configuration which can be adjusted
-manually by the user.
 
 In order to be able to use CMake for configuration purposes in DCMTK, perform
 the following steps to install CMake on your machine:
@@ -585,6 +587,11 @@ perform the following steps:
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
    libraries can be downloaded from http://dicom.offis.de/dcmtk#lib-win.)
+
+   If you want the DCMTK to be built as dynamic link libraries (.dll) instead
+   of static libraries (.lib), set the "BUILD_SHARED_LIBS" option to "ON".
+   Please note that this is currently not supported because it might conflict
+   with the use of external libraries.
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.)
 8. Go "OK" or "Generate".  (CMake will generate new project files in the
@@ -627,6 +634,18 @@ Known limitations of DCMTK on the Windows platform.
          when compiled with Visual C++ 6.0.  When updating software that uses
          DCMTK as a library, make sure that the use of the iostream library is
          consistent throughout the complete application!
+
+
+Unix with CMake
+---------------
+
+Starting with DCMTK 3.6.0, CMake can also be used for non-Windows systems.
+
+NOTE: This is not (yet) the recommended way since this mechanism is not as
+      mature and stable as the above described approach using GNU autoconf.
+      Please feel free to test it and report any issue.  Due to this, it is only
+      sparsely documented.  See the previous section on building the DCMTK with
+      CMake on Windows platforms, but note that details may differ.
 
 
 HTML DOCUMENTATION AND MAN PAGES
@@ -697,4 +716,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-10-21 (Riesmeier)
+Last revised: 2012-01-18 (Schlachter)
