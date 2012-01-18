@@ -19,8 +19,8 @@
  *           Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-09 10:57:59 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2012-01-18 10:37:59 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,11 +70,6 @@ public:
      *  @param s the value for second.
      */
     OFPair(const K& f, const V& s) : first(f), second(s) { }
-
-    /** copy constructor
-     *  @param p Other OFPair to copy from.
-     */
-    OFPair(const OFPair<K, V>& p) : first(p.first), second(p.second) { }
 
     /** copy constructor
      *  @param p Other OFPair to copy from.
@@ -277,6 +272,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.9  2012-01-18 10:37:59  uli
+** Fixed OFPair to compile again on MSC6.
+**
 ** Revision 1.8  2011-11-09 10:57:59  uli
 ** Fixed warnings from -Weffc++ and OFPair<OFString, void*>.
 **

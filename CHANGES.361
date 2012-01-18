@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.18 (schlachter)
 
+- Fixed OFPair to compile again on MSC6.
+  Affects: ofstd/include/dcmtk/ofstd/ofmap.h
+
 - Correctly disable warning 4251 with MSC6.
   Affects: CMakeLists.txt
            CMake/osconfig.h.in
