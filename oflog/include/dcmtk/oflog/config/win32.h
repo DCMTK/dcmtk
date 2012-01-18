@@ -38,34 +38,8 @@
 #  define DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE
 #endif
 
-// log4cplus_EXPORTS is used by the CMake build system.  DLL_EXPORT is
-// used by the autotools build system.  DCMTK_SHARED really is used by cmake.
-#if defined (DCMTK_log4cplus_EXPORTS) || defined (DLL_EXPORT) || defined(DCMTK_SHARED)
-#  undef DCMTK_LOG4CPLUS_BUILD_DLL
-#  define DCMTK_LOG4CPLUS_BUILD_DLL
-#endif
-#ifdef oflog_EXPORTS
-#  define DCMTK_INSIDE_LOG4CPLUS
-#endif
-
-#if ! defined (DCMTK_LOG4CPLUS_BUILD_DLL)
-#  undef DCMTK_LOG4CPLUS_STATIC
-#  define DCMTK_LOG4CPLUS_STATIC
-#endif
-
-#if defined (DCMTK_LOG4CPLUS_STATIC) && defined (DCMTK_LOG4CPLUS_BUILD_DLL)
-#  error DCMTK_LOG4CPLUS_STATIC and DCMTK_LOG4CPLUS_BUILD_DLL cannot be defined both.
-#endif
-
-#if defined (DCMTK_LOG4CPLUS_BUILD_DLL)
-#  if defined (DCMTK_INSIDE_LOG4CPLUS)
-#    define DCMTK_LOG4CPLUS_EXPORT __declspec(dllexport)
-#  else
-#    define DCMTK_LOG4CPLUS_EXPORT __declspec(dllimport)
-#  endif
-#else
-#  define DCMTK_LOG4CPLUS_EXPORT
-#endif
+// This was moved to config.h
+//#define DCMTK_LOG4CPLUS_EXPORT
 
 #ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
 #  define DCMTK_LOG4CPLUS_USE_WIN32_THREADS

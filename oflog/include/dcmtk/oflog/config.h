@@ -26,6 +26,8 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofdefine.h"     /* We need DCMTK_DECL_EXPORT/_IMPORT */
+
 #if defined (_WIN32)
 #  include "dcmtk/oflog/config/win32.h"
 #elif (defined(__MWERKS__) && defined(__MACOS__))
@@ -44,6 +46,13 @@
 #    define DCMTK_LOG4CPLUS_EXPORT DCMTK_LOG4CPLUS_DECLSPEC_IMPORT
 #  endif // defined (DCMTK_INSIDE_LOG4CPLUS)
 #endif // !_WIN32
+
+#undef DCMTK_LOG4CPLUS_EXPORT
+#ifdef oflog_EXPORTS
+#define DCMTK_LOG4CPLUS_EXPORT DCMTK_DECL_EXPORT
+#else
+#define DCMTK_LOG4CPLUS_EXPORT DCMTK_DECL_IMPORT
+#endif
 
 #include "dcmtk/oflog/helpers/threadcf.h"
 

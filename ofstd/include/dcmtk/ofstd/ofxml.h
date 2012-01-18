@@ -18,8 +18,8 @@
  *  Purpose: Simple non-validating XML parser
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:01 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2012-01-18 09:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,14 +149,7 @@
 // DCMTK: we want to use our own standard include wrappers
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
-
-// DCMTK: Make DLLs work correctly
-#if defined(DCMTK_SHARED) && defined(_WIN32)
-#define _USE_XMLPARSER_DLL
-#ifdef ofstd_EXPORTS
-#define _DLL_EXPORTS_
-#endif
-#endif
+#include "dcmtk/ofstd/ofdefine.h"
 
 #ifdef _UNICODE
 // If you comment the next "define" line then the library will never "switch to" _UNICODE (wchar_t*) mode (16/32 bits per characters).
@@ -172,18 +165,8 @@
 #define _XMLWINDOWS
 #endif
 
-#ifdef XMLDLLENTRY
-#undef XMLDLLENTRY
-#endif
-#ifdef _USE_XMLPARSER_DLL
-#ifdef _DLL_EXPORTS_
-#define XMLDLLENTRY __declspec(dllexport)
-#else
-#define XMLDLLENTRY __declspec(dllimport)
-#endif
-#else
-#define XMLDLLENTRY
-#endif
+// DCMTK: Simplified to use our own version in ofstd
+#define XMLDLLENTRY DCMTK_OFSTD_EXPORT
 
 // uncomment the next line if you want no support for wchar_t* (no need for the <wchar.h> or <tchar.h> libraries anymore to compile)
 // DCMTK: we don't want wide characters
@@ -198,7 +181,6 @@
 #ifdef _XMLWINDOWS
 #include <tchar.h>
 #else
-#define XMLDLLENTRY
 #ifndef XML_NO_WIDE_CHAR
 #include <wchar.h> // to have 'wcsrtombs' for ANSI version
                    // to have 'mbsrtowcs' for WIDECHAR version
@@ -831,6 +813,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: ofxml.h,v $
+ * Revision 1.4  2012-01-18 09:33:57  uli
+ * Added support for building with hidden visibility.
+ *
  * Revision 1.3  2011-12-14 08:54:01  uli
  * Make it possible to correctly build ofstd as a DLL.
  *

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.18 (schlachter)
+
+- Added support for building with hidden visibility.
+  Affects: CMakeLists.txt
+           CMake/osconfig.h.in
+           oflog/include/dcmtk/oflog/config.h
+           oflog/include/dcmtk/oflog/config/win32.h
+           ofstd/include/dcmtk/ofstd/ofdefine.h
+           ofstd/include/dcmtk/ofstd/ofxml.h
+
 **** Changes from 2012.01.12 (riesmeier)
 
 - Added note that the dataset passed to the write method is not cleared.

@@ -18,8 +18,8 @@
  *  Purpose: common defines for configuration
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2012-01-18 09:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,10 +36,16 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
+#ifdef DCMTK_SHARED
+#ifdef _WIN32
 // Defines needed for building DLLs on windows
-#if defined(DCMTK_SHARED) && defined(_WIN32)
 #define DCMTK_DECL_EXPORT __declspec(dllexport)
 #define DCMTK_DECL_IMPORT __declspec(dllimport)
+#elif defined(HAVE_HIDDEN_VISIBILITY)
+// GCC hides everything when given -fvisibility=hidden. The symbols which
+// should be visible have to get a default visibility again.
+#define DCMTK_DECL_EXPORT __attribute__ ((visibility("default")))
+#endif
 #endif
 
 #ifndef DCMTK_DECL_EXPORT
@@ -124,6 +130,9 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofdefine.h,v $
+ * Revision 1.4  2012-01-18 09:33:57  uli
+ * Added support for building with hidden visibility.
+ *
  * Revision 1.3  2011-12-14 08:54:00  uli
  * Make it possible to correctly build ofstd as a DLL.
  *
