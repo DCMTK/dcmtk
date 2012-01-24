@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-07 13:20:10 $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  Update Date:      $Date: 2012-01-24 08:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1354,6 +1354,8 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                 out << " keyword=\"" << OFStandard::convertToMarkupString(tagName, xmlString) << "\"";
             }
         }
+        /* close XML start tag */
+        out << ">" << OFendl;
     } else {
         /* value multiplicity = 1..n */
         out << " vm=\"" << getVM() << "\"";
@@ -1368,9 +1370,9 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
         /* write additional attributes (if any) */
         if ((attrText != NULL) && (attrText[0] != '\0'))
             out << " " << attrText;
+        /* close XML start tag */
+        out << ">";
     }
-    /* close XML start tag */
-    out << ">" << OFendl;
 }
 
 
@@ -1916,6 +1918,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.102  2012-01-24 08:18:06  joergr
+** Fixed wrong line break in XML output, which caused problems with the xml2dcm
+** conversion.
+**
 ** Revision 1.101  2011-12-07 13:20:10  joergr
 ** Changed order of attributes for XML element "DicomAttribute" in order to be
 ** consistent with the XML Schema given in the DICOM standard.

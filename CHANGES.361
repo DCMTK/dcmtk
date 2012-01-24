@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.24 (riesmeier)
+
+- Fixed wrong line break in XML output, which caused problems with the xml2dcm
+  conversion. Thanks to forum user "henry" for the report.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2012.01.18 (schlachter)
 
 - Don't use P_tmpdir because in MSC6 this define breaks OFTempFile.
