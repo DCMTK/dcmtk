@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:03 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-01-26 14:08:12 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -441,12 +441,16 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /// internal tree node pointer (current conten item)
     DSRDocumentTreeNode *TreeNode;
 
+    /// empty numeric measurement value. Used as default return value for getNumericValue().
+    /// A static member variable (as for the other values below) cannot be used because this
+    /// class contains members that again contain OFCondition instances that cannot be defined
+    /// before the main() function starts.
+    const DSRNumericMeasurementValue EmptyNumericMeasurement;
+
     /// empty string value. Used as default return value for getStringValue()
     static const OFString                     EmptyString;
     /// empty coded entry value. Used as default return value for getCodeValue() and getConceptName()
     static const DSRCodedEntryValue           EmptyCodedEntry;
-    /// empty numberic measurement value. Used as default return value for getNumericValue()
-    static const DSRNumericMeasurementValue   EmptyNumericMeasurement;
     /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
     static const DSRSpatialCoordinatesValue   EmptySpatialCoordinates;
     /// empty spatial coordinates 3D value. Used as default return value for getSpatialCoordinates3D()
@@ -474,6 +478,10 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
+ *  Revision 1.23  2012-01-26 14:08:12  joergr
+ *  Converted (static) class variable to member variable in order to avoid crash
+ *  on Windows systems (OFCondition instances cannot be used in global objects).
+ *
  *  Revision 1.22  2012-01-06 09:13:03  uli
  *  Make it possible to build dcmsr as a DLL.
  *

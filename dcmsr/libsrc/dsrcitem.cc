@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-30 14:21:34 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2012-01-26 14:08:14 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,6 @@
 // definition of empty default objects
 const OFString                     DSRContentItem::EmptyString;
 const DSRCodedEntryValue           DSRContentItem::EmptyCodedEntry;
-const DSRNumericMeasurementValue   DSRContentItem::EmptyNumericMeasurement;
 const DSRSpatialCoordinatesValue   DSRContentItem::EmptySpatialCoordinates;
 const DSRSpatialCoordinates3DValue DSRContentItem::EmptySpatialCoordinates3D;
 const DSRTemporalCoordinatesValue  DSRContentItem::EmptyTemporalCoordinates;
@@ -62,7 +61,8 @@ const DSRWaveformReferenceValue    DSRContentItem::EmptyWaveformReference;
 
 
 DSRContentItem::DSRContentItem()
-  : TreeNode(NULL)
+  : TreeNode(NULL),
+    EmptyNumericMeasurement()
 {
 }
 
@@ -696,6 +696,10 @@ OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateId
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
+ *  Revision 1.17  2012-01-26 14:08:14  joergr
+ *  Converted (static) class variable to member variable in order to avoid crash
+ *  on Windows systems (OFCondition instances cannot be used in global objects).
+ *
  *  Revision 1.16  2011-11-30 14:21:34  joergr
  *  Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
  *

@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.26 (riesmeier)
 
+- Converted (static) class variable to member variable in order to avoid crash
+  on Windows systems (OFCondition instances cannot be used in global objects).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/libsrc/dsrcitem.cc
+
 - Fixed wrong return status when reading an IMAGE content item without icon.
   Affects: dcmsr/libsrc/dsrimgvl.cc
 
