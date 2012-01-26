@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-01-26 17:47:50 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,9 +44,6 @@ class DcmItem;
 /** A class for managing and converting between different DICOM character sets.
  *  The conversion relies on the OFCharacterEncoding class, which again relies
  *  on the libiconv toolkit (if available).
- *  \note Code extension techniques according to ISO 2022 are not yet supported,
- *        i.e. a Specific Character Set (0008,0005) element with multiple values
- *        cannot be selected.
  */
 class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 {
@@ -271,8 +268,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
     /** check whether the given string contains at least one escape character
      *  (ESC), because it is used for code extension techniques like ISO 2022
-     *  @param  strValue   string to be checked for any escape character
-     *  @param  strLength  length of the string to be checked
+     *  @param  strValue   input string to be checked for any escape character
+     *  @param  strLength  length of the input string
      *  @return OFTrue if an escape character has been found, OFFalse otherwise
      */
     OFBool checkForEscapeCharacter(const char *strValue,
@@ -283,8 +280,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  length of the string is always limited to a particular maximum (see
      *  implementation).  If the converted string would be longer, it is
      *  cropped and "..." is appended to indicate this cropping.
-     *  @param  strValue   string to be checked for any escape character
-     *  @param  strLength  length of the string to be checked
+     *  @param  strValue   input string to be converted and possibly cropped
+     *  @param  strLength  length of the input string
      *  @return resulting string in octal format
      */
     OFString convertToLengthLimitedOctalString(const char *strValue,
@@ -324,6 +321,9 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
  *
  * CVS/RCS Log:
  * $Log: dcspchrs.h,v $
+ * Revision 1.5  2012-01-26 17:47:50  joergr
+ * Removed outdated comment on the main class and revised some other comments.
+ *
  * Revision 1.4  2011-12-14 09:04:13  uli
  * Make it possible to accurately build dcmdata and libi2d as DLLs.
  *
