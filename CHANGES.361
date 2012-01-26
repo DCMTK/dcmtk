@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.26 (riesmeier)
+
+- Fixed wrong return status when reading an IMAGE content item without icon.
+  Affects: dcmsr/libsrc/dsrimgvl.cc
+
 **** Changes from 2012.01.24 (riesmeier)
 
 - Fixed wrong line break in XML output, which caused problems with the xml2dcm

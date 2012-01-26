@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-03 10:58:08 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2012-01-26 09:10:55 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,9 +237,10 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
     if (result.good())
     {
         DcmSequenceOfItems dseq(DCM_IconImageSequence);
-        result = DSRTypes::getElementFromDataset(dataset, dseq);
-        DSRTypes::checkElementValue(dseq, "1", "3", result, "IMAGE content item");
-        if (result.good())
+        /* use local status variable since the sequence is optional */
+        const OFCondition seqStatus = DSRTypes::getElementFromDataset(dataset, dseq);
+        DSRTypes::checkElementValue(dseq, "1", "3", seqStatus, "IMAGE content item");
+        if (seqStatus.good())
         {
             /* check for empty sequence (allowed!) */
             if (dseq.card() > 0)
@@ -534,6 +535,9 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.26  2012-01-26 09:10:55  joergr
+ *  Fixed wrong return status when reading an IMAGE content item without icon.
+ *
  *  Revision 1.25  2012-01-03 10:58:08  joergr
  *  Added support for icon image to IMAGE content item (introduced with CP-217).
  *
