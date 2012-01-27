@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.27 (elgazzar)
+
+- Added a module number for the dcmkosel module
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+
 **** Changes from 2012.01.26 (riesmeier)
 
 - Removed outdated comment on the main class and revised some other comments.

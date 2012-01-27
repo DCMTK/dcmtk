@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:11 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2012-01-27 15:15:00 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ const unsigned short OFM_dcmstcom = 23;
 const unsigned short OFM_dcmppscu = 24;
 const unsigned short OFM_dcmstscp = 25;
 const unsigned short OFM_dcmqrdbx = 26;
+const unsigned short OFM_dcmkosel = 27;
 
 // condition constants
 
@@ -156,6 +157,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.44  2012-01-27 15:15:00  ogazzar
+** Added a module number for the dcmkosel module.
+**
 ** Revision 1.43  2011-12-14 09:04:11  uli
 ** Make it possible to accurately build dcmdata and libi2d as DLLs.
 **
