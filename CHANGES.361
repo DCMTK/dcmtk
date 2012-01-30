@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.30 (riesmeier)
 
+- Fixed issue reported on Mac OS X with Clang: Only define the macro MAX() if
+  not yet defined somewhere else.
+  Thanks to forum user "chaircrusher" for the report.
+  Affects: dcmwlm/wwwapps/writwlst.cc
+
 - Fixed issue with wrong initialization of member variable "waitMillis".
   Thanks to forum user "chaircrusher" for the report.
   Affects: oflog/libsrc/config.cc

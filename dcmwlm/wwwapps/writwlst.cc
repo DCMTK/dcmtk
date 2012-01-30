@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *   hexedecimal encoded string.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-18 12:03:17 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2012-01-30 10:09:14 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,9 @@ usage()
 
 #define SimpleStr_defaultSize 32
 
+#ifndef MAX
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
 class SimpleStr {
 private:
@@ -583,6 +585,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
+ *   Revision 1.12  2012-01-30 10:09:14  joergr
+ *   Fixed issue reported on Mac OS X with Clang: Only define the macro MAX() if
+ *   not yet defined somewhere else.
+ *
  *   Revision 1.11  2011-08-18 12:03:17  joergr
  *   Replaced function max() by macro MAX() in order to compile with VisualStudio.
  *
