@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.01.30 (riesmeier)
+
+- Fixed issue with wrong initialization of member variable "waitMillis".
+  Thanks to forum user "chaircrusher" for the report.
+  Affects: oflog/libsrc/config.cc
+
 **** Changes from 2012.01.27 (elgazzar)
 
 - Added a module number for the dcmkosel module
