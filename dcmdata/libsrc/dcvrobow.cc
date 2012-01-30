@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:37:59 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-01-30 10:15:20 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -516,7 +516,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
         {
             /* ... and convert it to a character string (hex mode) */
             char buffer[32];
-            sprintf(buffer, "%2.2hx", uint8Val);
+            sprintf(buffer, "%2.2hx", OFstatic_cast(unsigned short, uint8Val));
             /* assign result */
             stringVal = buffer;
         }
@@ -760,6 +760,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.71  2012-01-30 10:15:20  joergr
+** Added explicit type cast to avoid warning reporting on Mac OS X with Clang.
+**
 ** Revision 1.70  2011-12-07 14:37:59  uli
 ** Use an UUID instead of an UID for the BulkData XML output.
 **

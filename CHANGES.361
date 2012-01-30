@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.01.30 (riesmeier)
 
+- Added explicit type cast to avoid warning reporting on Mac OS X with Clang.
+  Thanks to forum user "chaircrusher" for the report and suggested patch.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
 - Fixed issue reported on Mac OS X with Clang: Only define the macro MAX() if
   not yet defined somewhere else.
   Thanks to forum user "chaircrusher" for the report.
