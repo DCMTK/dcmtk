@@ -502,17 +502,20 @@ int main()
 }")
 
 # Check if strerror_r returns a char* is defined.
-DCMTK_TRY_COMPILE(HAVE_CHARP_STRERROR_R "strerror_r returns an int"
+DCMTK_TRY_COMPILE(HAVE_INT_STRERROR_R "strerror_r returns an int"
     "#include <string.h>
 
 int main()
 {
-    // We can't test \"char *p = strerror_r()\" because that only causes a
-    // compiler warning when strerror_r returns an integer.
     char *buf = 0;
     int i = strerror_r(0, buf, 100);
     return i;
 }")
+IF(HAVE_INT_STRERROR_R)
+  SET(HAVE_CHARP_STRERROR_R 0 CACHE INTERNAL "Set if strerror_r() returns a char*")
+ELSE(HAVE_INT_STRERROR_R)
+  SET(HAVE_CHARP_STRERROR_R 1 CACHE INTERNAL "Set if strerror_r() returns a char*")
+ENDIF(HAVE_INT_STRERROR_R)
 
 # Check if variable length arrays are supported.
 DCMTK_TRY_COMPILE(HAVE_VLA "variable length arrays are supported"

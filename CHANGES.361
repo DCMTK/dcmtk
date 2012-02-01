@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.01 (schlachter)
+
+- Corrected CMake's test for strerror_r()'s return value. Thanks to forum
+  user "chaircrusher" for the report.
+
 **** Changes from 2012.01.30 (riesmeier)
 
 - Added explicit type cast to avoid warning reporting on Mac OS X with Clang.
