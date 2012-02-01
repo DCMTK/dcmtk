@@ -7,10 +7,18 @@
 #define JLS_INTERFACE
 
 #include "pubtypes.h"
-#include "dcmtk/ofstd/ofstd.h" /* for size_t */
+#include "dcmtk/ofstd/ofstd.h"    /* for size_t */
+#include "dcmtk/ofstd/ofdefine.h" /* for DCMTK_DECL_EXPORT */
+
+
+#ifdef charls_EXPORTS
+#define DCMTK_CHARLS_EXPORT DCMTK_DECL_EXPORT
+#else
+#define DCMTK_CHARLS_EXPORT DCMTK_DECL_IMPORT
+#endif
 
 #ifndef CHARLS_IMEXPORT
-#define CHARLS_IMEXPORT(returntype) returntype
+#define CHARLS_IMEXPORT(returntype) DCMTK_CHARLS_EXPORT returntype
 #endif
 
 

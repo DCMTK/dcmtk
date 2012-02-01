@@ -3,8 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.01 (schlachter)
 
+- Build charls as a shared library if BUILD_SHARED_LIBS is ON.
+  Affects: dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/intrface.h
+
 - Corrected CMake's test for strerror_r()'s return value. Thanks to forum
   user "chaircrusher" for the report.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
 
 **** Changes from 2012.01.30 (riesmeier)
 
