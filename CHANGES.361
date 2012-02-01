@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.01 (schlachter)
 
+- Moved some definitions to a file that can be included from C.
+  Added:   ofstd/include/dcmtk/ofstd/ofexport.h
+  Affects: ofstd/include/dcmtk/ofstd/ofdefine.h
+
 - Build charls as a shared library if BUILD_SHARED_LIBS is ON.
   Affects: dcmjpls/libcharls/CMakeLists.txt
            dcmjpls/libcharls/intrface.h

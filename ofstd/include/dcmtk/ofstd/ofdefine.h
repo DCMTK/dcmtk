@@ -18,8 +18,8 @@
  *  Purpose: common defines for configuration
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-18 09:33:57 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2012-02-01 09:49:18 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,30 +31,11 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofexport.h"
 
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
-
-#ifdef DCMTK_SHARED
-#ifdef _WIN32
-// Defines needed for building DLLs on windows
-#define DCMTK_DECL_EXPORT __declspec(dllexport)
-#define DCMTK_DECL_IMPORT __declspec(dllimport)
-#elif defined(HAVE_HIDDEN_VISIBILITY)
-// GCC hides everything when given -fvisibility=hidden. The symbols which
-// should be visible have to get a default visibility again.
-#define DCMTK_DECL_EXPORT __attribute__ ((visibility("default")))
-#endif
-#endif
-
-#ifndef DCMTK_DECL_EXPORT
-#define DCMTK_DECL_EXPORT
-#endif
-
-#ifndef DCMTK_DECL_IMPORT
-#define DCMTK_DECL_IMPORT
-#endif
 
 #ifdef ofstd_EXPORTS
 #define DCMTK_OFSTD_EXPORT DCMTK_DECL_EXPORT
@@ -130,6 +111,9 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofdefine.h,v $
+ * Revision 1.5  2012-02-01 09:49:18  uli
+ * Moved some definitions to a file that can be included from C.
+ *
  * Revision 1.4  2012-01-18 09:33:57  uli
  * Added support for building with hidden visibility.
  *
