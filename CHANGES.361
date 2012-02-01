@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.01 (schlachter)
 
+- Don't call MSVC++ with -fvisibility=hidden.
+  Affects: CMakeLists.txt
+
 - Build the ijg libraries as shared libraries if BUILD_SHARED_LIBS is ON.
   Affects: dcmjpeg/libijg12/CMakeLists.txt
            dcmjpeg/libijg12/jmorecfg12.h
