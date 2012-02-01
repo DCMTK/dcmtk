@@ -11,6 +11,15 @@
  */
 
 
+#include "dcmtk/ofstd/ofexport.h" /* for DCMTK_DECL_EXPORT */
+
+#ifdef ijg16_EXPORTS
+#define DCMTK_IJG16_EXPORT DCMTK_DECL_EXPORT
+#else
+#define DCMTK_IJG16_EXPORT DCMTK_DECL_IMPORT
+#endif
+
+
 /*
  * Define BITS_IN_JSAMPLE as either
  *   8   for 8-bit sample values (the usual setting)
@@ -218,7 +227,7 @@ typedef unsigned int JDIMENSION;
 /* a function referenced thru EXTERNs: */
 #define GLOBAL(type)		type
 /* a reference to a GLOBAL function: */
-#define EXTERN(type)		extern type
+#define EXTERN(type)		extern DCMTK_IJG16_EXPORT type
 
 
 /* This macro is used to declare a "method", that is, a function pointer.

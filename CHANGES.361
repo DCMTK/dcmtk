@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.01 (schlachter)
 
+- Build the ijg libraries as shared libraries if BUILD_SHARED_LIBS is ON.
+  Affects: dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg12/jmorecfg12.h
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg16/jmorecfg16.h
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libijg8/jmorecfg8.h
+
 - Moved some definitions to a file that can be included from C.
   Added:   ofstd/include/dcmtk/ofstd/ofexport.h
   Affects: ofstd/include/dcmtk/ofstd/ofdefine.h
