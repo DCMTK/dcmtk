@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.03 (riesmeier)
+
+- Added missing package include statement for "FindPackageHandleStandardArgs".
+  Thanks to Julien Finet <julien.finet@kitware.com> for the report and fix.
+  Affects: CMake/FindICONV.cmake
+
 **** Changes from 2012.02.01 (schlachter)
 
 - Don't call MSVC++ with -fvisibility=hidden.

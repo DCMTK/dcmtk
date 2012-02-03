@@ -6,6 +6,7 @@
 #  LIBICONV_LIBRARIES    - Lists of libraries when using iconv
 #  LIBICONV_FOUND        - True if iconv found
 
+INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(dcmtkTryCompile)
 
 # Look for the header file
