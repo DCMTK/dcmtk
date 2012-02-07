@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.07 (riesmeier)
+
+- Added comment about conflicting definition of (0040,A170) in Supplement 23
+  (frozen draft from 1997) and DICOM standard. This might result in parsing
+  errors when reading/processing old trial implementation draft SR documents.
+  Affects: dcmdata/data/dicom.dic
+
 **** Changes from 2012.02.03 (riesmeier)
 
 - Added missing package include statement for "FindPackageHandleStandardArgs".
