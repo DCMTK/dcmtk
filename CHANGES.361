@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.08 (schlachter)
+
+- Link libraries against their external dependencies.
+  Affects: dcmdata/libsrc/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
 **** Changes from 2012.02.07 (riesmeier)
 
 - Added comment about conflicting definition of (0040,A170) in Supplement 23
