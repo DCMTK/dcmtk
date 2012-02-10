@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -67,8 +67,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2012-02-10 09:09:46 $
-** Revision:      $Revision: 1.99 $
+** Last Update:   $Author: joergr $, $Date: 2012-02-10 11:09:10 $
+** Revision:      $Revision: 1.100 $
 ** Status:        $State: Exp $
 */
 
@@ -2136,28 +2136,6 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         msg += OFStandard::strerror(errno, buf, sizeof(buf));
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
-#ifndef DISABLE_RECV_TIMEOUT
-      /* use a timeout of 60 seconds for the recv() function */
-      const int recvTimeout = 60;
-      DCMNET_DEBUG("setting network receive timeout to " << recvTimeout << " seconds");
-#ifdef HAVE_WINSOCK_H
-      // for Windows, specify receive timeout in milliseconds
-      int timeoutVal = recvTimeout * 1000;
-      if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
-#else
-      // for other systems, specify receive timeout as timeval struct
-      struct timeval timeoutVal;
-      timeoutVal.tv_sec = recvTimeout;
-      timeoutVal.tv_usec = 0;
-      if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
-#endif
-      {
-        // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
-        // so we are reporting a warning message but are not returning with an error code;
-        // this also applies to all other systems where the call to this function might fail
-        DCMNET_WARN("cannot set network receive timeout to " << recvTimeout << " seconds");
-      }
-#endif
 #endif
       listen(sock, PRV_LISTENBACKLOG);
     }
@@ -2765,6 +2743,10 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.100  2012-02-10 11:09:10  joergr
+** Moved setting of timeout for recv() function to the DcmTransportConnection
+** constructor. The previous commit was not really solving the problem.
+**
 ** Revision 1.99  2012-02-10 09:09:46  joergr
 ** Moved setting of timeout for the recv() function to initializeNetworkTCP(),
 ** i.e. now it applies to both incoming and outgoing connections.

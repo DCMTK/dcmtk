@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.10 (riesmeier)
 
+- Moved setting of timeout for recv() function to the DcmTransportConnection
+  constructor. The previous commit was not really solving the problem.
+  Affects: dcmnet/libsrc/dcmtrans.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/Makefile.dep
+
 - Moved setting of timeout for the recv() function to initializeNetworkTCP(),
   i.e. now it applies to both incoming and outgoing connections.
   Affects: dcmnet/libsrc/dul.cc

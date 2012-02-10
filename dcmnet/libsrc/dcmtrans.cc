@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2012-02-10 11:09:10 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,6 +30,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcompat.h"     /* compatibility code for certain Unix dialects such as SunOS */
+#include "dcmtk/dcmnet/diutil.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -62,6 +63,35 @@ END_EXTERN_C
 DcmTransportConnection::DcmTransportConnection(int openSocket)
 : theSocket(openSocket)
 {
+#ifndef HAVE_GUSI_H
+  if (theSocket >= 0)
+  {
+#ifndef DISABLE_RECV_TIMEOUT
+    {
+      /* use a timeout of 60 seconds for the recv() function */
+      const int recvTimeout = 60;
+      DCMNET_DEBUG("setting network receive timeout to " << recvTimeout << " seconds");
+#ifdef HAVE_WINSOCK_H
+      // for Windows, specify receive timeout in milliseconds
+      int timeoutVal = recvTimeout * 1000;
+      if (setsockopt(theSocket, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
+#else
+      // for other systems, specify receive timeout as timeval struct
+      struct timeval timeoutVal;
+      timeoutVal.tv_sec = recvTimeout;
+      timeoutVal.tv_usec = 0;
+      if (setsockopt(theSocket, SOL_SOCKET, SO_RCVTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
+#endif
+      {
+        // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
+        // so we are reporting a warning message but are not returning with an error code;
+        // this also applies to all other systems where the call to this function might fail
+        DCMNET_WARN("cannot set network receive timeout to " << recvTimeout << " seconds");
+      }
+    }
+#endif
+  }
+#endif
 }
 
 DcmTransportConnection::~DcmTransportConnection()
@@ -314,6 +344,10 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
+ *  Revision 1.15  2012-02-10 11:09:10  joergr
+ *  Moved setting of timeout for recv() function to the DcmTransportConnection
+ *  constructor. The previous commit was not really solving the problem.
+ *
  *  Revision 1.14  2010-10-14 13:14:28  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
