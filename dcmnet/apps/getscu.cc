@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2011-12-16 16:36:44 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2012-02-10 14:54:38 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -496,7 +496,6 @@ main(int argc, char *argv[])
     } else
     {
       /* release association */
-      OFLOG_INFO(getscuLogger, "Releasing Association");
       scu.closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
       exit(0);
     }
@@ -618,6 +617,9 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.10  2012-02-10 14:54:38  onken
+** Removed duplicate log message when closing an association.
+**
 ** Revision 1.9  2011-12-16 16:36:44  meichel
 ** Minor changes for MSVC6 compatibility
 **
