@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:12 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-10 07:48:19 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -511,7 +511,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                      OFBool searchIntoSub = OFFalse);
 
     /** check if an element with the given attribute tag exists in the dataset
-     *  and has a non-empty value (i.e., length > 0)
+     *  and has a non-empty value
      *  @param key tag key to be searched
      *  @param searchIntoSub if true, do hierarchical search within sequences,
      *    if false only search through this dataset
@@ -1321,6 +1321,9 @@ DCMTK_DCMDATA_EXPORT OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.92  2012-02-10 07:48:19  joergr
+** Fixed issue with tagExistsWithValue() and compressed PixelData (7fe0,0010).
+**
 ** Revision 1.91  2011-12-14 09:04:12  uli
 ** Make it possible to accurately build dcmdata and libi2d as DLLs.
 **

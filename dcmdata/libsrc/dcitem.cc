@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-05 16:09:32 $
- *  CVS/RCS Revision: $Revision: 1.164 $
+ *  Update Date:      $Date: 2012-02-10 07:48:21 $
+ *  CVS/RCS Revision: $Revision: 1.165 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2218,16 +2218,17 @@ OFBool DcmItem::tagExists(const DcmTagKey &key,
 OFBool DcmItem::tagExistsWithValue(const DcmTagKey &key,
                                    OFBool searchIntoSub)
 {
-    DcmElement *elem = NULL;
-    Uint32 len = 0;
     DcmStack stack;
+    OFBool result = OFFalse;
 
-    OFCondition ec = search(key, stack, ESM_fromHere, searchIntoSub);
-    elem = OFstatic_cast(DcmElement *, stack.top());
-    if (ec.good() && elem != NULL)
-        len = elem->getLength();
+    if (search(key, stack, ESM_fromHere, searchIntoSub).good())
+    {
+        DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
+        if (elem != NULL)
+            result = !(elem->isEmpty());
+    }
 
-    return (ec.good()) && (len > 0);
+    return result;
 }
 
 
@@ -3965,6 +3966,9 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.165  2012-02-10 07:48:21  joergr
+** Fixed issue with tagExistsWithValue() and compressed PixelData (7fe0,0010).
+**
 ** Revision 1.164  2011-12-05 16:09:32  joergr
 ** Added workaround that treats the non-standard VR "OX" as "OW" when reading a
 ** DICOM dataset, since it seems to be used by some products out there.

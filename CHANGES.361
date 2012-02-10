@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.10 (riesmeier)
+
+- Fixed issue with tagExistsWithValue() and compressed PixelData (7fe0,0010).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2012.02.08 (schlachter)
 
 - Link libraries against their external dependencies.
