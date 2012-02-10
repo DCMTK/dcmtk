@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.10 (riesmeier)
 
+- Introduced a new timeout of 60 seconds for the send() function in order to
+  make sure that the association is terminated if the sender looses the
+  connection to the receiver. This can be disabled by DISABLE_SEND_TIMEOUT.
+  Thanks to forum user "Matterhorn" for the original report.
+  Affects: config/docs/macros.txt
+           dcmnet/libsrc/dcmtrans.cc
+
 - Moved setting of timeout for recv() function to the DcmTransportConnection
   constructor. The previous commit was not really solving the problem.
   Affects: dcmnet/libsrc/dcmtrans.cc

@@ -19,8 +19,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-10 11:09:10 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2012-02-10 11:10:55 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,30 @@ DcmTransportConnection::DcmTransportConnection(int openSocket)
 #ifndef HAVE_GUSI_H
   if (theSocket >= 0)
   {
+#ifndef DISABLE_SEND_TIMEOUT
+    {
+      /* use a timeout of 60 seconds for the send() function */
+      const int sendTimeout = 60;
+      DCMNET_DEBUG("setting network send timeout to " << sendTimeout << " seconds");
+#ifdef HAVE_WINSOCK_H
+      // for Windows, specify send timeout in milliseconds
+      int timeoutVal = sendTimeout * 1000;
+      if (setsockopt(theSocket, SOL_SOCKET, SO_SNDTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
+#else
+      // for other systems, specify send timeout as timeval struct
+      struct timeval timeoutVal;
+      timeoutVal.tv_sec = sendTimeout;
+      timeoutVal.tv_usec = 0;
+      if (setsockopt(theSocket, SOL_SOCKET, SO_SNDTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
+#endif
+      {
+        // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
+        // so we are reporting a warning message but are not returning with an error code;
+        // this also applies to all other systems where the call to this function might fail
+        DCMNET_WARN("cannot set network send timeout to " << sendTimeout << " seconds");
+      }
+    }
+#endif
 #ifndef DISABLE_RECV_TIMEOUT
     {
       /* use a timeout of 60 seconds for the recv() function */
@@ -344,6 +368,11 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
+ *  Revision 1.16  2012-02-10 11:10:55  joergr
+ *  Introduced a new timeout of 60 seconds for the send() function in order to
+ *  make sure that the association is terminated if the sender looses the
+ *  connection to the receiver. This can be disabled by DISABLE_SEND_TIMEOUT.
+ *
  *  Revision 1.15  2012-02-10 11:09:10  joergr
  *  Moved setting of timeout for recv() function to the DcmTransportConnection
  *  constructor. The previous commit was not really solving the problem.
