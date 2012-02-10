@@ -3,7 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.10 (riesmeier)
 
+- Moved setting of timeout for the recv() function to initializeNetworkTCP(),
+  i.e. now it applies to both incoming and outgoing connections.
+  Affects: dcmnet/libsrc/dul.cc
+
 - Fixed issue with tagExistsWithValue() and compressed PixelData (7fe0,0010).
+  Thanks to forum user "angad" for the original report.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/libsrc/dcitem.cc
 
