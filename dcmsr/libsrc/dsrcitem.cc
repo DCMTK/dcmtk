@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-26 14:08:14 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2012-02-14 11:07:26 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -673,6 +673,23 @@ OFCondition DSRContentItem::setObservationDateTime(const OFString &observationDa
 }
 
 
+const OFString &DSRContentItem::getObservationUID() const
+{
+    if (TreeNode != NULL)
+        return TreeNode->getObservationUID();
+    return EmptyString;
+}
+
+
+OFCondition DSRContentItem::setObservationUID(const OFString &observationUID)
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+        result = TreeNode->setObservationUID(observationUID);
+    return result;
+}
+
+
 OFCondition DSRContentItem::getTemplateIdentification(OFString &templateIdentifier,
                                                       OFString &mappingResource) const
 {
@@ -696,6 +713,9 @@ OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateId
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
+ *  Revision 1.18  2012-02-14 11:07:26  joergr
+ *  Added support for Observation UID (0040,A171) to content items (CP-1147).
+ *
  *  Revision 1.17  2012-01-26 14:08:14  joergr
  *  Converted (static) class variable to member variable in order to avoid crash
  *  on Windows systems (OFCondition instances cannot be used in global objects).

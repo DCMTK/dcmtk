@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:06 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-14 11:07:24 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,6 +303,26 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
 
+    /** get observation unique identifier.
+     *  The UID represents the semantic content of the observation; an encoding of the same
+     *  observation with the same context into another representation may use the same UID.
+     ** @return observation unique identifier of current content item (might be empty/invalid)
+     */
+    inline const OFString &getObservationUID() const
+    {
+        return ObservationUID;
+    }
+
+    /** set observation unique identifier.
+     *  The UID represents the semantic content of the observation; an encoding of the same
+     *  observation with the same context into another representation may use the same UID.
+     *  Please use the correct DICOM format (VR=UI) or an empty string to clear the current
+     *  value.  Currently no check is performed on the parameter value!
+     ** @param  observationUID  value to be set (might be an empty string)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setObservationUID(const OFString &observationUID);
+
     /** get template identifier and mapping resource.
      *  This value pair identifies the template that was used to create this content item
      *  (and its children).  According to the DICOM standard it is "required if a template
@@ -553,6 +573,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     DSRCodedEntryValue       ConceptName;
     /// observation date and time (VR=DT, conditional)
     OFString                 ObservationDateTime;
+    /// observation unique identifier (VR=UI, optional)
+    OFString                 ObservationUID;
 
     /// template identifier (VR=CS, mandatory in ContentTemplateSequence)
     OFString                 TemplateIdentifier;
@@ -579,6 +601,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
+ *  Revision 1.30  2012-02-14 11:07:24  joergr
+ *  Added support for Observation UID (0040,A171) to content items (CP-1147).
+ *
  *  Revision 1.29  2012-01-06 09:13:06  uli
  *  Make it possible to build dcmsr as a DLL.
  *

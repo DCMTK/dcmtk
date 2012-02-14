@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-14 10:21:19 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2012-02-14 11:07:26 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipTy
     ValueType(valueType),
     ConceptName(),
     ObservationDateTime(),
+    ObservationUID(),
     TemplateIdentifier(),
     MappingResource(),
     MACParameters(DCM_MACParametersSequence),
@@ -67,6 +68,7 @@ void DSRDocumentTreeNode::clear()
     ReferenceTarget = OFFalse;
     ConceptName.clear();
     ObservationDateTime.clear();
+    ObservationUID.clear();
     TemplateIdentifier.clear();
     MappingResource.clear();
     MACParameters.clear();
@@ -164,10 +166,13 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         }
         /* read concept name (not required in some cases) */
         ConceptName.readXML(doc, doc.getNamedNode(cursor.getChild(), "concept", OFFalse /*required*/));
-        /* read observation datetime (optional) */
+        /* read observation UID and datetime (optional) */
         const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "observation", OFFalse /*required*/);
         if (childCursor.valid())
-            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor.getChild(), "datetime"), ObservationDateTime);
+        {
+            doc.getStringFromAttribute(childCursor, ObservationUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
+            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor.getChild(), "datetime", OFFalse /*required*/), ObservationDateTime);
+        }
         /* read node content (depends on value type) */
         result = readXMLContentItem(doc, cursor);
         /* goto first child node */
@@ -267,15 +272,22 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
         ConceptName.writeXML(stream, flags);
         stream << "</concept>" << OFendl;
     }
-    /* observation datetime (optional) */
-    if (!ObservationDateTime.empty())
+    if (!(ObservationDateTime.empty() && ObservationUID.empty()))
     {
+        /* observation UID (optional) */
         OFString tmpString;
-        stream << "<observation>" << OFendl;
-        /* output time in ISO 8601 format */
-        DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
-            OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
-        writeStringValueToXML(stream, tmpString, "datetime");
+        stream << "<observation";
+        if (!ObservationUID.empty())
+            stream << " uid=\"" << ObservationUID << "\"";
+        stream << ">" << OFendl;
+        /* observation datetime (optional) */
+        if (!ObservationDateTime.empty())
+        {
+            /* output time in ISO 8601 format */
+            DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+                OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
+            writeStringValueToXML(stream, tmpString, "datetime");
+        }
         stream << "</observation>" << OFendl;
     }
     /* write child nodes (if any) */
@@ -388,8 +400,16 @@ OFCondition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &concep
 
 OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observationDateTime)
 {
-    /* might add a check for proper DateTime format */
+    /* might add a check for proper DT format */
     ObservationDateTime = observationDateTime;
+    return EC_Normal;
+}
+
+
+OFCondition DSRDocumentTreeNode::setObservationUID(const OFString &observationUID)
+{
+    /* might add a check for proper UI format */
+    ObservationUID = observationUID;
     return EC_Normal;
 }
 
@@ -497,6 +517,8 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     }
     /* read ObservationDateTime (conditional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C");
+    /* read ObservationUID (optional) */
+    getAndCheckStringValueFromDataset(dataset, DCM_ObservationUID, ObservationUID, "1", "3");
     /* determine template identifier expected for this document */
     const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? OFSTRING_GUARD(constraintChecker->getRootTemplateIdentifier()) : "";
     /* read ContentTemplateSequence (conditional) */
@@ -560,6 +582,9 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
         markedItems->push(&dataset);
     /* write ObservationDateTime (conditional) */
     result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, OFFalse /*allowEmpty*/);
+    /* write ObservationUID (optional) */
+    if (result.good())
+        result = putStringValueToDataset(dataset, DCM_ObservationUID, ObservationUID, OFFalse /*allowEmpty*/);
     /* write ContentTemplateSequence (conditional) */
     if (result.good())
     {
@@ -1147,6 +1172,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.60  2012-02-14 11:07:26  joergr
+ *  Added support for Observation UID (0040,A171) to content items (CP-1147).
+ *
  *  Revision 1.59  2011-12-14 10:21:19  joergr
  *  Report a warning if the value of Template Identifier (0040,DB00) does not
  *  follow the rules for DICOM template identifiers.

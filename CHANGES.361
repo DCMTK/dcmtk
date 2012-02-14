@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.14 (riesmeier)
+
+- Added support for Observation UID (0040,A171) to content items (CP-1147).
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrreftn.cc
+
 **** Changes from 2012.02.10 (riesmeier)
 
 - Introduced a new timeout of 60 seconds for the send() function in order to

@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:11 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-14 11:07:24 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,13 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
      */
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
 
+    /** set observation unique identifier
+     ** @param  observationUID  dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no observation
+     *          unique identifier (part of Document Relationship Macro)
+     */
+    virtual OFCondition setObservationUID(const OFString &observationUID);
+
     /** set template identifier and mapping resource
      ** @param  templateIdentifier  dummy parameter
      *  @param  mappingResource     dummy parameter
@@ -191,6 +198,9 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
+ *  Revision 1.17  2012-02-14 11:07:24  joergr
+ *  Added support for Observation UID (0040,A171) to content items (CP-1147).
+ *
  *  Revision 1.16  2012-01-06 09:13:11  uli
  *  Make it possible to build dcmsr as a DLL.
  *

@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-26 14:08:12 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2012-02-14 11:07:24 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -393,6 +393,24 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      */
     OFCondition setObservationDateTime(const OFString &observationDateTime);
 
+    /** get observation unique identifier.
+     *  The UID represents the semantic content of the observation; an encoding of the same
+     *  observation with the same context into another representation may use the same UID.
+     *  Applicable to all content items (by-value only, optional attribute).
+     ** @return observation unique identifier of current content item if valid, EmptyString otherwise
+     */
+    const OFString &getObservationUID() const;
+
+    /** set observation unique identifier.
+     *  The UID represents the semantic content of the observation; an encoding of the same
+     *  observation with the same context into another representation may use the same UID.
+     *  Please use the correct DICOM format (VR=UI).
+     *  Applicable to all content items (by-value only).
+     ** @param  observationUID  value to be set (might be an empty string)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setObservationUID(const OFString &observationUID);
+
     /** get template identifier and mapping resource.
      *  This value pair identifies the template that was used to create this content item
      *  (and its children).  According to the DICOM standard is is "required if a template
@@ -478,6 +496,9 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
+ *  Revision 1.24  2012-02-14 11:07:24  joergr
+ *  Added support for Observation UID (0040,A171) to content items (CP-1147).
+ *
  *  Revision 1.23  2012-01-26 14:08:12  joergr
  *  Converted (static) class variable to member variable in order to avoid crash
  *  on Windows systems (OFCondition instances cannot be used in global objects).

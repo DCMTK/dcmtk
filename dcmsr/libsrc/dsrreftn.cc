@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:19 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2012-02-14 11:07:26 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,6 +202,13 @@ OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*ob
 }
 
 
+OFCondition DSRByReferenceTreeNode::setObservationUID(const OFString & /*observationUID*/)
+{
+    /* invalid: no observation unique identifier allowed */
+    return EC_IllegalCall;
+}
+
+
 OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /*templateIdentifier*/,
                                                               const OFString & /*mappingResource*/)
 {
@@ -213,6 +220,9 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
+ *  Revision 1.23  2012-02-14 11:07:26  joergr
+ *  Added support for Observation UID (0040,A171) to content items (CP-1147).
+ *
  *  Revision 1.22  2011-03-22 16:55:19  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2011, OFFIS e.V.
+      Copyright (C) 2003-2012, OFFIS e.V.
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -249,8 +249,9 @@
 
   <xsd:complexType name="Observation">
     <xsd:sequence>
-      <xsd:element name="datetime" type="dsr:DateTime"/>
+      <xsd:element name="datetime" type="dsr:DateTime" minOccurs="0"/>
     </xsd:sequence>
+    <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
   </xsd:complexType>
 
   <xsd:complexType name="ReferencedSOP">
@@ -904,7 +905,8 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="DateTime">
-    <xsd:restriction base="xsd:dateTime">
+    <!-- cannot use xsd:dateTime here since this would make the "seconds" part mandatory -->
+    <xsd:restriction base="xsd:string">
       <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}([\-+][0-9]{2}:[0-9]{2})?)?"/>
     </xsd:restriction>
   </xsd:simpleType>
