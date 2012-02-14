@@ -12,6 +12,11 @@ Changes between releases are documented here.
            dcmsr/libsrc/dsrdoctn.cc
            dcmsr/libsrc/dsrreftn.cc
 
+**** Changes from 2012.02.10 (onken)
+
+- Removed duplicate log message when closing an association.
+  Affects: dcmnet/apps/getscu.cc
+
 **** Changes from 2012.02.10 (riesmeier)
 
 - Introduced a new timeout of 60 seconds for the send() function in order to
