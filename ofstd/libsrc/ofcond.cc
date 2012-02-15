@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-28 11:15:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-02-15 14:50:46 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,27 +32,19 @@
 
 /* ---------- global condition constants ---------- */
 
-const OFConditionConst ECC_Normal                     (0,  0, OF_ok,      "Normal");
-const OFConditionConst ECC_IllegalParameter           (0,  1, OF_error,   "Illegal parameter");
-const OFConditionConst ECC_MemoryExhausted            (0,  2, OF_failure, "Virtual Memory exhausted");
-const OFConditionConst ECC_NoEncodingLibrary          (0,  3, OF_error,   "No character encoding library available");
-const OFConditionConst ECC_NoEncodingSelected         (0,  4, OF_error,   "No character encoding selected");
+makeOFConditionConst(EC_Normal,                      0, 0, OF_ok,      "Normal");
+makeOFConditionConst(EC_IllegalParameter,            0, 1, OF_error,   "Illegal parameter");
+makeOFConditionConst(EC_MemoryExhausted,             0, 2, OF_failure, "Virtual Memory exhausted");
+makeOFConditionConst(EC_NoEncodingLibrary,           0, 3, OF_error,   "No character encoding library available");
+makeOFConditionConst(EC_NoEncodingSelected,          0, 4, OF_error,   "No character encoding selected");
 // codes 5..8 are used for dynamically created error messages (see below constants)
-const OFConditionConst ECC_CouldNotCreateTemporaryFile(0,  9, OF_error,   "Could not create temporary file");
-const OFConditionConst ECC_InvalidFilename            (0, 10, OF_error,   "Invalid filename");
+makeOFConditionConst(EC_CouldNotCreateTemporaryFile, 0, 9, OF_error,   "Could not create temporary file");
+makeOFConditionConst(EC_InvalidFilename,             0, 10, OF_error,  "Invalid filename");
 
 
 // NOTE:
 // error codes 1024..2047 are reserved for inter-process communication
 // errors defined elsewhere in module ofstd
-
-const OFCondition EC_Normal                     (ECC_Normal);
-const OFCondition EC_IllegalParameter           (ECC_IllegalParameter);
-const OFCondition EC_MemoryExhausted            (ECC_MemoryExhausted);
-const OFCondition EC_NoEncodingLibrary          (ECC_NoEncodingLibrary);
-const OFCondition EC_NoEncodingSelected         (ECC_NoEncodingSelected);
-const OFCondition EC_CouldNotCreateTemporaryFile(ECC_CouldNotCreateTemporaryFile);
-const OFCondition EC_InvalidFilename            (ECC_InvalidFilename);
 
 const unsigned short EC_CODE_CannotOpenEncoding     = 5;
 const unsigned short EC_CODE_CannotCloseEncoding    = 6;
@@ -60,66 +52,17 @@ const unsigned short EC_CODE_CannotConvertEncoding  = 7;
 const unsigned short EC_CODE_CannotControlConverter = 8;
 
 
-/* ---------- class OFConditionConst ---------- */
-
-const OFConditionBase *OFConditionConst::clone() const
-{
-  return this; // since we're not deletable, we just return a copy to ourselves
-}
-
-unsigned long OFConditionConst::codeAndModule() const
-{
-  return theCodeAndModule;
-}
-
-OFStatus OFConditionConst::status() const
-{
-  return theStatus;
-}
-
-const char *OFConditionConst::text() const
-{
-  return theText;
-}
-
-OFBool OFConditionConst::deletable() const
-{
-  return OFFalse;
-}
-
-
-/* ---------- class OFConditionString ---------- */
-
-const OFConditionBase *OFConditionString::clone() const
-{
-  return new OFConditionString(*this);
-}
-
-unsigned long OFConditionString::codeAndModule() const
-{
-  return theCodeAndModule;
-}
-
-OFStatus OFConditionString::status() const
-{
-  return theStatus;
-}
-
-const char *OFConditionString::text() const
-{
-  return theText.c_str();
-}
-
-OFBool OFConditionString::deletable() const
-{
-  return OFTrue;
-}
-
-
 /*
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
+ * Revision 1.11  2012-02-15 14:50:46  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.10  2011-11-28 11:15:46  joergr
  * Added general condition constant for invalid filenames.
  *

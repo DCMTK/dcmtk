@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-03 10:58:08 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-02-15 14:50:44 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,39 +253,22 @@ struct S_CharacterSetNameMap
  *---------------------------------*/
 
 // conditions
-const OFConditionConst ECC_UnknownDocumentType              (OFM_dcmsr,  1, OF_error, "Unknown Document Type");
-const OFConditionConst ECC_InvalidDocument                  (OFM_dcmsr,  2, OF_error, "Invalid Document");
-const OFConditionConst ECC_InvalidDocumentTree              (OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
-const OFConditionConst ECC_MandatoryAttributeMissing        (OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
-const OFConditionConst ECC_InvalidValue                     (OFM_dcmsr,  5, OF_error, "Invalid Value");
-const OFConditionConst ECC_UnsupportedValue                 (OFM_dcmsr,  6, OF_error, "Unsupported Value");
-const OFConditionConst ECC_UnknownValueType                 (OFM_dcmsr,  7, OF_error, "Unknown Value Type");
-const OFConditionConst ECC_UnknownRelationshipType          (OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
-const OFConditionConst ECC_InvalidByValueRelationship       (OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
-const OFConditionConst ECC_InvalidByReferenceRelationship   (OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
-const OFConditionConst ECC_SOPInstanceNotFound              (OFM_dcmsr, 11, OF_error, "SOP Instance not found");
-const OFConditionConst ECC_DifferentSOPClassesForAnInstance (OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
-const OFConditionConst ECC_CodingSchemeNotFound             (OFM_dcmsr, 13, OF_error, "Coding Scheme Designator not found");
-const OFConditionConst ECC_CorruptedXMLStructure            (OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
-const OFConditionConst ECC_RepresentationNotAvailable       (OFM_dcmsr, 15, OF_error, "Representation not available");
-const OFConditionConst ECC_CannotCreateIconImage            (OFM_dcmsr, 16, OF_error, "Cannot create Icon Image");
-
-const OFCondition SR_EC_UnknownDocumentType                 (ECC_UnknownDocumentType);
-const OFCondition SR_EC_InvalidDocument                     (ECC_InvalidDocument);
-const OFCondition SR_EC_InvalidDocumentTree                 (ECC_InvalidDocumentTree);
-const OFCondition SR_EC_MandatoryAttributeMissing           (ECC_MandatoryAttributeMissing);
-const OFCondition SR_EC_InvalidValue                        (ECC_InvalidValue);
-const OFCondition SR_EC_UnsupportedValue                    (ECC_UnsupportedValue);
-const OFCondition SR_EC_UnknownValueType                    (ECC_UnknownValueType);
-const OFCondition SR_EC_UnknownRelationshipType             (ECC_UnknownRelationshipType);
-const OFCondition SR_EC_InvalidByValueRelationship          (ECC_InvalidByValueRelationship);
-const OFCondition SR_EC_InvalidByReferenceRelationship      (ECC_InvalidByReferenceRelationship);
-const OFCondition SR_EC_SOPInstanceNotFound                 (ECC_SOPInstanceNotFound);
-const OFCondition SR_EC_DifferentSOPClassesForAnInstance    (ECC_DifferentSOPClassesForAnInstance);
-const OFCondition SR_EC_CodingSchemeNotFound                (ECC_CodingSchemeNotFound);
-const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStructure);
-const OFCondition SR_EC_RepresentationNotAvailable          (ECC_RepresentationNotAvailable);
-const OFCondition SR_EC_CannotCreateIconImage               (ECC_CannotCreateIconImage);
+makeOFConditionConst(SR_EC_UnknownDocumentType,              OFM_dcmsr,  1, OF_error, "Unknown Document Type");
+makeOFConditionConst(SR_EC_InvalidDocument,                  OFM_dcmsr,  2, OF_error, "Invalid Document");
+makeOFConditionConst(SR_EC_InvalidDocumentTree,              OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
+makeOFConditionConst(SR_EC_MandatoryAttributeMissing,        OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
+makeOFConditionConst(SR_EC_InvalidValue,                     OFM_dcmsr,  5, OF_error, "Invalid Value");
+makeOFConditionConst(SR_EC_UnsupportedValue,                 OFM_dcmsr,  6, OF_error, "Unsupported Value");
+makeOFConditionConst(SR_EC_UnknownValueType,                 OFM_dcmsr,  7, OF_error, "Unknown Value Type");
+makeOFConditionConst(SR_EC_UnknownRelationshipType,          OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
+makeOFConditionConst(SR_EC_InvalidByValueRelationship,       OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
+makeOFConditionConst(SR_EC_InvalidByReferenceRelationship,   OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
+makeOFConditionConst(SR_EC_SOPInstanceNotFound,              OFM_dcmsr, 11, OF_error, "SOP Instance not found");
+makeOFConditionConst(SR_EC_DifferentSOPClassesForAnInstance, OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
+makeOFConditionConst(SR_EC_CodingSchemeNotFound,             OFM_dcmsr, 13, OF_error, "Coding Scheme Designator not found");
+makeOFConditionConst(SR_EC_CorruptedXMLStructure,            OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
+makeOFConditionConst(SR_EC_RepresentationNotAvailable,       OFM_dcmsr, 15, OF_error, "Representation not available");
+makeOFConditionConst(SR_EC_CannotCreateIconImage,            OFM_dcmsr, 16, OF_error, "Cannot create Icon Image");
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
@@ -1644,6 +1627,13 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.84  2012-02-15 14:50:44  uli
+ *  Removed dependency on static initialization order from OFCondition.
+ *  All static condition objects are now created via makeOFConditionConst()
+ *  in a way that doesn't need a constructor to run. This should only break
+ *  code which defines its own condition objects, all other changes are
+ *  backwards compatible.
+ *
  *  Revision 1.83  2012-01-03 10:58:08  joergr
  *  Added support for icon image to IMAGE content item (introduced with CP-217).
  *

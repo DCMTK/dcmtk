@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: (STATUS: OK)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:59 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2012-02-15 14:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,19 +36,13 @@
 
 OFLogger DCM_dcmjpegLogger = OFLog::getLogger("dcmtk.dcmjpeg");
 
-const OFConditionConst EJC_Suspension(                           OFM_dcmjpeg,  1, OF_error, "IJG codec suspension return"  );
-const OFConditionConst EJC_IJG8_FrameBufferTooSmall(             OFM_dcmjpeg,  2, OF_error, "Buffer for decompressed image (8 bits/sample) too small"  );
-const OFConditionConst EJC_IJG12_FrameBufferTooSmall(            OFM_dcmjpeg,  3, OF_error, "Buffer for decompressed image (12 bits/sample) too small"  );
-const OFConditionConst EJC_IJG16_FrameBufferTooSmall(            OFM_dcmjpeg,  4, OF_error, "Buffer for decompressed image (16 bits/sample) too small"  );
-const OFConditionConst EJC_UnsupportedPhotometricInterpretation( OFM_dcmjpeg,  5, OF_error, "Codec does not support this PhotometricInterpretation"  );
-const OFConditionConst EJC_UnsupportedColorConversion(           OFM_dcmjpeg,  6, OF_error, "Codec does not support this kind of color conversion"  );
+makeOFConditionConst(EJ_Suspension,                           OFM_dcmjpeg,  1, OF_error, "IJG codec suspension return"  );
+makeOFConditionConst(EJ_IJG8_FrameBufferTooSmall,             OFM_dcmjpeg,  2, OF_error, "Buffer for decompressed image (8 bits/sample) too small"  );
+makeOFConditionConst(EJ_IJG12_FrameBufferTooSmall,            OFM_dcmjpeg,  3, OF_error, "Buffer for decompressed image (12 bits/sample) too small"  );
+makeOFConditionConst(EJ_IJG16_FrameBufferTooSmall,            OFM_dcmjpeg,  4, OF_error, "Buffer for decompressed image (16 bits/sample) too small"  );
+makeOFConditionConst(EJ_UnsupportedPhotometricInterpretation, OFM_dcmjpeg,  5, OF_error, "Codec does not support this PhotometricInterpretation"  );
+makeOFConditionConst(EJ_UnsupportedColorConversion,           OFM_dcmjpeg,  6, OF_error, "Codec does not support this kind of color conversion"  );
 
-const OFCondition      EJ_Suspension(                           EJC_Suspension);
-const OFCondition      EJ_IJG8_FrameBufferTooSmall(             EJC_IJG8_FrameBufferTooSmall);
-const OFCondition      EJ_IJG12_FrameBufferTooSmall(            EJC_IJG12_FrameBufferTooSmall);
-const OFCondition      EJ_IJG16_FrameBufferTooSmall(            EJC_IJG16_FrameBufferTooSmall);
-const OFCondition      EJ_UnsupportedPhotometricInterpretation( EJC_UnsupportedPhotometricInterpretation);
-const OFCondition      EJ_UnsupportedColorConversion(           EJC_UnsupportedColorConversion);
 EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 {
   if (item)
@@ -86,6 +80,13 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
+ * Revision 1.10  2012-02-15 14:50:42  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.9  2011-04-18 07:00:59  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

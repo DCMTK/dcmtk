@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:58:34 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2012-02-15 14:50:43 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,8 @@
 #include "dcmtk/dcmnet/dimse.h"
 
 /// invalid peer for move operation
-extern DCMTK_DCMQRDB_EXPORT const OFCondition QR_EC_InvalidPeer;
-extern DCMTK_DCMQRDB_EXPORT const OFCondition QR_EC_IndexDatabaseError;
+extern DCMTK_DCMQRDB_EXPORT const OFConditionConst QR_EC_InvalidPeer;
+extern DCMTK_DCMQRDB_EXPORT const OFConditionConst QR_EC_IndexDatabaseError;
 
 /** this class encapsulates all the various options that affect the
  *  operation of the SCP, in addition to those defined in the config file
@@ -175,6 +175,13 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
+ * Revision 1.12  2012-02-15 14:50:43  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.11  2011-12-14 12:58:34  uli
  * Make it possible to build dcmqrdb as a DLL.
  *

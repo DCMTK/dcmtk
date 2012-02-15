@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:14 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2012-02-15 14:50:43 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,52 +117,52 @@ class DSRIODConstraintChecker;
 //@{
 
 /// error: the document type (SOP class UID) is unknown or not supported
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_UnknownDocumentType;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnknownDocumentType;
 
 /// error: the document status is invalid
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_InvalidDocument;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidDocument;
 
 /// error: the document tree is invalid (corrupted structure)
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_InvalidDocumentTree;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidDocumentTree;
 
 /// error: a mandatory attribute is missing
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_MandatoryAttributeMissing;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_MandatoryAttributeMissing;
 
 /// error: a value is invalid according to the standard
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_InvalidValue;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidValue;
 
 /// error: a value is not supported by this implementation
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_UnsupportedValue;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnsupportedValue;
 
 /// error: an unknown value type is used
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_UnknownValueType;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnknownValueType;
 
 /// error: an unknown relationship type is used
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_UnknownRelationshipType;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnknownRelationshipType;
 
 /// error: the by-value relationship between two content items is not allowed
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_InvalidByValueRelationship;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidByValueRelationship;
 
 /// error: the by-reference relationship between two content items is not allowed
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_InvalidByReferenceRelationship;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidByReferenceRelationship;
 
 /// error: the specified SOP instance could not be found
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_SOPInstanceNotFound;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_SOPInstanceNotFound;
 
 /// error: a SOP instance has different SOP classes
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_DifferentSOPClassesForAnInstance;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_DifferentSOPClassesForAnInstance;
 
 /// error: the specified coding scheme designator could not be found
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_CodingSchemeNotFound;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodingSchemeNotFound;
 
 /// error: the XML structure is corrupted (XML parser error)
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_CorruptedXMLStructure;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CorruptedXMLStructure;
 
 /// error: the requested representation is not available
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_RepresentationNotAvailable;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_RepresentationNotAvailable;
 
 /// error: an icon image could not be created from the given DICOM image
-extern DCMTK_DCMSR_EXPORT const OFCondition SR_EC_CannotCreateIconImage;
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotCreateIconImage;
 //@}
 
 
@@ -1385,6 +1385,13 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.78  2012-02-15 14:50:43  uli
+ *  Removed dependency on static initialization order from OFCondition.
+ *  All static condition objects are now created via makeOFConditionConst()
+ *  in a way that doesn't need a constructor to run. This should only break
+ *  code which defines its own condition objects, all other changes are
+ *  backwards compatible.
+ *
  *  Revision 1.77  2012-01-06 09:13:14  uli
  *  Make it possible to build dcmsr as a DLL.
  *

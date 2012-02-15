@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 13:50:08 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2012-02-15 14:50:43 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +32,8 @@
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
 
-const OFConditionConst QR_ECC_IndexDatabaseError(OFM_dcmqrdb, 1, OF_error, "Index database error");
-const OFConditionConst QR_ECC_InvalidPeer       (OFM_dcmqrdb, 2, OF_error, "Invalid peer for move operation");
-
-const OFCondition QR_EC_IndexDatabaseError(QR_ECC_IndexDatabaseError);
-const OFCondition QR_EC_InvalidPeer       (QR_ECC_InvalidPeer);
+makeOFConditionConst(QR_EC_IndexDatabaseError, OFM_dcmqrdb, 1, OF_error, "Index database error");
+makeOFConditionConst(QR_EC_InvalidPeer,        OFM_dcmqrdb, 2, OF_error, "Invalid peer for move operation");
 
 DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 : allowShutdown_(OFFalse)
@@ -91,6 +88,13 @@ DcmQueryRetrieveOptions::~DcmQueryRetrieveOptions()
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
+ * Revision 1.10  2012-02-15 14:50:43  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.9  2011-10-10 13:50:08  uli
  * Slightly improved the error condition names and definition.
  *

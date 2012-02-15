@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:55:35 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2012-02-15 14:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,55 +111,62 @@ enum JLS_CompressionBitDepth
 // CONDITION CONSTANTS
 
 /// error condition constant: Too small buffer used for image data (internal error)
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUncompressedBufferTooSmall;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUncompressedBufferTooSmall;
 
 /// error condition constant: Too small buffer used for compressed image data (internal error)
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCompressedBufferTooSmall;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSCompressedBufferTooSmall;
 
 /// error condition constant: The image uses some features which the codec does not support
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCodecUnsupportedImageType;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSCodecUnsupportedImageType;
 
 /// error condition constant: The codec was fed with invalid parameters (e.g. height = -1)
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCodecInvalidParameters;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSCodecInvalidParameters;
 
 /// error condition constant: The codec was fed with unsupported parameters (e.g. 32 bit per sample)
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCodecUnsupportedValue;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSCodecUnsupportedValue;
 
 /// error condition constant: The compressed image is invalid
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSInvalidCompressedData;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSInvalidCompressedData;
 
 /// error condition constant: The images' color transformation is not supported in this bit depth
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedBitDepthForTransform;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedBitDepthForTransform;
 
 /// error condition constant: The images' color transformation is not supported
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedColorTransform;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedColorTransform;
 
 /// error condition constant: Unsupported bit depth in JPEG-LS transfer syntax
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedBitDepth;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedBitDepth;
 
 /// error condition constant: Cannot compute number of fragments for JPEG-LS frame
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSCannotComputeNumberOfFragments;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSCannotComputeNumberOfFragments;
 
 /// error condition constant: Image data mismatch between DICOM header and JPEG-LS bitstream
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSImageDataMismatch;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSImageDataMismatch;
 
 /// error condition constant: Unsupported photometric interpretation for near-lossless JPEG-LS compression
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedPhotometricInterpretation;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedPhotometricInterpretation;
 
 /// error condition constant: Unsupported pixel representation for near-lossless JPEG-LS compression
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedPixelRepresentation;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedPixelRepresentation;
 
 /// error condition constant: Unsupported type of image for JPEG-LS compression
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSUnsupportedImageType;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedImageType;
 
 /// error condition constant: Trailing data after image
-extern DCMTK_DCMJPLS_EXPORT const OFCondition EC_JLSTooMuchCompressedData;
+extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSTooMuchCompressedData;
 
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.11  2012-02-15 14:50:42  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.10  2011-12-14 10:55:35  uli
  * Add some changes which were missing in the previous commit.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:14:12 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2012-02-15 14:50:43 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,57 +85,64 @@ enum E_MACType
  */
  
 /// object initialization failed
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_InitializationFailed;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_InitializationFailed;
 
 /// an OpenSSL call has failed
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_OpenSSLFailure;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_OpenSSLFailure;
 
 /// file cannot be read
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_CannotRead;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_CannotRead;
 
 /// unable to use the selected transfer syntax for MAC computation
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_WrongTransferSyntax;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_WrongTransferSyntax;
 
 /// no more MAC ID numbers available
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_MacIDsExhausted;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_MacIDsExhausted;
 
 /// certificate and private key do not match
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_CertificateDoesNotMatchPrivateKey;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_CertificateDoesNotMatchPrivateKey;
 
 /// MAC algorithm not allowed for the current security profile
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_MacDoesNotMatchProfile;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_MacDoesNotMatchProfile;
 
 /// Signature algorithm not allowed for the current security profile
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_AlgorithmDoesNotMatchProfile;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_AlgorithmDoesNotMatchProfile;
 
 /// Transfer syntax not allowed for the current security profile
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_TransferSyntaxDoesNotMatchProfile;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_TransferSyntaxDoesNotMatchProfile;
 
 /** signature verification failed because the certificate is missing
  *  or cannot be read (e.g. unsupported format)
  */
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_VerificationFailed_NoCertificate;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoCertificate;
 
 /// signature verification failed because the corresponding MAC parameters item could not be found or is incomplete
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_VerificationFailed_NoMAC;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoMAC;
 
 /// signature verification failed because the corresponding signature item is incomplete
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_VerificationFailed_NoSignature;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoSignature;
 
 /// signature verification failed because the MAC algorithm is not supported
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
 
 /// signature verification failed because the signature is invalid (document corrupted)
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_VerificationFailed_Corrupted;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_Corrupted;
 
 /// signature verification failed because the certificate was issued by an untrusted (unknown) CA
-extern DCMTK_DCMSIGN_EXPORT const OFCondition SI_EC_VerificationFailed_NoTrust;
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoTrust;
 
 #endif
 #endif
 
 /*
  *  $Log: sitypes.h,v $
+ *  Revision 1.9  2012-02-15 14:50:43  uli
+ *  Removed dependency on static initialization order from OFCondition.
+ *  All static condition objects are now created via makeOFConditionConst()
+ *  in a way that doesn't need a constructor to run. This should only break
+ *  code which defines its own condition objects, all other changes are
+ *  backwards compatible.
+ *
  *  Revision 1.8  2011-12-14 12:14:12  uli
  *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
  *

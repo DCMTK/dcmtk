@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:21 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2012-02-15 14:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,17 +182,17 @@ enum E_DecompressionColorSpaceConversion
 // CONDITION CONSTANTS
 
 /// IJG codec suspension return
-extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_Suspension;
+extern DCMTK_DCMJPEG_EXPORT const OFConditionConst EJ_Suspension;
 /// Buffer for decompressed image (8 bits/sample) too small
-extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_IJG8_FrameBufferTooSmall;
+extern DCMTK_DCMJPEG_EXPORT const OFConditionConst EJ_IJG8_FrameBufferTooSmall;
 /// Buffer for decompressed image (12 bits/sample) too small
-extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_IJG12_FrameBufferTooSmall;
+extern DCMTK_DCMJPEG_EXPORT const OFConditionConst EJ_IJG12_FrameBufferTooSmall;
 /// Buffer for decompressed image (16 bits/sample) too small
-extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_IJG16_FrameBufferTooSmall;
+extern DCMTK_DCMJPEG_EXPORT const OFConditionConst EJ_IJG16_FrameBufferTooSmall;
 /// Codec does not support this PhotometricInterpretation
-extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_UnsupportedPhotometricInterpretation;
+extern DCMTK_DCMJPEG_EXPORT const OFConditionConst EJ_UnsupportedPhotometricInterpretation;
 /// Codec does not support this kind of color conversion
-extern DCMTK_DCMJPEG_EXPORT const OFCondition EJ_UnsupportedColorConversion;
+extern DCMTK_DCMJPEG_EXPORT const OFConditionConst EJ_UnsupportedColorConversion;
 
 // reserved condition codes for IJG error messages
 const unsigned short EJCode_IJG8_Compression    = 0x0100;
@@ -222,6 +222,13 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djutils.h,v $
+ * Revision 1.9  2012-02-15 14:50:42  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.8  2011-12-14 10:33:21  uli
  * Make it possible to decently build dcmjpeg as a DLL.
  *

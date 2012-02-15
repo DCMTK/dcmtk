@@ -10,6 +10,33 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.15 (schlachter)
 
+- Removed dependency on static initialization order from OFCondition.
+  All static condition objects are now created via makeOFConditionConst()
+  in a way that doesn't need a constructor to run. This should only break
+  code which defines its own condition objects, all other changes are
+  backwards compatible.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
+           dcmjpeg/libsrc/djutils.cc
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libsrc/djerror.h
+           dcmjpls/libsrc/djutils.cc
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/cond.cc
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h
+           dcmqrdb/libsrc/dcmqropt.cc
+           dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/drttypes.cc
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/sitypes.cc
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+           ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofcond.cc
+
 - Don't use C++ comments in file included from C.
   Affects: ofstd/include/dcmtk/ofstd/ofexport.h
 

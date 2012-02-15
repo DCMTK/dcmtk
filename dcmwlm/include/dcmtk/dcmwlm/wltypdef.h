@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:14:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2012-02-15 14:50:45 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,27 +100,12 @@ enum WlmRefuseReasonType
   WLM_NO_IC_UID
 };
 
-  /// const objects for error objects below
-const OFConditionConst WLM_ECC_InsufficientPortPrivileges              ( OFM_dcmwlm,  1, OF_error, "Insufficient privileges to listen to port.");
-const OFConditionConst WLM_ECC_InitializationOfNetworkConnectionFailed ( OFM_dcmwlm,  2, OF_error, "Initialization of network connection failed.");
-const OFConditionConst WLM_ECC_TerminationOfNetworkConnectionFailed    ( OFM_dcmwlm,  3, OF_error, "Termination of network connection failed.");
-const OFConditionConst WLM_ECC_DatabaseStatementConfigFilesNotExistent ( OFM_dcmwlm,  4, OF_error, "Database statement configuration files not existent.");
-const OFConditionConst WLM_ECC_CannotConnectToDataSource               ( OFM_dcmwlm,  5, OF_error, "Cannot connect to data source.");
-
-  /// error: Insufficient privileges to listen to port.
-const OFCondition WLM_EC_InsufficientPortPrivileges                ( WLM_ECC_InsufficientPortPrivileges );
-
-  /// error: Initialization of network connection failed.
-const OFCondition WLM_EC_InitializationOfNetworkConnectionFailed   ( WLM_ECC_InitializationOfNetworkConnectionFailed );
-
-  /// error: Termination of network connection failed.
-const OFCondition WLM_EC_TerminationOfNetworkConnectionFailed      ( WLM_ECC_TerminationOfNetworkConnectionFailed );
-
-  /// error: Database statement configuration files not existent.
-const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( WLM_ECC_DatabaseStatementConfigFilesNotExistent );
-
-  /// error: Cannot connect to data source.
-const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_CannotConnectToDataSource );
+  /// const objects for error objects
+makeOFConditionConst(WLM_EC_InsufficientPortPrivileges,              OFM_dcmwlm,  1, OF_error, "Insufficient privileges to listen to port.");
+makeOFConditionConst(WLM_EC_InitializationOfNetworkConnectionFailed, OFM_dcmwlm,  2, OF_error, "Initialization of network connection failed.");
+makeOFConditionConst(WLM_EC_TerminationOfNetworkConnectionFailed,    OFM_dcmwlm,  3, OF_error, "Termination of network connection failed.");
+makeOFConditionConst(WLM_EC_DatabaseStatementConfigFilesNotExistent, OFM_dcmwlm,  4, OF_error, "Database statement configuration files not existent.");
+makeOFConditionConst(WLM_EC_CannotConnectToDataSource,               OFM_dcmwlm,  5, OF_error, "Cannot connect to data source.");
 
   /// number of currently supported matching key attributes
 #define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 15
@@ -145,6 +130,13 @@ struct DCMTK_DCMWLM_EXPORT WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
+** Revision 1.18  2012-02-15 14:50:45  uli
+** Removed dependency on static initialization order from OFCondition.
+** All static condition objects are now created via makeOFConditionConst()
+** in a way that doesn't need a constructor to run. This should only break
+** code which defines its own condition objects, all other changes are
+** backwards compatible.
+**
 ** Revision 1.17  2011-12-14 12:14:13  uli
 ** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Support code for dcmjpls
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:59 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2012-02-15 14:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,8 +33,7 @@
 OFLogger DCM_dcmjplsLogger = OFLog::getLogger("dcmtk.dcmjpls");
 
 #define MAKE_DCMJPLS_ERROR(number, name, description)  \
-const OFConditionConst ECC_ ## name (OFM_dcmjpls, number, OF_error, description); \
-const OFCondition      EC_  ## name (ECC_ ## name)
+makeOFConditionConst(EC_ ## name, OFM_dcmjpls, number, OF_error, description)
 
 MAKE_DCMJPLS_ERROR( 1, JLSUncompressedBufferTooSmall, "Uncompressed pixel data too short for uncompressed image");
 MAKE_DCMJPLS_ERROR( 2, JLSCompressedBufferTooSmall, "Allocated too small buffer for compressed image data");
@@ -55,6 +54,13 @@ MAKE_DCMJPLS_ERROR(15, JLSTooMuchCompressedData, "Too much compressed data, trai
 /*
  * CVS/RCS Log:
  * $Log: djutils.cc,v $
+ * Revision 1.8  2012-02-15 14:50:42  uli
+ * Removed dependency on static initialization order from OFCondition.
+ * All static condition objects are now created via makeOFConditionConst()
+ * in a way that doesn't need a constructor to run. This should only break
+ * code which defines its own condition objects, all other changes are
+ * backwards compatible.
+ *
  * Revision 1.7  2011-04-18 07:00:59  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

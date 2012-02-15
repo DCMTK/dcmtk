@@ -18,8 +18,8 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 11:31:50 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2012-02-15 14:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,63 +70,63 @@ const unsigned short OFM_dcmkosel = 27;
 // condition constants
 
 /// invalid tag
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidTag;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidTag;
 /// tag not found
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_TagNotFound;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_TagNotFound;
 /// invalid VR
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidVR;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidVR;
 /// invalid stream
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidStream;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidStream;
 /// end of stream
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_EndOfStream;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_EndOfStream;
 /// corrupted data
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_CorruptedData;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CorruptedData;
 /// illegal call, perhaps wrong parameters
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_IllegalCall;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_IllegalCall;
 /// sequence end
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_SequEnd;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SequEnd;
 /// doubled tag
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_DoubledTag;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_DoubledTag;
 /// I/O suspension or premature end of stream
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_StreamNotifyClient;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_StreamNotifyClient;
 /// stream mode (R/W, random/sequence) is wrong
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_WrongStreamMode;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_WrongStreamMode;
 /// item end
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ItemEnd;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemEnd;
 /// compressed/uncompressed pixel representation not found
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_RepresentationNotFound;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_RepresentationNotFound;
 /// Pixel representation cannot be changed to requested transfer syntax
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_CannotChangeRepresentation;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotChangeRepresentation;
 /// Unsupported compression or encryption
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_UnsupportedEncoding;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnsupportedEncoding;
 /// Parser failure: Putback operation failed
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_PutbackFailed;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PutbackFailed;
 /// Too many compression filters
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_DoubleCompressionFilters;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_DoubleCompressionFilters;
 /// Storage media application profile violated
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ApplicationProfileViolated;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ApplicationProfileViolated;
 /// Invalid offset
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidOffset;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidOffset;
 /// Too many bytes requested
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_TooManyBytesRequested;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_TooManyBytesRequested;
 // Invalid basic offset table
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_InvalidBasicOffsetTable;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidBasicOffsetTable;
 /// Element length is larger than (explicit) length of surrounding item
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ElemLengthLargerThanItem;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthLargerThanItem;
 /// File meta information header missing
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_FileMetaInfoHeaderMissing;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_FileMetaInfoHeaderMissing;
 /// Item or sequence content larger than explicit 32-bit length field permits
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_SeqOrItemContentOverflow;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SeqOrItemContentOverflow;
 /// Value Representation (VR) violated
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ValueRepresentationViolated;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ValueRepresentationViolated;
 /// Value Multiplicity (VM) violated
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ValueMultiplicityViolated;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ValueMultiplicityViolated;
 /// Maximum VR length violated
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_MaximumLengthViolated;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_MaximumLengthViolated;
 /// Element length is larger than 16-bit length field permits
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_ElemLengthExceeds16BitField;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds16BitField;
 /// Missing Delimitation Item while reading a sequence
-extern DCMTK_DCMDATA_EXPORT const OFCondition EC_DelimitationItemMissing;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_DelimitationItemMissing;
 
 // status code constants
 
@@ -144,6 +144,13 @@ extern const unsigned short EC_CODE_CannotConvertToXML;
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.46  2012-02-15 14:50:42  uli
+** Removed dependency on static initialization order from OFCondition.
+** All static condition objects are now created via makeOFConditionConst()
+** in a way that doesn't need a constructor to run. This should only break
+** code which defines its own condition objects, all other changes are
+** backwards compatible.
+**
 ** Revision 1.45  2012-02-15 11:31:50  uli
 ** Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
 **

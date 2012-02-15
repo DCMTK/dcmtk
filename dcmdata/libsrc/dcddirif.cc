@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-28 12:03:08 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-02-15 14:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -4066,7 +4066,7 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                                 /* free memory */
                                 delete[] pgmData;
                             } else {
-                                DCMDATA_ERROR(EC_MemoryExhausted.text() << ": cannot allocate memory for pgm pixel data");
+                                DCMDATA_ERROR(OFCondition(EC_MemoryExhausted).text() << ": cannot allocate memory for pgm pixel data");
                                 /* avoid double reporting of error message */
                                 corrupt = OFFalse;
                             }
@@ -5482,6 +5482,13 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.66  2012-02-15 14:50:42  uli
+ *  Removed dependency on static initialization order from OFCondition.
+ *  All static condition objects are now created via makeOFConditionConst()
+ *  in a way that doesn't need a constructor to run. This should only break
+ *  code which defines its own condition objects, all other changes are
+ *  backwards compatible.
+ *
  *  Revision 1.65  2011-11-28 12:03:08  joergr
  *  Reserve expected size of resulting string in order to reduce number of memory
  *  allocations in helper functions.
