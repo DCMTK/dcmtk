@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.15 (riesmeier)
+
+- Improved performance of findParam() when used with long list of parameters.
+  Now, the previous parameter position is used for searching (if possible).
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2012.02.15 (schlachter)
 
 - Don't use C++ comments in file included from C.

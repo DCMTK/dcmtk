@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 11:46:04 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2012-02-15 13:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,6 +179,8 @@ OFCommandLine::OFCommandLine()
     ArgumentList(),
     ArgumentIterator(),
     ParamPosList(),
+    ParamPosNumber(0),
+    ParamPosIterator(),
     OptionPosList(),
     OptionPosIterator(),
     OptionBlockIterator(),
@@ -464,18 +466,30 @@ OFBool OFCommandLine::findParam(const int pos)
 }
 
 
-OFBool OFCommandLine::findParam(int pos,
+OFBool OFCommandLine::findParam(const int pos,
                                 OFListIterator(OFCmdParamPos *) &pos_iter)
 {
     if ((pos > 0) && (pos <= getParamCount()))
     {
-        pos_iter = ParamPosList.begin();
+        int counter;
+        if ((ParamPosNumber > 0) && (pos >= ParamPosNumber))     // can we start from previous position?
+        {
+            counter = pos - ParamPosNumber + 1;
+            pos_iter = ParamPosIterator;
+        } else {                                                 // if not, start from beginning
+            counter = pos;
+            pos_iter = ParamPosList.begin();
+        }
         const OFListIterator(OFCmdParamPos *) pos_last = ParamPosList.end();
         while (pos_iter != pos_last)
         {
             ArgumentIterator = (*pos_iter)->ParamIter;
-            if (--pos == 0)
+            if (--counter == 0)
+            {
+                ParamPosNumber = pos;                            // if found, store current position
+                ParamPosIterator = pos_iter;
                 return OFTrue;
+            }
             ++pos_iter;
         }
     }
@@ -1158,9 +1172,10 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                                                       const int flags,
                                                       const int startPos)
 {
-    ArgumentList.clear();                                                // initialize lists
+    ArgumentList.clear();                                                // initialize lists/positions
     ParamPosList.clear();
     OptionPosList.clear();
+    ParamPosNumber = 0;
     ExclusiveOption = OFFalse;
     if (argCount > 0)                                                    // determine program name
         ProgramName = argValue[0];
@@ -1561,6 +1576,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.53  2012-02-15 13:26:01  joergr
+ * Improved performance of findParam() when used with long list of parameters.
+ * Now, the previous parameter position is used for searching (if possible).
+ *
  * Revision 1.52  2011-11-17 11:46:04  joergr
  * Define WIN32_LEAN_AND_MEAN in order to avoid unneeded header file inclusions
  * caused by "windows.h".

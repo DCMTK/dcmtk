@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-15 13:25:58 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -874,7 +874,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
 
     /** finds specified parameter and sets given iterator to this position
      */
-    OFBool findParam(int pos,
+    OFBool findParam(const int pos,
                      OFListIterator(OFCmdParamPos *) &pos_iter);
 
     /** finds specified option and returns reference to its describing structure
@@ -940,6 +940,10 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
 
     /// list of parameter positions within argument list
     OFList<OFCmdParamPos *> ParamPosList;
+    /// current position in param position list (numeric value)
+    int ParamPosNumber;
+    /// current position in param position list (iterator)
+    OFListIterator(OFCmdParamPos *) ParamPosIterator;
     /// list of option positions within argument list
     OFList<OFListIterator_OFString> OptionPosList;
     /// current position in option position list
@@ -985,6 +989,10 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
+ * Revision 1.45  2012-02-15 13:25:58  joergr
+ * Improved performance of findParam() when used with long list of parameters.
+ * Now, the previous parameter position is used for searching (if possible).
+ *
  * Revision 1.44  2011-12-14 08:54:00  uli
  * Make it possible to correctly build ofstd as a DLL.
  *
