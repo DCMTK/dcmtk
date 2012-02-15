@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.15 (schlachter)
+
+- Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
+  Affects: config/docs/macros.txt
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           ofstd/include/dcmtk/ofstd/ofcond.h
+
 **** Changes from 2012.02.14 (riesmeier)
 
 - Added support for Observation UID (0040,A171) to content items (CP-1147).

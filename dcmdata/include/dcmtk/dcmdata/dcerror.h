@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2012-01-27 15:15:00 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-02-15 11:31:50 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,24 +139,14 @@ extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertCharacterS
 extern const unsigned short EC_CODE_CannotConvertToXML;
 
 
-#ifndef OFCONDITION_STRICT_MODE
-
-// for backward compatibility with existing software
-typedef OFCondition E_Condition;
-
-/** Return a pointer to a char array describing the error condition.
- *  For backward compatibility with old software; deprecated.
- */
-extern const char *dcmErrorConditionToString(OFCondition cond);
-
-#endif
-
-
 #endif /* !DCERROR_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.45  2012-02-15 11:31:50  uli
+** Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
+**
 ** Revision 1.44  2012-01-27 15:15:00  ogazzar
 ** Added a module number for the dcmkosel module.
 **

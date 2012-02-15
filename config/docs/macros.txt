@@ -242,14 +242,6 @@ OFCONDITION_IMPLICIT_BOOL_CONVERSION
     be a good idea since it can hide unwanted constructs.  Therefore,
     this operator is disabled by default.
 
-OFCONDITION_STRICT_MODE
-  Affected: ofstd
-  Type of modification: Disables feature
-  Explanation: Disables the compatibility options related to the
-    transition to OFCondition: No OFCondition default constructor, no
-    typedefs for E_Condition, CONDITION, no macros for SUCCESS and
-    condition aliases.
-
 ON_THE_FLY_COMPRESSION
   Affected: storescu
   Type of modification: Activates experimental or rarely used feature

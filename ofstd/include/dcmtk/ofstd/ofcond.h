@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2012-02-15 11:31:50 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -322,12 +322,7 @@ public:
    *     to exist for the lifetime of this (and every derived) object
    *     since it is only referenced but not copied.
    */
-#ifdef OFCONDITION_STRICT_MODE
-  // in strict mode OFCondition has no default constructor.
-  OFCondition(const OFConditionConst& base)
-#else
   OFCondition(const OFConditionConst& base = ECC_Normal)
-#endif
   : theCondition(&base)
   {
     assert(theCondition);
@@ -488,6 +483,9 @@ extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
  *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.17  2012-02-15 11:31:50  uli
+ * Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
+ *
  * Revision 1.16  2011-12-14 08:54:00  uli
  * Make it possible to correctly build ofstd as a DLL.
  *

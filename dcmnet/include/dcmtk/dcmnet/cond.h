@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:14 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2012-02-15 11:31:50 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,12 +59,6 @@
  *
  * - DUL_PEERREQUESTEDRELEASE is now an error code, i.e. unlike prior releases
  *   SUCCESS(DUL_PEERREQUESTEDRELEASE) is false.
- *
- * - In strict mode (compiled with OFCONDITION_STRICT_MODE), additional
- *   restrictions apply.  OFCondition requires explicit copy construction
- *   (not default constructor), and all compatibility aliases/typedefs
- *   are disabled. SUCCESS(cond) is undefined, use cond.good() instead.
- *
  */
 
 // condition code constants used in the association module
@@ -271,33 +265,14 @@ public:
 };
 
 
-// if not in strict mode, we define a couple of things
-// to improve compatibility with existing code.
-#ifndef OFCONDITION_STRICT_MODE
-
-// CONDITION is now identical to OFCondition
-typedef OFCondition CONDITION;
-
-// the success macro was defined in dicom.h in earlier releases
-#define SUCCESS(cond)                 ((cond).good())
-
-// aliases for condition codes
-#define ASC_ASSOCIATIONREJECTED       DUL_ASSOCIATIONREJECTED
-#define ASC_NORMAL                    EC_Normal
-#define ASC_PEERABORTEDASSOCIATION    DUL_PEERABORTEDASSOCIATION
-#define ASC_PEERREQUESTEDRELEASE      DUL_PEERREQUESTEDRELEASE
-#define ASC_READTIMEOUT               DUL_READTIMEOUT
-#define DIMSE_NORMAL                  EC_Normal
-#define DIMSE_PEERABORTEDASSOCIATION  DUL_PEERABORTEDASSOCIATION
-#define DIMSE_PEERREQUESTEDRELEASE    DUL_PEERREQUESTEDRELEASE
-
-#endif /* !OFCONDITION_STRICT_MODE */
-
 #endif
 
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.24  2012-02-15 11:31:50  uli
+ * Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
+ *
  * Revision 1.23  2011-12-14 11:45:14  uli
  * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
  *
