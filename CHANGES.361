@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.15 (schlachter)
 
+- Don't use C++ comments in file included from C.
+  Affects: ofstd/include/dcmtk/ofstd/ofexport.h
+
 - Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
   Affects: config/docs/macros.txt
            dcmdata/include/dcmtk/dcmdata/dcerror.h
