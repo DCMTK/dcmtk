@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.17 (riesmeier)
+
+- Added missing "stdlib" include, required for free() on some Linux systems.
+  Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the report.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+
 **** Changes from 2012.02.15 (riesmeier)
 
 - Improved performance of findParam() when used with long list of parameters.

@@ -17,9 +17,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:46 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-17 10:03:04 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #define INCLUDE_CASSERT
 #define INCLUDE_CSTRING            /* for strdup() */
+#define INCLUDE_CSTDLIB            /* for free() */
 #include "dcmtk/ofstd/ofstdinc.h"
 
 /** this enumeration describes the return status of an operation.
@@ -386,6 +387,9 @@ inline OFBool operator!= (const OFCondition& lhs, const OFConditionConst& rhs)
  *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.19  2012-02-17 10:03:04  joergr
+ * Added missing "stdlib" include, required for free() on some Linux systems.
+ *
  * Revision 1.18  2012-02-15 14:50:46  uli
  * Removed dependency on static initialization order from OFCondition.
  * All static condition objects are now created via makeOFConditionConst()
