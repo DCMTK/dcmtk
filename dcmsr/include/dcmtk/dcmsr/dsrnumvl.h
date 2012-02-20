@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 14:08:39 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-02-20 14:31:27 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -318,7 +318,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 
   protected:
 
-	/** get pointer to numeric measurement value
+    /** get pointer to numeric measurement value
      ** @return pointer to numeric measurement value (never NULL)
      */
     inline DSRNumericMeasurementValue *getValuePtr()
@@ -395,6 +395,9 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
+ *  Revision 1.20  2012-02-20 14:31:27  joergr
+ *  Replaced tab by space character.
+ *
  *  Revision 1.19  2012-02-20 14:08:39  joergr
  *  Minor changes of source code formatting, documentation and the like.
  *

@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.20 (riesmeier)
 
+- Replaced tab by space character.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+
 - Minor changes of source code formatting, documentation and the like.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
            dcmsr/libsrc/dsrimgfr.cc
