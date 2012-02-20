@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.20 (riesmeier)
 
+- Fixed typo in comment.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/assoc.cc
+           dcmqrdb/libsrc/dcmqrptb.cc
+
 - Rebuilt Makefile dependencies.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/libi2d/Makefile.dep

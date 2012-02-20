@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:15 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 14:02:32 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -805,7 +805,7 @@ private:
   DUL_BLOCKOPTIONS m_connectionBlockingMode;
 
   /// Blocking mode for DIMSE operations. If DIMSE non-blocking mode is enabled, the SCP is
-  /// wating for new DIMSE data a specific (m_dimseTimeout) amount of time and then returns
+  /// waiting for new DIMSE data a specific (m_dimseTimeout) amount of time and then returns
   /// if not data arrives. In blocking mode the SCP is calling the underlying operating
   /// system function for receiving data from the socket directly, which may return after a
   /// very long time, depending on the system's network configuration.
@@ -847,6 +847,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.20  2012-02-20 14:02:32  joergr
+ *  Fixed typo in comment.
+ *
  *  Revision 1.19  2011-12-14 11:45:15  uli
  *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
  *

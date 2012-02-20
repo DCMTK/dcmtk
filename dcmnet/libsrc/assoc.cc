@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -84,8 +84,8 @@
 ** Module Prefix: ASC_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2011-08-03 11:00:02 $
-** CVS/RCS Revision:    $Revision: 1.62 $
+** Update Date:         $Date: 2012-02-20 14:02:34 $
+** CVS/RCS Revision:    $Revision: 1.63 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,7 +97,7 @@
 */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmnet/assoc.h"      /* always include the module header */
+#include "dcmtk/dcmnet/assoc.h"       /* always include the module header */
 #include "dcmtk/dcmnet/diutil.h"
 
 #define INCLUDE_CSTDLIB
@@ -493,7 +493,7 @@ ASC_getRejectParameters(T_ASC_Parameters * params,
                         T_ASC_RejectParameters * rejectParameters)
  /*
   * Copies the Rejection Parameters stored in the association parameters into
-  * the supplied structure.  Youmust provide storage to copy into.
+  * the supplied structure.  You must provide storage to copy into.
   */
 {
     int reason;
@@ -2207,6 +2207,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.63  2012-02-20 14:02:34  joergr
+** Fixed typo in comment.
+**
 ** Revision 1.62  2011-08-03 11:00:02  joergr
 ** Added blocking mode and timeout parameter to request association functions.
 **
