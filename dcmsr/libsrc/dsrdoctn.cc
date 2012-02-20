@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-14 11:07:26 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2012-02-20 09:44:12 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -827,7 +827,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         printContentItemErrorMessage("Reading", result, newNode, location.c_str());
                         /* print current data set (item) that caused the error */
                         DCMSR_DEBUG(OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl
-                            << DcmObject::PrintHelper(*ditem, 0, 1) << OFString(78, '-'));
+                            << DcmObject::PrintHelper(*ditem, DCMTypes::PF_convertToOctalNumbers, 1) << OFString(78, '-'));
                     }
                 } else
                     result = SR_EC_InvalidDocumentTree;
@@ -1172,6 +1172,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.61  2012-02-20 09:44:12  joergr
+ *  Output dataset dump with PF_convertToOctalNumbers flag in case of error.
+ *  This makes some unusual control characters more visible in the output.
+ *
  *  Revision 1.60  2012-02-14 11:07:26  joergr
  *  Added support for Observation UID (0040,A171) to content items (CP-1147).
  *

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.20 (riesmeier)
+
+- Output dataset dump with PF_convertToOctalNumbers flag in case of error.
+  This makes some unusual control characters more visible in the output.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
 **** Changes from 2012.02.17 (riesmeier)
 
 - Added missing "stdlib" include, required for free() on some Linux systems.
