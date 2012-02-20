@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:18 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 14:08:40 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -29,6 +29,7 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmsr/dsrimgfr.h"
 
 #define INCLUDE_CSTDIO
@@ -180,6 +181,9 @@ OFCondition DSRImageFrameList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
+ *  Revision 1.21  2012-02-20 14:08:40  joergr
+ *  Minor changes of source code formatting, documentation and the like.
+ *
  *  Revision 1.20  2012-01-06 09:13:18  uli
  *  Make it possible to build dcmsr as a DLL.
  *

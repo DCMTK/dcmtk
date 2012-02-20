@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2012-02-20 14:08:41 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 #endif
 
 /* declared in class DSRListOfItems<T> */
-EXPLICIT_SPECIALIZATION const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem(0,0);
+EXPLICIT_SPECIALIZATION const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem(0, 0);
 
 
 DSRWaveformChannelList::DSRWaveformChannelList()
@@ -204,6 +204,9 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
+ *  Revision 1.27  2012-02-20 14:08:41  joergr
+ *  Minor changes of source code formatting, documentation and the like.
+ *
  *  Revision 1.26  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

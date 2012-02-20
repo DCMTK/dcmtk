@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.20 (riesmeier)
 
+- Minor changes of source code formatting, documentation and the like.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrsc3gr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrwavch.cc
+
 - Fixed typo in comment.
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
            dcmnet/libsrc/assoc.cc

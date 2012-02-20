@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:19 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2012-02-20 14:08:41 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,9 +131,9 @@ OFCondition DSRSCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 
 OFCondition DSRSCoordTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
                                                      STD_NAMESPACE ostream &annexStream,
-                                                      const size_t /*nestingLevel*/,
-                                                      size_t &annexNumber,
-                                                      const size_t flags) const
+                                                     const size_t /*nestingLevel*/,
+                                                     size_t &annexNumber,
+                                                     const size_t flags) const
 {
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags);
@@ -150,6 +150,9 @@ OFCondition DSRSCoordTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
+ *  Revision 1.21  2012-02-20 14:08:41  joergr
+ *  Minor changes of source code formatting, documentation and the like.
+ *
  *  Revision 1.20  2011-03-22 16:55:19  joergr
  *  Added support for colored output to the print() method - Unix only.
  *
