@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:50 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2012-02-20 11:44:27 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -598,14 +598,14 @@ OFCondition DcmMetaInfo::write(
 // ********************************
 
 
-OFCondition DcmMetaInfo::loadFile(const char *fileName,
+OFCondition DcmMetaInfo::loadFile(const OFFilename &fileName,
                                   const E_TransferSyntax readXfer,
                                   const E_GrpLenEncoding groupLength,
                                   const Uint32 maxReadLength)
 {
-    OFCondition l_error = EC_IllegalParameter;
+    OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if ((fileName != NULL) && (strlen(fileName) > 0))
+    if (!fileName.isEmpty())
     {
         /* open file for input */
         DcmInputFileStream fileStream(fileName);
@@ -634,6 +634,10 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.64  2012-02-20 11:44:27  joergr
+** Added initial support for wide character strings (UTF-16) used for filenames
+** by the Windows operating system.
+**
 ** Revision 1.63  2011-12-02 11:02:50  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **

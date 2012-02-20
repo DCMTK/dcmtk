@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:12 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 11:44:24 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,11 +177,13 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** load object from a DICOM file.  If the file preamble is missing, an error is returned.
-     *  @param fileName name of the file to load
+     *  @param fileName name of the file to load (may contain wide chars if support enabled).
+     *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
+     *    or "wchar_t *" can also be passed directly to this parameter.
      *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
@@ -189,7 +191,7 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
      *    (with getXXX()) or loadAllDataElements() is called.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition loadFile(const char *fileName,
+    virtual OFCondition loadFile(const OFFilename &fileName,
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength);
@@ -258,6 +260,10 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
+** Revision 1.36  2012-02-20 11:44:24  joergr
+** Added initial support for wide character strings (UTF-16) used for filenames
+** by the Windows operating system.
+**
 ** Revision 1.35  2011-12-14 09:04:12  uli
 ** Make it possible to accurately build dcmdata and libi2d as DLLs.
 **

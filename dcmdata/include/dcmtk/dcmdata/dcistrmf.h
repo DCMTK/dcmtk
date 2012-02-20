@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:12 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 11:44:24 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,11 @@ class DCMTK_DCMDATA_EXPORT DcmFileProducer: public DcmProducer
 {
 public:
   /** constructor
-   *  @param filename name of file to be opened, must not be NULL or empty
+   *  @param filename name of file to be opened (may contain wide chars
+   *    if support enabled)
    *  @param offset byte offset to skip from the start of file
    */
-  DcmFileProducer(const char *filename, offile_off_t offset = 0);
+  DcmFileProducer(const OFFilename &filename, offile_off_t offset = 0);
 
   /// destructor
   virtual ~DcmFileProducer();
@@ -119,10 +120,11 @@ class DCMTK_DCMDATA_EXPORT DcmInputFileStreamFactory: public DcmInputStreamFacto
 public:
 
   /** constructor
-   *  @param filename name of file to be opened, must not be NULL or empty
+   *  @param filename name of file to be opened (may contain wide chars
+   *    if support enabled)
    *  @param offset byte offset to skip from the start of file
    */
-  DcmInputFileStreamFactory(const char *filename, offile_off_t offset);
+  DcmInputFileStreamFactory(const OFFilename &filename, offile_off_t offset);
 
   /// copy constructor
   DcmInputFileStreamFactory(const DcmInputFileStreamFactory &arg);
@@ -149,7 +151,7 @@ private:
   DcmInputFileStreamFactory& operator=(const DcmInputFileStreamFactory&);
 
   /// filename
-  OFString filename_;
+  OFFilename filename_;
 
   /// offset in file
   offile_off_t offset_;
@@ -163,10 +165,11 @@ class DCMTK_DCMDATA_EXPORT DcmInputFileStream: public DcmInputStream
 {
 public:
   /** constructor
-   *  @param filename name of file to be opened, must not be NULL or empty
+   *  @param filename name of file to be opened (may contain wide chars
+   *    if support enabled)
    *  @param offset byte offset to skip from the start of file
    */
-  DcmInputFileStream(const char *filename, offile_off_t offset = 0);
+  DcmInputFileStream(const OFFilename &filename, offile_off_t offset = 0);
 
   /// destructor
   virtual ~DcmInputFileStream();
@@ -194,7 +197,7 @@ private:
   DcmFileProducer producer_;
 
   /// filename
-  OFString filename_;
+  OFFilename filename_;
 };
 
 /** class that manages the life cycle of a temporary file.
@@ -209,10 +212,10 @@ public:
   /** static method that permits creation of instances of
    *  this class (only) on the heap, never on the stack.
    *  A newly created instance always has a reference counter of 1.
-   *  @param fname path to temporary file
+   *  @param filename path to temporary file (may contain wide chars
+   *    if support enabled)
    */
-
-  static DcmTempFileHandler *newInstance(const char *fname);
+  static DcmTempFileHandler *newInstance(const OFFilename &filename);
 
   /** create an input stream that permits reading from the temporary file
    *  @return pointer to input stream. Note that there is no guarantee
@@ -233,9 +236,10 @@ private:
 
   /** private constructor.
    *  Instances of this class are always created through newInstance().
-   *  @param fname path to temporary file
+   *  @param filename path to temporary file (may contain wide chars
+   *    if support enabled)
    */
-  DcmTempFileHandler(const char *fname);
+  DcmTempFileHandler(const OFFilename &filename);
 
   /** private destructor. Instances of this class
    *  are always deleted through the reference counting methods
@@ -259,8 +263,7 @@ private:
 #endif
 
   /// path to temporary file
-  OFString filename_;
-
+  OFFilename filename_;
 };
 
 /** input stream factory for temporary file handlers
@@ -297,7 +300,6 @@ private:
 
   /// handler for temporary file
   DcmTempFileHandler *fileHandler_;
-
 };
 
 
@@ -306,6 +308,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
+ * Revision 1.11  2012-02-20 11:44:24  joergr
+ * Added initial support for wide character strings (UTF-16) used for filenames
+ * by the Windows operating system.
+ *
  * Revision 1.10  2011-12-14 09:04:12  uli
  * Make it possible to accurately build dcmdata and libi2d as DLLs.
  *

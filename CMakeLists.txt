@@ -42,11 +42,16 @@ OPTION(DCMTK_WITH_ICONV "Configure DCMTK with support for ICONV." ON)
 OPTION(DCMTK_WITH_PRIVATE_TAGS "Configure DCMTK with support for DICOM private tags coming with DCMTK." OFF)
 OPTION(DCMTK_WITH_THREADS "Configure DCMTK with support for multi-threading." ON)
 OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen." ON)
+OPTION(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 
 # Mark various settings as "advanced"
 MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
 MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
+IF(NOT WIN32)
+  # support for wide char file I/O functions is currently Windows-specific
+  MARK_AS_ADVANCED(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
+ENDIF(NOT WIN32)
 
 ENABLE_TESTING()
 

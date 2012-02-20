@@ -16,6 +16,15 @@ ELSE(DCMTK_WITH_THREADS)
   MESSAGE(STATUS "Info: Thread support will be disabled")
 ENDIF(DCMTK_WITH_THREADS)
 
+# Wide char file I/O support
+IF(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
+  SET(WIDE_CHAR_FILE_IO_FUNCTIONS 1)
+  MESSAGE(STATUS "Info: Wide char file I/O functions will be enabled")
+ELSE(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
+  SET(WIDE_CHAR_FILE_IO_FUNCTIONS "")
+  MESSAGE(STATUS "Info: Wide char file I/O functions will be disabled")
+ENDIF(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
+
 # Standard C++ headers (currently hard-coded)
 #IF(VTK_USE_ANSI_STDLIB)
   SET(USE_STD_CXX_INCLUDES 1)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-08 09:49:03 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 11:44:27 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
-DcmFileProducer::DcmFileProducer(const char *filename, offile_off_t offset)
+DcmFileProducer::DcmFileProducer(const OFFilename &filename, offile_off_t offset)
 : DcmProducer()
 , file_()
 , status_(EC_Normal)
@@ -138,12 +138,11 @@ void DcmFileProducer::putback(offile_off_t num)
 
 /* ======================================================================= */
 
-DcmInputFileStreamFactory::DcmInputFileStreamFactory(const char *filename, offile_off_t offset)
+DcmInputFileStreamFactory::DcmInputFileStreamFactory(const OFFilename &filename, offile_off_t offset)
 : DcmInputStreamFactory()
-, filename_()
+, filename_(filename)
 , offset_(offset)
 {
-  if (filename) filename_ = filename;
 }
 
 DcmInputFileStreamFactory::DcmInputFileStreamFactory(const DcmInputFileStreamFactory& arg)
@@ -159,17 +158,16 @@ DcmInputFileStreamFactory::~DcmInputFileStreamFactory()
 
 DcmInputStream *DcmInputFileStreamFactory::create() const
 {
-  return new DcmInputFileStream(filename_.c_str(), offset_);
+  return new DcmInputFileStream(filename_, offset_);
 }
 
 /* ======================================================================= */
 
-DcmInputFileStream::DcmInputFileStream(const char *filename, offile_off_t offset)
+DcmInputFileStream::DcmInputFileStream(const OFFilename &filename, offile_off_t offset)
 : DcmInputStream(&producer_) // safe because DcmInputStream only stores pointer
 , producer_(filename, offset)
-, filename_()
+, filename_(filename)
 {
-  if (filename) filename_ = filename;
 }
 
 DcmInputFileStream::~DcmInputFileStream()
@@ -182,7 +180,7 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
   if (currentProducer() == &producer_)
   {
     // no filter installed, can create factory object
-    result = new DcmInputFileStreamFactory(filename_.c_str(), tell());
+    result = new DcmInputFileStreamFactory(filename_, tell());
   }
   return result;
 }
@@ -191,26 +189,26 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
 
 DcmInputStream *DcmTempFileHandler::create() const
 {
-    return new DcmInputFileStream(filename_.c_str(), 0);
+    return new DcmInputFileStream(filename_, 0);
 }
 
-DcmTempFileHandler::DcmTempFileHandler(const char *fname)
+DcmTempFileHandler::DcmTempFileHandler(const OFFilename &filename)
 #ifdef WITH_THREADS
-: refCount_(1), mutex_(), filename_(fname)
+: refCount_(1), mutex_(), filename_(filename)
 #else
-: refCount_(1), filename_(fname)
+: refCount_(1), filename_(filename)
 #endif
 {
 }
 
 DcmTempFileHandler::~DcmTempFileHandler()
 {
-    unlink(filename_.c_str());
+    OFStandard::deleteFile(filename_);
 }
 
-DcmTempFileHandler *DcmTempFileHandler::newInstance(const char *fname)
+DcmTempFileHandler *DcmTempFileHandler::newInstance(const OFFilename &filename)
 {
-    return new DcmTempFileHandler(fname);
+    return new DcmTempFileHandler(filename);
 }
 
 void DcmTempFileHandler::increaseRefCount()
@@ -270,6 +268,10 @@ DcmInputStreamFactory *DcmInputTempFileStreamFactory::clone() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
+ * Revision 1.11  2012-02-20 11:44:27  joergr
+ * Added initial support for wide character strings (UTF-16) used for filenames
+ * by the Windows operating system.
+ *
  * Revision 1.10  2010-11-08 09:49:03  uli
  * Fixed even more gcc warnings caused by additional compiler flags.
  *

@@ -18,6 +18,9 @@
 /* Define when the compiler supports hidden visibility */
 #cmakedefine HAVE_HIDDEN_VISIBILITY @HAVE_HIDDEN_VISIBILITY@
 
+/* Define when building with wide char file I/O functions */
+#cmakedefine WIDE_CHAR_FILE_IO_FUNCTIONS @WIDE_CHAR_FILE_IO_FUNCTIONS@
+
 #ifdef _WIN32
   /* Define if you have the <windows.h> header file. */
   #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@

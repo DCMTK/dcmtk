@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 13:20:28 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2012-02-20 11:44:30 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/offile.h"
 #include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CMATH
@@ -727,9 +728,19 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 }
 
 
-OFBool OFStandard::deleteFile(const OFString &filename)
+OFBool OFStandard::deleteFile(const OFFilename &filename)
 {
-  int err = unlink(filename.c_str());
+  int err = -1;
+  /* avoid NULL or empty string passed to unlink() */
+  if (!filename.isEmpty())
+  {
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    if (filename.usesWideChars())
+      err = _wunlink(filename.getWideCharPointer());
+    else
+#endif
+      err = unlink(filename.getCharPointer());
+  }
   return (err == 0);
 }
 
@@ -1978,6 +1989,10 @@ int OFStandard::rand_r(unsigned int &seed)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.72  2012-02-20 11:44:30  joergr
+ *  Added initial support for wide character strings (UTF-16) used for filenames
+ *  by the Windows operating system.
+ *
  *  Revision 1.71  2011-10-12 13:20:28  joergr
  *  Added methods for converting non-ASCII and control characters to their octal
  *  representation, i.e. to '\ooo' where 'ooo' are the three octal digits.

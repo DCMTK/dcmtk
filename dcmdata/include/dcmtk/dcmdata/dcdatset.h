@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:11 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 11:44:24 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,13 +258,15 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** load object from a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
      *  Use DcmFileFormat::loadFile() to load files with meta header.
-     *  @param fileName name of the file to load
+     *  @param fileName name of the file to load (may contain wide chars if support enabled).
+     *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
+     *    or "wchar_t *" can also be passed directly to this parameter.
      *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
@@ -272,7 +274,7 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *    (with getXXX()) or loadAllDataElements() is called.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition loadFile(const char *fileName,
+    virtual OFCondition loadFile(const OFFilename &fileName,
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength);
@@ -280,7 +282,9 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
     /** save object to a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
      *  Use DcmFileFormat::saveFile() to save files with meta header.
-     *  @param fileName name of the file to save
+     *  @param fileName name of the file to save (may contain wide chars if support enabled).
+     *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
+     *    or "wchar_t *" can also be passed directly to this parameter.
      *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use current)
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
      *  @param groupLength flag, specifying how to handle the group length tags
@@ -289,7 +293,7 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  @param subPadLength number of bytes used for the item padding (has to be an even number)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition saveFile(const char *fileName,
+    virtual OFCondition saveFile(const OFFilename &fileName,
                                  const E_TransferSyntax writeXfer = EXS_Unknown,
                                  const E_EncodingType encodingType = EET_UndefinedLength,
                                  const E_GrpLenEncoding groupLength = EGL_recalcGL,
@@ -351,6 +355,10 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.45  2012-02-20 11:44:24  joergr
+** Added initial support for wide character strings (UTF-16) used for filenames
+** by the Windows operating system.
+**
 ** Revision 1.44  2011-12-14 09:04:11  uli
 ** Make it possible to accurately build dcmdata and libi2d as DLLs.
 **

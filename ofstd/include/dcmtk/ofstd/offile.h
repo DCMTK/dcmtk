@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2010, OFFIS e.V.
+ *  Copyright (C) 2006-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-17 10:50:30 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2012-02-20 11:44:28 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,6 +99,151 @@ END_EXTERN_C
 // the type we use to store the last error.
 typedef int offile_errno_t;
 
+
+/** class for managing filenames consisting either of conventional (8-bit) or
+ *  wide (e.g. 16-bit) characters.  The wide character support is currently
+ *  Windows-specific because most other operating systems use UTF-8, which is
+ *  compatible with conventional 8-bit character strings.
+ */
+class OFFilename
+{
+public:
+  /** constructor expecting a conventional character string
+   *  @param filename filename to be stored (8-bit characters)
+   */
+  OFFilename(const char *filename)
+    : filename_(NULL)
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    , wfilename_(NULL)
+#endif
+  {
+    if (filename != NULL)
+      filename_ = strdup(filename);
+  }
+
+  /** constructor expecting a character string as an OFString instance
+   *  @param filename filename to be stored (8-bit characters)
+   */
+  OFFilename(const OFString &filename)
+    : filename_(NULL)
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    , wfilename_(NULL)
+#endif
+  {
+    filename_ = strdup(filename.c_str());
+  }
+
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+  /** constructor expecting a wide character string
+   *  @param filename filename to be stored (e.g. 16-bit characters)
+   */
+  OFFilename(const wchar_t *filename)
+    : filename_(NULL),
+      wfilename_(NULL)
+  {
+    if (filename != NULL)
+      wfilename_ = _wcsdup(filename);
+  }
+#endif
+
+  /** copy constructor
+   *  @param arg filename object to be copied
+   */
+  OFFilename(const OFFilename &arg)
+    : filename_(NULL)
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    , wfilename_(NULL)
+#endif
+  {
+    if (arg.filename_ != NULL)
+      filename_ = strdup(arg.filename_);
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    if (arg.wfilename_ != NULL)
+      wfilename_ = _wcsdup(arg.wfilename_);
+#endif
+  }
+
+  /** destructor. Frees memory.
+   */
+  ~OFFilename()
+  {
+    free(filename_);
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    free(wfilename_);
+#endif
+  }
+
+  /** assignment operator
+   *  @param arg filename object to be copied
+   *  @return reference to this filename object
+   */
+  OFFilename &operator=(const OFFilename &arg)
+  {
+    if (&arg != this)
+    {
+      free(filename_);
+      filename_ = (arg.filename_ != NULL) ? strdup(arg.filename_) : NULL;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+      free(wfilename_);
+      wfilename_ = (arg.wfilename_ != NULL) ? _wcsdup(arg.wfilename_) : NULL;
+#endif
+    }
+    return *this;
+  }
+
+  /** checks whether this object stores an empty filename
+   *  @return OFTrue if the filename is empty, OFFalse otherwise
+   */
+  OFBool isEmpty() const
+  {
+    OFBool result = (filename_ == NULL) || (filename_[0] == '\0');
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    if (result)
+        result = (wfilename_ == NULL) || (wfilename_[0] == L'\0');
+#endif
+    return result;
+  }
+
+  /** checks whether this object stores a wide character filename
+   *  @return OFTrue if the filename uses wide characters, OFFalse otherwise
+   */
+  inline OFBool usesWideChars() const
+  {
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    return (wfilename_ != NULL);
+#else
+    return OFFalse;
+#endif
+  }
+
+  /** get stored filename consisting of conventional characters
+   *  @return filename (might be NULL if none is stored)
+   */
+  inline const char *getCharPointer() const
+  {
+    return filename_;
+  }
+
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+  /** get stored filename consisting of wide characters
+   *  @return wide char filename (might be NULL if none is stored)
+   */
+  inline const wchar_t *getWideCharPointer() const
+  {
+    return wfilename_;
+  }
+#endif
+
+private:
+  /// filename consisting of conventional characters (8-bit)
+  char *filename_;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+  /// filename consisting of wide characters (e.g. 16-bit on Windows)
+  wchar_t *wfilename_;
+#endif
+};
+
+
 /** this class provides a simple C++ encapsulation layer for stdio FILE pointers.
  *  All stdio functions on files are directly mapped into member functions.
  *  The handling of large files (64 bit file systems) is transparent. Instead
@@ -133,8 +278,8 @@ public:
    *  a stream with it.
    *  @param filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
-   *  @return true if stream was successfully created, false otherwise, in which case
-   *   the error code is set.
+   *  @return true if stream was successfully created, false otherwise, in which
+   *    case the error code is set.
    */
   OFBool fopen(const char *filename, const char *modes)
   {
@@ -149,11 +294,14 @@ public:
   }
 
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
-  /** opens the file whose name is the wide character string pointed to by path and associates
-   *  a stream with it. This function is Win32 specific and only exists on WinNT and newer.
+  /** opens the file whose name is the wide character string pointed to by path and
+   *  associates a stream with it. This function is Win32 specific and only exists on
+   *  WinNT and newer.
    *  @param filename Unicode filename path to file
-   *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a wide character string
-   *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a wide
+   *    character string
+   *  @return true if stream was successfully created, false otherwise, in which case
+   *    the error code is set.
    */
   OFBool wfopen(const wchar_t *filename, const wchar_t *modes)
   {
@@ -163,6 +311,38 @@ public:
     return (file_ != NULL);
   }
 #endif
+
+  /** opens the file whose name is a conventional or wide character string pointed to
+   *  by path and associates. The wide character support is currently Windows-specific.
+   *  @param filename object containing the filename path to file
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
+   *  @return true if stream was successfully created, false otherwise, in which case
+   *    the error code is set.
+   */
+  OFBool fopen(const OFFilename &filename, const char *modes)
+  {
+    OFBool result = OFFalse;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    if (filename.usesWideChars())
+    {
+      // convert file mode to wide char string
+      const size_t length = strlen(modes) + 1;
+      wchar_t *wmodes = new wchar_t[length];
+      if (wmodes != NULL)
+      {
+        for (size_t i = 0; i < length; ++i)
+        {
+          // conversion of ASCII codes (7-bit) is easy
+          wmodes[i] = OFstatic_cast(wchar_t, modes[i]);
+        }
+        result = wfopen(filename.getWideCharPointer(), wmodes);
+      }
+      delete[] wmodes;
+    } else
+#endif
+      result = fopen(filename.getCharPointer(), modes);
+    return result;
+  }
 
   /** associates a stream with the existing file descriptor, fildes. The mode
    *  of the stream (one of the values "r", "r+", "w", "w+", "a", "a+") must be
@@ -174,7 +354,8 @@ public:
    *  applying fdopen to a shared memory object is undefined.
    *  @param fd file descriptor
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
-   *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
+   *  @return true if stream was successfully created, false otherwise, in which
+   *    case the error code is set.
    */
   OFBool fdopen(int fd, const char *modes)
   {
@@ -837,12 +1018,16 @@ private:
 
 };
 
-
 #endif
+
 
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.18  2012-02-20 11:44:28  joergr
+ * Added initial support for wide character strings (UTF-16) used for filenames
+ * by the Windows operating system.
+ *
  * Revision 1.17  2010-12-17 10:50:30  joergr
  * Check whether "feof" and "ferror" are defined as macros (e.g. on IRIX 6.3).
  *

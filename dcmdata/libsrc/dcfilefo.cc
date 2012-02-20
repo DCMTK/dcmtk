@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:50 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2012-02-20 11:44:26 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -797,7 +797,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
 // ********************************
 
 
-OFCondition DcmFileFormat::loadFile(const char *fileName,
+OFCondition DcmFileFormat::loadFile(const OFFilename &fileName,
                                     const E_TransferSyntax readXfer,
                                     const E_GrpLenEncoding groupLength,
                                     const Uint32 maxReadLength,
@@ -806,9 +806,9 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
     if (readMode == ERM_dataset)
         return getDataset()->loadFile(fileName, readXfer, groupLength, maxReadLength);
 
-    OFCondition l_error = EC_IllegalParameter;
+    OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if ((fileName != NULL) && (strlen(fileName) > 0))
+    if (!fileName.isEmpty())
     {
         /* open file for input */
         DcmInputFileStream fileStream(fileName);
@@ -836,7 +836,7 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
 }
 
 
-OFCondition DcmFileFormat::saveFile(const char *fileName,
+OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
                                     const E_TransferSyntax writeXfer,
                                     const E_EncodingType encodingType,
                                     const E_GrpLenEncoding groupLength,
@@ -845,15 +845,14 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
                                     const Uint32 subPadLength,
                                     const E_FileWriteMode writeMode)
 {
-
     if (writeMode == EWM_dataset)
     {
         return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
             padEncoding, padLength, subPadLength);
     }
-    OFCondition l_error = EC_IllegalParameter;
+    OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if ((fileName != NULL) && (strlen(fileName) > 0))
+    if (!fileName.isEmpty())
     {
         DcmWriteCache wcache;
 
@@ -1026,6 +1025,10 @@ OFCondition DcmFileFormat::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.72  2012-02-20 11:44:26  joergr
+** Added initial support for wide character strings (UTF-16) used for filenames
+** by the Windows operating system.
+**
 ** Revision 1.71  2011-12-02 11:02:50  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **

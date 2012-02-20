@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:12 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 11:44:24 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,9 +43,10 @@ class DCMTK_DCMDATA_EXPORT DcmFileConsumer: public DcmConsumer
 {
 public:
   /** constructor
-   *  @param filename name of file to be created, must not be NULL or empty
+   *  @param filename name of file to be created (may contain wide chars
+   *    if support enabled)
    */
-  DcmFileConsumer(const char *filename);
+  DcmFileConsumer(const OFFilename &filename);
 
   /** constructor
    *  @param file structure, file must already be open for writing
@@ -86,7 +87,7 @@ public:
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
-   *  @return number of bytes actually processed. 
+   *  @return number of bytes actually processed.
    */
   virtual offile_off_t write(const void *buf, offile_off_t buflen);
 
@@ -119,9 +120,10 @@ class DCMTK_DCMDATA_EXPORT DcmOutputFileStream: public DcmOutputStream
 {
 public:
   /** constructor
-   *  @param filename name of file to be created, must not be NULL or empty
+   *  @param filename name of file to be created (may contain wide chars
+   *    if support enabled)
    */
-  DcmOutputFileStream(const char *filename);
+  DcmOutputFileStream(const OFFilename &filename);
 
   /** constructor
    *  @param file structure, file must already be open for writing
@@ -141,7 +143,6 @@ private:
 
   /// the final consumer of the filter chain
   DcmFileConsumer consumer_;
-
 };
 
 
@@ -150,6 +151,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.h,v $
+ * Revision 1.9  2012-02-20 11:44:24  joergr
+ * Added initial support for wide character strings (UTF-16) used for filenames
+ * by the Windows operating system.
+ *
  * Revision 1.8  2011-12-14 09:04:12  uli
  * Make it possible to accurately build dcmdata and libi2d as DLLs.
  *

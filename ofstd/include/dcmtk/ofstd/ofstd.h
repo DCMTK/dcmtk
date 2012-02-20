@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-20 11:44:28 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,13 @@ BEGIN_EXTERN_C
 #include <sys/types.h>  /* for size_t */
 #endif
 END_EXTERN_C
+
+
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
+
+class OFFilename;
 
 
 /*---------------------*
@@ -312,10 +319,13 @@ class DCMTK_OFSTD_EXPORT OFStandard
                                              const OFBool recurse = OFTrue);
 
     /** delete given file from filesystem
-     *  @param filename name of the file (including directory) to delete
+     *  @param filename name of the file (including directory) to delete. This filename may
+     *    contain wide characters if support enabled. Since there are various constructors
+     *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
+     *    directly to this parameter.
      *  @return OFTrue if deletion was successul, OFFalse otherwise
      */
-    static OFBool deleteFile(const OFString &filename);
+    static OFBool deleteFile(const OFFilename &filename);
 
     /** determine size of given file (in bytes)
      *  @param filename name of the file to be checked
@@ -671,6 +681,10 @@ class DCMTK_OFSTD_EXPORT OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.50  2012-02-20 11:44:28  joergr
+ * Added initial support for wide character strings (UTF-16) used for filenames
+ * by the Windows operating system.
+ *
  * Revision 1.49  2011-12-14 08:54:00  uli
  * Make it possible to correctly build ofstd as a DLL.
  *

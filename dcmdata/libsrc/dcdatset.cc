@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:48 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2012-02-20 11:44:26 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -295,7 +295,7 @@ void DcmDataset::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags)
 {
     /* the Native DICOM Model as defined for Application Hosting needs special handling */
@@ -601,17 +601,17 @@ OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream &outStream,
 // ********************************
 
 
-OFCondition DcmDataset::loadFile(const char *filename,
+OFCondition DcmDataset::loadFile(const OFFilename &fileName,
                                  const E_TransferSyntax readXfer,
                                  const E_GrpLenEncoding groupLength,
                                  const Uint32 maxReadLength)
 {
-    OFCondition l_error = EC_IllegalParameter;
+    OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if ((filename != NULL) && (strlen(filename) > 0))
+    if (!fileName.isEmpty())
     {
         /* open file for input */
-        DcmInputFileStream fileStream(filename);
+        DcmInputFileStream fileStream(fileName);
 
         /* check stream status */
         l_error = fileStream.status();
@@ -633,7 +633,7 @@ OFCondition DcmDataset::loadFile(const char *filename,
 }
 
 
-OFCondition DcmDataset::saveFile(const char *fileName,
+OFCondition DcmDataset::saveFile(const OFFilename &fileName,
                                  const E_TransferSyntax writeXfer,
                                  const E_EncodingType encodingType,
                                  const E_GrpLenEncoding groupLength,
@@ -641,11 +641,11 @@ OFCondition DcmDataset::saveFile(const char *fileName,
                                  const Uint32 padLength,
                                  const Uint32 subPadLength)
 {
-    DcmWriteCache wcache;
-    OFCondition l_error = EC_IllegalParameter;
+    OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if ((fileName != NULL) && (strlen(fileName) > 0))
+    if (!fileName.isEmpty())
     {
+        DcmWriteCache wcache;
         /* open file for output */
         DcmOutputFileStream fileStream(fileName);
 
@@ -764,6 +764,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.63  2012-02-20 11:44:26  joergr
+** Added initial support for wide character strings (UTF-16) used for filenames
+** by the Windows operating system.
+**
 ** Revision 1.62  2011-12-02 11:02:48  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **

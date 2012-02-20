@@ -3,6 +3,27 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.20 (riesmeier)
 
+- Added initial support for wide character strings (UTF-16) used for filenames
+  by the Windows operating system. Thanks to Niels Dekker <C.E.Dekker@lumc.nl>
+  and Jeroen Eggermont <J.Eggermont@lumc.nl> for the suggestion.
+  Affects: CMakeLists.txt
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/docs/macros.txt
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcistrmf.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/include/dcmtk/dcmdata/dcostrmf.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcistrmf.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcostrmf.cc
+           ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Output dataset dump with PF_convertToOctalNumbers flag in case of error.
   This makes some unusual control characters more visible in the output.
   Affects: dcmsr/libsrc/dsrdoctn.cc

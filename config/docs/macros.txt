@@ -380,11 +380,13 @@ USING_STD_NAMESPACE
 
 WIDE_CHAR_FILE_IO_FUNCTIONS
   Affects: ofstd
-  Type of modification: Activates currently unused feature
+  Type of modification: Activates feature
   Explanation: In addition to the standard file I/O functions, the OFFile class
     also defines the corresponding wide character functions from C99 standard.
-    Since these functions are currently not used within DCMTK and also not yet
-    supported by all compilers, this feature is disabled by default.
+    Since these functions are not yet supported by all compilers and the
+    current implementation is Windows-specific, this feature is disabled by
+    default.  When using CMake, you can enable this macro by setting the CMake
+    option DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS to "on".
 
 WRITE_VERY_LARGE_CHUNKS
   Affects: dcmdata
