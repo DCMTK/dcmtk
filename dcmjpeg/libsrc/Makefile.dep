@@ -11,6 +11,8 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -21,6 +23,7 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -64,6 +67,8 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
@@ -87,6 +92,8 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dcmimage.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
@@ -98,6 +105,8 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diovlay.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diobjcou.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diovdat.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diovpln.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -117,7 +126,6 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/discalet.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/ditranst.h \
   ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dipxrept.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h
 dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -127,17 +135,20 @@ dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/loglevel.h \
   ../../oflog/include/dcmtk/oflog/streams.h \
   ../../oflog/include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
@@ -177,6 +188,8 @@ dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diimage.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -207,6 +220,8 @@ dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diobjcou.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diovdat.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diovpln.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -222,11 +237,15 @@ dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg8/jpeglib8.h ../../dcmjpeg/libijg8/jconfig8.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg8/jmorecfg8.h ../../dcmjpeg/libijg8/jerror8.h \
-  ../../dcmjpeg/libijg8/jpegint8.h ../../dcmjpeg/libijg8/jversion8.h
+  ../../dcmjpeg/libijg8/jmorecfg8.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg8/jerror8.h ../../dcmjpeg/libijg8/jpegint8.h \
+  ../../dcmjpeg/libijg8/jversion8.h
 djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djcodecd.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -238,6 +257,8 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -245,6 +266,7 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -289,6 +311,8 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -301,7 +325,11 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -342,6 +370,8 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -349,6 +379,7 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -393,6 +424,8 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -405,7 +438,11 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -481,6 +518,8 @@ djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -488,6 +527,7 @@ djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -532,6 +572,8 @@ djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -544,7 +586,11 @@ djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
-  ../../oflog/include/dcmtk/oflog/oflog.h
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h
 djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djdecbas.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -557,6 +603,8 @@ djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -564,6 +612,7 @@ djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -608,6 +657,8 @@ djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -620,7 +671,11 @@ djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -649,6 +704,8 @@ djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -656,6 +713,7 @@ djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -700,6 +758,8 @@ djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -712,7 +772,11 @@ djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -742,6 +806,8 @@ djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -749,6 +815,7 @@ djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -793,6 +860,8 @@ djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -805,7 +874,11 @@ djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -833,6 +906,8 @@ djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
@@ -843,6 +918,7 @@ djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -887,12 +963,18 @@ djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -916,6 +998,8 @@ djdecpro.o: djdecpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -923,6 +1007,7 @@ djdecpro.o: djdecpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -967,6 +1052,8 @@ djdecpro.o: djdecpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -979,7 +1066,11 @@ djdecpro.o: djdecpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -1009,6 +1100,8 @@ djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1016,6 +1109,7 @@ djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1060,6 +1154,8 @@ djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -1072,7 +1168,11 @@ djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -1102,6 +1202,8 @@ djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1109,6 +1211,7 @@ djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1153,6 +1256,8 @@ djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -1165,7 +1270,11 @@ djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -1193,17 +1302,20 @@ djdijg12.o: djdijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/loglevel.h \
   ../../oflog/include/dcmtk/oflog/streams.h \
   ../../oflog/include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
@@ -1243,6 +1355,8 @@ djdijg12.o: djdijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1251,7 +1365,11 @@ djdijg12.o: djdijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djcparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1264,7 +1382,9 @@ djdijg12.o: djdijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg12/jpeglib12.h ../../dcmjpeg/libijg12/jconfig12.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg12/jmorecfg12.h ../../dcmjpeg/libijg12/jerror12.h
+  ../../dcmjpeg/libijg12/jmorecfg12.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg12/jerror12.h
 djdijg16.o: djdijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djdijg16.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1275,17 +1395,20 @@ djdijg16.o: djdijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/loglevel.h \
   ../../oflog/include/dcmtk/oflog/streams.h \
   ../../oflog/include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
@@ -1325,6 +1448,8 @@ djdijg16.o: djdijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1333,7 +1458,11 @@ djdijg16.o: djdijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djcparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1346,7 +1475,9 @@ djdijg16.o: djdijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg16/jpeglib16.h ../../dcmjpeg/libijg16/jconfig16.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg16/jmorecfg16.h ../../dcmjpeg/libijg16/jerror16.h
+  ../../dcmjpeg/libijg16/jmorecfg16.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg16/jerror16.h
 djdijg8.o: djdijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1357,17 +1488,20 @@ djdijg8.o: djdijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/loglevel.h \
   ../../oflog/include/dcmtk/oflog/streams.h \
   ../../oflog/include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
@@ -1407,6 +1541,8 @@ djdijg8.o: djdijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1415,7 +1551,11 @@ djdijg8.o: djdijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djcparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1428,7 +1568,9 @@ djdijg8.o: djdijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg8/jpeglib8.h ../../dcmjpeg/libijg8/jconfig8.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg8/jmorecfg8.h ../../dcmjpeg/libijg8/jerror8.h
+  ../../dcmjpeg/libijg8/jmorecfg8.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg8/jerror8.h
 djeijg12.o: djeijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djeijg12.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1436,6 +1578,8 @@ djeijg12.o: djeijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmjpeg/djencabs.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1444,6 +1588,7 @@ djeijg12.o: djeijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1490,15 +1635,21 @@ djeijg12.o: djeijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djcparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1511,8 +1662,9 @@ djeijg12.o: djeijg12.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg12/jpeglib12.h ../../dcmjpeg/libijg12/jconfig12.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg12/jmorecfg12.h ../../dcmjpeg/libijg12/jerror12.h \
-  ../../dcmjpeg/libijg12/jpegint12.h
+  ../../dcmjpeg/libijg12/jmorecfg12.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg12/jerror12.h ../../dcmjpeg/libijg12/jpegint12.h
 djeijg16.o: djeijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djeijg16.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1520,6 +1672,8 @@ djeijg16.o: djeijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmjpeg/djencabs.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1528,6 +1682,7 @@ djeijg16.o: djeijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1574,15 +1729,21 @@ djeijg16.o: djeijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djcparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1595,8 +1756,9 @@ djeijg16.o: djeijg16.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg16/jpeglib16.h ../../dcmjpeg/libijg16/jconfig16.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg16/jmorecfg16.h ../../dcmjpeg/libijg16/jerror16.h \
-  ../../dcmjpeg/libijg16/jpegint16.h
+  ../../dcmjpeg/libijg16/jmorecfg16.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg16/jerror16.h ../../dcmjpeg/libijg16/jpegint16.h
 djeijg8.o: djeijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1604,6 +1766,8 @@ djeijg8.o: djeijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmjpeg/djencabs.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1612,6 +1776,7 @@ djeijg8.o: djeijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1658,15 +1823,21 @@ djeijg8.o: djeijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmjpeg/djcparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1679,8 +1850,9 @@ djeijg8.o: djeijg8.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmjpeg/libijg8/jpeglib8.h ../../dcmjpeg/libijg8/jconfig8.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpeg/libijg8/jmorecfg8.h ../../dcmjpeg/libijg8/jerror8.h \
-  ../../dcmjpeg/libijg8/jpegint8.h
+  ../../dcmjpeg/libijg8/jmorecfg8.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+  ../../dcmjpeg/libijg8/jerror8.h ../../dcmjpeg/libijg8/jpegint8.h
 djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djencbas.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1693,6 +1865,8 @@ djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1700,6 +1874,7 @@ djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1744,6 +1919,8 @@ djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -1756,7 +1933,11 @@ djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
@@ -1786,6 +1967,8 @@ djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1793,6 +1976,7 @@ djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1837,6 +2021,8 @@ djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -1849,7 +2035,11 @@ djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
@@ -1880,6 +2070,8 @@ djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1887,6 +2079,7 @@ djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1931,6 +2124,8 @@ djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -1943,7 +2138,11 @@ djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
@@ -1972,6 +2171,8 @@ djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
@@ -1982,6 +2183,7 @@ djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2026,10 +2228,16 @@ djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -2057,6 +2265,8 @@ djencpro.o: djencpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -2064,6 +2274,7 @@ djencpro.o: djencpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2108,6 +2319,8 @@ djencpro.o: djencpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -2120,7 +2333,11 @@ djencpro.o: djencpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
@@ -2151,6 +2368,8 @@ djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -2158,6 +2377,7 @@ djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2202,6 +2422,8 @@ djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -2214,7 +2436,11 @@ djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
@@ -2245,6 +2471,8 @@ djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -2252,6 +2480,7 @@ djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2296,6 +2525,8 @@ djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
@@ -2308,7 +2539,11 @@ djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
@@ -2342,16 +2577,21 @@ djrplol.o: djrplol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2403,7 +2643,9 @@ djrplol.o: djrplol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h
 djrploss.o: djrploss.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djrploss.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -2419,16 +2661,21 @@ djrploss.o: djrploss.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2480,7 +2727,9 @@ djrploss.o: djrploss.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h
 djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpeg/djutils.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -2489,6 +2738,8 @@ djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
@@ -2499,6 +2750,7 @@ djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/config/defines.h \
   ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -2543,12 +2795,18 @@ djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmjpeg/djdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
