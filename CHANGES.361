@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.21 (riesmeier)
 
+- Removed misplaced export macro (forward declaration of a class).
+  Affects: oflog/include/dcmtk/oflog/socketap.h
+
 - Fixed wrong comment on the time complexity of the swap() function.
   Affects: ofstd/include/dcmtk/ofstd/ofstring.h
 

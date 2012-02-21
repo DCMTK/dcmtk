@@ -111,7 +111,7 @@ namespace log4cplus {
         tstring serverName;
 
 #if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
-        class DCMTK_LOG4CPLUS_EXPORT ConnectorThread;
+        class ConnectorThread;
         friend class ConnectorThread;
 
         class DCMTK_LOG4CPLUS_EXPORT ConnectorThread
