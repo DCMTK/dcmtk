@@ -18,8 +18,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 11:44:28 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2012-02-21 09:24:44 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,6 +191,22 @@ public:
     return *this;
   }
 
+  /** fast, non-throwing swap function. The time complexity of this function
+   *  is constant.
+   *  @param arg filename object to swap with
+   */
+  void swap(OFFilename &arg)
+  {
+    char *charPointer = filename_;
+    filename_ = arg.filename_;
+    arg.filename_ = charPointer;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    wchar_t *wideCharPointer = wfilename_;
+    wfilename_ = arg.wfilename_;
+    arg.wfilename_ = wideCharPointer;
+#endif
+  }
+
   /** checks whether this object stores an empty filename
    *  @return OFTrue if the filename is empty, OFFalse otherwise
    */
@@ -242,6 +258,16 @@ private:
   wchar_t *wfilename_;
 #endif
 };
+
+/** swap function for OFFilename class. The time complexity of this function
+ *  is constant.
+ *  @param lhs left-hand side filename
+ *  @param rhs right-hand side filename
+ */
+inline void swap(OFFilename &lhs, OFFilename &rhs)
+{
+  lhs.swap(rhs);
+}
 
 
 /** this class provides a simple C++ encapsulation layer for stdio FILE pointers.
@@ -1024,6 +1050,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.19  2012-02-21 09:24:44  joergr
+ * Added fast, non-throwing swap function to OFFilename class.
+ *
  * Revision 1.18  2012-02-20 11:44:28  joergr
  * Added initial support for wide character strings (UTF-16) used for filenames
  * by the Windows operating system.
