@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2011, OFFIS e.V.
+ *  Copyright (C) 2008-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:15 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-21 08:48:51 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #include "dcmtk/dcmnet/dcompat.h"
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
 #include "dcmtk/dcmnet/dcasccff.h"  /* For reading a association config file */
-#include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
+#include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association config file infos */
 #include "dcmtk/ofstd/oflist.h"
 
 
@@ -261,9 +261,9 @@ public:
   virtual OFCondition sendECHORequest(const T_ASC_PresentationContextID presID);
 
   /** This function sends a C-STORE request on the currently opened association and receives
-   *  the corresponding response then.  If required and supported, the dataset of the SOP
+   *  the corresponding response then. If required and supported, the dataset of the SOP
    *  instance can be converted automatically to the network transfer syntax that was
-   *  negotiated (and is specified by the parameter 'presID').  However, this feature is
+   *  negotiated (and is specified by the parameter 'presID'). However, this feature is
    *  disabled by default. See setDatasetConversionMode() on how to enable it.
    *  @param presID        [in]  Contains in the end the ID of the presentation context which
    *                             was specified in the DIMSE command. If 0 is given, the
@@ -296,17 +296,18 @@ public:
    *  responses=NULL when calling the function.
    *  This function can be overwritten by actual SCU implementations but just should work fine
    *  for most people.
-   *  @param presID      [in]  The presentation context ID that should be used. Must be an odd
-   *                           number.
+   *  @param presID                 [in]  The presentation context ID that should be used.
+   *                                      Must be an odd number.
    *  @param moveDestinationAETitle [in]  The move destination's AE title, i.e.\ the one that
-   *                           is used for connection to the storage server.
-   *  @param dataset     [in]  The dataset containing the information about the object(s) to
-   *                           be retrieved
-   *  @param responses   [out] The incoming C-MOVE responses for this request. The caller is
-   *                           responsible for providing a non-NULL pointer for this case.
-   *                           After receiving the results, the caller is responsible for
-   *                           freeing the memory of this variable. If NULL is specified, the
-   *                           responses will not bereturned to the caller.
+   *                                      is used for connection to the storage server.
+   *  @param dataset                [in]  The dataset containing the information about the
+   *                                      object(s) to be retrieved.
+   *  @param responses              [out] The incoming C-MOVE responses for this request.
+   *                                      The caller is responsible for providing a non-NULL
+   *                                      pointer for this case. After receiving the results,
+   *                                      the caller is responsible for freeing the memory of
+   *                                      this variable. If NULL is specified, the responses
+   *                                      will not bereturned to the caller.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send and responses
    *          (with whatever status) could be received.
    */
@@ -322,8 +323,9 @@ public:
    *  sendMOVERequest() can decide on its own whether he wants to cancel the C-MOVE session,
    *  terminate the association, do something useful or whatever. Thus this function is a more
    *  object-oriented kind of callback.
-   *  @param presID   [in] The presentation context ID where the response was received on.
-   *  @param response [in] The C-MOVE response received.
+   *  @param presID              [in]  The presentation context ID where the response was
+   *                                   received on.
+   *  @param response            [in]  The C-MOVE response received.
    *  @param waitForNextResponse [out] Denotes whether SCU should try to receive another
    *                                   response. If set to OFTrue, then sendMOVERequest() will
    *                                   continue waiting for responses. The current
@@ -404,13 +406,13 @@ public:
 
   /** Function handling a single C-STORE Request. If storage mode is set to disk (default),
    *  this function is called and the incoming object stored to disk.
-   *  @param presID               [in]  The presentation context the C-STORE Response was
-   *                                    received on.
-   *  @param incomingObject       [in]  The dataset (the object) received
-   *  @param continueCGETSession  [out] Defines whether it is decided to wait for further
-   *                                    C-GET Responses/C-STORE requests within this C-GET
-   *                                    session.
-   *  @param cStoreReturnStatus   [out] Denotes the desired C-STORE return status.
+   *  @param presID              [in]  The presentation context the C-STORE Response was
+   *                                   received on.
+   *  @param incomingObject      [in]  The dataset (the object) received
+   *  @param continueCGETSession [out] Defines whether it is decided to wait for further
+   *                                   C-GET Responses/C-STORE requests within this C-GET
+   *                                   session.
+   *  @param cStoreReturnStatus  [out] Denotes the desired C-STORE return status.
    *  @return If errors occur (incomingObject NULL or SCU not connected or file could not be
    *          stored), this method will return an error code otherwise EC_Normal.
    */
@@ -422,25 +424,20 @@ public:
   /** Function handling a single C-STORE Request. If storage mode is set to bit preserving,
    *  this function is called and the incoming object stored directly to disk, i.e. not stored
    *  fully in memory.
-   *  @param presID          [in] The presentation context the C-STORE Response was received
-   *                              on.
-   *  @param filename        [in] The filename to store to
-   *  @param request         [in] The incoming C-STORE request command set
-   *  @param callback        [in] The desired user callback
-   *  @param callbackContext [in] The desired user callback data
+   *  @param presID   [in] The presentation context the C-STORE Response was received on.
+   *  @param filename [in] The filename to store to
+   *  @param request  [in] The incoming C-STORE request command set
    *  @return If errors occur (incomingObject NULL or SCU not connected filename not
    *          specified), this method will return an error code otherwise EC_Normal.
    */
   virtual OFCondition handleSTORERequestFile(T_ASC_PresentationContextID *presID,
                                              const OFString& filename,
-                                             T_DIMSE_C_StoreRQ* request,
-                                             DIMSE_ProgressCallback callback,
-                                             void *callbackContext);
+                                             T_DIMSE_C_StoreRQ* request);
 
-  /** This function is called if an object was receveid due to a C-GET request and can be
-   *  overwritten by a user in order to be informed about such an event. The standard handles
-   *  just prints a message. Note that this function is not called if the SCU is in storage
-   *  mode DCMSCU_STORAGE_IGNORE.
+  /** This function is called if an object was received due to a C-GET request and can be
+   *  overwritten by a user in order to be informed about such an event. The default
+   *  implementation just prints a DEBUG message. Note that this function is not called if
+   *  the SCU is in storage mode DCMSCU_STORAGE_IGNORE.
    *  @param filename       [in] The filename written
    *  @param sopClassUID    [in] The SOP Class UID of the object written
    *  @param sopInstanceUID [in] The SOP Instance UID of the object written
@@ -458,15 +455,15 @@ public:
    *  responses=NULL when calling the function.
    *  This function can be overwritten by actual SCU implementations but just should work fine
    *  for most people.
-   *  @param presID      [in]  The presentation context ID that should be used. Must be an odd
-   *                           number.
-   *  @param queryKeys   [in]  The dataset containing the query keys to be searched for on the
-   *                           server (SCP).
-   *  @param responses   [out] The incoming C-FIND responses for this request. The caller is
-   *                           responsible for providing a non-NULL pointer for this case.
-   *                           After receiving the results, the caller is responsible for
-   *                           freeing the memory of this variable. If NULL is specified, the
-   *                           responses will be not returned to the caller.
+   *  @param presID    [in]  The presentation context ID that should be used. Must be an odd
+   *                         number.
+   *  @param queryKeys [in]  The dataset containing the query keys to be searched for on the
+   *                         server (SCP).
+   *  @param responses [out] The incoming C-FIND responses for this request. The caller is
+   *                         responsible for providing a non-NULL pointer for this case.
+   *                         After receiving the results, the caller is responsible for
+   *                         freeing the memory of this variable. If NULL is specified, the
+   *                         responses will be not returned to the caller.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send and responses
    *          (with whatever status) could be received.
    */
@@ -481,8 +478,9 @@ public:
    *  sendFINDRequest() can decide on its own whether he wants to cancel the C-FIND session,
    *  terminate the association, do something useful or whatever. That way this is a more
    *  object-oriented kind of callback.
-   *  @param presID   [in] The presentation context ID where the response was received on.
-   *  @param response [in] The C-FIND response received.
+   *  @param presID              [in]  The presentation context ID where the response was
+   *                                   received on.
+   *  @param response            [in]  The C-FIND response received.
    *  @param waitForNextResponse [out] Denotes whether SCU should try to receive another
    *                                   response. If set to OFTrue, then sendFINDRequest()
    *                                   will continue waiting for responses. The current
@@ -554,6 +552,24 @@ public:
   virtual OFCondition handleEVENTREPORTRequest(DcmDataset *&reqDataset,
                                                Uint16 &eventTypeID,
                                                const int timeout = 0);
+
+  /** This function is called while sending DIMSE messages, i.e.\ on each PDV of a dataset.
+   *  The default implementation just prints a TRACE message on the number of bytes sent so
+   *  far. By overwriting this method, the progress of the send process can be shown to the
+   *  user in a more appropriate way. The progress notification can also be disabled
+   *  completely by calling setProgressNotificationMode().
+   *  @param byteCount [in] Number of bytes sent so far
+   */
+  virtual void notifySENDProgress(const unsigned long byteCount);
+
+  /** This function is called while receiving DIMSE messages, i.e.\ on each PDV of a dataset.
+   *  The default implementation just prints a TRACE message on the number of bytes received
+   *  so far. By overwriting this method, the progress of the receive process can be shown to
+   *  the user in a more appropriate way. The progress notification can also be disabled
+   *  completely by calling setProgressNotificationMode().
+   *  @param byteCount [in] Number of bytes received so far
+   */
+  virtual void notifyRECEIVEProgress(const unsigned long byteCount);
 
   /** Closes the association created by this SCU. Also resets the current association.
    *  @param closeType [in] Define whether to release or abort the association
@@ -632,11 +648,18 @@ public:
   void setVerbosePCMode(const OFBool mode);
 
   /** Set the mode that specifies whether the transfer syntax of the dataset can be changed
-   *  for network transmission.  This mainly covers the compression/decompression of datasets,
+   *  for network transmission. This mainly covers the compression/decompression of datasets,
    *  which is disabled by default.
    *  @param mode [in] Allow dataset conversion if OFTrue
    */
   void setDatasetConversionMode(const OFBool mode);
+
+  /** Set the mode that specifies whether the progress of sending and receiving DIMSE
+   *  messages is notified by calling notifySENDProgress() and notifyRECEIVEProgress(),
+   *  respectively. The progress notification is enabled by default.
+   *  @param mode [in] Disable progress notification if OFFalse
+   */
+  void setProgressNotificationMode(const OFBool mode);
 
   /* Get methods */
 
@@ -686,20 +709,6 @@ public:
    */
   Uint32 getACSETimeout() const;
 
-  /** Returns the verbose presentation context mode configured specifying whether details on
-   *  the presentation contexts (negotiated during association setup) should be shown in
-   *  verbose or debug mode. The latter is the default.
-   *  @return The verbose presentation context mode configured
-   */
-  OFBool getVerbosePCMode() const;
-
-  /** Returns the mode that specifies whether the transfer syntax of the dataset can be
-   *  changed for network transmission.  This mainly covers the compression/decompression
-   *  of datasets, which is disabled by default.
-   *  @return The transfer syntax conversion mode
-   */
-  OFBool getDatasetConversionMode() const;
-
   /** Returns the storage directory used for storing objects received with C-STORE requests
    *  in the context of C-GET sessions. Default is empty string which refers to the current
    *  working directory.
@@ -711,6 +720,29 @@ public:
    *  @return The storage mode enabled
    */
   DcmStorageMode getStorageMode() const;
+
+  /** Returns the verbose presentation context mode configured specifying whether details
+   *  on the presentation contexts (negotiated during association setup) should be shown in
+   *  verbose or debug mode. The latter is the default.
+   *  @return The current verbose presentation context mode. Show details on the
+   *          presentation contexts on INFO log level (verbose) if OFTrue and on DEBUG
+   *          level if OFFalse.
+   */
+  OFBool getVerbosePCMode() const;
+
+  /** Returns the mode that specifies whether the transfer syntax of the dataset can be
+   *  changed for network transmission. This mainly covers the compression/decompression
+   *  of datasets, which is disabled by default.
+   *  @return The current dataset conversion mode, enabled if OFTrue
+   */
+  OFBool getDatasetConversionMode() const;
+
+  /** Returns the mode that specifies whether the progress of sending and receiving DIMSE
+   *  messages is notified by calling notifySENDProgress() and notifyRECEIVEProgress(),
+   *  respectively. The progress notification is enabled by default.
+   *  @return The current progress notification mode, enabled if OFTrue
+   */
+  OFBool getProgressNotificationMode() const;
 
   /** Returns whether SCU is configured to create a TLS connection with the SCP
    *  @return OFFalse for this class but may be overriden by derived classes
@@ -724,24 +756,18 @@ protected:
 
   /** Sends a DIMSE command and possibly also a dataset from a data object via network to
    *  another DICOM application
-   *  @param presID          [in]  Presentation context ID to be used for message
-   *  @param msg             [in]  Structure that represents a certain DIMSE command which
-   *                               shall be sent
-   *  @param dataObject      [in]  The instance data which shall be sent to the other DICOM
-   *                               application; NULL, if there is none
-   *  @param callback        [in]  Pointer to a function which shall be called to indicate
-   *                               progress
-   *  @param callbackContext [in]  Pointer to data which shall be passed to the progress
-   *                               indicating function
-   *  @param commandSet      [out] If this parameter is not NULL it will return a copy of the
-   *                               DIMSE command which is sent to the other DICOM application
+   *  @param presID     [in]  Presentation context ID to be used for message
+   *  @param msg        [in]  Structure that represents a certain DIMSE command which
+   *                          shall be sent
+   *  @param dataObject [in]  The instance data which shall be sent to the other DICOM
+   *                          application; NULL, if there is none
+   *  @param commandSet [out] If this parameter is not NULL it will return a copy of the
+   *                          DIMSE command which is sent to the other DICOM application
    *  @return EC_Normal if sending request was successful, an error code otherwise
    */
   OFCondition sendDIMSEMessage(const T_ASC_PresentationContextID presID,
                                T_DIMSE_Message *msg,
                                DcmDataset *dataObject,
-                               DIMSE_ProgressCallback callback,
-                               void *callbackContext,
                                DcmDataset **commandSet = NULL);
 
   /** Returns SOP Class UID, SOP Instance UID and original transfer syntax for a given dataset.
@@ -750,7 +776,7 @@ protected:
    *  @param sopClassUID    [out] The value of attribute SOP Class UID if present
    *  @param sopInstanceUID [out] The value of attribute SOP Instance UID if present
    *  @param transferSyntax [out] The value of transfer syntax that originally was read from
-   *                              disk.  Will be unknown if the dataset was created in memory.
+   *                              disk. Will be unknown if the dataset was created in memory.
    *  @return EC_Normal if all information could be retrieved and is valid, an error code
    *    otherwise
    */
@@ -793,24 +819,18 @@ protected:
                                   const Uint32 timeout = 0);
 
   /** Receives one dataset (of instance data) via network from another DICOM application
-   *  @param presID          [out] Contains in the end the ID of the presentation context
-   *                               which was used in the PDVs that were received on the
-   *                               network. If the PDVs show different presentation context
-   *                               IDs, this function will return an error.
-   *  @param dataObject      [out] Contains in the end the information which was received
-   *                               over the network
-   *  @param callback        [in]  Pointer to a function which shall be called to indicate
-   *                               progress
-   *  @param callbackContext [in]  Pointer to data which shall be passed to the progress
-   *                               indicating function
+   *  @param presID     [out] Contains in the end the ID of the presentation context which
+   *                          was used in the PDVs that were received on the network. If the
+   *                          PDVs show different presentation context IDs, this function
+   *                          will return an error.
+   *  @param dataObject [out] Contains in the end the information which was received over
+   *                          the network
    *  @return EC_Normal if dataset could be received successfully, an error code otherwise
    */
   OFCondition receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
-                                  DcmDataset **dataObject,
-                                  DIMSE_ProgressCallback callback,
-                                  void *callbackContext);
+                                  DcmDataset **dataObject);
 
-  /** clear list of presentation contexts.  In addition, any currently selected association
+  /** clear list of presentation contexts. In addition, any currently selected association
    *  configuration file is disabled.
    */
   void clearPresentationContexts();
@@ -871,6 +891,22 @@ protected:
    */
   virtual OFCondition ignoreSTORERequest(T_ASC_PresentationContextID presID,
                                          const T_DIMSE_C_StoreRQ& request);
+
+  /* Callback functions */
+
+  /** Callback function used for sending DIMSE messages.
+   *  @param callbackContext [in] The desired user callback data
+   *  @param byteCount       [in] Progress bytes count
+   */
+  static void callbackSENDProgress(void *callbackContext,
+                                   unsigned long byteCount);
+
+  /** Callback function used for receiving DIMSE messages.
+   *  @param callbackContext [in] The desired user callback data
+   *  @param byteCount       [in] Progress bytes count
+   */
+  static void callbackRECEIVEProgress(void *callbackContext,
+                                      unsigned long byteCount);
 
 private:
 
@@ -952,12 +988,6 @@ private:
   /// ACSE timeout
   Uint32 m_acseTimeout;
 
-  /// Verbose PC mode
-  OFBool m_verbosePCMode;
-
-  /// Dataset conversion mode
-  OFBool m_datasetConversionMode;
-
   /// Storage directory for objects received with C-STORE due to a
   /// running C-GET session. Per default, the received objects
   /// are stored in the current working directory.
@@ -971,6 +1001,15 @@ private:
   /// in memory. Default is OFFalse (no bit preserving) storage.
   DcmStorageMode m_storageMode;
 
+  /// Verbose PC mode
+  OFBool m_verbosePCMode;
+
+  /// Dataset conversion mode
+  OFBool m_datasetConversionMode;
+
+  /// Progress notification mode
+  OFBool m_progressNotificationMode;
+
   /** Returns next available message ID free to be used by SCU
    *  @return Next free message ID
    */
@@ -982,6 +1021,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.41  2012-02-21 08:48:51  joergr
+** Added support for progress notifications while sending and receiving DICOM
+** datasets.
+**
 ** Revision 1.40  2011-12-14 11:45:15  uli
 ** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
 **

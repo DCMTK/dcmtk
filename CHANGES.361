@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.21 (riesmeier)
+
+- Added support for progress notifications while sending and receiving a DICOM
+  dataset. Thanks to Michal Spacek <tupinek@gmail.com> for the original patch.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2012.02.20 (riesmeier)
 
 - Replaced tab by space character.
