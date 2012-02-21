@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:01 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-02-21 09:35:31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -489,8 +489,8 @@ public:
      */
     OFString substr(size_t pos = 0, size_t n = OFString_npos) const;
 
-    /** swaps the contents of the two strings. The time
-     *  complexity of this function is linear.
+    /** swaps the contents of the two strings. The time complexity of this
+     *  function is constant.
      *  @param s string to swap with
      */
     void swap(OFString& s);
@@ -1112,6 +1112,9 @@ DCMTK_OFSTD_EXPORT OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.32  2012-02-21 09:35:31  joergr
+** Fixed wrong comment on the time complexity of the swap() function.
+**
 ** Revision 1.31  2011-12-14 08:54:01  uli
 ** Make it possible to correctly build ofstd as a DLL.
 **

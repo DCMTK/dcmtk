@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.02.21 (riesmeier)
 
+- Fixed wrong comment on the time complexity of the swap() function.
+  Affects: ofstd/include/dcmtk/ofstd/ofstring.h
+
 - Added fast, non-throwing swap function to OFFilename class.
   Thanks to Niels Dekker <C.E.Dekker@lumc.nl> for providing the patch.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
