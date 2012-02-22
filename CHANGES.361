@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.22 (riesmeier)
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2012.02.21 (riesmeier)
 
 - Removed misplaced export macro (forward declaration of a class).
