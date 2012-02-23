@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-17 10:03:04 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-02-23 12:00:28 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,15 +30,17 @@
 #ifndef OFCOND_H
 #define OFCOND_H
 
-#include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"   /* for class OFBool */
-#include "dcmtk/ofstd/ofstring.h"  /* for class OFString */
+#include "dcmtk/config/osconfig.h"  /* include OS specific configuration first */
+
+#include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
+#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofcast.h"
 
 #define INCLUDE_CASSERT
-#define INCLUDE_CSTRING            /* for strdup() */
-#define INCLUDE_CSTDLIB            /* for free() */
+#define INCLUDE_CSTRING             /* for strdup() */
+#define INCLUDE_CSTDLIB             /* for free() */
 #include "dcmtk/ofstd/ofstdinc.h"
+
 
 /** this enumeration describes the return status of an operation.
  */
@@ -199,7 +201,7 @@ public:
   {
     if (ownsText)
     {
-        free(OFconst_cast(char *, theCondition.theText)); // cast away const
+      free(OFconst_cast(char *, theCondition.theText)); // cast away const
     }
   }
 
@@ -213,7 +215,7 @@ public:
     {
       if (ownsText)
       {
-          free(OFconst_cast(char *, theCondition.theText)); // cast away const
+        free(OFconst_cast(char *, theCondition.theText)); // cast away const
       }
       theCondition = arg.theCondition;
       ownsText = arg.ownsText;
@@ -262,7 +264,7 @@ public:
     return theCondition.theText;
   }
 
-  /** Internal function only, don't use yourself.
+  /** internal function only, don't use yourself.
    *  @return an equivalent OFConditionConst for this object.
    */
   inline const OFConditionConst& condition() const
@@ -270,7 +272,7 @@ public:
     return theCondition;
   }
 
-  /** Check if the status is OK.
+  /** check if the status is OK.
    *  @return true if status is OK, else false
    */
   inline OFBool good() const
@@ -279,7 +281,7 @@ public:
     return (s == OF_ok);
   }
 
-  /** Check if the status is not OK, i. e. error or failure
+  /** check if the status is not OK, i.e.\ error or failure.
    *  @return true if status is not OK, else false
    */
   inline OFBool bad() const
@@ -387,6 +389,10 @@ inline OFBool operator!= (const OFCondition& lhs, const OFConditionConst& rhs)
  *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.20  2012-02-23 12:00:28  joergr
+ * Fixed Doxygen documentation issue: Appended "\" in case "." does not mark
+ * the end of a sentence.
+ *
  * Revision 1.19  2012-02-17 10:03:04  joergr
  * Added missing "stdlib" include, required for free() on some Linux systems.
  *

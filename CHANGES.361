@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.23 (riesmeier)
+
+- Fixed Doxygen documentation issue: Appended "\" in case "." does not mark
+  the end of a sentence.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+
 **** Changes from 2012.02.22 (riesmeier)
 
 - Updated man pages for new development snapshot.
