@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.24 (riesmeier)
+
+- Updated copyright date.
+  Affects: COPYRIGHT
+
 **** Changes from 2012.02.23 (riesmeier)
 
 - Fixed Doxygen documentation issue: Appended "\" in case "." does not mark
