@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:19 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2012-02-28 08:35:37 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
         // if the input string is empty or NULL, we are done
         if (status.good() && (fromString != NULL) && (fromLength > 0))
         {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
             const char *inputPos = fromString;
 #else
             char *inputPos = OFconst_cast(char *, fromString);
@@ -365,6 +365,9 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.11  2012-02-28 08:35:37  joergr
+ * Fixed compilation issue on MinGW/MSYS systems (modified #ifdef statement).
+ *
  * Revision 1.10  2011-11-17 16:13:19  joergr
  * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
  *

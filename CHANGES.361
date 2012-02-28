@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.02.28 (riesmeier)
+
+- Fixed compilation issue on MinGW/MSYS systems (modified #ifdef statement).
+  Thanks to forum user "martinrame" for the report.
+  Affects: ofstd/libsrc/ofchrenc.cc
+
 **** Changes from 2012.02.24 (riesmeier)
 
 - Updated copyright date.
