@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:15 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-03-06 08:38:45 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
     E_DecompressionMode getDecompressionMode() const;
 
     /** get mode that specifies whether to halt if an invalid file is encountered during batch
-     *  processing (e.g. when adding SOP instances from a DICOMDIR) or whether to continue
+     *  processing (e.g.\ when adding SOP instances from a DICOMDIR) or whether to continue
      *  with the next SOP instance.
      *  @return mode indicating whether to halt on invalid file or not
      */
@@ -166,7 +166,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
     void setDecompressionMode(const E_DecompressionMode decompressionMode);
 
     /** set mode that specifies whether to halt if an invalid file is encountered during batch
-     *  processing (e.g. when adding SOP instances from a DICOMDIR) or whether to continue
+     *  processing (e.g.\ when adding SOP instances from a DICOMDIR) or whether to continue
      *  with the next SOP instance.
      *  @param  haltMode  mode indicating whether to halt or not (default: OFTrue, i.e.\ halt)
      */
@@ -230,17 +230,18 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
                                   const OFString &sopInstanceUID,
                                   const OFBool allOccurrences = OFTrue);
 
-    /** add a SOP instance stored as a DICOM file to the list of instances to be transferred.
-     *  Before adding the SOP instance to the list, it is checked for validity and conformance
-     *  to the DICOM standard (see checkSOPInstance() for details).  However, duplicate
-     *  instances are not recognized, i.e. they are added to the list and later on transferred
-     *  to the storage SCP when calling sendSOPInstances().
-     *  If the specified DICOM file is a DICOMDIR and the 'ReadFromDICOMDIRMode' is enabled,
-     *  the referenced SOP instances are added to the transfer list (using the relevant
-     *  information from the DICOMDIR) and not the DICOMDIR itself, which is not meant to be
-     *  transferred anyway.  Please note that it is not checked whether the referenced files
-     *  really exist.
-     *  @param  filename     name of the DICOM file that contains the SOP instance to be sent
+    /** add a SOP instance stored as a DICOM file or a number of SOP instances referenced from
+     *  a DICOMDIR to the list of instances to be transferred.  Before adding a SOP instance
+     *  to the list, it is checked for validity and conformance to the DICOM standard
+     *  (see checkSOPInstance() for details).  However, duplicate instances are not
+     *  recognized, i.e. they are added to the list and later on transferred to the storage
+     *  SCP when calling sendSOPInstances().  If the specified DICOM file is a DICOMDIR and
+     *  the 'ReadFromDICOMDIRMode' is enabled, the referenced SOP instances are added to the
+     *  transfer list (using the relevant information from the DICOMDIR) and not the DICOMDIR
+     *  itself, which is not meant to be transferred anyway.  Please note that it is not
+     *  checked whether the referenced files really exist.
+     *  @param  filename     name of the DICOM file that contains the SOP instance or name of
+     *                       the DICOMDIR file that references the SOP instances to be sent
      *  @param  readMode     read mode passed to the DcmFileFormat::loadFile() method.  If
      *                       ERM_fileOnly, only the file meta information header is loaded,
      *                       i.e. the behavior is identical to using ERM_metaOnly.
@@ -541,6 +542,10 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 /*
  * CVS Log
  * $Log: dstorscu.h,v $
+ * Revision 1.6  2012-03-06 08:38:45  joergr
+ * Fixed Doxygen documentation issues: Appended "\" in case "." does not mark
+ * the end of a sentence. Also made documentation on DICOMDIR use clearer.
+ *
  * Revision 1.5  2011-12-14 11:45:15  uli
  * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
  *
