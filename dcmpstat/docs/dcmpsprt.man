@@ -197,7 +197,7 @@ dcmfile-in  DICOM image file(s) to be printed
          use overlay gray level v (default: 4095 = white)
 \endverbatim
 
-\subsection other_print_options
+\subsection other_print_options other print options
 \verbatim
   -l   --layout  [c]olumns [r]ows: integer (default: 1 1)
          use 'STANDARD\c,r' image display format
@@ -312,6 +312,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

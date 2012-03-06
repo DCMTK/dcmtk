@@ -7,6 +7,9 @@ Changes between releases are documented here.
   the end of a sentence. Also made documentation on DICOMDIR use clearer.
   Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
 
+- Fixed Doxygen documentation issue in subsection title.
+  Affects: dcmpstat/docs/dcmpsprt.man
+
 **** Changes from 2012.02.28 (riesmeier)
 
 - Fixed compilation issue on MinGW/MSYS systems (modified #ifdef statement).
