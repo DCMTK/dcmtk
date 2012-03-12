@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.03.12 (riesmeier)
 
+- Made sure that the member variable "nonSignificantChars" is also copied in
+  the copy constructor and the assignment operator.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+
 - Added new command line options for parsing incorrectly encoded datasets
   where the sequence and/or item delimitation items are mixed up.
   Affects: dcmdata/apps/dcmconv.cc

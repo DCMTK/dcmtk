@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 08:59:53 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2012-03-12 17:08:12 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ DcmByteString::DcmByteString(const DcmByteString &old)
     maxLength(old.maxLength),
     realLength(old.realLength),
     fStringMode(old.fStringMode),
-    nonSignificantChars()
+    nonSignificantChars(old.nonSignificantChars)
 {
 }
 
@@ -119,10 +119,11 @@ DcmByteString &DcmByteString::operator=(const DcmByteString &obj)
         DcmElement::operator=(obj);
 
         /* copy member variables */
-        realLength = obj.realLength;
-        fStringMode = obj.fStringMode;
         paddingChar = obj.paddingChar;
         maxLength = obj.maxLength;
+        realLength = obj.realLength;
+        fStringMode = obj.fStringMode;
+        nonSignificantChars = obj.nonSignificantChars;
     }
     return *this;
 }
@@ -789,6 +790,10 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.68  2012-03-12 17:08:12  joergr
+** Made sure that the member variable "nonSignificantChars" is also copied in
+** the copy constructor and the assignment operator.
+**
 ** Revision 1.67  2011-11-24 08:59:53  joergr
 ** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
 **
