@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-03-12 17:21:01 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2657,7 +2657,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
     if (isFilenameValid(filename))
     {
         /* load DICOM file */
-        result = fileformat.loadFile(pathname.c_str());
+        result = fileformat.loadFile(pathname);
         if (result.good())
         {
             /* check for correct part 10 file format */
@@ -5348,7 +5348,7 @@ void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
         {
             OFString stringValue;
             /* retrieve string value from source dataset and put it into the destination dataset */
-            status = record->putAndInsertString(key, getStringFromDataset(dataset, key, stringValue).c_str());
+            status = record->putAndInsertOFStringArray(key, getStringFromDataset(dataset, key, stringValue));
         } else {
             if (printWarning && (defaultValue != NULL))
             {
@@ -5482,6 +5482,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.67  2012-03-12 17:21:01  joergr
+ *  Slightly adapted code in order to avoid unneeded calls to OFString::c_str().
+ *
  *  Revision 1.66  2012-02-15 14:50:42  uli
  *  Removed dependency on static initialization order from OFCondition.
  *  All static condition objects are now created via makeOFConditionConst()

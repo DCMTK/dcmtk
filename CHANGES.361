@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.03.12 (riesmeier)
 
+- Slightly adapted code in order to avoid unneeded calls to OFString::c_str().
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 - Made sure that the member variable "nonSignificantChars" is also copied in
   the copy constructor and the assignment operator.
   Affects: dcmdata/libsrc/dcbytstr.cc
