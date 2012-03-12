@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:26 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2012-03-12 11:59:04 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -947,10 +947,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 
     if (! go_cleanup)
     {
-        time_t t = time(NULL);
         DCMQRDB_INFO("Association Received (" << assoc->params->DULparams.callingPresentationAddress
-                << ":" << assoc->params->DULparams.callingAPTitle << " -> "
-                << assoc->params->DULparams.calledAPTitle << ") " << ctime(&t));
+            << ":" << assoc->params->DULparams.callingAPTitle << " -> "
+            << assoc->params->DULparams.calledAPTitle << ")");
 
         DCMQRDB_DEBUG("Parameters:" << OFendl << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
@@ -979,7 +978,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     {
         /* Implementation Class UID */
         if (options_.rejectWhenNoImplementationClassUID_ &&
-        strlen(assoc->params->theirImplementationClassUID) == 0)
+            strlen(assoc->params->theirImplementationClassUID) == 0)
         {
             /* reject: no implementation Class UID provided */
             DCMQRDB_INFO("No implementation Class UID provided");
@@ -992,9 +991,13 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     {
         /* Does peer AE have access to required service ?? */
         if (! config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
-        assoc->params->DULparams.callingAPTitle,
-        assoc->params->DULparams.callingPresentationAddress))
+            assoc->params->DULparams.callingAPTitle,
+            assoc->params->DULparams.callingPresentationAddress))
         {
+            DCMQRDB_DEBUG("Peer "
+                << assoc->params->DULparams.callingPresentationAddress << ":"
+                << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
+                << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
             cond = refuseAssociation(&assoc, CTN_BadAEService);
             go_cleanup = OFTrue;
         }
@@ -1107,6 +1110,9 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.16  2012-03-12 11:59:04  joergr
+ * Output debug message in case access to a storage area is not permitted.
+ *
  * Revision 1.15  2011-03-17 09:46:26  joergr
  * Added support for MPEG4 transfer syntaxes to network tools.
  *

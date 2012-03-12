@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Updated gcc version number based on the main development system (Linux).
   Affects: INSTALL
 
+- Output debug message in case access to a storage area is not permitted.
+  Affects: dcmqrdb/libsrc/dcmqrsrv.cc
+
 **** Changes from 2012.03.06 (riesmeier)
 
 - Fixed Doxygen documentation issues: Appended "\" in case "." does not mark
