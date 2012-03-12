@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:39 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2012-03-12 13:58:28 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,8 @@ OFGlobal<OFBool>    dcmIgnoreParsingErrors(OFFalse);
 OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)
 OFGlobal<OFBool>    dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
 OFGlobal<OFBool>    dcmIgnoreFileMetaInformationGroupLength(OFFalse);
+OFGlobal<OFBool>    dcmReplaceWrongDelimitationItem(OFFalse);
+
 
 // ****** public methods **********************************
 
@@ -530,6 +532,10 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.73  2012-03-12 13:58:28  joergr
+ * Added new parser flag that allows for reading corrupted datasets where the
+ * sequence and/or item delimitation items are incorrect (e.g. mixed up).
+ *
  * Revision 1.72  2011-11-08 15:51:39  joergr
  * Added support for converting files, datasets and element values to any DICOM
  * character set that does not require code extension techniques (if compiled

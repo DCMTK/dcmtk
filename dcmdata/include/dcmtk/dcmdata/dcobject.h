@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,9 +19,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:12 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-03-12 13:58:26 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,6 +180,14 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefi
  *  is available (i.e. all elements are read as long as the group number is 0x0002).
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength; /* default OFFalse */
+
+/** This flag enables the replacement of a wrong delimitation item at the end of
+ *  a sequence or item.  This is because there are incorrect systems that write
+ *  a Sequence Delimitation Item (fffe,e0dd) at the end of an item or an Item
+ *  Delimitation Item (fffe,e00d) at the end of a sequence.  By default, no
+ *  delimitation items are replaced.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmReplaceWrongDelimitationItem; /* default OFFalse */
 
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
@@ -714,6 +722,10 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.76  2012-03-12 13:58:26  joergr
+ * Added new parser flag that allows for reading corrupted datasets where the
+ * sequence and/or item delimitation items are incorrect (e.g. mixed up).
+ *
  * Revision 1.75  2011-12-14 09:04:12  uli
  * Make it possible to accurately build dcmdata and libi2d as DLLs.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-16 13:50:36 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-03-12 13:58:29 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,10 +56,14 @@ static OFLogger tparserLogger = OFLog::getLogger("dcmtk.test.tparser");
     TAG(tag), v, r, ENDIAN_UINT16(length)
 #define ITEM(length) \
     TAG(DCM_Item), ENDIAN_UINT32(length)
+#define ITEM_END \
+    TAG(DCM_ItemDelimitationItem), ENDIAN_UINT32(0)
+#define SEQUENCE_END \
+    TAG(DCM_SequenceDelimitationItem), ENDIAN_UINT32(0)
 
 #define UNDEFINED_LENGTH  0xffffffff
 #define UNDEFINED_LENGTH2 0xffff
-#define VALUE 0x11
+#define VALUE 0x2a
 
 /* To switch between big and little endian, just change these macros */
 #define TRANSFER_SYNTAX EXS_LittleEndianExplicit
@@ -74,19 +78,20 @@ static OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, size_t len
 
     dset.clear();
     dset.transferInit();
-    OFCondition cond = dset.read(stream, TRANSFER_SYNTAX);
+    const OFCondition cond = dset.read(stream, TRANSFER_SYNTAX);
     dset.transferEnd();
 
     return cond;
 }
 
-OFTEST(dcmdata_parser_missingSequenceDelimitationItem)
+OFTEST(dcmdata_parser_missingDelimitationItems)
 {
     const Uint8 data[] = {
-        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', UNDEFINED_LENGTH),
-        ITEM(4),
-        VALUE, VALUE, VALUE, VALUE
-        /* DCM_SequenceDelimitationItem missing */
+        TAG_AND_LENGTH(DCM_IconImageSequence, 'S', 'Q', UNDEFINED_LENGTH),
+        ITEM(UNDEFINED_LENGTH),
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE,
+        /* Delimitation Items missing at the end of the stream */
     };
     DcmDataset dset;
     OFCondition cond;
@@ -102,9 +107,163 @@ OFTEST(dcmdata_parser_missingSequenceDelimitationItem)
     // This should complain about the missing item
     dcmIgnoreParsingErrors.set(OFFalse);
     cond = readDataset(dset, data, sizeof(data));
-    if (cond != EC_DelimitationItemMissing)
+    if (cond != EC_SequDelimitationItemMissing)
     {
-        OFCHECK_FAIL("Parsing should have failed with 'DelimitationItemMissing', but got: " << cond.text());
+        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
+    }
+}
+
+OFTEST(dcmdata_parser_missingSequenceDelimitationItem_1)
+{
+    const Uint8 data[] = {
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', UNDEFINED_LENGTH),
+        ITEM(4),
+        VALUE, VALUE, VALUE, VALUE
+        /* SequenceDelimitationItem missing at the end of the stream */
+    };
+    DcmDataset dset;
+    OFCondition cond;
+
+    // This should assume the above sequence is complete
+    dcmIgnoreParsingErrors.set(OFTrue);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+    }
+
+    // This should complain about the missing item
+    dcmIgnoreParsingErrors.set(OFFalse);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond != EC_SequDelimitationItemMissing)
+    {
+        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
+    }
+}
+
+OFTEST(dcmdata_parser_missingSequenceDelimitationItem_2)
+{
+    const Uint8 data[] = {
+        TAG_AND_LENGTH(DCM_IconImageSequence, 'S', 'Q', UNDEFINED_LENGTH),
+        ITEM(UNDEFINED_LENGTH),
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE,
+        ITEM_END,
+        /* SequenceDelimitationItem missing, but there's further data after the sequence */
+        TAG_AND_LENGTH(DCM_DataSetTrailingPadding, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond;
+
+    // This should fail with a specific error code
+    dcmIgnoreParsingErrors.set(OFFalse);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond != EC_SequDelimitationItemMissing)
+    {
+        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
+    }
+}
+
+OFTEST(dcmdata_parser_wrongDelimitationItemForSequence)
+{
+    const Uint8 data[] = {
+        TAG_AND_LENGTH(DCM_IconImageSequence, 'S', 'Q', UNDEFINED_LENGTH),
+        ITEM(UNDEFINED_LENGTH),
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE,
+        ITEM_END,
+        /* wrong delimitation item */
+        ITEM_END,
+        TAG_AND_LENGTH(DCM_DataSetTrailingPadding, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond;
+
+    // This should complain about the wrong delimitation item
+    dcmIgnoreParsingErrors.set(OFFalse);
+    dcmReplaceWrongDelimitationItem.set(OFFalse);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond != EC_SequDelimitationItemMissing)
+    {
+        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
+    }
+
+    // This should assume the above sequence encoding is correct
+    dcmIgnoreParsingErrors.set(OFTrue);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond.good())
+    {
+        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+        if (dset.card() != 1)
+            OFCHECK_FAIL("There should be exactly 1 element on the main dataset level, but " << dset.card() << " found");
+    } else {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+    }
+
+    // This should replace the wrong delimitation item
+    dcmIgnoreParsingErrors.set(OFFalse);
+    dcmReplaceWrongDelimitationItem.set(OFTrue);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond.good())
+    {
+        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+        if (dset.card() != 2)
+            OFCHECK_FAIL("There should be exactly 2 elements on the main dataset level, but " << dset.card() << " found");
+    } else {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+    }
+}
+
+OFTEST(dcmdata_parser_wrongDelimitationItemForItem)
+{
+    const Uint8 data[] = {
+        TAG_AND_LENGTH(DCM_IconImageSequence, 'S', 'Q', UNDEFINED_LENGTH),
+        ITEM(UNDEFINED_LENGTH),
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE,
+        /* wrong delimitation item */
+        SEQUENCE_END,
+        SEQUENCE_END,
+        TAG_AND_LENGTH(DCM_DataSetTrailingPadding, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond;
+
+    // This should complain about the wrong delimitation item
+    dcmIgnoreParsingErrors.set(OFFalse);
+    dcmReplaceWrongDelimitationItem.set(OFFalse);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond != EC_ItemDelimitationItemMissing)
+    {
+        OFCHECK_FAIL("Parsing should have failed with 'Item Delimitation Item missing', but got: " << cond.text());
+    }
+
+    // This should assume the above item encoding is correct
+    dcmIgnoreParsingErrors.set(OFTrue);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond.good())
+    {
+        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+        if (dset.card() != 2)
+            OFCHECK_FAIL("There should be exactly 2 elements on the main dataset level, but " << dset.card() << " found");
+    } else {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+    }
+
+    // This should replace the wrong delimitation item
+    dcmIgnoreParsingErrors.set(OFFalse);
+    dcmReplaceWrongDelimitationItem.set(OFTrue);
+    cond = readDataset(dset, data, sizeof(data));
+    if (cond.good())
+    {
+        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+        if (dset.card() != 2)
+            OFCHECK_FAIL("There should be exactly 2 elements on the main dataset level, but " << dset.card() << " found");
+    } else {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
     }
 }
 
@@ -260,6 +419,10 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.9  2012-03-12 13:58:29  joergr
+ * Added new parser flag that allows for reading corrupted datasets where the
+ * sequence and/or item delimitation items are incorrect (e.g. mixed up).
+ *
  * Revision 1.8  2011-11-16 13:50:36  uli
  * Added a new class for managing temporary files.
  *

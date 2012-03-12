@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-03-12 13:58:26 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,8 +125,10 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ValueMultiplicityViolated;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_MaximumLengthViolated;
 /// Element length is larger than 16-bit length field permits
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds16BitField;
-/// Missing Delimitation Item while reading a sequence
-extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_DelimitationItemMissing;
+/// Missing Sequence Delimitation Item while reading a sequence
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SequDelimitationItemMissing;
+/// Missing Item Delimitation Item while reading an item
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemDelimitationItemMissing;
 
 // status code constants
 
@@ -144,6 +146,10 @@ extern const unsigned short EC_CODE_CannotConvertToXML;
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.47  2012-03-12 13:58:26  joergr
+** Added new parser flag that allows for reading corrupted datasets where the
+** sequence and/or item delimitation items are incorrect (e.g. mixed up).
+**
 ** Revision 1.46  2012-02-15 14:50:42  uli
 ** Removed dependency on static initialization order from OFCondition.
 ** All static condition objects are now created via makeOFConditionConst()

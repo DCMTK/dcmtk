@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-10 07:48:21 $
- *  CVS/RCS Revision: $Revision: 1.165 $
+ *  Update Date:      $Date: 2012-03-12 13:58:28 $
+ *  CVS/RCS Revision: $Revision: 1.166 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1118,12 +1118,34 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
     else if (l_error != EC_ItemEnd)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-        DCMDATA_WARN("DcmItem: Parse error in sequence item, found " << newTag
-            << " instead of an item delimiter");
+        // dump some information if required
+        if (dcmIgnoreParsingErrors.get() || (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_SequEnd)))
+        {
+            DCMDATA_WARN("DcmItem: Parse error in sequence item, found " << newTag
+                << " instead of item delimiter " << DCM_ItemDelimitationItem);
+        } else {
+            DCMDATA_ERROR("DcmItem: Parse error in sequence item, found " << newTag
+                << " instead of item delimiter " << DCM_ItemDelimitationItem);
+        }
+        // some systems use the wrong delimitation item at the end of a sequence
+        if (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_SequEnd))
+        {
+            DCMDATA_DEBUG("DcmItem::readSubItem() replacing wrong sequence delimiter "
+                << DCM_SequenceDelimitationItem << " by item delimiter "
+                << DCM_ItemDelimitationItem << " because it is expected here");
+            l_error = EC_ItemEnd;
+        } else {
+            DCMDATA_DEBUG("DcmItem::readSubElement() cannot create Sub Element " << newTag);
+            // treat this incorrect encoding as an error
+            if (!dcmIgnoreParsingErrors.get())
+                l_error = EC_ItemDelimitationItemMissing;
+        }
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
 
+    /* dump some information if required */
+    DCMDATA_TRACE("DcmItem::readSubItem() returns error = " << l_error.text());
     /* return result value */
     return l_error;
 }
@@ -1257,9 +1279,18 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
               errorFlag = EC_StreamNotifyClient;
         }
     } // else errorFlag
-    /* modify the result value: two kinds of special error codes do not count as an error */
+    /* modify the result value: three kinds of special error codes do not count as an error */
     if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
         errorFlag = EC_Normal;
+    else if (errorFlag == EC_SequEnd)
+    {
+        if (dcmIgnoreParsingErrors.get())
+        {
+            /* do not treat the missing delimiter as an error */
+            errorFlag = EC_Normal;
+        } else
+            errorFlag = EC_ItemDelimitationItemMissing;
+    }
 
     /* if at this point the error flag indicates success, the item has */
     /* been read completely; hence, set the transfer state to ERW_ready. */
@@ -1267,6 +1298,9 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
     /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
     if (errorFlag.good())
         setTransferState(ERW_ready);
+
+    /* dump information if required */
+    DCMDATA_TRACE("DcmItem::read() returns error = " << errorFlag.text());
 
     /* return result value */
     return errorFlag;
@@ -1486,7 +1520,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 }
                 /* dump some information if required */
                 DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
-                    << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" at beginning inserted");
+                    << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted at beginning");
                 /* terminate do-while-loop */
                 break;
             }
@@ -3966,6 +4000,10 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.166  2012-03-12 13:58:28  joergr
+** Added new parser flag that allows for reading corrupted datasets where the
+** sequence and/or item delimitation items are incorrect (e.g. mixed up).
+**
 ** Revision 1.165  2012-02-10 07:48:21  joergr
 ** Fixed issue with tagExistsWithValue() and compressed PixelData (7fe0,0010).
 **

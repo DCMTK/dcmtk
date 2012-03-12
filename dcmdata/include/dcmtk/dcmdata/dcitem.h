@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-10 07:48:19 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2012-03-12 13:58:26 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -406,7 +406,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** check if this item is empty
      *  @param normalize not used for this class
-     *  @return true if item is empty, i.e. has no elements, false otherwise
+     *  @return true if item is empty, i.e.\ has no elements, false otherwise
      */
     virtual OFBool isEmpty(const OFBool normalize = OFTrue);
 
@@ -1213,7 +1213,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     E_TransferSyntax checkTransferSyntax(DcmInputStream &inStream);
 
     /** check whether the given tag requires some special handling regarding the VR
-     *  (i.e. in case it is undefined and multiple values are possible). If required,
+     *  (i.e.\ in case it is undefined and multiple values are possible). If required,
      *  the VR of the given element tag is then updated according to the DICOM
      *  standard, e.g. the VR of PixelPaddingValue (if undefined) is set to 'SS' or
      *  'US' depending on the value of PixelRepresentation.
@@ -1321,6 +1321,10 @@ DCMTK_DCMDATA_EXPORT OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.93  2012-03-12 13:58:26  joergr
+** Added new parser flag that allows for reading corrupted datasets where the
+** sequence and/or item delimitation items are incorrect (e.g. mixed up).
+**
 ** Revision 1.92  2012-02-10 07:48:19  joergr
 ** Fixed issue with tagExistsWithValue() and compressed PixelData (7fe0,0010).
 **

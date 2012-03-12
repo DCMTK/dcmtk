@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2012.03.12 (riesmeier)
 
+- Added new parser flag that allows for reading corrupted datasets where the
+  sequence and/or item delimitation items are incorrect (e.g. mixed up).
+  Thanks to Carmen Avram <carmen@pixeldata.ro> for the report and test data.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tparser.cc
+
 - Updated gcc version number based on the main development system (Linux).
   Affects: INSTALL
 

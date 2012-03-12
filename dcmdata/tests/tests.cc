@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:53 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2012-03-12 13:58:29 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,11 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_up);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_xs);
 OFTEST_REGISTER(dcmdata_elementLength_pixelItem);
 OFTEST_REGISTER(dcmdata_elementLength_pixelSequence);
-OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem);
+OFTEST_REGISTER(dcmdata_parser_missingDelimitationItems);
+OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem_1);
+OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem_2);
+OFTEST_REGISTER(dcmdata_parser_wrongDelimitationItemForSequence);
+OFTEST_REGISTER(dcmdata_parser_wrongDelimitationItemForItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_lastItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_notLastItem);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_default);
@@ -100,6 +104,10 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.16  2012-03-12 13:58:29  joergr
+** Added new parser flag that allows for reading corrupted datasets where the
+** sequence and/or item delimitation items are incorrect (e.g. mixed up).
+**
 ** Revision 1.15  2011-12-02 11:02:53  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **

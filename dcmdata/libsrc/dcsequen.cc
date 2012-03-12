@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:50 $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  Update Date:      $Date: 2012-03-12 13:58:28 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -521,34 +521,60 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
                                             const E_GrpLenEncoding glenc,
                                             const Uint32 maxReadLength)
 {
-    // For DcmSequenceOfItems, subObject is always inherited from DcmItem
-    // For DcmPixelSequence, subObject is always inherited from DcmPixelItem
-    DcmObject * subObject = NULL;
+    // For DcmSequenceOfItems, subObject is always inherited from DcmItem.
+    // For DcmPixelSequence, subObject is always inherited from DcmPixelItem.
+    DcmObject *subObject = NULL;
     OFCondition l_error = makeSubObject(subObject, newTag, newLength);
     if (l_error.good() && (subObject != NULL))
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
         itemList->insert(subObject, ELP_next);
-        l_error = subObject->read(inStream, xfer, glenc, maxReadLength); // read sub-item
-        return l_error; // prevent subObject from getting deleted
+        // dump some information if required
+        DCMDATA_TRACE("DcmSequenceOfItems::readSubItem() Sub Item " << newTag << " inserted");
+        // read sub-item
+        l_error = subObject->read(inStream, xfer, glenc, maxReadLength);
+        // prevent subObject from getting deleted
+        return l_error;
     }
     else if (l_error == EC_InvalidTag)  // try to recover parsing
     {
         inStream.putback();
-        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
-            << " instead of item tag");
-        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() parse error occurred: " << newTag);
+        // dump some information if required
+        DCMDATA_WARN("DcmSequenceOfItems: Parse error in sequence " << getTag() << ", found "
+            << newTag << " instead of item tag " << DCM_Item);
     }
     else if (l_error != EC_SequEnd)
     {
-        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
-            << " instead of a sequence delimiter");
-        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() cannot create Sub Item " << newTag);
+        // dump some information if required
+        if (dcmIgnoreParsingErrors.get() || (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_ItemEnd)))
+        {
+            DCMDATA_WARN("DcmSequenceOfItems: Parse error in sequence " << getTag() << ", found "
+                << newTag << " instead of sequence delimiter " << DCM_SequenceDelimitationItem);
+        } else {
+            DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence "  << getTag() << ", found "
+                << newTag << " instead of sequence delimiter " << DCM_SequenceDelimitationItem);
+        }
+        // some systems use the wrong delimitation item at the end of a sequence
+        if (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_ItemEnd))
+        {
+            DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() replacing wrong item delimiter "
+                << DCM_ItemDelimitationItem << " by sequence delimiter "
+                << DCM_SequenceDelimitationItem << " because it is expected here");
+            l_error = EC_SequEnd;
+        } else {
+            DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() cannot create Sub Item " << newTag);
+            // treat this incorrect encoding as an error
+            if (!dcmIgnoreParsingErrors.get())
+                l_error = EC_SequDelimitationItemMissing;
+        }
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
 
-    if (subObject) delete subObject; // only executed if makeSubObject() has returned an error
+    if (subObject)
+        delete subObject; // only executed if makeSubObject() has returned an error
+    // dump some information if required
+    DCMDATA_TRACE("DcmSequenceOfItems::readSubItem() returns error = " << l_error.text());
     return l_error;
 }
 
@@ -598,7 +624,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                             errorFlag = EC_SequEnd;
                         }
                         else
-                            errorFlag = EC_DelimitationItemMissing;
+                            errorFlag = EC_SequDelimitationItemMissing;
                         break;
                     }
 
@@ -635,6 +661,8 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
         if (errorFlag.good())
             setTransferState(ERW_ready);      // sequence is complete
     }
+    // dump information if required
+    DCMDATA_TRACE("DcmSequenceOfItems::read() returns error = " << errorFlag.text());
     return errorFlag;
 }
 
@@ -1354,6 +1382,10 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.101  2012-03-12 13:58:28  joergr
+** Added new parser flag that allows for reading corrupted datasets where the
+** sequence and/or item delimitation items are incorrect (e.g. mixed up).
+**
 ** Revision 1.100  2011-12-02 11:02:50  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **
