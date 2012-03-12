@@ -179,13 +179,13 @@ handling of private max-length elements (implicit VR):
   +sq  --maxlength-seq
          read as sequence with undefined length
 
-automatic data correction:
+handling of wrong delimitation items:
 
-  +dc  --enable-correction
-         enable automatic data correction (default)
+  -rd  --use-delim-items
+         use delimitation items from dataset (default)
 
-  -dc  --disable-correction
-         disable automatic data correction
+  +rd  --replace-wrong-delim
+         replace wrong sequence/item delimitation items
 
 general handling of parser errors:
 
@@ -199,6 +199,14 @@ other parsing options:
 
   +st  --stop-after-elem  [t]ag: "gggg,eeee" or dictionary name
          stop parsing after element specified by t
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
 
 bitstream format of deflated input:
 
@@ -384,6 +392,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

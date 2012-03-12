@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.03.12 (riesmeier)
 
+- Added new command line options for parsing incorrectly encoded datasets
+  where the sequence and/or item delimitation items are mixed up.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
+
 - Added new parser flag that allows for reading corrupted datasets where the
   sequence and/or item delimitation items are incorrect (e.g. mixed up).
   Thanks to Carmen Avram <carmen@pixeldata.ro> for the report and test data.

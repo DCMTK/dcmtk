@@ -141,6 +141,14 @@ handling of private max-length elements (implicit VR):
   +sq  --maxlength-seq
          read as sequence with undefined length
 
+handling of wrong delimitation items:
+
+  -rd  --use-delim-items
+         use delimitation items from dataset (default)
+
+  +rd  --replace-wrong-delim
+         replace wrong sequence/item delimitation items
+
 general handling of parser errors:
 
   +Ep  --ignore-parse-errors
@@ -346,6 +354,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

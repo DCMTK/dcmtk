@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-09 12:47:19 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2012-03-12 14:13:34 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,6 +163,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of private max-length elements (implicit VR):");
       cmd.addOption("--maxlength-dict",      "-sq",    "read as defined in dictionary (default)");
       cmd.addOption("--maxlength-seq",       "+sq",    "read as sequence with undefined length");
+    cmd.addSubGroup("handling of wrong delimitation items:");
+      cmd.addOption("--use-delim-items",     "-rd",    "use delimitation items from dataset (default)");
+      cmd.addOption("--replace-wrong-delim", "+rd",    "replace wrong sequence/item delimitation items");
     cmd.addSubGroup("general handling of parser errors: ");
       cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
       cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
@@ -364,6 +367,19 @@ int main(int argc, char *argv[])
         dcmReadImplPrivAttribMaxLengthAsSQ.set(OFTrue);
       }
       cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--use-delim-items"))
+      {
+        dcmReplaceWrongDelimitationItem.set(OFFalse);
+      }
+      if (cmd.findOption("--replace-wrong-delim"))
+      {
+        dcmReplaceWrongDelimitationItem.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
       if (cmd.findOption("--ignore-parse-errors"))
       {
         dcmIgnoreParsingErrors.set(OFTrue);
@@ -593,6 +609,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.79  2012-03-12 14:13:34  joergr
+** Added new command line options for parsing incorrectly encoded datasets
+** where the sequence and/or item delimitation items are mixed up.
+**
 ** Revision 1.78  2011-11-09 12:47:19  joergr
 ** Renamed the new option "--convert-to-latin-1" to "--convert-to-latin1".
 **
