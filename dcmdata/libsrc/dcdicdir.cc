@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 08:22:05 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2012-03-22 16:24:10 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1012,6 +1012,11 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     /* find the path of the dicomdir to be created */
     OFString tempfiledir;
     OFStandard::getDirNameFromPath(tempfiledir, dicomDirFileName, OFFalse);
+    if (tempfiledir.empty())
+    {
+        /* use current directory to avoid file creation in "temp" */
+        tempfiledir = ".";
+    }
 
     OFString tempfile;
     int tempfilefd;
@@ -1317,6 +1322,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.73  2012-03-22 16:24:10  joergr
+** Never create temporary DICOMDIR file in "temp" directory in order to avoid
+** possible EXDEV I/O error (Invalid cross-device link).
+**
 ** Revision 1.72  2011-12-09 08:22:05  joergr
 ** Output a warning message to the logger in case an offset cannot be resolved.
 ** Slightly modified the output of the DcmDicomDir::print() method.

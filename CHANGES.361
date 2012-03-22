@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.03.21 (riesmeier)
+
+- Never create temporary DICOMDIR file in "temp" directory in order to avoid
+  possible EXDEV I/O error (Invalid cross-device link).
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2012.03.12 (riesmeier)
 
 - Slightly adapted code in order to avoid unneeded calls to OFString::c_str().
