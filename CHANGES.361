@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.03.27 (schlachter)
+
+- Use O_BINARY again when writing dicom dirs.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2012.03.21 (riesmeier)
 
 - Never create temporary DICOMDIR file in "temp" directory in order to avoid

@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-22 16:24:10 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-03-27 09:37:17 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,10 @@
 #endif
 #include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
 #undef timeval
+#endif
+
+#ifndef O_BINARY
+#define O_BINARY 0      /* only windows has O_BINARY */
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -1020,7 +1024,8 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     OFString tempfile;
     int tempfilefd;
-    OFCondition status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR, tempfiledir, TEMPNAME_TEMPLATE_PREFIX, "");
+    OFCondition status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR | O_BINARY,
+            tempfiledir, TEMPNAME_TEMPLATE_PREFIX, "");
     if (status.bad())
         return status;
 
@@ -1322,6 +1327,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.74  2012-03-27 09:37:17  uli
+** Use O_BINARY again when writing dicom dirs.
+**
 ** Revision 1.73  2012-03-22 16:24:10  joergr
 ** Never create temporary DICOMDIR file in "temp" directory in order to avoid
 ** possible EXDEV I/O error (Invalid cross-device link).
