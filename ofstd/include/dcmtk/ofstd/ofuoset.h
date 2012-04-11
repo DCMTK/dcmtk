@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Template class for administrating an unordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:51 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-04-11 10:17:41 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       {
         // if size equals num, we need more space
         if( OFSet<T>::size == OFSet<T>::num )
-          Resize( OFSet<T>::size * 2 );
+          this->Resize( OFSet<T>::size * 2 );
 
         // copy item
         T *newItem = new T( item );
@@ -446,6 +446,9 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofuoset.h,v $
+** Revision 1.8  2012-04-11 10:17:41  uli
+** Minor change to make gcc 4.7.0 happy.
+**
 ** Revision 1.7  2010-10-14 13:15:51  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

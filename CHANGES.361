@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.11 (schlachter)
+
+- Minor change to make gcc 4.7.0 happy.
+  Affects: ofstd/include/dcmtk/ofstd/ofuoset.h
+
 **** Changes from 2012.03.27 (schlachter)
 
 - Use O_BINARY again when writing dicom dirs.
