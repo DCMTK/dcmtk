@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for managing file system interaction.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-27 10:54:11 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-04-11 14:44:40 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,8 +48,6 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofoset.h"
-#include "dcmtk/ofstd/ofsetit.h"
 #include "dcmtk/ofstd/ofdate.h"
 #include "dcmtk/ofstd/oftime.h"
 #include "dcmtk/ofstd/oftypes.h"
@@ -182,7 +180,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 // Parameters   : searchMask - [in] The search mask.
 // Return Value : Number of matching records.
 {
-  OFOrderedSet<OFString> worklistFiles;
+  OFVector<OFString> worklistFiles;
 
   // initialize member variables
   matchingRecords = NULL;
@@ -192,7 +190,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
   DetermineWorklistFiles( worklistFiles );
 
   // go through all worklist files
-  for( unsigned int i=0 ; i<worklistFiles.NumberOfElements() ; i++ )
+  for( unsigned int i=0 ; i<worklistFiles.size() ; i++ )
   {
     // read information from worklist file
     DcmFileFormat fileform;
@@ -434,7 +432,7 @@ void WlmFileSystemInteractionManager::ClearMatchingRecords()
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFString> &worklistFiles )
+void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString> &worklistFiles )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines all worklist files in the directory specified by
@@ -445,7 +443,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
 // Return Value : none.
 {
   // initialize out parameters
-  worklistFiles.Clear();
+  worklistFiles.clear();
 
   // determine complete path to data source files
   // (dfPath + PATH_SEPARATOR + calledApplicationEntityTitle)
@@ -473,7 +471,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
       subname += fileData.name;
 
       // Add string to the set of strings
-      worklistFiles.Insert( subname );
+      worklistFiles.push_back( subname );
     }
     ret = _findnext( hFile, &fileData );
   }
@@ -506,7 +504,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
         subname += dp->d_name;
 
         // add string to the set of strings
-        worklistFiles.Insert( subname );
+        worklistFiles.push_back( subname );
       }
     }
 
@@ -520,15 +518,15 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
   {
     DCMWLM_INFO("=============================");
     DCMWLM_INFO("Worklist Database Files:");
-    if( worklistFiles.NumberOfElements() == 0 )
+    if( worklistFiles.empty() )
       DCMWLM_INFO("<no files found>");
     else
     {
-      OFSetIterator<OFString> iter( worklistFiles );
-      while( iter.Object() )
+      OFVector<OFString>::const_iterator iter = worklistFiles.begin();
+      while( iter != worklistFiles.end() )
       {
-        DCMWLM_INFO(*iter.Object());
-        iter.Next();
+        DCMWLM_INFO(*iter);
+        ++iter;
       }
     }
     DCMWLM_INFO("=============================");
@@ -2161,6 +2159,9 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.30  2012-04-11 14:44:40  uli
+** Use OFVector instead of OFOrderedSet for the file list.
+**
 ** Revision 1.29  2011-06-27 10:54:11  joergr
 ** Closed two memory leaks.
 **

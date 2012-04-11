@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.04.11 (schlachter)
 
+- Use OFVector instead of OFOrderedSet for the file list.
+  Affects: dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/libsrc/wlfsim.cc
+
 - Fix a narrowing conversion error with gcc 4.7.0. Yay for C++11.
   Affects: dcmdata/tests/tparser.cc
 

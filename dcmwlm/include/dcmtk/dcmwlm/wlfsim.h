@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class for managing file system interaction.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:14:13 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-04-11 14:44:40 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
+#include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/dcmwlm/wldefine.h"
 
 template <class T> class OFOrderedSet;
@@ -76,7 +77,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  filename information in an array of strings.
        *  @param worklistFiles Set of strings, each specifying path and filename to one worklist file.
        */
-    void DetermineWorklistFiles( OFOrderedSet<OFString> &worklistFiles );
+    void DetermineWorklistFiles( OFVector<OFString> &worklistFiles );
 
       /** This function returns OFTrue if the given filename refers to a worklist file,
        *  i.e. has an extension of ".wl".
@@ -454,6 +455,9 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.20  2012-04-11 14:44:40  uli
+** Use OFVector instead of OFOrderedSet for the file list.
+**
 ** Revision 1.19  2011-12-14 12:14:13  uli
 ** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
 **
