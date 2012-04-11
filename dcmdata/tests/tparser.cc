@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:29 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-04-11 14:25:51 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,10 @@
 static OFLogger tparserLogger = OFLog::getLogger("dcmtk.test.tparser");
 
 /* Macros for handling the endian */
-#define LITTLE_ENDIAN_UINT16(w) ((w) & 0xff), ((w) >> 8)
+#define LITTLE_ENDIAN_UINT16(w) OFstatic_cast(Uint8, (w) & 0xff), OFstatic_cast(Uint8, (w) >> 8)
 #define LITTLE_ENDIAN_UINT32(w) LITTLE_ENDIAN_UINT16((w) & 0xffff), LITTLE_ENDIAN_UINT16((w) >> 16)
 
-#define BIG_ENDIAN_UINT16(w) ((w) >> 8), ((w) & 0xff)
+#define BIG_ENDIAN_UINT16(w) OFstatic_cast(Uint8, (w) >> 8), OFstatic_cast(Uint8, (w) & 0xff)
 #define BIG_ENDIAN_UINT32(w) BIG_ENDIAN_UINT16((w) >> 16), BIG_ENDIAN_UINT16((w) & 0xffff)
 
 /* Various definitions for "fake generating" DICOM datasets */
@@ -419,6 +419,9 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.10  2012-04-11 14:25:51  uli
+ * Fix a narrowing conversion error with gcc 4.7.0. Yay for C++11.
+ *
  * Revision 1.9  2012-03-12 13:58:29  joergr
  * Added new parser flag that allows for reading corrupted datasets where the
  * sequence and/or item delimitation items are incorrect (e.g. mixed up).
