@@ -18,8 +18,8 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2012-02-07 11:44:21 $
-#  CVS/RCS Revision: $Revision: 1.20 $
+#  Update Date:      $Date: 2012-04-12 14:29:26 $
+#  CVS/RCS Revision: $Revision: 1.21 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2011 edition of the
@@ -29,7 +29,7 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 152.
-# - CP 1064, 1147.
+# - CP 1064, 1123, 1147.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3290,11 +3290,13 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1064, 1147
+# Correction Items 1064, 1123, 1147
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
 (0040,A163)	UL	RationalDenominatorValue	1-n	CP_1064
+#
+(0010,0200)	CS	QualityControlSubject	1	CP_1123
 #
 (0040,A171)	UI	ObservationUID	1	CP_1147
 #

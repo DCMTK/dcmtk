@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.12 (riesmeier)
+
+- Added support for CP-1123 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2012.04.11 (schlachter)
 
 - Use OFVector instead of OFOrderedSet for the file list.

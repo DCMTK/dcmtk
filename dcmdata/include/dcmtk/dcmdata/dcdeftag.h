@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-11-03 16:17:30
+**   Date: 2012-04-12 16:26:08
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-11-03 16:17:30"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-04-12 16:26:08"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3602
+** Number of entries: 3603
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -281,6 +281,7 @@
 #define DCM_PatientInsurancePlanCodeSequence     DcmTagKey(0x0010, 0x0050)
 #define DCM_PatientPrimaryLanguageCodeSequence   DcmTagKey(0x0010, 0x0101)
 #define DCM_PatientPrimaryLanguageModifierCodeSequence DcmTagKey(0x0010, 0x0102)
+#define DCM_QualityControlSubject                DcmTagKey(0x0010, 0x0200)
 #define DCM_OtherPatientIDs                      DcmTagKey(0x0010, 0x1000)
 #define DCM_OtherPatientNames                    DcmTagKey(0x0010, 0x1001)
 #define DCM_OtherPatientIDsSequence              DcmTagKey(0x0010, 0x1002)
