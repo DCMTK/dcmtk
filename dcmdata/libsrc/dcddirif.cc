@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 17:21:01 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2012-04-12 14:54:13 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1437,7 +1437,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     /* transfer syntax needs to be checked later */
                     found = compare(mediaSOPClassUID, UID_CTImageStorage) ||
                             compare(mediaSOPClassUID, UID_MRImageStorage) ||
-                            compare(mediaSOPClassUID, UID_SecondaryCaptureImageStorage);
+                            compare(mediaSOPClassUID, UID_SecondaryCaptureImageStorage) ||
+                            /* the following SOP classes have been added with CP-1182 */
+                            compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage) ||
+                            compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage);
                     if (!found && RetiredSOPClassSupport)
                     {
                         /* the following SOP class has been retired with DICOM 2004: */
@@ -1800,25 +1803,36 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             }
                             break;
                         case AP_CTandMR:
-                            /* need to check multiple transfer syntaxes */
-                            found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
-                                    compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax);
-                            if (!found)
                             {
-                                const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                const OFString expXferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
-                                /* create error message */
-                                OFOStringStream oss;
-                                oss << expXferName1 << " or " << expXferName2 << " expected but " << xferName
-                                    << " found: " << filename << OFStringStream_ends;
-                                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                                if (TransferSyntaxCheck)
+                                const OFBool isImage = compare(mediaSOPClassUID, UID_CTImageStorage) ||
+                                                       compare(mediaSOPClassUID, UID_MRImageStorage) ||
+                                                       compare(mediaSOPClassUID, UID_SecondaryCaptureImageStorage);
+                                /* need to check multiple transfer syntaxes (JPEG only allowed for images) */
+                                found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
+                                       (compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax) && isImage);
+                                if (!found)
                                 {
-                                    DCMDATA_ERROR(tmpString);
-                                    result = EC_ApplicationProfileViolated;
-                                } else
-                                    DCMDATA_WARN(tmpString);
-                                OFSTRINGSTREAM_FREESTR(tmpString)
+                                    const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                    const OFString expXferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
+                                    /* create error message */
+                                    OFOStringStream oss;
+                                    if (isImage)
+                                    {
+                                        oss << expXferName1 << " or " << expXferName2 << " expected but " << xferName
+                                            << " found: " << filename << OFStringStream_ends;
+                                    } else {
+                                        oss << expXferName1 << " expected but " << xferName << " found: " << filename
+                                            << OFStringStream_ends;
+                                    }
+                                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                                    if (TransferSyntaxCheck)
+                                    {
+                                        DCMDATA_ERROR(tmpString);
+                                        result = EC_ApplicationProfileViolated;
+                                    } else
+                                        DCMDATA_WARN(tmpString);
+                                    OFSTRINGSTREAM_FREESTR(tmpString)
+                                }
                             }
                             break;
                         case AP_UltrasoundIDSF:
@@ -5482,6 +5496,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.68  2012-04-12 14:54:13  joergr
+ *  Added support for CP-1182 (Add SOP Classes to CT/MR Media Profiles).
+ *
  *  Revision 1.67  2012-03-12 17:21:01  joergr
  *  Slightly adapted code in order to avoid unneeded calls to OFString::c_str().
  *
