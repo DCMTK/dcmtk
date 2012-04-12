@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.04.12 (riesmeier)
 
+- Added support for CP-1188 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for CP-1182 (Add SOP Classes to CT/MR Media Profiles).
   Affects: dcmdata/libsrc/dcddirif.cc
 

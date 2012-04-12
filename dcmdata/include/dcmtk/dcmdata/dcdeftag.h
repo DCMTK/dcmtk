@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-04-12 16:26:08
+**   Date: 2012-04-12 16:58:25
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-04-12 16:26:08"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-04-12 16:58:25"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3603
+** Number of entries: 3604
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -3240,6 +3240,7 @@
 #define DCM_CompensatorThicknessData             DcmTagKey(0x300a, 0x00ec)
 #define DCM_NumberOfBoli                         DcmTagKey(0x300a, 0x00ed)
 #define DCM_CompensatorType                      DcmTagKey(0x300a, 0x00ee)
+#define DCM_CompensatorTrayID                    DcmTagKey(0x300a, 0x00ef)
 #define DCM_NumberOfBlocks                       DcmTagKey(0x300a, 0x00f0)
 #define DCM_TotalBlockTrayFactor                 DcmTagKey(0x300a, 0x00f2)
 #define DCM_TotalBlockTrayWaterEquivalentThickness DcmTagKey(0x300a, 0x00f3)
