@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.13 (riesmeier)
+
+- Made sure that VisualStudio does not complain about the redefinition of
+  O_BINARY (moved existing code a few lines down).
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2012.04.12 (riesmeier)
 
 - Added support for CP-1188 to data dictionary.

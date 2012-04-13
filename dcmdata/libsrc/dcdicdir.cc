@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-03-27 09:37:17 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-04-13 12:44:45 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,10 +45,6 @@
 #undef timeval
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0      /* only windows has O_BINARY */
-#endif
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/oftempf.h"
@@ -66,6 +62,11 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 #include "dcmtk/dcmdata/dcvrui.h"      /* for class DcmUniqueIdentifier */
+
+#ifndef O_BINARY
+#define O_BINARY 0                     /* only Windows has O_BINARY */
+#endif
+
 
 // ********************************
 
@@ -1327,6 +1328,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.75  2012-04-13 12:44:45  joergr
+** Made sure that VisualStudio does not complain about the redefinition of
+** O_BINARY (moved existing code a few lines down).
+**
 ** Revision 1.74  2012-03-27 09:37:17  uli
 ** Use O_BINARY again when writing dicom dirs.
 **
