@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:06 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2012-04-13 12:54:22 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,20 +103,26 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 #ifdef _WIN32
 #ifndef DCMTK_GUI
 #ifndef __CYGWIN__
-    /* Map stderr onto stdout (cannot redirect stderr under windows).
+    /* Map stderr onto stdout (cannot redirect stderr under Windows).
      * Remove any buffering (windows uses a 2k buffer for stdout when not
      * writing to the console.  since dcmtk uses mixed stdout, stderr
      * cout and cerr, this results in _very_ mixed up output).
      */
 
-    /* duplicate the stderr file descriptor be the same as stdout */
-    close(fileno(stderr));
-    int fderr = dup(fileno(stdout));
-    if (fderr != fileno(stderr))
+    /* first of all, check whether stderr and stdout file descriptors are
+     * already the same, e.g. from a previous call of this function
+     */
+    if (fileno(stderr) != fileno(stdout))
     {
-        char buf[256];
-        DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: "
-            << OFStandard::strerror(errno, buf, sizeof(buf)));
+        /* duplicate the stderr file descriptor to be the same as stdout */
+        close(fileno(stderr));
+        int fderr = dup(fileno(stdout));
+        if (fderr != fileno(stderr))
+        {
+            char buf[256];
+            DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: "
+                << OFStandard::strerror(errno, buf, sizeof(buf)));
+        }
     }
 
 #ifndef NO_IOS_BASE_ASSIGN
@@ -160,6 +166,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.28  2012-04-13 12:54:22  joergr
+** Avoid crash on Windows systems when prepareCmdLineArgs() is called multiple
+** times.
+**
 ** Revision 1.27  2010-10-14 13:14:06  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

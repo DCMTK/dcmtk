@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.04.13 (riesmeier)
 
+- Avoid crash on Windows systems when prepareCmdLineArgs() is called multiple
+  times. Thanks to Hanno Hugenberg <hanno.hugenberg@gkmedsys.de> for the report
+  and suggested fix.
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+
 - Made sure that VisualStudio does not complain about the redefinition of
   O_BINARY (moved existing code a few lines down).
   Affects: dcmdata/libsrc/dcdicdir.cc
