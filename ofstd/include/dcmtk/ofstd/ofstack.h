@@ -19,8 +19,8 @@
  *      Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-04-16 07:59:36 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,7 +211,12 @@ public:
     /// Assignment operator
     OFStack<T> &operator=(const OFStack<T> &x)
     {
-        copy(x);
+        if (this != &x)
+        {
+            while(!OFStackBase::base_empty())
+                OFStackBase::base_pop();
+            copy(x);
+        }
         return *this;
     }
 
@@ -281,6 +286,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
+** Revision 1.20  2012-04-16 07:59:36  uli
+** Fixed several assignment operators in STL replacement classes.
+**
 ** Revision 1.19  2011-12-14 08:54:00  uli
 ** Make it possible to correctly build ofstd as a DLL.
 **

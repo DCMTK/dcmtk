@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.16 (schlachter)
+
+- Fixed several assignment operators in STL replacement classes.
+  Affects: ofstd/include/dcmtk/ofstd/ofmap.h
+           ofstd/include/dcmtk/ofstd/ofstack.h
+           ofstd/include/dcmtk/ofstd/ofvector.h
+
 **** Changes from 2012.04.13 (riesmeier)
 
 - Avoid crash on Windows systems when prepareCmdLineArgs() is called multiple

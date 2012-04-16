@@ -19,8 +19,8 @@
  *           Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-18 10:37:59 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2012-04-16 07:59:36 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,9 +126,12 @@ public:
     /** default constructor */
     OFMap() : values_() { }
 
-    /** copy constructor */
+    /** assignment operator */
     OFMap& operator=(const OFMap& other)
     {
+        if (this == &other)
+            return *this;
+
         clear();
 
         for (const_iterator it = other.begin();
@@ -272,6 +275,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.10  2012-04-16 07:59:36  uli
+** Fixed several assignment operators in STL replacement classes.
+**
 ** Revision 1.9  2012-01-18 10:37:59  uli
 ** Fixed OFPair to compile again on MSC6.
 **
