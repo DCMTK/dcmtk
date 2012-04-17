@@ -293,7 +293,7 @@ error handling:
 searching:
 
   +P   --search  [t]ag: "gggg,eeee" or dictionary name
-         print the value of tag t
+         print the textual dump of tag t
          this option can be specified multiple times
          (default: the complete file is printed)
 

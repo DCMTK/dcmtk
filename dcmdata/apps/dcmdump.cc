@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 14:13:34 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2012-04-17 14:27:39 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
 
       cmd.addSubGroup("searching:");
         cmd.addOption("--search",              "+P",  1, "[t]ag: \"gggg,eeee\" or dictionary name",
-                                                         "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
+                                                         "print the textual dump of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
         cmd.addOption("--search-all",          "+s",     "print all instances of searched tags (default)");
         cmd.addOption("--search-first",        "-s",     "only print first instance of searched tags");
         cmd.addOption("--prepend",             "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (gggg,eeee).(gggg,eeee).*\n(only when used with --search)");
@@ -832,6 +832,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.95  2012-04-17 14:27:39  joergr
+ * Made it clearer that --search prints the textual dump of the specified tag
+ * (consisting of tag, VR, value, etc.) and not only the element's value.
+ *
  * Revision 1.94  2012-03-12 14:13:34  joergr
  * Added new command line options for parsing incorrectly encoded datasets
  * where the sequence and/or item delimitation items are mixed up.

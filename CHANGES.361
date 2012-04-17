@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.17 (riesmeier)
+
+- Made it clearer that --search prints the textual dump of the specified tag
+  (consisting of tag, VR, value, etc.) and not only the element's value.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 **** Changes from 2012.04.16 (schlachter)
 
 - Fixed several assignment operators in STL replacement classes.
