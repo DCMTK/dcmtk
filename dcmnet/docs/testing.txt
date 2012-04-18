@@ -29,8 +29,8 @@ e.g.
 
 will start storescp in verbose mode listening on port 5678 for
 incoming associations.  storescp will never exit, it will continue
-to wait for new associations until terminated.  See storescp.txt for 
-more information on the storescp application.
+to wait for new associations until terminated.  See storescp
+documentation for more information on the storescp application.
 
 Step 3:
 
@@ -41,8 +41,8 @@ e.g.
 will start echoscu in verbose mode.  It will attempt to build a
 DICOM association with an application running on host1 (attached
 to port 5678) and will send a C-ECHO request and await a C-ECHO
-response from host1.  See echoscu.txt for more information on the 
-echoscu application.
+response from host1.  See echoscu documentation for more information
+on the echoscu application.
 
 Step 3:
 
@@ -51,9 +51,8 @@ e.g.
 	host2> storescu -v host1 5678 ctimage.dcm
 
 will start the storescu application in verbose mode.  It will
-attempt to build a DICOM association with an application running 
+attempt to build a DICOM association with an application running
 on host1 (attached to port 5678) and will send a C-STORE request
 containing the contents of the DICOM image ctimage.dcm and await
-a C-STORE response from host1.  See storescu.txt for more information
-on the storescu application.
-
+a C-STORE response from host1.  See storescu documentation for
+more information on the storescu application.

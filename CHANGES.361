@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.18 (riesmeier)
+
+- Fixed wrong reference to ".txt" files with further documentation. Thanks to
+  Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr> for pointing this out.
+  Affects: dcmnet/docs/testing.txt
+
 **** Changes from 2012.04.17 (riesmeier)
 
 - Made it clearer that --search prints the textual dump of the specified tag
