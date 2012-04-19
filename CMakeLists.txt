@@ -3,9 +3,9 @@ PROJECT(DCMTK)
 
 # Minimum CMake version required
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.7)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.7 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.7)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.8)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.8 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.8)
 
 #-----------------------------------------------------------------------------
 # General project settings to configure DCMTK build process

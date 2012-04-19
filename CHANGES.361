@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.19 (riesmeier)
+
+- Updated information on latest CMake version that has been tested to "2.8.8".
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.04.18 (riesmeier)
 
 - Fixed wrong reference to ".txt" files with further documentation. Thanks to
