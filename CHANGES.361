@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.04.25 (riesmeier)
+
+- Made sure that NDEBUG is always defined in release mode when overwriting the
+  compiler flags for Visual Studio on Windows systems, which is the default.
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.04.19 (riesmeier)
 
 - Updated information on latest CMake version that has been tested to "2.8.8".
