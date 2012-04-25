@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This code is inspired by quicktest.
@@ -22,9 +22,9 @@
  *
  *  Purpose: Provide a test framework for the toolkit
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 14:28:46 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-04-25 15:12:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,9 +249,9 @@ public:
 #ifdef OFTEST_OFSTD_ONLY
         if (cmd.findOption("--verbose")) verbose_ = OFTrue;
 #else
-        /* We disable warnings by default since some tests cause warnings
-	 * by testing corner cases. */
-        OFLog::configureFromCommandLine(cmd, app, OFLogger::ERROR_LOG_LEVEL);
+        /* We disable warnings and errors by default since some tests cause
+         * such messages by testing corner cases. */
+        OFLog::configureFromCommandLine(cmd, app, OFLogger::FATAL_LOG_LEVEL);
 #endif
         if (cmd.findOption("--list")) listOnly = OFTrue;
 
@@ -482,6 +482,9 @@ public: \
  *
  * CVS/RCS Log:
  * $Log: oftest.h,v $
+ * Revision 1.5  2012-04-25 15:12:54  joergr
+ * Now, also error log messages are disabled by default.
+ *
  * Revision 1.4  2011-07-06 14:28:46  uli
  * Changed the default log level for tests to ERROR.
  *

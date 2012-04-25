@@ -3,8 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.04.25 (riesmeier)
 
+- Now, also error log messages are disabled by default.
+  Affects: ofstd/include/dcmtk/ofstd/oftest.h
+
 - Made sure that NDEBUG is always defined in release mode when overwriting the
   compiler flags for Visual Studio on Windows systems, which is the default.
+  Thanks to forum user "wollet88" for the original report.
   Affects: CMakeLists.txt
 
 **** Changes from 2012.04.19 (riesmeier)
