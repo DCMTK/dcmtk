@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:16 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2012-05-04 09:32:31 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,9 +31,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
-#include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
-#include "dcmtk/dcmdata/libi2d/i2dplsc.h"
-#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2dimgs.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 
 class DCMTK_I2D_EXPORT Image2Dcm
@@ -274,6 +272,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.15  2012-05-04 09:32:31  onken
+ * Cleaned up includes. Fixed plugin functionality to receive list of supported
+ * SOP classes.
+ *
  * Revision 1.14  2011-12-14 09:04:16  uli
  * Make it possible to accurately build dcmdata and libi2d as DLLs.
  *

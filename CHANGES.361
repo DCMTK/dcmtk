@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.04 (onken)
+
+- Cleaned up includes. Thanks to Michal Spacek<tupinek@gmail.com> for the hint.
+  Fixed plugin functionality to receive list of supported SOP classes.
+  Affects: dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2dplnsc.h
+           dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2dplsc.h
+           dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2dplvlp.h
+           dcmtk/dcmdata/libi2d/i2dplnsc.cc
+           dcmtk/dcmdata/libi2d/i2dplsc.cc
+           dcmtk/dcmdata/libi2d/i2dplvlp.cc
+
 **** Changes from 2012.04.25 (riesmeier)
 
 - Now, also error log messages are disabled by default.

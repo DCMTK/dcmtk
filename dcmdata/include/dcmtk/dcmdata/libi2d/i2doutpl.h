@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for converter from image file to DICOM
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:16 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2012-05-04 09:32:31 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ public:
    *  @param suppSOPs - [out] List containing supported output SOP classes
    *  @return String containing the Storage SOP class UID
    */
-  virtual void supportedSOPClassUIDs(OFList<OFString> suppSOPs) =0;
+  virtual void supportedSOPClassUIDs(OFList<OFString>& suppSOPs) =0;
 
   /** Outputs SOP class specific information into dataset
    * @param dataset - [in/out] Dataset to write to
@@ -231,6 +231,10 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.14  2012-05-04 09:32:31  onken
+ * Cleaned up includes. Fixed plugin functionality to receive list of supported
+ * SOP classes.
+ *
  * Revision 1.13  2011-12-14 09:04:16  uli
  * Make it possible to accurately build dcmdata and libi2d as DLLs.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements conversion from image into DICOM Visible Light Photography IOD
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:18:24 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2012-05-04 09:32:38 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ OFString I2DOutputPlugVLP::ident()
   return "Visible Light Photographic Image SOP Class";
 }
 
-void I2DOutputPlugVLP::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
+void I2DOutputPlugVLP::supportedSOPClassUIDs(OFList<OFString>& suppSOPs)
 {
   suppSOPs.push_back(UID_VLPhotographicImageStorage);
 }
@@ -95,6 +95,10 @@ I2DOutputPlugVLP::~I2DOutputPlugVLP()
 /*
  * CVS/RCS Log:
  * $Log: i2dplvlp.cc,v $
+ * Revision 1.6  2012-05-04 09:32:38  onken
+ * Cleaned up includes. Fixed plugin functionality to receive list of supported
+ * SOP classes.
+ *
  * Revision 1.5  2010-10-14 13:18:24  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements conversion from image into new DICOM SC IODs
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:18:23 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2012-05-04 09:32:38 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ OFString I2DOutputPlugNewSC::ident()
 }
 
 
-void I2DOutputPlugNewSC::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
+void I2DOutputPlugNewSC::supportedSOPClassUIDs(OFList<OFString>& suppSOPs)
 {
   suppSOPs.push_back(UID_MultiframeSingleBitSecondaryCaptureImageStorage);
   suppSOPs.push_back(UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage);
@@ -270,6 +270,10 @@ I2DOutputPlugNewSC::~I2DOutputPlugNewSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplnsc.cc,v $
+ * Revision 1.6  2012-05-04 09:32:38  onken
+ * Cleaned up includes. Fixed plugin functionality to receive list of supported
+ * SOP classes.
+ *
  * Revision 1.5  2010-10-14 13:18:23  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
