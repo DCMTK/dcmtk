@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:29 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-05-07 10:06:54 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_up);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_xs);
 OFTEST_REGISTER(dcmdata_elementLength_pixelItem);
 OFTEST_REGISTER(dcmdata_elementLength_pixelSequence);
+OFTEST_REGISTER(dcmdata_elementParent);
 OFTEST_REGISTER(dcmdata_parser_missingDelimitationItems);
 OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem_1);
 OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem_2);
@@ -104,6 +105,9 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.17  2012-05-07 10:06:54  uli
+** Added a test for the new functions for accessing parent objects and items.
+**
 ** Revision 1.16  2012-03-12 13:58:29  joergr
 ** Added new parser flag that allows for reading corrupted datasets where the
 ** sequence and/or item delimitation items are incorrect (e.g. mixed up).

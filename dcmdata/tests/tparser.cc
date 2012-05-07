@@ -18,8 +18,8 @@
  *  Purpose: test program for reading DICOM datasets
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-04-11 14:25:51 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2012-05-07 10:06:54 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,53 +36,16 @@
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcistrmb.h"
 #include "dcmtk/dcmdata/dcostrmb.h"
+#include "dctmacro.h"
 
-
-static OFLogger tparserLogger = OFLog::getLogger("dcmtk.test.tparser");
-
-/* Macros for handling the endian */
-#define LITTLE_ENDIAN_UINT16(w) OFstatic_cast(Uint8, (w) & 0xff), OFstatic_cast(Uint8, (w) >> 8)
-#define LITTLE_ENDIAN_UINT32(w) LITTLE_ENDIAN_UINT16((w) & 0xffff), LITTLE_ENDIAN_UINT16((w) >> 16)
-
-#define BIG_ENDIAN_UINT16(w) OFstatic_cast(Uint8, (w) >> 8), OFstatic_cast(Uint8, (w) & 0xff)
-#define BIG_ENDIAN_UINT32(w) BIG_ENDIAN_UINT16((w) >> 16), BIG_ENDIAN_UINT16((w) & 0xffff)
-
-/* Various definitions for "fake generating" DICOM datasets */
-#define RESERVED_BYTES 0, 0
-#define TAG(tag) ENDIAN_UINT16((tag).getGroup()), ENDIAN_UINT16((tag).getElement())
-#define TAG_AND_LENGTH(tag, v, r, length) \
-    TAG(tag), v, r, RESERVED_BYTES, ENDIAN_UINT32(length)
-#define TAG_AND_LENGTH2(tag, v, r, length) \
-    TAG(tag), v, r, ENDIAN_UINT16(length)
-#define ITEM(length) \
-    TAG(DCM_Item), ENDIAN_UINT32(length)
-#define ITEM_END \
-    TAG(DCM_ItemDelimitationItem), ENDIAN_UINT32(0)
-#define SEQUENCE_END \
-    TAG(DCM_SequenceDelimitationItem), ENDIAN_UINT32(0)
-
-#define UNDEFINED_LENGTH  0xffffffff
-#define UNDEFINED_LENGTH2 0xffff
-#define VALUE 0x2a
 
 /* To switch between big and little endian, just change these macros */
 #define TRANSFER_SYNTAX EXS_LittleEndianExplicit
 #define ENDIAN_UINT16(w) LITTLE_ENDIAN_UINT16(w)
 #define ENDIAN_UINT32(w) LITTLE_ENDIAN_UINT32(w)
 
-static OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, size_t length)
-{
-    DcmInputBufferStream stream;
-    stream.setBuffer(buffer, length);
-    stream.setEos();
 
-    dset.clear();
-    dset.transferInit();
-    const OFCondition cond = dset.read(stream, TRANSFER_SYNTAX);
-    dset.transferEnd();
-
-    return cond;
-}
+static OFLogger tparserLogger = OFLog::getLogger("dcmtk.test.tparser");
 
 OFTEST(dcmdata_parser_missingDelimitationItems)
 {
@@ -98,7 +61,7 @@ OFTEST(dcmdata_parser_missingDelimitationItems)
 
     // This should assume the above sequence is complete
     dcmIgnoreParsingErrors.set(OFTrue);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond.bad())
     {
         OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
@@ -106,7 +69,7 @@ OFTEST(dcmdata_parser_missingDelimitationItems)
 
     // This should complain about the missing item
     dcmIgnoreParsingErrors.set(OFFalse);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond != EC_SequDelimitationItemMissing)
     {
         OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
@@ -126,7 +89,7 @@ OFTEST(dcmdata_parser_missingSequenceDelimitationItem_1)
 
     // This should assume the above sequence is complete
     dcmIgnoreParsingErrors.set(OFTrue);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond.bad())
     {
         OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
@@ -134,7 +97,7 @@ OFTEST(dcmdata_parser_missingSequenceDelimitationItem_1)
 
     // This should complain about the missing item
     dcmIgnoreParsingErrors.set(OFFalse);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond != EC_SequDelimitationItemMissing)
     {
         OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
@@ -158,7 +121,7 @@ OFTEST(dcmdata_parser_missingSequenceDelimitationItem_2)
 
     // This should fail with a specific error code
     dcmIgnoreParsingErrors.set(OFFalse);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond != EC_SequDelimitationItemMissing)
     {
         OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
@@ -184,7 +147,7 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForSequence)
     // This should complain about the wrong delimitation item
     dcmIgnoreParsingErrors.set(OFFalse);
     dcmReplaceWrongDelimitationItem.set(OFFalse);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond != EC_SequDelimitationItemMissing)
     {
         OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item missing', but got: " << cond.text());
@@ -192,7 +155,7 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForSequence)
 
     // This should assume the above sequence encoding is correct
     dcmIgnoreParsingErrors.set(OFTrue);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond.good())
     {
         OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
@@ -205,7 +168,7 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForSequence)
     // This should replace the wrong delimitation item
     dcmIgnoreParsingErrors.set(OFFalse);
     dcmReplaceWrongDelimitationItem.set(OFTrue);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond.good())
     {
         OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
@@ -235,7 +198,7 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForItem)
     // This should complain about the wrong delimitation item
     dcmIgnoreParsingErrors.set(OFFalse);
     dcmReplaceWrongDelimitationItem.set(OFFalse);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond != EC_ItemDelimitationItemMissing)
     {
         OFCHECK_FAIL("Parsing should have failed with 'Item Delimitation Item missing', but got: " << cond.text());
@@ -243,7 +206,7 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForItem)
 
     // This should assume the above item encoding is correct
     dcmIgnoreParsingErrors.set(OFTrue);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond.good())
     {
         OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
@@ -256,7 +219,7 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForItem)
     // This should replace the wrong delimitation item
     dcmIgnoreParsingErrors.set(OFFalse);
     dcmReplaceWrongDelimitationItem.set(OFTrue);
-    cond = readDataset(dset, data, sizeof(data));
+    cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
     if (cond.good())
     {
         OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
@@ -348,16 +311,16 @@ static const DcmTagKey wrongExplicitVRinDataset_unknownTag(0x0006, 0x0006);
 
 static const Uint8 wrongExplicitVRinDataset_testData[] = {
     /* This non-standard tag cannot be corrected (not in data dictionary) */
-    TAG_AND_LENGTH2(wrongExplicitVRinDataset_unknownTag, 'P', 'N', 4),
+    TAG_AND_LENGTH_SHORT(wrongExplicitVRinDataset_unknownTag, 'P', 'N', 4),
     'A', 'B', 'C', 'D',
     /* This standard tag has a wrong VR ("ST" instead of "PN") */
-    TAG_AND_LENGTH2(DCM_PatientName, 'S', 'T', 4),
+    TAG_AND_LENGTH_SHORT(DCM_PatientName, 'S', 'T', 4),
     'A', 'B', 'C', 'D',
     /* This standard tag has a wrong VR ("UN") and uses a 4-byte length field */
     TAG_AND_LENGTH(DCM_PatientID, 'U', 'N', 4),
     '0', '8', '1', '5',
     /* This standard tag has a correct VR, no modification required */
-    TAG_AND_LENGTH2(DCM_PatientSex, 'C', 'S', 2),
+    TAG_AND_LENGTH_SHORT(DCM_PatientSex, 'C', 'S', 2),
     'O', ' '
 };
 
@@ -381,7 +344,7 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_default)
 
     // This should use the VR from the dataset (default)
     dcmPreferVRFromDataDictionary.set(OFFalse);
-    cond = readDataset(dset, wrongExplicitVRinDataset_testData, sizeof(wrongExplicitVRinDataset_testData));
+    cond = readDataset(dset, wrongExplicitVRinDataset_testData, sizeof(wrongExplicitVRinDataset_testData), TRANSFER_SYNTAX);
     if (cond.good())
     {
         OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
@@ -401,7 +364,7 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
 
     // This should use the VR from the data dictionary
     dcmPreferVRFromDataDictionary.set(OFTrue);
-    cond = readDataset(dset, wrongExplicitVRinDataset_testData, sizeof(wrongExplicitVRinDataset_testData));
+    cond = readDataset(dset, wrongExplicitVRinDataset_testData, sizeof(wrongExplicitVRinDataset_testData), TRANSFER_SYNTAX);
     if (cond.good())
     {
         OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
@@ -419,6 +382,9 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.11  2012-05-07 10:06:54  uli
+ * Added a test for the new functions for accessing parent objects and items.
+ *
  * Revision 1.10  2012-04-11 14:25:51  uli
  * Fix a narrowing conversion error with gcc 4.7.0. Yay for C++11.
  *

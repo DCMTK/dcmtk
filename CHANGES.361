@@ -18,6 +18,14 @@ Changes between releases are documented here.
 
 **** Changes from 2012.05.07 (schlachter)
 
+- Added a test for the new functions for accessing parent objects and items.
+  Added:   dcmdata/tests/dctmacro.h
+           dcmdata/tests/tparent.cc
+  Affects: dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tparser.cc
+
 - Fixed a bug in the output buffer flushing which caused a failed assertion.
   Thanks to forum user "wollet88" for the original report.
   Affects: dcmjpls/libcharls/encodstr.h
