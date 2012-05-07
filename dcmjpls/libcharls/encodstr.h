@@ -70,7 +70,7 @@ protected:
 #endif
 
 		bitpos -= length;
-		if (bitpos >= 0)
+		if (bitpos > 0)
 		{
 			valcurrent = valcurrent | (value << bitpos);
 			return;

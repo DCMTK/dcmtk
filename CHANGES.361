@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.07 (schlachter)
+
+- Fixed a bug in the output buffer flushing which caused a failed assertion.
+  Affects: dcmjpls/libcharls/encodstr.h
+
 **** Changes from 2012.05.04 (onken)
 
 - Cleaned up includes. Thanks to Michal Spacek<tupinek@gmail.com> for the hint.
