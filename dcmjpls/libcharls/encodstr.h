@@ -79,9 +79,9 @@ protected:
 
 		Flush();
 
-		ASSERT(bitpos >=0);
-		valcurrent |= value << bitpos;
-
+		ASSERT(bitpos >= 0);
+		if (bitpos < 32)
+			valcurrent |= value << bitpos;
 	}
 
 	void EndScan()

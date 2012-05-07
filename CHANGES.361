@@ -18,6 +18,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.05.07 (schlachter)
 
+- Fixed a bug in the earlier bug fix where a 32bit int may be shifted by 32.
+  Affects: dcmjpls/libcharls/encodstr.h
+
 - Added a test for the new functions for accessing parent objects and items.
   Added:   dcmdata/tests/dctmacro.h
            dcmdata/tests/tparent.cc
