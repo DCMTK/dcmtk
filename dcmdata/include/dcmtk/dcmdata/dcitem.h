@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:26 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Update Date:      $Date: 2012-05-07 09:49:10 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +182,12 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  when reading/writing this object from/to a stream has been completed.
      */
     virtual void transferEnd();
+
+    /** get parent item of this object, i.e.\ the item/dataset in which the
+     *  surrounding sequence element is stored.
+     *  @return pointer to the parent item of this object (might be NULL)
+     */
+    virtual DcmItem *getParentItem();
 
     /** check if this DICOM object can be encoded in the given transfer syntax.
      *  @param newXfer transfer syntax in which the DICOM object is to be encoded
@@ -1321,6 +1327,11 @@ DCMTK_DCMDATA_EXPORT OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.94  2012-05-07 09:49:10  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.93  2012-03-12 13:58:26  joergr
 ** Added new parser flag that allows for reading corrupted datasets where the
 ** sequence and/or item delimitation items are incorrect (e.g. mixed up).

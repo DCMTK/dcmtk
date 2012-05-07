@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:28 $
- *  CVS/RCS Revision: $Revision: 1.166 $
+ *  Update Date:      $Date: 2012-05-07 09:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.167 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,10 @@ DcmItem::DcmItem(const DcmItem &old)
         old.elementList->seek(ELP_first);
         do
         {
-            elementList->insert(old.elementList->get()->clone(), ELP_next);
+            DcmObject *dO = old.elementList->get()->clone();
+            elementList->insert(dO, ELP_next);
+            // remember the parent
+            dO->setParent(this);
         } while (old.elementList->seek(ELP_next));
     }
 }
@@ -144,7 +147,10 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
       obj.elementList->seek(ELP_first);
       do
       {
-        elementList->insert(obj.elementList->get()->clone(), ELP_next);
+        DcmObject *dO = obj.elementList->get()->clone();
+        elementList->insert(dO, ELP_next);
+        // remember the parent
+        dO->setParent(this);
       } while (obj.elementList->seek(ELP_next));
     }
   }
@@ -672,6 +678,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
+                            // remember the parent
+                            dO->setParent(this);
                             DCMDATA_WARN("DcmItem: Group Length with VR other than UL found, corrected");
                         }
                         /* if the above mentioned condition is not met but the caller specified */
@@ -684,6 +692,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             // insert new GroupLength element
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
+                            // remember the parent
+                            dO->setParent(this);
                         }
 
                         /* in case we want to add padding elements and the current element is a */
@@ -1386,7 +1396,9 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
   return errorFlag;
 }
 
+
 // ********************************
+
 
 OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
                                           const E_TransferSyntax oxfer,
@@ -1444,6 +1456,47 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
 // ********************************
 
 
+DcmItem *DcmItem::getParentItem()
+{
+    DcmItem *parentItem = NULL;
+    if (getParent() != NULL)
+    {
+        // make sure that the direct parent has the correct type
+        const DcmEVR parentIdent = getParent()->ident();
+        if ((parentIdent == EVR_SQ) || (parentIdent == EVR_pixelSQ))
+        {
+            DcmObject *parent = getParent()->getParent();
+            if (parent != NULL)
+            {
+                // make sure that it is really a class derived from DcmItem
+                switch (parent->ident())
+                {
+                    case EVR_metainfo:
+                    case EVR_dataset:
+                    case EVR_item:
+                    case EVR_dirRecord:
+                        parentItem = OFreinterpret_cast(DcmItem *, parent);
+                        break;
+                    default:
+                        DCMDATA_DEBUG("DcmItem::getParentItem() Parent object has wrong class identifier: "
+                            << OFstatic_cast(int, parent->ident())
+                            << " (" << DcmVR(parent->ident()).getVRName() << ")");
+                        break;
+                }
+            }
+        // When our parent is a fileformat, we should be a dataset or a metainfo.
+        // In these cases, there really is no parent item, so no message.
+        } else if (parentIdent != EVR_fileFormat) {
+            DCMDATA_DEBUG("DcmItem::getParentItem() Direct parent object is not a sequence element");
+        }
+    }
+    return parentItem;
+}
+
+
+// ********************************
+
+
 void DcmItem::transferInit()
 {
     DcmObject::transferInit();
@@ -1458,9 +1511,6 @@ void DcmItem::transferInit()
         } while (elementList->seek(ELP_next));
     }
 }
-
-
-// ********************************
 
 
 void DcmItem::transferEnd()
@@ -1511,16 +1561,24 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 elementList->insert(elem, ELP_first);
                 if (checkInsertOrder)
                 {
-                  // check if we have inserted at the end of the list
-                  if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
-                  {
-                    // produce diagnostics
-                    DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
-                  }
+                    // check if we have inserted at the end of the list
+                    if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
+                    {
+                        // produce diagnostics
+                        DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
+                    }
                 }
                 /* dump some information if required */
                 DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
                     << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted at beginning");
+                /* check whether the new element already has a parent */
+                if (elem->getParent() != NULL)
+                {
+                    DCMDATA_DEBUG("DcmItem::insert() Element " << elem->getTag() << " already has a parent: "
+                      << elem->getParent()->getTag() << " VR=" << DcmVR(elem->getParent()->getVR()).getVRName());
+                }
+                /* remember the parent (i.e. the surrounding item/dataset) */
+                elem->setParent(this);
                 /* terminate do-while-loop */
                 break;
             }
@@ -1532,16 +1590,24 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 elementList->insert(elem, ELP_next);
                 if (checkInsertOrder)
                 {
-                  // check if we have inserted at the end of the list
-                  if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
-                  {
-                      // produce diagnostics
-                      DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
-                  }
+                    // check if we have inserted at the end of the list
+                    if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
+                    {
+                        // produce diagnostics
+                        DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
+                    }
                 }
                 /* dump some information if required */
                 DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
                     << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted");
+                /* check whether the new element already has a parent */
+                if (elem->getParent() != NULL)
+                {
+                    DCMDATA_DEBUG("DcmItem::insert() Element " << elem->getTag() << " already has a parent: "
+                        << elem->getParent()->getTag() << " VR=" << DcmVR(elem->getParent()->getVR()).getVRName());
+                }
+                /* remember the parent (i.e. the surrounding item/dataset) */
+                elem->setParent(this);
                 /* terminate do-while-loop */
                 break;
             }
@@ -1577,6 +1643,14 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
                             << " VR=\"" << DcmVR(elem->getVR()).getVRName()
                             << "\" p=" << OFstatic_cast(void *, elem) << " replaced older one");
+                        /* check whether the new element already has a parent */
+                        if (elem->getParent() != NULL)
+                        {
+                            DCMDATA_DEBUG("DcmItem::insert() Element " << elem->getTag() << " already has a parent: "
+                                << elem->getParent()->getTag() << " VR=" << DcmVR(elem->getParent()->getVR()).getVRName());
+                        }
+                        /* remember the parent (i.e. the surrounding item/dataset) */
+                        elem->setParent(this);
                     }   // if (replaceOld)
                     /* or else, i.e. the current element shall not be replaced by the new element */
                     else {
@@ -1694,8 +1768,10 @@ DcmElement *DcmItem::remove(const unsigned long num)
     elem = OFstatic_cast(DcmElement *, elementList->seek_to(num));
     // read element from list
     if (elem != NULL)
+    {
         elementList->remove();          // removes element from list but does not delete it
-    else
+        elem->setParent(NULL);          // forget about the parent
+    } else
         errorFlag = EC_IllegalCall;
     return elem;
 }
@@ -1716,6 +1792,7 @@ DcmElement *DcmItem::remove(DcmObject *elem)
             if (dO == elem)
             {
                 elementList->remove();     // removes element from list but does not delete it
+                elem->setParent(NULL);     // forget about the parent
                 errorFlag = EC_Normal;
                 break;
             }
@@ -1743,6 +1820,7 @@ DcmElement *DcmItem::remove(const DcmTagKey &tag)
             if (dO->getTag() == tag)
             {
                 elementList->remove();     // removes element from list but does not delete it
+                dO->setParent(NULL);       // forget about the parent
                 errorFlag = EC_Normal;
                 break;
             }
@@ -4000,6 +4078,11 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.167  2012-05-07 09:49:12  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.166  2012-03-12 13:58:28  joergr
 ** Added new parser flag that allows for reading corrupted datasets where the
 ** sequence and/or item delimitation items are incorrect (e.g. mixed up).

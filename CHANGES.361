@@ -1,14 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.07 (riesmeier)
+
+- Added suppport for accessing the parent of a DICOM object/element, i.e. the
+  surrounding structure in the DICOM dataset, in which it is contained. This
+  also includes access to both the parent and the root item.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpxitem.h
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2012.05.07 (schlachter)
 
 - Fixed a bug in the output buffer flushing which caused a failed assertion.
+  Thanks to forum user "wollet88" for the original report.
   Affects: dcmjpls/libcharls/encodstr.h
 
 **** Changes from 2012.05.04 (onken)
 
-- Cleaned up includes. Thanks to Michal Spacek<tupinek@gmail.com> for the hint.
+- Cleaned up includes. Thanks to Michal Spacek <tupinek@gmail.com> for the hint.
   Fixed plugin functionality to receive list of supported SOP classes.
   Affects: dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
            dcmtk/dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h

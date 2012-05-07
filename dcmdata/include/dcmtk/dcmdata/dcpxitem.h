@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-07 09:49:10 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,12 @@ class DCMTK_DCMDATA_EXPORT DcmPixelItem : public DcmOtherByteOtherWord
      */
     virtual OFCondition copyFrom(const DcmObject &rhs);
 
+    /** get parent item of this object, i.e.\ the item/dataset in which the
+     *  surrounding pixel sequence is stored.
+     *  @return pointer to the parent item of this object (might be NULL)
+     */
+    virtual DcmItem *getParentItem();
+
     /** print all elements of the item to a stream
      *  @param out output stream
      *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
@@ -153,6 +159,11 @@ class DCMTK_DCMDATA_EXPORT DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
+** Revision 1.32  2012-05-07 09:49:10  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.31  2011-12-14 09:04:13  uli
 ** Make it possible to accurately build dcmdata and libi2d as DLLs.
 **

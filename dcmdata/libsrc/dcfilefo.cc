@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 11:44:26 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2012-05-07 09:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,8 +66,11 @@ DcmFileFormat::DcmFileFormat()
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
+    MetaInfo->setParent(this);
+
     DcmDataset *Dataset = new DcmDataset();
     DcmSequenceOfItems::itemList->insert(Dataset);
+    Dataset->setParent(this);
 }
 
 
@@ -77,13 +80,15 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
-    DcmDataset *newDataset;
+    MetaInfo->setParent(this);
 
+    DcmDataset *newDataset;
     if (dataset == NULL)
         newDataset = new DcmDataset();
     else
         newDataset = new DcmDataset(*dataset);
     DcmSequenceOfItems::itemList->insert(newDataset);
+    newDataset->setParent(this);
 }
 
 
@@ -644,6 +649,8 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             {
                 metaInfo = new DcmMetaInfo();
                 itemList->insert(metaInfo, ELP_first);
+                // remember the parent
+                metaInfo->setParent(this);
             }
             if (metaInfo && metaInfo->transferState() != ERW_ready)
             {
@@ -666,6 +673,8 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                     dataset = new DcmDataset();
                     itemList->seek (ELP_first);
                     itemList->insert(dataset, ELP_next);
+                    // remember the parent
+                    dataset->setParent(this);
                 }
                 // check whether to read the dataset at all
                 if (FileReadMode != ERM_metaOnly)
@@ -968,8 +977,12 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
     if (itemList->seek_to(1) != NULL && itemList->get()->ident() == EVR_dataset)
     {
         data = OFstatic_cast(DcmDataset *, itemList->remove());
+        // forget about the parent
+        data->setParent(NULL);
         DcmDataset *Dataset = new DcmDataset();
         DcmSequenceOfItems::itemList->insert(Dataset, ELP_last);
+        // remember the parent
+        Dataset->setParent(this);
     }
     else
         errorFlag = EC_IllegalCall;
@@ -1025,6 +1038,11 @@ OFCondition DcmFileFormat::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.73  2012-05-07 09:49:12  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.72  2012-02-20 11:44:26  joergr
 ** Added initial support for wide character strings (UTF-16) used for filenames
 ** by the Windows operating system.

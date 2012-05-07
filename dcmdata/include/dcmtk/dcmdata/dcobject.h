@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:26 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2012-05-07 09:49:10 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 
 
 // forward declarations
+class DcmItem;
 class DcmOutputStream;
 class DcmInputStream;
 class DcmWriteCache;
@@ -298,6 +299,44 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  when reading/writing this object from/to a stream has been completed.
      */
     virtual void transferEnd(void);
+
+    /** get root dataset/item (top-level) that contains this object. Internally,
+     *  the list of parent pointers is followed in order to find the root. If
+     *  this object has no parent item, a pointer to this object is returned
+     *  instead.
+     *  @return pointer to the root dataset/item (might be NULL)
+     */
+    DcmItem *getRootItem();
+
+    /** get parent item of this object. In case of a top-level element, this is
+     *  either the main dataset or the file meta-information. In case of a nested
+     *  element, this is the surrounding item.
+     *  @return pointer to the parent item of this object (might be NULL)
+     */
+    virtual DcmItem *getParentItem();
+
+    /** get parent of this object. If this object is an element that has been
+     *  inserted into a dataset/item, the parent is this particular dataset/item.
+     *  If this object is an item that has been inserted into a sequence, the
+     *  parent is this particular sequence. If this object has not been inserted
+     *  into a dataset/item or sequence, NULL is returned.
+     *  @return pointer to the parent of this object (might be NULL)
+     */
+    inline DcmObject *getParent() { return Parent; }
+
+    /** get parent of this object. If this object is an element that has been
+     *  inserted into a dataset/item, the parent is this particular dataset/item.
+     *  If this object is an item that has been inserted into a sequence, the
+     *  parent is this particular sequence. If this object has not been inserted
+     *  into a dataset/item or sequence, NULL is returned.
+     *  @return pointer to the parent of this object (might be NULL)
+     */
+    inline const DcmObject *getParent() const { return Parent; }
+
+    /** set parent of this object. NULL means no parent.
+     *  NB: This method is used by derived classes for internal purposes only.
+     */
+    inline void setParent(DcmObject *parent) { Parent = parent; }
 
     /** return the group number of the attribute tag for this object
      *  @return group number of the attribute tag for this object
@@ -703,6 +742,8 @@ class DCMTK_DCMDATA_EXPORT DcmObject
     /// number of bytes already read/written during transfer
     Uint32 fTransferredBytes;
 
+    /// pointer to parent object if contained in a dataset/item (might be NULL)
+    DcmObject *Parent;
  }; // class DcmObject
 
 /** Print a DcmObject::PrintHelper to an ostream.
@@ -722,6 +763,11 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.77  2012-05-07 09:49:10  joergr
+ * Added suppport for accessing the parent of a DICOM object/element, i.e. the
+ * surrounding structure in the DICOM dataset, in which it is contained. This
+ * also includes access to both the parent and the root item.
+ *
  * Revision 1.76  2012-03-12 13:58:26  joergr
  * Added new parser flag that allows for reading corrupted datasets where the
  * sequence and/or item delimitation items are incorrect (e.g. mixed up).

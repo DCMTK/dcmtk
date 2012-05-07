@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2012-05-07 09:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,6 +203,14 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
             DCMDATA_TRACE("DcmPixelSequence::insert() Item at position " << where << " inserted");
         if (where >= itemList->card())
             DCMDATA_TRACE("DcmPixelSequence::insert() Item at last position inserted");
+        // check whether the new item already has a parent
+        if (item->getParent() != NULL)
+        {
+            DCMDATA_DEBUG("DcmPixelSequence::insert() PixelItem already has a parent: "
+                << item->getParent()->getTag() << " VR=" << DcmVR(item->getParent()->getVR()).getVRName());
+        }
+        // remember the parent (i.e. the surrounding sequence)
+        item->setParent(this);
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -232,8 +240,10 @@ OFCondition DcmPixelSequence::remove(DcmPixelItem *&item,
     errorFlag = EC_Normal;
     item = OFstatic_cast(DcmPixelItem*, itemList->seek_to(num));  // read item from list
     if (item != NULL)
+    {
         itemList->remove();
-    else
+        item->setParent(NULL);          // forget about the parent
+    } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
 }
@@ -254,6 +264,7 @@ OFCondition DcmPixelSequence::remove(DcmPixelItem *item)
             if (dO == item)
             {
                 itemList->remove();         // remove element from list, but do no delete it
+                item->setParent(NULL);      // forget about the parent
                 errorFlag = EC_Normal;
                 break;
             }
@@ -389,6 +400,11 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.49  2012-05-07 09:49:12  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.48  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

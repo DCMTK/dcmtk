@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2012-05-07 09:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,44 @@ OFCondition DcmPixelItem::copyFrom(const DcmObject &rhs)
 
 DcmPixelItem::~DcmPixelItem()
 {
+}
+
+
+// ********************************
+
+
+DcmItem *DcmPixelItem::getParentItem()
+{
+    DcmItem *parentItem = NULL;
+    if (getParent() != NULL)
+    {
+        // make sure that the direct parent has the correct type
+        if (getParent()->ident() == EVR_pixelSQ)
+        {
+            DcmObject *parent = getParent()->getParent();
+            if (parent != NULL)
+            {
+                // make sure that it is really a class derived from DcmItem
+                switch (parent->ident())
+                {
+                    case EVR_metainfo:
+                    case EVR_dataset:
+                    case EVR_item:
+                    case EVR_dirRecord:
+                        parentItem = OFreinterpret_cast(DcmItem *, parent);
+                        break;
+                    default:
+                        DCMDATA_DEBUG("DcmPixelItem::getParentItem() Parent object has wrong class identifier: "
+                            << OFstatic_cast(int, parent->ident())
+                            << " (" << DcmVR(parent->ident()).getVRName() << ")");
+                        break;
+                }
+            }
+        } else {
+            DCMDATA_DEBUG("DcmPixelItem::getParentItem() Direct parent object is not a pixel sequence");
+        }
+    }
+    return parentItem;
 }
 
 
@@ -378,6 +416,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.44  2012-05-07 09:49:12  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.43  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

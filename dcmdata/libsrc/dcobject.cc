@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:28 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2012-05-07 09:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,7 @@ DcmObject::DcmObject(const DcmTag &tag,
 , Length(len)
 , fTransferState(ERW_init)
 , fTransferredBytes(0)
+, Parent(NULL)
 {
 }
 
@@ -83,6 +84,7 @@ DcmObject::DcmObject(const DcmObject &obj)
 , Length(obj.Length)
 , fTransferState(obj.fTransferState)
 , fTransferredBytes(obj.fTransferredBytes)
+, Parent(NULL)
 {
 }
 
@@ -101,6 +103,7 @@ DcmObject &DcmObject::operator=(const DcmObject &obj)
         errorFlag = obj.errorFlag;
         fTransferState = obj.fTransferState;
         fTransferredBytes = obj.fTransferredBytes;
+        Parent = NULL;
     }
     return *this;
 }
@@ -125,7 +128,72 @@ void DcmObject::transferEnd()
 // ********************************
 
 
-DcmObject * DcmObject::nextInContainer(const DcmObject * /*obj*/)
+DcmItem *DcmObject::getRootItem()
+{
+    DcmItem *rootItem = NULL;
+    DcmObject *parent = this;
+    // search for the root object
+    do {
+        // stop at top-level dataset/item
+        if ((parent->getParent() == NULL) || (parent->getParent()->ident() == EVR_fileFormat))
+            break;
+        parent = parent->getParent();
+    } while (parent != NULL);
+    if (parent != NULL)
+    {
+        // make sure that it is really a class derived from DcmItem
+        switch (parent->ident())
+        {
+            case EVR_metainfo:
+            case EVR_dataset:
+            case EVR_item:
+            case EVR_dirRecord:
+                rootItem = OFreinterpret_cast(DcmItem *, parent);
+                break;
+            default:
+                // Don't generate a message when there is no root
+                if (this != parent)
+                {
+                    DCMDATA_DEBUG("DcmObject::getRootItem() Root object has wrong class identifier: "
+                        << OFstatic_cast(int, parent->ident())
+                        << " (" << DcmVR(parent->ident()).getVRName() << ")");
+                }
+                break;
+        }
+    }
+    return rootItem;
+}
+
+
+DcmItem *DcmObject::getParentItem()
+{
+    DcmItem *parentItem = NULL;
+    if (Parent != NULL)
+    {
+        // make sure that it is really a class derived from DcmItem
+        switch (Parent->ident())
+        {
+            case EVR_metainfo:
+            case EVR_dataset:
+            case EVR_item:
+            case EVR_dirRecord:
+                parentItem = OFreinterpret_cast(DcmItem *, Parent);
+                break;
+            default:
+                DCMDATA_DEBUG("DcmObject::getParentItem() Parent object has wrong class identifier: "
+                    << OFstatic_cast(int, Parent->ident())
+                    << " (" << DcmVR(Parent->ident()).getVRName() << ")");
+                break;
+        }
+    }
+    return parentItem;
+}
+
+
+// ********************************
+
+
+DcmObject *DcmObject::nextInContainer(const DcmObject * /*obj*/)
 {
     return NULL;
 }
@@ -532,6 +600,11 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.74  2012-05-07 09:49:12  joergr
+ * Added suppport for accessing the parent of a DICOM object/element, i.e. the
+ * surrounding structure in the DICOM dataset, in which it is contained. This
+ * also includes access to both the parent and the root item.
+ *
  * Revision 1.73  2012-03-12 13:58:28  joergr
  * Added new parser flag that allows for reading corrupted datasets where the
  * sequence and/or item delimitation items are incorrect (e.g. mixed up).

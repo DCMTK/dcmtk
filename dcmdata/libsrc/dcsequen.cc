@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 13:58:28 $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  Update Date:      $Date: 2012-05-07 09:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,10 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
         old.itemList->seek(ELP_first);
         do
         {
-            itemList->insert(old.itemList->get()->clone(), ELP_next);
+            DcmObject *dO = old.itemList->get()->clone();
+            itemList->insert(dO, ELP_next);
+            // remember the parent
+            dO->setParent(this);
         } while (old.itemList->seek(ELP_next));
     }
 }
@@ -146,6 +149,8 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                                 break;
                         }
                         newList->insert(newDO, ELP_next);
+                        // remember the parent
+                        newDO->setParent(this);
                     } while (obj.itemList->seek(ELP_next));
                 }
                 break;
@@ -531,6 +536,8 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
         itemList->insert(subObject, ELP_next);
         // dump some information if required
         DCMDATA_TRACE("DcmSequenceOfItems::readSubItem() Sub Item " << newTag << " inserted");
+        // remember the parent (i.e. the surrounding sequence)
+        subObject->setParent(this);
         // read sub-item
         l_error = subObject->read(inStream, xfer, glenc, maxReadLength);
         // prevent subObject from getting deleted
@@ -915,12 +922,16 @@ OFCondition DcmSequenceOfItems::prepend(DcmItem *item)
 {
     errorFlag = EC_Normal;
     if (item != NULL)
+    {
         itemList->prepend(item);
-    else
+        // remember the parent (i.e. the surrounding sequence)
+        item->setParent(this);
+    } else
         errorFlag = EC_IllegalCall;
 
     return errorFlag;
 }
+
 
 // ********************************
 
@@ -944,14 +955,24 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
             DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
                 << (before ? "before" : "after") << " position " << where);
         }
+        // check whether the new item already has a parent
+        if (item->getParent() != NULL)
+        {
+            DCMDATA_DEBUG("DcmSequenceOfItems::insert() Item already has a parent: "
+                << item->getParent()->getTag() << " VR=" << DcmVR(item->getParent()->getVR()).getVRName());
+        }
+        // remember the parent (i.e. the surrounding sequence)
+        item->setParent(this);
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
+
 // ********************************
 
-OFCondition DcmSequenceOfItems::insertAtCurrentPos(DcmItem* item,
+
+OFCondition DcmSequenceOfItems::insertAtCurrentPos(DcmItem *item,
                                                    OFBool before)
 {
     errorFlag = EC_Normal;
@@ -960,6 +981,14 @@ OFCondition DcmSequenceOfItems::insertAtCurrentPos(DcmItem* item,
         // insert before or after current position
         E_ListPos whichSide = (before) ? (ELP_prev) : (ELP_next);
         itemList->insert(item, whichSide);
+        // check whether the new item already has a parent
+        if (item->getParent() != NULL)
+        {
+            DCMDATA_DEBUG("DcmSequenceOfItems::insertAtCurrentPos() Item already has a parent: "
+                << item->getParent()->getTag() << " VR=" << DcmVR(item->getParent()->getVR()).getVRName());
+        }
+        // remember the parent (i.e. the surrounding sequence)
+        item->setParent(this);
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -973,8 +1002,17 @@ OFCondition DcmSequenceOfItems::append(DcmItem *item)
 {
     errorFlag = EC_Normal;
     if (item != NULL)
+    {
         itemList->append(item);
-    else
+        // check whether the new item already has a parent
+        if (item->getParent() != NULL)
+        {
+            DCMDATA_DEBUG("DcmSequenceOfItems::append() Item already has a parent: "
+                << item->getParent()->getTag() << " VR=" << DcmVR(item->getParent()->getVR()).getVRName());
+        }
+        // remember the parent (i.e. the surrounding sequence)
+        item->setParent(this);
+    } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
 }
@@ -1066,8 +1104,10 @@ DcmItem *DcmSequenceOfItems::remove(const unsigned long num)
     DcmItem *item;
     item = OFstatic_cast(DcmItem *, itemList->seek_to(num));  // read item from list
     if (item != NULL)
+    {
         itemList->remove();
-    else
+        item->setParent(NULL);              // forget about the parent
+    } else
         errorFlag = EC_IllegalCall;
     return item;
 }
@@ -1089,6 +1129,7 @@ DcmItem *DcmSequenceOfItems::remove(DcmItem *item)
             if (dO == item)
             {
                 itemList->remove();         // removes element from list but does not delete it
+                item->setParent(NULL);      // forget about the parent
                 errorFlag = EC_Normal;
                 break;
             }
@@ -1382,6 +1423,11 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.102  2012-05-07 09:49:12  joergr
+** Added suppport for accessing the parent of a DICOM object/element, i.e. the
+** surrounding structure in the DICOM dataset, in which it is contained. This
+** also includes access to both the parent and the root item.
+**
 ** Revision 1.101  2012-03-12 13:58:28  joergr
 ** Added new parser flag that allows for reading corrupted datasets where the
 ** sequence and/or item delimitation items are incorrect (e.g. mixed up).
