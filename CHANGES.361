@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.08 (riesmeier)
+
+- Output a warning message if value of "maxBytesPerStudy" exceeds upper limit.
+  Thanks to Michal Spacek <tupinek@gmail.com> for the suggested patch.
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2012.05.07 (riesmeier)
 
 - Added suppport for accessing the parent of a DICOM object/element, i.e. the

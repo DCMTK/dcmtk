@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-12-06 16:28:17 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-08 10:11:40 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3289,15 +3289,22 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
             << " maxBytesPerStudy: " << maxBytesPerStudy);
 #endif
 
-    if (maxStudiesPerStorageArea > DB_UpperMaxStudies) {
+    /* check maximum number of studies for valid value */
+    if (maxStudiesPerStorageArea < 0) {
+        maxStudiesPerStorageArea = DB_UpperMaxStudies;
+    }
+    else if (maxStudiesPerStorageArea > DB_UpperMaxStudies) {
         DCMQRDB_WARN("maxStudiesPerStorageArea too large" << OFendl
             << "        setting to " << DB_UpperMaxStudies);
         maxStudiesPerStorageArea = DB_UpperMaxStudies;
     }
-    if (maxStudiesPerStorageArea < 0) {
-        maxStudiesPerStorageArea = DB_UpperMaxStudies;
+    /* check maximum study size for valid value value */
+    if (maxBytesPerStudy < 0) {
+        maxBytesPerStudy = DB_UpperMaxBytesPerStudy;
     }
-    if (maxBytesPerStudy < 0 || maxBytesPerStudy > DB_UpperMaxBytesPerStudy) {
+    else if (maxBytesPerStudy > DB_UpperMaxBytesPerStudy) {
+        DCMQRDB_WARN("maxBytesPerStudy too large" << OFendl
+            << "        setting to " << DB_UpperMaxBytesPerStudy);
         maxBytesPerStudy = DB_UpperMaxBytesPerStudy;
     }
 
@@ -3468,6 +3475,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.36  2012-05-08 10:11:40  joergr
+ * Output a warning message if value of "maxBytesPerStudy" exceeds upper limit.
+ *
  * Revision 1.35  2011-12-06 16:28:17  ogazzar
  * Added const declaration to a parameter of findSOPInstance().
  *
