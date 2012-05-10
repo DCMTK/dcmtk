@@ -18,8 +18,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-15 13:26:01 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2012-05-10 15:09:11 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -977,7 +977,7 @@ void OFCommandLine::storeParameter(const OFString &param,
 {
     ArgumentList.push_back(param);
     const OFListIterator(OFListIterator_OFString) iter = (OptionPosList.size() == 0) ? OptionPosList.end() : --OptionPosList.end();
-    OFCmdParamPos *paramPos = new OFCmdParamPos(--ArgumentList.end(), iter, OptionPosList.size(), directOpt);
+    OFCmdParamPos *paramPos = new OFCmdParamPos(--ArgumentList.end(), iter, OFstatic_cast(int, OptionPosList.size()), directOpt);
     if (paramPos != NULL)
         ParamPosList.push_back(paramPos);
 }
@@ -1204,7 +1204,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 }
             }
         }
-        i = argList.size();
+        i = OFstatic_cast(int, argList.size());
         OFListIterator(OFString) argIter = argList.begin();
         const OFListIterator(OFString) argEnd = argList.end();
         /* iterate over all command line arguments */
@@ -1320,9 +1320,9 @@ void OFCommandLine::getOptionString(OFString &optionStr) const
                         if (!((*i)->Flags & OFCommandLine::AF_Internal))
                         {
                             if ((*i)->ShortOption.length() > shortSize)
-                                shortSize = (*i)->ShortOption.length();
+                                shortSize = OFstatic_cast(unsigned int, (*i)->ShortOption.length());
                             if ((*i)->LongOption.length() > longSize)
-                                longSize = (*i)->LongOption.length();
+                                longSize = OFstatic_cast(unsigned int, (*i)->LongOption.length());
                         }
                         i++;
                     }
@@ -1393,7 +1393,7 @@ void OFCommandLine::getParamString(OFString &paramStr) const
         while ((iter != last) && ((*iter)->ParamDescription.length() > 0))
         {
             if ((*iter)->ParamName.length() > columnSize)           // determine maximum column width
-                columnSize = (*iter)->ParamName.length();
+                columnSize = OFstatic_cast(unsigned int, (*iter)->ParamName.length());
             ++iter;
         }
         iter = ValidParamList.begin();                              // reset iterator
@@ -1576,6 +1576,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.54  2012-05-10 15:09:11  joergr
+ * Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
+ * with additional flags.
+ *
  * Revision 1.53  2012-02-15 13:26:01  joergr
  * Improved performance of findParam() when used with long list of parameters.
  * Now, the previous parameter position is used for searching (if possible).

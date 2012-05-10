@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.12 (riesmeier)
+
+- Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
+  with additional flags.
+  Affects: ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/oftime.cc
+           ofstd/tests/tchrenc.cc
+
 **** Changes from 2012.05.08 (riesmeier)
 
 - Output a warning message if value of "maxBytesPerStudy" exceeds upper limit.

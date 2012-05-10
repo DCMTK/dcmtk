@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-30 08:35:09 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2012-05-10 15:09:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,7 +261,7 @@ OFBool OFTime::setTimeInSeconds(const double seconds,
     if (normalize || ((seconds >= 0) && (seconds < 86400)))
     {
         /* first normalize the value first to the valid range of [0.0,86400.0[ */
-        const double normalSeconds = (normalize) ? seconds + OFstatic_cast(signed long, seconds / 86400) * 86400 : seconds;
+        const double normalSeconds = (normalize) ? seconds + OFstatic_cast(double, OFstatic_cast(signed long, seconds / 86400) * 86400) : seconds;
         /* compute time from given number of seconds since "00:00:00" */
         const unsigned int newHour = OFstatic_cast(unsigned int, normalSeconds / 3600);
         const unsigned int newMinute = OFstatic_cast(unsigned int, (normalSeconds - OFstatic_cast(double, newHour) * 3600) / 60);
@@ -281,7 +281,7 @@ OFBool OFTime::setTimeInHours(const double hours,
     if (normalize || ((hours >= 0) && (hours < 24)))
     {
         /* first normalize the value to the valid range of [0.0,24.0[ */
-        const double normalHours = (normalize) ? hours + OFstatic_cast(signed long, hours / 24) * 24 : hours;
+        const double normalHours = (normalize) ? hours + OFstatic_cast(double, OFstatic_cast(signed long, hours / 24) * 24) : hours;
         /* compute time from given number of hours since "00:00:00" */
         const unsigned int newHour = OFstatic_cast(unsigned int, normalHours);
         const unsigned int newMinute = OFstatic_cast(unsigned int, (normalHours - OFstatic_cast(double, newHour)) * 60);
@@ -500,7 +500,7 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
     double result = ((OFstatic_cast(double, hour) - timeZone) * 60 + OFstatic_cast(double, minute)) * 60 + second;
     /* normalize the result to the range [0.0,86400.0[ */
     if (normalize)
-        result -= OFstatic_cast(unsigned long, result / 86400) * 86400;
+        result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 86400) * 86400);
     return result;
 }
 
@@ -515,7 +515,7 @@ double OFTime::getTimeInHours(const unsigned int hour,
     double result = OFstatic_cast(double, hour) - timeZone + (OFstatic_cast(double, minute) + second / 60) / 60;
     /* normalize the result to the range [0.0,24.0[ */
     if (normalize)
-        result -= OFstatic_cast(unsigned long, result / 24) * 24;
+        result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 24) * 24);
     return result;
 }
 
@@ -650,6 +650,10 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
+ * Revision 1.22  2012-05-10 15:09:11  joergr
+ * Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
+ * with additional flags.
+ *
  * Revision 1.21  2011-11-30 08:35:09  joergr
  * Made setISOFormattedeTime() more robust with regard to input values. Fixed
  * an issue with determining the local time zone (introduced with last commit).

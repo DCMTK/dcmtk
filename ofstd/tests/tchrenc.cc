@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: test program for OFCharacterEncoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-25 07:10:05 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2012-05-10 15:09:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ OFTEST(ofstd_OFCharacterEncoding_3)
         // create a huge string with valid ISO 8859-1 characters (code #32 to #255)
         char hugeStr[4096];
         for (size_t i = 0; i < sizeof(hugeStr); i++)
-            hugeStr[i] = 32 + (i % 224);
+            hugeStr[i] = OFstatic_cast(char, 32 + (i % 224));
         // then convert it to UTF-8 (and check whether the internal buffering works)
         OFCharacterEncoding charEnc;
         OFString resultStr;
@@ -180,6 +180,10 @@ OFTEST(ofstd_OFCharacterEncoding_6)
  *
  * CVS/RCS Log:
  * $Log: tchrenc.cc,v $
+ * Revision 1.5  2012-05-10 15:09:12  joergr
+ * Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
+ * with additional flags.
+ *
  * Revision 1.4  2011-10-25 07:10:05  joergr
  * Added new convert method that accepts a C string and its length as input.
  *
