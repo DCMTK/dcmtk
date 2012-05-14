@@ -7,13 +7,13 @@ Changes between releases are documented here.
   missing code Ax702 and enhanced recognition of customized 0xCxxx codes.)
   Affects: dcmtk/dcmnet/scu.cc
 
-**** Changes from 2012.05.07 (schlachter)
+**** Changes from 2012.05.14 (schlachter)
 
 - Fixed error reporting for all objects created through a factory.
   Thanks to Heyo Spekker <spekker@icsmed.de> for reporting this issue.
   Affects: oflog/libsrc/factory.cc
 
-**** Changes from 2012.05.12 (riesmeier)
+**** Changes from 2012.05.10 (riesmeier)
 
 - Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
   with additional flags.
