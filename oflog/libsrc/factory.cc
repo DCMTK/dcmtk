@@ -123,7 +123,10 @@ public:
     virtual ProductPtr createObject (Properties const & props, tstring& error)
     {
         error.clear();
-        return ProductPtr (new LocalProduct (props, error));
+        ProductPtr ptr (new LocalProduct (props, error));
+        if (!error.empty())
+            return ProductPtr (0);
+        return ptr;
     }
 };
 

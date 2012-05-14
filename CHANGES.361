@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.07 (schlachter)
+
+- Fixed error reporting for all objects created through a factory.
+  Thanks to Heyo Spekker <spekker@icsmed.de> for reporting this issue.
+  Affects: oflog/libsrc/factory.cc
+
 **** Changes from 2012.05.12 (riesmeier)
 
 - Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
