@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-21 08:48:54 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2012-05-14 10:42:54 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1242,18 +1242,32 @@ OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID /* pres
     return DIMSE_NULLKEY;
 
   DCMNET_DEBUG("Handling C-GET Response");
+  
+  /* First, perform separate check for 0xCxxx error codes */
+  Uint16 highNibble = response->m_status & 0xf000;
+  if (highNibble == STATUS_GET_Failed_UnableToProcess)
+  {
+    continueCGETSession = OFFalse;
+    DCMNET_ERROR("Unable to Process");
+    DCMNET_WARN("Full status is 0x"
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << response->m_status);
+    return EC_Normal;
+  }
+
+  /* Check for other error codes */
   switch (response->m_status) {
+  case STATUS_GET_Refused_OutOfResourcesNumberOfMatches:
+    continueCGETSession = OFFalse;
+    DCMNET_ERROR("Out of Resouces - Unable to calculate number of matches");
+    break;
+  case STATUS_GET_Refused_OutOfResourcesSubOperations:
+    continueCGETSession = OFFalse;
+    DCMNET_ERROR("Out of Resouces - Unable to perform sub-operations");
+    break;
   case STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass:
     continueCGETSession = OFFalse;
-    DCMNET_ERROR("Identifier does not match SOP class in C-GET response");
-    break;
-  case STATUS_GET_Failed_UnableToProcess:
-    continueCGETSession = OFFalse;
-    DCMNET_ERROR("Unable to process C-GET response");
-    break;
-  case STATUS_GET_Failed_SOPClassNotSupported:
-    continueCGETSession = OFFalse;
-    DCMNET_ERROR("SOP class not supported");
+    DCMNET_ERROR("Identifier does not match SOP class");
     break;
   case STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication:
     continueCGETSession = OFFalse;
@@ -2411,6 +2425,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.60  2012-05-14 10:42:54  onken
+** Enhanced handling of error codes for C-GET (added explicit support for
+** missing code Ax702 and enhanced recognition of customized 0xCxxx codes.)
+**
 ** Revision 1.59  2012-02-21 08:48:54  joergr
 ** Added support for progress notifications while sending and receiving DICOM
 ** datasets.
