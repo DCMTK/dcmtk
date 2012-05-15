@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "Wed Feb 22 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "Tue May 15 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding 
@@ -142,6 +142,14 @@ handling of private max-length elements (implicit VR):
 
   +sq  --maxlength-seq
          read as sequence with undefined length
+
+handling of wrong delimitation items:
+
+  -rd  --use-delim-items
+         use delimitation items from dataset (default)
+
+  +rd  --replace-wrong-delim
+         replace wrong sequence/item delimitation items
 
 general handling of parser errors:
 
@@ -311,4 +319,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1994-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

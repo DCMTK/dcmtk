@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "Wed Feb 22 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "Tue May 15 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set 
@@ -170,13 +170,13 @@ handling of private max-length elements (implicit VR):
   +sq  --maxlength-seq
          read as sequence with undefined length
 
-automatic data correction:
+handling of wrong delimitation items:
 
-  +dc  --enable-correction
-         enable automatic data correction (default)
+  -rd  --use-delim-items
+         use delimitation items from dataset (default)
 
-  -dc  --disable-correction
-         disable automatic data correction
+  +rd  --replace-wrong-delim
+         replace wrong sequence/item delimitation items
 
 general handling of parser errors:
 
@@ -190,6 +190,14 @@ other parsing options:
 
   +st  --stop-after-elem  [t]ag: "gggg,eeee" or dictionary name
          stop parsing after element specified by t
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
 
 bitstream format of deflated input:
 
@@ -280,7 +288,7 @@ error handling:
 searching:
 
   +P   --search  [t]ag: "gggg,eeee" or dictionary name
-         print the value of tag t
+         print the textual dump of tag t
          this option can be specified multiple times
          (default: the complete file is printed)
 
@@ -330,4 +338,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1994-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
