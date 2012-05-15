@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Updated man pages for new development snapshot.
   Affects: doxygen/manpages/man1/*
 
+- Added missing word "directory" to libsndfile warning message.
+  Affects: CMake/3rdparty.cmake
+
 **** Changes from 2012.05.14 (onken)
 
 - Enhanced handling of error codes for C-GET (added explicit support for

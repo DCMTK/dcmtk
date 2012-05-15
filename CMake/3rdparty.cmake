@@ -118,7 +118,7 @@ IF(WIN32)
       MESSAGE(STATUS "Info: DCMTK SNDFILE support will be enabled")
       SET(WITH_SNDFILE 1)
     ELSE(WITH_SNDFILEINC) # turn off library if library path not set
-      MESSAGE(STATUS "Warning: SNDFILE support will be disabled because libsndfile was not specified. Correct path and re-enable DCMTK_WITH_SNDFILE.")
+      MESSAGE(STATUS "Warning: SNDFILE support will be disabled because libsndfile directory was not specified. Correct path and re-enable DCMTK_WITH_SNDFILE.")
       # SET(DCMTK_WITH_SNDFILE OFF CACHE BOOL "" FORCE)
       SET(WITH_SNDFILE "")
     ENDIF(WITH_SNDFILEINC)
