@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.23 (riesmeier)
+
+- Simplified code of assignment operator since OFList::operator=() now exists.
+  Affects: dcmsr/libsrc/dsrtncsr.cc
+
 **** Changes from 2012.05.15 (riesmeier)
 
 - Updated man pages for new development snapshot.
