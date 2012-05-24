@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.24 (riesmeier)
+
+- Added Windows-specific support for converting between wide character encoding
+  (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/tests/tchrenc.cc
+           ofstd/tests/tests.cc
+
 **** Changes from 2012.05.23 (riesmeier)
 
 - Simplified code of assignment operator since OFList::operator=() now exists.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:16:28 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-24 16:12:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@ OFTEST_REGISTER(ofstd_OFCharacterEncoding_3);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_6);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_7);
 OFTEST_REGISTER(ofstd_OFDate);
 OFTEST_REGISTER(ofstd_OFDateTime);
 OFTEST_REGISTER(ofstd_OFList_1);
@@ -76,6 +77,10 @@ OFTEST_MAIN("ofstd")
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.9  2012-05-24 16:12:46  joergr
+ * Added Windows-specific support for converting between wide character encoding
+ * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
+ *
  * Revision 1.8  2011-12-07 14:16:28  uli
  * Added a new class for generating Universally Unique Identifiers.
  *

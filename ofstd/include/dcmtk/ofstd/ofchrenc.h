@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for character encoding conversion (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-24 16:12:42 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,8 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL byte.
      *  @param  fromString  input string to be converted (using the source
-     *                      character encoding)
+     *                      character encoding).  A NULL pointer is regarded
+     *                      as an empty string.
      *  @param  fromLength  length of the input string (number of bytes without
      *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
@@ -159,11 +160,85 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
                               OFString &toString,
                               const OFBool clearMode = OFTrue);
 
+#ifdef _WIN32
+
+    // --- static Windows-specific functions ---
+
+    /** convert the given string between Windows-specific wide character
+     *  encoding (UTF-16) and UTF-8.  In contrast to convertString(), no
+     *  special character encoding library is needed, but on the other hand
+     *  it only works on Windows systems.
+     *  Since the length of the input string has to be specified explicitly,
+     *  the string can contain more than one NULL character.
+     *  @param  fromString  input string to be converted (using the UTF-16
+     *                      character encoding).  A NULL pointer is regarded
+     *                      as an empty string.
+     *  @param  fromLength  length of the input string (number of characters
+     *                      without the trailing NULL character)
+     *  @param  toString    reference to variable where the converted string
+     *                      (using the UTF-8 character encoding) is stored
+     *                      (or appended, see parameter 'clearMode')
+     *  @param  clearMode   flag indicating whether to clear the variable
+     *                      'toString' before appending the converted string
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition convertWideCharStringToUTF8(const wchar_t *fromString,
+                                                   const size_t fromLength,
+                                                   OFString &toString,
+                                                   const OFBool clearMode = OFTrue);
+
+    /** convert the given string between UTF-8 and the Windows-specific wide
+     *  character encoding (UTF-16).  In contrast to convertString(), no
+     *  special character encoding library is needed, but on the other hand
+     *  it only works on Windows systems.
+     *  @param  fromString  input string to be converted (using the UTF-8
+     *                      character encoding)
+     *  @param  toString    reference to variable in which the pointer to the
+     *                      converted string (using the UTF-16 character
+     *                      encoding) is stored.  Might be NULL in case of
+     *                      error.  Please note that the buffer is created
+     *                      with new[] and has to be deleted by the caller.
+     *  @param  toLength    number of converted characters, i.e.\ length of
+     *                      'toString'
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition convertUTF8ToWideCharString(OFString &fromString,
+                                                   wchar_t *&toString,
+                                                   size_t &toLength);
+
+    /** convert the given string between UTF-8 and the Windows-specific wide
+     *  character encoding (UTF-16).  In contrast to convertString(), no
+     *  special character encoding library is needed, but on the other hand
+     *  it only works on Windows systems.
+     *  Since the length of the input string has to be specified explicitly,
+     *  the string can contain more than one NULL byte.
+     *  @param  fromString  input string to be converted (using the UTF-8
+     *                      character encoding).  A NULL pointer is regarded
+     *                      as an empty string.
+     *  @param  fromLength  length of the input string (number of bytes
+     *                      without the trailing NULL byte)
+     *  @param  toString    reference to variable in which the pointer to the
+     *                      converted string (using the UTF-16 character
+     *                      encoding) is stored.  Might be NULL in case of
+     *                      error.  Please note that the buffer is created
+     *                      with new[] and has to be deleted by the caller.
+     *  @param  toLength    number of converted characters, i.e.\ length of
+     *                      'toString'
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition convertUTF8ToWideCharString(const char *fromString,
+                                                   const size_t fromLength,
+                                                   wchar_t *&toString,
+                                                   size_t &toLength);
+
+#endif
+
     // --- static helper functions ---
 
     /** check whether the underlying character encoding library is available.
      *  If the library is not available, no conversion between different
-     *  character encodings will be possible.
+     *  character encodings will be possible (apart from the Windows-specific
+     *  wide character conversion functions).
      *  @return OFTrue if the character encoding library is available, OFFalse
      *    otherwise
      */
@@ -228,7 +303,8 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *  @param  descriptor  previously allocated conversion descriptor to be
      *                      used for the conversion of the character encodings
      *  @param  fromString  input string to be converted (using the source
-     *                      character encoding)
+     *                      character encoding).  A NULL pointer is regarded
+     *                      as an empty string.
      *  @param  fromLength  length of the input string (number of bytes without
      *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
@@ -253,16 +329,33 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
     // private undefined assignment operator
     OFCharacterEncoding &operator=(const OFCharacterEncoding &);
 
-    /** create an error condition based on the curent value of "errno" and the
+    // --- static helper functions ---
+
+    /** create an error condition based on the current value of "errno" and the
      *  given parameters.  The function OFStandard::strerror() is used to map
      *  the numerical value of the error to a textual description.
      *  @param  status   reference to variable where the condition is stored
      *  @param  message  message text that is used as a prefix to strerror()
      *  @param  code     unique status code of the error condition
      */
-    void createErrnoCondition(OFCondition &status,
-                              OFString message,
-                              const unsigned short code);
+    static void createErrnoCondition(OFCondition &status,
+                                     OFString message,
+                                     const unsigned short code);
+
+#ifdef _WIN32
+
+    /** create an error condition based on the return value of "getLastError()"
+     *  and the given parameters.  The Windows function FormatMessage() is used
+     *  to map the numerical value of the error to a textual description.
+     *  @param  status   reference to variable where the condition is stored
+     *  @param  message  message text that is used as a prefix to the error
+     *  @param  code     unique status code of the error condition
+     */
+    static void createGetLastErrorCondition(OFCondition &status,
+                                            OFString message,
+                                            const unsigned short code);
+
+#endif
 
     /// current locale's character encoding
     OFString LocaleEncoding;
@@ -285,6 +378,10 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.10  2012-05-24 16:12:42  joergr
+ * Added Windows-specific support for converting between wide character encoding
+ * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
+ *
  * Revision 1.9  2011-12-14 08:54:00  uli
  * Make it possible to correctly build ofstd as a DLL.
  *

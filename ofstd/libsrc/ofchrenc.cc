@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-28 08:35:37 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2012-05-24 16:12:44 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,11 @@ BEGIN_EXTERN_C
 #include <sys/errno.h>
 #endif
 END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 
 #define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(OFCharacterEncoding::T_Descriptor, -1)
@@ -246,6 +251,101 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
 }
 
 
+#ifdef _WIN32  // Windows-specific conversion functions
+
+OFCondition OFCharacterEncoding::convertWideCharStringToUTF8(const wchar_t *fromString,
+                                                             const size_t fromLength,
+                                                             OFString &toString,
+                                                             const OFBool clearMode)
+{
+    // first, clear result variable if requested
+    if (clearMode)
+        toString.clear();
+    OFCondition status = EC_Normal;
+    // check for empty string
+    if ((fromString != NULL) && (fromLength > 0))
+    {
+        // determine required size for output buffer
+        const int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, fromString, fromLength, NULL, 0, NULL, NULL);
+        if (sizeNeeded > 0)
+        {
+            // allocate temporary buffer
+            char *toBuffer = new char[sizeNeeded];
+            if (toBuffer != NULL)
+            {
+                // convert characters to UTF-8 (without trailing NULL byte)
+                const int charsConverted = WideCharToMultiByte(CP_UTF8, 0, fromString, fromLength, toBuffer, sizeNeeded, NULL, NULL);
+                if (charsConverted > 0)
+                {
+                    // append the converted character string to the result variable
+                    toString.append(toBuffer, charsConverted);
+                } else {
+                    // if conversion failed, create appropriate condition text
+                    createGetLastErrorCondition(status, "Cannot convert character encoding: ",
+                        EC_CODE_CannotConvertEncoding);
+                }
+                delete[] toBuffer;
+            } else {
+                // output buffer could not be allocated
+                status = EC_MemoryExhausted;
+            }
+        }
+    }
+    return status;
+}
+
+
+OFCondition OFCharacterEncoding::convertUTF8ToWideCharString(OFString &fromString,
+                                                             wchar_t *&toString,
+                                                             size_t &toLength)
+{
+    // call the real method converting the given string
+    return OFCharacterEncoding::convertUTF8ToWideCharString(fromString.c_str(), fromString.length(),
+        toString, toLength);
+}
+
+
+OFCondition OFCharacterEncoding::convertUTF8ToWideCharString(const char *fromString,
+                                                             const size_t fromLength,
+                                                             wchar_t *&toString,
+                                                             size_t &toLength)
+{
+    OFCondition status = EC_Normal;
+    // check for empty string
+    if ((fromString != NULL) && (fromLength > 0))
+    {
+        // determine required size for output buffer
+        const int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, fromString, fromLength, NULL, 0);
+        // allocate output buffer (one extra byte for the terminating NULL)
+        toString = new wchar_t[sizeNeeded + 1];
+        if (toString != NULL)
+        {
+            // convert characters to UTF-8 (without trailing NULL byte)
+            toLength = MultiByteToWideChar(CP_UTF8, 0, fromString, fromLength, toString, sizeNeeded);
+            // append NULL byte to mark "end of string"
+            toString[toLength] = L'\0';
+            if (toLength == 0)
+            {
+                // if conversion failed, create appropriate condition text
+                createGetLastErrorCondition(status, "Cannot convert character encoding: ",
+                    EC_CODE_CannotConvertEncoding);
+            }
+        } else {
+            // output buffer could not be allocated
+            status = EC_MemoryExhausted;
+        }
+    } else {
+        // create an empty string (should never fail)
+        toString = new wchar_t[1];
+        toString[0] = L'\0';
+        toLength = 0;
+    }
+    return status;
+}
+
+#endif  // _WIN32
+
+
 OFCondition OFCharacterEncoding::openDescriptor(T_Descriptor &descriptor,
                                                 const OFString &fromEncoding,
                                                 const OFString &toEncoding)
@@ -322,6 +422,27 @@ void OFCharacterEncoding::createErrnoCondition(OFCondition &status,
 }
 
 
+#ifdef _WIN32  // Windows-specific function
+
+void OFCharacterEncoding::createGetLastErrorCondition(OFCondition &status,
+                                                      OFString message,
+                                                      const unsigned short code)
+{
+    LPVOID errBuf = NULL;
+    // obtain an error string from system error code
+    if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &errBuf, 0, NULL) > 0)
+    {
+        message.append(OFstatic_cast(const char *, errBuf));
+    } else
+        message.append("unknown error code");
+    LocalFree(errBuf);
+    status = makeOFCondition(0, code, OF_error, message.c_str());
+}
+
+#endif
+
+
 OFBool OFCharacterEncoding::isLibraryAvailable()
 {
 #ifdef WITH_LIBICONV
@@ -365,6 +486,10 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.12  2012-05-24 16:12:44  joergr
+ * Added Windows-specific support for converting between wide character encoding
+ * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
+ *
  * Revision 1.11  2012-02-28 08:35:37  joergr
  * Fixed compilation issue on MinGW/MSYS systems (modified #ifdef statement).
  *

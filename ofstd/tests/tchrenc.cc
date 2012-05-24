@@ -18,8 +18,8 @@
  *  Purpose: test program for OFCharacterEncoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-10 15:09:12 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2012-05-24 16:12:46 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,10 +176,50 @@ OFTEST(ofstd_OFCharacterEncoding_6)
 }
 
 
+OFTEST(ofstd_OFCharacterEncoding_7)
+{
+#ifdef _WIN32
+    OFString resultStr;
+    wchar_t *resultPtr;
+    size_t resultLen;
+    /* check Windows-specific conversion from UTF-8 */
+    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(NULL, 1, resultPtr, resultLen).good());
+    OFCHECK_EQUAL(resultLen, 0);
+    delete[] resultPtr;
+    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString("", 0, resultPtr, resultLen).good());
+    OFCHECK_EQUAL(resultLen, 0);
+    delete[] resultPtr;
+    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(OFString(""), resultPtr, resultLen).good());
+    OFCHECK_EQUAL(resultLen, 0);
+    delete[] resultPtr;
+    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(OFString("J\303\266rg"), resultPtr, resultLen).good());
+    OFCHECK_EQUAL(resultLen, 4);
+    if (resultPtr != NULL)
+        OFCHECK(wcscmp(resultPtr, L"J\x00f6rg") == 0);
+    delete[] resultPtr;
+    // check string with embedded NULL byte
+    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(OFString("Te\0st", 5), resultPtr, resultLen).good());
+    OFCHECK_EQUAL(resultLen, 5);
+    /* check Windows-specific conversion to UTF-8 */
+    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(NULL, 1, resultStr).good());
+    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(L"", 0, resultStr).good());
+    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(L"J\x00f6rg", 4, resultStr).good());
+    OFCHECK_EQUAL(resultStr, "J\303\266rg");
+    // check string with embedded NULL character
+    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(L"Te\0st", 5, resultStr).good());
+    OFCHECK_EQUAL(resultStr, OFString("Te\0st", 5));
+#endif
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: tchrenc.cc,v $
+ * Revision 1.6  2012-05-24 16:12:46  joergr
+ * Added Windows-specific support for converting between wide character encoding
+ * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
+ *
  * Revision 1.5  2012-05-10 15:09:12  joergr
  * Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
  * with additional flags.
