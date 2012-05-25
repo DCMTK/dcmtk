@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 16:04:44 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2012-05-25 08:53:29 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ void DSRSOPInstanceReferenceList::InstanceStruct::clear()
 DSRSOPInstanceReferenceList::SeriesStruct::SeriesStruct(const OFString &seriesUID)
   : SeriesUID(seriesUID),
     RetrieveAETitle(),
+    RetrieveLocationUID(),
     StorageMediaFileSetID(),
     StorageMediaFileSetUID(),
     InstanceList(),
@@ -93,6 +94,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
 {
     /* first, read optional attributes on series level */
     getAndCheckStringValueFromDataset(dataset, DCM_RetrieveAETitle, RetrieveAETitle, "1-n", "3", "ReferencedSeriesSequence");
+    getAndCheckStringValueFromDataset(dataset, DCM_RetrieveLocationUID, RetrieveLocationUID, "1", "3", "ReferencedSeriesSequence");
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetID, StorageMediaFileSetID, "1", "3", "ReferencedSeriesSequence");
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetUID, StorageMediaFileSetUID, "1", "3", "ReferencedSeriesSequence");
     /* then, check whether sequence is present and non-empty */
@@ -150,6 +152,8 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::write(DcmItem &dataset) c
     /* write optional attributes if non-empty */
     if (!RetrieveAETitle.empty())
         dataset.putAndInsertOFStringArray(DCM_RetrieveAETitle, RetrieveAETitle);
+    if (!RetrieveLocationUID.empty())
+        dataset.putAndInsertOFStringArray(DCM_RetrieveLocationUID, RetrieveLocationUID);
     if (!StorageMediaFileSetID.empty())
         dataset.putAndInsertOFStringArray(DCM_StorageMediaFileSetID, StorageMediaFileSetID);
     if (!StorageMediaFileSetUID.empty())
@@ -189,6 +193,8 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocum
     {
         /* first, read optional elements on series level */
         doc.getStringFromNodeContent(doc.getNamedNode(cursor, "aetitle", OFFalse /*required*/), RetrieveAETitle);
+        doc.getStringFromAttribute(doc.getNamedNode(cursor, "location", OFFalse /*required*/), RetrieveLocationUID, "uid",
+            OFFalse /*encoding*/, OFFalse /*required*/);
         const DSRXMLCursor childCursor = doc.getNamedNode(cursor, "fileset", OFFalse /*required*/);
         if (childCursor.valid())
         {
@@ -256,6 +262,13 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE os
     /* write the series level attributes */
     stream << "<series uid=\"" << SeriesUID << "\">" << OFendl;
     writeStringValueToXML(stream, RetrieveAETitle, "aetitle", (flags & XF_writeEmptyTags) > 0);
+    if ((flags & XF_writeEmptyTags) || !RetrieveLocationUID.empty())
+    {
+        stream << "<location";
+        if (!RetrieveLocationUID.empty())
+            stream << " uid=\"" << RetrieveLocationUID << "\"";
+        stream << "/>" << OFendl;
+    }
     if ((flags & XF_writeEmptyTags) || !StorageMediaFileSetUID.empty() || !StorageMediaFileSetID.empty())
     {
         stream << "<fileset";
@@ -280,7 +293,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE os
             stream << "</sopclass>" << OFendl;
             stream << "<instance uid=\"" << instance->InstanceUID << "\"/>" << OFendl;
             /* purpose of reference (optional) */
-            if (!instance->PurposeOfReference.isEmpty())
+            if (instance->PurposeOfReference.isValid())
             {
                 if (flags & DSRTypes::XF_codeComponentsAsAttribute)
                     stream << "<purpose";     // bracket ">" is closed in next writeXML() call
@@ -288,7 +301,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE os
                     stream << "<purpose>" << OFendl;
                 instance->PurposeOfReference.writeXML(stream, flags);
                 stream << "</purpose>" << OFendl;
-        }
+            }
             stream << "</value>" << OFendl;
         }
         iter++;
@@ -1317,6 +1330,19 @@ const OFString &DSRSOPInstanceReferenceList::getRetrieveAETitle(OFString &string
 }
 
 
+const OFString &DSRSOPInstanceReferenceList::getRetrieveLocationUID(OFString &stringValue) const
+{
+    /* check whether current series is valid */
+    SeriesStruct *series = getCurrentSeries();
+    /* get retrieve location UID or clear string if invalid */
+    if (series != NULL)
+        stringValue = series->RetrieveLocationUID;
+    else
+        stringValue.clear();
+    return stringValue;
+}
+
+
 const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetID(OFString &stringValue) const
 {
     /* check whether current series is valid */
@@ -1373,6 +1399,21 @@ OFCondition DSRSOPInstanceReferenceList::setRetrieveAETitle(const OFString &valu
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::setRetrieveLocationUID(const OFString &value)
+{
+    OFCondition result = EC_IllegalCall;
+    /* check whether current series is valid */
+    SeriesStruct *series = getCurrentSeries();
+    if (series != NULL)
+    {
+        /* set the value */
+        series->RetrieveLocationUID = value;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetID(const OFString &value)
 {
     OFCondition result = EC_IllegalCall;
@@ -1421,6 +1462,10 @@ OFCondition DSRSOPInstanceReferenceList::setPurposeOfReference(const DSRCodedEnt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.21  2012-05-25 08:53:29  joergr
+ *  Added support for optional Retrieve Location UID (0040,E011) to the class
+ *  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).
+ *
  *  Revision 1.20  2011-12-09 16:04:44  joergr
  *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
  *  class DSRSOPInstanceReferenceList.

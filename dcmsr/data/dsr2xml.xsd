@@ -307,6 +307,11 @@
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element name="aetitle" type="dsr:ApplicationEntity" minOccurs="0"/>
+                  <xsd:element name="location" minOccurs="0">
+                    <xsd:complexType>
+                      <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
+                    </xsd:complexType>
+                  </xsd:element>
                   <xsd:element name="fileset" minOccurs="0">
                     <xsd:complexType>
                       <xsd:simpleContent>

@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.25 (riesmeier)
+
+- Added support for optional Retrieve Location UID (0040,E011) to the class
+  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).
+  Thanks to forum user "xcoder" for pointing this out.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmsr/libsrc/dsrsoprf.cc
+
 **** Changes from 2012.05.24 (riesmeier)
 
 - Added Windows-specific support for converting between wide character encoding

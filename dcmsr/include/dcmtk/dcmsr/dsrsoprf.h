@@ -19,9 +19,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:11 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-25 08:53:26 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,6 +163,8 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
         const OFString SeriesUID;
         /// Retrieve Application Entity Title (VR=AE, VM=1-n, Type=3)
         OFString RetrieveAETitle;
+        /// Retrieve Location UID (VR=UI, VM=1, Type=3)
+        OFString RetrieveLocationUID;
         /// Storage Media File Set ID (VR=SH, VM=1, Type=3)
         OFString StorageMediaFileSetID;
         /// Storage Media File Set UID (VR=UI, VM=1, Type=3)
@@ -457,6 +459,12 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      */
     const OFString &getRetrieveAETitle(OFString &stringValue) const;
 
+    /** get the retrieve location UID of the currently selected entry (optional)
+     ** @param  stringValue  reference to string variable in which the result is stored
+     ** @return reference to the resulting string (might be empty)
+     */
+    const OFString &getRetrieveLocationUID(OFString &stringValue) const;
+
     /** get the storage media file set ID of the currently selected entry (optional)
      ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
@@ -481,6 +489,12 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setRetrieveAETitle(const OFString &value);
+
+    /** set the retrieve location UID of the currently selected entry
+     ** @param  value  string value to be set (use empty string to omit optional attribute)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setRetrieveLocationUID(const OFString &value);
 
     /** set the storage media file set ID of the currently selected entry
      ** @param  value  string value to be set (use empty string to omit optional attribute)
@@ -556,6 +570,10 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
+ *  Revision 1.19  2012-05-25 08:53:26  joergr
+ *  Added support for optional Retrieve Location UID (0040,E011) to the class
+ *  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).
+ *
  *  Revision 1.18  2012-01-06 09:13:11  uli
  *  Make it possible to build dcmsr as a DLL.
  *
