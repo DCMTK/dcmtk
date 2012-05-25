@@ -10,6 +10,10 @@ Changes between releases are documented here.
            dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
            dcmsr/libsrc/dsrsoprf.cc
 
+- Added note on current limitations of the XML Schema "dsr2xml.xsd".
+  Affects: dcmsr/docs/dsr2xml.man
+           dcmsr/docs/xml2dsr.man
+
 **** Changes from 2012.05.24 (riesmeier)
 
 - Added Windows-specific support for converting between wide character encoding

@@ -220,6 +220,11 @@ mapped in case of value multiplicity).  If needed, option \e --convert-to-utf8
 can be used to convert the DICOM file or data set to UTF-8 encoding prior to
 the conversion to XML format.
 
+\subsection limitations Limitations
+
+The XML Schema <em>dsr2xml.xsd</em> does not support all variations of the
+\b dsr2xml output format.  However, the default output format should work.
+
 \section logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -287,6 +292,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
