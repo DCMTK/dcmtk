@@ -19,8 +19,8 @@
  *    classes: DSRReferencedInstanceList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 15:00:10 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,8 +88,9 @@ OFCondition DSRReferencedInstanceList::read(DcmItem &dataset)
     {
         ItemStruct *item = NULL;
         OFString sopClassUID, instanceUID;
+        const unsigned long count = sequence.card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned long i = 0; i < count; i++)
         {
             DcmItem *ditem = sequence.getItem(i);
             if (ditem != NULL)
@@ -424,6 +425,9 @@ OFCondition DSRReferencedInstanceList::setPurposeOfReference(const DSRCodedEntry
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefin.cc,v $
+ *  Revision 1.2  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.1  2011-12-09 15:00:10  joergr
  *  Added support for the Referenced Instance Sequence (0008,114A) introduced
  *  with CP-670 (Reference rendering of SR), which allows for referencing an

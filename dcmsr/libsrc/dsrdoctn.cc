@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 09:44:12 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -570,9 +570,9 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
 {
     OFCondition result = EC_Normal;
     /* write digital signatures sequences (optional) */
-    if (MACParameters.card() > 0)
+    if (!MACParameters.isEmpty())
         addElementToDataset(result, dataset, new DcmSequenceOfItems(MACParameters), "1-n", "3", "SOPCommonModule");
-    if (DigitalSignatures.card() > 0)
+    if (!DigitalSignatures.isEmpty())
     {
         addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures), "1-n", "3", "SOPCommonModule");
         DCMSR_WARN("Writing possibly incorrect digital signature - same as read from dataset");
@@ -1172,6 +1172,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.62  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.61  2012-02-20 09:44:12  joergr
  *  Output dataset dump with PF_convertToOctalNumbers flag in case of error.
  *  This makes some unusual control characters more visible in the output.

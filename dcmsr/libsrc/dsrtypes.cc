@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:44 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -876,6 +876,7 @@ void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
     DcmStack stack;
     DcmItem *item = NULL;
     const size_t count = OFstatic_cast(size_t, sequence.card());
+    /* iterate over all sequence items */
     for (size_t i = 0; i < count; i++)
     {
         /* not very efficient, should be replaced by nextObject() sometime */
@@ -1627,6 +1628,9 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.85  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.84  2012-02-15 14:50:44  uli
  *  Removed dependency on static initialization order from OFCondition.
  *  All static condition objects are now created via makeOFConditionConst()

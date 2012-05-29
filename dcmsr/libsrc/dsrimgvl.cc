@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-26 09:10:55 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,7 +243,7 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
         if (seqStatus.good())
         {
             /* check for empty sequence (allowed!) */
-            if (dseq.card() > 0)
+            if (!dseq.isEmpty())
             {
                 /* read first item */
                 DcmItem *ditem = dseq.getItem(0);
@@ -535,6 +535,9 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.27  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.26  2012-01-26 09:10:55  joergr
  *  Fixed wrong return status when reading an IMAGE content item without icon.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 14:47:52 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -280,7 +280,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset)
     if (result.good())
     {
         /* check for empty sequence (allowed!) */
-        if (dseq.card() > 0)
+        if (!dseq.isEmpty())
         {
             /* read first item */
             DcmItem *ditem = dseq.getItem(0);
@@ -579,6 +579,9 @@ OFBool DSRNumericMeasurementValue::checkRationalRepresentation(const Sint32 /*ra
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
+ *  Revision 1.29  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.28  2011-12-15 14:47:52  joergr
  *  Added support for additional representations of a numeric value according to
  *  CP-1064 (Float VR in numeric SR content items).

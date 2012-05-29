@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.29 (riesmeier)
+
+- Slightly modified code for using methods from class DcmSequenceOfItems.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrrefin.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2012.05.25 (riesmeier)
 
 - Added support for optional Retrieve Location UID (0040,E011) to the class

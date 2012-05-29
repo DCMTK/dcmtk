@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-14 11:07:24 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2012-05-29 14:02:16 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,7 +177,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     inline OFBool isSigned()
     {
-        return (DigitalSignatures.card() > 0);
+        return !DigitalSignatures.isEmpty();
     }
 
     /** check whether content item is marked.
@@ -601,6 +601,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
+ *  Revision 1.31  2012-05-29 14:02:16  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.30  2012-02-14 11:07:24  joergr
  *  Added support for Observation UID (0040,A171) to content items (CP-1147).
  *

@@ -20,8 +20,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-25 08:53:29 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,8 +103,9 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
     checkElementValue(sequence, "1-n", "1", result);
     if (result.good())
     {
+        const unsigned long count = sequence.card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned long i = 0; i < count; i++)
         {
             DcmItem *item = sequence.getItem(i);
             if (item != NULL)
@@ -460,8 +461,9 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset)
     checkElementValue(sequence, "1-n", "1", result);
     if (result.good())
     {
+        const unsigned long count = sequence.card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned long i = 0; i < count; i++)
         {
             DcmItem *item = sequence.getItem(i);
             if (item != NULL)
@@ -836,8 +838,9 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset)
     if (result.good())
     {
         OFString sequenceName = DcmTag(SequenceTag).getTagName();
+        const unsigned long count = sequence.card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned long i = 0; i < count; i++)
         {
             DcmItem *item = sequence.getItem(i);
             if (item != NULL)
@@ -1462,6 +1465,9 @@ OFCondition DSRSOPInstanceReferenceList::setPurposeOfReference(const DSRCodedEnt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.22  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.21  2012-05-25 08:53:29  joergr
  *  Added support for optional Retrieve Location UID (0040,E011) to the class
  *  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).

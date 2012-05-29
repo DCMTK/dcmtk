@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-09 16:11:14 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2012-05-29 14:02:18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,8 +88,9 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
     {
         ItemStruct *item = NULL;
         OFString codingSchemeDesignator;
+        const unsigned long count = sequence.card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned long i = 0; i < count; i++)
         {
             DcmItem *ditem = sequence.getItem(i);
             if (ditem != NULL)
@@ -565,6 +566,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.19  2012-05-29 14:02:18  joergr
+ *  Slightly modified code for using methods from class DcmSequenceOfItems.
+ *
  *  Revision 1.18  2011-12-09 16:11:14  joergr
  *  Removed numerous explicit typecasts because they are not needed any longer.
  *
