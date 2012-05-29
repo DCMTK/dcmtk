@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2012-05-29 14:09:38 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,7 +194,7 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
         if (hasFloating)
         {
             /* increase default precision */
-            const int oldPrecision = stream.precision(8);
+            const STD_NAMESPACE streamsize oldPrecision = stream.precision(8);
             stream << floatValue;
             /* reset i/o manipulators */
             stream.precision(oldPrecision);
@@ -579,6 +579,10 @@ OFBool DSRNumericMeasurementValue::checkRationalRepresentation(const Sint32 /*ra
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
+ *  Revision 1.30  2012-05-29 14:09:38  joergr
+ *  Added explicit type casts or changed type declaration in order to avoid
+ *  warnings reported by gcc 4.4.5 (Linux) with additional flags.
+ *
  *  Revision 1.29  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

@@ -13,6 +13,11 @@ Changes between releases are documented here.
            dcmsr/libsrc/dsrsoprf.cc
            dcmsr/libsrc/dsrtypes.cc
 
+- Added explicit type casts or changed type declaration in order to avoid
+  warnings reported by gcc 4.4.5 (Linux) with additional flags.
+  Affects: dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrreftn.cc
+
 **** Changes from 2012.05.25 (riesmeier)
 
 - Added support for optional Retrieve Location UID (0040,E011) to the class

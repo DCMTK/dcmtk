@@ -19,8 +19,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-14 11:07:26 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2012-05-29 14:09:38 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,9 +142,9 @@ OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset) const
             posEnd = ReferencedContentItem.find('.', posStart);
             /* is last segment? */
             if (posEnd == OFString_npos)
-                delem.putUint32(DSRTypes::stringToNumber(ReferencedContentItem.substr(posStart).c_str()), i);
+                delem.putUint32(OFstatic_cast(Uint32, DSRTypes::stringToNumber(ReferencedContentItem.substr(posStart).c_str())), i);
             else {
-                delem.putUint32(DSRTypes::stringToNumber(ReferencedContentItem.substr(posStart, posEnd - posStart).c_str()), i);
+                delem.putUint32(OFstatic_cast(Uint32, DSRTypes::stringToNumber(ReferencedContentItem.substr(posStart, posEnd - posStart).c_str())), i);
                 posStart = posEnd + 1;
             }
             i++;
@@ -220,6 +220,10 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
+ *  Revision 1.24  2012-05-29 14:09:38  joergr
+ *  Added explicit type casts or changed type declaration in order to avoid
+ *  warnings reported by gcc 4.4.5 (Linux) with additional flags.
+ *
  *  Revision 1.23  2012-02-14 11:07:26  joergr
  *  Added support for Observation UID (0040,A171) to content items (CP-1147).
  *
