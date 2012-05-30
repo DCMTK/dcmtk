@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:30:18 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2012-05-30 14:18:53 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -242,13 +242,16 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
     OFBool result = OFFalse;
     if (DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID))
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.x 2003) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2011) */
         if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
             (sopClassUID == UID_GeneralECGWaveformStorage) ||
             (sopClassUID == UID_AmbulatoryECGWaveformStorage) ||
             (sopClassUID == UID_HemodynamicWaveformStorage) ||
             (sopClassUID == UID_CardiacElectrophysiologyWaveformStorage) ||
-            (sopClassUID == UID_BasicVoiceAudioWaveformStorage))
+            (sopClassUID == UID_BasicVoiceAudioWaveformStorage) ||
+            (sopClassUID == UID_GeneralAudioWaveformStorage) ||
+            (sopClassUID == UID_ArterialPulseWaveformStorage) ||
+            (sopClassUID == UID_RespiratoryWaveformStorage))
         {
             result = OFTrue;
         }
@@ -260,6 +263,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
+ *  Revision 1.24  2012-05-30 14:18:53  joergr
+ *  Added support for Waveform Storage SOP Classes introduced after 2003 edition
+ *  of the DICOM standard, i.e. General Audio, Arterial Pulse and Respiratory.
+ *
  *  Revision 1.23  2011-12-15 16:30:18  joergr
  *  Fixed typo in comments.
  *

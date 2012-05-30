@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.05.30 (riesmeier)
+
+- Added support for Waveform Storage SOP Classes introduced after 2003 edition
+  of the DICOM standard, i.e. General Audio, Arterial Pulse and Respiratory.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+           dcmsr/libsrc/dsrwavvl.cc
+
 **** Changes from 2012.05.29 (riesmeier)
 
 - Slightly modified code for using methods from class DcmSequenceOfItems.

@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:16 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-05-30 14:18:51 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -198,7 +198,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
-     *  Currently all waveform SOP classes that are defined in DICOM PS 3.x 2003 are allowed.
+     *  Currently, all waveform SOP classes that are defined in DICOM PS 3.6-2011 are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
      ** @return OFTrue if SOP class UID is valid, OFFalse otherwise
      */
@@ -218,6 +218,10 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
+ *  Revision 1.20  2012-05-30 14:18:51  joergr
+ *  Added support for Waveform Storage SOP Classes introduced after 2003 edition
+ *  of the DICOM standard, i.e. General Audio, Arterial Pulse and Respiratory.
+ *
  *  Revision 1.19  2012-01-06 09:13:16  uli
  *  Make it possible to build dcmsr as a DLL.
  *
