@@ -16,6 +16,8 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmjpls
 \li \ref mod_dcmnet
 \li \ref mod_dcmpstat
+\li \ref mod_dcmqrdb
+\li \ref mod_dcmrt
 \li \ref mod_dcmsign
 \li \ref mod_dcmsr
 \li \ref mod_dcmtls
@@ -30,7 +32,6 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \if MODULE_DCMPPS \li \ref mod_dcmpps \endif
 \if MODULE_DCMPPSCU \li \ref mod_dcmppscu \endif
 \if MODULE_DCMSTCOM \li \ref mod_dcmstcom \endif
-\if MODULE_DCMRT \li \ref mod_dcmrt \endif
 
 
 Each sub-directory (except config) contains further sub-directories for

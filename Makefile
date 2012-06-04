@@ -7,34 +7,34 @@ configdir = config
 
 include $(configdir)/Makefile.def
 
-all:  config-all ofstd-all oflog-all dcmdata-all dcmimgle-all dcmimage-all dcmjpeg-all dcmjpls-all dcmtls-all dcmnet-all dcmsr-all dcmsign-all dcmwlm-all dcmqrdb-all dcmpstat-all
+all:  config-all ofstd-all oflog-all dcmdata-all dcmimgle-all dcmimage-all dcmjpeg-all dcmjpls-all dcmtls-all dcmnet-all dcmsr-all dcmsign-all dcmwlm-all dcmqrdb-all dcmpstat-all dcmrt-all
 
-libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmimgle-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmwlm-libsrc-all dcmqrdb-libsrc-all dcmpstat-libsrc-all
+libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmimgle-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmwlm-libsrc-all dcmqrdb-libsrc-all dcmpstat-libsrc-all dcmrt-libsrc-all
 
-tests-all:  config-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmimgle-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all dcmtls-tests-all dcmnet-tests-all dcmsr-tests-all dcmsign-tests-all dcmwlm-tests-all dcmqrdb-tests-all dcmpstat-tests-all
+tests-all:  config-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmimgle-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all dcmtls-tests-all dcmnet-tests-all dcmsr-tests-all dcmsign-tests-all dcmwlm-tests-all dcmqrdb-tests-all dcmpstat-tests-all dcmrt-tests-all
 
-install:  config-install ofstd-install oflog-install dcmdata-install dcmimgle-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtls-install dcmnet-install dcmsr-install dcmsign-install dcmwlm-install dcmqrdb-install dcmpstat-install dcmtk-install-doc install-man
+install:  config-install ofstd-install oflog-install dcmdata-install dcmimgle-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtls-install dcmnet-install dcmsr-install dcmsign-install dcmwlm-install dcmqrdb-install dcmpstat-install dcmrt-install dcmtk-install-doc install-man
 
 install-all: install install-lib install-html
 
-install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmimgle-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin dcmtls-install-bin dcmnet-install-bin dcmsr-install-bin dcmsign-install-bin dcmwlm-install-bin dcmqrdb-install-bin dcmpstat-install-bin
+install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmimgle-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin dcmtls-install-bin dcmnet-install-bin dcmsr-install-bin dcmsign-install-bin dcmwlm-install-bin dcmqrdb-install-bin dcmpstat-install-bin dcmrt-install-bin
 
-install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmimgle-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc dcmtls-install-doc dcmnet-install-doc dcmsr-install-doc dcmsign-install-doc dcmwlm-install-doc dcmqrdb-install-doc dcmpstat-install-doc
+install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmimgle-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc dcmtls-install-doc dcmnet-install-doc dcmsr-install-doc dcmsign-install-doc dcmwlm-install-doc dcmqrdb-install-doc dcmpstat-install-doc dcmrt-install-doc
 
-install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmimgle-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data dcmtls-install-data dcmnet-install-data dcmsr-install-data dcmsign-install-data dcmwlm-install-data dcmqrdb-install-data dcmpstat-install-data
+install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmimgle-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data dcmtls-install-data dcmnet-install-data dcmsr-install-data dcmsign-install-data dcmwlm-install-data dcmqrdb-install-data dcmpstat-install-data dcmrt-install-data
 
-install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmimgle-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc dcmtls-install-etc dcmnet-install-etc dcmsr-install-etc dcmsign-install-etc dcmwlm-install-etc dcmqrdb-install-etc dcmpstat-install-etc
+install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmimgle-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc dcmtls-install-etc dcmnet-install-etc dcmsr-install-etc dcmsign-install-etc dcmwlm-install-etc dcmqrdb-install-etc dcmpstat-install-etc dcmrt-install-etc
 
-install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmimgle-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib dcmtls-install-lib dcmnet-install-lib dcmsr-install-lib dcmsign-install-lib dcmwlm-install-lib dcmqrdb-install-lib dcmpstat-install-lib
+install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmimgle-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib dcmtls-install-lib dcmnet-install-lib dcmsr-install-lib dcmsign-install-lib dcmwlm-install-lib dcmqrdb-install-lib dcmpstat-install-lib dcmrt-install-lib
 
-install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmimgle-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include dcmtls-install-include dcmnet-install-include dcmsr-install-include dcmsign-install-include dcmwlm-install-include dcmqrdb-install-include dcmpstat-install-include
+install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmimgle-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include dcmtls-install-include dcmnet-install-include dcmsr-install-include dcmsign-install-include dcmwlm-install-include dcmqrdb-install-include dcmpstat-install-include dcmrt-install-include
 
-install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmimgle-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support dcmtls-install-support dcmnet-install-support dcmsr-install-support dcmsign-install-support dcmwlm-install-support dcmqrdb-install-support dcmpstat-install-support
+install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmimgle-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support dcmtls-install-support dcmnet-install-support dcmsr-install-support dcmsign-install-support dcmwlm-install-support dcmqrdb-install-support dcmpstat-install-support dcmrt-install-support
 
 check: tests-all
 	$(MAKE) -s check-nosilent
 
-check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmimgle-check dcmimage-check dcmjpeg-check dcmjpls-check dcmtls-check dcmnet-check dcmsr-check dcmsign-check dcmwlm-check dcmqrdb-check dcmpstat-check
+check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmimgle-check dcmimage-check dcmjpeg-check dcmjpls-check dcmtls-check dcmnet-check dcmsr-check dcmsign-check dcmwlm-check dcmqrdb-check dcmpstat-check dcmrt-check
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
@@ -594,6 +594,42 @@ dcmpstat-install-support:
 dcmpstat-check:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
+dcmrt-all:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmrt-libsrc-all:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmrt-tests-all:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmrt-install:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmrt-install-bin:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmrt-install-doc:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmrt-install-data:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmrt-install-etc:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmrt-install-lib:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmrt-install-include:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmrt-install-support:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmrt-check:
+	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dependencies:
 	(cd ofstd && $(MAKE) dependencies)
 	(cd oflog && $(MAKE) dependencies)
@@ -609,6 +645,7 @@ dependencies:
 	(cd dcmwlm && $(MAKE) dependencies)
 	(cd dcmqrdb && $(MAKE) dependencies)
 	(cd dcmpstat && $(MAKE) dependencies)
+	(cd dcmrt && $(MAKE) dependencies)
 	-(cd config && $(MAKE) dependencies)
 
 clean:
@@ -626,6 +663,7 @@ clean:
 	(cd dcmwlm && $(MAKE) clean)
 	(cd dcmqrdb && $(MAKE) clean)
 	(cd dcmpstat && $(MAKE) clean)
+	(cd dcmrt && $(MAKE) clean)
 	(cd doxygen && $(MAKE) clean)
 	-(cd config && $(MAKE) clean)
 	rm -f $(TRASH)
@@ -645,6 +683,7 @@ distclean:
 	(cd dcmwlm && $(MAKE) distclean)
 	(cd dcmqrdb && $(MAKE) distclean)
 	(cd dcmpstat && $(MAKE) distclean)
+	(cd dcmrt && $(MAKE) distclean)
 	(cd doxygen && $(MAKE) distclean)
 	-(cd config && $(MAKE) distclean)
 	rm -f $(TRASH)

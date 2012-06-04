@@ -1,0 +1,802 @@
+
+Changes that happened before this module has been moved to the public DCMTK
+are documented here.
+
+**** Changes from 2012.06.04 (riesmeier)
+
+- Moved module for "DICOM in Radiation Therapy" (DCMRT) to the public DCMTK.
+  Removed: COPYRIGHT
+
+**** Changes from 2012.03.28 (riesmeier)
+
+- Added missing get methods for PixelData (7fe0,0010) element.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtris.h
+
+**** Changes from 2012.03.27 (riesmeier)
+
+- Added get/set methods for US/SS/OW data, e.g. LUTData (0028,3006).
+  Affects: dcmrt/include/dcmtk/dcmrt/seq/drtmls.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtvls.h
+           dcmrt/libsrc/drtmls.cc
+           dcmrt/libsrc/drtvls.cc
+
+- Added const variant to get sequence methods.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/drtionpl.h
+           dcmrt/include/dcmtk/dcmrt/drtiontr.h
+           dcmrt/include/dcmtk/dcmrt/drtplan.h
+           dcmrt/include/dcmtk/dcmrt/drtstruct.h
+
+- Updated copyright date.
+  Affects: dcmrt/docs/drtdump.man
+
+**** Changes from 2012.02.01 (riesmeier)
+
+- Moved header files for sequence classes to sub-directory "seq".
+  Added:   dcmrt/include/dcmtk/dcmrt/seq/drt*s.h
+           dcmrt/include/dcmtk/dcmrt/seq/drt*s1.h
+           dcmrt/include/dcmtk/dcmrt/seq/drt*s2.h
+           dcmrt/include/dcmtk/dcmrt/seq/drt*s3.h
+  Removed: dcmrt/include/dcmtk/dcmrt/drt*s.h
+           dcmrt/include/dcmtk/dcmrt/drt*s1.h
+           dcmrt/include/dcmtk/dcmrt/drt*s2.h
+           dcmrt/include/dcmtk/dcmrt/drt*s3.h
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/include/Makefile.in
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2012.01.06 (riesmeier)
+
+- Added support for building this library as a Windows DLL.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/CMakeLists.txt
+
+- Updated copyright date to the current year.
+  Affects: dcmrt/COPYRIGHT
+           dcmrt/apps/drtdump.cc
+           dcmrt/libsrc/*.cc
+           dcmrt/tests/drttest.cc
+
+**** Changes from 2011.11.23 (riesmeier)
+
+- Use putOFStringArray() instead of putString() where appropriate.
+  Affects: dcmrt/libsrc/*.cc
+           dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2011.10.27 (riesmeier)
+
+- Added libiconv to all "apps" that depend on dcmdata to avoid linker errors.
+  Affects: dcmrt/apps/CMakeLists.txt
+           dcmrt/apps/Makefile.in
+           dcmrt/tests/CMakeLists.txt
+           dcmrt/tests/Makefile.in
+
+**** Changes from 2011.10.18 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2011.08.24 (riesmeier)
+
+- Removed unused parameters "argc" and "argv" from the main() function because
+  this caused warnings reported by gcc with additional options.
+  Affects: dcmrt/tests/drttest.cc
+
+**** Changes from 2011.08.23 (riesmeier)
+
+- Fixed memory leak in write() method of sequence classes.
+  Affects: dcmrt/libsrc/*.cc
+
+**** Changes from 2011.08.22 (riesmeier)
+
+- Fixed wrong documentation of getItem() parameter. Re-generated header files.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+
+**** Changes from 2011.08.22 (schlachter)
+
+- Enhanced the "make check" target.
+  Affects: dcmrt/Makefile.in
+           dcmrt/tests/Makefile.in
+
+**** Changes from 2011.08.09 (riesmeier)
+
+- Introduced installation components for the CMake build system (in a similar
+  way as for GNU autoconf), which could be useful for package maintainers.
+  Added:   dcmrt/include/CMakeLists.txt
+  Removed: dcmrt/include/dcmtk/dcmrt/CMakeLists.txt
+  Affects: dcmrt/CMakeLists.txt
+           dcmrt/apps/CMakeLists.txt
+           dcmrt/libsrc/CMakeLists.txt
+
+**** Changes from 2011.08.01 (riesmeier)
+
+- Fixed typo in generated header files. Re-generated all files.
+  Affects: dcmrt/libsrc/*.cc
+           dcmrt/include/dcmtk/dcmrt/*.h
+
+**** Changes from 2011.07.05 (schlachter)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2011.05.31 (schlachter)
+
+- Added a "check" Makefile target.
+  Affects: dcmrt/Makefile.in
+
+**** Changes from 2011.05.30 (riesmeier)
+
+- Changed code generator script in order to handle sequences that are defined
+  differently in different Modules (not in different IODs as it was before).
+  Please note that as a result of the new approach some class names changed.
+  Thanks to forum user "rmoore" for the original report on missing elements.
+  Added:   dcmrt/include/dcmtk/dcmrt/drtas1.h
+           dcmrt/include/dcmtk/dcmrt/drtas5.h
+           dcmrt/include/dcmtk/dcmrt/drtas6.h
+           dcmrt/include/dcmtk/dcmrt/drtas7.h
+           dcmrt/include/dcmtk/dcmrt/drtbl2.h
+           dcmrt/include/dcmtk/dcmrt/drtbl5.h
+           dcmrt/include/dcmtk/dcmrt/drtblds5.h
+           dcmrt/include/dcmtk/dcmrt/drtblds6.h
+           dcmrt/include/dcmtk/dcmrt/drtlsds6.h
+           dcmrt/include/dcmtk/dcmrt/drtlsds7.h
+           dcmrt/include/dcmtk/dcmrt/drtrbass8.h
+           dcmrt/include/dcmtk/dcmrt/drtrbos1.h
+           dcmrt/include/dcmtk/dcmrt/drtrbos6.h
+           dcmrt/include/dcmtk/dcmrt/drtrbos7.h
+           dcmrt/include/dcmtk/dcmrt/drtrbs8.h
+           dcmrt/include/dcmtk/dcmrt/drtrdros.h
+           dcmrt/include/dcmtk/dcmrt/drtrdrs1.h
+           dcmrt/include/dcmtk/dcmrt/drtrdrs6.h
+           dcmrt/include/dcmtk/dcmrt/drtrdrs8.h
+           dcmrt/include/dcmtk/dcmrt/drtrmss6.h
+           dcmrt/include/dcmtk/dcmrt/drtrmss7.h
+           dcmrt/include/dcmtk/dcmrt/drtrris1.h
+           dcmrt/include/dcmtk/dcmrt/drtrris6.h
+           dcmrt/include/dcmtk/dcmrt/drtrris9.h
+           dcmrt/include/dcmtk/dcmrt/drtrrtps3.h
+           dcmrt/include/dcmtk/dcmrt/drtrrtps4.h
+           dcmrt/include/dcmtk/dcmrt/drtrrtps5.h
+           dcmrt/include/dcmtk/dcmrt/drtrshs6.h
+           dcmrt/include/dcmtk/dcmrt/drtrshs7.h
+           dcmrt/include/dcmtk/dcmrt/drttms0.h
+           dcmrt/include/dcmtk/dcmrt/drttms9.h
+           dcmrt/libsrc/drtas1.cc
+           dcmrt/libsrc/drtas5.cc
+           dcmrt/libsrc/drtas6.cc
+           dcmrt/libsrc/drtas7.cc
+           dcmrt/libsrc/drtbl2.cc
+           dcmrt/libsrc/drtbl5.cc
+           dcmrt/libsrc/drtblds5.cc
+           dcmrt/libsrc/drtblds6.cc
+           dcmrt/libsrc/drtlsds6.cc
+           dcmrt/libsrc/drtlsds7.cc
+           dcmrt/libsrc/drtrbass8.cc
+           dcmrt/libsrc/drtrbos1.cc
+           dcmrt/libsrc/drtrbos6.cc
+           dcmrt/libsrc/drtrbos7.cc
+           dcmrt/libsrc/drtrbs8.cc
+           dcmrt/libsrc/drtrdros.cc
+           dcmrt/libsrc/drtrdrs1.cc
+           dcmrt/libsrc/drtrdrs6.cc
+           dcmrt/libsrc/drtrdrs8.cc
+           dcmrt/libsrc/drtrmss6.cc
+           dcmrt/libsrc/drtrmss7.cc
+           dcmrt/libsrc/drtrris1.cc
+           dcmrt/libsrc/drtrris6.cc
+           dcmrt/libsrc/drtrris9.cc
+           dcmrt/libsrc/drtrrtps3.cc
+           dcmrt/libsrc/drtrrtps4.cc
+           dcmrt/libsrc/drtrrtps5.cc
+           dcmrt/libsrc/drtrshs6.cc
+           dcmrt/libsrc/drtrshs7.cc
+           dcmrt/libsrc/drttms0.cc
+           dcmrt/libsrc/drttms9.cc
+  Removed: dcmrt/include/dcmtk/dcmrt/drtas.h
+           dcmrt/include/dcmtk/dcmrt/drtblds2.h
+           dcmrt/include/dcmtk/dcmrt/drtbls.h
+           dcmrt/include/dcmtk/dcmrt/drtfgs6.h
+           dcmrt/include/dcmtk/dcmrt/drtlsdss.h
+           dcmrt/include/dcmtk/dcmrt/drtrbas3.h
+           dcmrt/include/dcmtk/dcmrt/drtrbas6.h
+           dcmrt/include/dcmtk/dcmrt/drtrbos.h
+           dcmrt/include/dcmtk/dcmrt/drtrbs3.h
+           dcmrt/include/dcmtk/dcmrt/drtrbs6.h
+           dcmrt/include/dcmtk/dcmrt/drtrdors.h
+           dcmrt/include/dcmtk/dcmrt/drtrdrs.h
+           dcmrt/include/dcmtk/dcmrt/drtrmss.h
+           dcmrt/include/dcmtk/dcmrt/drtrris.h
+           dcmrt/include/dcmtk/dcmrt/drtrrps1.h
+           dcmrt/include/dcmtk/dcmrt/drtrrps2.h
+           dcmrt/include/dcmtk/dcmrt/drtrrps3.h
+           dcmrt/include/dcmtk/dcmrt/drtrshss.h
+           dcmrt/include/dcmtk/dcmrt/drttms.h
+           dcmrt/libsrc/drtas.cc
+           dcmrt/libsrc/drtblds2.cc
+           dcmrt/libsrc/drtbls.cc
+           dcmrt/libsrc/drtfgs6.cc
+           dcmrt/libsrc/drtlsdss.cc
+           dcmrt/libsrc/drtrbas3.cc
+           dcmrt/libsrc/drtrbas6.cc
+           dcmrt/libsrc/drtrbos.cc
+           dcmrt/libsrc/drtrbs3.cc
+           dcmrt/libsrc/drtrbs6.cc
+           dcmrt/libsrc/drtrdors.cc
+           dcmrt/libsrc/drtrdrs.cc
+           dcmrt/libsrc/drtrmss.cc
+           dcmrt/libsrc/drtrris.cc
+           dcmrt/libsrc/drtrrps1.cc
+           dcmrt/libsrc/drtrrps2.cc
+           dcmrt/libsrc/drtrrps3.cc
+           dcmrt/libsrc/drtrshss.cc
+           dcmrt/libsrc/drttms.cc
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/*.cc
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/drttest.cc
+
+- Removed unused variables in order to avoid compiler warnings.
+  Affects: dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2011.05.24 (schlachter)
+
+- Moved LIBDIRS in front of LDFLAGS to link against the freshly build libs.
+  Thanks to Eric A. Borisch <Borisch.Eric@mayo.edu> for reporting this.
+  Affects: dcmrt/apps/Makefile.in
+           dcmrt/tests/Makefile.in
+
+**** Changes from 2011.04.19 (schlachter)
+
+- Use a more thread-safe, global variable for the logger object.
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/*.cc
+
+**** Changes from 2011.03.23 (riesmeier)
+
+- Added prefix "DCMTK_" to various installation sub-directory CMake variables.
+  Affects: dcmrt/apps/CMakeLists.txt
+           dcmrt/include/dcmtk/dcmrt/CMakeLists.txt
+           dcmrt/libsrc/CMakeLists.txt
+
+**** Changes from 2011.02.02 (riesmeier)
+
+- Moved documentation of valid values for the VMs that can be checked to a
+  central place, i.e. DcmElement::checkVM().
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+
+**** Changes from 2011.01.13 (riesmeier)
+
+- Indicate in the library description that this module also contains apps.
+  Affects: dcmrt/docs/dcmrt.dox
+
+**** Changes from 2011.01.07 (riesmeier)
+
+- Updated copyright date to the current year.
+  Affects: dcmrt/COPYRIGHT
+
+**** Changes from 2010.11.05 (riesmeier)
+
+- Added support for checking the value multiplicity "9" (see Supplement 131).
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+
+**** Changes from 2010.10.27 (riesmeier)
+
+- Added method which allows for retrieving the stored floating point values
+  more efficiently from a DecimalString element (using a vector).
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2010.10.21 (riesmeier)
+
+- Added virtual destructor in order to avoid warnings reported by gcc with
+  additional flags.
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2010.09.29 (riesmeier)
+
+- Fixed possible memory leak when "not adding" a data element to the dataset.
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/drttypes.cc
+
+- Use new isEmpty() method instead of length in order to determine whether the
+  element value is empty (e.g. for checking the presence of type 2 attributes).
+  Affects: dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2010.09.27 (riesmeier)
+
+- Removed module-specific definitions for RT Ion SOP Classes (now in DCMTK).
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+
+**** Changes from 2010.08.20 (riesmeier)
+
+- Added support for RT Ion Plan IOD and RT Ion Beams Treatment Record IOD.
+  Added:   dcmrt/include/dcmtk/dcmrt/drtbldls.h
+           dcmrt/include/dcmtk/dcmrt/drtcdrs.h
+           dcmrt/include/dcmtk/dcmrt/drtcpas.h
+           dcmrt/include/dcmtk/dcmrt/drtfgs6.h
+           dcmrt/include/dcmtk/dcmrt/drtiblds.h
+           dcmrt/include/dcmtk/dcmrt/drtibls.h
+           dcmrt/include/dcmtk/dcmrt/drtibs.h
+           dcmrt/include/dcmtk/dcmrt/drticpds.h
+           dcmrt/include/dcmtk/dcmrt/drticps.h
+           dcmrt/include/dcmtk/dcmrt/drtionpl.h
+           dcmrt/include/dcmtk/dcmrt/drtiontr.h
+           dcmrt/include/dcmtk/dcmrt/drtircs.h
+           dcmrt/include/dcmtk/dcmrt/drtitts.h
+           dcmrt/include/dcmtk/dcmrt/drtiwps.h
+           dcmrt/include/dcmtk/dcmrt/drtiws.h
+           dcmrt/include/dcmtk/dcmrt/drtlsds.h
+           dcmrt/include/dcmtk/dcmrt/drtlsdss.h
+           dcmrt/include/dcmtk/dcmrt/drtmdrs.h
+           dcmrt/include/dcmtk/dcmrt/drtos.h
+           dcmrt/include/dcmtk/dcmrt/drtrbas6.h
+           dcmrt/include/dcmtk/dcmrt/drtrbls.h
+           dcmrt/include/dcmtk/dcmrt/drtrbs6.h
+           dcmrt/include/dcmtk/dcmrt/drtrcdrs.h
+           dcmrt/include/dcmtk/dcmrt/drtrcos.h
+           dcmrt/include/dcmtk/dcmrt/drtrlsds.h
+           dcmrt/include/dcmtk/dcmrt/drtrmdrs.h
+           dcmrt/include/dcmtk/dcmrt/drtrms.h
+           dcmrt/include/dcmtk/dcmrt/drtrmss.h
+           dcmrt/include/dcmtk/dcmrt/drtrrms.h
+           dcmrt/include/dcmtk/dcmrt/drtrrshs.h
+           dcmrt/include/dcmtk/dcmrt/drtrshs.h
+           dcmrt/include/dcmtk/dcmrt/drtrshss.h
+           dcmrt/include/dcmtk/dcmrt/drtrsns.h
+           dcmrt/include/dcmtk/dcmrt/drtrvis.h
+           dcmrt/include/dcmtk/dcmrt/drtrws.h
+           dcmrt/include/dcmtk/dcmrt/drtsns.h
+           dcmrt/include/dcmtk/dcmrt/drttsibs.h
+           dcmrt/libsrc/drtbldls.cc
+           dcmrt/libsrc/drtcdrs.cc
+           dcmrt/libsrc/drtcpas.cc
+           dcmrt/libsrc/drtfgs6.cc
+           dcmrt/libsrc/drtiblds.cc
+           dcmrt/libsrc/drtibls.cc
+           dcmrt/libsrc/drtibs.cc
+           dcmrt/libsrc/drticpds.cc
+           dcmrt/libsrc/drticps.cc
+           dcmrt/libsrc/drtionpl.cc
+           dcmrt/libsrc/drtiontr.cc
+           dcmrt/libsrc/drtircs.cc
+           dcmrt/libsrc/drtitts.cc
+           dcmrt/libsrc/drtiwps.cc
+           dcmrt/libsrc/drtiws.cc
+           dcmrt/libsrc/drtlsds.cc
+           dcmrt/libsrc/drtlsdss.cc
+           dcmrt/libsrc/drtmdrs.cc
+           dcmrt/libsrc/drtos.cc
+           dcmrt/libsrc/drtrbas6.cc
+           dcmrt/libsrc/drtrbls.cc
+           dcmrt/libsrc/drtrbs6.cc
+           dcmrt/libsrc/drtrcdrs.cc
+           dcmrt/libsrc/drtrcos.cc
+           dcmrt/libsrc/drtrlsds.cc
+           dcmrt/libsrc/drtrmdrs.cc
+           dcmrt/libsrc/drtrms.cc
+           dcmrt/libsrc/drtrmss.cc
+           dcmrt/libsrc/drtrrms.cc
+           dcmrt/libsrc/drtrrshs.cc
+           dcmrt/libsrc/drtrshs.cc
+           dcmrt/libsrc/drtrshss.cc
+           dcmrt/libsrc/drtrsns.cc
+           dcmrt/libsrc/drtrvis.cc
+           dcmrt/libsrc/drtrws.cc
+           dcmrt/libsrc/drtsns.cc
+           dcmrt/libsrc/drttsibs.cc
+  Affects: dcmrt/apps/drtdump.cc
+           dcmrt/apps/Makefile.dep
+           dcmrt/docs/dcmrt.dox
+           dcmrt/docs/drtdump.man
+           dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/libsrc/*.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmrt/tests/Makefile.dep
+
+**** Changes from 2010.08.09 (riesmeier)
+
+- Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+  the official "keyword" is used for the attribute name which results in a
+  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+  NB: Both users and developers should be aware of these changes and modify
+  their scripts and/or source code accordingly.
+  Affects: dcmrt/apps/drtdump.cc
+           dcmrt/docs/dcmrt.dox
+           dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+**** Changes from 2010.07.21 (onken)
+
+- Fixed compilation when compiling using cmake.
+  Affects: dcmrt/apps/CMakeLists.txt
+           dcmrt/tests/CMakeLists.txt
+
+**** Changes from 2010.06.04 (schlachter)
+
+- Don't trip over spaces in the absolute path to the code.
+  Affects: dcmrt/configure
+
+**** Changes from 2010.05.11 (riesmeier)
+
+- Added simple command line tool that dumps the content of a DICOM RT file.
+  The output of IOD specific data is still somewhat limited for most of the
+  RT objects.
+  Added:   dcmrt/apps/CMakeLists.txt
+           dcmrt/apps/drtdump.cc
+           dcmrt/apps/Makefile.dep
+           dcmrt/apps/Makefile.in
+           dcmrt/docs/drtdump.man
+  Affects: dcmrt/CMakeLists.txt
+           dcmrt/Makefile.in
+           dcmrt/docs/dcmrt.dox
+
+- Added source code examples on how to use the library.
+  Affects: dcmrt/docs/dcmrt.dox
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2010.04.28 (riesmeier)
+
+- Made default constructor of the item class public (was private) in order to
+  be also used from the medium-level API. Makes friend declaration obsolete.
+  Affects: dcmrt/include/dcmtk/dcmrt/drt*s.h
+           dcmrt/include/dcmtk/dcmrt/drt*s1.h
+           dcmrt/include/dcmtk/dcmrt/drt*s2.h
+           dcmrt/include/dcmtk/dcmrt/drt*s3.h
+
+- Added comment that error code 4 is reserved for medium-level API messages.
+  Affects: dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2010.04.23 (riesmeier)
+
+- Enhanced checking of element values using the new methods from module
+  dcmdata (check whether the value conforms to the VR and to the given VM).
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/*.cc
+           dcmrt/libsrc/drttypes.cc
+
+- Added missing detail to API documentation.
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+
+**** Changes from 2010.04.21 (riesmeier)
+
+- Added get methods with numeric result variable for data elements with a
+  value representation of IS (Integer String) and DS (Decimal String).
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+- Changed default log level from TRACE to INFO.
+  Affects: dcmrt/tests/drttest.cc
+
+**** Changes from 2010.03.26 (riesmeier)
+
+- Added methods for checking the presence of non-mandatory DICOM modules.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/drtplan.h
+           dcmrt/include/dcmtk/dcmrt/drtstruct.h
+           dcmrt/include/dcmtk/dcmrt/drttreat.h
+           dcmrt/libsrc/drtdose.cc
+           dcmrt/libsrc/drtimage.cc
+           dcmrt/libsrc/drtplan.cc
+           dcmrt/libsrc/drtstruct.cc
+           dcmrt/libsrc/drttreat.cc
+
+- Added comment that the VR of an element value should also be checked.
+  Affects: dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2010.03.25 (riesmeier)
+
+- Added COPYRIGHT file which contains the license details for the library.
+  Added:   dcmrt/COPYRIGHT
+
+- Updated copyright date and added OFFIS e.V. as a copyright holder.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+           dcmrt/tests/drttest.cc
+
+**** Changes from 2010.03.15 (schlachter)
+
+- Remove the second occurance of drttsmds.o from $(objs).
+  Affects: dcmrt/libsrc/Makefile.in
+
+**** Changes from 2009.12.17 (riesmeier)
+
+- Added "const" variant of some methods and used const list iterators where
+  appropriate in order to avoid compiler errors with HAVE_STL defined.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+**** Changes from 2009.12.09 (schlachter)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2009.11.02 (riesmeier)
+
+- Added separate read() methods for patient, study and series data.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/drtplan.h
+           dcmrt/include/dcmtk/dcmrt/drtstruct.h
+           dcmrt/include/dcmtk/dcmrt/drttreat.h
+           dcmrt/libsrc/drtdose.cc
+           dcmrt/libsrc/drtimage.cc
+           dcmrt/libsrc/drtplan.cc
+           dcmrt/libsrc/drtstruct.cc
+           dcmrt/libsrc/drttreat.cc
+
+- Clear result variable if getElementFromDataset() fails.
+  Affects: dcmrt/libsrc/drttypes.cc
+
+- Use symbolic name of SOP classes instead of numeric UID values.
+  Affects: dcmrt/libsrc/drtdose.cc
+           dcmrt/libsrc/drtimage.cc
+           dcmrt/libsrc/drtplan.cc
+           dcmrt/libsrc/drtstruct.cc
+           dcmrt/libsrc/drttreat.cc
+
+- Added tests for copy constructors and assignment operators.
+  Affects: dcmrt/tests/drttest.cc
+
+**** Changes from 2009.10.30 (riesmeier)
+
+- Added implementation of copy constructor and assignment operator.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+- Added new condition code "invalid object".
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/drttypes.cc
+
+**** Changes from 2009.10.02 (riesmeier)
+
+- Added "const" variant of some methods, especially getXXX() methods, and made
+  some existing methods "const".
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmrt/CMakeLists.txt
+           dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/libsrc/*.cc
+           dcmrt/tests/CMakeLists.txt
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/Makefile.in
+           dcmrt/tests/drttest.cc
+
+- Added DRTTreatmentSummaryRecordIOD to the list of main interface classes.
+  Affects: dcmrt/docs/dcmrt.dox
+
+**** Changes from 2009.09.28 (riesmeier)
+
+- Moved general purpose definition file from module dcmdata to ofstd, and
+  added new defines in order to make the usage easier.
+  Affects: dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2009.09.02 (riesmeier)
+
+- Added support for the RT Treament Summary Record IOD.
+  Added:   dcmrt/include/dcmtk/dcmrt/drtfgss.h
+           dcmrt/include/dcmtk/dcmrt/drtfsss.h
+           dcmrt/include/dcmtk/dcmrt/drtrrtps.h
+           dcmrt/include/dcmtk/dcmrt/drttreat.h
+           dcmrt/include/dcmtk/dcmrt/drttscds.h
+           dcmrt/include/dcmtk/dcmrt/drttsmds.h
+           dcmrt/include/dcmtk/dcmrt/drtrtrs.h
+           dcmrt/libsrc/drtrtrs.cc
+           dcmrt/libsrc/drttsmds.cc
+           dcmrt/libsrc/drttreat.cc
+           dcmrt/libsrc/drttscds.cc
+           dcmrt/libsrc/drtfgss.cc
+           dcmrt/libsrc/drtfsss.cc
+           dcmrt/libsrc/drtrrtps.cc
+  Affects: dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/tests/drttest.cc
+           dcmrt/tests/Makefile.dep
+
+- Specified default value for parameter "check" in set() methods.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+
+- Regenerated source files.
+  Affects: dcmrt/libsrc/*.cc
+
+- Regenerated header files.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/drtplan.h
+           dcmrt/include/dcmtk/dcmrt/drtstruct.h
+
+**** Changes from 2009.08.07 (riesmeier)
+
+- Use new isEmpty() method instead of length in order to determine whether the
+  element value is empty (e.g. for checking the presence of type 1 attributes).
+  Affects: dcmrt/libsrc/drttypes.cc
+
+- Removed "const" specifier from isEmpty() methods (required because of changes
+  to the underlying dcmdata method).
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+**** Changes from 2009.08.04 (riesmeier)
+
+- Enhanced documentation of new "check" parameter of setXXX() methods: Added
+  details on the VM definition.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+
+**** Changes from 2009.08.03 (riesmeier)
+
+- Added check to the setXXX() methods whether the given string value conforms
+  to the VR and VM definitions of the DICOM standards.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+**** Changes from 2009.07.27 (riesmeier)
+
+- Significantly enhanced the checking mechanism used for the write() methods.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
+**** Changes from 2009.07.24 (riesmeier)
+
+- Made (almost) all public methods of the IOD class "virtual" in order to
+  facilitate the derivation of subclasses.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/drtplan.h
+           dcmrt/include/dcmtk/dcmrt/drtstruct.h
+
+- Added check on the presence of all type 1/2 attributes when reading a module.
+  Affects: dcmrt/libsrc/drtdose.cc
+           dcmrt/libsrc/drtimage.cc
+           dcmrt/libsrc/drtstruct.cc
+           dcmrt/libsrc/drtplan.cc
+
+- Regenerated source and header file.
+  Affects: dcmrt/include/dcmtk/dcmrt/drtbcps.h
+           dcmrt/libsrc/drtbcps.cc
+
+**** Changes from 2009.04.16 (riesmeier)
+
+- Updated automatically generated source and header files (added files for
+  missing sequence classes).
+  Added:   dcmrt/include/dcmtk/dcmrt/drtas.h
+           dcmrt/include/dcmtk/dcmrt/drtbads.h
+           dcmrt/include/dcmtk/dcmrt/drtbcps.h
+           dcmrt/include/dcmtk/dcmrt/drtbldps.h
+           dcmrt/include/dcmtk/dcmrt/drtbls.h
+           dcmrt/include/dcmtk/dcmrt/drtbrdrs.h
+           dcmrt/include/dcmtk/dcmrt/drtchs.h
+           dcmrt/include/dcmtk/dcmrt/drtcos.h
+           dcmrt/include/dcmtk/dcmrt/drtcps.h
+           dcmrt/include/dcmtk/dcmrt/drtcshs.h
+           dcmrt/include/dcmtk/dcmrt/drtfds.h
+           dcmrt/include/dcmtk/dcmrt/drtmss.h
+           dcmrt/include/dcmtk/dcmrt/drtpvis.h
+           dcmrt/include/dcmtk/dcmrt/drtrbas2.h
+           dcmrt/include/dcmtk/dcmrt/drtrbas3.h
+           dcmrt/include/dcmtk/dcmrt/drtrbos.h
+           dcmrt/include/dcmtk/dcmrt/drtrbs2.h
+           dcmrt/include/dcmtk/dcmrt/drtrbs3.h
+           dcmrt/include/dcmtk/dcmrt/drtrdors.h
+           dcmrt/include/dcmtk/dcmrt/drtrics.h
+           dcmrt/include/dcmtk/dcmrt/drtrpps.h
+           dcmrt/include/dcmtk/dcmrt/drtrrros.h
+           dcmrt/include/dcmtk/dcmrt/drtrses.h
+           dcmrt/include/dcmtk/dcmrt/drtrsts.h
+           dcmrt/include/dcmtk/dcmrt/drtsds.h
+           dcmrt/include/dcmtk/dcmrt/drtshds.h
+           dcmrt/include/dcmtk/dcmrt/drtwps.h
+           dcmrt/include/dcmtk/dcmrt/drtws.h
+           dcmrt/libsrc/drtas.cc
+           dcmrt/libsrc/drtbads.cc
+           dcmrt/libsrc/drtbcps.cc
+           dcmrt/libsrc/drtbldps.cc
+           dcmrt/libsrc/drtbls.cc
+           dcmrt/libsrc/drtbrdrs.cc
+           dcmrt/libsrc/drtchs.cc
+           dcmrt/libsrc/drtcos.cc
+           dcmrt/libsrc/drtcps.cc
+           dcmrt/libsrc/drtcshs.cc
+           dcmrt/libsrc/drtfds.cc
+           dcmrt/libsrc/drtmss.cc
+           dcmrt/libsrc/drtpvis.cc
+           dcmrt/libsrc/drtrbas2.cc
+           dcmrt/libsrc/drtrbas3.cc
+           dcmrt/libsrc/drtrbos.cc
+           dcmrt/libsrc/drtrbs2.cc
+           dcmrt/libsrc/drtrbs3.cc
+           dcmrt/libsrc/drtrdors.cc
+           dcmrt/libsrc/drtrics.cc
+           dcmrt/libsrc/drtrpps.cc
+           dcmrt/libsrc/drtrrros.cc
+           dcmrt/libsrc/drtrses.cc
+           dcmrt/libsrc/drtrsts.cc
+           dcmrt/libsrc/drtsds.cc
+           dcmrt/libsrc/drtshds.cc
+           dcmrt/libsrc/drtwps.cc
+           dcmrt/libsrc/drtws.cc
+  Removed: dcmrt/include/dcmtk/dcmrt/drtrbs.h
+           dcmrt/libsrc/drtrbs.cc
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/libsrc/*.cc
+           dcmrt/tests/Makefile.dep
+
+**** Changes from 2009.04.02 (riesmeier)
+
+- Fixed issue with "const" declaration when compiled with HAVE_STL defined.
+  Affects: dcmrt/include/dcmtk/dcmrt/drt*.h
+           dcmrt/libsrc/drt*.cc
+
+**** Changes from 2009.03.26 (riesmeier)
+
+- Added missing zlib include directory to CMake project file.
+  Affects: dcmrt/CMakeLists.txt
+
+- Added missing zlib library and directory to CMake project file.
+  Affects: dcmrt/tests/CMakeLists.txt
+
+**** Changes from 2009.03.25 (riesmeier)
+
+- Added main Doxygen page for this new module.
+  Added:   dcmrt/docs/Makefile.in
+           dcmrt/docs/dcmrt.dox
+
+- Added "install" target to makefiles.
+  Affects: dcmrt/Makefile.in
+           dcmrt/include/Makefile.in
+           dcmrt/libsrc/Makefile.in
+
+- Initial checkin of new module "dcmrt" used for DICOM Radiation Therapy IODs.
+  Please note that (almost) all of these source code and header files are
+  generated automatically based on an XML representation of the DICOM standard.
+  Added:   dcmrt/CMakeLists.txt
+           dcmrt/configure
+           dcmrt/Makefile.in
+           dcmrt/include/dcmtk/dcmrt/CMakeLists.txt
+           dcmrt/include/dcmtk/dcmrt/drt*.h
+           dcmrt/include/Makefile.in
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/libsrc/drt*.cc
+           dcmrt/tests/CMakeLists.txt
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/Makefile.in
+           dcmrt/tests/drttest.cc

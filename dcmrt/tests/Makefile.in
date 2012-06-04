@@ -1,0 +1,49 @@
+#
+#	Makefile for dcmrt/tests
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
+dcmdatadir = $(top_srcdir)/../dcmdata
+
+LOCALINCLUDES = -I$(top_srcdir)/include -I$(dcmdatadir)/include -I$(oflogdir)/include \
+	-I$(ofstddir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(oflogdir)/libsrc \
+	-L$(ofstddir)/libsrc
+LOCALLIBS = -ldcmrt -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(ICONVLIBS)
+
+objs = drttest.o
+progs = drttest
+
+
+all: $(progs)
+
+drttest: drttest.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+install: all
+
+check:
+
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean:
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+include $(DEP)

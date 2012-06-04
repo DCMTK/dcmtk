@@ -12,9 +12,9 @@ ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.8)
 #-----------------------------------------------------------------------------
 
 # Modules to be built (default: build all public modules)
-SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat doxygen)
+SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt doxygen)
 # Add non-public modules
-#SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmrt dcmwave dcmeval)
+#SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmwave dcmeval)
 
 # Package "release" settings (some are currently unused)
 SET(DCMTK_PACKAGE_NAME "dcmtk")

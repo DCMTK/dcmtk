@@ -16,6 +16,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
     dcmnet   - a networking library and utility apps
     dcmpstat - a presentation state library and utility apps
     dcmqrdb  - an image database server
+    dcmrt    - a radiation therapy library and utility apps
     dcmsign  - a digital signature library and utility apps
     dcmsr    - a structured report library and utility apps
     dcmtls   - security extensions for the network library

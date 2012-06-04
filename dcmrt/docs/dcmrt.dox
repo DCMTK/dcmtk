@@ -1,0 +1,81 @@
+/*!
+
+\page mod_dcmrt dcmrt: a radiation therapy library and utility apps
+
+This module contains classes to read, write, create, modify and access various
+DICOM Radiation Therapy (RT) objects.
+
+The main interface classes are:
+\li \b DRTDoseIOD
+\li \b DRTImageIOD
+\li \b DRTPlanIOD
+\li \b DRTStructureSetIOD
+\li \b DRTTreatmentSummaryRecordIOD
+\li \b DRTIonPlanIOD
+\li \b DRTIonBeamsTreatmentRecordIOD
+
+\section Tools
+
+This module contains the following command line tools:
+\li \ref drtdump
+
+\section Examples
+
+The following example shows how to load an RT Dose file and output the
+patient's name:
+
+\code
+DcmFileFormat fileformat;
+OFCondition status = fileformat.loadFile("rtdose.dcm");
+if (status.good())
+{
+  DRTDoseIOD rtdose;
+  status = rtdose.read(*fileformat.getDataset());
+  if (status.good())
+  {
+    OFString patientName;
+    status = rtdose.getPatientName(patientName);
+    if (status.good())
+    {
+      cout << "Patient's Name: " << patientName << endl;
+    } else
+      cerr << "Error: cannot access Patient's Name (" << status.text() << ")" << endl;
+  } else
+    cerr << "Error: cannot read RT Dose object (" << status.text() << ")" << endl;
+} else
+  cerr << "Error: cannot load DICOM file (" << status.text() << ")" << endl;
+\endcode
+
+The following example shows how to load an RT Plan file, change the patient's
+name and save it to a new file:
+
+\code
+DcmFileFormat fileformat;
+OFCondition status = fileformat.loadFile("rtplan.dcm");
+if (status.good())
+{
+  DRTPlanIOD rtplan;
+  status = rtplan.read(*fileformat.getDataset());
+  if (status.good())
+  {
+    status = rtplan.setPatientName("Doe^John");
+    if (status.good())
+    {
+      fileformat.clear();
+      status = rtplan.write(*fileformat.getDataset());
+      if (status.good())
+      {
+        status = fileformat.saveFile("rtplan_new.dcm");
+        if (status.bad())
+          cerr << "Error: cannot save DICOM file (" << status.text() << ")" << endl;
+      } else
+        cerr << "Error: cannot write RT Plan object (" << status.text() << ")" << endl;
+    } else
+      cerr << "Error: cannot change Patient's Name (" << status.text() << ")" << endl;
+  } else
+    cerr << "Error: cannot read RT Plan object (" << status.text() << ")" << endl;
+} else
+  cerr << "Error: cannot load DICOM file (" << status.text() << ")" << endl;
+\endcode
+
+*/
