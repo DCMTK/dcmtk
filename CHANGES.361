@@ -6,7 +6,7 @@ Changes between releases are documented here.
 - Moved module for "DICOM in Radiation Therapy" (DCMRT) to the public DCMTK.
   Please note that this module is not yet complete, because the so-called
   medium-level API is still missing. Currently, it consists of classes that
-  are generated automatically bases on the 2007 edition of the DICOM standard.
+  are generated automatically based on the 2007 edition of the DICOM standard.
   See "dcmrt/CHANGES" file for details on changes before this merge happened.
   Added:   doxygen/manpages/man1/drtdump.1
   Affects: CMakeLists.txt
@@ -16,6 +16,9 @@ Changes between releases are documented here.
            config/modules
            doxygen/htmldocs.cfg
            doxygen/htmldocs.dox
+
+- Removed double entry on dcmqrdb module (second one added with last commit).
+  Affects: doxygen/htmldocs.dox
 
 **** Changes from 2012.06.04 (schlachter)
 
