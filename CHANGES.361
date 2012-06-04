@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.04 (riesmeier)
+
+- Moved module for "DICOM in Radiation Therapy" (DCMRT) to the public DCMTK.
+  Please note that this module is not yet complete, because the so-called
+  medium-level API is still missing. Currently, it consists of classes that
+  are generated automatically bases on the 2007 edition of the DICOM standard.
+  See "dcmrt/CHANGES" file for details on changes before this merge happened.
+  Added:   doxygen/manpages/man1/drtdump.1
+  Affects: CMakeLists.txt
+           COPYRIGHT
+           Makefile
+           README
+           config/modules
+           doxygen/htmldocs.cfg
+           doxygen/htmldocs.dox
+
 **** Changes from 2012.06.04 (schlachter)
 
 - Added an 'exhaustive' test mode for running slow tests.
