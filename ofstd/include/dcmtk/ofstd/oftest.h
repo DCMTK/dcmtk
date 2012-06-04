@@ -22,9 +22,9 @@
  *
  *  Purpose: Provide a test framework for the toolkit
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-04-25 15:12:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-06-04 06:58:57 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,12 +71,22 @@ public:
     /// This is the type used for test results.
     typedef OFList<OFString> TestResult;
 
+    /** Special flags that a test can have. The flags for a test are the result
+     *  of a bitwise or of these individual flags.
+     */
+    enum E_Flags {
+        EF_None = 0x0,
+        /// Slow test which should only be run in exhaustive mode.
+        EF_Slow = 0x1
+    };
+
     /** Contructor
      *  @param testName the name of this test case
      */
-    OFTestTest(const OFString& testName)
-      : testName_(testName),
-        results_()
+    OFTestTest(const OFString& testName, int flag)
+      : testName_(testName)
+      , results_()
+      , flags_(flag)
     {
     }
 
@@ -84,6 +94,9 @@ public:
     virtual ~OFTestTest()
     {
     }
+
+    /// @return the flags of this test case
+    int flags() const { return flags_; }
 
     /// @return the name of this test case
     const OFString& getTestName() const { return testName_; }
@@ -126,6 +139,9 @@ private:
 
     /// The test results, empty for success.
     TestResult results_;
+
+    /// Flags that this test has.
+    const int flags_;
 };
 
 /** The test manager singleton manages the list of available test cases
@@ -232,10 +248,11 @@ public:
         cmd.addParam("tests-to-run", "names of tests to run (default: all)", OFCmdParam::PM_MultiOptional);
 
         cmd.addGroup("general options:");
-          cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-          cmd.addOption("--list",    "-l", "list available tests and exit");
+          cmd.addOption("--help",       "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+          cmd.addOption("--list",       "-l", "list available tests and exit", OFCommandLine::AF_Exclusive);
+          cmd.addOption("--exhaustive", "-x", "also run extensive and slow tests");
 #ifdef OFTEST_OFSTD_ONLY
-          cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
+          cmd.addOption("--verbose",    "-v", "verbose mode, print processing details");
 #else
           OFLog::addOptions(cmd);
 #endif
@@ -253,6 +270,7 @@ public:
          * such messages by testing corner cases. */
         OFLog::configureFromCommandLine(cmd, app, OFLogger::FATAL_LOG_LEVEL);
 #endif
+        if (cmd.findOption("--exhaustive")) exhaustive_ = OFTrue;
         if (cmd.findOption("--list")) listOnly = OFTrue;
 
         if (!buildTestsToRun(cmd, testsToRun))
@@ -267,11 +285,11 @@ public:
         if (listOnly)
         {
             OFListIterator(OFTestTest*) it;
-            COUT << "There are " << tests_.size() << " tests";
+            COUT << "There are " << testsToRun.size() << " tests";
             if (module)
                 COUT << " for module '" << module << "'";
             COUT << ":" << OFendl;
-            for (it = tests_.begin(); it != tests_.end(); ++it)
+            for (it = testsToRun.begin(); it != testsToRun.end(); ++it)
             {
                 COUT << "  " << (*it)->getTestName() << "\n";
             }
@@ -284,8 +302,9 @@ public:
 private:
     /// Private constructor, this is a singleton!
     OFTestManager()
-      : tests_(),
-        curTest_(NULL)
+      : tests_()
+      , curTest_(NULL)
+      , exhaustive_(OFFalse)
 #ifdef OFTEST_OFSTD_ONLY
       , verbose_(OFFalse)
 #endif
@@ -303,39 +322,53 @@ private:
      *  @param tests will be set to the list of tests to run
      *  @return OFFalse if the command line could not be handled.
      */
-    OFBool buildTestsToRun(OFCommandLine& cmd, OFList<OFTestTest*>& tests)
+    OFBool buildTestsToRun(OFCommandLine& cmd, OFList<OFTestTest*>& tests) const
     {
         const int paramCount = cmd.getParamCount();
         OFString paramString;
+        OFBool result = OFTrue;
 
         if (paramCount == 0)
         {
             // If no arguments are given, run all possible tests
             tests = tests_;
-            return OFTrue;
         }
-
-        OFBool result = OFTrue;
-        for (int i = 1; i <= paramCount; i++)
+        else
         {
-            cmd.getParam(i, paramString);
-
-            // Find all tests matching this argument
-            OFBool found = OFFalse;
-            OFListIterator(OFTestTest*) it;
-            for (it = tests_.begin(); it != tests_.end(); ++it)
+            for (int i = 1; i <= paramCount; i++)
             {
-                if (testMatches(*it, paramString))
+                cmd.getParam(i, paramString);
+
+                // Find all tests matching this argument
+                OFBool found = OFFalse;
+                OFListIterator(OFTestTest*) it;
+                for (it = tests_.begin(); it != tests_.end(); ++it)
                 {
-                    tests.push_back(*it);
-                    found = OFTrue;
+                    if (testMatches(*it, paramString))
+                    {
+                        tests.push_back(*it);
+                        found = OFTrue;
+                    }
+                }
+
+                if (!found)
+                {
+                    CERR << "Error: No test matches '" << paramString << "'" << OFendl;
+                    result = OFFalse;
                 }
             }
+        }
 
-            if (!found)
+        // If we are not in exhaustive mode, remove all slow tests
+        if (!exhaustive_)
+        {
+            OFListIterator(OFTestTest*) it = tests.begin();
+            while (it != tests.end())
             {
-                CERR << "Error: No test matches '" << paramString << "'" << OFendl;
-                result = OFFalse;
+                if ((*it)->flags() & OFTestTest::EF_Slow)
+                    it = tests.erase(it);
+                else
+                    ++it;
             }
         }
 
@@ -348,7 +381,7 @@ private:
      *  @param str the string describing the tests
      *  @return OFTrue if we found a match, else OFFalse
      */
-    OFBool testMatches(const OFTestTest* test, const OFString& str)
+    OFBool testMatches(const OFTestTest* test, const OFString& str) const
     {
         const char* testName = test->getTestName().c_str();
         const char* string = str.c_str();
@@ -377,6 +410,9 @@ private:
     /// Currently running test.
     OFTestTest* curTest_;
 
+    /// Should slow tests be run, too?
+    OFBool exhaustive_;
+
 #ifdef OFTEST_OFSTD_ONLY
     /// Are we running in verbose mode? Only used if oflog is not available.
     OFBool verbose_;
@@ -399,11 +435,7 @@ int main(int argc, char* argv[]) \
 class OFTest ## testName : public OFTestTest \
 { \
 public: \
-    OFTest ## testName() \
-    : OFTestTest(#testName) \
-    { \
-        OFTestManager::instance().addTest(this); \
-    } \
+    OFTest ## testName(); \
     void run(); \
 }
 
@@ -424,10 +456,25 @@ public: \
 
 /** Macro to define a new test case. Internally this defines a new class
  *  inheriting from OFTest.
+ *  This is equivalent to OFTEST_FLAGS(testName, EF_None).
  *  @param testName name describing the test
+ *  @see OFTEST_FLAGS
  */
-#define OFTEST(testName) \
+#define OFTEST(testName) OFTEST_FLAGS(testName, EF_None)
+
+/** Macro to define a new test case. Internally this defines a new class
+ *  inheriting from OFTest.
+ *  @param flags flags that should be set for this test
+ *  @param testName name describing the test
+ *  @see OFTEST
+ */
+#define OFTEST_FLAGS(testName, flags) \
     OFTEST_CLASS(testName); \
+    OFTest ## testName::OFTest ## testName() \
+    : OFTestTest(#testName, flags) \
+    { \
+        OFTestManager::instance().addTest(this); \
+    } \
     void OFTest ## testName ::run()
 
 /** @name macros for checking conditions in tests
@@ -482,6 +529,9 @@ public: \
  *
  * CVS/RCS Log:
  * $Log: oftest.h,v $
+ * Revision 1.6  2012-06-04 06:58:57  uli
+ * Added an 'exhaustive' test mode for running slow tests.
+ *
  * Revision 1.5  2012-04-25 15:12:54  joergr
  * Now, also error log messages are disabled by default.
  *

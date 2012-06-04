@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.04 (schlachter)
+
+- Added an 'exhaustive' test mode for running slow tests.
+  Affects: ofstd/include/dcmtk/ofstd/oftest.h
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.in
+           ofstd/tests/tests.cc
+           ofstd/tests/toffile.cc
+
 **** Changes from 2012.05.30 (riesmeier)
 
 - Added support for Waveform Storage SOP Classes introduced after 2003 edition

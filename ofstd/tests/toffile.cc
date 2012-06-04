@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *           in class OFFile
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2012-06-04 06:58:57 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,9 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
+
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
 
 #define INCLUDE_CTIME
 #define INCLUDE_CSTDLIB
@@ -334,7 +337,7 @@ static OFBool seekFile(OFFile &file)
   return OFTrue;
 }
 
-int main()
+OFTEST_FLAGS(ofstd_OFFile, EF_Slow)
 {
   COUT << "Test program for LFS support in DCMTK class OFFile\n" << OFendl;
 
@@ -349,8 +352,8 @@ int main()
   if (sizeof(offile_fpos_t) > 4) COUT << " - OK\n"; else COUT << " - too small, no LFS support\n";
   if ((sizeof(offile_off_t) <= 4 || sizeof(offile_fpos_t) <= 4))
   {
-    COUT << "No LFS support available. LFS test failed." << OFendl;
-    return 10;
+    OFCHECK_FAIL("No LFS support available. LFS test failed.");
+    return;
   }
 
   OFFile file;
@@ -364,20 +367,20 @@ int main()
     COUT << "\nCreating a 6 GByte data file." << OFendl << STD_NAMESPACE flush;
     if (!file.fopen(FILENAME, "w+b"))
     {
-      COUT << "Error: Unable to create file " << FILENAME << ". LFS test failed." << OFendl;
-      return 10;
+      OFCHECK_FAIL("Error: Unable to create file " << FILENAME << ". LFS test failed." << OFendl);
+      return;
     }
 
     if (! fillFile(file))
     {
-      COUT << "Error: Unable to write 6 GByte of data. LFS test failed." << OFendl;
-      return 10;
+      OFCHECK_FAIL("Error: Unable to write 6 GByte of data. LFS test failed.");
+      return;
     }
 
     if (! seekFile(file))
     {
-      COUT << "Error: fseek() tests unsuccessful. LFS test failed." << OFendl;
-      return 10;
+      OFCHECK_FAIL("Error: fseek() tests unsuccessful. LFS test failed.");
+      return;
     }
 
     COUT << "Closing file." << OFendl << STD_NAMESPACE flush;
@@ -389,23 +392,23 @@ int main()
 
   if (!file.fopen(FILENAME, "rb"))
   {
-    COUT << "Error: Unable to open file " << FILENAME << ". LFS test failed." << OFendl;
-    return 10;
+    OFCHECK_FAIL("Error: Unable to open file " << FILENAME << ". LFS test failed.");
+    return;
   }
 
   if (! seekFile(file))
   {
-    COUT << "Error: fseek() tests unsuccessful. LFS test failed." << OFendl;
-    return 10;
+    OFCHECK_FAIL("Error: fseek() tests unsuccessful. LFS test failed.");
+    return;
   }
-
-
-  return 0;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.10  2012-06-04 06:58:57  uli
+ * Added an 'exhaustive' test mode for running slow tests.
+ *
  * Revision 1.9  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *

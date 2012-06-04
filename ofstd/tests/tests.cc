@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-24 16:12:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2012-06-04 06:58:57 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@ OFTEST_REGISTER(ofstd_OFList_splice);
 OFTEST_REGISTER(ofstd_OFMap);
 OFTEST_REGISTER(ofstd_OFStack);
 OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
+OFTEST_REGISTER(ofstd_OFFile);
 OFTEST_REGISTER(ofstd_OFString_compare);
 OFTEST_REGISTER(ofstd_OFString_concatenate);
 OFTEST_REGISTER(ofstd_OFString_constructor);
@@ -77,6 +78,9 @@ OFTEST_MAIN("ofstd")
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.10  2012-06-04 06:58:57  uli
+ * Added an 'exhaustive' test mode for running slow tests.
+ *
  * Revision 1.9  2012-05-24 16:12:46  joergr
  * Added Windows-specific support for converting between wide character encoding
  * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.

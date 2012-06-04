@@ -19,18 +19,15 @@ LOCALTRASH = *.out
 
 test_objs = tests.o tatof.o tmap.o tvec.o tftoa.o tthread.o tbase64.o \
             tstring.o tlist.o tstack.o tofdatim.o tofstd.o tmarkup.o \
-            tchrenc.o txml.o tuuid.o
-objs = toffile.o $(test_objs)
-progs = toffile tests
+            tchrenc.o txml.o tuuid.o toffile.o
+objs = $(test_objs)
+progs = tests
 
 
 all: $(progs)
 
 tests: $(test_objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(ICONVLIBS) $(LIBS)
-
-toffile: toffile.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 check: tests
