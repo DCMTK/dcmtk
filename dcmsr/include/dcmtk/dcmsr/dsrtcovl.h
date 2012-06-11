@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:12 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for spatial coordinate values
+/** Class for temporal coordinate values
  */
 class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 {
@@ -79,13 +79,13 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 
     /** clear all internal variables.
      *  Temporal range type is set to TRT_invalid.  Since an empty list of graphic data is
-     *  invalid the spatial coordinates value becomes invalid afterwards.
+     *  invalid the temporal coordinates value becomes invalid afterwards.
      */
     virtual void clear();
 
-    /** check whether the current spatial coordinates value is valid.
+    /** check whether the current temporal coordinates value is valid.
      *  The value is valid if the temporal range type is not TRT_invalid and the other data
-     *  is valid (see checkData() for details).
+     *  is valid.  See checkData() method for details.
      ** @return OFTrue if reference value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -152,13 +152,17 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     OFCondition getValue(DSRTemporalCoordinatesValue &coordinatesValue) const;
 
     /** set temporal coordinates value.
-     *  Before setting the value the temporal range type and other data are checked (see
-     *  checkData()).  If the value is invalid the current value is not replaced and remains
+     *  Before setting the value, the temporal range type and other data are checked (see
+     *  checkData()).  If the value is invalid, the current value is not replaced and remains
      *  unchanged.
      ** @param  coordinatesValue  value to be set
+     *  @param  check             if enabled, check values for validity before setting them.
+     *                            See checkData() method for details.  Empty values are only
+     *                            accepted for non-mandatory attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const DSRTemporalCoordinatesValue &coordinatesValue);
+    OFCondition setValue(const DSRTemporalCoordinatesValue &coordinatesValue,
+                         const OFBool check = OFTrue);
 
     /** get current temporal range type.
      *  This value represents the type of temporal extent of the region of interest.
@@ -172,16 +176,18 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     /** set current temporal range type.
      *  This value represents the type of temporal extent of the region of interest.
      ** @param  temporalRangeType  temporal range type to be set (TRT_invalid is not allowed)
+     *  @param  check              dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType);
+    OFCondition setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType,
+                                     const OFBool check = OFTrue);
 
-    /** get reference to list of referenced datetime
+    /** get reference to list of referenced date/time
      ** @return reference to list
      */
-    inline DSRReferencedDatetimeList &getDatetimeList()
+    inline DSRReferencedDateTimeList &getDateTimeList()
     {
-        return DatetimeList;
+        return DateTimeList;
     }
 
     /** get reference to list of referenced sample positions
@@ -228,18 +234,22 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 
     /** check the temporal range type and other data for validity.
      *  The data is valid if the 'temporalRangeType' is valid and at least one of the three
-     *  lists are non-empty.  If more the one list is non-empty a warning is reported since
-     *  they are mutually exclusive (type 1C).
+     *  lists are non-empty.  If more than one list is non-empty, a warning is reported (if
+     *  enabled) since they are mutually exclusive (type 1C).
      ** @param  temporalRangeType   temporal range type to be checked
      *  @param  samplePositionList  list of referenced sample positions to be checked
      *  @param  timeOffsetList      list of referenced time offsets to be checked
-     *  @param  datetimeList        list of referenced datetime to be checked
-     ** @return OFTrue if data is valid, OFFalse otherwise
+     *  @param  dateTimeList        list of referenced date/time to be checked
+     *  @param  reportWarnings      if enabled, report a warning message on each deviation
+     *                              from an expected value to the logger
+     ** @return status, EC_Normal if graphic type and data are valid, an error code otherwise
      */
-    OFBool checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
-                     const DSRReferencedSamplePositionList &samplePositionList,
-                     const DSRReferencedTimeOffsetList &timeOffsetList,
-                     const DSRReferencedDatetimeList &datetimeList) const;
+    OFCondition checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
+                          const DSRReferencedSamplePositionList &samplePositionList,
+                          const DSRReferencedTimeOffsetList &timeOffsetList,
+                          const DSRReferencedDateTimeList &dateTimeList,
+                          const OFBool reportWarnings = OFFalse) const;
+
 
   private:
 
@@ -250,8 +260,8 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     DSRReferencedSamplePositionList SamplePositionList;
     /// list of referenced time offsets (associated DICOM VR=DS, VM=1-n, type 1C)
     DSRReferencedTimeOffsetList     TimeOffsetList;
-    /// list of referenced datetime (associated DICOM VR=DT, VM=1-n, type 1C)
-    DSRReferencedDatetimeList       DatetimeList;
+    /// list of referenced date/time (associated DICOM VR=DT, VM=1-n, type 1C)
+    DSRReferencedDateTimeList       DateTimeList;
 };
 
 
@@ -261,6 +271,9 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.h,v $
+ *  Revision 1.15  2012-06-11 08:53:03  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.14  2012-01-06 09:13:12  uli
  *  Make it possible to build dcmsr as a DLL.
  *

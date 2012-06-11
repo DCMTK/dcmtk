@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:04 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:01 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,8 +55,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     DSRCodedEntryValue();
 
-    /** constructor.
-     *  The code triple is only set if it passed the validity check (see setCode()).
+    /** constructor
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
@@ -64,13 +63,16 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
+     *  @param  check                   if enabled, check code for validity before setting it.
+     *                                  See checkCode() for details.  Empty values are never
+     *                                  accepted.
      */
     DSRCodedEntryValue(const OFString &codeValue,
                        const OFString &codingSchemeDesignator,
-                       const OFString &codeMeaning);
+                       const OFString &codeMeaning,
+                       const OFBool check = OFTrue);
 
-    /** constructor.
-     *  The code 4-tuple is only set if it passed the validity check (see setCode()).
+    /** constructor
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
@@ -82,11 +84,15 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
+     *  @param  check                   if enabled, check code for validity before setting it.
+     *                                  See checkCode() for details.  Empty values are only
+     *                                  accepted for non-mandatory attributes.
      */
     DSRCodedEntryValue(const OFString &codeValue,
                        const OFString &codingSchemeDesignator,
                        const OFString &codingSchemeVersion,
-                       const OFString &codeMeaning);
+                       const OFString &codeMeaning,
+                       const OFBool check = OFTrue);
 
     /** copy constructor
      ** @param  codedEntryValue  code to be copied (not checked !)
@@ -116,14 +122,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     virtual void clear();
 
-    /** check whether the current code is valid.
-     *  See checkCode() for details.
+    /** check whether the current code is valid.  This check only covers the "Basic Coded Entry
+     *  Attributes".  See checkCode() for details.
      ** @return OFTrue if code is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
 
-    /** check whether the current code is empty.
-     *  Checks whether all four components of the code are empty.
+    /** check whether the current code is empty, i.e.\ whether all four components of the code
+     *  ("Basic Coded Entry Attributes") are empty.
      ** @return OFTrue if code is empty, OFFalse otherwise
      */
     virtual OFBool isEmpty() const;
@@ -146,8 +152,9 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
     /** read code sequence from dataset.
      *  The number of items within the code sequence is checked.  If error/warning output are
-     *  enabled a warning message is printed if the sequence is empty or contains more than
-     *  one item.
+     *  enabled, a warning message is printed if the sequence is empty or contains more than
+     *  one item.  The latter is a limitation of the current implementation, knowing that
+     *  there are code sequences for which more than one item is allowed.
      ** @param  dataset  DICOM dataset from which the code sequence should be read
      *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be read
      *  @param  type     value type of the sequence (valid value: "1", "2", something else).
@@ -320,19 +327,23 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     }
 
     /** set code.
-     *  Before setting the code, it is checked (see checkCode()).  If the code is invalid
-     *  the current code is not replaced and remains unchanged.  The attributes from the
-     *  "Enhanced Encoding Mode" are set by one of the setEnhancedEncodingMode() methods.
+     *  Before setting the code, it is usually checked.  If the code is invalid, the current
+     *  code is not replaced and remains unchanged.  The attributes from the "Enhanced
+     *  Encoding Mode" are set by one of the setEnhancedEncodingMode() methods.
      ** @param  codedEntryValue  code to be set
+     *  @param  check            if enabled, check code for validity before setting it.
+     *                           See checkCode() for details.  Empty values are only accepted
+     *                           for non-mandatory attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const DSRCodedEntryValue &codedEntryValue);
+    OFCondition setValue(const DSRCodedEntryValue &codedEntryValue,
+                         const OFBool check = OFTrue);
 
     /** set code.
-     *  Before setting the code, it is checked (see checkCode()).  If the code is invalid the
-     *  current code is not replaced and remains unchanged.  Additional information on the
-     *  coding scheme can be provided via the DSRDocument::getCodingSchemeIdentification()
-     *  method (highly recommended for private coding schemes).
+     *  Before setting the code, it is usually checked.  If the code is invalid, the current
+     *  code is not replaced and remains unchanged.  Additional information on the coding
+     *  scheme can be provided via the DSRDocument::getCodingSchemeIdentification() method
+     *  (highly recommended for private coding schemes).
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
@@ -342,17 +353,21 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
+     *  @param  check                   if enabled, check code for validity before setting it.
+     *                                  See checkCode() for details.  Empty values are only
+     *                                  accepted for non-mandatory attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setCode(const OFString &codeValue,
                         const OFString &codingSchemeDesignator,
-                        const OFString &codeMeaning);
+                        const OFString &codeMeaning,
+                        const OFBool check = OFTrue);
 
     /** set code.
-     *  Before setting the code, it is checked (see checkCode()).  If the code is invalid the
-     *  current code is not replaced and remains unchanged.  Additional information on the
-     *  coding scheme can be provided via the DSRDocument::getCodingSchemeIdentification()
-     *  method (highly recommended for private coding schemes).
+     *  Before setting the code, it is usually checked.  If the code is invalid, the current
+     *  code is not replaced and remains unchanged.  Additional information on the coding
+     *  scheme can be provided via the DSRDocument::getCodingSchemeIdentification() method
+     *  (highly recommended for private coding schemes).
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
@@ -366,12 +381,16 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
+     *  @param  check                   if enabled, check code for validity before setting it.
+     *                                  See checkCode() for details.  Empty values are only
+     *                                  accepted for non-mandatory attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setCode(const OFString &codeValue,
                         const OFString &codingSchemeDesignator,
                         const OFString &codingSchemeVersion,
-                        const OFString &codeMeaning);
+                        const OFString &codeMeaning,
+                        const OFBool check = OFTrue);
 
     /** check whether the "Enhanced Encoding Mode" is used for this code.
      *  Currently, the only check that is performed is that either the context identifier or
@@ -381,17 +400,23 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     OFBool usesEnhancedEncodingMode() const;
 
     /** remove the "Enhanced Encoding Mode" from this code.
-     *  Internally, all attributes that belong to this mode are cleared.
+     *  Internally, all elements that belong to this mode are cleared.
      */
     void removeEnhancedEncodingMode();
 
     /** specify the "Enhanced Encoding Mode" for this code.
      *  This method should be used for private context groups, which are not identified by a
-     *  context identifier and mapping resource.
+     *  context identifier and mapping resource.  Before setting the code, it is usually
+     *  checked.  If the code is invalid, the current code is not replaced and remains
+     *  unchanged.
      ** @param  contextUID  uniquely identifies the context group.  (VR=UI, mandatory)
+     *  @param  check       if enabled, the given value is checked for validity (conformance
+     *                      with corresponding VR and VM) before setting it.  An empty value
+     *                      is never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setEnhancedEncodingMode(const OFString &contextUID);
+    OFCondition setEnhancedEncodingMode(const OFString &contextUID,
+                                        const OFBool check = OFTrue);
 
     /** specify the "Enhanced Encoding Mode" for this code.
      *  This method should be used for codes from or extensions to non-private context groups,
@@ -410,6 +435,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  @param  extensionCreatorUID  identifies the person or organization who created the
      *                               extension to the context group.  (VR=UI, conditional)
      *                               Should be specified if 'localVersion' is non-empty.
+     *  @param  check                if enabled, the given values are checked for validity
+     *                               (conformance with corresponding VR and VM) before setting
+     *                               them.  Empty values are only accepted for non-mandatory
+     *                               attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setEnhancedEncodingMode(const OFString &contextIdentifier,
@@ -417,7 +446,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
                                         const OFString &contextGroupVersion,
                                         const OFString &contextUID = "",
                                         const OFString &localVersion = "",
-                                        const OFString &extensionCreatorUID = "");
+                                        const OFString &extensionCreatorUID = "",
+                                        const OFBool check = OFTrue);
+
+    /** check the currently stored code for validity.
+     *  See below checkCode() method for details.
+     ** @return status, EC_Normal if current value is valid, an error code otherwise
+     */
+    OFCondition checkCurrentValue() const;
 
 
   protected:
@@ -447,45 +483,48 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified code for validity.
-     *  Currently, the only check that is performed is that the three given string values are
-     *  not empty.  Later on, it might be checked whether the specified code really belongs to
-     *  the coding scheme, etc.  This require the presence of the relevant code dictionaries.
+     *  Currently, the only checks performed are that the three mandatory string values are
+     *  non-empty and that all four values conform to the corresponding VR and VM.  Later on,
+     *  it might also be checked whether the specified code really belongs to the coding
+     *  scheme, etc.  This requires the presence of the relevant code dictionaries, though.
      ** @param  codeValue               code value to be checked
      *  @param  codingSchemeDesignator  coding scheme designator to be checked
-     *  @param  codeMeaning             code meaning tobe checked
-     ** @return OFTrue if code is valid, OFFalse otherwise
+     *  @param  codingSchemeVersion     coding scheme version to be checked (might be empty)
+     *  @param  codeMeaning             code meaning to be checked
+     ** @return status, EC_Normal if code is valid, an error code otherwise
      */
-    OFBool checkCode(const OFString &codeValue,
-                     const OFString &codingSchemeDesignator,
-                     const OFString &codeMeaning) const;
+    OFCondition checkCode(const OFString &codeValue,
+                          const OFString &codingSchemeDesignator,
+                          const OFString &codingSchemeVersion,
+                          const OFString &codeMeaning) const;
 
 
   private:
 
     // -- Basic Coded Entry Attributes --
 
-    /// Code Value (VR=SH, mandatory)
+    /// Code Value (VR=SH, type 1)
     OFString CodeValue;
-    /// Coding Scheme Designator (VR=SH, mandatory)
+    /// Coding Scheme Designator (VR=SH, type 1)
     OFString CodingSchemeDesignator;
-    /// Coding Scheme Version (VR=SH, optional)
+    /// Coding Scheme Version (VR=SH, 1C)
     OFString CodingSchemeVersion;
-    /// Code Meaning (VR=LO, mandatory)
+    /// Code Meaning (VR=LO, type 1)
     OFString CodeMeaning;
 
     // -- Enhanced Encoding Mode --
 
-    /// Context Identifier (VR=CS, optional)
+    /// Context Identifier (VR=CS, type 3)
     OFString ContextIdentifier;
-    /// Context UID (VR=UI, optional)
+    /// Context UID (VR=UI, type 2)
     OFString ContextUID;
-    /// Mapping Resource (VR=CS, conditional)
+    /// Mapping Resource (VR=CS, type 1C)
     OFString MappingResource;
-    /// Context Group Version (VR=DT, conditional)
+    /// Context Group Version (VR=DT, type 1C)
     OFString ContextGroupVersion;
-    /// Context Group Local Version (VR=DT, conditional)
+    /// Context Group Local Version (VR=DT, type 1C)
     OFString ContextGroupLocalVersion;
-    /// Context Group Extension Creator UID (VR=UI, conditional)
+    /// Context Group Extension Creator UID (VR=UI, type 1C)
     OFString ContextGroupExtensionCreatorUID;
 };
 
@@ -496,6 +535,9 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
+ *  Revision 1.25  2012-06-11 08:53:01  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.24  2012-01-06 09:13:04  uli
  *  Make it possible to build dcmsr as a DLL.
  *

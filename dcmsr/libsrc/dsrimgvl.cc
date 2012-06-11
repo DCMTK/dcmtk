@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,29 +47,31 @@ DSRImageReferenceValue::DSRImageReferenceValue()
 
 
 DSRImageReferenceValue::DSRImageReferenceValue(const OFString &sopClassUID,
-                                               const OFString &sopInstanceUID)
+                                               const OFString &sopInstanceUID,
+                                               const OFBool check)
   : DSRCompositeReferenceValue(),
     PresentationState(),
     FrameList(),
     IconImage(NULL)
 {
-    /* check for appropriate SOP class UID */
-    setReference(sopClassUID, sopInstanceUID);
+    /* use the set method for checking purposes */
+    setReference(sopClassUID, sopInstanceUID, check);
 }
 
 
 DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
                                                const OFString &imageSOPInstanceUID,
                                                const OFString &pstateSOPClassUID,
-                                               const OFString &pstateSOPInstanceUID)
+                                               const OFString &pstateSOPInstanceUID,
+                                               const OFBool check)
   : DSRCompositeReferenceValue(),
     PresentationState(),
     FrameList(),
     IconImage(NULL)
 {
-    /* check for appropriate SOP class UID */
-    setReference(imageSOPClassUID, imageSOPInstanceUID);
-    setPresentationState(DSRCompositeReferenceValue(pstateSOPClassUID, pstateSOPInstanceUID));
+    /* use the set methods for checking purposes */
+    setReference(imageSOPClassUID, imageSOPInstanceUID, check);
+    setPresentationState(DSRCompositeReferenceValue(pstateSOPClassUID, pstateSOPInstanceUID, OFFalse /*check*/), check);
 }
 
 
@@ -89,14 +91,11 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &ref
 
 DSRImageReferenceValue::DSRImageReferenceValue(const DSRCompositeReferenceValue &imageReferenceValue,
                                                const DSRCompositeReferenceValue &pstateReferenceValue)
-  : DSRCompositeReferenceValue(),
-    PresentationState(),
+  : DSRCompositeReferenceValue(imageReferenceValue),
+    PresentationState(pstateReferenceValue),
     FrameList(),
     IconImage(NULL)
 {
-    /* check for appropriate SOP class UID */
-    DSRCompositeReferenceValue::setValue(imageReferenceValue);
-    setPresentationState(pstateReferenceValue);
 }
 
 
@@ -129,7 +128,7 @@ void DSRImageReferenceValue::clear()
 
 OFBool DSRImageReferenceValue::isValid() const
 {
-    return DSRCompositeReferenceValue::isValid() && checkPresentationState(PresentationState);
+    return DSRCompositeReferenceValue::isValid() && checkPresentationState(PresentationState).good();
 }
 
 
@@ -480,26 +479,32 @@ OFCondition DSRImageReferenceValue::getValue(DSRImageReferenceValue &referenceVa
 }
 
 
-OFCondition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue)
+OFCondition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue,
+                                             const OFBool check)
 {
-    OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue);
+    OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue, check);
     if (result.good())
     {
         FrameList = referenceValue.FrameList;
-        setPresentationState(referenceValue.PresentationState);
+        /* ignore status (return value) since the presentation state is optional */
+        setPresentationState(referenceValue.PresentationState, check);
     }
     return result;
 }
 
 
-OFCondition DSRImageReferenceValue::setPresentationState(const DSRCompositeReferenceValue &referenceValue)
+OFCondition DSRImageReferenceValue::setPresentationState(const DSRCompositeReferenceValue &pstateValue,
+                                                         const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkPresentationState(referenceValue))
-    {
-        PresentationState = referenceValue;
-        result = EC_Normal;
-    }
+    OFCondition result = EC_Normal;
+    /* check whether the passed value is valid */
+    if (check)
+        result = checkPresentationState(pstateValue);
+    /* both UID values need to be empty or non-empty (optional) */
+    else if (pstateValue.getSOPClassUID().empty() != pstateValue.getSOPInstanceUID().empty())
+        result = SR_EC_InvalidValue;
+    if (result.good())
+        PresentationState = pstateValue;
     return result;
 }
 
@@ -513,28 +518,37 @@ OFBool DSRImageReferenceValue::appliesToFrame(const Sint32 frameNumber) const
 }
 
 
-OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+OFCondition DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
-    OFBool result = OFFalse;
-    if (DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID))
+    OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
+    if (result.good())
     {
-        /* tbd: might check for IMAGE storage class later on */
-        result = OFTrue;
+        /* tbd: might check for known IMAGE storage class later on */
     }
     return result;
 }
 
 
-OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const
+OFCondition DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const
 {
-    return referenceValue.isEmpty() || (referenceValue.isValid() &&
-          (DSRTypes::sopClassUIDToPresentationStateType(referenceValue.getSOPClassUID()) != DSRTypes::PT_invalid));
+    OFCondition result = EC_Normal;
+    /* the reference to a presentation state is optional, so an empty value is also valid */
+    if (!referenceValue.isEmpty())
+    {
+        result = referenceValue.checkCurrentValue();
+        if (result.good() && (DSRTypes::sopClassUIDToPresentationStateType(referenceValue.getSOPClassUID()) == DSRTypes::PT_invalid))
+            result = SR_EC_InvalidValue;
+    }
+    return result;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.28  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.27  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

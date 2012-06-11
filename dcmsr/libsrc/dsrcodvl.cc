@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:30:18 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,8 @@ DSRCodedEntryValue::DSRCodedEntryValue()
 
 DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
                                        const OFString &codingSchemeDesignator,
-                                       const OFString &codeMeaning)
+                                       const OFString &codeMeaning,
+                                       const OFBool check)
   : CodeValue(codeValue),
     CodingSchemeDesignator(codingSchemeDesignator),
     CodingSchemeVersion(),
@@ -64,15 +65,16 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
     ContextGroupLocalVersion(),
     ContextGroupExtensionCreatorUID()
 {
-    /* check code */
-    setCode(codeValue, codingSchemeDesignator, codeMeaning);
+    /* check code (if not disabled) */
+    setCode(codeValue, codingSchemeDesignator, codeMeaning, check);
 }
 
 
 DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
                                        const OFString &codingSchemeDesignator,
                                        const OFString &codingSchemeVersion,
-                                       const OFString &codeMeaning)
+                                       const OFString &codeMeaning,
+                                       const OFBool check)
   : CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
@@ -84,8 +86,8 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
     ContextGroupLocalVersion(),
     ContextGroupExtensionCreatorUID()
 {
-    /* check code */
-    setCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning);
+    /* check code (if not disabled) */
+    setCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning, check);
 }
 
 
@@ -129,6 +131,7 @@ DSRCodedEntryValue &DSRCodedEntryValue::operator=(const DSRCodedEntryValue &code
 
 OFBool DSRCodedEntryValue::operator==(const DSRCodedEntryValue &codedEntryValue) const
 {
+    /* Code Meaning is not used for comparing the two codes */
     return (CodeValue == codedEntryValue.CodeValue) &&
            (CodingSchemeDesignator == codedEntryValue.CodingSchemeDesignator) &&
            (CodingSchemeVersion == codedEntryValue.CodingSchemeVersion);
@@ -152,7 +155,8 @@ void DSRCodedEntryValue::clear()
 
 OFBool DSRCodedEntryValue::isValid() const
 {
-    return checkCode(CodeValue, CodingSchemeDesignator, CodeMeaning);
+    /* tbd: there might be an issue with checking extended characters! */
+    return checkCurrentValue().good();
 }
 
 
@@ -346,7 +350,7 @@ OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
             }
         }
         /* check whether code is valid */
-        result = (isValid() ? EC_Normal : SR_EC_InvalidValue);
+        result = isValid() ? EC_Normal : SR_EC_InvalidValue;
     }
     return result;
 }
@@ -427,14 +431,16 @@ OFCondition DSRCodedEntryValue::getValue(DSRCodedEntryValue &codedEntryValue) co
 }
 
 
-OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryValue)
+OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryValue,
+                                         const OFBool check)
 {
     /* first set "Basic Coded Entry Attributes" */
     OFCondition result = setCode(codedEntryValue.CodeValue,
                                  codedEntryValue.CodingSchemeDesignator,
                                  codedEntryValue.CodingSchemeVersion,
-                                 codedEntryValue.CodeMeaning);
-    /* then handle "Enhanced Encoding Mode" */
+                                 codedEntryValue.CodeMeaning,
+                                 check);
+    /* then handle "Enhanced Encoding Mode" (if present) */
     if (result.good())
     {
         if (!codedEntryValue.ContextIdentifier.empty())
@@ -445,12 +451,14 @@ OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryVal
                                              codedEntryValue.ContextGroupVersion,
                                              codedEntryValue.ContextUID,
                                              codedEntryValue.ContextGroupLocalVersion,
-                                             codedEntryValue.ContextGroupExtensionCreatorUID);
+                                             codedEntryValue.ContextGroupExtensionCreatorUID,
+                                             check);
         }
         else if (!codedEntryValue.ContextUID.empty())
         {
             /* specify details for a private context group */
-            result = setEnhancedEncodingMode(codedEntryValue.ContextUID);
+            result = setEnhancedEncodingMode(codedEntryValue.ContextUID,
+                                             check);
         }
     }
     return result;
@@ -459,19 +467,30 @@ OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryVal
 
 OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
                                         const OFString &codingSchemeDesignator,
-                                        const OFString &codeMeaning)
+                                        const OFString &codeMeaning,
+                                        const OFBool check)
 {
-    return setCode(codeValue, codingSchemeDesignator, "", codeMeaning);
+    return setCode(codeValue, codingSchemeDesignator, "" /*codingSchemeVersion*/, codeMeaning, check);
 }
 
 
 OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
                                         const OFString &codingSchemeDesignator,
                                         const OFString &codingSchemeVersion,
-                                        const OFString &codeMeaning)
+                                        const OFString &codeMeaning,
+                                        const OFBool check)
 {
     OFCondition result = EC_Normal;
-    if (checkCode(codeValue, codingSchemeDesignator, codeMeaning))
+    if (check)
+    {
+        /* check whether the passed values are valid */
+        result = checkCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning);
+    } else {
+        /* make sure that the mandatory values are non-empty */
+        if (codeValue.empty() || codingSchemeDesignator.empty() || codeMeaning.empty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
     {
         /* copy "Basic Coded Entry Attributes" */
         CodeValue = codeValue;
@@ -480,18 +499,8 @@ OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
         CodeMeaning = codeMeaning;
         /* clear attributes from "Enhanced Encoding Mode" */
         removeEnhancedEncodingMode();
-    } else
-        result = SR_EC_InvalidValue;
+    }
     return result;
-}
-
-
-OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
-                                     const OFString &codingSchemeDesignator,
-                                     const OFString &codeMeaning) const
-{
-    /* need to check correctness of the code (code dictionary?) */
-    return (!codeValue.empty() && !codingSchemeDesignator.empty() && !codeMeaning.empty());
 }
 
 
@@ -513,11 +522,19 @@ void DSRCodedEntryValue::removeEnhancedEncodingMode()
 }
 
 
-OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextUID)
+OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextUID,
+                                                        const OFBool check)
 {
     OFCondition result = EC_Normal;
-    /* check whether a non-empty value is passed */
-    if (!contextUID.empty())
+    /* first, make sure that the mandatory value is non-empty */
+    if (contextUID.empty())
+        result = EC_IllegalParameter;
+    else if (check)
+    {
+        /* check whether the passed value is valid */
+        result = DcmUniqueIdentifier::checkStringValue(contextUID, "1");
+    }
+    if (result.good())
     {
         ContextUID = contextUID;
         /* clear all other attributes */
@@ -526,8 +543,7 @@ OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextU
         ContextGroupVersion.clear();
         ContextGroupLocalVersion.clear();
         ContextGroupExtensionCreatorUID.clear();
-    } else
-        result = SR_EC_InvalidValue;
+    }
     return result;
 }
 
@@ -537,12 +553,32 @@ OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextI
                                                         const OFString &contextGroupVersion,
                                                         const OFString &contextUID,
                                                         const OFString &localVersion,
-                                                        const OFString &extensionCreatorUID)
+                                                        const OFString &extensionCreatorUID,
+                                                        const OFBool check)
 {
     OFCondition result = EC_Normal;
-    /* check whether the main attributes are non-empty (and some basic conditions are met) */
-    if (!contextIdentifier.empty() && !mappingResource.empty() && !contextGroupVersion.empty() &&
-        (localVersion.empty() == extensionCreatorUID.empty() /* both empty or non-empty */ ))
+    /* first, make sure that the mandatory values are non-empty */
+    if (contextIdentifier.empty() || mappingResource.empty() || contextGroupVersion.empty())
+        result = EC_IllegalParameter;
+    /* both values need to be empty or non-empty */
+    else if (localVersion.empty() != extensionCreatorUID.empty())
+        result = SR_EC_InvalidValue;
+    else if (check)
+    {
+        /* check whether the passed values are valid */
+        result = DcmCodeString::checkStringValue(contextIdentifier, "1");
+        if (result.good())
+            result = DcmCodeString::checkStringValue(mappingResource, "1");
+        if (result.good())
+            result = DcmDateTime::checkStringValue(contextGroupVersion, "1");
+        if (result.good())
+            result = DcmUniqueIdentifier::checkStringValue(contextUID, "1");
+        if (result.good())
+            result = DcmDateTime::checkStringValue(localVersion, "1");
+        if (result.good())
+            result = DcmUniqueIdentifier::checkStringValue(extensionCreatorUID, "1");
+    }
+    if (result.good())
     {
         ContextIdentifier = contextIdentifier;
         MappingResource = mappingResource;
@@ -550,15 +586,46 @@ OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextI
         ContextUID = contextUID;
         ContextGroupLocalVersion = localVersion;
         ContextGroupExtensionCreatorUID = extensionCreatorUID;
-    } else
-        result = SR_EC_InvalidValue;
+    }
     return result;
+}
+
+
+OFCondition DSRCodedEntryValue::checkCode(const OFString &codeValue,
+                                          const OFString &codingSchemeDesignator,
+                                          const OFString &codingSchemeVersion,
+                                          const OFString &codeMeaning) const
+{
+    OFCondition result = EC_Normal;
+    /* first, make sure that the mandatory values are non-empty */
+    if (codeValue.empty() || codingSchemeDesignator.empty() || codeMeaning.empty())
+        result = SR_EC_InvalidValue;
+    /* then, check whether the passed values are valid */
+    if (result.good())
+        result = DcmShortString::checkStringValue(codeValue, "1");
+    if (result.good())
+        result = DcmShortString::checkStringValue(codingSchemeDesignator, "1");
+    if (result.good())
+        result = DcmShortString::checkStringValue(codingSchemeVersion, "1");
+    if (result.good())
+        result = DcmLongString::checkStringValue(codeMeaning, "1");
+    /* tbd: also need to check correctness of the code (requires code dictionary) */
+    return result;
+}
+
+
+OFCondition DSRCodedEntryValue::checkCurrentValue() const
+{
+    return checkCode(CodeValue, CodingSchemeDesignator, CodingSchemeVersion, CodeMeaning);
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
+ *  Revision 1.31  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.30  2011-12-15 16:30:18  joergr
  *  Fixed typo in comments.
  *

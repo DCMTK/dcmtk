@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDateTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:19:12 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,16 +36,17 @@
 
 
 DSRDateTimeTreeNode::DSRDateTimeTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_DateTime),
-   DSRStringValue()
+  : DSRDocumentTreeNode(relationshipType, VT_DateTime),
+    DSRStringValue()
 {
 }
 
 
 DSRDateTimeTreeNode::DSRDateTimeTreeNode(const E_RelationshipType relationshipType,
-                                         const OFString &stringValue)
- : DSRDocumentTreeNode(relationshipType, VT_DateTime),
-   DSRStringValue(stringValue)
+                                         const OFString &dateTimeValue,
+                                         const OFBool check)
+  : DSRDocumentTreeNode(relationshipType, VT_DateTime),
+    DSRStringValue(dateTimeValue, check)
 {
 }
 
@@ -65,7 +66,7 @@ void DSRDateTimeTreeNode::clear()
 OFBool DSRDateTimeTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRStringValue::isValid() && getConceptName().isValid();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();
 }
 
 
@@ -190,9 +191,23 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &do
 }
 
 
+OFCondition DSRDateTimeTreeNode::checkValue(const OFString &dateTimeValue) const
+{
+    /* first, make sure that the mandatory value is non-empty */
+    OFCondition result = DSRStringValue::checkValue(dateTimeValue);
+    /* then, check whether the passed value is valid */
+    if (result.good())
+        result = DcmDateTime::checkStringValue(dateTimeValue, "1");
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
+ *  Revision 1.27  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.26  2011-11-29 16:19:12  joergr
  *  Added support for optional time zone to XML read/write methods of DT values.
  *

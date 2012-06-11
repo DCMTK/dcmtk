@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2012-06-11 08:53:07 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@ DSRTemporalCoordinatesValue::DSRTemporalCoordinatesValue()
   : TemporalRangeType(DSRTypes::TRT_invalid),
     SamplePositionList(),
     TimeOffsetList(),
-    DatetimeList()
+    DateTimeList()
 {
 }
 
@@ -47,7 +47,7 @@ DSRTemporalCoordinatesValue::DSRTemporalCoordinatesValue(const DSRTypes::E_Tempo
   : TemporalRangeType(temporalRangeType),
     SamplePositionList(),
     TimeOffsetList(),
-    DatetimeList()
+    DateTimeList()
 {
 }
 
@@ -56,7 +56,7 @@ DSRTemporalCoordinatesValue::DSRTemporalCoordinatesValue(const DSRTemporalCoordi
   : TemporalRangeType(coordinatesValue.TemporalRangeType),
     SamplePositionList(coordinatesValue.SamplePositionList),
     TimeOffsetList(coordinatesValue.TimeOffsetList),
-    DatetimeList(coordinatesValue.DatetimeList)
+    DateTimeList(coordinatesValue.DateTimeList)
 {
 }
 
@@ -71,7 +71,7 @@ DSRTemporalCoordinatesValue &DSRTemporalCoordinatesValue::operator=(const DSRTem
     TemporalRangeType = coordinatesValue.TemporalRangeType;
     SamplePositionList = coordinatesValue.SamplePositionList;
     TimeOffsetList = coordinatesValue.TimeOffsetList;
-    DatetimeList = coordinatesValue.DatetimeList;
+    DateTimeList = coordinatesValue.DateTimeList;
     return *this;
 }
 
@@ -81,19 +81,19 @@ void DSRTemporalCoordinatesValue::clear()
     TemporalRangeType = DSRTypes::TRT_invalid;
     SamplePositionList.clear();
     TimeOffsetList.clear();
-    DatetimeList.clear();
+    DateTimeList.clear();
 }
 
 
 OFBool DSRTemporalCoordinatesValue::isValid() const
 {
-    return checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList);
+    return checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DateTimeList).good();
 }
 
 
 OFBool DSRTemporalCoordinatesValue::isShort(const size_t flags) const
 {
-    return (SamplePositionList.isEmpty() && TimeOffsetList.isEmpty() && DatetimeList.isEmpty()) ||
+    return (SamplePositionList.isEmpty() && TimeOffsetList.isEmpty() && DateTimeList.isEmpty()) ||
           !(flags & DSRTypes::HF_renderFullData);
 }
 
@@ -111,7 +111,7 @@ OFCondition DSRTemporalCoordinatesValue::print(STD_NAMESPACE ostream &stream,
     else if (!TimeOffsetList.isEmpty())
         TimeOffsetList.print(stream, flags);
     else
-        DatetimeList.print(stream, flags);
+        DateTimeList.print(stream, flags);
     stream << ")";
     return EC_Normal;
 }
@@ -142,8 +142,8 @@ OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
             }
             else if (typeString == "DATETIME")
             {
-                /* put value to the datetime list (tbd: convert from ISO 8601 format?) */
-                result = DatetimeList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+                /* put value to the date/time list (tbd: convert from ISO 8601 format?) */
+                result = DateTimeList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
             } else {
                 DSRTypes::printUnknownValueWarningMessage("TCOORD data type", typeString.c_str());
                 result = SR_EC_InvalidValue;
@@ -159,7 +159,7 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
 {
     /* TemporalRangeType is written in TreeNode class */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !SamplePositionList.isEmpty() ||
-         !TimeOffsetList.isEmpty() || !DatetimeList.isEmpty())
+         !TimeOffsetList.isEmpty() || !DateTimeList.isEmpty())
     {
         stream << "<data type=\"";
         /* print only one list */
@@ -175,7 +175,7 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
         } else {
             /* tbd: convert output to ISO 8601 format? */
             stream << "DATETIME\">";
-            DatetimeList.print(stream);
+            DateTimeList.print(stream);
         }
         stream << "</data>" << OFendl;
     }
@@ -197,10 +197,9 @@ OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset)
         /* first read data (all three lists) */
         SamplePositionList.read(dataset);
         TimeOffsetList.read(dataset);
-        DatetimeList.read(dataset);
+        DateTimeList.read(dataset);
         /* then check data and report warnings if any */
-        if (!checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList))
-            result = SR_EC_InvalidValue;
+        checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DateTimeList, OFTrue /*reportWarnings*/);
     }
     return result;
 }
@@ -218,10 +217,10 @@ OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset) const
         else if (!TimeOffsetList.isEmpty())
             TimeOffsetList.write(dataset);
         else
-            DatetimeList.write(dataset);
+            DateTimeList.write(dataset);
     }
     /* check data and report warnings if any */
-    checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList);
+    checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DateTimeList, OFTrue /*reportWarnings*/);
     return result;
 }
 
@@ -252,8 +251,8 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docSt
                 docStream << "<b>Referenced Time Offsets:</b>" << lineBreak;
                 TimeOffsetList.print(docStream);
             } else {
-                docStream << "<b>Referenced Datetime:</b>" << lineBreak;
-                DatetimeList.print(docStream);
+                docStream << "<b>Referenced Date/Time:</b>" << lineBreak;
+                DateTimeList.print(docStream);
             }
             docStream << "</p>";
         } else {
@@ -270,8 +269,8 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docSt
                 annexStream << "<b>Referenced Time Offsets:</b>" << lineBreak;
                 TimeOffsetList.print(annexStream);
             } else {
-                annexStream << "<b>Referenced Datetime:</b>" << lineBreak;
-                DatetimeList.print(annexStream);
+                annexStream << "<b>Referenced Date/Time:</b>" << lineBreak;
+                DateTimeList.print(annexStream);
             }
             annexStream << "</p>" << OFendl;
         }
@@ -280,17 +279,31 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docSt
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::setValue(const DSRTemporalCoordinatesValue &coordinatesValue)
+OFCondition DSRTemporalCoordinatesValue::setValue(const DSRTemporalCoordinatesValue &coordinatesValue,
+                                                  const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkData(coordinatesValue.TemporalRangeType, coordinatesValue.SamplePositionList,
-                  coordinatesValue.TimeOffsetList, coordinatesValue.DatetimeList))
+    OFCondition result = EC_Normal;
+    if (check)
+    {
+        /* check whether the passed value is valid */
+        result = checkData(coordinatesValue.TemporalRangeType, coordinatesValue.SamplePositionList,
+                           coordinatesValue.TimeOffsetList, coordinatesValue.DateTimeList);
+    } else {
+        /* make sure that the mandatory values are non-empty/invalid */
+        if ((coordinatesValue.TemporalRangeType == DSRTypes::TRT_invalid) ||
+            (coordinatesValue.SamplePositionList.isEmpty() &&
+             coordinatesValue.TimeOffsetList.isEmpty() &&
+             coordinatesValue.DateTimeList.isEmpty()))
+        {
+            result = EC_IllegalParameter;
+        }
+    }
+    if (result.good())
     {
         TemporalRangeType = coordinatesValue.TemporalRangeType;
         SamplePositionList = coordinatesValue.SamplePositionList;
         TimeOffsetList = coordinatesValue.TimeOffsetList;
-        DatetimeList = coordinatesValue.DatetimeList;
-        result = EC_Normal;
+        DateTimeList = coordinatesValue.DateTimeList;
     }
     return result;
 }
@@ -303,9 +316,11 @@ OFCondition DSRTemporalCoordinatesValue::getValue(DSRTemporalCoordinatesValue &c
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType)
+OFCondition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType,
+                                                              const OFBool /*check*/)
 {
     OFCondition result = EC_IllegalParameter;
+    /* check whether the passed value is valid */
     if (temporalRangeType != DSRTypes::TRT_invalid)
     {
         TemporalRangeType = temporalRangeType;
@@ -315,30 +330,34 @@ OFCondition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_
 }
 
 
-OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
-                                              const DSRReferencedSamplePositionList &samplePositionList,
-                                              const DSRReferencedTimeOffsetList &timeOffsetList,
-                                              const DSRReferencedDatetimeList &datetimeList) const
+// helper macro to avoid annoying check of boolean flag
+#define REPORT_WARNING(msg) { if (reportWarnings) DCMSR_WARN(msg); }
+
+OFCondition DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
+                                                   const DSRReferencedSamplePositionList &samplePositionList,
+                                                   const DSRReferencedTimeOffsetList &timeOffsetList,
+                                                   const DSRReferencedDateTimeList &dateTimeList,
+                                                   const OFBool reportWarnings) const
 {
-    OFBool result = OFTrue;
+    OFCondition result = EC_Normal;
     if (temporalRangeType == DSRTypes::TRT_invalid)
-        DCMSR_WARN("Invalid TemporalRangeType for TCOORD content item");
+        REPORT_WARNING("Invalid TemporalRangeType for TCOORD content item")
     const OFBool list1 = !samplePositionList.isEmpty();
     const OFBool list2 = !timeOffsetList.isEmpty();
-    const OFBool list3 = !datetimeList.isEmpty();
+    const OFBool list3 = !dateTimeList.isEmpty();
     if (list1 && list2 && list3)
-        DCMSR_WARN("ReferencedSamplePositions/TimeOffsets/Datetime present in TCOORD content item");
+        REPORT_WARNING("ReferencedSamplePositions/TimeOffsets/DateTime present in TCOORD content item")
     else if (list1 && list2)
-        DCMSR_WARN("ReferencedSamplePositions/TimeOffsets present in TCOORD content item");
+        REPORT_WARNING("ReferencedSamplePositions/TimeOffsets present in TCOORD content item")
     else if (list1 && list3)
-        DCMSR_WARN("ReferencedSamplePositions/Datetime present in TCOORD content item");
+        REPORT_WARNING("ReferencedSamplePositions/DateTime present in TCOORD content item")
     else if (list2 && list3)
-        DCMSR_WARN("ReferencedTimeOffsets/Datetime present in TCOORD content item");
+        REPORT_WARNING("ReferencedTimeOffsets/DateTime present in TCOORD content item")
     else if (!list1 && !list2 && !list3)
     {
-        DCMSR_WARN("ReferencedSamplePositions/TimeOffsets/Datetime empty in TCOORD content item");
+        REPORT_WARNING("ReferencedSamplePositions/TimeOffsets/DateTime empty in TCOORD content item")
         /* invalid: all lists are empty (type 1C) */
-        result= OFFalse;
+        result = SR_EC_InvalidValue;
     }
     return result;
 }
@@ -347,6 +366,9 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
+ *  Revision 1.18  2012-06-11 08:53:07  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.17  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

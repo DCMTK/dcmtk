@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2012-06-11 08:53:07 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -989,7 +989,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     DcmTag tag = delem.getTag();
     const OFString tagName = tag.getTagName();
     const OFString module = (moduleName == NULL) ? "SR document" : moduleName;
-    /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
+    /* NB: type 1C and 2C cannot be checked, assuming to be optional */
     if (((type == "1") || (type == "2")) && searchCond.bad())
     {
         DCMSR_WARN(tagName << " " << tag << " absent in " << module << " (type " << type << ")");
@@ -1285,7 +1285,7 @@ const OFString &DSRTypes::convertToXMLString(const OFString &sourceString,
 }
 
 
-OFBool DSRTypes::checkForValidUIDFormat(const OFString &stringValue)
+OFBool DSRTypes::checkForValidReference(const OFString &stringValue)
 {
     OFBool result = OFFalse;
     /* empty strings are invalid */
@@ -1297,6 +1297,9 @@ OFBool DSRTypes::checkForValidUIDFormat(const OFString &stringValue)
             /* check for leading number */
             while (isdigit(*p))
             {
+                /* disallow leading 0 */
+                if (!result && (*p == '0'))
+                    break;
                 result = OFTrue;
                 p++;
             }
@@ -1309,6 +1312,9 @@ OFBool DSRTypes::checkForValidUIDFormat(const OFString &stringValue)
                 /* check for trailing number */
                 while (isdigit(*p))
                 {
+                    /* disallow leading 0 */
+                    if (!result && (*p == '0'))
+                        break;
                     result = OFTrue;
                     p++;
                 }
@@ -1628,6 +1634,9 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.86  2012-06-11 08:53:07  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.85  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

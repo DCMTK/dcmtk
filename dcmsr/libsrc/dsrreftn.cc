@@ -19,8 +19,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:09:38 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,7 @@ OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset) const
 {
     OFCondition result = SR_EC_InvalidValue;
     /* only write references with valid format */
-    if (checkForValidUIDFormat(ReferencedContentItem))
+    if (checkForValidReference(ReferencedContentItem))
     {
         result = EC_Normal;
         DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
@@ -188,21 +188,24 @@ OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream 
 }
 
 
-OFCondition DSRByReferenceTreeNode::setConceptName(const DSRCodedEntryValue & /*conceptName*/)
+OFCondition DSRByReferenceTreeNode::setConceptName(const DSRCodedEntryValue & /*conceptName*/,
+                                                   const OFBool /*check*/)
 {
     /* invalid: no concept name allowed */
     return EC_IllegalCall;
 }
 
 
-OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*observationDateTime*/)
+OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*observationDateTime*/,
+                                                           const OFBool /*check*/)
 {
-    /* invalid: no observation date and time allowed */
+    /* invalid: no observation date/time allowed */
     return EC_IllegalCall;
 }
 
 
-OFCondition DSRByReferenceTreeNode::setObservationUID(const OFString & /*observationUID*/)
+OFCondition DSRByReferenceTreeNode::setObservationUID(const OFString & /*observationUID*/,
+                                                      const OFBool /*check*/)
 {
     /* invalid: no observation unique identifier allowed */
     return EC_IllegalCall;
@@ -210,7 +213,8 @@ OFCondition DSRByReferenceTreeNode::setObservationUID(const OFString & /*observa
 
 
 OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /*templateIdentifier*/,
-                                                              const OFString & /*mappingResource*/)
+                                                              const OFString & /*mappingResource*/,
+                                                              const OFBool /*check*/)
 {
     /* invalid: no template identification allowed */
     return EC_IllegalCall;
@@ -220,6 +224,9 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
+ *  Revision 1.25  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.24  2012-05-29 14:09:38  joergr
  *  Added explicit type casts or changed type declaration in order to avoid
  *  warnings reported by gcc 4.4.5 (Linux) with additional flags.

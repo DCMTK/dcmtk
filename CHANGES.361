@@ -1,6 +1,63 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.11 (riesmeier)
+
+- Added optional "check" parameter to "set" methods and enhanced documentation.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrcontn.h
+           dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/include/dcmtk/dcmsr/dsrdattn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdtitn.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrpnmtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrrefin.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3vl.h
+           dcmsr/include/dcmtk/dcmsr/dsrscovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmsr/include/dcmtk/dcmsr/dsrstrvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcodt.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtextn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtimtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/include/dcmtk/dcmsr/dsruidtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrrefin.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrsc3vl.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcovl.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
 **** Changes from 2012.06.04 (riesmeier)
 
 - Moved module for "DICOM in Radiation Therapy" (DCMRT) to the public DCMTK.

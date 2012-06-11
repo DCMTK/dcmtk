@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:19 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,16 +36,17 @@
 
 
 DSRPNameTreeNode::DSRPNameTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_PName),
-   DSRStringValue()
+  : DSRDocumentTreeNode(relationshipType, VT_PName),
+    DSRStringValue()
 {
 }
 
 
 DSRPNameTreeNode::DSRPNameTreeNode(const E_RelationshipType relationshipType,
-                                   const OFString &stringValue)
- : DSRDocumentTreeNode(relationshipType, VT_PName),
-   DSRStringValue(stringValue)
+                                   const OFString &personNameValue,
+                                   const OFBool check)
+  : DSRDocumentTreeNode(relationshipType, VT_PName),
+    DSRStringValue(personNameValue, check)
 {
 }
 
@@ -65,7 +66,8 @@ void DSRPNameTreeNode::clear()
 OFBool DSRPNameTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRStringValue::isValid() && getConceptName().isValid();
+    /* tbd: there might be an issue with checking extended characters! */
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();;
 }
 
 
@@ -198,9 +200,23 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
 }
 
 
+OFCondition DSRPNameTreeNode::checkValue(const OFString &personNameValue) const
+{
+    /* first, make sure that the mandatory value is non-empty */
+    OFCondition result = DSRStringValue::checkValue(personNameValue);
+    /* then, check whether the passed value is valid */
+    if (result.good())
+        result = DcmPersonName::checkStringValue(personNameValue, "1");
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
+ *  Revision 1.29  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.28  2011-03-22 16:55:19  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

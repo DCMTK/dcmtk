@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRDateTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:05 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,10 +59,14 @@ class DCMTK_DCMSR_EXPORT DSRDateTreeNode
     /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
-     *  @param  stringValue       initial string value to be set
+     *  @param  dateValue         initial value to be set (VR=DA, mandatory)
+     *  @param  check             if enabled, check 'dateValue' for validity before setting
+     *                            it.  See checkValue() for details.  An empty value is never
+     *                            accepted.
      */
     DSRDateTreeNode(const E_RelationshipType relationshipType,
-                    const OFString &stringValue);
+                    const OFString &dateValue,
+                    const OFBool check = OFTrue);
 
     /** destructor
      */
@@ -74,7 +78,8 @@ class DCMTK_DCMSR_EXPORT DSRDateTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes and the concept name are valid.
+     *  The content item is valid if the base classes, the concept name and the currently
+     *  stored date value are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -150,6 +155,14 @@ class DCMTK_DCMSR_EXPORT DSRDateTreeNode
                                               size_t &annexNumber,
                                               const size_t flags) const;
 
+    /** check the specified date value for validity.
+     *  In addition to the base class check for a non-empty value, this method also checks
+     *  whether the given value conforms to the corresponding VR (DA) and VM (1).
+     ** @param  dateValue  value to be checked
+     ** @return status, EC_Normal if value is valid, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &dateValue) const;
+
 
   private:
 
@@ -167,6 +180,9 @@ class DCMTK_DCMSR_EXPORT DSRDateTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.h,v $
+ *  Revision 1.18  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.17  2012-01-06 09:13:05  uli
  *  Make it possible to build dcmsr as a DLL.
  *

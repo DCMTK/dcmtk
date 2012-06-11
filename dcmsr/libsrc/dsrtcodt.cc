@@ -16,11 +16,11 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRReferencedDatetimeList
+ *    classes: DSRReferencedDateTimeList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:18 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,31 +42,31 @@
 EXPLICIT_SPECIALIZATION const OFString DSRListOfItems<OFString>::EmptyItem;
 
 
-DSRReferencedDatetimeList::DSRReferencedDatetimeList()
+DSRReferencedDateTimeList::DSRReferencedDateTimeList()
   : DSRListOfItems<OFString>()
 {
 }
 
 
-DSRReferencedDatetimeList::DSRReferencedDatetimeList(const DSRReferencedDatetimeList &lst)
+DSRReferencedDateTimeList::DSRReferencedDateTimeList(const DSRReferencedDateTimeList &lst)
   : DSRListOfItems<OFString>(lst)
 {
 }
 
 
-DSRReferencedDatetimeList::~DSRReferencedDatetimeList()
+DSRReferencedDateTimeList::~DSRReferencedDateTimeList()
 {
 }
 
 
-DSRReferencedDatetimeList &DSRReferencedDatetimeList::operator=(const DSRReferencedDatetimeList &lst)
+DSRReferencedDateTimeList &DSRReferencedDateTimeList::operator=(const DSRReferencedDateTimeList &lst)
 {
     DSRListOfItems<OFString>::operator=(lst);
     return *this;
 }
 
 
-OFCondition DSRReferencedDatetimeList::print(STD_NAMESPACE ostream &stream,
+OFCondition DSRReferencedDateTimeList::print(STD_NAMESPACE ostream &stream,
                                              const size_t flags,
                                              const char separator) const
 {
@@ -91,7 +91,7 @@ OFCondition DSRReferencedDatetimeList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset)
+OFCondition DSRReferencedDateTimeList::read(DcmItem &dataset)
 {
     /* get string array from dataset */
     DcmDateTime delem(DCM_ReferencedDateTime);
@@ -113,7 +113,7 @@ OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset)
 }
 
 
-OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset) const
+OFCondition DSRReferencedDateTimeList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
@@ -137,7 +137,7 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset) const
 }
 
 
-OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
+OFCondition DSRReferencedDateTimeList::putString(const char *stringValue)
 {
     OFCondition result = EC_Normal;
     /* clear internal list */
@@ -147,7 +147,7 @@ OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
     {
         const char *ptr1 = stringValue;
         const char *ptr2;
-        /* retrieve datetime values from string */
+        /* retrieve date/time values from string */
         do {
             ptr2 = strchr(ptr1, ',');
             if (ptr2 != NULL)
@@ -170,6 +170,9 @@ OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
+ *  Revision 1.19  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.18  2012-01-06 09:13:18  uli
  *  Make it possible to build dcmsr as a DLL.
  *

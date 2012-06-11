@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-12 12:02:29 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** print current SR document to specified output stream.
      *  The output format is identical to that of the dsrdump command line tool.
-     ** @param  stream  output stream (e.g. COUT from "ofconsol.h")
+     ** @param  stream  output stream (e.g.\ COUT from "ofconsol.h")
      *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -110,7 +110,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      ** @param  dataset  reference to DICOM dataset from which the document should be read
      *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx).
      *                   E.g. RF_readDigitalSignatures indicates whether to read the digital
-     *                   signatures from the dataset or not.  If set the MACParametersSequence
+     *                   signatures from the dataset or not.  If set, the MACParametersSequence
      *                   and the DigitalSignaturesSequence are read for the general document
      *                   header (equivilent to top-level content item) and each content item
      *                   of the document tree.
@@ -1075,7 +1075,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
      *  and modality.  Any incorrectness regarding these two attributes is reported to the log stream
-     *  (if valid).  Currently unsupported SOP classes are also reported as an error.
+     *  (if valid).  Currently, unsupported SOP classes are also reported as an error.
      ** @param  dataset       DICOM dataset to be checked
      *  @param  documentType  SR document type retrieved from the SOP class UID
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -1247,6 +1247,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.60  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.59  2012-01-12 12:02:29  joergr
  *  Added note that the dataset passed to the write method is not cleared.
  *

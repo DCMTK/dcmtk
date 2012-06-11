@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRReferencedInstanceList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -256,11 +256,20 @@ OFCondition DSRReferencedInstanceList::addItem(const OFString &sopClassUID,
 
 
 OFCondition DSRReferencedInstanceList::addItem(const OFString &sopClassUID,
-                                               const OFString &instanceUID)
+                                               const OFString &instanceUID,
+                                               const OFBool check)
 {
-    ItemStruct *item = NULL;
-    /* call the "real" function */
-    return addItem(sopClassUID, instanceUID, item);
+    OFCondition result = EC_Normal;
+    /* check whether the passed values are valid */
+    if (check)
+        result = checkSOPInstance(sopClassUID, instanceUID);
+    /* call the "real" function (empty parameters are rejected) */
+    if (result.good())
+    {
+        ItemStruct *item = NULL;
+        result = addItem(sopClassUID, instanceUID, item);
+    }
+    return result;
 }
 
 
@@ -365,33 +374,33 @@ DSRReferencedInstanceList::ItemStruct *DSRReferencedInstanceList::getCurrentItem
 }
 
 
-const OFString &DSRReferencedInstanceList::getSOPClassUID(OFString &stringValue) const
+const OFString &DSRReferencedInstanceList::getSOPClassUID(OFString &sopClassUID) const
 {
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     /* get requested value or clear string if invalid */
     if (item != NULL)
-        stringValue = item->SOPClassUID;
+        sopClassUID = item->SOPClassUID;
     else
-        stringValue.clear();
-    return stringValue;
+        sopClassUID.clear();
+    return sopClassUID;
 }
 
 
-const OFString &DSRReferencedInstanceList::getSOPInstanceUID(OFString &stringValue) const
+const OFString &DSRReferencedInstanceList::getSOPInstanceUID(OFString &instanceUID) const
 {
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     /* get requested value or clear string if invalid */
     if (item != NULL)
-        stringValue = item->InstanceUID;
+        instanceUID = item->InstanceUID;
     else
-        stringValue.clear();
-    return stringValue;
+        instanceUID.clear();
+    return instanceUID;
 }
 
 
-OFCondition DSRReferencedInstanceList::getPurposeOfReference(DSRCodedEntryValue &codeValue) const
+OFCondition DSRReferencedInstanceList::getPurposeOfReference(DSRCodedEntryValue &purposeOfReference) const
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
@@ -399,32 +408,67 @@ OFCondition DSRReferencedInstanceList::getPurposeOfReference(DSRCodedEntryValue 
     /* get requested value or clear code value if invalid */
     if (item != NULL)
     {
-        codeValue = item->PurposeOfReference;
+        purposeOfReference = item->PurposeOfReference;
         result = EC_Normal;
     } else
-        codeValue.clear();
+        purposeOfReference.clear();
     return result;
 }
 
 
-OFCondition DSRReferencedInstanceList::setPurposeOfReference(const DSRCodedEntryValue &codeValue)
+OFCondition DSRReferencedInstanceList::setPurposeOfReference(const DSRCodedEntryValue &purposeOfReference,
+                                                             const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->PurposeOfReference = codeValue;
-        result = EC_Normal;
+        if (check)
+        {
+            /* check whether the passed value is valid */
+            result = checkPurposeOfReference(purposeOfReference);
+        } else {
+            /* make sure that the mandatory values are non-empty */
+            result = purposeOfReference.isEmpty() ? SR_EC_InvalidValue : EC_Normal;
+        }
+        if (result.good())
+            item->PurposeOfReference = purposeOfReference;
     }
     return result;
+}
+
+
+OFCondition DSRReferencedInstanceList::checkSOPInstance(const OFString &sopClassUID,
+                                                        const OFString &instanceUID) const
+{
+    OFCondition result = EC_Normal;
+    /* the two UID values should never be empty */
+    if (sopClassUID.empty() || instanceUID.empty())
+        result = SR_EC_InvalidValue;
+    /* check for conformance with VR and VM */
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(sopClassUID, "1");
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(instanceUID, "1");
+    return result;
+}
+
+
+OFCondition DSRReferencedInstanceList::checkPurposeOfReference(const DSRCodedEntryValue &purposeOfReference) const
+{
+    /* purpose of reference should never be empty */
+    return purposeOfReference.isEmpty() ? SR_EC_InvalidValue
+                                        : purposeOfReference.checkCurrentValue();
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefin.cc,v $
+ *  Revision 1.3  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.2  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *
@@ -432,7 +476,6 @@ OFCondition DSRReferencedInstanceList::setPurposeOfReference(const DSRCodedEntry
  *  Added support for the Referenced Instance Sequence (0008,114A) introduced
  *  with CP-670 (Reference rendering of SR), which allows for referencing an
  *  equivalent CDA document or a rendering as an Encapsulated PDF document.
- *
  *
  *
  */

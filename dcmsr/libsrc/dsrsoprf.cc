@@ -20,8 +20,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1005,13 +1005,22 @@ DSRSOPInstanceReferenceList::StudyStruct *DSRSOPInstanceReferenceList::gotoStudy
 OFCondition DSRSOPInstanceReferenceList::addItem(const OFString &studyUID,
                                                  const OFString &seriesUID,
                                                  const OFString &sopClassUID,
-                                                 const OFString &instanceUID)
+                                                 const OFString &instanceUID,
+                                                 const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
+    OFCondition result = EC_Normal;
     /* check parameters first */
-    if (!studyUID.empty() && !seriesUID.empty() && !sopClassUID.empty() && !instanceUID.empty())
+    if (check)
     {
-        result = EC_Normal;
+        /* check whether the passed values are valid */
+        result = checkSOPInstance(studyUID, seriesUID, sopClassUID, instanceUID);
+    } else {
+        /* make sure that the mandatory values are non-empty */
+        if (studyUID.empty() || seriesUID.empty() || sopClassUID.empty() || instanceUID.empty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
+    {
         StudyStruct *study = gotoStudy(studyUID);
         /* check whether study already exists */
         if (study == NULL)
@@ -1034,7 +1043,8 @@ OFCondition DSRSOPInstanceReferenceList::addItem(const OFString &studyUID,
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::addItem(DcmItem &dataset)
+OFCondition DSRSOPInstanceReferenceList::addItem(DcmItem &dataset,
+                                                 const OFBool check)
 {
     OFString studyUID, seriesUID, sopClassUID, instanceUID;
     /* retrieve element values from dataset */
@@ -1043,7 +1053,7 @@ OFCondition DSRSOPInstanceReferenceList::addItem(DcmItem &dataset)
     dataset.findAndGetOFString(DCM_SOPClassUID, sopClassUID);
     dataset.findAndGetOFString(DCM_SOPInstanceUID, instanceUID);
     /* add new item to the list of references (if valid) */
-    return addItem(studyUID, seriesUID, sopClassUID, instanceUID);
+    return addItem(studyUID, seriesUID, sopClassUID, instanceUID, check);
 }
 
 
@@ -1387,84 +1397,133 @@ OFCondition DSRSOPInstanceReferenceList::getPurposeOfReference(DSRCodedEntryValu
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::setRetrieveAETitle(const OFString &value)
+OFCondition DSRSOPInstanceReferenceList::setRetrieveAETitle(const OFString &value,
+                                                            const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     if (series != NULL)
     {
-        /* set the value */
-        series->RetrieveAETitle = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmApplicationEntity::checkStringValue(value, "1-n") : EC_Normal;
+        if (result.good())
+            series->RetrieveAETitle = value;
     }
     return result;
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::setRetrieveLocationUID(const OFString &value)
+OFCondition DSRSOPInstanceReferenceList::setRetrieveLocationUID(const OFString &value,
+                                                                const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     if (series != NULL)
     {
-        /* set the value */
-        series->RetrieveLocationUID = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            series->RetrieveLocationUID = value;
     }
     return result;
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetID(const OFString &value)
+OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetID(const OFString &value,
+                                                                  const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     if (series != NULL)
     {
-        /* set the value */
-        series->StorageMediaFileSetID = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            series->StorageMediaFileSetID = value;
     }
     return result;
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFString &value)
+OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFString &value,
+                                                                   const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     if (series != NULL)
     {
-        /* set the value */
-        series->StorageMediaFileSetUID = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            series->StorageMediaFileSetUID = value;
     }
     return result;
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::setPurposeOfReference(const DSRCodedEntryValue &codeValue)
+OFCondition DSRSOPInstanceReferenceList::setPurposeOfReference(const DSRCodedEntryValue &codeValue,
+                                                               const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current instance is valid */
     InstanceStruct *instance = getCurrentInstance();
     if (instance != NULL)
     {
-        /* set the value */
-        instance->PurposeOfReference = codeValue;
-        result = EC_Normal;
+        if (check)
+        {
+            /* check whether the passed value is valid */
+            result = checkPurposeOfReference(codeValue);
+        } else {
+            /* make sure that the mandatory values are non-empty */
+            result = codeValue.isEmpty() ? SR_EC_InvalidValue : EC_Normal;
+        }
+        if (result.good())
+            instance->PurposeOfReference = codeValue;
     }
     return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::checkSOPInstance(const OFString &studyUID,
+                                                          const OFString &seriesUID,
+                                                          const OFString &sopClassUID,
+                                                          const OFString &instanceUID) const
+{
+    OFCondition result = EC_Normal;
+    /* the four UID values should never be empty */
+    if (studyUID.empty() || seriesUID.empty() || sopClassUID.empty() || instanceUID.empty())
+        result = SR_EC_InvalidValue;
+    /* check for conformance with VR and VM */
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(studyUID, "1");
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(seriesUID, "1");
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(sopClassUID, "1");
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(instanceUID, "1");
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::checkPurposeOfReference(const DSRCodedEntryValue &purposeOfReference) const
+{
+    /* purpose of reference can be empty */
+    return purposeOfReference.isEmpty() ? EC_Normal
+                                        : purposeOfReference.checkCurrentValue();
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.23  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.22  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

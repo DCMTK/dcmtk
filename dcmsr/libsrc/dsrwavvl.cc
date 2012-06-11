@@ -19,8 +19,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-30 14:18:53 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2012-06-11 08:53:07 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,12 +42,13 @@ DSRWaveformReferenceValue::DSRWaveformReferenceValue()
 
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue(const OFString &sopClassUID,
-                                                     const OFString &sopInstanceUID)
+                                                     const OFString &sopInstanceUID,
+                                                     const OFBool check)
   : DSRCompositeReferenceValue(),
     ChannelList()
 {
-    /* check for appropriate SOP class UID */
-    setReference(sopClassUID, sopInstanceUID);
+    /* use the set method for checking purposes */
+    setReference(sopClassUID, sopInstanceUID, check);
 }
 
 
@@ -218,9 +219,10 @@ OFCondition DSRWaveformReferenceValue::getValue(DSRWaveformReferenceValue &refer
 }
 
 
-OFCondition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue)
+OFCondition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue,
+                                                const OFBool check)
 {
-    OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue);
+    OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue, check);
     if (result.good())
         ChannelList = referenceValue.ChannelList;
     return result;
@@ -237,10 +239,10 @@ OFBool DSRWaveformReferenceValue::appliesToChannel(const Uint16 multiplexGroupNu
 }
 
 
-OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
-    OFBool result = OFFalse;
-    if (DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID))
+    OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
+    if (result.good())
     {
         /* check for all valid/known SOP classes (according to DICOM PS 3.6-2011) */
         if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
@@ -253,7 +255,7 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
             (sopClassUID == UID_ArterialPulseWaveformStorage) ||
             (sopClassUID == UID_RespiratoryWaveformStorage))
         {
-            result = OFTrue;
+            result = SR_EC_InvalidValue;
         }
     }
     return result;
@@ -263,6 +265,9 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
+ *  Revision 1.25  2012-06-11 08:53:07  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.24  2012-05-30 14:18:53  joergr
  *  Added support for Waveform Storage SOP Classes introduced after 2003 edition
  *  of the DICOM standard, i.e. General Audio, Arterial Pulse and Respiratory.

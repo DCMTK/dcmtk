@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:30:18 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,11 +40,12 @@ DSRStringValue::DSRStringValue()
 }
 
 
-DSRStringValue::DSRStringValue(const OFString &stringValue)
+DSRStringValue::DSRStringValue(const OFString &stringValue,
+                               const OFBool check)
   : Value()
 {
     /* use the set methods for checking purposes */
-    setValue(stringValue);
+    setValue(stringValue, check);
 }
 
 
@@ -76,7 +77,7 @@ void DSRStringValue::clear()
 
 OFBool DSRStringValue::isValid() const
 {
-    return checkValue(Value);
+    return checkCurrentValue().good();
 }
 
 
@@ -94,7 +95,7 @@ void DSRStringValue::print(STD_NAMESPACE ostream &stream,
 OFCondition DSRStringValue::read(DcmItem &dataset,
                                  const DcmTagKey &tagKey)
 {
-    /* tbd: check value */
+    /* read value */
     return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", "content item");
 }
 
@@ -117,7 +118,7 @@ OFCondition DSRStringValue::readXML(const DSRXMLDocument &doc,
         /* retrieve value from XML element */
         doc.getStringFromNodeContent(cursor, Value, NULL /*name*/, encoding);
         /* check whether string value is valid */
-        result = (isValid() ? EC_Normal : SR_EC_InvalidValue);
+        result = isValid() ? EC_Normal : SR_EC_InvalidValue;
     }
     return result;
 }
@@ -148,27 +149,43 @@ OFCondition DSRStringValue::renderHTML(STD_NAMESPACE ostream &docStream,
 }
 
 
-OFCondition DSRStringValue::setValue(const OFString &stringValue)
+OFCondition DSRStringValue::setValue(const OFString &stringValue,
+                                     const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkValue(stringValue))
+    OFCondition result = EC_Normal;
+    if (check)
     {
-        Value = stringValue;
-        result = EC_Normal;
+        /* check whether the passed value is valid */
+        result = checkValue(stringValue);
+    } else {
+        /* make sure that the value is non-empty */
+        result = DSRStringValue::checkValue(stringValue);
     }
+    if (result.good())
+        Value = stringValue;
     return result;
 }
 
 
-OFBool DSRStringValue::checkValue(const OFString &stringValue) const
+OFCondition DSRStringValue::checkValue(const OFString &stringValue) const
 {
-    return !stringValue.empty();
+    /* all corresponding DICOM attributes are type 1, i.e. mandatory */
+    return stringValue.empty() ? SR_EC_InvalidValue : EC_Normal;
+}
+
+
+OFCondition DSRStringValue::checkCurrentValue() const
+{
+    return checkValue(Value);
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
+ *  Revision 1.20  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.19  2011-12-15 16:30:18  joergr
  *  Fixed typo in comments.
  *

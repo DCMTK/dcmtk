@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         }
         /* read concept name (not required in some cases) */
         ConceptName.readXML(doc, doc.getNamedNode(cursor.getChild(), "concept", OFFalse /*required*/));
-        /* read observation UID and datetime (optional) */
+        /* read observation UID and date/time (optional) */
         const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "observation", OFFalse /*required*/);
         if (childCursor.valid())
         {
@@ -280,7 +280,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
         if (!ObservationUID.empty())
             stream << " uid=\"" << ObservationUID << "\"";
         stream << ">" << OFendl;
-        /* observation datetime (optional) */
+        /* observation date/time (optional) */
         if (!ObservationDateTime.empty())
         {
             /* output time in ISO 8601 format */
@@ -385,32 +385,36 @@ OFCondition DSRDocumentTreeNode::getConceptName(DSRCodedEntryValue &conceptName)
 }
 
 
-OFCondition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &conceptName)
+OFCondition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &conceptName,
+                                                const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    /* check for valid code */
-    if (conceptName.isValid() || conceptName.isEmpty())
-    {
+    OFCondition result = EC_Normal;
+    /* check for valid code (if not disabled) */
+    if (check && !conceptName.isEmpty())
+        result = conceptName.checkCurrentValue();
+    if (result.good())
         ConceptName = conceptName;
-        result = EC_Normal;
-    }
     return result;
 }
 
 
-OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observationDateTime)
+OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observationDateTime,
+                                                        const OFBool check)
 {
-    /* might add a check for proper DT format */
-    ObservationDateTime = observationDateTime;
-    return EC_Normal;
+    OFCondition result = (check) ? DcmDateTime::checkStringValue(observationDateTime, "1") : EC_Normal;
+    if (result.good())
+        ObservationDateTime = observationDateTime;
+    return result;
 }
 
 
-OFCondition DSRDocumentTreeNode::setObservationUID(const OFString &observationUID)
+OFCondition DSRDocumentTreeNode::setObservationUID(const OFString &observationUID,
+                                                   const OFBool check)
 {
-    /* might add a check for proper UI format */
-    ObservationUID = observationUID;
-    return EC_Normal;
+    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(observationUID, "1") : EC_Normal;
+    if (result.good())
+        ObservationUID = observationUID;
+    return result;
 }
 
 
@@ -430,15 +434,24 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
 
 
 OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templateIdentifier,
-                                                           const OFString &mappingResource)
+                                                           const OFString &mappingResource,
+                                                           const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
+    OFCondition result = EC_Normal;
     /* check for valid value pair */
-    if (templateIdentifier.empty() == mappingResource.empty())
+    if (templateIdentifier.empty() != mappingResource.empty())
+        result = EC_IllegalParameter;
+    /* check whether the passed value is valid */
+    else if (check)
+    {
+        result = DcmCodeString::checkStringValue(templateIdentifier, "1");
+        if (result.good())
+            result = DcmCodeString::checkStringValue(mappingResource, "1");
+    }
+    if (result.good())
     {
         TemplateIdentifier = templateIdentifier;
         MappingResource = mappingResource;
-        result = EC_Normal;
     }
     return result;
 }
@@ -931,7 +944,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream &do
             docStream << ":</b>";
             writeLine = OFTrue;
         }
-        /* render optional observation datetime */
+        /* render optional observation date/time */
         if (!ObservationDateTime.empty())
         {
             if (writeLine)
@@ -1172,6 +1185,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.63  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.62  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

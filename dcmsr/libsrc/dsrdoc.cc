@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:24:13 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1089,7 +1089,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                 DcmItem *ditem = new DcmItem();
                 if (ditem != NULL)
                 {
-                    OFString datetimeString, nameString, orgaString;
+                    OFString dateTimeString, nameString, orgaString;
                     DSRCodedEntryValue codeValue;
                     DSRXMLCursor childCursor = cursor.getChild();
                     /* iterate over all child nodes */
@@ -1109,7 +1109,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                         else if (doc.matchNode(childCursor, "datetime"))
                         {
                             /* Verification Datetime */
-                            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, childCursor, datetimeString);
+                            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, childCursor, dateTimeString);
                         } else {
                             /* Verifying Observer Organization */
                             doc.getStringFromNodeContent(childCursor, orgaString, "organization", OFTrue /*encoding*/, OFFalse /*clearString*/);
@@ -1118,7 +1118,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                         childCursor.gotoNext();
                     }
                     /* put string values into the sequence item */
-                    putStringValueToDataset(*ditem, DCM_VerificationDateTime, datetimeString);
+                    putStringValueToDataset(*ditem, DCM_VerificationDateTime, dateTimeString);
                     putStringValueToDataset(*ditem, DCM_VerifyingObserverName, nameString);
                     putStringValueToDataset(*ditem, DCM_VerifyingOrganization, orgaString);
                     /* write code value to sequence item (might be empty, type 2) */
@@ -2749,6 +2749,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.84  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.83  2011-12-15 16:24:13  joergr
  *  Added support for optional series-related attributes (Series Date and Series
  *  Time). Also improved handling of other study/series-related attributes.

@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:43 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:03 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -937,9 +937,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
   // --- misc helper functions ---
 
-    /** check whether specified SR document type is supported by this library.
-     *  Currently all three general SOP classes, the Key Object Selection Document, the
-     *  Mammography and Chest CAD SR class as defined in the DICOM 2003 standard are supported.
+    /** check whether specified SR document type is supported by this library
      ** @param  documentType  SR document type to be checked
      ** @return status, OFTrue if SR document type is supported, OFFalse otherwise
      */
@@ -1079,15 +1077,14 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     static const OFString &convertToXMLString(const OFString &sourceString,
                                               OFString &markupString);
 
-    /** check string for valid UID format.
-     *  The string should be non-empty and consist only of integer numbers separated by "." where
+    /** check string for valid reference (as used for by-reference relationships).
+     *  The string should be non-empty and consist of integer numbers only separated by a "." where
      *  the first and the last character of the string are always figures (0..9). Example: 1 or 1.2.3.
-     *  Please note that this test is not as strict as specified for value representation UI in the
-     *  DICOM standard (e.g. regarding even length padding or leading '0' for the numbers).
+     *  Both the integer number 0 and a leading 0 for the numbers are forbidden.
      ** @param  stringValue  character string to be checked
      ** @result OFTrue if 'string' conforms to UID format, OFFalse otherwise
      */
-    static OFBool checkForValidUIDFormat(const OFString &stringValue);
+    static OFBool checkForValidReference(const OFString &stringValue);
 
     /** create specified SR IOD content relationship contraint checker object.
      *  Please note that the created object has to be deleted by the caller.
@@ -1385,6 +1382,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.79  2012-06-11 08:53:03  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.78  2012-02-15 14:50:43  uli
  *  Removed dependency on static initialization order from OFCondition.
  *  All static condition objects are now created via makeOFConditionConst()

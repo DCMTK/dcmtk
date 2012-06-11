@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:09:38 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,8 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue()
 
 
 DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericValue,
-                                                       const DSRCodedEntryValue &measurementUnit)
+                                                       const DSRCodedEntryValue &measurementUnit,
+                                                       const OFBool check)
   : NumericValue(),
     MeasurementUnit(),
     ValueQualifier(),
@@ -55,14 +56,15 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericVa
     RationalNumeratorValue(DCM_RationalNumeratorValue),
     RationalDenominatorValue(DCM_RationalDenominatorValue)
 {
-    /* use the set methods for checking purposes */
-    setValue(numericValue, measurementUnit);
+    /* use the set method for checking purposes */
+    setValue(numericValue, measurementUnit, check);
 }
 
 
 DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericValue,
                                                        const DSRCodedEntryValue &measurementUnit,
-                                                       const DSRCodedEntryValue &valueQualifier)
+                                                       const DSRCodedEntryValue &valueQualifier,
+                                                       const OFBool check)
   : NumericValue(),
     MeasurementUnit(),
     ValueQualifier(),
@@ -70,8 +72,8 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericVa
     RationalNumeratorValue(DCM_RationalNumeratorValue),
     RationalDenominatorValue(DCM_RationalDenominatorValue)
 {
-    /* use the set methods for checking purposes */
-    setValue(numericValue, measurementUnit, valueQualifier);
+    /* use the set method for checking purposes */
+    setValue(numericValue, measurementUnit, valueQualifier, check);
 }
 
 
@@ -118,9 +120,10 @@ void DSRNumericMeasurementValue::clear()
 
 OFBool DSRNumericMeasurementValue::isValid() const
 {
-    return isEmpty() || (checkNumericValue(NumericValue) &&
-                         checkMeasurementUnit(MeasurementUnit) &&
-                         checkNumericValueQualifier(ValueQualifier));
+    /* the MeasuredValueSequence can be empty (type 2) */
+    return isEmpty() || (checkNumericValue(NumericValue).good() &&
+                         checkMeasurementUnit(MeasurementUnit).good() &&
+                         checkNumericValueQualifier(ValueQualifier).good());
 }
 
 
@@ -397,6 +400,13 @@ OFCondition DSRNumericMeasurementValue::getMeasurementUnit(DSRCodedEntryValue &m
 }
 
 
+OFCondition DSRNumericMeasurementValue::getNumericValueQualifier(DSRCodedEntryValue &valueQualifier) const
+{
+    valueQualifier = ValueQualifier;
+    return EC_Normal;
+}
+
+
 OFCondition DSRNumericMeasurementValue::getFloatingPointRepresentation(Float64 &floatingPoint) const
 {
     OFCondition result = SR_EC_RepresentationNotAvailable;
@@ -415,32 +425,40 @@ OFCondition DSRNumericMeasurementValue::getRationalRepresentation(Sint32 &ration
     /* cast away the const specifier (yes, this is ugly) */
     DcmSignedLong &signedElement = OFconst_cast(DcmSignedLong &, RationalNumeratorValue);
     DcmUnsignedLong &unsignedElement = OFconst_cast(DcmUnsignedLong &, RationalDenominatorValue);
-    if (!signedElement.isEmpty())
+    /* check whether both values are present or absent */
+    if (signedElement.isEmpty() != unsignedElement.isEmpty())
+        result = EC_CorruptedData;
+    /* determine rational numerator and denominator (if present) */
+    else if (!signedElement.isEmpty() && !unsignedElement.isEmpty())
+    {
         result = signedElement.getSint32(rationalNumerator);
-    if (result.good() && !unsignedElement.isEmpty())
-        result = unsignedElement.getUint32(rationalDenominator);
+        if (result.good())
+            result = unsignedElement.getUint32(rationalDenominator);
+    }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
+OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement,
+                                                 const OFBool check)
 {
     /* first set the basic parameters */
     OFCondition result = setValue(numericMeasurement.NumericValue,
                                   numericMeasurement.MeasurementUnit,
-                                  numericMeasurement.ValueQualifier);
+                                  numericMeasurement.ValueQualifier,
+                                  check);
     /* then the additional representations */
     if (result.good())
     {
         Float64 floatValue;
         if (numericMeasurement.getFloatingPointRepresentation(floatValue).good())
-            result = setFloatingPointRepresentation(floatValue);
+            result = setFloatingPointRepresentation(floatValue, check);
         if (result.good())
         {
             Sint32 numeratorValue;
             Uint32 denominatorValue;
             if (numericMeasurement.getRationalRepresentation(numeratorValue, denominatorValue).good())
-                result = setRationalRepresentation(numeratorValue, denominatorValue);
+                result = setRationalRepresentation(numeratorValue, denominatorValue, check);
         }
     }
     return result;
@@ -448,11 +466,22 @@ OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValu
 
 
 OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
-                                                 const DSRCodedEntryValue &measurementUnit)
+                                                 const DSRCodedEntryValue &measurementUnit,
+                                                 const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    /* check both values before setting them */
-    if (checkNumericValue(numericValue) && checkMeasurementUnit(measurementUnit))
+    OFCondition result = EC_Normal;
+    if (check)
+    {
+        /* check whether the passed values are valid */
+        result = checkNumericValue(numericValue);
+        if (result.good())
+            result = checkMeasurementUnit(measurementUnit);
+    } else {
+        /* make sure that the mandatory values are non-empty */
+        if (measurementUnit.isEmpty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
     {
         NumericValue = numericValue;
         MeasurementUnit = measurementUnit;
@@ -460,7 +489,6 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
         FloatingPointValue.clear();
         RationalNumeratorValue.clear();
         RationalDenominatorValue.clear();
-        result = EC_Normal;
     }
     return result;
 }
@@ -468,12 +496,24 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
 
 OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
                                                  const DSRCodedEntryValue &measurementUnit,
-                                                 const DSRCodedEntryValue &valueQualifier)
+                                                 const DSRCodedEntryValue &valueQualifier,
+                                                 const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    /* check all three values before setting them */
-    if (checkNumericValue(numericValue) && checkMeasurementUnit(measurementUnit) &&
-        checkNumericValueQualifier(valueQualifier))
+    OFCondition result = EC_Normal;
+    if (check)
+    {
+        /* check whether the passed values are valid */
+        result = checkNumericValue(numericValue);
+        if (result.good())
+            result = checkMeasurementUnit(measurementUnit);
+        if (result.good())
+            result = checkNumericValueQualifier(valueQualifier);
+    } else {
+        /* make sure that the mandatory values are non-empty */
+        if (numericValue.empty() || measurementUnit.isEmpty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
     {
         NumericValue = numericValue;
         MeasurementUnit = measurementUnit;
@@ -482,53 +522,70 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
         FloatingPointValue.clear();
         RationalNumeratorValue.clear();
         RationalDenominatorValue.clear();
-        result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericValue)
+OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericValue,
+                                                        const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkNumericValue(numericValue))
+    OFCondition result = EC_Normal;
+    if (check)
+    {
+        /* check whether the passed value is valid */
+        result = checkNumericValue(numericValue);
+    } else {
+        /* make sure that the mandatory values are non-empty */
+        if (numericValue.empty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
     {
         NumericValue = numericValue;
         /* clear additional representations */
         FloatingPointValue.clear();
         RationalNumeratorValue.clear();
         RationalDenominatorValue.clear();
-        result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryValue &measurementUnit)
+OFCondition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryValue &measurementUnit,
+                                                           const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkMeasurementUnit(measurementUnit))
+    OFCondition result = EC_Normal;
+    if (check)
     {
+        /* check whether the passed value is valid */
+        result = checkMeasurementUnit(measurementUnit);
+    } else {
+        /* make sure that the mandatory values are non-empty */
+        if (measurementUnit.isEmpty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
         MeasurementUnit = measurementUnit;
-        result = EC_Normal;
-    }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::setNumericValueQualifier(const DSRCodedEntryValue &valueQualifier)
+OFCondition DSRNumericMeasurementValue::setNumericValueQualifier(const DSRCodedEntryValue &valueQualifier,
+                                                                 const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkNumericValueQualifier(valueQualifier))
-    {
+    OFCondition result = EC_Normal;
+    /* check whether the passed value is valid */
+    if (check)
+        result = checkNumericValueQualifier(valueQualifier);
+    if (result.good())
         ValueQualifier = valueQualifier;
-        result = EC_Normal;
-    }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::setFloatingPointRepresentation(const Float64 floatingPoint)
+OFCondition DSRNumericMeasurementValue::setFloatingPointRepresentation(const Float64 floatingPoint,
+                                                                       const OFBool /*check*/)
 {
     /* make sure that only a single value is stored */
     return FloatingPointValue.putFloat64Array(&floatingPoint, 1);
@@ -536,49 +593,96 @@ OFCondition DSRNumericMeasurementValue::setFloatingPointRepresentation(const Flo
 
 
 OFCondition DSRNumericMeasurementValue::setRationalRepresentation(const Sint32 rationalNumerator,
-                                                                  const Uint32 rationalDenominator)
+                                                                  const Uint32 rationalDenominator,
+                                                                  const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkRationalRepresentation(rationalNumerator, rationalDenominator))
+    OFCondition result = EC_Normal;
+    /* check whether the passed values are valid */
+    if (check)
+        result = checkRationalRepresentation(rationalNumerator, rationalDenominator);
+    if (result.good())
     {
         /* make sure that only a single value is stored */
         RationalNumeratorValue.putSint32Array(&rationalNumerator, 1);
         RationalDenominatorValue.putUint32Array(&rationalDenominator, 1);
-        result = EC_Normal;
     }
     return result;
 }
 
 
-OFBool DSRNumericMeasurementValue::checkNumericValue(const OFString &numericValue) const
+void DSRNumericMeasurementValue::removeFloatingPointRepresentation()
 {
-    return !numericValue.empty();
+    FloatingPointValue.clear();
 }
 
 
-OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue &measurementUnit) const
+void DSRNumericMeasurementValue::removeRationalRepresentation()
 {
-    return measurementUnit.isValid();
+    RationalNumeratorValue.clear();
+    RationalDenominatorValue.clear();
 }
 
 
-OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const
+OFCondition DSRNumericMeasurementValue::checkNumericValue(const OFString &numericValue) const
 {
-    return valueQualifier.isEmpty() || valueQualifier.isValid();
+    /* numeric measurement value should never be empty */
+    return numericValue.empty() ? SR_EC_InvalidValue
+                                : DcmDecimalString::checkStringValue(numericValue, "1");
 }
 
 
-OFBool DSRNumericMeasurementValue::checkRationalRepresentation(const Sint32 /*rationalNumerator*/,
-                                                               const Uint32 rationalDenominator) const
+OFCondition DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue &measurementUnit) const
+{
+    /* measurement unit should never be empty */
+    return measurementUnit.isEmpty() ? SR_EC_InvalidValue
+                                     : measurementUnit.checkCurrentValue();
+}
+
+
+OFCondition DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const
+{
+    /* numeric value qualifier might be empty */
+    return valueQualifier.isEmpty() ? EC_Normal
+                                    : valueQualifier.checkCurrentValue();
+}
+
+
+OFCondition DSRNumericMeasurementValue::checkRationalRepresentation(const Sint32 /*rationalNumerator*/,
+                                                                    const Uint32 rationalDenominator) const
 {
     /* avoid "division by zero" */
-    return (rationalDenominator != 0);
+    return (rationalDenominator == 0) ? SR_EC_InvalidValue
+                                      : EC_Normal;
+}
+
+
+OFCondition DSRNumericMeasurementValue::checkCurrentValue() const
+{
+    OFCondition result = checkNumericValue(NumericValue);
+    if (result.good())
+        result = checkMeasurementUnit(MeasurementUnit);
+    if (result.good())
+        result = checkNumericValueQualifier(ValueQualifier);
+    if (result.good())
+    {
+        Sint32 numeratorValue;
+        Uint32 denominatorValue;
+        result = getRationalRepresentation(numeratorValue, denominatorValue);
+        if (result.good())
+            result = checkRationalRepresentation(numeratorValue, denominatorValue);
+        else if (result == SR_EC_RepresentationNotAvailable)
+            result = EC_Normal;
+    }
+    return result;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
+ *  Revision 1.31  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.30  2012-05-29 14:09:38  joergr
  *  Added explicit type casts or changed type declaration in order to avoid
  *  warnings reported by gcc 4.4.5 (Linux) with additional flags.

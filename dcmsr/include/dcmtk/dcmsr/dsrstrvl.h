@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:12 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:03 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,10 +54,12 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
     DSRStringValue();
 
     /** constructor
-     *  The string value is only set if it passed the validity check (see setValue()).
-     ** @param  stringValue  string value to be set
+     ** @param  stringValue  initial value to be set
+     *  @param  check        if enabled, check 'stringValue' for validity before setting it.
+     *                       See checkValue() for details.  An empty value is never accepted.
      */
-    DSRStringValue(const OFString &stringValue);
+    DSRStringValue(const OFString &stringValue,
+                   const OFBool check = OFTrue);
 
     /** copy constructor
      ** @param  stringValue  string value to be copied (not checked !)
@@ -99,8 +101,8 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
                const size_t maxLength = 0) const;
 
     /** read string value from dataset.
-     *  If error/warning output is enabled a warning message is printed if the string value does
-     *  not conform with the type (= 1) and value multiplicity (= 1).
+     *  If error/warning output is enabled, a warning message is printed if the string value
+     *  does not conform with the type (1), value multiplicity (1) and/or value representation.
      ** @param  dataset  DICOM dataset from which the string value should be read
      *  @param  tagKey   DICOM tag specifying the attribute which should be read
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -143,30 +145,39 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
     }
 
     /** set string value.
-     *  Before setting the string value it is checked (see checkValue()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.  Use clear() to
-     *  empty the string value (which becomes invalid afterwards).
-     ** @param  stringValue  value to be set
+     *  Before setting the string value, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.  Use the clear() method to empty
+     *  the string value (which becomes invalid afterwards).
+     ** @param  stringValue  value to be set (various VRs, mandatory)
+     *  @param  check        check 'stringValue' for conformance with VR and VM if enabled.
+     *                       An empty value is never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const OFString &stringValue);
+    OFCondition setValue(const OFString &stringValue,
+                         const OFBool check = OFTrue);
 
 
   protected:
 
     /** check the specified string value for validity.
      *  This base class just checks that the string value is not empty (since all corresponding
-     *  DICOM attributes are type 1).  Derived classes might overwrite this method to perform
+     *  DICOM attributes are type 1).  Derived classes should overwrite this method to perform
      *  more sophisticated tests.
-     ** @param  stringValue  string value to be checked
-     ** @return OFTrue if code is valid, OFFalse otherwise
+     ** @param  stringValue  value to be checked
+     ** @return status, EC_Normal if current value is valid, an error code otherwise
      */
-    virtual OFBool checkValue(const OFString &stringValue) const;
+    virtual OFCondition checkValue(const OFString &stringValue) const;
+
+    /** check the currently stored string value for validity.
+     *  See above checkValue() method for details.
+     ** @return status, EC_Normal if value is valid, an error code otherwise
+     */
+    OFCondition checkCurrentValue() const;
 
 
   private:
 
-    /// string value (various VRs, mandatory)
+    /// string value (various VRs, type 1)
     OFString Value;
 };
 
@@ -177,6 +188,9 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
+ *  Revision 1.19  2012-06-11 08:53:03  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.18  2012-01-06 09:13:12  uli
  *  Make it possible to build dcmsr as a DLL.
  *

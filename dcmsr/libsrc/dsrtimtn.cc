@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:19 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2012-06-11 08:53:07 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,16 +36,17 @@
 
 
 DSRTimeTreeNode::DSRTimeTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_Time),
-   DSRStringValue()
+  : DSRDocumentTreeNode(relationshipType, VT_Time),
+    DSRStringValue()
 {
 }
 
 
 DSRTimeTreeNode::DSRTimeTreeNode(const E_RelationshipType relationshipType,
-                                 const OFString &stringValue)
- : DSRDocumentTreeNode(relationshipType, VT_Time),
-   DSRStringValue(stringValue)
+                                 const OFString &timeValue,
+                                 const OFBool check)
+  : DSRDocumentTreeNode(relationshipType, VT_Time),
+    DSRStringValue(timeValue, check)
 {
 }
 
@@ -65,7 +66,7 @@ void DSRTimeTreeNode::clear()
 OFBool DSRTimeTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRStringValue::isValid() && getConceptName().isValid();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();
 }
 
 
@@ -184,9 +185,23 @@ OFCondition DSRTimeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
 }
 
 
+OFCondition DSRTimeTreeNode::checkValue(const OFString &timeValue) const
+{
+    /* first, make sure that the mandatory value is non-empty */
+    OFCondition result = DSRStringValue::checkValue(timeValue);
+    /* then, check whether the passed value is valid */
+    if (result.good())
+        result = DcmTime::checkStringValue(timeValue, "1");
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
+ *  Revision 1.25  2012-06-11 08:53:07  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.24  2011-03-22 16:55:19  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:19 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2012-06-11 08:53:07 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,16 +36,17 @@
 
 
 DSRUIDRefTreeNode::DSRUIDRefTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_UIDRef),
-   DSRStringValue()
+  : DSRDocumentTreeNode(relationshipType, VT_UIDRef),
+    DSRStringValue()
 {
 }
 
 
 DSRUIDRefTreeNode::DSRUIDRefTreeNode(const E_RelationshipType relationshipType,
-                                     const OFString &stringValue)
- : DSRDocumentTreeNode(relationshipType, VT_UIDRef),
-   DSRStringValue(stringValue)
+                                     const OFString &uidValue,
+                                     const OFBool check)
+  : DSRDocumentTreeNode(relationshipType, VT_UIDRef),
+    DSRStringValue(uidValue, check)
 {
 }
 
@@ -65,7 +66,7 @@ void DSRUIDRefTreeNode::clear()
 OFBool DSRUIDRefTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRStringValue::isValid() && getConceptName().isValid();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();
 }
 
 
@@ -136,9 +137,23 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
 }
 
 
+OFCondition DSRUIDRefTreeNode::checkValue(const OFString &uidValue) const
+{
+    /* first, make sure that the mandatory value is non-empty */
+    OFCondition result = DSRStringValue::checkValue(uidValue);
+    /* then, check whether the passed value is valid */
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(uidValue, "1");
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
+ *  Revision 1.24  2012-06-11 08:53:07  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.23  2011-03-22 16:55:19  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

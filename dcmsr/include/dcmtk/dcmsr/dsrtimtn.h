@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTimeTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,10 +59,14 @@ class DCMTK_DCMSR_EXPORT DSRTimeTreeNode
     /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
-     *  @param  stringValue       initial string value to be set
+     *  @param  timeValue         initial value to be set (VR=TM, mandatory)
+     *  @param  check             if enabled, check 'timeValue' for validity before setting
+     *                            it.  See checkValue() for details.  An empty value is never
+     *                            accepted.
      */
     DSRTimeTreeNode(const E_RelationshipType relationshipType,
-                    const OFString &stringValue);
+                    const OFString &timeValue,
+                    const OFBool check = OFTrue);
 
     /** destructor
      */
@@ -74,7 +78,8 @@ class DCMTK_DCMSR_EXPORT DSRTimeTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes and the concept name are valid.
+     *  The content item is valid if the base classes, the concept name and the currently
+     *  stored date value are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -150,6 +155,14 @@ class DCMTK_DCMSR_EXPORT DSRTimeTreeNode
                                               size_t &annexNumber,
                                               const size_t flags) const;
 
+    /** check the specified time value for validity.
+     *  In addition to the base class check for a non-empty value, this method also checks
+     *  whether the given value conforms to the corresponding VR (TM) and VM (1).
+     ** @param  timeValue  value to be checked
+     ** @return status, EC_Normal if value is valid, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &timeValue) const;
+
 
   private:
 
@@ -167,6 +180,9 @@ class DCMTK_DCMSR_EXPORT DSRTimeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.h,v $
+ *  Revision 1.18  2012-06-11 08:53:03  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.17  2012-01-06 09:13:13  uli
  *  Make it possible to build dcmsr as a DLL.
  *

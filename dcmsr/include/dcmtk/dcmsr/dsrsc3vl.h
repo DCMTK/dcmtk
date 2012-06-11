@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinates3DValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:11 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,8 +82,9 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
     virtual void clear();
 
     /** check whether the current spatial coordinates value is valid.
-     *  The value is valid if the graphic type is not GT3_invalid and the graphic data is
-     *  valid (see checkData() for details).
+     *  The value is valid if the graphic type is not GT3_invalid and the graphic data as well
+     *  as the referenced frame of reference UID are valid.  See checkXXX() methods for
+     *  details.
      ** @return OFTrue if reference value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -201,36 +202,49 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
     }
 
     /** set spatial coordinates value.
-     *  Before setting the value the graphic type, graphic data and frame of reference UID
-     *  are checked (see checkData()).  If the value is invalid the current value is not
-     *  replaced and remains unchanged.
+     *  Before setting the value, the graphic type, graphic data and frame of reference UID
+     *  are usually checked.  If the value is invalid, the current value is not replaced and
+     *  remains unchanged.
      ** @param  coordinatesValue  value to be set
+     *  @param  check             if enabled, check values for validity before setting them.
+     *                            See checkXXX() methods for details.  Empty values are only
+     *                            accepted for non-mandatory attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const DSRSpatialCoordinates3DValue &coordinatesValue);
+    OFCondition setValue(const DSRSpatialCoordinates3DValue &coordinatesValue,
+                         const OFBool check = OFTrue);
 
     /** set current graphic type.
      *  The graphic type specifies the geometry of the coordinates stored in the graphic data
      *  list.
      ** @param  graphicType  graphic type to be set (GT3_invalid is not allowed)
+     *  @param  check        dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setGraphicType(const DSRTypes::E_GraphicType3D graphicType);
+    OFCondition setGraphicType(const DSRTypes::E_GraphicType3D graphicType,
+                               const OFBool check = OFTrue);
 
     /** set current referenced frame of reference UID.
      *  Uniquely identifies the frame of reference within which the coordinates are defined.
-     ** @param  frameOfReferenceUID  value to be set (VR=UI, required)
+     ** @param  frameOfReferenceUID  value to be set (VR=UI, mandatory)
+     *  @param  check                if enabled, check value for validity before setting it.
+     *                               See checkFrameOfReferenceUID() method for details.  An
+     *                               empty value is never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setFrameOfReferenceUID(const OFString &frameOfReferenceUID);
+    OFCondition setFrameOfReferenceUID(const OFString &frameOfReferenceUID,
+                                       const OFBool check = OFTrue);
 
     /** set current fiducial UID.
      *  Globally unique identifier that can be used to associate these spatial coordinates
      *  with other content items.
      ** @param  fiducialUID  value to be set (VR=UI, optional)
+     *  @param  check        if enabled, check value for validity before setting it.  See
+     *                       checkFiducialUID() method for details.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setFiducialUID(const OFString &fiducialUID);
+    OFCondition setFiducialUID(const OFString &fiducialUID,
+                               const OFBool check = OFTrue);
 
 
   protected:
@@ -243,19 +257,32 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
         return this;
     }
 
-    /** check the graphic type, graphic data and frame of reference UID for validity.
-     *  If 'graphicType' is valid the number of entries in the 'graphicDatalist' are checked.
+    /** check the specified graphic type and data for validity.
+     *  If 'graphicType' is valid, the number of entries in the 'graphicDatalist' are checked.
      *  A POINT needs exactly 1 value triplets (x,y,z), a MULTIPOINT at least 1?, a POLYLINE
      *  at least 1?, a POLYGON at least 1? where the first and last triplet are equal, an
      *  ELLIPSE exactly 4 and an ELLIPSOID exactly 6.
-     ** @param  graphicType          graphic type to be checked
-     *  @param  graphicDataList      list of graphic data to be checked
-     *  @param  frameOfReferenceUID  referenced frame of reference UID to be checked
-     ** @return OFTrue if graphic type and data are valid, OFFalse otherwise
+     ** @param  graphicType      graphic type to be checked
+     *  @param  graphicDataList  list of graphic data to be checked
+     *  @param  reportWarnings   if enabled, report a warning message on each deviation from
+     *                           an expected value to the logger
+     ** @return status, EC_Normal if graphic type and data are valid, an error code otherwise
      */
-    OFBool checkData(const DSRTypes::E_GraphicType3D graphicType,
-                     const DSRGraphicData3DList &graphicDataList,
-                     const OFString &frameOfReferenceUID) const;
+    OFCondition checkGraphicData(const DSRTypes::E_GraphicType3D graphicType,
+                                 const DSRGraphicData3DList &graphicDataList,
+                                 const OFBool reportWarnings = OFFalse) const;
+
+    /** check the specified frame of reference UID for validity
+     ** @param  frameOfReferenceUID  referenced frame of reference UID to be checked
+     ** @return status, EC_Normal if frame of reference UID is valid, an error code otherwise
+     */
+    OFCondition checkFrameOfReferenceUID(const OFString &frameOfReferenceUID) const;
+
+    /** check the specified fiducial UID for validity
+     ** @param  fiducialUID  fiducial UID to be checked
+     ** @return status, EC_Normal if fiducial UID is valid, an error code otherwise
+     */
+    OFCondition checkFiducialUID(const OFString &fiducialUID) const;
 
 
   private:
@@ -277,6 +304,9 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsc3vl.h,v $
+ *  Revision 1.5  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.4  2012-01-06 09:13:11  uli
  *  Make it possible to build dcmsr as a DLL.
  *

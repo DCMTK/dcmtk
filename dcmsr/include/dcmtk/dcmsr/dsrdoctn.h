@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:16 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,29 +279,33 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  If the new code is invalid the current one is not replaced.  An empty code can
      *  be used to clear the current concept name.
      ** @param  conceptName  code to be set as the new concept name (checked before set)
+     *  @param  check        check 'conceptName' for validity if enabled.  See
+     *                       DSRCodedEntryValue::checkCode() for details.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName);
+    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName,
+                                       const OFBool check = OFTrue);
 
-    /** get observation date time.
+    /** get observation date/time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
-     ** @return observation date and time of current content item (might be empty/invalid)
+     ** @return observation date/time of current content item (might be empty/invalid)
      */
     inline const OFString &getObservationDateTime() const
     {
         return ObservationDateTime;
     }
 
-    /** set observation date time.
+    /** set observation date/time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
-     *  Please use the correct DICOM format (YYYYMMDDHHMMSS) or an empty string to clear
-     *  the current value.  Currently no check is performed on the parameter value!
      ** @param  observationDateTime  value to be set (might be an empty string)
+     *  @param  check                check 'observationDateTime' for conformance with VR (DT)
+     *                               and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
+    virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
+                                               const OFBool check = OFTrue);
 
     /** get observation unique identifier.
      *  The UID represents the semantic content of the observation; an encoding of the same
@@ -316,12 +320,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     /** set observation unique identifier.
      *  The UID represents the semantic content of the observation; an encoding of the same
      *  observation with the same context into another representation may use the same UID.
-     *  Please use the correct DICOM format (VR=UI) or an empty string to clear the current
-     *  value.  Currently no check is performed on the parameter value!
      ** @param  observationUID  value to be set (might be an empty string)
+     *  @param  check           check 'observationUID' for conformance with VR (UI) and VM (1)
+     *                          if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setObservationUID(const OFString &observationUID);
+    virtual OFCondition setObservationUID(const OFString &observationUID,
+                                          const OFBool check = OFTrue);
 
     /** get template identifier and mapping resource.
      *  This value pair identifies the template that was used to create this content item
@@ -341,12 +346,15 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     /** set template identifier and mapping resource.
      *  The identification is valid if both values are either present (non-empty) or absent
      *  (empty).  See getTemplateIdentification() for details.
-     ** @param  templateIdentifier  identifier of the template to be set (VR=CS)
-     *  @param  mappingResource     mapping resource that defines the template (VR=CS)
+     ** @param  templateIdentifier  identifier of the template to be set
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  check               check 'templateIdentifier' and 'mappingResource' for
+     *                              conformance with VR (CS) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
-                                                  const OFString &mappingResource);
+                                                  const OFString &mappingResource,
+                                                  const OFBool check = OFTrue);
 
     /** remove digital signatures from content item.
      *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for
@@ -519,7 +527,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
                                      DcmStack *markedItems) const;
 
     /** render concept name in HTML/XHTML format.
-     *  If the optional observation datetime field is valid (not empty) it is also rendered.
+     *  If the optional observation date/time field is non-empty, it is also rendered.
      ** @param  docStream  output stream to which the main HTML/XHTML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -571,7 +579,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 
     /// concept name (VR=SQ, conditional)
     DSRCodedEntryValue       ConceptName;
-    /// observation date and time (VR=DT, conditional)
+    /// observation date/time (VR=DT, conditional)
     OFString                 ObservationDateTime;
     /// observation unique identifier (VR=UI, optional)
     OFString                 ObservationUID;
@@ -601,6 +609,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
+ *  Revision 1.32  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.31  2012-05-29 14:02:16  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

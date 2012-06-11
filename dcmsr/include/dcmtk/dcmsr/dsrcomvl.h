@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:04 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,15 +55,18 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      */
     DSRCompositeReferenceValue();
 
-    /** constructor.
-     *  The UID pair is only set if it passed the validity check (see setValue()).
+    /** constructor
      ** @param  sopClassUID     referenced SOP class UID of the composite object.
-     *                          (VR=UI, type 1)
+     *                          (VR=UI, mandatory)
      *  @param  sopInstanceUID  referenced SOP instance UID of the composite object.
-     *                          (VR=UI, type 1)
+     *                          (VR=UI, mandatory)
+     *  @param  check           if enabled, check 'sopClassUID' and 'sopInstanceUID' for
+     *                          validity before setting them.  See checkXXX() for details.
+     *                          Empty values are never accepted.
      */
     DSRCompositeReferenceValue(const OFString &sopClassUID,
-                               const OFString &sopInstanceUID);
+                               const OFString &sopInstanceUID,
+                               const OFBool check = OFTrue);
 
     /** copy constructor
      ** @param  referenceValue  reference value to be copied (not checked !)
@@ -86,8 +89,8 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     virtual void clear();
 
     /** check whether the current reference value is valid.
-     *  The reference value is valid if SOP class UID and SOP instance UID are valid (see
-     *  checkSOP...UID() for details).
+     *  The reference value is valid if SOP class UID and SOP instance UID are valid.  See
+     *  checkSOPClassUID() and checkSOPInstanceUID() methods for details.
      ** @return OFTrue if reference value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -126,7 +129,7 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
 
     /** read referenced SOP sequence from dataset.
      *  The number of items within the sequence is checked.  If error/warning output are
-     *  enabled a warning message is printed if the sequence is absent or contains more than
+     *  enabled, a warning message is printed if the sequence is absent or contains more than
      *  one item.
      ** @param  dataset  DICOM dataset from which the sequence should be read
      *  @param  type     value type of the sequence (valid value: "1", "2", something else)
@@ -187,38 +190,59 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     OFCondition getValue(DSRCompositeReferenceValue &referenceValue) const;
 
     /** set composite reference value.
-     *  Before setting the reference it is checked (see checkXXX()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.
+     *  Before setting the reference, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
      ** @param  referenceValue  value to be set
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See checkXXX() for details.  Empty values are never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const DSRCompositeReferenceValue &referenceValue);
+    OFCondition setValue(const DSRCompositeReferenceValue &referenceValue,
+                         const OFBool check = OFTrue);
 
     /** set SOP class UID and SOP instance UID value.
-     *  Before setting the values they are checked (see checkXXX()).  If the value pair is
-     *  invalid the current value pair is not replaced and remains unchanged.
-     ** @param  sopClassUID     referenced SOP class UID to be set
-     *  @param  sopInstanceUID  referenced SOP instance UID to be set
+     *  Before setting the values, they are usually checked.  If the value pair is invalid
+     *  the current value pair is not replaced and remains unchanged.
+     ** @param  sopClassUID     referenced SOP class UID to be set. (VR=UI, mandatory)
+     *  @param  sopInstanceUID  referenced SOP instance UID to be set. (VR=UI, mandatory)
+     *  @param  check           if enabled, check 'sopClassUID' and 'sopInstanceUID' for
+     *                          validity before setting them.  See checkXXX() for details.
+     *                          Empty values are never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setReference(const OFString &sopClassUID,
-                             const OFString &sopInstanceUID);
+                             const OFString &sopInstanceUID,
+                             const OFBool check = OFTrue);
 
     /** set SOP class UID value.
-     *  Before setting the value is is checked (see checkSOPClassUID()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the current
+     *  value is not replaced and remains unchanged.
      ** @param  sopClassUID  SOP class UID to be set
+     *  @param  check        if enabled, check 'sopClassUID' for validity before setting it.
+     *                       See checkSOPClassUID() for details.  Empty values are never
+     *                       accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSOPClassUID(const OFString &sopClassUID);
+    OFCondition setSOPClassUID(const OFString &sopClassUID,
+                               const OFBool check = OFTrue);
 
     /** set SOP instance UID value.
-     *  Before setting the value is is checked (see checkSOPInstanceUID()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the current
+     *  value is not replaced and remains unchanged.
      ** @param  sopInstanceUID  SOP instance UID to be set
+     *  @param  check           if enabled, check 'sopInstanceUID' for validity before setting
+     *                          it.  See checkSOPInstanceUID() for details.  Empty values are
+     *                          never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSOPInstanceUID(const OFString &sopInstanceUID);
+    OFCondition setSOPInstanceUID(const OFString &sopInstanceUID,
+                                  const OFBool check = OFTrue);
+
+    /** check the currently stored reference value for validity.
+     *  See below checkXXX() methods for details.
+     ** @return status, EC_Normal if current value is valid, an error code otherwise
+     */
+    OFCondition checkCurrentValue() const;
 
 
   protected:
@@ -244,21 +268,22 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
-     *  The only check that is currently performed is that the UID is not empty.  Derived
-     *  classes might overwrite this method for more specific tests (e.g. allowing only
-     *  particular SOP classes).
+     *  The only checks performed are that the UID is non-empty and that it conforms to the
+     *  corresponding VR (UI) and VM (1).  Derived classes should overwrite this method for
+     *  more specific tests (e.g. allowing only particular SOP classes).
      ** @param  sopClassUID   SOP class UID to be checked
-     ** @return OFTrue if SOP class UID is valid, OFFalse otherwise
+     ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFBool checkSOPClassUID(const OFString &sopClassUID) const;
+    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID) const;
 
     /** check the specified SOP instance UID for validity.
-     *  The only check that is currently performed is that the UID is not empty.  Derived
-     *  classes might overwrite this method for more specific tests.
+     *  The only checks performed are that the UID is non-empty and that it conforms to the
+     *  corresponding VR (UI) and VM (1).  Derived classes should overwrite this method for
+     *  more specific tests.
      *  @param  sopInstanceUID  SOP instance UID to be checked
-     ** @return OFTrue if SOP instance UID is valid, OFFalse otherwise
+     ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFBool checkSOPInstanceUID(const OFString &sopInstanceUID) const;
+    virtual OFCondition checkSOPInstanceUID(const OFString &sopInstanceUID) const;
 
     /// reference SOP class UID (VR=UI, type 1)
     OFString SOPClassUID;
@@ -273,6 +298,9 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
+ *  Revision 1.14  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.13  2012-01-06 09:13:04  uli
  *  Make it possible to build dcmsr as a DLL.
  *

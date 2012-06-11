@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:08 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,18 +63,20 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      */
     DSRImageReferenceValue();
 
-    /** constructor.
-     *  The UID pair is only set if it passed the validity check (see setValue()).
+    /** constructor
      ** @param  sopClassUID     referenced SOP class UID of the image object.
      *                          (VR=UI, mandatory)
      *  @param  sopInstanceUID  referenced SOP instance UID of the image object.
      *                          (VR=UI, mandatory)
+     *  @param  check           if enabled, check 'sopClassUID' and 'sopInstanceUID' for
+     *                          validity before setting them.  See checkXXX() for details.
+     *                          Empty values are never accepted.
      */
     DSRImageReferenceValue(const OFString &sopClassUID,
-                           const OFString &sopInstanceUID);
+                           const OFString &sopInstanceUID,
+                           const OFBool check = OFTrue);
 
-    /** constructor.
-     *  The UID 4-tuple is only set if it passed the validity check (see setValue()).
+    /** constructor
      ** @param  imageSOPClassUID      referenced SOP class UID of the image object.
      *                                (VR=UI, mandatory)
      *  @param  imageSOPInstanceUID   referenced SOP instance UID of the image object.
@@ -83,11 +85,15 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *                                object. (VR=UI, optional)
      *  @param  pstateSOPInstanceUID  referenced SOP instance UID of the presentation state
      *                                object. (VR=UI, optional)
+     *  @param  check                 if enabled, check all four UID values for validity
+     *                                before setting them.  See checkXXX() for details.
+     *                                Empty values are never accepted.
      */
     DSRImageReferenceValue(const OFString &imageSOPClassUID,
                            const OFString &imageSOPInstanceUID,
                            const OFString &pstateSOPClassUID,
-                           const OFString &pstateSOPInstanceUID);
+                           const OFString &pstateSOPInstanceUID,
+                           const OFBool check = OFTrue);
 
     /** copy constructor
      ** @param  referenceValue  image reference value to be copied (not checked !)
@@ -95,7 +101,7 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     DSRImageReferenceValue(const DSRImageReferenceValue &referenceValue);
 
     /** copy constructor
-     ** @param  imageReferenceValue   imagee reference value to be copied (not checked !)
+     ** @param  imageReferenceValue   image reference value to be copied (not checked !)
      *  @param  pstateReferenceValue  presentation state reference value to be copied (not
      *                                checked !)
      */
@@ -269,12 +275,15 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     OFCondition getValue(DSRImageReferenceValue &referenceValue) const;
 
     /** set image reference value.
-     *  Before setting the reference it is checked (see checkXXX()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.
+     *  Before setting the reference, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
      ** @param  referenceValue  value to be set
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See checkXXX() for details.  Empty values are never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const DSRImageReferenceValue &referenceValue);
+    OFCondition setValue(const DSRImageReferenceValue &referenceValue,
+                         const OFBool check = OFTrue);
 
     /** get reference to presentation state value
      ** @return reference to presentation state value (might be empty or invalid)
@@ -285,12 +294,16 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     }
 
     /** set presentation state value.
-     *  Before setting the reference it is checked (see checkPresentationState()).
-     *  If the value is invalid the current value is not replaced and remains unchanged.
-     ** @param  referenceValue  value to be set
+     *  Before setting the presentation state value, it is usually checked.  If the value is
+     *  invalid, the current value is not replaced and remains unchanged.
+     ** @param  pstateValue  value to be set
+     *  @param  check        If enabled, check value for validity before setting it.  See
+     *                       checkXXX() for details.  Empty UID values are accepted for
+     *                       disabling the optional presentation state.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPresentationState(const DSRCompositeReferenceValue &referenceValue);
+    OFCondition setPresentationState(const DSRCompositeReferenceValue &pstateValue,
+                                     const OFBool check = OFTrue);
 
     /** get reference to list of referenced frame numbers
      ** @return reference to frame list
@@ -332,22 +345,22 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
-     *  The only check that is currently performed is that the UID is not empty.  Later on
-     *  it might be checked whether the specified SOP class is really an image storage SOP
-     *  class.
+     *  Currently, this method does not further specialize the checks performed in the base
+     *  class DSRCompositeReferenceValue.  Later on, this method might be extended to also
+     *  check whether the specified SOP class is really an image storage SOP class.
      ** @param  sopClassUID  SOP class UID to be checked
-     ** @return OFTrue if SOP class UID is valid, OFFalse otherwise
+     ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFBool checkSOPClassUID(const OFString &sopClassUID) const;
+    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID) const;
 
-    /** check the presentation state object for validity.
+    /** check the given reference to a presentation state object for validity.
      *  The presentation state object is "valid" if both UIDs are empty or both are not
      *  empty and SOP class UID refers to a softcopy presentation state (see
      *  DSRTypes::E_PresentationStateType for a list of supported SOP classes).
      ** @param  referenceValue  value to be checked
-     ** @return OFTrue if presentation state object is valid, OFFalse otherwise
+     ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    OFBool checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const;
+    virtual OFCondition checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const;
 
 
   private:
@@ -367,6 +380,9 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
+ *  Revision 1.22  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.21  2012-01-06 09:13:08  uli
  *  Make it possible to build dcmsr as a DLL.
  *

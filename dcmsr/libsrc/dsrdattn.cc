@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDateTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:18 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,17 +36,19 @@
 
 
 DSRDateTreeNode::DSRDateTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_Date),
-   DSRStringValue()
+  : DSRDocumentTreeNode(relationshipType, VT_Date),
+    DSRStringValue()
 {
 }
 
 
 DSRDateTreeNode::DSRDateTreeNode(const E_RelationshipType relationshipType,
-                                 const OFString &stringValue)
- : DSRDocumentTreeNode(relationshipType, VT_Date),
-   DSRStringValue(stringValue)
+                                 const OFString &dateValue,
+                                 const OFBool check)
+  : DSRDocumentTreeNode(relationshipType, VT_Date),
+    DSRStringValue(dateValue, check)
 {
+
 }
 
 
@@ -65,7 +67,7 @@ void DSRDateTreeNode::clear()
 OFBool DSRDateTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRStringValue::isValid() && getConceptName().isValid();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();
 }
 
 
@@ -184,9 +186,23 @@ OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
 }
 
 
+OFCondition DSRDateTreeNode::checkValue(const OFString &dateValue) const
+{
+    /* first, make sure that the mandatory value is non-empty */
+    OFCondition result = DSRStringValue::checkValue(dateValue);
+    /* then, check whether the passed value is valid */
+    if (result.good())
+        result = DcmDate::checkStringValue(dateValue, "1");
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
+ *  Revision 1.25  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.24  2011-03-22 16:55:18  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

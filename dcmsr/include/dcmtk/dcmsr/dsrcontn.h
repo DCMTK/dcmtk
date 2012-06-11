@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:05 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,10 +130,12 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     /** set continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are sparate items.
-     ** @param  continuityOfContent  value to be set (should be different from COC_onvalid)
+     ** @param  continuityOfContent  value to be set (should be different from COC_invalid)
+     *  @param  check                dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
+    OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent,
+                                       const OFBool check = OFTrue);
 
 
   protected:
@@ -194,6 +196,9 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
+ *  Revision 1.18  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.17  2012-01-06 09:13:05  uli
  *  Make it possible to build dcmsr as a DLL.
  *

@@ -19,8 +19,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-29 14:02:18 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -283,11 +283,25 @@ OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSch
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSchemeDesignator)
+OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSchemeDesignator,
+                                                       const OFBool check)
 {
-    ItemStruct *item = NULL;
-    /* call the "real" function */
-    return addItem(codingSchemeDesignator, item);
+    OFCondition result = EC_Normal;
+    /* make sure that the mandatory value is non-empty */
+    if (codingSchemeDesignator.empty())
+        result = EC_IllegalParameter;
+    else if (check)
+    {
+        /* check whether the passed value is valid */
+        result = DcmShortString::checkStringValue(codingSchemeDesignator, "1");
+    }
+    if (result.good())
+    {
+        ItemStruct *item = NULL;
+        /* call the "real" function */
+        result = addItem(codingSchemeDesignator, item);
+    }
+    return result;
 }
 
 
@@ -473,91 +487,103 @@ const OFString &DSRCodingSchemeIdentificationList::getResponsibleOrganization(OF
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeRegistry(const OFString &value)
+OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeRegistry(const OFString &value,
+                                                                       const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->CodingSchemeRegistry = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            item->CodingSchemeRegistry = value;
     }
     return result;
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeUID(const OFString &value)
+OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeUID(const OFString &value,
+                                                                  const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->CodingSchemeUID = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            item->CodingSchemeUID = value;
     }
     return result;
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeExternalID(const OFString &value)
+OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeExternalID(const OFString &value,
+                                                                         const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->CodingSchemeExternalID = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            item->CodingSchemeExternalID = value;
     }
     return result;
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeName(const OFString &value)
+OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeName(const OFString &value,
+                                                                   const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->CodingSchemeName = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            item->CodingSchemeName = value;
     }
     return result;
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeVersion(const OFString &value)
+OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeVersion(const OFString &value,
+                                                                      const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->CodingSchemeVersion = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            item->CodingSchemeVersion = value;
     }
     return result;
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const OFString &value)
+OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const OFString &value,
+                                                                          const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     if (item != NULL)
     {
-        /* set the value */
-        item->ResponsibleOrganization = value;
-        result = EC_Normal;
+        /* set the value (if valid) */
+        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            item->ResponsibleOrganization = value;
     }
     return result;
 }
@@ -566,6 +592,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.20  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.19  2012-05-29 14:02:18  joergr
  *  Slightly modified code for using methods from class DcmSequenceOfItems.
  *

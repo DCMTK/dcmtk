@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-15 16:30:18 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,12 +43,13 @@ DSRCompositeReferenceValue::DSRCompositeReferenceValue()
 
 
 DSRCompositeReferenceValue::DSRCompositeReferenceValue(const OFString &sopClassUID,
-                                                       const OFString &sopInstanceUID)
+                                                       const OFString &sopInstanceUID,
+                                                       const OFBool check)
   : SOPClassUID(),
     SOPInstanceUID()
 {
-    /* use the set methods for checking purposes */
-    setReference(sopClassUID, sopInstanceUID);
+    /* use the set method for checking purposes */
+    setReference(sopClassUID, sopInstanceUID, check);
 }
 
 
@@ -83,7 +84,7 @@ void DSRCompositeReferenceValue::clear()
 
 OFBool DSRCompositeReferenceValue::isValid() const
 {
-    return checkSOPClassUID(SOPClassUID) && checkSOPInstanceUID(SOPInstanceUID);
+    return checkSOPClassUID(SOPClassUID).good() && checkSOPInstanceUID(SOPInstanceUID).good();
 }
 
 
@@ -121,7 +122,7 @@ OFCondition DSRCompositeReferenceValue::readXML(const DSRXMLDocument &doc,
         doc.getStringFromAttribute(doc.getNamedNode(cursor, "sopclass"), SOPClassUID, "uid");
         doc.getStringFromAttribute(doc.getNamedNode(cursor, "instance"), SOPInstanceUID, "uid");
         /* check whether value is valid */
-        result = (isValid() ? EC_Normal : SR_EC_InvalidValue);
+        result = isValid() ? EC_Normal : SR_EC_InvalidValue;
     }
     return result;
 }
@@ -234,66 +235,106 @@ OFCondition DSRCompositeReferenceValue::getValue(DSRCompositeReferenceValue &ref
 }
 
 
-OFCondition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValue &referenceValue)
+OFCondition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValue &referenceValue,
+                                                 const OFBool check)
 {
-    return setReference(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
+    return setReference(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID, check);
 }
 
 
 OFCondition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID,
-                                                     const OFString &sopInstanceUID)
+                                                     const OFString &sopInstanceUID,
+                                                     const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    /* check both values before setting them */
-    if (checkSOPClassUID(sopClassUID) && checkSOPInstanceUID(sopInstanceUID))
+    OFCondition result = EC_Normal;
+    /* first, make sure that the mandatory values are non-empty */
+    if (sopClassUID.empty() || sopInstanceUID.empty())
+        result = EC_IllegalParameter;
+    else if (check)
+    {
+        /* then, check whether the passed values are valid */
+        result = checkSOPClassUID(sopClassUID);
+        if (result.good())
+            result = checkSOPInstanceUID(sopInstanceUID);
+    }
+    if (result.good())
     {
         SOPClassUID = sopClassUID;
         SOPInstanceUID = sopInstanceUID;
-        result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID)
+OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID,
+                                                       const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkSOPClassUID(sopClassUID))
+    OFCondition result = EC_Normal;
+    /* first, make sure that the mandatory value is non-empty */
+    if (sopClassUID.empty())
+        result = EC_IllegalParameter;
+    else if (check)
     {
+        /* then, check whether the passed value is valid */
+        result = checkSOPClassUID(sopClassUID);
+    }
+    if (result.good())
         SOPClassUID = sopClassUID;
-        result = EC_Normal;
-    }
     return result;
 }
 
 
-OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
+OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID,
+                                                          const OFBool check)
 {
-    OFCondition result = EC_IllegalParameter;
-    if (checkSOPInstanceUID(sopInstanceUID))
+    OFCondition result = EC_Normal;
+    /* first, make sure that the mandatory value is non-empty */
+    if (sopInstanceUID.empty())
+        result = EC_IllegalParameter;
+    else if (check)
     {
-        SOPInstanceUID = sopInstanceUID;
-        result = EC_Normal;
+        /* then, check whether the passed value is valid */
+        result = checkSOPInstanceUID(sopInstanceUID);
     }
+    if (result.good())
+        SOPInstanceUID = sopInstanceUID;
     return result;
 }
 
 
-OFBool DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+OFCondition DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
-    return DSRTypes::checkForValidUIDFormat(sopClassUID);
+    OFCondition result = sopClassUID.empty() ? SR_EC_InvalidValue : EC_Normal;
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(sopClassUID, "1");
+    return result;
 }
 
 
-OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) const
+OFCondition DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) const
 {
-    return DSRTypes::checkForValidUIDFormat(sopInstanceUID);
+    OFCondition result = sopInstanceUID.empty() ? SR_EC_InvalidValue : EC_Normal;
+    if (result.good())
+        result = DcmUniqueIdentifier::checkStringValue(sopInstanceUID, "1");
+    return result;
+}
+
+
+OFCondition DSRCompositeReferenceValue::checkCurrentValue() const
+{
+    OFCondition result = checkSOPClassUID(SOPClassUID);
+    if (result.good())
+        result = checkSOPInstanceUID(SOPInstanceUID);
+    return result;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
+ *  Revision 1.23  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.22  2011-12-15 16:30:18  joergr
  *  Fixed typo in comments.
  *

@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRReferencedInstanceList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:10 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,44 +44,13 @@
  *---------------------*/
 
 /** Class that manages a list of SOP instances significantly related to the current
- *  SR document.  An implementation of the Referenced Instance Sequence.
+ *  SR document.  This is an implementation of the Referenced Instance Sequence.
  */
 class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
   : public DSRTypes
 {
 
   public:
-
-    /** Internal structure defining the list items
-     */
-    struct DCMTK_DCMSR_EXPORT ItemStruct
-    {
-        /** constructor
-         ** @param  sopClassUID  SOP class UID
-         ** @param  instanceUID  SOP instance UID
-         */
-        ItemStruct(const OFString &sopClassUID,
-                   const OFString &instanceUID)
-          : SOPClassUID(sopClassUID),
-            InstanceUID(instanceUID),
-            PurposeOfReference()
-        {}
-
-        /** clear additional information
-         */
-        void clear()
-        {
-            // an empty code is invalid
-            PurposeOfReference.clear();
-        }
-
-        /// SOP Class UID (VR=UI, VM=1, Type=1)
-        const OFString SOPClassUID;
-        /// SOP Instance UID (VR=UI, VM=1, Type=1)
-        const OFString InstanceUID;
-        /// Purpose of Reference Code Sequence (VR=SQ, VM=1, Type=1)
-        DSRCodedEntryValue PurposeOfReference;
-    };
 
     /** constructor (default)
      */
@@ -121,7 +90,8 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
     /** read list of items from XML document
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   optional flag used to customize the reading process (see
+     *                  DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXML(const DSRXMLDocument &doc,
@@ -137,13 +107,19 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
                          const size_t flags = 0) const;
 
     /** add new entry to the list of instances (if not already existent).
-     *  Finally, the specified item is selected as the current one.
-     ** @param  sopClassUID  SOP class UID of the entry to be added
-     *  @param  instanceUID  SOP instance UID of the entry to be added
+     *  Before adding (or searching for) the entry, the given UID values are usually
+     *  checked.  If one of the values is invalid, nothing is done but an error is
+     *  returned.  If successful, the specified item is selected as the current one.
+     ** @param  sopClassUID  SOP class UID of the entry to be added (VR=UI, mandatory)
+     *  @param  instanceUID  SOP instance UID of the entry to be added (VR=UI, mandatory)
+     *  @param  check        if enabled, check values for validity before adding them.
+     *                       See checkSOPInstance() method for details.  An empty value
+     *                       is never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(const OFString &sopClassUID,
-                        const OFString &instanceUID);
+                        const OFString &instanceUID,
+                        const OFBool check = OFTrue);
 
     /** remove the current item from the list.
      *  After successful removal the cursor is set to the next valid position.
@@ -181,33 +157,68 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
     OFCondition gotoNextItem();
 
     /** get the SOP class UID of the currently selected entry
-     ** @param  stringValue  reference to string variable in which the result is stored
+     ** @param  sopClassUID  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getSOPClassUID(OFString &stringValue) const;
+    const OFString &getSOPClassUID(OFString &sopClassUID) const;
 
     /** get the SOP instance UID of the currently selected entry
-     ** @param  stringValue  reference to string variable in which the result is stored
+     ** @param  instanceUID  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getSOPInstanceUID(OFString &stringValue) const;
+    const OFString &getSOPInstanceUID(OFString &instanceUID) const;
 
     /** get purpose of reference code of the currently selected entry
-     ** @param  codeValue  variable where a copy of the code should be stored
+     ** @param  purposeOfReference  variable where a copy of the code should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition getPurposeOfReference(DSRCodedEntryValue &codeValue) const;
+    OFCondition getPurposeOfReference(DSRCodedEntryValue &purposeOfReference) const;
 
     /** set purpose of reference code of the currently selected entry.
-     *  The Context Group with CID 7006 (SR Document Purposes of Reference) contains
-     *  a list of appropriate code values.  See DICOM standard for details.
-     ** @param  codeValue  value to be set (not checked for validity)
+     *  Before setting the value, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
+     ** @param  purposeOfReference  value to be set (mandatory)
+     *  @param  check               if enabled, check value for validity before setting it.
+     *                              See checkPurposeOfReference() method for details.  An
+     *                              empty value is never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPurposeOfReference(const DSRCodedEntryValue &codeValue);
+    OFCondition setPurposeOfReference(const DSRCodedEntryValue &purposeOfReference,
+                                      const OFBool check = OFTrue);
 
 
   protected:
+
+    /** Internal structure defining the list items
+     */
+    struct DCMTK_DCMSR_EXPORT ItemStruct
+    {
+        /** constructor
+         ** @param  sopClassUID  SOP class UID
+         ** @param  instanceUID  SOP instance UID
+         */
+        ItemStruct(const OFString &sopClassUID,
+                   const OFString &instanceUID)
+          : SOPClassUID(sopClassUID),
+            InstanceUID(instanceUID),
+            PurposeOfReference()
+        {}
+
+        /** clear additional information
+         */
+        void clear()
+        {
+            // an empty code is invalid
+            PurposeOfReference.clear();
+        }
+
+        /// SOP Class UID (VR=UI, type 1)
+        const OFString SOPClassUID;
+        /// SOP Instance UID (VR=UI, type 1)
+        const OFString InstanceUID;
+        /// Purpose of Reference Code Sequence (VR=SQ, type 1)
+        DSRCodedEntryValue PurposeOfReference;
+    };
 
     /** add the specified SOP instance to the list (if not existent)
      ** @param  sopClassUID  SOP class UID of the entry to be added
@@ -223,6 +234,25 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
      ** @return pointer to the item structure if successful, NULL otherwise
      */
     ItemStruct *getCurrentItem() const;
+
+    /** check the specified SOP class UID and SOP instance UID for validity.
+     *  Currently, the only checks performed are that the strings are non-empty and that
+     *  the given values conform to the corresponding VR (UI) and VM (1).
+     ** @param  sopClassUID  SOP class UID to be checked
+     *  @param  instanceUID  SOP instance UID to be checked
+     ** @return status, EC_Normal if all values are valid, an error code otherwise
+     */
+    OFCondition checkSOPInstance(const OFString &sopClassUID,
+                                 const OFString &instanceUID) const;
+
+    /** check the specified purpose of reference code for validity.
+     *  Internally, the methods DSRCodedEntryValue::isEmpty() and
+     *  DSRCodedEntryValue::checkCurrentValue() are used for this purpose.  Conformance
+     *  with the Context Group 7006 (as defined in the DICOM standard) is not yet checked.
+     ** @param  purposeOfReference  purpose of reference code to be checked
+     ** @return status, EC_Normal if code is valid, an error code otherwise
+     */
+    OFCondition checkPurposeOfReference(const DSRCodedEntryValue &purposeOfReference) const;
 
 
   private:
@@ -245,6 +275,9 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefin.h,v $
+ *  Revision 1.3  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.2  2012-01-06 09:13:10  uli
  *  Make it possible to build dcmsr as a DLL.
  *
@@ -252,7 +285,6 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
  *  Added support for the Referenced Instance Sequence (0008,114A) introduced
  *  with CP-670 (Reference rendering of SR), which allows for referencing an
  *  equivalent CDA document or a rendering as an Encapsulated PDF document.
- *
  *
  *
  */

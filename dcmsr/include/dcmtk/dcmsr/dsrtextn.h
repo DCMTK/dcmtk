@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:13 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:03 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,10 +59,14 @@ class DCMTK_DCMSR_EXPORT DSRTextTreeNode
     /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
-     *  @param  stringValue       initial string value to be set
+     *  @param  textValue         initial value to be set (VR=UT, mandatory)
+     *  @param  check             if enabled, check 'textValue' for validity before setting
+     *                            it.  See checkValue() for details.  An empty value is never
+     *                            accepted.
      */
     DSRTextTreeNode(const E_RelationshipType relationshipType,
-                    const OFString &stringValue);
+                    const OFString &textValue,
+                    const OFBool check = OFTrue);
 
     /** destructor
      */
@@ -74,7 +78,8 @@ class DCMTK_DCMSR_EXPORT DSRTextTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes and the concept name are valid.
+     *  The content item is valid if the base classes, the concept name and the currently
+     *  stored date value are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -143,6 +148,14 @@ class DCMTK_DCMSR_EXPORT DSRTextTreeNode
                                               size_t &annexNumber,
                                               const size_t flags) const;
 
+    /** check the specified text value for validity.
+     *  In addition to the base class check for a non-empty value, this method also checks
+     *  whether the given value conforms to the corresponding VR (UT).
+     ** @param  textValue  value to be checked
+     ** @return status, EC_Normal if value is valid, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &textValue) const;
+
 
   private:
 
@@ -160,6 +173,9 @@ class DCMTK_DCMSR_EXPORT DSRTextTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.h,v $
+ *  Revision 1.19  2012-06-11 08:53:03  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.18  2012-01-06 09:13:13  uli
  *  Make it possible to build dcmsr as a DLL.
  *

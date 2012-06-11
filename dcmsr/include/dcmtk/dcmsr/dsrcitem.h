@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-14 11:07:24 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2012-06-11 08:53:01 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,9 +112,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  the corresponding content item (value type).
      *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
      ** @param  stringValue  value to be set
+     *  @param  check        if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStringValue(const OFString &stringValue);
+    OFCondition setStringValue(const OFString &stringValue,
+                               const OFBool check = OFTrue);
 
     /** get pointer to code value.
      *  Applicable to: CODE
@@ -138,9 +140,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set code value.
      *  Applicable to: CODE
      ** @param  codeValue  value to be set
+     *  @param  check      if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setCodeValue(const DSRCodedEntryValue &codeValue);
+    OFCondition setCodeValue(const DSRCodedEntryValue &codeValue,
+                             const OFBool check = OFTrue);
 
     /** get pointer to numeric value.
      *  Applicable to: NUM
@@ -164,9 +168,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set numeric value.
      *  Applicable to: NUM
      ** @param  numericValue  value to be set
+     *  @param  check         if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setNumericValue(const DSRNumericMeasurementValue &numericValue);
+    OFCondition setNumericValue(const DSRNumericMeasurementValue &numericValue,
+                                const OFBool check = OFTrue);
 
     /** get pointer to spatial coordinates.
      *  Applicable to: SCOORD
@@ -190,9 +196,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set spatial coordinates.
      *  Applicable to: SCOORD
      ** @param  coordinatesValue  value to be set
+     *  @param  check             if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue);
+    OFCondition setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue,
+                                      const OFBool check = OFTrue);
 
     /** get pointer to spatial coordinates 3D.
      *  Applicable to: SCOORD3D
@@ -216,9 +224,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set spatial coordinates 3D.
      *  Applicable to: SCOORD3D
      ** @param  coordinatesValue  value to be set
+     *  @param  check             if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSpatialCoordinates3D(const DSRSpatialCoordinates3DValue &coordinatesValue);
+    OFCondition setSpatialCoordinates3D(const DSRSpatialCoordinates3DValue &coordinatesValue,
+                                        const OFBool check = OFTrue);
 
     /** get pointer to temporal coordinates.
      *  Applicable to: TCOORD
@@ -242,9 +252,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set temporal coordinates.
      *  Applicable to: TCOORD
      ** @param  coordinatesValue  value to be set
+     *  @param  check             if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue);
+    OFCondition setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue,
+                                       const OFBool check = OFTrue);
 
     /** get pointer to composite reference.
      *  Applicable to: COMPOSITE
@@ -268,9 +280,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set composite reference.
      *  Applicable to: COMPOSITE
      ** @param  referenceValue  value to be set
+     *  @param  check           if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setCompositeReference(const DSRCompositeReferenceValue &referenceValue);
+    OFCondition setCompositeReference(const DSRCompositeReferenceValue &referenceValue,
+                                      const OFBool check = OFTrue);
 
     /** get pointer to image reference.
      *  Applicable to: IMAGE
@@ -294,9 +308,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set image reference.
      *  Applicable to: IMAGE
      ** @param  referenceValue  value to be set
+     *  @param  check           if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setImageReference(const DSRImageReferenceValue &referenceValue);
+    OFCondition setImageReference(const DSRImageReferenceValue &referenceValue,
+                                  const OFBool check = OFTrue);
 
     /** get pointer to waveform reference.
      *  Applicable to: WAVEFORM
@@ -320,9 +336,11 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set waveform reference.
      *  Applicable to: WAVEFORM
      ** @param  referenceValue  value to be set
+     *  @param  check           if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setWaveformReference(const DSRWaveformReferenceValue &referenceValue);
+    OFCondition setWaveformReference(const DSRWaveformReferenceValue &referenceValue,
+                                     const OFBool check = OFTrue);
 
     /** get continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
@@ -336,10 +354,12 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are sparate items.
      *  Applicable to: CONTAINER
-     ** @param  continuityOfContent  value to be set (should be different from COC_onvalid)
+     ** @param  continuityOfContent  value to be set (should be different from COC_invalid)
+     *  @param  check                if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
+    OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent,
+                                       const OFBool check = OFTrue);
 
     /** get pointer to concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
@@ -371,27 +391,31 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  of document title and section headings in documents.
      *  Applicable to all content items (by-value only, optional/conditional for some value types).
      ** @param  conceptName  value to be set
+     *  @param  check        if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setConceptName(const DSRCodedEntryValue &conceptName);
+    OFCondition setConceptName(const DSRCodedEntryValue &conceptName,
+                               const OFBool check = OFTrue);
 
-    /** get observation date time.
+    /** get observation date/time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
      *  Applicable to all content items (by-value only, optional attribute).
-     ** @return observation date and time of current content item if valid, EmptyString otherwise
+     ** @return observation date/time of current content item if valid, EmptyString otherwise
      */
     const OFString &getObservationDateTime() const;
 
-    /** set observation date time.
+    /** set observation date/time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
      *  Please use the correct DICOM format (VR=DT).
      *  Applicable to all content items (by-value only).
      ** @param  observationDateTime  value to be set (might be an empty string)
+     *  @param  check                if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setObservationDateTime(const OFString &observationDateTime);
+    OFCondition setObservationDateTime(const OFString &observationDateTime,
+                                       const OFBool check = OFTrue);
 
     /** get observation unique identifier.
      *  The UID represents the semantic content of the observation; an encoding of the same
@@ -407,13 +431,15 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  Please use the correct DICOM format (VR=UI).
      *  Applicable to all content items (by-value only).
      ** @param  observationUID  value to be set (might be an empty string)
+     *  @param  check           if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setObservationUID(const OFString &observationUID);
+    OFCondition setObservationUID(const OFString &observationUID,
+                                  const OFBool check = OFTrue);
 
     /** get template identifier and mapping resource.
      *  This value pair identifies the template that was used to create this content item
-     *  (and its children).  According to the DICOM standard is is "required if a template
+     *  (and its children).  According to the DICOM standard this is "required if a template
      *  was used to define the content of this Item, and the template consists of a single
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
      *  nested templates that start with the same CONTAINER."  However, this condition is
@@ -430,13 +456,16 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set template identifier and mapping resource.
      *  The identification is valid if both values are either present (non-empty) or absent
      *  (empty).  See getTemplateIdentification() for details.
+     *  Please use the correct DICOM format for both values (VR=CS).
      *  Applicable to all content items (by-value only).
-     ** @param  templateIdentifier  identifier of the template to be set (VR=CS)
-     *  @param  mappingResource     mapping resource that defines the template (VR=CS)
+     ** @param  templateIdentifier  identifier of the template to be set
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  check               if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setTemplateIdentification(const OFString &templateIdentifier,
-                                          const OFString &mappingResource);
+                                          const OFString &mappingResource,
+                                          const OFBool check = OFTrue);
 
 
   protected:
@@ -496,6 +525,9 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
+ *  Revision 1.25  2012-06-11 08:53:01  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.24  2012-02-14 11:07:24  joergr
  *  Added support for Observation UID (0040,A171) to content items (CP-1147).
  *

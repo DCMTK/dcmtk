@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:18 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2012-06-11 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,7 +159,7 @@ OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
             getConceptName().renderHTML(docStream, flags, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /*fullCode*/);
             docStream << "</h" << section << ">" << OFendl;
         }
-        /* render optional observation datetime */
+        /* render optional observation date/time */
         if (!getObservationDateTime().empty())
         {
             OFString tmpString;
@@ -204,9 +204,11 @@ OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
 }
 
 
-OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent)
+OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent,
+                                                         const OFBool /*check*/)
 {
     OFCondition result = EC_IllegalParameter;
+    /* check whether the passed value is valid */
     if (continuityOfContent != COC_invalid)
     {
         ContinuityOfContent = continuityOfContent;
@@ -219,6 +221,9 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
+ *  Revision 1.30  2012-06-11 08:53:05  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.29  2011-03-22 16:55:18  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

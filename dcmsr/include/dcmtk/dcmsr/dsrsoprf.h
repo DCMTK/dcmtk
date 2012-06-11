@@ -20,8 +20,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-25 08:53:26 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,229 +56,6 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 {
 
   public:
-
-    /** Internal structure defining the instance list items
-     */
-    struct DCMTK_DCMSR_EXPORT InstanceStruct
-    {
-        /** constructor
-         ** @param  sopClassUID  SOP class UID
-         ** @param  instanceUID  SOP instance UID
-         */
-        InstanceStruct(const OFString &sopClassUID,
-                       const OFString &instanceUID);
-
-        /** clear additional information
-         */
-        void clear();
-
-        /// SOP Class UID (VR=UI, VM=1, Type=1)
-        const OFString SOPClassUID;
-        /// SOP Instance UID (VR=UI, VM=1, Type=1)
-        const OFString InstanceUID;
-        /// Purpose of Reference Code Sequence (VR=SQ, VM=1, Type=3)
-        DSRCodedEntryValue PurposeOfReference;
-    };
-
-    /** Internal structure defining the series list items
-     */
-    struct DCMTK_DCMSR_EXPORT SeriesStruct
-    {
-        /** constructor
-         ** @param  seriesUID  series instance UID
-         */
-        SeriesStruct(const OFString &seriesUID);
-
-        /** destructor
-         */
-        ~SeriesStruct();
-
-        /** get number of instance stored in the list of instances
-         ** @return number of instances
-         */
-        size_t getNumberOfInstances() const;
-
-        /** read instance level attributes from dataset
-         ** @param  dataset  DICOM dataset from which the list should be read
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition read(DcmItem &dataset);
-
-        /** write series and instance level attributes to dataset
-         ** @param  dataset  DICOM dataset to which the list should be written
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition write(DcmItem &dataset) const;
-
-        /** read series and instance level attributes from XML document
-         ** @param  doc     document containing the XML file content
-         *  @param  cursor  cursor pointing to the starting node
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition readXML(const DSRXMLDocument &doc,
-                            DSRXMLCursor cursor);
-
-        /** write series and instance level attributes in XML format
-         ** @param  stream  output stream to which the XML document is written
-         *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                             const size_t flags = 0) const;
-
-        /** set cursor to the specified instance (if existent)
-         ** @param  instanceUID  SOP instance UID of the entry to be searched for
-         ** @return pointer to the instance structure if successful, NULL otherwise
-         */
-        InstanceStruct *gotoInstance(const OFString &instanceUID);
-
-        /** select the first item in the list.
-         *  That means the first instance in the current series.
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition gotoFirstItem();
-
-        /** select the next item in the list.
-         *  That means the next instance in the current series (if available).
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition gotoNextItem();
-
-        /** add new entry to the list of instances (if not already existent).
-         *  Finally, the specified item is selected as the current one.
-         ** @param  sopClassUID  SOP class UID of the entry to be added
-         *  @param  instanceUID  SOP instance UID of the entry to be added
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition addItem(const OFString &sopClassUID,
-                            const OFString &instanceUID);
-
-        /** remove the current item from the list of instances.
-         *  After successful removal the cursor is set to the next valid position.
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition removeItem();
-
-        /// Series Instance UID (VR=UI, VM=1, Type=1)
-        const OFString SeriesUID;
-        /// Retrieve Application Entity Title (VR=AE, VM=1-n, Type=3)
-        OFString RetrieveAETitle;
-        /// Retrieve Location UID (VR=UI, VM=1, Type=3)
-        OFString RetrieveLocationUID;
-        /// Storage Media File Set ID (VR=SH, VM=1, Type=3)
-        OFString StorageMediaFileSetID;
-        /// Storage Media File Set UID (VR=UI, VM=1, Type=3)
-        OFString StorageMediaFileSetUID;
-
-        /// list of referenced instances
-        OFList<InstanceStruct *> InstanceList;
-        /// currently selected instance (cursor)
-        OFListIterator(InstanceStruct *) Iterator;
-    };
-
-    /** Internal structure defining the study list items
-     */
-    struct DCMTK_DCMSR_EXPORT StudyStruct
-    {
-        /** constructor
-         ** @param  studyUID  study instance UID
-         */
-        StudyStruct(const OFString &studyUID);
-
-        /** destructor
-         */
-        ~StudyStruct();
-
-        /** get number of instance stored in the list of series
-         ** @return number of instances
-         */
-        size_t getNumberOfInstances() const;
-
-        /** read series and instance level from dataset
-         ** @param  dataset  DICOM dataset from which the list should be read
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition read(DcmItem &dataset);
-
-        /** write study, series and instance level attributes to dataset
-         ** @param  dataset  DICOM dataset to which the list should be written
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition write(DcmItem &dataset) const;
-
-        /** read study, series and instance level attributes from XML document
-         ** @param  doc     document containing the XML file content
-         *  @param  cursor  cursor pointing to the starting node
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition readXML(const DSRXMLDocument &doc,
-                            DSRXMLCursor cursor);
-
-        /** write study, series and instance level attributes in XML format
-         ** @param  stream  output stream to which the XML document is written
-         *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                             const size_t flags = 0) const;
-
-        /** set cursor to the specified series entry (if existent)
-         ** @param  seriesUID  series instance UID of the entry to be searched for
-         ** @return pointer to the series structure if successful, NULL otherwise
-         */
-        SeriesStruct *gotoSeries(const OFString &seriesUID);
-
-        /** set cursor to the specified instance entry (if existent)
-         ** @param  instanceUID  SOP instance UID of the entry to be searched for
-         ** @return pointer to the instance structure if successful, NULL otherwise
-         */
-        InstanceStruct *gotoInstance(const OFString &instanceUID);
-
-        /** select the first item in the list.
-         *  That means the first instance in the first series of the current study.
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition gotoFirstItem();
-
-        /** select the next item in the list.
-         *  That means the next instance in the current series, or the first instance
-         *  in the next series (if available).
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition gotoNextItem();
-
-        /** add new entry to the list of series and instances (if not already existent).
-         *  Finally, the specified items are selected as the current one.
-         ** @param  seriesUID    series instance UID of the entry to be added
-         *  @param  sopClassUID  SOP class UID of the entry to be added
-         *  @param  instanceUID  SOP instance UID of the entry to be added
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition addItem(const OFString &seriesUID,
-                            const OFString &sopClassUID,
-                            const OFString &instanceUID);
-
-        /** remove the current item from the list of series and instances.
-         *  After successful removal the cursors are set to the next valid position.
-         ** @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition removeItem();
-
-        /** remove empty/incomplete items from the list.
-         *  (e.g. series with no instances)
-         *  Please note that this function modifies the value of 'Iterator'.
-         */
-        void removeIncompleteItems();
-
-        /// Study Instance UID (VR=UI, VM=1, Type=1)
-        const OFString StudyUID;
-
-        /// list of referenced series
-        OFList<SeriesStruct *> SeriesList;
-        /// currently selected series (cursor)
-        OFListIterator(SeriesStruct *) Iterator;
-    };
-
 
     /** constructor
      ** @param  sequence  DICOM tag specifying the attribute (sequence) of the reference list
@@ -343,28 +120,38 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
                          const size_t flags = 0) const;
 
     /** add the specified item to the list of references.
-     *  Internally the item is inserted into the hierarchical structure of studies, series
-     *  and instances, if not already contained in the list. In any case the specified item
-     *  is selected as the current one.
+     *  Before adding the item, the given UID values are usually checked.  If one of the
+     *  values is invalid, nothing is done but an error is returned.  If successful, the
+     *  item is inserted into the hierarchical structure of studies, series and instances,
+     *  if not already contained in the list. In any case, the specified item is selected
+     *  as the current one.
      ** @param  studyUID     study instance UID of the entry to be added
      *  @param  seriesUID    series instance UID of the entry to be added
      *  @param  sopClassUID  SOP class UID of the entry to be added
      *  @param  instanceUID  SOP instance UID of the entry to be added
+     *  @param  check        if enabled, check values for validity before adding them.
+     *                       See checkSOPInstance() method for details.  Empty values are
+     *                       never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(const OFString &studyUID,
                         const OFString &seriesUID,
                         const OFString &sopClassUID,
-                        const OFString &instanceUID);
+                        const OFString &instanceUID,
+                        const OFBool check = OFTrue);
 
     /** add item from specified DICOM dataset to the list of references.
      *  Internally an item representing the given dataset is inserted into the hierarchical
      *  structure of studies, series and instances, if not already contained in the list.
-     *  In any case the specified item is selected as the current one.
+     *  In any case, the specified item is selected as the current one.
      ** @param  dataset  reference to DICOM dataset from which the relevant UIDs are retrieved
+     *  @param  check    if enabled, check values for validity before adding them.  See
+     *                   checkSOPInstance() method for details.  An empty value is never
+     *                   accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition addItem(DcmItem &dataset);
+    OFCondition addItem(DcmItem &dataset,
+                        const OFBool check = OFTrue);
 
     /** remove the current item from the list of referenced SOP instances.
      *  After successful removal the cursor is set to the next valid position.
@@ -483,39 +270,277 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      */
     OFCondition getPurposeOfReference(DSRCodedEntryValue &codeValue) const;
 
-    /** set the retrieve application entity title of the currently selected entry.
-     *  Multiple values are to be separated by a backslash ("\").
-     ** @param  value  string value to be set (use empty string to omit optional attribute)
+    /** set the retrieve application entity title of the currently selected entry
+     ** @param  value  string value to be set (possibly multi-valued) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (AE) and VM (1-n) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setRetrieveAETitle(const OFString &value);
+    OFCondition setRetrieveAETitle(const OFString &value,
+                                   const OFBool check = OFTrue);
 
     /** set the retrieve location UID of the currently selected entry
-     ** @param  value  string value to be set (use empty string to omit optional attribute)
+     ** @param  value  string value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setRetrieveLocationUID(const OFString &value);
+    OFCondition setRetrieveLocationUID(const OFString &value,
+                                       const OFBool check = OFTrue);
 
     /** set the storage media file set ID of the currently selected entry
-     ** @param  value  string value to be set (use empty string to omit optional attribute)
+     ** @param  value  string value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStorageMediaFileSetID(const OFString &value);
+    OFCondition setStorageMediaFileSetID(const OFString &value,
+                                         const OFBool check = OFTrue);
 
     /** set the storage media file set UID of the currently selected entry
-     ** @param  value  string value to be set (use empty string to omit optional attribute)
+     ** @param  value  string value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStorageMediaFileSetUID(const OFString &value);
+    OFCondition setStorageMediaFileSetUID(const OFString &value,
+                                          const OFBool check = OFTrue);
 
-    /** set purpose of reference code of the currently selected entry
-     ** @param  codeValue  value to be set (use empty code to omit optional attribute)
+    /** set purpose of reference code of the currently selected entry.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
+     ** @param  codeValue  value to be set (optional).  Use an empty code to remove the
+     *                     current value.
+     *  @param  check      if enabled, check value for validity before setting it.  See
+     *                     checkPurposeOfReference() method for details.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPurposeOfReference(const DSRCodedEntryValue &codeValue);
+    OFCondition setPurposeOfReference(const DSRCodedEntryValue &codeValue,
+                                      const OFBool check = OFTrue);
 
 
   protected:
+
+    /** Internal structure defining the instance list items
+     */
+    struct DCMTK_DCMSR_EXPORT InstanceStruct
+    {
+        /** constructor
+         ** @param  sopClassUID  SOP class UID
+         ** @param  instanceUID  SOP instance UID
+         */
+        InstanceStruct(const OFString &sopClassUID,
+                       const OFString &instanceUID);
+
+        /** clear additional information
+         */
+        void clear();
+
+        /// SOP Class UID (VR=UI, type 1)
+        const OFString SOPClassUID;
+        /// SOP Instance UID (VR=UI, type 1)
+        const OFString InstanceUID;
+        /// Purpose of Reference Code Sequence (VR=SQ, type 3).
+        /// NB: According to the DICOM standard, "One or more Items are permitted in this
+        ///     sequence."  However, the current implementation only supports a single
+        ///     item.  Also see documentation of DSRCodedEntryValue::readSequence().
+        DSRCodedEntryValue PurposeOfReference;
+    };
+
+    /** Internal structure defining the series list items
+     */
+    struct DCMTK_DCMSR_EXPORT SeriesStruct
+    {
+        /** constructor
+         ** @param  seriesUID  series instance UID
+         */
+        SeriesStruct(const OFString &seriesUID);
+
+        /** destructor
+         */
+        ~SeriesStruct();
+
+        /** get number of instance stored in the list of instances
+         ** @return number of instances
+         */
+        size_t getNumberOfInstances() const;
+
+        /** read instance level attributes from dataset
+         ** @param  dataset  DICOM dataset from which the list should be read
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition read(DcmItem &dataset);
+
+        /** write series and instance level attributes to dataset
+         ** @param  dataset  DICOM dataset to which the list should be written
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition write(DcmItem &dataset) const;
+
+        /** read series and instance level attributes from XML document
+         ** @param  doc     document containing the XML file content
+         *  @param  cursor  cursor pointing to the starting node
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition readXML(const DSRXMLDocument &doc,
+                            DSRXMLCursor cursor);
+
+        /** write series and instance level attributes in XML format
+         ** @param  stream  output stream to which the XML document is written
+         *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition writeXML(STD_NAMESPACE ostream &stream,
+                             const size_t flags = 0) const;
+
+        /** set cursor to the specified instance (if existent)
+         ** @param  instanceUID  SOP instance UID of the entry to be searched for
+         ** @return pointer to the instance structure if successful, NULL otherwise
+         */
+        InstanceStruct *gotoInstance(const OFString &instanceUID);
+
+        /** select the first item in the list.
+         *  That means the first instance in the current series.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoFirstItem();
+
+        /** select the next item in the list.
+         *  That means the next instance in the current series (if available).
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoNextItem();
+
+        /** add new entry to the list of instances (if not already existent).
+         *  Finally, the specified item is selected as the current one.
+         ** @param  sopClassUID  SOP class UID of the entry to be added
+         *  @param  instanceUID  SOP instance UID of the entry to be added
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition addItem(const OFString &sopClassUID,
+                            const OFString &instanceUID);
+
+        /** remove the current item from the list of instances.
+         *  After successful removal the cursor is set to the next valid position.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition removeItem();
+
+        /// Series Instance UID (VR=UI, VM=1, type 1)
+        const OFString SeriesUID;
+        /// Retrieve Application Entity Title (VR=AE, VM=1-n, type 3)
+        OFString RetrieveAETitle;
+        /// Retrieve Location UID (VR=UI, VM=1, type 3)
+        OFString RetrieveLocationUID;
+        /// Storage Media File Set ID (VR=SH, VM=1, type 3)
+        OFString StorageMediaFileSetID;
+        /// Storage Media File Set UID (VR=UI, VM=1, type 3)
+        OFString StorageMediaFileSetUID;
+
+        /// list of referenced instances
+        OFList<InstanceStruct *> InstanceList;
+        /// currently selected instance (cursor)
+        OFListIterator(InstanceStruct *) Iterator;
+    };
+
+    /** Internal structure defining the study list items
+     */
+    struct DCMTK_DCMSR_EXPORT StudyStruct
+    {
+        /** constructor
+         ** @param  studyUID  study instance UID
+         */
+        StudyStruct(const OFString &studyUID);
+
+        /** destructor
+         */
+        ~StudyStruct();
+
+        /** get number of instance stored in the list of series
+         ** @return number of instances
+         */
+        size_t getNumberOfInstances() const;
+
+        /** read series and instance level from dataset
+         ** @param  dataset  DICOM dataset from which the list should be read
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition read(DcmItem &dataset);
+
+        /** write study, series and instance level attributes to dataset
+         ** @param  dataset  DICOM dataset to which the list should be written
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition write(DcmItem &dataset) const;
+
+        /** read study, series and instance level attributes from XML document
+         ** @param  doc     document containing the XML file content
+         *  @param  cursor  cursor pointing to the starting node
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition readXML(const DSRXMLDocument &doc,
+                            DSRXMLCursor cursor);
+
+        /** write study, series and instance level attributes in XML format
+         ** @param  stream  output stream to which the XML document is written
+         *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition writeXML(STD_NAMESPACE ostream &stream,
+                             const size_t flags = 0) const;
+
+        /** set cursor to the specified series entry (if existent)
+         ** @param  seriesUID  series instance UID of the entry to be searched for
+         ** @return pointer to the series structure if successful, NULL otherwise
+         */
+        SeriesStruct *gotoSeries(const OFString &seriesUID);
+
+        /** set cursor to the specified instance entry (if existent)
+         ** @param  instanceUID  SOP instance UID of the entry to be searched for
+         ** @return pointer to the instance structure if successful, NULL otherwise
+         */
+        InstanceStruct *gotoInstance(const OFString &instanceUID);
+
+        /** select the first item in the list.
+         *  That means the first instance in the first series of the current study.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoFirstItem();
+
+        /** select the next item in the list.
+         *  That means the next instance in the current series, or the first instance
+         *  in the next series (if available).
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoNextItem();
+
+        /** add new entry to the list of series and instances (if not already existent).
+         *  Finally, the specified items are selected as the current one.
+         ** @param  seriesUID    series instance UID of the entry to be added
+         *  @param  sopClassUID  SOP class UID of the entry to be added
+         *  @param  instanceUID  SOP instance UID of the entry to be added
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition addItem(const OFString &seriesUID,
+                            const OFString &sopClassUID,
+                            const OFString &instanceUID);
+
+        /** remove the current item from the list of series and instances.
+         *  After successful removal the cursors are set to the next valid position.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition removeItem();
+
+        /** remove empty/incomplete items from the list.
+         *  (e.g. series with no instances)
+         *  Please note that this function modifies the value of 'Iterator'.
+         */
+        void removeIncompleteItems();
+
+        /// Study Instance UID (VR=UI, type 1)
+        const OFString StudyUID;
+
+        /// list of referenced series
+        OFList<SeriesStruct *> SeriesList;
+        /// currently selected series (cursor)
+        OFListIterator(SeriesStruct *) Iterator;
+    };
 
     /** set cursor to the specified study entry (if existent)
      ** @param  studyUID  study instance UID of the entry to be searched for
@@ -544,6 +569,28 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      */
     void removeIncompleteItems();
 
+    /** check the four specified UID values for validity.
+     *  Currently, the only checks performed are that the strings are non-empty and that
+     *  the given values conform to the corresponding VR (UI) and VM (1).
+     ** @param  studyUID     study instance UID to be checked
+     *  @param  seriesUID    series instance UID to be checked
+     *  @param  sopClassUID  SOP class UID to be checked
+     *  @param  instanceUID  SOP instance UID to be checked
+     ** @return status, EC_Normal if all values are valid, an error code otherwise
+     */
+    OFCondition checkSOPInstance(const OFString &studyUID,
+                                 const OFString &seriesUID,
+                                 const OFString &sopClassUID,
+                                 const OFString &instanceUID) const;
+
+    /** check the specified purpose of reference code for validity.
+     *  Internally, the method DSRCodedEntryValue::checkCurrentValue()
+     *  is used for this purpose (if the code is not empty).
+     ** @param  purposeOfReference  purpose of reference code to be checked
+     ** @return status, EC_Normal if code is valid, an error code otherwise
+     */
+    OFCondition checkPurposeOfReference(const DSRCodedEntryValue &purposeOfReference) const;
+
 
   private:
 
@@ -570,6 +617,9 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
+ *  Revision 1.20  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.19  2012-05-25 08:53:26  joergr
  *  Added support for optional Retrieve Location UID (0040,E011) to the class
  *  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).

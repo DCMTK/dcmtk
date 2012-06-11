@@ -19,8 +19,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-30 14:18:51 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2012-06-11 08:53:03 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,15 +56,18 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
      */
     DSRWaveformReferenceValue();
 
-    /** constructor.
-     *  The UID pair is only set if it passed the validity check (see setValue()).
+    /** constructor
      ** @param  sopClassUID     referenced SOP class UID of the waveform object.
      *                          (VR=UI, mandatory)
      *  @param  sopInstanceUID  referenced SOP instance UID of the waveform object.
      *                          (VR=UI, mandatory)
+     *  @param  check           if enabled, check 'sopClassUID' and 'sopInstanceUID' for
+     *                          validity before setting them.  See checkXXX() for details.
+     *                          Empty values are never accepted.
      */
     DSRWaveformReferenceValue(const OFString &sopClassUID,
-                              const OFString &sopInstanceUID);
+                              const OFString &sopInstanceUID,
+                              const OFBool check = OFTrue);
 
     /** copy constructor
      ** @param  referenceValue  waveform reference value to be copied (not checked !)
@@ -149,12 +152,16 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     OFCondition getValue(DSRWaveformReferenceValue &referenceValue) const;
 
     /** set waveform reference value.
-     *  Before setting the reference it is checked (see checkXXX()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.
+     *  Before setting the reference, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
      ** @param  referenceValue  value to be set
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See checkXXX() for details.  Empty values are only accepted
+     *                          for non-mandatory attributes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setValue(const DSRWaveformReferenceValue &referenceValue);
+    OFCondition setValue(const DSRWaveformReferenceValue &referenceValue,
+                         const OFBool check = OFTrue);
 
     /** get reference to list of referenced waveform channels
      ** @return reference to channel list
@@ -198,11 +205,13 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
-     *  Currently, all waveform SOP classes that are defined in DICOM PS 3.6-2011 are allowed.
+     *  This method further specializes the checks performed in the base class
+     *  DSRCompositeReferenceValue.  Currently, all waveform SOP classes that are defined
+     *  in DICOM PS 3.6-2011 are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
-     ** @return OFTrue if SOP class UID is valid, OFFalse otherwise
+     ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFBool checkSOPClassUID(const OFString &sopClassUID) const;
+    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID) const;
 
 
   private:
@@ -218,6 +227,9 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
+ *  Revision 1.21  2012-06-11 08:53:03  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.20  2012-05-30 14:18:51  joergr
  *  Added support for Waveform Storage SOP Classes introduced after 2003 edition
  *  of the DICOM standard, i.e. General Audio, Arterial Pulse and Respiratory.

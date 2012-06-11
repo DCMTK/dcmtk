@@ -19,8 +19,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-14 11:07:24 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,32 +100,40 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
 
     /** set the concept name
      ** @param  conceptName  dummy parameter
+     *  @param  check        dummy parameter
      ** @return always returns EC_IllegalCall, since this content item has no concept name
      */
-    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName);
+    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName,
+                                       const OFBool check = OFTrue);
 
-    /** set observation date time
+    /** set observation date/time
      ** @param  observationDateTime  dummy parameter
+     *  @param  check                dummy parameter
      ** @return always returns EC_IllegalCall, since this content item has no observation
      *          date and time (part of Document Relationship Macro)
      */
-    virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
+    virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
+                                               const OFBool check = OFTrue);
 
     /** set observation unique identifier
      ** @param  observationUID  dummy parameter
+     *  @param  check           dummy parameter
      ** @return always returns EC_IllegalCall, since this content item has no observation
      *          unique identifier (part of Document Relationship Macro)
      */
-    virtual OFCondition setObservationUID(const OFString &observationUID);
+    virtual OFCondition setObservationUID(const OFString &observationUID,
+                                          const OFBool check = OFTrue);
 
     /** set template identifier and mapping resource
      ** @param  templateIdentifier  dummy parameter
      *  @param  mappingResource     dummy parameter
+     *  @param  check               dummy parameter
      ** @return always returns EC_IllegalCall, since this content item has no template
      *          identification (part of Document Relationship Macro)
      */
     virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
-                                                  const OFString &mappingResource);
+                                                  const OFString &mappingResource,
+                                                  const OFBool check = OFTrue);
 
     /** get ID of the referenced node
      ** @return ID of the referenced node if valid, 0 otherwise
@@ -198,6 +206,9 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
+ *  Revision 1.18  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.17  2012-02-14 11:07:24  joergr
  *  Added support for Observation UID (0040,A171) to content items (CP-1147).
  *

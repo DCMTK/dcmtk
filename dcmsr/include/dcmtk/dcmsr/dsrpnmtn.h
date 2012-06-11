@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:10 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-11 08:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,10 +59,14 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
     /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
-     *  @param  stringValue       initial string value to be set
+     *  @param  personNameValue   initial value to be set (VR=PN, mandatory)
+     *  @param  check             if enabled, check 'personNameValue' for validity before
+     *                            setting it.  See checkValue() for details.  An empty value
+     *                            is never accepted.
      */
     DSRPNameTreeNode(const E_RelationshipType relationshipType,
-                     const OFString &stringValue);
+                     const OFString &personNameValue,
+                     const OFBool check = OFTrue);
 
     /** destructor
      */
@@ -74,7 +78,8 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes and the concept name are valid.
+     *  The content item is valid if the base classes, the concept name and the currently
+     *  stored date value are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -149,6 +154,14 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
                                               size_t &annexNumber,
                                               const size_t flags) const;
 
+    /** check the specified person name value for validity.
+     *  In addition to the base class check for a non-empty value, this method also checks
+     *  whether the given value conforms to the corresponding VR (PN) and VM (1).
+     ** @param  personNameValue  value to be checked
+     ** @return status, EC_Normal if value is valid, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &personNameValue) const;
+
 
   private:
 
@@ -166,6 +179,9 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.h,v $
+ *  Revision 1.19  2012-06-11 08:53:02  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.18  2012-01-06 09:13:10  uli
  *  Make it possible to build dcmsr as a DLL.
  *

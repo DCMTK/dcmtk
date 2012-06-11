@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-30 08:48:09 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2012-06-11 08:53:06 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -605,7 +605,7 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const size_t mode,
                                     else
                                         refNode->ReferencedContentItem.clear();
                                     /* tbd: check for valid reference could be more strict */
-                                    refNode->ValidReference = checkForValidUIDFormat(refNode->ReferencedContentItem);
+                                    refNode->ValidReference = checkForValidReference(refNode->ReferencedContentItem);
                                 } else if (refNodeID == 0)
                                     refNode->ValidReference = OFFalse;
                             }
@@ -683,6 +683,9 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.39  2012-06-11 08:53:06  joergr
+ *  Added optional "check" parameter to "set" methods and enhanced documentation.
+ *
  *  Revision 1.38  2011-11-30 08:48:09  joergr
  *  Output optional observation date/time of each content item in print() method.
  *
