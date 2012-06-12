@@ -2,4 +2,6 @@
 PROJECT(dcmjpls)
 
 # recurse into subdirectories
-SUBDIRS(libsrc libcharls apps include)
+FOREACH(SUBDIR libsrc libcharls apps include)
+  ADD_SUBDIRECTORY(${SUBDIR})
+ENDFOREACH(SUBDIR)

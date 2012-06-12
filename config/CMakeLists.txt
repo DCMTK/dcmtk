@@ -2,4 +2,4 @@
 PROJECT(config)
 
 # recurse into subdirectories
-SUBDIRS(docs)
+ADD_SUBDIRECTORY(docs)

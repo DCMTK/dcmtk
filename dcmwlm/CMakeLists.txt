@@ -5,4 +5,6 @@ PROJECT(dcmwlm)
 INCLUDE_DIRECTORIES(${dcmwlm_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${oflog_SOURCE_DIR}/include ${oflog_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${dcmnet_SOURCE_DIR}/include ${ZLIB_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc apps wwwapps include docs data)
+FOREACH(SUBDIR libsrc apps wwwapps include docs data)
+  ADD_SUBDIRECTORY(${SUBDIR})
+ENDFOREACH(SUBDIR)

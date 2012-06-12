@@ -1,6 +1,27 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.12 (riesmeier)
+
+- Converted deprecated CMake command SUBDIRS() into ADD_DIRECTORY() calls.
+  Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.
+  Affects: config/CMakeLists.txt
+           dcmdata/CMakeLists.txt
+           dcmimage/CMakeLists.txt
+           dcmimgle/CMakeLists.txt
+           dcmjpeg/CMakeLists.txt
+           dcmjpls/CMakeLists.txt
+           dcmnet/CMakeLists.txt
+           dcmpstat/CMakeLists.txt
+           dcmqrdb/CMakeLists.txt
+           dcmrt/CMakeLists.txt
+           dcmsign/CMakeLists.txt
+           dcmsr/CMakeLists.txt
+           dcmtls/CMakeLists.txt
+           dcmwlm/CMakeLists.txt
+           oflog/CMakeLists.txt
+           ofstd/CMakeLists.txt
+
 **** Changes from 2012.06.11 (riesmeier)
 
 - Added optional "check" parameter to "set" methods and enhanced documentation.

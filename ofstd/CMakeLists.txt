@@ -5,4 +5,6 @@ PROJECT(ofstd)
 INCLUDE_DIRECTORIES(${ofstd_SOURCE_DIR}/include)
 
 # recurse into subdirectories
-SUBDIRS(libsrc include tests)
+FOREACH(SUBDIR libsrc include tests)
+  ADD_SUBDIRECTORY(${SUBDIR})
+ENDFOREACH(SUBDIR)
