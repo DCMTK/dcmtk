@@ -3,6 +3,11 @@ ADD_LIBRARY(dcmimgle dcmimage dibaslut diciefn dicielut didislut didispfn didocu
 
 TARGET_LINK_LIBRARIES(dcmimgle ofstd oflog dcmdata)
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmimgle PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmimgle
         COMPONENT lib

@@ -1,6 +1,33 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.13 (riesmeier)
+
+- Added proper definition of "soname" for better shared library support.
+  Thanks to Mario Ceresa <mrceresa@gmail.com> for the original idea and to
+  Mathieu Malaterra <mathieu.malaterre@gmail.com> for the reminder.
+  Affects: CMakeLists.txt
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmqrdb/libsrc/CMakeLists.txt
+           dcmrt/libsrc/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
 **** Changes from 2012.06.12 (riesmeier)
 
 - Converted deprecated CMake command SUBDIRS() into ADD_DIRECTORY() calls.

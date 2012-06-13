@@ -6,6 +6,11 @@ ADD_LIBRARY(dcmjpeg ddpiimpl dipijpeg djcodecd djcodece djcparam djdecbas djdece
 
 TARGET_LINK_LIBRARIES(dcmjpeg ofstd oflog dcmdata dcmimgle dcmimage ijg8 ijg12 ijg16)
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmjpeg PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmjpeg
         COMPONENT lib

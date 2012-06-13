@@ -3,6 +3,11 @@ ADD_LIBRARY(dcmdata cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcddirif dcdicdi
 
 TARGET_LINK_LIBRARIES(dcmdata ofstd oflog ${ZLIB_LIBS})
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmdata PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmdata
         COMPONENT lib

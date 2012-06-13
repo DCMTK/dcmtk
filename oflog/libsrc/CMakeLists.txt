@@ -10,6 +10,11 @@ ADD_LIBRARY(oflog oflog apndimpl appender config consap factory fileap filter gl
 
 TARGET_LINK_LIBRARIES(oflog ofstd ${WIN32_STD_LIBRARIES})
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(oflog PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS oflog
         COMPONENT lib

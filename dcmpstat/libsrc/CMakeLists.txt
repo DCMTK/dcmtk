@@ -3,6 +3,11 @@ ADD_LIBRARY(dcmpstat dcmpstat dviface dvpsab dvpsabl dvpsal dvpsall dvpscf dvpsc
 
 TARGET_LINK_LIBRARIES(dcmpstat ofstd oflog dcmdata dcmimgle dcmimage dcmnet dcmdsig dcmtls dcmsr dcmqrdb)
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmpstat PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmpstat
         COMPONENT lib

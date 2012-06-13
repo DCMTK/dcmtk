@@ -6,6 +6,11 @@ ADD_LIBRARY(dcmjpls djcparam djdecode djencode djrparam djcodecd djutils djcodec
 
 TARGET_LINK_LIBRARIES(dcmjpls ofstd oflog dcmdata dcmimgle dcmimage charls)
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmjpls PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmjpls
         COMPONENT lib

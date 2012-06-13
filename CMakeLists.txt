@@ -16,15 +16,25 @@ SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls d
 # Add non-public modules
 #SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmwave dcmeval)
 
+# Basic version information
+SET(DCMTK_MAJOR_VERSION 3)
+SET(DCMTK_MINOR_VERSION 6)
+SET(DCMTK_BUILD_VERSION 1)
+# The ABI is not guaranteed to be stable between different snapshots/releases
+SET(DCMTK_ABI_VERSION 3)
+
 # Package "release" settings (some are currently unused)
 SET(DCMTK_PACKAGE_NAME "dcmtk")
 SET(DCMTK_PACKAGE_DATE "CVS")
-#SET(DCMTK_PACKAGE_TARNAME "dcmtk-3.6.1")
-SET(DCMTK_PACKAGE_VERSION "3.6.1")
-SET(DCMTK_PACKAGE_VERSION_NUMBER 361)
+SET(DCMTK_PACKAGE_VERSION "${DCMTK_MAJOR_VERSION}.${DCMTK_MINOR_VERSION}.${DCMTK_BUILD_VERSION}")
+SET(DCMTK_PACKAGE_VERSION_NUMBER ${DCMTK_MAJOR_VERSION}${DCMTK_MINOR_VERSION}${DCMTK_BUILD_VERSION})
 SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
-#SET(DCMTK_PACKAGE_STRING "dcmtk 3.6.1")
+#SET(DCMTK_PACKAGE_TARNAME "dcmtk-${DCMTK_PACKAGE_VERSION}")
+#SET(DCMTK_PACKAGE_STRING "dcmtk ${DCMTK_PACKAGE_VERSION}")
 #SET(DCMTK_PACKAGE_BUGREPORT "dicom-bugs@offis.de")
+
+# Shared library version information
+SET(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
 
 # General build options and settings
 OPTION(BUILD_SHARED_LIBS "Build with shared libraries." OFF)

@@ -3,6 +3,11 @@ ADD_LIBRARY(dcmnet assoc cond dcasccff dcasccfg dccfenmp dccfpcmp dccfprmp dccfr
 
 TARGET_LINK_LIBRARIES(dcmnet ofstd oflog dcmdata ${WIN32_STD_LIBRARIES})
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmnet PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmnet
         COMPONENT lib

@@ -3,6 +3,11 @@ ADD_LIBRARY(dcmdsig dcsignat siautopr sibrsapr sicert sicertvf sicreapr sidsa si
 
 TARGET_LINK_LIBRARIES(dcmdsig ofstd dcmdata ${OPENSSL_LIBS})
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmdsig PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmdsig
         COMPONENT lib

@@ -3,6 +3,11 @@ ADD_LIBRARY(dcmsr dsrcitem dsrcodtn dsrcodvl dsrcomtn dsrcomvl dsrcontn dsrcsidl
 
 TARGET_LINK_LIBRARIES(dcmsr ofstd oflog dcmdata dcmimgle dcmimage ${LIBXML_LIBS})
 
+# set proper version information for shared library
+IF(BUILD_SHARED_LIBS)
+  SET_TARGET_PROPERTIES(dcmsr PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
+ENDIF(BUILD_SHARED_LIBS)
+
 # declare installation files
 INSTALL(TARGETS dcmsr
         COMPONENT lib
