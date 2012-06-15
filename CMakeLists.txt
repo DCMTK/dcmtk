@@ -17,13 +17,16 @@ SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls d
 #SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmwave dcmeval)
 
 # Basic version information
+# (Starting with version 3.5.5, an odd number at the last position indicates
+#  a development snapshot and an even number indicates an official release.)
 SET(DCMTK_MAJOR_VERSION 3)
 SET(DCMTK_MINOR_VERSION 6)
 SET(DCMTK_BUILD_VERSION 1)
-# The ABI is not guaranteed to be stable between different snapshots/releases
+# The ABI is not guaranteed to be stable between different snapshots/releases,
+# so this particular version number is increased for each snapshot or release.
 SET(DCMTK_ABI_VERSION 3)
 
-# Package "release" settings (some are currently unused)
+# Package "release" settings (some are currently unused and, therefore, disabled)
 SET(DCMTK_PACKAGE_NAME "dcmtk")
 SET(DCMTK_PACKAGE_DATE "CVS")
 SET(DCMTK_PACKAGE_VERSION "${DCMTK_MAJOR_VERSION}.${DCMTK_MINOR_VERSION}.${DCMTK_BUILD_VERSION}")
@@ -290,6 +293,13 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
                ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h)
 
 #-----------------------------------------------------------------------------
+# Write current configuration to file (for external projects)
+#-----------------------------------------------------------------------------
+
+CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake.in
+               ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake @ONLY)
+
+#-----------------------------------------------------------------------------
 # Dart configuration (disabled per default)
 #-----------------------------------------------------------------------------
 
@@ -347,3 +357,6 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/config/include/dcmtk/config/osconfig.h
 
 # Install DCMTK's general documentation files
 INSTALL(FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_VERSION_NUMBER} COPYRIGHT FAQ HISTORY VERSION DESTINATION ${DCMTK_INSTALL_DOCDIR} COMPONENT doc)
+
+# Install DCMTK's CMake configuration file
+INSTALL(FILES ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake DESTINATION ${DCMTK_INSTALL_DATDIR} COMPONENT data)

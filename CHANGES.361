@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.15 (riesmeier)
+
+- Added support for writing the current CMake configuration to file in order
+  to be used by external projects. Currently, only very basic configuration
+  settings like version information and some build options are stored.
+  Thanks to Marco Nolden <m.nolden@dkfz-heidelberg.de> for the suggestion.
+  Added:   CMake/DCMTKConfig.cmake.in
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.06.13 (riesmeier)
 
 - Added proper definition of "soname" for better shared library support.
