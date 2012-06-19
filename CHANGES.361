@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.19 (riesmeier)
+
+- Replaced use of OFListIterator by OFListConstIterator for variable
+  declaration in order to compile when HAVE_STL or HAVE_STL_LIST is defined.
+  Affects: ofstd/include/dcmtk/ofstd/oftest.h
+
 **** Changes from 2012.06.15 (riesmeier)
 
 - Added support for writing the current CMake configuration to file in order
