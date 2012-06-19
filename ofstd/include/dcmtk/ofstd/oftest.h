@@ -4,9 +4,9 @@
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This code is inspired by quicktest.
- *  Copyright (C) 2005-2008
- *  Tyler Streeter (http://www.tylerstreeter.net)
- *    http://quicktest.sourceforge.net
+ *    Copyright (C) 2005-2008
+ *    Tyler Streeter (http://www.tylerstreeter.net)
+ *      http://quicktest.sourceforge.net
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *
  *  Purpose: Provide a test framework for the toolkit
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-06-04 06:58:57 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-19 08:41:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -341,7 +341,7 @@ private:
 
                 // Find all tests matching this argument
                 OFBool found = OFFalse;
-                OFListIterator(OFTestTest*) it;
+                OFListConstIterator(OFTestTest*) it;
                 for (it = tests_.begin(); it != tests_.end(); ++it)
                 {
                     if (testMatches(*it, paramString))
@@ -529,6 +529,10 @@ public: \
  *
  * CVS/RCS Log:
  * $Log: oftest.h,v $
+ * Revision 1.7  2012-06-19 08:41:09  joergr
+ * Replaced use of OFListIterator by OFListConstIterator for variable
+ * declaration in order to compile when HAVE_STL or HAVE_STL_LIST is defined.
+ *
  * Revision 1.6  2012-06-04 06:58:57  uli
  * Added an 'exhaustive' test mode for running slow tests.
  *
