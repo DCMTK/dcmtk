@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:50:22 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2012-06-20 10:52:25 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,9 @@ const unsigned long CIF_CheckLutBitDepth             = 0x0000100;
 /// use absolute (possible) pixel range for determining the internal representation (monochrome only)
 const unsigned long CIF_UseAbsolutePixelRange        = 0x0000200;
 
-/// use partial access to pixel data, i.e. without decompressing or loading a complete multi-frame image
+/// use partial access to pixel data, i.e. without decompressing or loading a complete multi-frame image.
+/// Please note that the use of this flag can cause another copy of the pixel data to be created in memory,
+/// e.g. in case the pixel data element value has already been loaded or decompressed completely in memory.
 const unsigned long CIF_UsePartialAccessToPixelData  = 0x0000400;
 
 /// always decompress complete pixel data when processing an image, i.e. even if partial access is used
@@ -446,6 +448,10 @@ class DCMTK_DCMIMGLE_EXPORT DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.45  2012-06-20 10:52:25  joergr
+ * Slightly changed the rules for partial access to pixel data to reduce memory
+ * consumption (see comment on the CIF_UsePartialAccessToPixelData flag).
+ *
  * Revision 1.44  2011-12-14 09:50:22  uli
  * Make it possible to properly build dcmimgle as a DLL.
  *

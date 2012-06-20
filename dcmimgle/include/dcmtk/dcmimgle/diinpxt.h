@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:26 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2012-06-20 10:52:22 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -370,8 +370,7 @@ class DiInputPixelTemplate
         const Uint16 bitsof_T2 = bitsof(T2);
         const OFBool uncompressed = pixelData->canWriteXfer(EXS_LittleEndianExplicit, EXS_Unknown);
         /* check whether to use partial read */
-        if ((document->getFlags() & CIF_UsePartialAccessToPixelData) && (PixelCount > 0) &&
-            (!uncompressed || !pixelData->valueLoaded()) && (bitsAllocated % 8 == 0))
+        if ((document->getFlags() & CIF_UsePartialAccessToPixelData) && (PixelCount > 0) && (bitsAllocated % 8 == 0))
         {
             /* Bits Allocated is always a multiple of 8 (see above), same for bits of T1 */
             const Uint32 byteFactor = bitsAllocated / 8;
@@ -641,6 +640,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
+ * Revision 1.43  2012-06-20 10:52:22  joergr
+ * Slightly changed the rules for partial access to pixel data to reduce memory
+ * consumption (see comment on the CIF_UsePartialAccessToPixelData flag).
+ *
  * Revision 1.42  2010-10-14 13:16:26  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-16 11:45:44 $
- *  CVS/RCS Revision: $Revision: 1.106 $
+ *  Update Date:      $Date: 2012-06-20 10:52:29 $
+ *  CVS/RCS Revision: $Revision: 1.107 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -939,9 +939,9 @@ int main(int argc, char *argv[])
         // since we process all frames anyway, decompress the complete pixel data (if required)
         opt_compatibilityMode |= CIF_DecompressCompletePixelData;
     }
-    if (frameCount > 1)
+    if ((frameCount > 1) && !(opt_compatibilityMode & CIF_DecompressCompletePixelData))
     {
-        // use partial read access to pixel data (only in case of multiple frames)
+        // use partial read access to pixel data (only in case of multiple frames, but not for all frames)
         opt_compatibilityMode |= CIF_UsePartialAccessToPixelData;
     }
 
@@ -1559,6 +1559,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.107  2012-06-20 10:52:29  joergr
+ * Slightly changed the rules for partial access to pixel data to reduce memory
+ * consumption (see comment on the CIF_UsePartialAccessToPixelData flag).
+ *
  * Revision 1.106  2011-12-16 11:45:44  joergr
  * Added support for 16 bits per sample to PNG image export.
  *

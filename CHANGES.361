@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.20 (riesmeier)
+
+- Slightly changed the rules for partial access to pixel data to reduce memory
+  consumption (see comment on the CIF_UsePartialAccessToPixelData flag).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original patch.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2012.06.19 (riesmeier)
 
 - Replaced use of OFListIterator by OFListConstIterator for variable
