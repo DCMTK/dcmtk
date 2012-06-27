@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.27 (riesmeier)
+
+- Fixed wrong name of #include guard (was OFITER_H instead of OFALGO_H).
+  Affects: ofstd/include/dcmtk/ofstd/ofalgo.h
+
 **** Changes from 2012.06.20 (riesmeier)
 
 - Slightly changed the rules for partial access to pixel data to reduce memory
