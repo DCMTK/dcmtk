@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2012.06.27 (riesmeier)
 
+- Added new method isNested(), which checks whether an element/item is nested
+  in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpxitem.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpxitem.cc
+
 - Fixed wrong name of #include guard (was OFITER_H instead of OFALGO_H).
   Affects: ofstd/include/dcmtk/ofstd/ofalgo.h
 

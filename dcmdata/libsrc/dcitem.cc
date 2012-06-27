@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:12 $
- *  CVS/RCS Revision: $Revision: 1.167 $
+ *  Update Date:      $Date: 2012-06-27 13:20:57 $
+ *  CVS/RCS Revision: $Revision: 1.168 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -843,11 +843,11 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
     }
     /* delete invalid group length elements from item. Cannot be done in */
     /* above while loop because then elementList iterator is invalidated */
-    Uint32 numElems = exceededGroupLengthElems.size();
-    for (Uint32 i=0; i < numElems; i++)
+    const size_t numElems = exceededGroupLengthElems.size();
+    for (size_t i = 0; i < numElems; i++)
     {
-      delete remove(exceededGroupLengthElems.front());
-      exceededGroupLengthElems.pop_front();
+        delete remove(exceededGroupLengthElems.front());
+        exceededGroupLengthElems.pop_front();
     }
 
     return l_error;
@@ -1454,6 +1454,20 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
 
 
 // ********************************
+
+
+OFBool DcmItem::isNested() const
+{
+    OFBool nested = OFFalse;
+    if (getParent() != NULL)
+    {
+        // check for surrounding structure of sequence of items
+        const DcmEVR parentIdent = getParent()->ident();
+        if ((parentIdent == EVR_SQ) || (parentIdent == EVR_pixelSQ))
+            nested = OFTrue;
+    }
+    return nested;
+}
 
 
 DcmItem *DcmItem::getParentItem()
@@ -3157,7 +3171,7 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
                                         const OFBool replaceOld)
 {
     /* determine length of the string value */
-    const Uint32 length = (value != NULL) ? strlen(value) : 0;
+    const Uint32 length = (value != NULL) ? OFstatic_cast(Uint32, strlen(value)) : 0;
     /* call the real function */
     return putAndInsertString(tag, value, length, replaceOld);
 }
@@ -4078,6 +4092,10 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.168  2012-06-27 13:20:57  joergr
+** Added new method isNested(), which checks whether an element/item is nested
+** in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+**
 ** Revision 1.167  2012-05-07 09:49:12  joergr
 ** Added suppport for accessing the parent of a DICOM object/element, i.e. the
 ** surrounding structure in the DICOM dataset, in which it is contained. This

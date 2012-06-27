@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:10 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2012-06-27 13:20:55 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,12 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  @return true if leaf node, false otherwise.
      */
     virtual OFBool isLeaf() const { return OFFalse; }
+
+    /** check if this item is nested in a sequence of items, i.e.\ not a
+     *  top-level or stand-alone item/dataset
+     *  @return true if this item is nested, false otherwise
+     */
+    virtual OFBool isNested() const;
 
     /** print all elements of the item to a stream
      *  @param out output stream
@@ -1327,6 +1333,10 @@ DCMTK_DCMDATA_EXPORT OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.95  2012-06-27 13:20:55  joergr
+** Added new method isNested(), which checks whether an element/item is nested
+** in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+**
 ** Revision 1.94  2012-05-07 09:49:10  joergr
 ** Added suppport for accessing the parent of a DICOM object/element, i.e. the
 ** surrounding structure in the DICOM dataset, in which it is contained. This

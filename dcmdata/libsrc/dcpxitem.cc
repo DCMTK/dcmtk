@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:12 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2012-06-27 13:20:57 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,6 +78,19 @@ DcmPixelItem::~DcmPixelItem()
 
 
 // ********************************
+
+
+OFBool DcmPixelItem::isNested() const
+{
+    OFBool nested = OFFalse;
+    if (getParent() != NULL)
+    {
+        // check for surrounding structure of a pixel sequence
+        if ((getParent()->ident() == EVR_pixelSQ))
+            nested = OFTrue;
+    }
+    return nested;
+}
 
 
 DcmItem *DcmPixelItem::getParentItem()
@@ -189,7 +202,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
             }
             if (result.good())
             {
-                result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, array, numEntries * sizeof(Uint32), sizeof(Uint32));
+                result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, array, OFstatic_cast(Uint32, numEntries * sizeof(Uint32)), sizeof(Uint32));
                 if (result.good())
                     result = putUint8Array(OFreinterpret_cast(Uint8 *, array), numEntries * sizeof(Uint32));
             }
@@ -416,6 +429,10 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.45  2012-06-27 13:20:57  joergr
+** Added new method isNested(), which checks whether an element/item is nested
+** in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+**
 ** Revision 1.44  2012-05-07 09:49:12  joergr
 ** Added suppport for accessing the parent of a DICOM object/element, i.e. the
 ** surrounding structure in the DICOM dataset, in which it is contained. This

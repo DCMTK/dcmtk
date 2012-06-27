@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:10 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2012-06-27 13:20:55 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,12 @@ class DCMTK_DCMDATA_EXPORT DcmPixelItem : public DcmOtherByteOtherWord
      */
     virtual OFCondition copyFrom(const DcmObject &rhs);
 
+    /** check if this pixel item is nested in a pixel sequence, i.e.\ not a
+     *  top-level or stand-alone item/dataset
+     *  @return true if this item is nested, false otherwise
+     */
+    virtual OFBool isNested() const;
+
     /** get parent item of this object, i.e.\ the item/dataset in which the
      *  surrounding pixel sequence is stored.
      *  @return pointer to the parent item of this object (might be NULL)
@@ -159,6 +165,10 @@ class DCMTK_DCMDATA_EXPORT DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
+** Revision 1.33  2012-06-27 13:20:55  joergr
+** Added new method isNested(), which checks whether an element/item is nested
+** in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+**
 ** Revision 1.32  2012-05-07 09:49:10  joergr
 ** Added suppport for accessing the parent of a DICOM object/element, i.e. the
 ** surrounding structure in the DICOM dataset, in which it is contained. This

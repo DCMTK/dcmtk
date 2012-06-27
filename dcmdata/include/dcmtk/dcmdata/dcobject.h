@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:10 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2012-06-27 13:20:55 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,9 +268,15 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  All subclasses of DcmElement except for DcmSequenceOfItems
      *  are leaf nodes, while DcmSequenceOfItems, DcmItem, DcmDataset etc.
      *  are not.
-     *  @return true if leaf node, false otherwise.
+     *  @return true if leaf node, false otherwise
      */
     virtual OFBool isLeaf() const = 0;
+
+    /** check if this element is nested in a sequence of items, i.e.\ not a
+     *  top-level or stand-alone element
+     *  @return true if this element is nested, false otherwise
+     */
+    virtual OFBool isNested() const;
 
     /** print object to a stream
      *  @param out output stream
@@ -763,6 +769,10 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.78  2012-06-27 13:20:55  joergr
+ * Added new method isNested(), which checks whether an element/item is nested
+ * in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+ *
  * Revision 1.77  2012-05-07 09:49:10  joergr
  * Added suppport for accessing the parent of a DICOM object/element, i.e. the
  * surrounding structure in the DICOM dataset, in which it is contained. This

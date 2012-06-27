@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:12 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2012-06-27 13:20:57 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,27 @@ void DcmObject::transferEnd()
 
 
 // ********************************
+
+
+OFBool DcmObject::isNested() const
+{
+    OFBool nested = OFFalse;
+    if (Parent != NULL)
+    {
+        // check for surrounding structure of item and sequence
+        DcmEVR parentIdent = Parent->ident();
+        if ((parentIdent == EVR_item) || (parentIdent == EVR_dirRecord))
+        {
+            if (Parent->getParent() != NULL)
+            {
+                parentIdent = Parent->getParent()->ident();
+                if ((parentIdent == EVR_SQ) || (parentIdent == EVR_pixelSQ))
+                    nested = OFTrue;
+            }
+        }
+    }
+    return nested;
+}
 
 
 DcmItem *DcmObject::getRootItem()
@@ -600,6 +621,10 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.75  2012-06-27 13:20:57  joergr
+ * Added new method isNested(), which checks whether an element/item is nested
+ * in a sequence of items (SQ) element or a top-level/stand-alone element/item.
+ *
  * Revision 1.74  2012-05-07 09:49:12  joergr
  * Added suppport for accessing the parent of a DICOM object/element, i.e. the
  * surrounding structure in the DICOM dataset, in which it is contained. This
