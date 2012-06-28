@@ -635,6 +635,11 @@ Known limitations of DCMTK on the Windows platform.
          DCMTK as a library, make sure that the use of the iostream library is
          consistent throughout the complete application!
 
+5. DCMTK does not compile when UNICODE or _UNICODE is defined because the
+   VisualStudio compiler then uses the Unicode version instead of the ANSI
+   version for all Windows API functions (i.e. type wchar_t instead of char
+   for all character string parameters and return values).
+
 
 Unix with CMake
 ---------------
@@ -660,10 +665,10 @@ Workshop can also be generated allowing to create a single CHM file (compressed
 HTML) from the documentation.  Other output formats (e.g. LaTeX) can be enabled
 by changing the configuration file in the doxygen directory.
 
-At the current time, dcmimage, dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr,
-dcmtls, dcmwlm and ofstd are completely documented, dcmdata, dcmjpls, dcmnet
-and oflog are almost completely documented.  See FAQ entry: "Where is rest of
-the documentation?"
+At the current time, dcmimage, dcmimgle, dcmjpeg, dcmpstat, dcmrt, dcmsign,
+dcmsr, dcmtls, dcmwlm and ofstd are completely documented, dcmdata, dcmjpls,
+dcmnet and oflog are almost completely documented.  See FAQ entry: "Where is
+rest of the documentation?"
 
 On Unix platforms, man pages for all command line tools are installed during
 the "make install" step.  In order to use them, just add the directory (e.g.
@@ -716,4 +721,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2012-03-12 (Riesmeier)
+Last revised: 2012-06-28 (Riesmeier)

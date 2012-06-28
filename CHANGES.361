@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.06.28 (riesmeier)
 
+- Added comment that DCMTK does not compile when UNICODE or _UNICODE is defined
+  on a Windows system (VisualStudio compiler).
+  Affects: INSTALL
+
 - Fixed various warning messages reported by VisualStudio 2008 and gcc 4.4.5.
   Affects: dcmpstat/libsrc/dviface.cc
 
