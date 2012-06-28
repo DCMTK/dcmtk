@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 11:47:59 $
- *  CVS/RCS Revision: $Revision: 1.167 $
+ *  Update Date:      $Date: 2012-06-28 14:20:27 $
+ *  CVS/RCS Revision: $Revision: 1.168 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1005,7 +1005,7 @@ Uint32 DVInterface::getNumberOfPStates()
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
         if ((instance != NULL) && ((instance->Type == DVPSI_image) || (instance->Type == DVPSI_hardcopyGrayscale)))
-            return instance->List.size();
+            return OFstatic_cast(Uint32, instance->List.size());
     }
     return 0;
 }
@@ -4050,8 +4050,8 @@ extern "C" int DVInterfacePasswordCallback(char *buf, int size, int rwflag, void
 int DVInterfacePasswordCallback(char *buf, int size, int /* rwflag */, void *userdata)
 {
   if (userdata == NULL) return -1;
-  OFString *password = (OFString *)userdata;
-  int passwordSize = password->length();
+  OFString *password = OFstatic_cast(OFString *, userdata);
+  int passwordSize = OFstatic_cast(int, password->length());
   if (passwordSize > size) passwordSize = size;
   strncpy(buf, password->c_str(), passwordSize);
   return passwordSize;
@@ -4126,7 +4126,7 @@ OFCondition DVInterface::verifyAndSignStructuredReport(const char *userID, const
     OFString userOrg(getUserOrganization(userID));
     OFString userCV, userCSD, userCSV, userCM;
     DSRCodedEntryValue userCode(getUserCodeValue(userID, userCV), getUserCodingSchemeDesignator(userID, userCSD),
-                                getUserCodingSchemeVersion(userID, userCSV), getUserCodeMeaning(userID, userCM));
+                                getUserCodingSchemeVersion(userID, userCSV), getUserCodeMeaning(userID, userCM), OFTrue /*check*/);
     /* verify document */
     if (pReport->verifyDocument(userName, userCode, userOrg) == EC_Normal)
     {
@@ -4233,6 +4233,9 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.168  2012-06-28 14:20:27  joergr
+ *  Fixed various warning messages reported by VisualStudio 2008 and gcc 4.4.5.
+ *
  *  Revision 1.167  2011-11-24 11:47:59  joergr
  *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
  *  now return a status code, the get methods provide a "pos" and the set methods
