@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.06.29 (riesmeier)
+
+- Added some more simple tests for the integrated XML parser.
+  Affects: ofstd/tests/txml.cc
+
 **** Changes from 2012.06.28 (riesmeier)
 
 - Added comment that DCMTK does not compile when UNICODE or _UNICODE is defined
