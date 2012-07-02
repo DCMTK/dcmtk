@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-07 09:49:12 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2012-07-02 07:21:51 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -276,7 +276,8 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 elem = new DcmOtherByteOtherWord(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            Uint8 version[2] = {0,1};
+            // supported version of this implementation: 00\01
+            Uint8 version[2] = {0, 1};
             if ((elem->getLength() == 0) && (elem->ident() == EVR_OB))
                 OFstatic_cast(DcmOtherByteOtherWord *, elem)->putUint8Array(version, 2);
 
@@ -285,23 +286,22 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             l_error = OFstatic_cast(DcmOtherByteOtherWord *, elem)->getUint8Array(currVers);
             if (l_error.good() && (currVers != NULL))
             {
+                // the version information is stored in a bit field
                 if (((currVers[0] & version[0] & 0xff) == version[0]) &&
                     ((currVers[1] & version[1] & 0xff) == version[1]))
                 {
                     DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() Version of MetaHeader is ok: 0x"
                         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
-                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]));
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1]));
                 } else {
-                    currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
-                    currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
                     DCMDATA_WARN ("DcmFileFormat: Unknown Version of MetaHeader detected: 0x"
                         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
                         << ", supported: 0x"
-                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
-                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0]));
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0])
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1]));
                 }
             } else {
                 DCMDATA_ERROR("DcmFileFormat: Cannot determine Version of MetaHeader");
@@ -1038,6 +1038,9 @@ OFCondition DcmFileFormat::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.74  2012-07-02 07:21:51  joergr
+** Fixed wrong logger output of File Meta Information Version (0002,0001).
+**
 ** Revision 1.73  2012-05-07 09:49:12  joergr
 ** Added suppport for accessing the parent of a DICOM object/element, i.e. the
 ** surrounding structure in the DICOM dataset, in which it is contained. This
