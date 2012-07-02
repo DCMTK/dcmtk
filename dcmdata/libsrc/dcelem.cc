@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-24 08:18:06 $
- *  CVS/RCS Revision: $Revision: 1.102 $
+ *  Update Date:      $Date: 2012-07-02 12:26:34 $
+ *  CVS/RCS Revision: $Revision: 1.103 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -766,7 +766,7 @@ OFCondition DcmElement::changeValue(const void *value,
 OFCondition DcmElement::putOFStringArray(const OFString &val)
 {
     /* sets the value of a complete (possibly multi-valued) string attribute */
-    return putString(val.c_str(), val.length());
+    return putString(val.c_str(), OFstatic_cast(Uint32, val.length()));
 }
 
 
@@ -1341,7 +1341,10 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                     out << " privateCreator=\"";
                     out << creator << "\"";
                 } else {
-                    DCMDATA_WARN("Cannot write private creator to XML output: Not present in dataset");
+                    DCMDATA_WARN("Cannot write private creator for group 0x"
+                        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+                        << tag.getGTag() << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
+                        << " to XML output: Not present in dataset");
                 }
             }
         } else {
@@ -1504,7 +1507,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
     // value field to the point where we will start reading. This is always at the
     // start of a new value of a multi-valued attribute.
     Uint32 partialvalue = 0;
-    const Uint32 partialoffset = offset % valueWidth;
+    const Uint32 partialoffset = OFstatic_cast(Uint32, offset % valueWidth);
     const offile_off_t seekoffset = offset - partialoffset;
 
     // check if cache already contains the stream we're looking for
@@ -1555,14 +1558,14 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
       readStream->mark();
 
       // compute the number of bytes we need to copy from the first attributes
-      partialvalue = valueWidth - partialoffset;
+      partialvalue = OFstatic_cast(Uint32, valueWidth - partialoffset);
 
       // we need to read a single data element into the swap buffer
       if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
           return EC_InvalidStream;
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
-      swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
+      swapIfNecessary(byteOrder, fByteOrder, swapBuffer, OFstatic_cast(Uint32, valueWidth), valueWidth);
 
       // copy to target buffer and adjust values
       if (partialvalue > numBytes)
@@ -1583,7 +1586,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
     }
 
     // now read the main block of data directly into the target buffer
-    partialvalue = numBytes % valueWidth;
+    partialvalue = OFstatic_cast(Uint32, numBytes % valueWidth);
     const Uint32 bytesToRead = numBytes - partialvalue;
 
     if (bytesToRead > 0)
@@ -1640,7 +1643,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
         swapBuffer[partialBytesToRead] = swapBuffer[partialBytesToRead - 1];
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
-      swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
+      swapIfNecessary(byteOrder, fByteOrder, swapBuffer, OFstatic_cast(Uint32, valueWidth), valueWidth);
 
       // copy to target buffer and adjust values
       memcpy(targetBufferChar, swapBuffer, partialvalue);
@@ -1918,6 +1921,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.103  2012-07-02 12:26:34  joergr
+** Enhanced output of warning message in case the private creator is missing.
+** Fixed some typecast warnings reported by gcc 4.4.5 with additional options.
+**
 ** Revision 1.102  2012-01-24 08:18:06  joergr
 ** Fixed wrong line break in XML output, which caused problems with the xml2dcm
 ** conversion.

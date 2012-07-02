@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.02 (riesmeier)
 
+- Enhanced output of warning message in case the private creator is missing.
+  Fixed some typecast warnings reported by gcc 4.4.5 with additional options.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Fixed wrong logger output of File Meta Information Version (0002,0001).
   Affects: dcmdata/libsrc/dcfilefo.cc
 
