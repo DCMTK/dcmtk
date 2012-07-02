@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.02 (riesmeier)
+
+- Fixed wrong error message for conflict check of option --write-binary-data.
+  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/apps/dcm2xml.cc
+
 **** Changes from 2012.06.29 (riesmeier)
 
 - Added some more simple tests for the integrated XML parser.

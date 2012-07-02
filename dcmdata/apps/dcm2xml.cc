@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:43 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2012-07-02 07:19:44 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -428,7 +428,7 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--write-binary-data"))
         {
-            app.checkConflict("--write-element-name", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            app.checkConflict("--write-binary-data", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
             opt_writeFlags |= DCMTypes::XF_writeBinaryData;
         }
 
@@ -572,6 +572,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.48  2012-07-02 07:19:44  joergr
+ * Fixed wrong error message for conflict check of option --write-binary-data.
+ *
  * Revision 1.47  2011-12-02 11:02:43  joergr
  * Various fixes after first commit of the Native DICOM Model format support.
  *
