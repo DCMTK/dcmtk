@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.02 (schlachter)
 
+- Added a .gitignore file
+  Added:   .gitignore
+
 - Move configure checks to their own file.
   Affects: CMake/DCMTK.cmake
            CMake/GenerateDCMTKConfigure.cmake
