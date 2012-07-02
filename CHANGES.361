@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.02 (schlachter)
+
+- Use the current source dir in CMakeLists.txt instead of the top-level one.
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.07.02 (riesmeier)
 
 - Enhanced output of warning message in case the private creator is missing.
