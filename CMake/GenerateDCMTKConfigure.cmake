@@ -89,7 +89,7 @@ INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
-INCLUDE(${DCMTK_SOURCE_DIR}/CMake/CheckFunctionWithHeaderExists.cmake)
+INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/CheckFunctionWithHeaderExists.cmake)
 
 # For Windows, hardcode these values to avoid long search times
 IF(WIN32 AND NOT CYGWIN)
@@ -421,7 +421,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}" HAVE_ULONGLONG)
 
 # Tests that require a try-compile
-INCLUDE(${DCMTK_SOURCE_DIR}/CMake/dcmtkTryCompile.cmake)
+INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake)
 
 IF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
   MESSAGE(STATUS "Checking signedness of char")
