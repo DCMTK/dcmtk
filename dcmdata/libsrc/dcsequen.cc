@@ -286,7 +286,7 @@ OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
             << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
             << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
         /* value representation = VR */
-        out << " vr=\"" << vr.getVRName() << "\"";
+        out << " vr=\"" << vr.getValidVRName() << "\"";
         /* cardinality (number of items) = 1..n */
         out << " card=\"" << card() << "\"";
         /* value length in bytes = 0..max (if not undefined) */

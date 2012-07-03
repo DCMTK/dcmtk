@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.03 (riesmeier)
+
+- Make sure that "??" is never used for an unknown VR in the XML output.
+  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2012.07.02 (schlachter)
 
 - Rebuilt Makefile dependencies.
@@ -48,8 +55,8 @@ Changes between releases are documented here.
   Added:   .gitignore
 
 - Move configure checks to their own file.
-  Affects: CMake/DCMTK.cmake
-           CMake/GenerateDCMTKConfigure.cmake
+  Added:   CMake/DCMTK.cmake
+  Affects: CMake/GenerateDCMTKConfigure.cmake
            CMakeLists.txt
 
 - Use the current source dir in CMakeLists.txt instead of the top-level one.

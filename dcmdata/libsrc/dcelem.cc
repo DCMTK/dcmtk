@@ -1326,7 +1326,7 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
     }
 
     /* value representation = VR */
-    out << " vr=\"" << vr.getVRName() << "\"";
+    out << " vr=\"" << vr.getValidVRName() << "\"";
 
     if (flags & DCMTypes::XF_useNativeModel)
     {
