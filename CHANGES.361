@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.04 (riesmeier)
+
+- Extended support for Windows-specific conversion to and from wide character
+  encoding (UTF-16) by adding an optional "code page identifier" parameter.
+  Also renamed the conversion functions (removed the "UTF8" from the names).
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/tests/tchrenc.cc
+           ofstd/tests/tests.cc
+
 **** Changes from 2012.07.03 (riesmeier)
 
 - Make sure that "??" is never used for an unknown VR in the XML output.

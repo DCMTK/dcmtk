@@ -183,31 +183,52 @@ OFTEST(ofstd_OFCharacterEncoding_7)
     wchar_t *resultPtr;
     size_t resultLen;
     /* check Windows-specific conversion from UTF-8 */
-    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(NULL, 1, resultPtr, resultLen).good());
+    OFCHECK(OFCharacterEncoding::convertToWideCharString(NULL, 1, resultPtr, resultLen).good());
     OFCHECK_EQUAL(resultLen, 0);
     delete[] resultPtr;
-    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString("", 0, resultPtr, resultLen).good());
+    OFCHECK(OFCharacterEncoding::convertToWideCharString("", 0, resultPtr, resultLen).good());
     OFCHECK_EQUAL(resultLen, 0);
     delete[] resultPtr;
-    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(OFString(""), resultPtr, resultLen).good());
+    OFCHECK(OFCharacterEncoding::convertToWideCharString(OFString(""), resultPtr, resultLen).good());
     OFCHECK_EQUAL(resultLen, 0);
     delete[] resultPtr;
-    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(OFString("J\303\266rg"), resultPtr, resultLen).good());
+    OFCHECK(OFCharacterEncoding::convertToWideCharString(OFString("J\303\266rg"), resultPtr, resultLen).good());
     OFCHECK_EQUAL(resultLen, 4);
     if (resultPtr != NULL)
         OFCHECK(wcscmp(resultPtr, L"J\x00f6rg") == 0);
     delete[] resultPtr;
     // check string with embedded NULL byte
-    OFCHECK(OFCharacterEncoding::convertUTF8ToWideCharString(OFString("Te\0st", 5), resultPtr, resultLen).good());
+    OFCHECK(OFCharacterEncoding::convertToWideCharString(OFString("Te\0st", 5), resultPtr, resultLen).good());
     OFCHECK_EQUAL(resultLen, 5);
     /* check Windows-specific conversion to UTF-8 */
-    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(NULL, 1, resultStr).good());
-    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(L"", 0, resultStr).good());
-    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(L"J\x00f6rg", 4, resultStr).good());
+    OFCHECK(OFCharacterEncoding::convertFromWideCharString(NULL, 1, resultStr).good());
+    OFCHECK(OFCharacterEncoding::convertFromWideCharString(L"", 0, resultStr).good());
+    OFCHECK(OFCharacterEncoding::convertFromWideCharString(L"J\x00f6rg", 4, resultStr).good());
     OFCHECK_EQUAL(resultStr, "J\303\266rg");
     // check string with embedded NULL character
-    OFCHECK(OFCharacterEncoding::convertWideCharStringToUTF8(L"Te\0st", 5, resultStr).good());
+    OFCHECK(OFCharacterEncoding::convertFromWideCharString(L"Te\0st", 5, resultStr).good());
     OFCHECK_EQUAL(resultStr, OFString("Te\0st", 5));
+#endif
+}
+
+
+OFTEST(ofstd_OFCharacterEncoding_8)
+{
+#ifdef _WIN32
+    OFString resultStr;
+    wchar_t *resultPtr;
+    size_t resultLen;
+    /* check Windows-specific conversion from Latin-1 */
+    OFCHECK(OFCharacterEncoding::convertToWideCharString(OFString("J\366rg"), resultPtr, resultLen,
+        OFCharacterEncoding::CPC_Latin1).good());
+    OFCHECK_EQUAL(resultLen, 4);
+    if (resultPtr != NULL)
+        OFCHECK(wcscmp(resultPtr, L"J\x00f6rg") == 0);
+    delete[] resultPtr;
+    /* check Windows-specific conversion to Latin-1 */
+    OFCHECK(OFCharacterEncoding::convertFromWideCharString(L"J\x00f6rg", 4, resultStr,
+        OFCharacterEncoding::CPC_Latin1).good());
+    OFCHECK_EQUAL(resultStr, "J\366rg");
 #endif
 }
 

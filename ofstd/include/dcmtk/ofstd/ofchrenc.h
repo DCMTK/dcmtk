@@ -162,12 +162,33 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 
 #ifdef _WIN32
 
+    /** @name code page definitions.
+     *  Short list of common code page identifiers used for the conversion to
+     *  and from Windows-specific wide character encoding (UTF-16).
+     *  For further code pages, please refer to the MSDN documentation on
+     *  "Code Page Identifiers".
+     */
+    //@{
+
+    /// system default Windows ANSI code page.  See Windows function GetACP().
+    static const unsigned int CPC_ANSI;
+    /// current system OEM code page.  See Windows function GetOEMCP().
+    static const unsigned int CPC_OEM;
+    /// code page for ISO 8859-1 (Latin-1)
+    static const unsigned int CPC_Latin1;
+    /// code page for UTF-8
+    static const unsigned int CPC_UTF8;
+
+    //@}
+
     // --- static Windows-specific functions ---
 
     /** convert the given string between Windows-specific wide character
-     *  encoding (UTF-16) and UTF-8.  In contrast to convertString(), no
-     *  special character encoding library is needed, but on the other hand
-     *  it only works on Windows systems.
+     *  encoding (UTF-16) and the specified code page.  In contrast to
+     *  convertString(), no special character encoding library is needed,
+     *  but on the other hand it only works on Windows systems.
+     *  Please note that no conversion flags are specified for the internal
+     *  call to the WideCharToMultiByte() function.
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL character.
      *  @param  fromString  input string to be converted (using the UTF-16
@@ -176,23 +197,29 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *  @param  fromLength  length of the input string (number of characters
      *                      without the trailing NULL character)
      *  @param  toString    reference to variable where the converted string
-     *                      (using the UTF-8 character encoding) is stored
-     *                      (or appended, see parameter 'clearMode')
+     *                      (using the character encoding specified by
+     *                      'codePage') is stored (or appended, see parameter
+     *                      'clearMode')
+     *  @param  codePage    identifier of the code page to be used for the
+     *                      conversion (default: UTF-8)
      *  @param  clearMode   flag indicating whether to clear the variable
      *                      'toString' before appending the converted string
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    static OFCondition convertWideCharStringToUTF8(const wchar_t *fromString,
-                                                   const size_t fromLength,
-                                                   OFString &toString,
-                                                   const OFBool clearMode = OFTrue);
+    static OFCondition convertFromWideCharString(const wchar_t *fromString,
+                                                 const size_t fromLength,
+                                                 OFString &toString,
+                                                 const unsigned int codePage = CPC_UTF8,
+                                                 const OFBool clearMode = OFTrue);
 
-    /** convert the given string between UTF-8 and the Windows-specific wide
-     *  character encoding (UTF-16).  In contrast to convertString(), no
-     *  special character encoding library is needed, but on the other hand
-     *  it only works on Windows systems.
-     *  @param  fromString  input string to be converted (using the UTF-8
-     *                      character encoding)
+    /** convert the given string between the specified code page and the
+     *  Windows-specific wide character encoding (UTF-16).  In contrast to
+     *  convertString(), no special character encoding library is needed, but
+     *  on the other hand it only works on Windows systems.
+     *  Please note that no conversion flags are specified for the internal
+     *  call to the MultiByteToWideChar() function.
+     *  @param  fromString  input string to be converted (using character
+     *                      encoding specified by 'codePage')
      *  @param  toString    reference to variable in which the pointer to the
      *                      converted string (using the UTF-16 character
      *                      encoding) is stored.  Might be NULL in case of
@@ -200,21 +227,26 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *                      with new[] and has to be deleted by the caller.
      *  @param  toLength    number of converted characters, i.e.\ length of
      *                      'toString'
+     *  @param  codePage    identifier of the code page to be used for the
+     *                      conversion (default: UTF-8)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    static OFCondition convertUTF8ToWideCharString(OFString &fromString,
-                                                   wchar_t *&toString,
-                                                   size_t &toLength);
+    static OFCondition convertToWideCharString(OFString &fromString,
+                                               wchar_t *&toString,
+                                               size_t &toLength,
+                                               const unsigned int codePage = CPC_UTF8);
 
-    /** convert the given string between UTF-8 and the Windows-specific wide
-     *  character encoding (UTF-16).  In contrast to convertString(), no
-     *  special character encoding library is needed, but on the other hand
-     *  it only works on Windows systems.
+    /** convert the given string between the specified code page and the
+     *  Windows-specific wide character encoding (UTF-16).  In contrast to
+     *  convertString(), no special character encoding library is needed, but
+     *  on the other hand it only works on Windows systems.
+     *  Please note that no conversion flags are specified for the internal
+     *  call to the MultiByteToWideChar() function.
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL byte.
-     *  @param  fromString  input string to be converted (using the UTF-8
-     *                      character encoding).  A NULL pointer is regarded
-     *                      as an empty string.
+     *  @param  fromString  input string to be converted (using the  character
+     *                      encoding specified by 'codePage').  A NULL pointer
+     *                      is regarded as an empty string.
      *  @param  fromLength  length of the input string (number of bytes
      *                      without the trailing NULL byte)
      *  @param  toString    reference to variable in which the pointer to the
@@ -224,12 +256,15 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *                      with new[] and has to be deleted by the caller.
      *  @param  toLength    number of converted characters, i.e.\ length of
      *                      'toString'
+     *  @param  codePage    identifier of the code page to be used for the
+     *                      conversion (default: UTF-8)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    static OFCondition convertUTF8ToWideCharString(const char *fromString,
-                                                   const size_t fromLength,
-                                                   wchar_t *&toString,
-                                                   size_t &toLength);
+    static OFCondition convertToWideCharString(const char *fromString,
+                                               const size_t fromLength,
+                                               wchar_t *&toString,
+                                               size_t &toLength,
+                                               const unsigned int codePage = CPC_UTF8);
 
 #endif
 

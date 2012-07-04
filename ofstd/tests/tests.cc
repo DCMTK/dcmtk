@@ -38,6 +38,7 @@ OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_6);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_7);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_8);
 OFTEST_REGISTER(ofstd_OFDate);
 OFTEST_REGISTER(ofstd_OFDateTime);
 OFTEST_REGISTER(ofstd_OFList_1);

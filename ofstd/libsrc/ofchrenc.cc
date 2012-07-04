@@ -54,6 +54,19 @@ END_EXTERN_C
 #define CONVERSION_BUFFER_SIZE 1024
 
 
+/*-------------*
+ *  constants  *
+ *-------------*/
+
+#ifdef _WIN32
+// Windows-specific code page identifiers
+const unsigned int OFCharacterEncoding::CPC_ANSI   = CP_ACP;
+const unsigned int OFCharacterEncoding::CPC_OEM    = CP_OEMCP;
+const unsigned int OFCharacterEncoding::CPC_Latin1 = 28591;
+const unsigned int OFCharacterEncoding::CPC_UTF8   = CP_UTF8;
+#endif
+
+
 /*------------------*
  *  implementation  *
  *------------------*/
@@ -253,10 +266,11 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
 
 #ifdef _WIN32  // Windows-specific conversion functions
 
-OFCondition OFCharacterEncoding::convertWideCharStringToUTF8(const wchar_t *fromString,
-                                                             const size_t fromLength,
-                                                             OFString &toString,
-                                                             const OFBool clearMode)
+OFCondition OFCharacterEncoding::convertFromWideCharString(const wchar_t *fromString,
+                                                           const size_t fromLength,
+                                                           OFString &toString,
+                                                           const unsigned int codePage,
+                                                           const OFBool clearMode)
 {
     // first, clear result variable if requested
     if (clearMode)
@@ -266,15 +280,15 @@ OFCondition OFCharacterEncoding::convertWideCharStringToUTF8(const wchar_t *from
     if ((fromString != NULL) && (fromLength > 0))
     {
         // determine required size for output buffer
-        const int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, fromString, fromLength, NULL, 0, NULL, NULL);
+        const int sizeNeeded = WideCharToMultiByte(codePage, 0, fromString, fromLength, NULL, 0, NULL, NULL);
         if (sizeNeeded > 0)
         {
             // allocate temporary buffer
             char *toBuffer = new char[sizeNeeded];
             if (toBuffer != NULL)
             {
-                // convert characters to UTF-8 (without trailing NULL byte)
-                const int charsConverted = WideCharToMultiByte(CP_UTF8, 0, fromString, fromLength, toBuffer, sizeNeeded, NULL, NULL);
+                // convert characters (without trailing NULL byte)
+                const int charsConverted = WideCharToMultiByte(codePage, 0, fromString, fromLength, toBuffer, sizeNeeded, NULL, NULL);
                 if (charsConverted > 0)
                 {
                     // append the converted character string to the result variable
@@ -295,33 +309,35 @@ OFCondition OFCharacterEncoding::convertWideCharStringToUTF8(const wchar_t *from
 }
 
 
-OFCondition OFCharacterEncoding::convertUTF8ToWideCharString(OFString &fromString,
-                                                             wchar_t *&toString,
-                                                             size_t &toLength)
+OFCondition OFCharacterEncoding::convertToWideCharString(OFString &fromString,
+                                                         wchar_t *&toString,
+                                                         size_t &toLength,
+                                                         const unsigned int codePage)
 {
     // call the real method converting the given string
-    return OFCharacterEncoding::convertUTF8ToWideCharString(fromString.c_str(), fromString.length(),
-        toString, toLength);
+    return OFCharacterEncoding::convertToWideCharString(fromString.c_str(), fromString.length(),
+        toString, toLength, codePage);
 }
 
 
-OFCondition OFCharacterEncoding::convertUTF8ToWideCharString(const char *fromString,
-                                                             const size_t fromLength,
-                                                             wchar_t *&toString,
-                                                             size_t &toLength)
+OFCondition OFCharacterEncoding::convertToWideCharString(const char *fromString,
+                                                         const size_t fromLength,
+                                                         wchar_t *&toString,
+                                                         size_t &toLength,
+                                                         const unsigned int codePage)
 {
     OFCondition status = EC_Normal;
     // check for empty string
     if ((fromString != NULL) && (fromLength > 0))
     {
         // determine required size for output buffer
-        const int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, fromString, fromLength, NULL, 0);
+        const int sizeNeeded = MultiByteToWideChar(codePage, 0, fromString, fromLength, NULL, 0);
         // allocate output buffer (one extra byte for the terminating NULL)
         toString = new wchar_t[sizeNeeded + 1];
         if (toString != NULL)
         {
-            // convert characters to UTF-8 (without trailing NULL byte)
-            toLength = MultiByteToWideChar(CP_UTF8, 0, fromString, fromLength, toString, sizeNeeded);
+            // convert characters (without trailing NULL byte)
+            toLength = MultiByteToWideChar(codePage, 0, fromString, fromLength, toString, sizeNeeded);
             // append NULL byte to mark "end of string"
             toString[toLength] = L'\0';
             if (toLength == 0)
