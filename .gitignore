@@ -13,6 +13,13 @@ config.log
 config/Makefile.def
 config/include/dcmtk/config/osconfig.h
 
+# Ignore all temporary and log files
+*.tmp
+*.log
+
+# HTML documentation
+doxygen/htmldocs/
+
 # Built binary files
 */tests/tests
 config/lzwtest.tif
