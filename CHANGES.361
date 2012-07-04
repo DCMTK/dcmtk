@@ -61,9 +61,6 @@ Changes between releases are documented here.
            ofstd/libsrc/Makefile.dep
            ofstd/tests/Makefile.dep
 
-- Added a .gitignore file
-  Added:   .gitignore
-
 - Move configure checks to their own file.
   Added:   CMake/DCMTK.cmake
   Affects: CMake/GenerateDCMTKConfigure.cmake
