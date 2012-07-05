@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.06 (riesmeier)
+
+- Made sure that library "sndfile" is disabled if path is not set.
+  Affects: CMake/3rdparty.cmake
+
 **** Changes from 2012.07.04 (riesmeier)
 
 - Extended support for Windows-specific conversion to and from wide character
