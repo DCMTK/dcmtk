@@ -1,10 +1,13 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2012.07.06 (riesmeier)
+**** Changes from 2012.07.05 (riesmeier)
 
 - Made sure that library "sndfile" is disabled if path is not set.
   Affects: CMake/3rdparty.cmake
+
+- Removed double blank line at the end of the file.
+  Affects: CMake/DCMTK.cmake
 
 **** Changes from 2012.07.04 (riesmeier)
 
