@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2011, OFFIS e.V.
+ *  Copyright (C) 1999-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -70,7 +70,8 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
      *  if the command line has only one argument, namely "--help" or the specified shortcut,
      *  (in all cases) the usage is printed (see printUsage).
      *
-     ** @param  cmd       reference to the OFCommandLine object
+     ** @param  cmd       reference to the OFCommandLine object.  Should be valid at least as
+     *                    long as this object exists.
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument array (argv[])
      *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::PF_ExpandWildcards)
@@ -88,8 +89,9 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
      *
      ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue.
      *                    If compiled with 'libiconv' support, the current locale's character
-     *                    encoding is also shown.  Finally, if the DEBUG macro is defined, a
-     *                    note on the presence of debug code is given.
+     *                    encoding is also shown.  On Windows systems, the current OEM and
+     *                    ANSI code page identifiers are also printed.  Finally, if the DEBUG
+     *                    macro is defined, a note on the presence of debug code is given.
      *  @param  stdError  print to standard error stream if OFTrue (default: standard output)
      */
     void printHeader(const OFBool hostInfo = OFFalse,

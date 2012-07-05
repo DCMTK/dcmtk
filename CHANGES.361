@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.05 (riesmeier)
 
+- Output the current OEM/ANSI code page identifiers on Windows systems.
+  Affects: ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
 - Made sure that library "sndfile" is disabled if path is not set.
   Affects: CMake/3rdparty.cmake
 

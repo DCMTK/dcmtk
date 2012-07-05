@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2011, OFFIS e.V.
+ *  Copyright (C) 1999-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,8 +37,12 @@
 
 #define INCLUDE_LOCALE
 #include "dcmtk/ofstd/ofstdinc.h"     /* for setlocale() */
-
 #endif // WITH_LIBICONV
+
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 
 /*------------------*
@@ -68,7 +72,8 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
                                               const int flags,
                                               const int startPos)
 {
-    CmdLine = &cmd;                           // store reference to cmdline object
+    /* store reference to given cmdline object */
+    CmdLine = &cmd;
     OFCommandLine::E_ParseStatus status = cmd.parseLine(argCount, argValue, flags, startPos);
     OFBool result = OFFalse;
     switch (status)
@@ -130,6 +135,10 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
           else
             setlocale(LC_CTYPE, "C");
         }
+#endif
+#if _WIN32
+        /* determine system's current code pages */
+        (*output) << "Code page: " << GetOEMCP() << " (OEM) / " << GetACP() << " (ANSI)" << OFendl;
 #endif
 #ifdef DEBUG
         /* indicate that debug code is present */
