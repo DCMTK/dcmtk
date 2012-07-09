@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.09 (schlachter)
+
+- Removed obsolete list of private modules.
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.07.09 (riesmeier)
 
 - Replaced remaining tabs by spaces.

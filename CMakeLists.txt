@@ -13,8 +13,6 @@ INCLUDE(CMake/DCMTK.cmake NO_POLICY_SCOPE)
 
 # Modules to be built (default: build all public modules)
 SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt doxygen)
-# Add non-public modules
-#SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmwave dcmeval)
 
 #-----------------------------------------------------------------------------
 # Include directories
