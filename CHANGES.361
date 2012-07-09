@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.09 (riesmeier)
 
+- Check HAVE_WINDOWS_H instead of _WIN32 for printing code page identifiers.
+  Affects: ofstd/libsrc/ofconapp.cc
+
 - Replaced Windows-specific wildcard expansion for filenames by "setargv.obj".
   Affects: CMake/DCMTK.cmake
            dcmdata/apps/CMakeLists.txt
