@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -195,7 +195,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   // Evaluate command line.
   prepareCmdLineArgs( argc, argv, applicationName );
-  if( app->parseCommandLine( *cmd, argc, argv, OFCommandLine::PF_ExpandWildcards ) )
+  if( app->parseCommandLine( *cmd, argc, argv ) )
   {
     /* check exclusive options first */
     if (cmd->hasExclusiveOption())

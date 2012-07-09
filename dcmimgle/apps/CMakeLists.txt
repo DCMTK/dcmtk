@@ -12,4 +12,7 @@ INSTALL(TARGETS dcmdspfn dcod2lum dconvlum DESTINATION ${DCMTK_INSTALL_BINDIR} C
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmdspfn dcod2lum dconvlum)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmimgle dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+  ENDIF(WIN32)
 ENDFOREACH(PROGRAM)

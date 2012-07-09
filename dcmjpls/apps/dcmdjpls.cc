@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2011, OFFIS e.V.
+ *  Copyright (C) 2007-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -159,7 +159,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv))
     {
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())

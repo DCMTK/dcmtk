@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -177,7 +177,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 
     // evaluate commandline
     prepareCmdLineArgs(argc, argv, application_name);
-    if (app->parseCommandLine(*cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
+    if (app->parseCommandLine(*cmd, argc, argv))
     {
         /* print help text and exit */
         if (cmd->getArgCount() == 0)

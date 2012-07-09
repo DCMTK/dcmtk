@@ -16,8 +16,14 @@ INSTALL(TARGETS dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmftest dcmgpdir dcmodi
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm dcm2pdf img2dcm)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+  ENDIF(WIN32)
 ENDFOREACH(PROGRAM)
 
 TARGET_LINK_LIBRARIES(dcmftest ofstd ${LIBICONV_LIBS} ${THREAD_LIBS})
+IF(WIN32)
+  SET_TARGET_PROPERTIES(dcmftest PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+ENDIF(WIN32)
 TARGET_LINK_LIBRARIES(xml2dcm ${TARGET_LINK_LIBRARIES} ${LIBXML_LIBS})
 TARGET_LINK_LIBRARIES(img2dcm ${TARGET_LINK_LIBRARIES} i2d dcmdata)

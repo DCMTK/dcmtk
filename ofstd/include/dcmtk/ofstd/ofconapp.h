@@ -70,11 +70,10 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
      *  if the command line has only one argument, namely "--help" or the specified shortcut,
      *  (in all cases) the usage is printed (see printUsage).
      *
-     ** @param  cmd       reference to the OFCommandLine object.  Should be valid at least as
-     *                    long as this object exists.
+     ** @param  cmd       reference to the OFCommandLine object
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument array (argv[])
-     *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::PF_ExpandWildcards)
+     *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::PF_NoCommandFiles)
      *  @param  startPos  first argument to be parsed (default: 1, i.e. omit program name)
      *
      ** @return status of parsing process, true if successful, false otherwise

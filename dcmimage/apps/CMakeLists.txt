@@ -12,4 +12,7 @@ INSTALL(TARGETS dcm2pnm dcmquant dcmscale DESTINATION ${DCMTK_INSTALL_BINDIR} CO
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2pnm dcmquant dcmscale)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+  ENDIF(WIN32)
 ENDFOREACH(PROGRAM)

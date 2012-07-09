@@ -33,11 +33,6 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcast.h"
 
-#ifdef HAVE_WINDOWS_H
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 
 /*---------------------*
  *  macro definitions  *
@@ -50,12 +45,13 @@
  *  constant initializations  *
  *----------------------------*/
 
-const int OFCommandLine::PF_ExpandWildcards = 0x0001;
+const int OFCommandLine::PF_ExpandWildcards = 0x0001;  // not used anymore
 const int OFCommandLine::PF_NoCommandFiles  = 0x0002;
 
 const int OFCommandLine::AF_Exclusive       = 0x0001;
 const int OFCommandLine::AF_Internal        = 0x0002;
 const int OFCommandLine::AF_NoWarning       = 0x0004;
+
 
 /*-----------------------*
  *  struct declarations  *
@@ -1003,51 +999,6 @@ void OFCommandLine::unpackColumnValues(const int value,
 }
 
 
-#ifdef HAVE_WINDOWS_H
-void OFCommandLine::expandWildcards(const OFString &param,
-                                    int directOpt)
-{
-    const size_t paramLen = param.length();
-    if ((paramLen >= 2) && (param.at(0) == '"') && (param.at(paramLen - 1) == '"'))
-        storeParameter(param.substr(1, paramLen - 2).c_str(), directOpt);  // remove quotations
-    else
-    {
-        size_t pos1 = param.find_first_of("*?");                 // search for wildcards
-        if (pos1 != OFString_npos)
-        {
-            OFString name;
-            WIN32_FIND_DATA data;
-            size_t pos2 = param.find_first_of(":\\", pos1);      // search for next separator (":" or "\")
-            HANDLE handle = FindFirstFile(param.substr(0, pos2).c_str(), &data);
-            if (handle != INVALID_HANDLE_VALUE)                  // find first file/dir matching the wildcards
-            {
-                do {
-                    if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
-                    {                                            // skip "." and ".."
-                        size_t pos3 = param.find_last_of(":\\", pos1);
-                        if (pos3 != OFString_npos)
-                            name = param.substr(0, pos3 + 1) + data.cFileName;
-                        else
-                            name = data.cFileName;               // no path specified
-                        if (pos2 != OFString_npos)
-                            name += param.substr(pos2);
-                        if (GetFileAttributes(name.c_str()) != 0xFFFFFFFF)
-                        {
-                            storeParameter(name.c_str(), directOpt);   // file/dir does exist
-                            directOpt = 0;                             // only valid for first expanded parameter (tbt!)
-                        } else
-                            expandWildcards(name.c_str(), directOpt);  // recursively expand further wildcards
-                    }
-                } while (FindNextFile(handle, &data));           // while further files/dirs exist ... add them
-                FindClose(handle);
-            }
-        } else
-            storeParameter(param, directOpt);                    // parameter contains no wildcards, just add it
-    }
-}
-#endif
-
-
 OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
 {
     MinParamCount = 0;
@@ -1212,12 +1163,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
         {
             if (!checkOption(*argIter, OFFalse))                         // arg = parameter
             {
-#ifdef HAVE_WINDOWS_H
-                if (flags & PF_ExpandWildcards)                          // expand wildcards
-                    expandWildcards(*argIter, directOption);
-                else
-#endif
-                    storeParameter(*argIter, directOption);
+                storeParameter(*argIter, directOption);
                 directOption = 0;
             } else {                                                     // arg = option
                 const OFCmdOption *opt = findCmdOption(*argIter);

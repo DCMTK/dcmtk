@@ -850,7 +850,9 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
 
  // --- flags (used for method parseLine)
 
-    /// parsing flag to expand wildcard under Windows (very similar to Unix)
+    /// parsing flag to expand wildcard under Windows.
+    /// (not used anymore, only available for reasons of backward compatibility;
+    ///  link 'setargv.obj' to your program if you need wildcard expansion.)
     static const int PF_ExpandWildcards;
     /// disable support for command files ("@filename") containing additional arguments
     static const int PF_NoCommandFiles;
@@ -901,14 +903,6 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     void unpackColumnValues(const int value,
                             unsigned int &longCols,
                             unsigned int &shortCols) const;
-
-#ifdef HAVE_WINDOWS_H
-    /** expands wildcards in specified parameter.
-     *  Very similar to Unix environments, stores each resulting parameter in the argument/parameter list
-     */
-    void expandWildcards(const OFString &param,
-                         int directOption = 0);
-#endif
 
     /** checks whether number of parameters in parsed command line is within the range of min/max (see below)
      */

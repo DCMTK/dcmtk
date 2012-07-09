@@ -12,4 +12,7 @@ INSTALL(TARGETS dcmqrscp dcmqridx dcmqrti DESTINATION ${DCMTK_INSTALL_BINDIR} CO
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmqrscp dcmqridx dcmqrti)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmqrdb dcmnet dcmdata oflog ofstd ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+  ENDIF(WIN32)
 ENDFOREACH(PROGRAM)

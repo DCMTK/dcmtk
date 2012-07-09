@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -194,7 +194,7 @@ main(int argc, char *argv[])
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-  if (!app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
+  if (!app.parseCommandLine(cmd, argc, argv))
   {
     exit(1);
   }

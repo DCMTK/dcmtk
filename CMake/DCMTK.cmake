@@ -225,9 +225,10 @@ ELSE(WIN32)   # ... for non-Windows systems
 
 ENDIF(WIN32)
 
-# define libraries that must be linked to most Windows applications
+# define libraries and object files that must be linked to most Windows applications
 IF(WIN32)
-  SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
+  SET(WIN32_STD_LIBRARIES "ws2_32.lib netapi32.lib wsock32.lib")
+  SET(WIN32_STD_OBJECTS "setargv.obj")
   # settings for Borland C++
   IF(CMAKE_CXX_COMPILER MATCHES bcc32)
     # to be checked: further settings required?

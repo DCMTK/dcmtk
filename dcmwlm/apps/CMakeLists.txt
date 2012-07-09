@@ -12,3 +12,6 @@ INSTALL(TARGETS wlmscpfs DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 
 # make sure executables are linked to the corresponding libraries
 TARGET_LINK_LIBRARIES(wlmscpfs dcmwlm dcmnet dcmtls dcmdata oflog ofstd ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+IF(WIN32)
+  SET_TARGET_PROPERTIES(wlmscpfs PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+ENDIF(WIN32)

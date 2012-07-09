@@ -15,4 +15,7 @@ INSTALL(TARGETS dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpschk dcmpsmk dc
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpsmk dcmpschk dcmpsprt dcmpsrcv dcmpssnd)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmpstat dcmdsig dcmsr dcmimage dcmimgle dcmqrdb dcmnet dcmtls dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${LIBXML_LIBS} ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+  ENDIF(WIN32)
 ENDFOREACH(PROGRAM)

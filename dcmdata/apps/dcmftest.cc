@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     cmd.addParam("file", OFCmdParam::PM_MultiMandatory);
-    app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards);
+    app.parseCommandLine(cmd, argc, argv);
 
     int badCount = 0;
     int count = cmd.getParamCount();

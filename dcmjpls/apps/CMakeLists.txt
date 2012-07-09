@@ -15,4 +15,7 @@ INSTALL(TARGETS dcmcjpls dcmdjpls dcml2pnm DESTINATION ${DCMTK_INSTALL_BINDIR} C
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmcjpls dcmdjpls dcml2pnm)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmjpls charls dcmimage dcmimgle dcmdata oflog ofstd ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+  ENDIF(WIN32)
 ENDFOREACH(PROGRAM)

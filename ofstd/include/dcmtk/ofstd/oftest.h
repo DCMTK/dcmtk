@@ -258,7 +258,7 @@ public:
 #endif
 
         /* evaluate command line */
-        if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
+        if (app.parseCommandLine(cmd, argc, argv))
         {
             /* check exclusive options first */
         }

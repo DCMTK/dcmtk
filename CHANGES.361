@@ -1,6 +1,71 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.09 (riesmeier)
+
+- Replaced Windows-specific wildcard expansion for filenames by "setargv.obj".
+  Affects: CMake/DCMTK.cmake
+           dcmdata/apps/CMakeLists.txt
+           dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/dcmsend.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/getscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/tests/msgserv.cc
+           dcmqrdb/apps/CMakeLists.txt
+           dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmrt/apps/CMakeLists.txt
+           dcmrt/apps/drtdump.cc
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/apps/dcmsign.cc
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/apps/wlcefs.cc
+           ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/include/dcmtk/ofstd/oftest.h
+
 **** Changes from 2012.07.05 (riesmeier)
 
 - Output the current OEM/ANSI code page identifiers on Windows systems.
