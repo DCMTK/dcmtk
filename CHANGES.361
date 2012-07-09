@@ -3,6 +3,39 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.09 (schlachter)
 
+- Added macros for common tasks on all libraries/executables.
+  Added:   CMake/dcmtkMacros.cmake
+  Removed: CMake/dcmtkAddTests.cmake
+  Affects: CMake/DCMTK.cmake
+           config/changext
+           dcmdata/apps/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           dcmqrdb/libsrc/CMakeLists.txt
+           dcmrt/apps/CMakeLists.txt
+           dcmrt/libsrc/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
 - Removed obsolete list of private modules.
   Affects: CMakeLists.txt
 

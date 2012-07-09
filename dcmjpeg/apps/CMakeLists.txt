@@ -15,7 +15,5 @@ INSTALL(TARGETS dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir DESTINATION ${DCMTK_INSTALL_
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
-  IF(WIN32)
-    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
-  ENDIF(WIN32)
+  DCMTK_SETUP_EXECUTABLE(${PROGRAM})
 ENDFOREACH(PROGRAM)

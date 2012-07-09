@@ -5,11 +5,7 @@ INCLUDE_DIRECTORIES(${dcmjpeg_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${
 ADD_LIBRARY(dcmjpeg ddpiimpl dipijpeg djcodecd djcodece djcparam djdecbas djdecext djdeclol djdecode djdecpro djdecsps djdecsv1 djdijg12 djdijg8 djdijg16 djeijg12 djeijg8 djeijg16 djencbas djencext djenclol djencode djencpro djencsps djencsv1 djrplol djrploss djutils)
 
 TARGET_LINK_LIBRARIES(dcmjpeg ofstd oflog dcmdata dcmimgle dcmimage ijg8 ijg12 ijg16)
-
-# set proper version information for shared library
-IF(BUILD_SHARED_LIBS)
-  SET_TARGET_PROPERTIES(dcmjpeg PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
-ENDIF(BUILD_SHARED_LIBS)
+DCMTK_SETUP_LIBRARY(dcmjpeg)
 
 # declare installation files
 INSTALL(TARGETS dcmjpeg

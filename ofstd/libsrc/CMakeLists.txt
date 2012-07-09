@@ -2,11 +2,7 @@
 ADD_LIBRARY(ofstd ofchrenc ofcmdln ofconapp ofcond ofconfig ofconsol ofcrc32 ofdate ofdatime offname oflist ofstd ofstring ofthread oftime oftimer oftempf ofxml ofuuid)
 
 TARGET_LINK_LIBRARIES(ofstd ${LIBICONV_LIBS} ${THREAD_LIBS})
-
-# set proper version information for shared library
-IF(BUILD_SHARED_LIBS)
-  SET_TARGET_PROPERTIES(ofstd PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
-ENDIF(BUILD_SHARED_LIBS)
+DCMTK_SETUP_LIBRARY(ofstd)
 
 # declare installation files
 INSTALL(TARGETS ofstd

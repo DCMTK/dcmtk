@@ -2,11 +2,7 @@
 ADD_LIBRARY(dcmimage diargimg dicmyimg dicoimg dicoopx dicopx dihsvimg dilogger dipalimg dipipng dipitiff diqtctab diqtfs diqthash diqthitl diqtpbox diquant diregist dirgbimg diybrimg diyf2img diyp2img)
 
 TARGET_LINK_LIBRARIES(dcmimage oflog dcmdata dcmimgle ${LIBTIFF_LIBS} ${LIBPNG_LIBS})
-
-# set proper version information for shared library
-IF(BUILD_SHARED_LIBS)
-  SET_TARGET_PROPERTIES(dcmimage PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
-ENDIF(BUILD_SHARED_LIBS)
+DCMTK_SETUP_LIBRARY(dcmimage)
 
 # declare installation files
 INSTALL(TARGETS dcmimage

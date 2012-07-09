@@ -250,7 +250,7 @@ INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/3rdparty.cmake)
 # DCMTK libraries
 #-----------------------------------------------------------------------------
 
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkAddTests.cmake)
+INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkMacros.cmake)
 INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/GenerateDCMTKConfigure.cmake)
 
 #-----------------------------------------------------------------------------

@@ -2,11 +2,7 @@
 ADD_LIBRARY(dcmdsig dcsignat siautopr sibrsapr sicert sicertvf sicreapr sidsa simaccon simd5 sinullpr siprivat siripemd sirsa sisha1 sisprof sitypes)
 
 TARGET_LINK_LIBRARIES(dcmdsig ofstd dcmdata ${OPENSSL_LIBS})
-
-# set proper version information for shared library
-IF(BUILD_SHARED_LIBS)
-  SET_TARGET_PROPERTIES(dcmdsig PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
-ENDIF(BUILD_SHARED_LIBS)
+DCMTK_SETUP_LIBRARY(dcmdsig)
 
 # declare installation files
 INSTALL(TARGETS dcmdsig

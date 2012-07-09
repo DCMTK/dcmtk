@@ -12,7 +12,5 @@ INSTALL(TARGETS dsr2html dsr2xml dsrdump xml2dsr DESTINATION ${DCMTK_INSTALL_BIN
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dsr2html dsr2xml dsrdump xml2dsr)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmsr dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${LIBXML_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
-  IF(WIN32)
-    SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
-  ENDIF(WIN32)
+  DCMTK_SETUP_EXECUTABLE(${PROGRAM})
 ENDFOREACH(PROGRAM)

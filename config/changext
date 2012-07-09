@@ -140,10 +140,10 @@ if [ -f CMake/GenerateDCMTKConfigure.cmake ] ; then
   mv CMake/GenerateDCMTKConfigure.cmake.new CMake/GenerateDCMTKConfigure.cmake
 fi
 
-if [ -f CMake/dcmtkAddTests.cmake ] ; then
-  echo "updating CMake/dcmtkAddTests.cmake"
-  cat CMake/dcmtkAddTests.cmake | sed -e "s/\.$oldext/.$newext/g" > CMake/dcmtkAddTests.cmake.new
-  mv CMake/dcmtkAddTests.cmake.new CMake/dcmtkAddTests.cmake
+if [ -f CMake/dcmtkMacros.cmake ] ; then
+  echo "updating CMake/dcmtkMacros.cmake"
+  cat CMake/dcmtkMacros.cmake | sed -e "s/\.$oldext/.$newext/g" > CMake/dcmtkMacros.cmake.new
+  mv CMake/dcmtkMacros.cmake.new CMake/dcmtkMacros.cmake
 fi
 
 echo "done."
