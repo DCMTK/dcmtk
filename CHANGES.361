@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.09 (riesmeier)
 
+- Replaced remaining tabs by spaces.
+  Affects: dcmdata/libsrc/dcswap.cc
+
 - Check HAVE_WINDOWS_H instead of _WIN32 for printing code page identifiers.
   Affects: ofstd/libsrc/ofconapp.cc
 
