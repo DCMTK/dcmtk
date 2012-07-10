@@ -11,7 +11,7 @@ INCLUDE(CMake/DCMTK.cmake NO_POLICY_SCOPE)
 # General project settings to configure DCMTK build process
 #-----------------------------------------------------------------------------
 
-# Modules to be built (default: build all public modules)
+# Modules to be built
 SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt doxygen)
 
 #-----------------------------------------------------------------------------
