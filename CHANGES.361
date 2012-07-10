@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.10 (riesmeier)
+
+- Added explicit typecast in order to avoid warnings reported by gcc 4.4.5
+  with additional options.
+  Affects: dcmdata/libsrc/dcswap.cc
+
 **** Changes from 2012.07.09 (schlachter)
 
 - Added macros for common tasks on all libraries/executables.

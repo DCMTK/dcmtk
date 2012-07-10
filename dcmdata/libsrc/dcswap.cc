@@ -113,7 +113,7 @@ void swapBytes(void * value, const Uint32 byteLength,
         register Uint8 *start;
         register Uint8 *end;
 
-        Uint32 times = byteLength/valWidth;
+        Uint32 times = OFstatic_cast(Uint32, byteLength / valWidth);
         Uint8  *base = OFstatic_cast(Uint8 *, value);
 
         while (times--)
@@ -139,7 +139,6 @@ Uint16 swapShort(const Uint16 toSwap)
     swap2Bytes(swapped);
     return *OFreinterpret_cast(Uint16*, swapped);
 }
-
 
 
 /*
