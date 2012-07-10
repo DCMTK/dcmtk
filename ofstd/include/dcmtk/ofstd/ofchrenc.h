@@ -160,7 +160,7 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
                               OFString &toString,
                               const OFBool clearMode = OFTrue);
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 
     /** @name code page definitions.
      *  Short list of common code page identifiers used for the conversion to
@@ -266,7 +266,7 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
                                                size_t &toLength,
                                                const unsigned int codePage = CPC_UTF8);
 
-#endif
+#endif  // HAVE_WINDOWS_H
 
     // --- static helper functions ---
 
@@ -377,7 +377,7 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
                                      OFString message,
                                      const unsigned short code);
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 
     /** create an error condition based on the return value of "getLastError()"
      *  and the given parameters.  The Windows function FormatMessage() is used
@@ -390,7 +390,7 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
                                             OFString message,
                                             const unsigned short code);
 
-#endif
+#endif  // HAVE_WINDOWS_H
 
     /// current locale's character encoding
     OFString LocaleEncoding;

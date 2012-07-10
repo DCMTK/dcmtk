@@ -58,7 +58,7 @@ END_EXTERN_C
  *  constants  *
  *-------------*/
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 // Windows-specific code page identifiers
 const unsigned int OFCharacterEncoding::CPC_ANSI   = CP_ACP;
 const unsigned int OFCharacterEncoding::CPC_OEM    = CP_OEMCP;
@@ -264,7 +264,7 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
 }
 
 
-#ifdef _WIN32  // Windows-specific conversion functions
+#ifdef HAVE_WINDOWS_H  // Windows-specific conversion functions
 
 OFCondition OFCharacterEncoding::convertFromWideCharString(const wchar_t *fromString,
                                                            const size_t fromLength,
@@ -359,7 +359,7 @@ OFCondition OFCharacterEncoding::convertToWideCharString(const char *fromString,
     return status;
 }
 
-#endif  // _WIN32
+#endif  // HAVE_WINDOWS_H
 
 
 OFCondition OFCharacterEncoding::openDescriptor(T_Descriptor &descriptor,
@@ -438,7 +438,7 @@ void OFCharacterEncoding::createErrnoCondition(OFCondition &status,
 }
 
 
-#ifdef _WIN32  // Windows-specific function
+#ifdef HAVE_WINDOWS_H  // Windows-specific function
 
 void OFCharacterEncoding::createGetLastErrorCondition(OFCondition &status,
                                                       OFString message,
@@ -456,7 +456,7 @@ void OFCharacterEncoding::createGetLastErrorCondition(OFCondition &status,
     status = makeOFCondition(0, code, OF_error, message.c_str());
 }
 
-#endif
+#endif  // HAVE_WINDOWS_H
 
 
 OFBool OFCharacterEncoding::isLibraryAvailable()

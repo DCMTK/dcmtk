@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.10 (riesmeier)
 
+- Check HAVE_WINDOWS_H instead of _WIN32 when using Windows-specific functions.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+
 - Added explicit typecast in order to avoid warnings reported by gcc 4.4.5
   with additional options.
   Affects: dcmdata/libsrc/dcswap.cc
