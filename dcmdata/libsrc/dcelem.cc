@@ -1296,8 +1296,10 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
 
     /* write XML start tag for attribute */
     if (flags & DCMTypes::XF_useNativeModel)
+    {
         out << "<DicomAttribute";
-    else
+        out << STD_NAMESPACE uppercase;
+    } else
         out << "<element";
 
     /* write attribute tag */
@@ -1318,6 +1320,7 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
             out << STD_NAMESPACE setw(4) << tag.getETag() << "\""
                 << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
         }
+        out << STD_NAMESPACE nouppercase;
     }
     else  /* in DCMTK-specific format, write "gggg,eeee" */
     {
