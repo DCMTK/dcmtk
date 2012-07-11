@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -115,7 +115,7 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
         {
             /* generate a new UID but the binary data is not (yet) written. */
             OFUUID uuid;
-            out << "<BulkData UUID=\"";
+            out << "<BulkData uuid=\"";
             uuid.print(out, OFUUID::ER_RepresentationHex);
             out << "\"/>" << OFendl;
         }

@@ -686,7 +686,7 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
         {
             /* generate a new UID but the binary data is not (yet) written. */
             OFUUID uuid;
-            out << "<BulkData UUID=\"";
+            out << "<BulkData uuid=\"";
             uuid.print(out, OFUUID::ER_RepresentationHex);
             out << "\"/>" << OFendl;
         }

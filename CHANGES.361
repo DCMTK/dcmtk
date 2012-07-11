@@ -3,8 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.11 (riesmeier)
 
+- Fixed wrong attribute name of BulkData element: According to the XML Schema
+  in PS 3.19, the name for the UUID reference is "uuid" and not "UUID".
+  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrof.cc
+
 - Made sure that hexadecimal numbers of attribute tags are always printed in
-  uppercase (as required by the XML Schema in DICOM PS 3.19).
+  uppercase for the Native Model (as required by the XML Schema in PS 3.19).
   Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
 
