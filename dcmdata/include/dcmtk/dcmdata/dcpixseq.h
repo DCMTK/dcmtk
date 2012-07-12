@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,6 +31,7 @@
 #define DCPIXSEQ_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
 
@@ -198,6 +199,14 @@ public:
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
                               DcmWriteCache *wcache);
+
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
+                                 const size_t flags = 0);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream

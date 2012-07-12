@@ -1,17 +1,25 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.12 (riesmeier)
+
+- Fixed wrong output format of pixel sequence elements for the DICOM Native
+  Model (according to PS 3.19).
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpixseq.h
+           dcmdata/libsrc/dcpixseq.cc
+
 **** Changes from 2012.07.11 (riesmeier)
 
 - Fixed wrong attribute name of BulkData element: According to the XML Schema
   in PS 3.19, the name for the UUID reference is "uuid" and not "UUID".
-  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcvrobow.cc
            dcmdata/libsrc/dcvrof.cc
 
 - Made sure that hexadecimal numbers of attribute tags are always printed in
   uppercase for the Native Model (as required by the XML Schema in PS 3.19).
-  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
 
 **** Changes from 2012.07.10 (riesmeier)
@@ -161,7 +169,7 @@ Changes between releases are documented here.
 **** Changes from 2012.07.03 (riesmeier)
 
 - Make sure that "??" is never used for an unknown VR in the XML output.
-  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcsequen.cc
 
@@ -226,7 +234,7 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcfilefo.cc
 
 - Fixed wrong error message for conflict check of option --write-binary-data.
-  Thanks Mathieu Malaterra <mathieu.malaterre@gmail.com> for the report.
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/apps/dcm2xml.cc
 
 **** Changes from 2012.06.29 (riesmeier)
@@ -285,7 +293,7 @@ Changes between releases are documented here.
 
 - Added proper definition of "soname" for better shared library support.
   Thanks to Mario Ceresa <mrceresa@gmail.com> for the original idea and to
-  Mathieu Malaterra <mathieu.malaterre@gmail.com> for the reminder.
+  Mathieu Malaterre <mathieu.malaterre@gmail.com> for the reminder.
   Affects: CMakeLists.txt
            dcmdata/libi2d/CMakeLists.txt
            dcmdata/libsrc/CMakeLists.txt

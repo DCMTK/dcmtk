@@ -34,6 +34,8 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofuuid.h"
+
 #include "dcmtk/dcmdata/dcpixseq.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcitem.h"
@@ -140,6 +142,36 @@ void DcmPixelSequence::print(STD_NAMESPACE ostream &out,
         else
             printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-encod.)", &delimItemTag);
     }
+}
+
+
+// ********************************
+
+
+OFCondition DcmPixelSequence::writeXML(STD_NAMESPACE ostream &out,
+                                       const size_t flags)
+{
+    OFCondition l_error = EC_Normal;
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        /* write XML start tag */
+        writeXMLStartTag(out, flags);
+        /* for an empty value field, we do not need to do anything */
+        if (getLengthField() > 0)
+        {
+            /* generate a new UID but the binary data is not (yet) written. */
+            OFUUID uuid;
+            out << "<BulkData uuid=\"";
+            uuid.print(out, OFUUID::ER_RepresentationHex);
+            out << "\"/>" << OFendl;
+        }
+        /* write XML end tag */
+        writeXMLEndTag(out, flags);
+    } else {
+        /* the DCMTK-specific XML format requires no special handling */
+        l_error = DcmSequenceOfItems::writeXML(out, flags);
+    }
+    return l_error;
 }
 
 
