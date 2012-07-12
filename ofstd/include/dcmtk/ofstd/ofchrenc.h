@@ -231,7 +231,7 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *                      conversion (default: UTF-8)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    static OFCondition convertToWideCharString(OFString &fromString,
+    static OFCondition convertToWideCharString(const OFString &fromString,
                                                wchar_t *&toString,
                                                size_t &toLength,
                                                const unsigned int codePage = CPC_UTF8);

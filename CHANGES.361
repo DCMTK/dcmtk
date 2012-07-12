@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.12 (riesmeier)
 
+- Made convertToWideCharString()'s input parameter "fromString" const.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+
 - Fixed wrong output format of pixel sequence elements for the DICOM Native
   Model (according to PS 3.19).
   Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.

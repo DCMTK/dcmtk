@@ -309,7 +309,7 @@ OFCondition OFCharacterEncoding::convertFromWideCharString(const wchar_t *fromSt
 }
 
 
-OFCondition OFCharacterEncoding::convertToWideCharString(OFString &fromString,
+OFCondition OFCharacterEncoding::convertToWideCharString(const OFString &fromString,
                                                          wchar_t *&toString,
                                                          size_t &toLength,
                                                          const unsigned int codePage)
