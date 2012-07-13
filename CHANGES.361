@@ -23,6 +23,15 @@ Changes between releases are documented here.
 - Fixed a pre-processor check for HAVE_WINDOWS_H.
   Affects: ofstd/libsrc/ofconapp.cc
 
+**** Changes from 2012.07.13 (schlamelcher)
+
+- Fixed mingw-w64 compilation issues.
+  Affects: CMake/DCMTK.cmake
+           CMake/dcmtkMacros.cmake
+           dcmnet/libsrc/dul.cc
+           ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/libsrc/ofxml.cc
+
 **** Changes from 2012.07.13 (riesmeier)
 
 - Removed file extensions and quotation marks from Windows standard library
