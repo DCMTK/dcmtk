@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.13 (riesmeier)
+
+- Removed file extensions and quotations marks from Windows standard library
+  and object files.
+  Affects: CMake/DCMTK.cmake
+
 **** Changes from 2012.07.12 (riesmeier)
 
 - Made convertToWideCharString()'s input parameter "fromString" const.
