@@ -228,7 +228,11 @@ ENDIF(WIN32)
 # define libraries and object files that must be linked to most Windows applications
 IF(WIN32)
   SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
-  SET(WIN32_STD_OBJECTS setargv)
+  IF(MINGW)
+    SET(WIN32_STD_OBJECTS CRT_noglob)
+  ELSE(MINGW)
+    SET(WIN32_STD_OBJECTS setargv)
+  ENDIF(MINGW)
   # settings for Borland C++
   IF(CMAKE_CXX_COMPILER MATCHES bcc32)
     # to be checked: further settings required?

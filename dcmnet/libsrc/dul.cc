@@ -1796,7 +1796,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
                 char buf[20];
-                sprintf(buf, "%i", OFreinterpret_cast(int, childSocketHandle));
+                sprintf(buf, "%i", OFstatic_cast(int, OFreinterpret_cast(size_t, childSocketHandle)));
                 if (!WriteFile(hChildStdInWriteDup, buf, strlen(buf) + 1, &bytesWritten, NULL))
                 {
                     CloseHandle(hChildStdInWriteDup);
@@ -1806,7 +1806,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 // return OF_ok status code DULC_FORKEDCHILD with descriptive text
                 OFOStringStream stream;
                 stream << "New child process started with pid " << OFstatic_cast(int, pi.dwProcessId)
-                       << ", socketHandle " << OFreinterpret_cast(int, childSocketHandle) << OFStringStream_ends;
+                       << ", socketHandle " << OFstatic_cast(int, OFreinterpret_cast(size_t, childSocketHandle)) << OFStringStream_ends;
                 OFSTRINGSTREAM_GETOFSTRING(stream, msg)
                 return makeDcmnetCondition(DULC_FORKEDCHILD, OF_ok, msg.c_str());
             }

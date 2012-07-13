@@ -403,7 +403,7 @@ public:
   OFBool popen(const char *command, const char *modes)
   {
     if (file_) fclose();
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW64__)
     file_ = _popen(command, modes);
 #else
     file_ = :: popen(command, modes);
@@ -465,7 +465,7 @@ public:
     {
       if (popened_)
       {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW64__)
         result = _pclose(file_);
 #else
         result = :: pclose(file_);
