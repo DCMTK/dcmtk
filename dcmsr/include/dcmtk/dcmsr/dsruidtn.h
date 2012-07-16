@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:03 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -159,65 +152,3 @@ class DCMTK_DCMSR_EXPORT DSRUIDRefTreeNode
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsruidtn.h,v $
- *  Revision 1.17  2012-06-11 08:53:03  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.16  2012-01-06 09:13:14  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.15  2011-08-02 06:26:32  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.14  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.13  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.12  2007-11-15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.11  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.10  2005/12/08 16:05:31  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.9  2003/09/15 14:18:54  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *  Revision 1.8  2003/08/07 13:06:06  joergr
- *  Added readXML functionality. Added support for Chest CAD SR.
- *
- *  Revision 1.7  2001/11/09 16:10:55  joergr
- *  Added preliminary support for Mammography CAD SR.
- *
- *  Revision 1.6  2001/09/26 13:04:14  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.5  2001/06/01 15:51:06  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/11/07 18:14:32  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.3  2000/11/01 16:23:28  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.2  2000/10/23 15:14:13  joergr
- *  Added clear() method.
- *  Added/updated doc++ comments.
- *
- *  Revision 1.1  2000/10/13 07:49:36  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

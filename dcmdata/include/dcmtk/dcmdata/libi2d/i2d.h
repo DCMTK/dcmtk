@@ -17,13 +17,6 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2012-05-04 09:32:31 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef I2D_H
@@ -268,64 +261,3 @@ private:
 };
 
 #endif // I2D_H
-
-/*
- * CVS/RCS Log:
- * $Log: i2d.h,v $
- * Revision 1.15  2012-05-04 09:32:31  onken
- * Cleaned up includes. Fixed plugin functionality to receive list of supported
- * SOP classes.
- *
- * Revision 1.14  2011-12-14 09:04:16  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.13  2010-10-14 13:15:46  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2010-08-09 13:03:07  joergr
- * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- * the official "keyword" is used for the attribute name which results in a
- * number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- * Revision 1.11  2010-03-25 09:44:07  onken
- * Pixel data is now already marked with the correct transfer syntax in memory
- * not only when writing to disk. This permits conversion in memory, e. g. for
- * sending the converted DICOM images directly over the network.
- *
- * Revision 1.10  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.9  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.8  2009-07-16 14:23:37  onken
- * Extended Image2Dcm engine to also work for uncompressed pixel data input.
- *
- * Revision 1.7  2009-07-10 13:16:16  onken
- * Added path functionality for --key option and lets the code make use
- * of the DcmPath classes.
- *
- * Revision 1.6  2009-03-31 13:06:09  onken
- * Changed implementation of lossy compression attribute detection and writing.
- *
- * Revision 1.4  2009-01-16 09:51:55  onken
- * Completed doxygen documentation for libi2d.
- *
- * Revision 1.3  2008-01-16 16:32:23  onken
- * Fixed some empty or doubled log messages in libi2d files.
- *
- * Revision 1.2  2008-01-16 15:07:40  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.2  2008-01-11 14:17:53  onken
- * Added various options to i2dlib. Changed logging to use a configurable
- * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
- * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
- * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
- * need for templates any more). Added some bug fixes.
- *
- * Revision 1.1  2007/11/08 15:58:55  onken
- * Initial checkin of img2dcm application and corresponding library i2dlib.
- *
- *
- */

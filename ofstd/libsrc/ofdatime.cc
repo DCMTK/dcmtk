@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 17:56:14 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -271,63 +264,3 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTim
         stream << string;
     return stream;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofdatime.cc,v $
- * Revision 1.16  2011-11-29 17:56:14  joergr
- * Made setISOFormattedDateTime() more robust with regard to input values.
- *
- * Revision 1.15  2011-11-29 16:01:15  joergr
- * Added support for the optional time zone to setISOFormattedDateTime().
- * Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
- *
- * Revision 1.14  2010-10-20 07:41:37  uli
- * Made sure isalpha() & friends are only called with valid arguments.
- *
- * Revision 1.13  2010-10-14 13:14:53  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2009-08-19 11:55:45  meichel
- * Added additional includes needed for Sun Studio 11 on Solaris.
- *
- * Revision 1.11  2008-05-21 16:29:45  joergr
- * Added new constructor and new setDateTime() method.
- *
- * Revision 1.10  2006/12/12 11:56:05  joergr
- * Fixed wrong default value for the "dateTimeSeparator" parameter.
- *
- * Revision 1.9  2006/08/14 16:42:46  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.8  2005/12/08 15:48:56  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2004/04/16 12:44:20  joergr
- * Restructured code to avoid default parameter values for "complex types" like
- * OFString. Required for Sun CC 2.0.1.
- *
- * Revision 1.6  2004/01/16 10:35:18  joergr
- * Added setISOFormattedXXX() methods for Date, Time and DateTime.
- *
- * Revision 1.5  2003/12/17 15:27:21  joergr
- * Added note to the comparison operators that the "day overflow" is not yet
- * handled correctly.
- *
- * Revision 1.4  2003/09/15 12:15:07  joergr
- * Made comparison operators const.
- *
- * Revision 1.3  2002/11/27 15:09:39  meichel
- * Adapted module ofstd to use of new header file ofstdinc.h
- *
- * Revision 1.2  2002/05/24 09:44:26  joergr
- * Renamed some parameters/variables to avoid ambiguities.
- *
- * Revision 1.1  2002/04/11 12:14:33  joergr
- * Introduced new standard classes providing date and time functions.
- *
- *
- */

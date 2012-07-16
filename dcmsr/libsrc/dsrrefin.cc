@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRReferencedInstanceList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -461,21 +454,3 @@ OFCondition DSRReferencedInstanceList::checkPurposeOfReference(const DSRCodedEnt
     return purposeOfReference.isEmpty() ? SR_EC_InvalidValue
                                         : purposeOfReference.checkCurrentValue();
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrrefin.cc,v $
- *  Revision 1.3  2012-06-11 08:53:06  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.2  2012-05-29 14:02:18  joergr
- *  Slightly modified code for using methods from class DcmSequenceOfItems.
- *
- *  Revision 1.1  2011-12-09 15:00:10  joergr
- *  Added support for the Referenced Instance Sequence (0008,114A) introduced
- *  with CP-670 (Reference rendering of SR), which allows for referencing an
- *  equivalent CDA document or a rendering as an Encapsulated PDF document.
- *
- *
- */

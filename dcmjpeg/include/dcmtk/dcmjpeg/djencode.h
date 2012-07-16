@@ -17,13 +17,6 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJENCODE_H
@@ -139,45 +132,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djencode.h,v $
- * Revision 1.10  2011-12-14 10:33:21  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.9  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.8  2009-10-07 12:44:33  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.7  2008-04-30 12:45:52  meichel
- * DJEncoderRegistration::registerCodecs now by default enables the
- *   true lossless codec instead of pseudo-lossless.
- *
- * Revision 1.6  2005/12/08 16:59:32  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2005/11/29 15:57:05  onken
- * Added commandline options --accept-acr-nema and --accept-palettes
- * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
- * these options. Thanks to Gilles Mevel for suggestion.
- *
- * Revision 1.3  2005/11/29 08:50:34  onken
- * Added support for "true" lossless compression in dcmjpeg, that doesn't
- *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
- *   avoid losses in quality caused by color space conversions or modality
- *   transformations etc.
- * Corresponding commandline option in dcmcjpeg (new default)
- *
- * Revision 1.2  2001/11/19 15:13:29  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:56:27  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

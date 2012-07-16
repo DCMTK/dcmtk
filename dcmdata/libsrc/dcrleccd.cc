@@ -17,13 +17,6 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.18 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -697,79 +690,3 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
     }
     return result;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: dcrleccd.cc,v $
- * Revision 1.18  2010-11-01 10:42:44  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.17  2010-10-14 13:14:09  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.16  2010-10-01 10:21:05  uli
- * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
- *
- * Revision 1.15  2010-05-27 16:52:32  joergr
- * Re-added comment that was accidentally removed by the last commit.
- *
- * Revision 1.14  2010-05-21 14:02:48  joergr
- * Fixed issue with incorrectly encoded RLE images: Now, if the RLE decoder is
- * finished but has produced insufficient data, the remaining pixels of the
- * image are filled with the value of the last pixel. Applies to decodeFrame().
- * Added useful log messages on various levels to decode() and decodeFrame().
- *
- * Revision 1.13  2009-11-17 16:41:26  joergr
- * Added new method that allows for determining the color model of the
- * decompressed image.
- *
- * Revision 1.12  2009-11-04 09:58:10  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.11  2009-08-10 11:27:00  meichel
- * Added working implementation of DcmRLECodecDecoder::decodeFrame().
- *
- * Revision 1.10  2009-08-10 09:38:06  meichel
- * All decompression codecs now replace NumberOfFrames if larger than one
- *   or present in the original image.
- *
- * Revision 1.9  2008-08-15 09:18:13  meichel
- * Decoder now gracefully handles the case of faulty images where value of
- *   NumberOfFrames is larger than the number of compressed fragments, if and only
- *   if there is just a single fragment per frame.
- *
- * Revision 1.8  2008-05-29 10:46:16  meichel
- * Implemented new method DcmPixelData::getUncompressedFrame
- *   that permits frame-wise access to compressed and uncompressed
- *   objects without ever loading the complete object into main memory.
- *   For this new method to work with compressed images, all classes derived from
- *   DcmCodec need to implement a new method decodeFrame(). For now, only
- *   dummy implementations returning an error code have been defined.
- *
- * Revision 1.7  2005/12/08 15:41:29  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2005/07/26 17:08:35  meichel
- * Added option to RLE decoder that allows to correctly decode images with
- *   incorrect byte order of byte segments (LSB instead of MSB).
- *
- * Revision 1.5  2004/08/24 14:54:20  meichel
- *  Updated compression helper methods. Image type is not set to SECONDARY
- *   any more, support for the purpose of reference code sequence added.
- *
- * Revision 1.4  2003/08/14 09:01:06  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.3  2003/03/21 13:08:04  meichel
- * Minor code purifications for warnings reported by MSVC in Level 4
- *
- * Revision 1.2  2002/07/18 12:15:39  joergr
- * Added explicit type casts to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.1  2002/06/06 14:52:40  meichel
- * Initial release of the new RLE codec classes
- *   and the dcmcrle/dcmdrle tools in module dcmdata
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.25 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef COND_H
@@ -266,80 +259,3 @@ public:
 
 
 #endif
-
-/*
- * CVS Log
- * $Log: cond.h,v $
- * Revision 1.25  2012-02-15 14:50:42  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.24  2012-02-15 11:31:50  uli
- * Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
- *
- * Revision 1.23  2011-12-14 11:45:14  uli
- * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- * Revision 1.22  2011-12-05 13:21:35  joergr
- * Fixed a bug in DUL_RejectAssociationRQ() which always set the "Source" field
- * of the ASSOCIATE-RJ PDU to 0x01 (DICOM UL service-user).
- *
- * Revision 1.21  2011-10-10 14:01:29  uli
- * Moved SCU-specific error condition to the correct place.
- *
- * Revision 1.20  2011-10-06 14:16:08  joergr
- * Now also SOP instances from DICOM datasets can be added to the transfer list.
- * This allows for sending datasets created or received in memory.
- *
- * Revision 1.19  2011-09-29 13:11:59  joergr
- * Introduced new network-related error codes, e.g. in case that none of the
- * proposed presentation contexts were accepted by the association acceptor.
- *
- * Revision 1.18  2011-09-28 13:29:04  joergr
- * Introduced a couple of new network-related error codes (aka OFCondition).
- *
- * Revision 1.17  2011-08-03 13:31:44  joergr
- * Added macro that allows for disabling the port permission check in SCPs.
- *
- * Revision 1.16  2010-10-14 13:17:21  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.15  2010-09-09 08:32:13  joergr
- * Fixed typo in OFCondition constants for SCP/SCU role selection failures.
- *
- * Revision 1.14  2010-08-26 09:27:21  joergr
- * Fixed incorrect behavior of association acceptors during SCP/SCU role
- * selection negotiation.
- *
- * Revision 1.13  2009-11-18 11:53:58  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.12  2008-09-08 13:16:11  joergr
- * Fixed typo in OFCondition text string.
- *
- * Revision 1.11  2008-04-17 15:28:33  onken
- * Reworked and extended User Identity Negotiation code.
- *
- * Revision 1.10  2005-12-08 16:02:07  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.9  2005/11/25 11:31:11  meichel
- * StoreSCP now supports multi-process mode both on Posix and Win32 platforms
- *   where a separate client process is forked for each incoming association.
- *
- * Revision 1.8  2003/06/10 13:37:36  meichel
- * Added support for TCP wrappers in DICOM network layer
- *
- * Revision 1.7  2002/12/10 11:00:57  meichel
- * Removed error code DUL_NETWORKINITIALIZED which is not used anymore
- *
- * Revision 1.6  2001/10/12 10:18:25  meichel
- * Replaced the CONDITION types, constants and functions in the dcmnet module
- *   by an OFCondition based implementation which eliminates the global condition
- *   stack.  This is a major change, caveat emptor!
- *
- *
- */

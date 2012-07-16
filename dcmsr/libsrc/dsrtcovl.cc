@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:07 $
- *  CVS/RCS Revision: $Revision: 1.18 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -361,70 +354,3 @@ OFCondition DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRan
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtcovl.cc,v $
- *  Revision 1.18  2012-06-11 08:53:07  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.17  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.15  2007-11-15 16:45:42  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.14  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.13  2006/07/25 13:37:48  joergr
- *  Added new optional flags for the HTML rendering of SR documents:
- *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
- *  HF_renderSectionTitlesInline.
- *
- *  Revision 1.12  2005/12/08 15:48:14  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.11  2004/01/16 10:10:16  joergr
- *  Added comment regarding ISO datetime format.
- *
- *  Revision 1.10  2003/10/08 11:39:57  joergr
- *  Fixed incorrect output format in writeXML().
- *
- *  Revision 1.9  2003/08/07 14:08:24  joergr
- *  Added readXML functionality.
- *  Renamed parameters/variables "string" to avoid name clash with STL class.
- *
- *  Revision 1.8  2002/12/05 13:53:30  joergr
- *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
- *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
- *
- *  Revision 1.7  2002/07/22 14:22:10  joergr
- *  Removed unused variable.
- *
- *  Revision 1.6  2001/11/09 16:19:03  joergr
- *  Adjusted formatting in XML output.
- *
- *  Revision 1.5  2001/10/10 15:30:04  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.4  2001/09/26 13:04:26  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.3  2001/06/01 15:51:11  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/11/01 16:37:05  joergr
- *  Added support for conversion to XML. Optimized HTML rendering.
- *
- *  Revision 1.1  2000/10/26 14:40:29  joergr
- *  Added support for TCOORD content item.
- *
- *
- *
- */

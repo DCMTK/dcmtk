@@ -17,13 +17,6 @@
  *
  *  Purpose: Implementation of supplementary methods for a template list class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 13:46:48 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -118,49 +111,3 @@ void OFListBase::base_recalcListSize()
 
 
 #endif
-
-
-/*
-** CVS/RCS Log:
-** $Log: oflist.cc,v $
-** Revision 1.10  2010-10-21 13:46:48  joergr
-** Replaced tab characters by spaces
-**
-** Revision 1.9  2010-10-14 13:14:53  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.8  2005/12/08 15:48:58  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.7  2001/06/01 15:51:39  meichel
-** Updated copyright header
-**
-** Revision 1.6  2000/03/08 16:36:06  meichel
-** Updated copyright header.
-**
-** Revision 1.5  1998/11/27 12:43:53  joergr
-** Added copyright message to source files and changed CVS header.
-**
-** Revision 1.4  1998/07/02 07:47:05  meichel
-** Some code purifications to avoid gcc 2.8.1 -Weffc++ warnings.
-**
-** Revision 1.3  1998/02/06 15:07:41  meichel
-** Removed many minor problems (name clashes, unreached code)
-**   reported by Sun CC4 with "+w" or Sun CC2.
-**
-** Revision 1.2  1997/07/07 07:34:23  andreas
-** - Corrected destructor for OFListBase, now the dummy element is
-**   deleted.
-**
-** Revision 1.1  1997/07/02 11:52:20  andreas
-** - Preliminary release of the OFFIS Standard Library.
-**   In the future this library shall contain a subset of the
-**   ANSI C++ Library (Version 3) that works on a lot of different
-**   compilers. Additionally this library shall include classes and
-**   functions that are often used. All classes and functions begin
-**   with OF... This library is independent of the DICOM development and
-**   shall contain no DICOM specific stuff.
-**
-**
-*/
-

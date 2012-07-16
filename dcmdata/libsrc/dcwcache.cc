@@ -17,13 +17,6 @@
  *
  *  Purpose: Implementation of class DcmWriteCache
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -96,22 +89,3 @@ Uint32 DcmWriteCache::writeBuffer(DcmOutputStream &outStream)
   }
   return result;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcwcache.cc,v $
- * Revision 1.3  2010-10-14 13:14:11  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.2  2009-02-04 17:55:30  joergr
- * Fixes various type mismatches reported by MSVC introduced with OFFile class.
- *
- * Revision 1.1  2007-11-29 14:30:20  meichel
- * Write methods now handle large raw data elements (such as pixel data)
- *   without loading everything into memory. This allows very large images to
- *   be sent over a network connection, or to be copied without ever being
- *   fully in memory.
- *
- *
- */

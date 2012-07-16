@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinates3DValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:06 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -405,26 +398,3 @@ OFCondition DSRSpatialCoordinates3DValue::checkFiducialUID(const OFString &fiduc
     return fiducialUID.empty() ? EC_Normal
                                : DcmUniqueIdentifier::checkStringValue(fiducialUID, "1");
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrsc3vl.cc,v $
- *  Revision 1.5  2012-06-11 08:53:06  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.4  2011-12-16 16:58:34  joergr
- *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
- *  SCOORD3D content items.
- *
- *  Revision 1.3  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.2  2010-09-28 14:15:20  joergr
- *  Removed old CVS log entries (copied from master file).
- *
- *  Revision 1.1  2010-09-28 14:07:29  joergr
- *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
- *
- *
- */

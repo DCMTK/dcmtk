@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-05-07 10:06:54 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -79,13 +72,3 @@ static inline OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, siz
 
 
 #endif // DCTMACRO_H
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dctmacro.h,v $
- * Revision 1.1  2012-05-07 10:06:54  uli
- * Added a test for the new functions for accessing parent objects and items.
- *
- *
- */

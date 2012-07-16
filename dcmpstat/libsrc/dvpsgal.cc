@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSGraphicAnnotation_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -507,63 +500,3 @@ OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
   }
   return EC_IllegalCall;
 }
-
-
-/*
- *  $Log: dvpsgal.cc,v $
- *  Revision 1.17  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.15  2005-12-08 15:46:27  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.14  2004/02/04 15:57:49  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log.
- *
- *  Revision 1.13  2003/09/05 08:37:46  meichel
- *  Fixed minor issue that caused certain error messages during the
- *    parse process on a GSPS object to be "swallowed".
- *
- *  Revision 1.12  2003/06/12 18:23:11  joergr
- *  Modified code to use const_iterators where appropriate (required for STL).
- *
- *  Revision 1.11  2003/06/04 12:30:28  meichel
- *  Added various includes needed by MSVC5 with STL
- *
- *  Revision 1.10  2003/06/04 10:18:07  meichel
- *  Replaced private inheritance from template with aggregation
- *
- *  Revision 1.9  2001/11/28 13:56:54  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.8  2001/09/26 15:36:25  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.7  2001/06/01 15:50:30  meichel
- *  Updated copyright header
- *
- *  Revision 1.6  2000/06/02 16:01:00  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.5  2000/03/08 16:29:04  meichel
- *  Updated copyright header.
- *
- *  Revision 1.4  1999/07/22 16:39:57  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *  Revision 1.3  1999/04/30 16:40:49  meichel
- *  Minor code purifications to keep Sun CC 2.0.1 quiet
- *
- *  Revision 1.2  1998/12/14 16:10:41  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:40  meichel
- *  Initial Release.
- *
- *
- */

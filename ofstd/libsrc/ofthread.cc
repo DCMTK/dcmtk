@@ -21,13 +21,6 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-01-04 14:47:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -1003,86 +996,3 @@ int OFReadWriteLocker::unlock()
     locked = OFFalse;
   return ret;
 }
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofthread.cc,v $
- * Revision 1.22  2011-01-04 14:47:11  onken
- * Disable and hide OFSemaphore class on Mac OS X since implementation is
- * broken on that OS (needs named semaphores instead).
- *
- * Revision 1.21  2010-10-14 13:14:53  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2010-06-28 07:22:00  joergr
- * Introduced explicit type casts in order to compile with new gcc versions on
- * MinGW/MSYS. Use type cast macros (e.g. OFstatic_cast) where appropriate.
- *
- * Revision 1.19  2010-06-04 14:18:20  uli
- * Removed an outdated comment.
- *
- * Revision 1.18  2010-06-04 13:58:42  uli
- * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
- *
- * Revision 1.17  2010-06-03 10:27:04  joergr
- * Replaced calls to strerror() by new helper function OFStandard::strerror()
- * which results in using the thread safe version of strerror() if available.
- *
- * Revision 1.16  2005/12/08 15:49:02  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.15  2005/07/27 17:07:52  joergr
- * Fixed problem with pthread_t type cast and gcc 4.0.
- *
- * Revision 1.14  2004/08/03 16:44:17  meichel
- * Updated code to correctly handle pthread_t both as an integral integer type
- *   (e.g. Linux, Solaris) and as a pointer type (e.g. BSD, OSF/1).
- *
- * Revision 1.13  2004/04/22 10:45:33  joergr
- * Changed typecast from OFreinterpret_cast to OFstatic_cast to avoid compilation
- * error on Solaris with gcc 3.x.
- *
- * Revision 1.12  2003/12/02 16:20:12  meichel
- * Changed a few typecasts for static to reinterpret, required
- *   for NetBSD and OpenBSD
- *
- * Revision 1.11  2003/10/13 13:24:14  meichel
- * Changed order of include files, as a workaround for problem in Borland C++.
- *
- * Revision 1.10  2003/08/14 09:01:20  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.9  2002/11/27 11:23:11  meichel
- * Adapted module ofstd to use of new header file ofstdinc.h
- *
- * Revision 1.8  2002/02/27 14:13:22  meichel
- * Changed initialized() methods to const. Fixed some return values when
- *   compiled without thread support.
- *
- * Revision 1.7  2001/06/01 15:51:40  meichel
- * Updated copyright header
- *
- * Revision 1.6  2001/01/17 13:03:29  meichel
- * Fixed problem that leaded to compile errors if compiled on Windows without
- *   multi-thread support.
- *
- * Revision 1.5  2000/12/19 12:18:19  meichel
- * thread related classes now correctly disabled when configured
- *   with --disable-threads
- *
- * Revision 1.4  2000/06/26 09:27:38  joergr
- * Replaced _WIN32 by HAVE_WINDOWS_H to avoid compiler errors using CygWin-32.
- *
- * Revision 1.3  2000/04/14 15:17:16  meichel
- * Adapted all ofstd library classes to consistently use ofConsole for output.
- *
- * Revision 1.2  2000/04/11 15:24:45  meichel
- * Changed debug output to COUT instead of CERR
- *
- * Revision 1.1  2000/03/29 16:41:26  meichel
- * Added new classes providing an operating system independent abstraction
- *   for threads, thread specific data, semaphores, mutexes and read/write locks.
- *
- *
- */

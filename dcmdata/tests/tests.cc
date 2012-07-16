@@ -17,13 +17,6 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-05-07 10:06:54 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -99,69 +92,3 @@ OFTEST_REGISTER(dcmdata_specificCharacterSet_2);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_3);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_4);
 OFTEST_MAIN("dcmdata")
-
-
-/*
-**
-** CVS/RCS Log:
-** $Log: tests.cc,v $
-** Revision 1.17  2012-05-07 10:06:54  uli
-** Added a test for the new functions for accessing parent objects and items.
-**
-** Revision 1.16  2012-03-12 13:58:29  joergr
-** Added new parser flag that allows for reading corrupted datasets where the
-** sequence and/or item delimitation items are incorrect (e.g. mixed up).
-**
-** Revision 1.15  2011-12-02 11:02:53  joergr
-** Various fixes after first commit of the Native DICOM Model format support.
-**
-** Revision 1.14  2011-12-01 13:13:56  onken
-** Added support for Application Hosting's Native DICOM Model xml format
-** to dcm2xml.
-**
-** Revision 1.13  2011-11-15 08:04:58  joergr
-** Added regression tests for class DcmUniqueIdentifier.
-**
-** Revision 1.12  2011-11-08 15:51:39  joergr
-** Added support for converting files, datasets and element values to any DICOM
-** character set that does not require code extension techniques (if compiled
-** with and supported by libiconv), not only to UTF-8 as before.
-**
-** Revision 1.11  2011-11-01 14:54:07  joergr
-** Added support for code extensions (escape sequences) according to ISO 2022
-** to the character set conversion code.
-**
-** Revision 1.10  2011-10-26 16:13:03  joergr
-** Added helper class for converting between different DICOM character sets.
-** This initial version only supports the conversion to UTF-8 (Unicode) and only
-** from DICOM characters sets without code extension techniques (i.e. ISO 2022).
-**
-** Revision 1.9  2011-10-18 14:03:05  joergr
-** Added test program for various "string value" methods.
-**
-** Revision 1.8  2011-10-13 14:12:14  joergr
-** Added tests for class DcmDecimalString, especially for getFloat64Vector().
-**
-** Revision 1.7  2011-08-23 14:24:30  joergr
-** Fixed another inconsistent test name.
-**
-** Revision 1.6  2011-08-17 14:35:59  uli
-** Added a small test for the data dictionary.
-**
-** Revision 1.5  2011-08-08 11:04:06  joergr
-** Added test cases for new parser flag "dcmPreferVRFromDataDictionary".
-**
-** Revision 1.4  2011-07-06 13:04:18  uli
-** Fixed some inconsistencies in test names.
-**
-** Revision 1.3  2011-07-06 12:25:03  uli
-** Added tests for some bugs which we recently fixed.
-**
-** Revision 1.2  2011-06-07 07:06:57  uli
-** Added test cases for DcmElement::calcElementLength().
-**
-** Revision 1.1  2011-05-25 10:05:55  uli
-** Imported oftest and converted existing tests to oftest.
-**
-**
-*/

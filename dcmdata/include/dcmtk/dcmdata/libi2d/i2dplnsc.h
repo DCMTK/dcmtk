@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for conversion of image file into new DICOM SC Image IODs
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2012-05-04 09:32:31 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef I2DPLNSC_H
@@ -113,37 +106,3 @@ protected:
 };
 
 #endif // I2DPLNSC_H
-
-/*
- * CVS/RCS Log:
- * $Log: i2dplnsc.h,v $
- * Revision 1.7  2012-05-04 09:32:31  onken
- * Cleaned up includes. Fixed plugin functionality to receive list of supported
- * SOP classes.
- *
- * Revision 1.6  2011-12-14 09:04:16  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.5  2010-10-14 13:15:46  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.3  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.2  2009-01-16 09:51:55  onken
- * Completed doxygen documentation for libi2d.
- *
- * Revision 1.1  2008-01-16 15:11:44  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.1  2008-01-11 14:17:53  onken
- * Added various options to i2dlib. Changed logging to use a configurable
- * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
- * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
- * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
- * need for templates any more). Added some bug fixes.
- *
- */

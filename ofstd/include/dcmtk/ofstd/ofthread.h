@@ -21,13 +21,6 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:01 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -568,55 +561,3 @@ private:
 };
 
 #endif
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofthread.h,v $
- * Revision 1.13  2011-12-14 08:54:01  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.12  2011-01-04 14:47:09  onken
- * Disable and hide OFSemaphore class on Mac OS X since implementation is
- * broken on that OS (needs named semaphores instead).
- *
- * Revision 1.11  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2010-06-04 13:58:42  uli
- * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
- *
- * Revision 1.9  2005-12-08 16:06:08  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.8  2004/08/03 16:44:16  meichel
- * Updated code to correctly handle pthread_t both as an integral integer type
- *   (e.g. Linux, Solaris) and as a pointer type (e.g. BSD, OSF/1).
- *
- * Revision 1.7  2003/12/05 10:37:41  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright date where appropriate.
- *
- * Revision 1.6  2003/07/04 13:29:51  meichel
- * Replaced forward declarations for OFString with explicit includes,
- *   needed when compiling with HAVE_STD_STRING
- *
- * Revision 1.5  2003/06/06 10:31:04  meichel
- * Added volatile keyword to data pointers in multi-thread wrapper classes
- *
- * Revision 1.4  2002/02/27 14:13:19  meichel
- * Changed initialized() methods to const. Fixed some return values when
- *   compiled without thread support.
- *
- * Revision 1.3  2001/06/01 15:51:36  meichel
- * Updated copyright header
- *
- * Revision 1.2  2000/06/26 09:27:26  joergr
- * Replaced _WIN32 by HAVE_WINDOWS_H to avoid compiler errors using CygWin-32.
- *
- * Revision 1.1  2000/03/29 16:41:23  meichel
- * Added new classes providing an operating system independent abstraction
- *   for threads, thread specific data, semaphores, mutexes and read/write locks.
- *
- *
- */

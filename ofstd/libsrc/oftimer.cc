@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for measurement of time (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 11:46:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -94,23 +87,3 @@ STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &
         stream << (timeDiff / 3600) << " h";
     return stream;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: oftimer.cc,v $
- * Revision 1.3  2011-11-17 11:46:04  joergr
- * Define WIN32_LEAN_AND_MEAN in order to avoid unneeded header file inclusions
- * caused by "windows.h".
- *
- * Revision 1.2  2011-10-10 09:25:58  joergr
- * Added output stream operator in order to use different time units depending
- * on the value range, i.e. "ms", "s", "m" and "h".
- *
- * Revision 1.1  2011-10-10 09:12:25  joergr
- * Moved implementation from header to source file in order to avoid unwanted
- * header file inclusion.
- *
- *
- */

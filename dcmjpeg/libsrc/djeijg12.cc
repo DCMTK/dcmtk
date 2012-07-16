@@ -17,13 +17,6 @@
  *
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:59 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -565,70 +558,3 @@ void DJCompressIJG12Bit::emitMessage(void *arg, int msg_level) const
     DCM_dcmjpegLogger.forcedLog(level, buffer, __FILE__, __LINE__);
   }
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: djeijg12.cc,v $
- * Revision 1.17  2011-04-18 07:00:59  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.16  2010-10-14 13:14:21  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.15  2010-06-25 09:15:19  uli
- * Fixed issues with compiling with HAVE_STD_STRING.
- *
- * Revision 1.14  2010-03-01 09:08:48  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.13  2010-02-22 11:39:54  uli
- * Remove some unneeded includes.
- *
- * Revision 1.12  2009-11-18 16:17:54  uli
- * Use more than just the INFO log level.
- *
- * Revision 1.11  2009-10-07 12:44:34  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.10  2009-08-19 12:19:19  meichel
- * Unlike some other compilers, Sun Studio 11 on Solaris
- *   declares longjmp() in namespace std. Added code to handle this case.
- *
- * Revision 1.9  2006-08-16 16:30:21  meichel
- * Updated all code in module dcmjpeg to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.8  2005/12/08 15:43:39  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2005/11/28 17:09:52  meichel
- * Fixed bug affecting JPEG compression with 12 or 16 bits/pixel,
- *   where Huffman table optimization is required but was not always enabled.
- *
- * Revision 1.6  2005/11/14 17:09:39  meichel
- * Changed some function return types from int to ijg_boolean, to avoid
- *   compilation errors if the ijg_boolean type is ever changed.
- *
- * Revision 1.5  2003/10/13 13:25:49  meichel
- * Added workaround for name clash of typedef "boolean" in the IJG header files
- *   and the standard headers for Borland C++.
- *
- * Revision 1.4  2002/11/27 15:40:00  meichel
- * Adapted module dcmjpeg to use of new header file ofstdinc.h
- *
- * Revision 1.3  2001/12/18 09:48:58  meichel
- * Modified configure test for "const" support of the C compiler
- *   in order to avoid a macro recursion error on Sun CC 2.0.1
- *
- * Revision 1.2  2001/11/19 15:13:31  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:58:29  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

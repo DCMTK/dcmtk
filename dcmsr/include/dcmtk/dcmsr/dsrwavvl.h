@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:03 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -222,79 +215,3 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrwavvl.h,v $
- *  Revision 1.21  2012-06-11 08:53:03  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.20  2012-05-30 14:18:51  joergr
- *  Added support for Waveform Storage SOP Classes introduced after 2003 edition
- *  of the DICOM standard, i.e. General Audio, Arterial Pulse and Respiratory.
- *
- *  Revision 1.19  2012-01-06 09:13:16  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.18  2011-08-02 06:26:32  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.17  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.15  2007-11-15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.14  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.13  2005/12/08 16:05:34  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.12  2003/08/07 18:01:42  joergr
- *  Removed libxml dependency from header files.
- *
- *  Revision 1.11  2003/08/07 13:07:39  joergr
- *  Added readXML functionality.
- *
- *  Revision 1.10  2001/09/26 13:04:15  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.9  2001/06/01 15:51:06  meichel
- *  Updated copyright header
- *
- *  Revision 1.8  2000/11/06 11:21:53  joergr
- *  Moved some protected methods to public part.
- *
- *  Revision 1.7  2000/11/01 16:23:29  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.6  2000/10/26 14:22:23  joergr
- *  Updated comments.
- *
- *  Revision 1.5  2000/10/23 15:13:42  joergr
- *  Added/updated doc++ comments.
- *
- *  Revision 1.4  2000/10/20 10:15:43  joergr
- *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
- *
- *  Revision 1.3  2000/10/18 17:11:33  joergr
- *  Added methods allowing direct access to certain content item values.
- *  Made some functions inline.
- *  Added doc++ comments.
- *
- *  Revision 1.2  2000/10/16 11:52:29  joergr
- *  Added new method checking whether a waveform content item applies to a
- *  certain channel.
- *
- *  Revision 1.1  2000/10/13 07:49:37  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

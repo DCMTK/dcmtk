@@ -17,13 +17,6 @@
  *
  *  Purpose: Combined class for date and time functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -246,52 +239,3 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stre
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofdatime.h,v $
- * Revision 1.12  2011-12-14 08:54:00  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.11  2011-11-29 16:01:13  joergr
- * Added support for the optional time zone to setISOFormattedDateTime().
- * Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
- *
- * Revision 1.10  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.9  2008-05-21 16:31:22  joergr
- * Added new constructor and new setDateTime() method.
- *
- * Revision 1.8  2006/08/14 16:42:26  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.7  2005/12/08 16:05:55  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2004/04/16 12:43:26  joergr
- * Restructured code to avoid default parameter values for "complex types" like
- * OFString. Required for Sun CC 2.0.1.
- *
- * Revision 1.5  2004/01/16 10:30:39  joergr
- * Added setISOFormattedXXX() methods for Date, Time and DateTime.
- *
- * Revision 1.4  2003/12/17 15:16:20  joergr
- * Added note to the comparison operators that the "day overflow" is not yet
- * handled correctly.
- *
- * Revision 1.3  2003/09/15 12:12:56  joergr
- * Fixed incorrect/improper comments of the comparision operators. Enhanced
- * comment of the default constructor. Made comparison operators const.
- *
- * Revision 1.2  2002/05/24 09:43:04  joergr
- * Renamed some parameters/variables to avoid ambiguities.
- *
- * Revision 1.1  2002/04/11 12:12:23  joergr
- * Introduced new standard classes providing date and time functions.
- *
- *
- */

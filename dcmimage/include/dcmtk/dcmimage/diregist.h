@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomRegister (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -93,49 +86,3 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diregist.h,v $
- * Revision 1.12  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.11  2010-10-14 13:16:30  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2005-12-08 16:01:57  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.9  2003/12/23 12:22:02  joergr
- * Added missing API documentation.
- *
- * Revision 1.8  2003/12/17 18:18:08  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols).
- *
- * Revision 1.7  2001/06/20 15:11:39  joergr
- * Removed old dcmimage license information.
- *
- * Revision 1.6  2001/06/01 15:49:31  meichel
- * Updated copyright header
- *
- * Revision 1.5  2000/03/10 13:15:08  meichel
- * Release 1.1.1 (Release date - 2000-03-10)
- *
- * Revision 1.4  2000/03/08 16:21:53  meichel
- * Updated copyright header.
- *
- * Revision 1.3  1999/05/31 13:01:03  joergr
- * Changed Release version and date.
- *
- * Revision 1.2  1999/05/10 09:32:36  joergr
- * Moved dcm2pnm version definition from module dcmimgle to dcmimage.
- *
- * Revision 1.1  1998/11/27 13:09:54  joergr
- * Added registration class to allow easy combination of both modules.
- * Added copyright message to all source files.
- *
- *
- */

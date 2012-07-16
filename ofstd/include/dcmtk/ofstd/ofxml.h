@@ -17,13 +17,6 @@
  *
  *  Purpose: Simple non-validating XML parser
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-18 09:33:57 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 /****************************************************************************/
@@ -808,24 +801,3 @@ private:
 #undef XMLDLLENTRY
 
 #endif // OFXML_H
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofxml.h,v $
- * Revision 1.4  2012-01-18 09:33:57  uli
- * Added support for building with hidden visibility.
- *
- * Revision 1.3  2011-12-14 08:54:01  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.2  2011-11-24 10:38:32  joergr
- * Minor fixes to also compile with VisualStudio 2008 on Windows systems.
- *
- * Revision 1.1  2011-11-24 09:53:40  joergr
- * Added first version of a simple non-validating XML parser written by Frank
- * Vanden Berghen. This parser is intended to be used for configuration files
- * and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
- *
- *
- */

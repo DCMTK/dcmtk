@@ -17,13 +17,6 @@
  *
  *  Purpose: Defines a class which manages a temporary file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:01 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFTEMPF_H
@@ -127,15 +120,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log:
- * $Log: oftempf.h,v $
- * Revision 1.2  2011-12-14 08:54:01  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.1  2011-11-16 13:50:37  uli
- * Added a new class for managing temporary files.
- *
- *
- */

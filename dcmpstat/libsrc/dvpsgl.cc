@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSGraphicLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -258,64 +251,3 @@ void DVPSGraphicLayer::removeRecommendedDisplayValue(OFBool rgb, OFBool monochro
   if (monochrome) graphicLayerRecommendedDisplayGrayscaleValue.clear();
   return;
 }
-
-/*
- *  $Log: dvpsgl.cc,v $
- *  Revision 1.17  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.15  2008-04-30 12:38:43  meichel
- *  Fixed compile errors due to changes in attribute tag names
- *
- *  Revision 1.14  2006/08/15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.13  2005/12/08 15:46:28  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.12  2002/11/27 15:48:10  meichel
- *  Adapted module dcmpstat to use of new header file ofstdinc.h
- *
- *  Revision 1.11  2002/08/20 12:41:00  meichel
- *  Added explicit includes for header files included implicitly
- *    via dcstream before.
- *
- *  Revision 1.10  2001/09/26 15:36:26  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.9  2001/06/01 15:50:31  meichel
- *  Updated copyright header
- *
- *  Revision 1.8  2000/06/02 16:01:00  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.7  2000/05/31 13:02:36  meichel
- *  Moved dcmpstat macros and constants into a common header file
- *
- *  Revision 1.6  2000/03/08 16:29:05  meichel
- *  Updated copyright header.
- *
- *  Revision 1.5  2000/03/03 14:13:59  meichel
- *  Implemented library support for redirecting error messages into memory
- *    instead of printing them to stdout/stderr for GUI applications.
- *
- *  Revision 1.4  1999/07/22 16:39:58  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *  Revision 1.3  1999/05/04 15:27:26  meichel
- *  Minor code purifications to keep gcc on OSF1 quiet.
- *
- *  Revision 1.2  1998/12/14 16:10:41  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:41  meichel
- *  Initial Release.
- *
- *
- */
-

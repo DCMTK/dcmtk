@@ -18,13 +18,6 @@
  *  Purpose: Template class for automatically deleting pointers when they go out
  *           of scope.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-19 13:26:43 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFAPTR_H
@@ -180,41 +173,3 @@ template <class T> class OFauto_ptr
 #endif
 
 #endif
-
-
-/*
-** CVS/RCS Log:
-** $Log: ofaptr.h,v $
-** Revision 1.10  2011-10-19 13:26:43  joergr
-** Fixed some typos and other minor issues regarding the comments.
-**
-** Revision 1.9  2010-11-01 09:38:19  uli
-** Fixed some compiler warnings reported by gcc with additional flags.
-**
-** Revision 1.8  2010-10-14 13:15:49  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.7  2010-10-08 12:45:19  uli
-** Removed an invalid function which isn't part of std::auto_ptr.
-**
-** Revision 1.6  2010-10-08 12:35:59  uli
-** Added macro HAVE_STL_AUTO_PTR which defines OFauto_ptr to std::auto_ptr.
-**
-** Revision 1.5  2010-10-08 12:27:07  uli
-** Fixed all doxygen warnings for OFPair and OFauto_ptr.
-**
-** Revision 1.4  2010-04-26 12:22:30  uli
-** Fixed a some minor doxygen warnings.
-**
-** Revision 1.3  2010-03-01 09:08:50  uli
-** Removed some unnecessary include directives in the headers.
-**
-** Revision 1.2  2009-09-15 15:20:51  joergr
-** Fixed issue with class OFauto_ptr: Default copy constructor and assignment
-** operator could lead to double deletion of objects.
-**
-** Revision 1.1  2009-08-19 10:50:02  joergr
-** Added new class OFauto_ptr required for upcoming module "oflog".
-**
-**
-*/

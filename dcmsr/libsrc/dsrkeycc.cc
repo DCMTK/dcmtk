@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRKeyObjectSelectionDocumentConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -98,25 +91,3 @@ OFBool DSRKeyObjectSelectionDocumentConstraintChecker::checkContentRelationship(
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrkeycc.cc,v $
- *  Revision 1.5  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.4  2010-09-30 08:57:45  joergr
- *  Renamed class and enumeration related to the Key Object Selection Document.
- *
- *  Revision 1.3  2005-12-08 15:47:57  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.2  2003/10/09 13:00:41  joergr
- *  Added check for root template identifier when reading an SR document.
- *
- *  Revision 1.1  2003/09/15 14:16:50  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- */

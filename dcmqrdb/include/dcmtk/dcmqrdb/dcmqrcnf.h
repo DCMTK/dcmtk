@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:58:34 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMQRCNF_H
@@ -449,48 +442,3 @@ private:
 
 
 #endif
-
-/*
- * CVS Log
- * $Log: dcmqrcnf.h,v $
- * Revision 1.11  2011-12-14 12:58:34  uli
- * Make it possible to build dcmqrdb as a DLL.
- *
- * Revision 1.10  2011-11-09 15:32:03  uli
- * Added a destructor to DcmQueryRetrieveConfig.
- *
- * Revision 1.9  2011-04-18 07:01:04  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.8  2011-02-04 12:57:40  uli
- * Made sure all members are initialized in the constructor (-Weffc++).
- *
- * Revision 1.7  2010-10-14 13:16:41  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2010-09-09 17:20:33  joergr
- * Removed unused (or never used?) configuration entries.
- *
- * Revision 1.5  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.4  2009-08-21 09:50:07  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.3  2005/12/08 16:04:20  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2005/04/04 13:15:13  meichel
- * Added username/groupname configuration option that allows to start the
- *   image database as root and let it call setuid/setgid to execute under an
- *   unprivileged account once the listen socket has been opened.
- *
- * Revision 1.1  2005/03/30 13:34:50  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

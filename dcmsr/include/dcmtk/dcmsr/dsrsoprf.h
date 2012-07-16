@@ -19,13 +19,6 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:02 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -612,80 +605,3 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrsoprf.h,v $
- *  Revision 1.20  2012-06-11 08:53:02  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.19  2012-05-25 08:53:26  joergr
- *  Added support for optional Retrieve Location UID (0040,E011) to the class
- *  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).
- *
- *  Revision 1.18  2012-01-06 09:13:11  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.17  2011-12-09 16:04:42  joergr
- *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
- *  class DSRSOPInstanceReferenceList.
- *
- *  Revision 1.16  2011-08-02 06:26:32  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.15  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.14  2010-02-22 11:39:55  uli
- *  Remove some unneeded includes.
- *
- *  Revision 1.13  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.12  2007-11-15 16:33:19  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.11  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.10  2006/05/11 09:18:21  joergr
- *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
- *
- *  Revision 1.9  2005/12/08 16:05:18  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2005/07/27 16:33:39  joergr
- *  Added method that allows to add a DICOM dataset to the list of references.
- *
- *  Revision 1.7  2004/11/22 16:39:09  meichel
- *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
- *
- *  Revision 1.6  2003/08/07 18:01:42  joergr
- *  Removed libxml dependency from header files.
- *
- *  Revision 1.5  2003/08/07 12:50:12  joergr
- *  Added readXML functionality.
- *  Renamed parameters/variables "string" to avoid name clash with STL class.
- *  Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.
- *  series with no instances or studies with no series) are automatically
- *  removed from the list.
- *
- *  Revision 1.4  2002/08/30 14:16:59  joergr
- *  Removed "friend" statements from class declaration and moved sub-classes to
- *  the "public" section (required for Sun CC 6).
- *
- *  Revision 1.3  2002/05/14 08:16:07  joergr
- *  Added removeItem() methods.
- *
- *  Revision 1.2  2002/05/07 14:04:44  joergr
- *  Added "friend" statements to class declaration (required for MSVC).
- *
- *  Revision 1.1  2002/05/07 12:49:31  joergr
- *  Added support for the Current Requested Procedure Evidence Sequence and the
- *  Pertinent Other Evidence Sequence to the dcmsr module.
- *
- *
- */

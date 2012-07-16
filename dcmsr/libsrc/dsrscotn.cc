@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRSCoordTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 14:08:41 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -145,78 +138,3 @@ OFCondition DSRSCoordTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrscotn.cc,v $
- *  Revision 1.21  2012-02-20 14:08:41  joergr
- *  Minor changes of source code formatting, documentation and the like.
- *
- *  Revision 1.20  2011-03-22 16:55:19  joergr
- *  Added support for colored output to the print() method - Unix only.
- *
- *  Revision 1.19  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.18  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.17  2007-11-15 16:43:43  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.16  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.15  2005/12/08 15:48:05  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.14  2003/09/15 14:13:42  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *  Revision 1.13  2003/08/07 17:29:13  joergr
- *  Removed libxml dependency from header files. Simplifies linking (MSVC).
- *
- *  Revision 1.12  2003/08/07 13:43:48  joergr
- *  Added readXML functionality.
- *
- *  Revision 1.11  2003/06/04 14:26:54  meichel
- *  Simplified include structure to avoid preprocessor limitation
- *    (max 32 #if levels) on MSVC5 with STL.
- *
- *  Revision 1.10  2001/11/09 16:17:53  joergr
- *  Added preliminary support for Mammography CAD SR.
- *
- *  Revision 1.9  2001/10/10 15:30:00  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.8  2001/09/26 13:04:24  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.7  2001/05/07 16:14:25  joergr
- *  Updated CVS header.
- *
- *  Revision 1.6  2001/02/02 14:41:52  joergr
- *  Added new option to dsr2xml allowing to specify whether value and/or
- *  relationship type are to be encoded as XML attributes or elements.
- *
- *  Revision 1.5  2000/11/07 18:33:31  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.4  2000/11/01 16:37:03  joergr
- *  Added support for conversion to XML. Optimized HTML rendering.
- *
- *  Revision 1.3  2000/10/26 14:33:53  joergr
- *  Added support for "Comprehensive SR".
- *
- *  Revision 1.2  2000/10/16 12:07:29  joergr
- *  Reformatted print output.
- *
- *  Revision 1.1  2000/10/13 07:52:24  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

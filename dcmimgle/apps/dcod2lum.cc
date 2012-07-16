@@ -17,13 +17,6 @@
  *
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -180,43 +173,3 @@ int main(int argc, char *argv[])
     }
     return error;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcod2lum.cc,v $
- * Revision 1.10  2010-10-20 07:41:35  uli
- * Made sure isalpha() & friends are only called with valid arguments.
- *
- * Revision 1.9  2010-10-14 13:13:36  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.8  2010-06-25 09:15:19  uli
- * Fixed issues with compiling with HAVE_STD_STRING.
- *
- * Revision 1.7  2006-08-15 16:30:09  meichel
- * Updated the code in module dcmimgle to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.6  2006/07/27 14:01:23  joergr
- * Updated copyright date.
- *
- * Revision 1.5  2005/12/08 15:42:40  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.4  2003/12/23 15:40:13  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.3  2003/12/08 19:24:03  joergr
- * Updated copyright header.
- *
- * Revision 1.2  2002/11/27 14:08:00  meichel
- * Adapted module dcmimgle to use of new header file ofstdinc.h
- *
- * Revision 1.1  2002/07/18 12:23:54  joergr
- * Added command line tool to convert hardcopy to softcopy display files.
- *
- *
- *
- */

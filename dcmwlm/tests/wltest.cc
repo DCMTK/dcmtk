@@ -17,13 +17,6 @@
  *
  *  Purpose: Worklist Database Test Program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:48 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -362,53 +355,3 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 
     return OFTrue;
 }
-
-
-/*
-** CVS Log
-** $Log: wltest.cc,v $
-** Revision 1.13  2011-07-06 11:08:48  uli
-** Fixed various compiler warnings.
-**
-** Revision 1.12  2010-11-17 13:01:22  uli
-** Removed some uses of "%s" with sscanf().
-**
-** Revision 1.11  2010-11-01 13:37:32  uli
-** Fixed some compiler warnings reported by gcc with additional flags.
-**
-** Revision 1.10  2010-10-14 13:15:13  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.9  2010-06-03 10:31:24  joergr
-** Replaced calls to strerror() by new helper function OFStandard::strerror()
-** which results in using the thread safe version of strerror() if available.
-**
-** Revision 1.8  2009-11-24 10:40:01  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.7  2007-02-19 15:37:31  meichel
-** Removed calls to DcmObject::error()
-**
-** Revision 1.6  2005/12/14 17:43:42  meichel
-** Adapted code for compilation with TCP wrappers to NetBSD
-**
-** Revision 1.5  2005/12/12 15:14:34  meichel
-** Added code needed for compilation with TCP wrappers on OpenBSD
-**
-** Revision 1.4  2005/12/08 15:48:36  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.3  2004/08/03 11:43:39  meichel
-** Headers libc.h and unistd.h are now included via ofstdinc.h
-**
-** Revision 1.2  2004/02/11 09:49:06  joergr
-** Fixed usage output formatting.
-**
-** Revision 1.1  2002/12/03 12:16:37  wilkens
-** Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
-** so that dcmwlm can now completely replace wlistctn in the public domain part
-** of dcmtk. Pertaining to this replacement requirement, another optional return
-** key attribute was integrated into the wlm utilities.
-**
-**
-*/

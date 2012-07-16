@@ -17,13 +17,6 @@
  *
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:01 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFUUID_H
@@ -148,22 +141,3 @@ static inline STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& stream, 
 }
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofuuid.h,v $
- * Revision 1.4  2011-12-14 08:54:01  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.3  2011-12-07 16:51:39  joergr
- * Various minor fixes to API documentation and other comments.
- *
- * Revision 1.2  2011-12-07 14:25:53  uli
- * Could someone please hand me a brown paper bag?
- *
- * Revision 1.1  2011-12-07 14:16:28  uli
- * Added a new class for generating Universally Unique Identifiers.
- *
- *
- */

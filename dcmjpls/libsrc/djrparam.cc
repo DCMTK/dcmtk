@@ -17,13 +17,6 @@
  *
  *  Purpose: representation parameter for JPEG-LS
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:24 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -77,24 +70,3 @@ OFBool DJLSRepresentationParameter::operator==(const DcmRepresentationParameter 
   }
   return OFFalse;
 }
-
-/*
- * CVS/RCS Log:
- * $Log: djrparam.cc,v $
- * Revision 1.3  2010-10-14 13:14:24  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.2  2009-10-07 13:16:47  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.1  2009-07-29 14:46:48  meichel
- * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
- *
- * Revision 1.3  2007-06-15 14:35:45  meichel
- * Renamed CMake project and include directory from dcmjpgls to dcmjpls
- *
- * Revision 1.2  2007/06/13 16:41:07  meichel
- * Code clean-up and removal of dead code
- *
- *
- */

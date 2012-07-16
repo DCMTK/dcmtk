@@ -56,9 +56,6 @@
 ** Author, Date:  Stephen M. Moore, 11-May-92
 ** Intent:        This module defines structures and constants needed
 **                to implement the DICOM Upper Layer state machine.
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:36 $
-** Revision:      $Revision: 1.6 $
-** Status:        $State: Exp $
 */
 
 #ifndef DULFSM_H
@@ -138,30 +135,3 @@ typedef struct {
 }   FSM_ENTRY;
 
 #endif
-
-/*
-** CVS Log
-** $Log: dulfsm.h,v $
-** Revision 1.6  2010-12-01 08:26:36  joergr
-** Added OFFIS copyright header (beginning with the year 1994).
-**
-** Revision 1.5  2010-10-14 13:19:29  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.4  2005/12/08 15:48:09  meichel
-** Updated Makefiles to correctly install header files
-**
-** Revision 1.3  2001/10/12 10:18:39  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.2  1999/03/29 11:20:07  meichel
-** Cleaned up dcmnet code for char* to const char* assignments.
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/
-

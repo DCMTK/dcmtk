@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:51 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVSIGHDL_H
@@ -230,48 +223,3 @@ private:
 };
 
 #endif
-
-/*
- *  $Log: dvsighdl.h,v $
- *  Revision 1.12  2012-01-06 10:05:51  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.11  2010-10-14 13:16:37  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.10  2006/08/15 16:57:01  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.9  2005/12/08 16:04:15  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2004/02/04 15:49:09  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log. Removed leading
- *  underscore characters from preprocessor symbols (reserved symbols).
- *
- *  Revision 1.7  2002/04/16 14:02:04  joergr
- *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *  Revision 1.6  2001/09/26 15:36:19  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.5  2001/06/01 15:50:26  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2001/05/25 10:07:34  meichel
- *  Modified dcmpstat signature handler to also compile without OpenSSL
- *
- *  Revision 1.3  2001/01/29 14:55:43  meichel
- *  Added new methods for creating signatures and checking the signature
- *    status in module dcmpstat.
- *
- *  Revision 1.2  2001/01/25 17:37:43  meichel
- *  Fixed problem with undefined copy constructor
- *
- *  Revision 1.1  2001/01/25 15:18:05  meichel
- *  Added initial support for verification of digital signatures
- *    in presentation states, images and structured reports to module dcmpstat.
- *
- *
- */

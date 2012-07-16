@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRGraphicData3DList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 14:08:40 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -240,22 +233,3 @@ OFCondition DSRGraphicData3DList::putString(const char *stringValue)
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrsc3gr.cc,v $
- *  Revision 1.4  2012-02-20 14:08:40  joergr
- *  Minor changes of source code formatting, documentation and the like.
- *
- *  Revision 1.3  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.2  2010-09-29 15:16:50  joergr
- *  Enhanced checking and reporting of standard violations in write() methods.
- *
- *  Revision 1.1  2010-09-28 14:07:28  joergr
- *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: representation parameters for JPEG-LS
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:55:35 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMJPLS_DJRPARAM_H
@@ -102,36 +95,3 @@ private:
 
 
 #endif
-
-/*
- * CVS/RCS Log:
- * $Log: djrparam.h,v $
- * Revision 1.7  2011-12-14 10:55:35  uli
- * Add some changes which were missing in the previous commit.
- *
- * Revision 1.6  2011-12-14 10:44:09  uli
- * Make it possible to rightly build dcmjpls as a DLL
- *
- * Revision 1.5  2011-03-08 10:38:27  uli
- * Fixed crash in dcmjpls if no representation parameter is given.
- *
- * Revision 1.4  2010-10-14 13:17:19  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2010-03-01 10:35:28  uli
- * Renamed include guards to avoid name clash with e.g. dcmjpeg.
- *
- * Revision 1.2  2009-10-07 13:16:47  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.1  2009-07-29 14:46:46  meichel
- * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
- *
- * Revision 1.1  2007-06-15 14:35:45  meichel
- * Renamed CMake project and include directory from dcmjpgls to dcmjpls
- *
- * Revision 1.2  2007/06/13 16:41:07  meichel
- * Code clean-up and removal of dead code
- *
- *
- */

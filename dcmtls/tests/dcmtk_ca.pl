@@ -20,13 +20,6 @@
 #    Authority by means of OpenSSL, for use with the TLS-enhanced
 #    DCMTK DICOM Tools.
 #
-#  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-10-14 13:02:47 $
-#  CVS/RCS Revision: $Revision: 1.4 $
-#  Status:           $State: Exp $
-#
-#  CVS/RCS Log at end of file
-#
 
 $const_openssl="openssl";
 $const_ca_key="cakey.pem";
@@ -466,21 +459,3 @@ END_OF_CONFIGURATION_FILE
 
   close OUT;
 }
-
-
-#
-#  $Log: dcmtk_ca.pl,v $
-#  Revision 1.4  2010-10-14 13:02:47  joergr
-#  Updated copyright header. Added reference to COPYRIGHT file.
-#
-#  Revision 1.3  2001/06/01 16:51:53  meichel
-#  Fixed bug in CA perl script. mkcert -days option now works.
-#
-#  Revision 1.2  2001/06/01 15:51:14  meichel
-#  Updated copyright header
-#
-#  Revision 1.1  2000/11/14 13:36:33  meichel
-#  Added Perl script that simplifies creation of a Certification Authority,
-#    private keys and X.509 certificates with OpenSSL for use with DCMTK.
-#
-#

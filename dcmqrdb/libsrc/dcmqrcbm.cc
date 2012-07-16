@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 13:50:07 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -682,85 +675,3 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
     }
     return cond;
 }
-
-
-/*
- * CVS Log
- * $Log: dcmqrcbm.cc,v $
- * Revision 1.22  2011-10-10 13:50:07  uli
- * Slightly improved the error condition names and definition.
- *
- * Revision 1.21  2011-03-17 09:46:26  joergr
- * Added support for MPEG4 transfer syntaxes to network tools.
- *
- * Revision 1.20  2011-02-11 13:33:28  joergr
- * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
- *
- * Revision 1.19  2010-11-01 13:37:32  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.18  2010-10-14 13:14:35  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.17  2010-10-01 12:25:29  uli
- * Fixed most compiler warnings in remaining modules.
- *
- * Revision 1.16  2010-09-09 15:00:03  joergr
- * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
- *
- * Revision 1.15  2010-09-02 12:13:00  joergr
- * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
- *
- * Revision 1.14  2010-06-03 10:34:57  joergr
- * Replaced calls to strerror() by new helper function OFStandard::strerror()
- * which results in using the thread safe version of strerror() if available.
- *
- * Revision 1.13  2009-12-02 16:22:40  joergr
- * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
- * the log stream in order to avoid an application crash.
- * Slightly modified output of progress bar.
- *
- * Revision 1.12  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.11  2009-08-21 09:54:11  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.10  2009-02-06 15:25:43  joergr
- * Added support for JPEG-LS and MPEG2 transfer syntaxes.
- *
- * Revision 1.9  2005/12/20 11:21:30  meichel
- * Removed duplicate parameter
- *
- * Revision 1.8  2005/12/08 15:47:06  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2005/11/29 10:54:52  meichel
- * Added minimal support for compressed transfer syntaxes to dcmqrscp.
- *   No on-the-fly decompression is performed, but compressed images can
- *   be stored and retrieved.
- *
- * Revision 1.6  2005/11/17 13:44:40  meichel
- * Added command line options for DIMSE and ACSE timeouts
- *
- * Revision 1.5  2005/10/25 08:56:18  meichel
- * Updated list of UIDs and added support for new transfer syntaxes
- *   and storage SOP classes.
- *
- * Revision 1.4  2005/08/30 08:37:52  meichel
- * Fixed syntax error reported by Visual Studio 2003
- *
- * Revision 1.3  2005/06/16 08:02:43  meichel
- * Added system include files needed on Solaris
- *
- * Revision 1.2  2005/04/04 14:39:54  meichel
- * Fixed warning on Win32 platform
- *
- * Revision 1.1  2005/03/30 13:34:53  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

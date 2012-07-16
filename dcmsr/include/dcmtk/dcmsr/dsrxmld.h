@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:17 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -299,36 +292,3 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrxmld.h,v $
- *  Revision 1.8  2012-01-06 09:13:17  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.7  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.6  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.5  2005-12-08 16:05:36  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.4  2004/01/05 14:35:44  joergr
- *  Renamed XML attribute "ref_id" to "ref".
- *
- *  Revision 1.3  2003/12/01 15:46:18  joergr
- *  Changed XML encoding of by-reference relationships if flag
- *  XF_valueTypeAsAttribute is set.
- *
- *  Revision 1.2  2003/08/07 17:31:00  joergr
- *  Removed libxml dependency from header files. Simplifies linking (MSVC).
- *
- *  Revision 1.1  2003/08/07 12:16:37  joergr
- *  Added interface classes hiding the access to libxml (document and cursor
- *  class).
- *
- *
- */

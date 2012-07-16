@@ -22,24 +22,6 @@
 #   This module contains perl procedures which produce "standard"
 #   HTML headers and footers for the dcmwlm WWW component.
 #
-# Last Update:      $Author: joergr $
-# Update Date:      $Date: 2010-10-14 13:02:01 $
-# CVS/RCS Revision: $Revision: 1.2 $
-# Status:           $State: Exp $
-#
-# CVS/RCS Log
-#   $Log: layout.ph,v $
-#   Revision 1.2  2010-10-14 13:02:01  joergr
-#   Updated copyright header. Added reference to COPYRIGHT file.
-#
-#   Revision 1.1  2002/12/03 12:16:05  wilkens
-#   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
-#   so that dcmwlm can now completely replace wlistctn in the public domain part
-#   of dcmtk. Pertaining to this replacement requirement, another optional return
-#   key attribute was integrated into the wlm utilities.
-#
-#
-#
 
 require 'prefs.ph';
 

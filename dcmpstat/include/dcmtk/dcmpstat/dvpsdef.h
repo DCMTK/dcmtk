@@ -18,13 +18,6 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:50 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVPSDEF_H
@@ -191,52 +184,3 @@ if (result==EC_Normal)                                              \
 }
 
 #endif
-
-/*
- *  $Log: dvpsdef.h,v $
- *  Revision 1.14  2012-01-06 10:05:50  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.13  2011-04-18 07:01:04  uli
- *  Use global variables for the logger objects. This removes the thread-unsafe
- *  static local variables which were used before.
- *
- *  Revision 1.12  2010-10-14 13:16:36  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2010-10-07 14:31:35  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved).
- *
- *  Revision 1.10  2009-12-15 14:50:49  uli
- *  Fixes some issues with --logfile and the config's log options.
- *
- *  Revision 1.9  2009-11-24 14:12:57  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.8  2005-12-08 16:03:41  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.7  2002/01/08 10:32:12  joergr
- *  Corrected spelling of function dcmGenerateUniqueIdentifier().
- *
- *  Revision 1.6  2001/11/28 13:59:31  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.5  2001/06/01 15:50:15  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/11/13 10:42:40  joergr
- *  Added support for Structured Reporting "templates".
- *
- *  Revision 1.3  2000/06/07 13:16:37  meichel
- *  now using DIMSE status constants and log facilities defined in dcmnet
- *
- *  Revision 1.2  2000/06/02 16:00:45  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.1  2000/05/31 12:56:59  meichel
- *  Moved dcmpstat macros and constants into a common header file
- *
- *
- */

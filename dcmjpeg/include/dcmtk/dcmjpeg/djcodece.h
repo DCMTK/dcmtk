@@ -17,13 +17,6 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJCODEC_H
@@ -389,54 +382,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djcodece.h,v $
- * Revision 1.11  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.10  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.9  2009-11-17 16:46:01  joergr
- * Added new method that allows for determining the color model of the
- * decompressed image.
- *
- * Revision 1.8  2008-05-29 10:48:44  meichel
- * Implemented new method DcmPixelData::getUncompressedFrame
- *   that permits frame-wise access to compressed and uncompressed
- *   objects without ever loading the complete object into main memory.
- *   For this new method to work with compressed images, all classes derived from
- *   DcmCodec need to implement a new method decodeFrame(). For now, only
- *   dummy implementations returning an error code have been defined.
- *
- * Revision 1.7  2005/12/08 16:59:12  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2005/12/01 11:13:01  onken
- * Minor code modifications for gcc 4
- *
- * Revision 1.5  2005/11/29 11:00:40  onken
- * *** empty log message ***
- *
- * Revision 1.4  2005/11/29 08:50:34  onken
- * Added support for "true" lossless compression in dcmjpeg, that doesn't
- *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
- *   avoid losses in quality caused by color space conversions or modality
- *   transformations etc.
- * Corresponding commandline option in dcmcjpeg (new default)
- *
- * Revision 1.3  2003/07/04 13:26:22  meichel
- * Replaced forward declarations for OFString with explicit includes,
- *   needed when compiling with HAVE_STD_STRING
- *
- * Revision 1.2  2002/05/24 14:58:04  meichel
- * Moved helper methods that are useful for different compression techniques
- *   from module dcmjpeg to module dcmdata
- *
- * Revision 1.1  2001/11/13 15:56:16  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

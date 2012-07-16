@@ -17,13 +17,6 @@
  *
  *  Purpose: TI Common Constants, Types, Globals and Functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:58:34 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMQRTIS_H
@@ -300,41 +293,3 @@ private:
 
 
 #endif
-
-/*
- * CVS Log
- * $Log: dcmqrtis.h,v $
- * Revision 1.9  2011-12-14 12:58:34  uli
- * Make it possible to build dcmqrdb as a DLL.
- *
- * Revision 1.8  2010-10-14 13:16:41  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2010-08-09 13:23:00  joergr
- * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- * the official "keyword" is used for the attribute name which results in a
- * number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- * Revision 1.6  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.5  2009-08-21 09:50:07  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.4  2005/12/08 16:04:28  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2005/11/17 13:44:37  meichel
- * Added command line options for DIMSE and ACSE timeouts
- *
- * Revision 1.2  2005/06/16 08:03:51  meichel
- * Fixed typo in method name
- *
- * Revision 1.1  2005/03/30 13:34:50  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

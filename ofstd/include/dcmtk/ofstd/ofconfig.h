@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: OFConfigFile
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFCONFIG_H
@@ -556,40 +549,3 @@ private:
 };
 
 #endif
-
-/*
- *  $Log: ofconfig.h,v $
- *  Revision 1.9  2011-12-14 08:54:00  uli
- *  Make it possible to correctly build ofstd as a DLL.
- *
- *  Revision 1.8  2010-10-14 13:15:50  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.7  2010-04-26 12:22:30  uli
- *  Fixed a some minor doxygen warnings.
- *
- *  Revision 1.6  2008-04-16 09:37:27  meichel
- *  class OFConfigFile now supports an ordered mode where multiple
- *    configuration files can be loaded and can replace entries of other.
- *    Also added function to print content of configuration in reloadable format.
- *
- *  Revision 1.5  2008-04-15 15:46:30  meichel
- *  class OFConfigFile now supports flexible tree depths and configurable
- *    comment characters and can, therefore, fully replace the equivalent
- *    code in module dcmprint.
- *
- *  Revision 1.4  2005/12/08 16:05:51  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.3  2003/06/12 13:15:59  joergr
- *  Fixed inconsistent API documentation reported by Doxygen.
- *
- *  Revision 1.2  2003/06/04 12:31:44  meichel
- *  Added dummy comparison operators, needed by MSVC5 with STL
- *
- *  Revision 1.1  2003/04/29 10:14:16  meichel
- *  Moved configuration file parser from module dcmpstat to ofstd and renamed
- *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
- *
- *
- */

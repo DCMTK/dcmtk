@@ -17,13 +17,6 @@
  *
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJDECODE_H
@@ -98,33 +91,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djdecode.h,v $
- * Revision 1.7  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.6  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2009-10-07 12:44:33  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.4  2006-03-29 15:58:52  meichel
- * Added support for decompressing images with 16 bits/pixel compressed with
- *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
- *
- * Revision 1.3  2005/12/08 16:59:18  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2001/11/19 15:13:27  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:56:20  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

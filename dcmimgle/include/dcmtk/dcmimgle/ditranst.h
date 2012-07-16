@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomTransTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -143,71 +136,3 @@ class DiTransTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ditranst.h,v $
- * Revision 1.17  2010-10-14 13:16:27  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.16  2010-03-01 09:08:47  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.15  2008-05-20 10:07:31  joergr
- * Added new method that clears the destination image (set pixel values to 0).
- *
- * Revision 1.14  2005/12/08 16:48:11  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.13  2003/12/23 15:53:22  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.12  2003/12/08 18:51:26  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.11  2003/06/02 17:08:07  joergr
- * Added include statement for "diutils.h".
- *
- * Revision 1.10  2001/06/01 15:49:52  meichel
- * Updated copyright header
- *
- * Revision 1.9  2000/03/08 16:24:25  meichel
- * Updated copyright header.
- *
- * Revision 1.8  2000/03/02 12:51:37  joergr
- * Rewrote variable initialization in class contructors to avoid warnings
- * reported on Irix.
- *
- * Revision 1.7  1999/09/17 13:08:12  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- *
- * Revision 1.6  1999/08/25 16:41:56  joergr
- * Added new feature: Allow clipping region to be outside the image
- * (overlapping).
- *
- * Revision 1.5  1999/05/03 11:09:32  joergr
- * Minor code purifications to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.4  1999/03/24 17:20:27  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.3  1999/02/11 16:42:52  joergr
- * Corrected some typos and formatting.
- *
- * Revision 1.2  1998/12/22 14:42:23  joergr
- * Removed const declaration (as long as interpolated scaling isn't completed).
- *
- * Revision 1.1  1998/11/27 15:48:10  joergr
- * Added copyright message.
- * Added support for new bit manipulation class.
- *
- * Revision 1.2  1998/05/11 14:53:30  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

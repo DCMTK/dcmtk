@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for DcmElement::calcElementLength
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-19 13:46:00 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -155,21 +148,3 @@ TEST_VR(EVR_up)
 TEST_VR(EVR_PixelData)
 TEST_VR(EVR_OverlayData)
 #undef TEST_VR
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: telemlen.cc,v $
- * Revision 1.3  2011-08-19 13:46:00  uli
- * Fixed compilation with MSC6
- *
- * Revision 1.2  2011-06-08 07:11:11  uli
- * Corrected some file purpose descriptions.
- *
- * Revision 1.1  2011-06-07 07:06:57  uli
- * Added test cases for DcmElement::calcElementLength().
- *
- *
- *
- */

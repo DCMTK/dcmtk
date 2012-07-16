@@ -17,13 +17,6 @@
  *
  *  Purpose: Interface of class DcmDate
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:14 $
- *  CVS/RCS Revision: $Revision: 1.26 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCVRDA_H
@@ -219,95 +212,3 @@ class DCMTK_DCMDATA_EXPORT DcmDate
 
 
 #endif // DCVRDA_H
-
-
-/*
-** CVS/RCS Log:
-** $Log: dcvrda.h,v $
-** Revision 1.26  2011-12-14 09:04:14  uli
-** Make it possible to accurately build dcmdata and libi2d as DLLs.
-**
-** Revision 1.25  2011-11-24 14:46:36  joergr
-** Handle an empty element/input value as a special case in the "convert to ISO
-** format" methods, i.e. the resulting string is cleared and no error reported.
-**
-** Revision 1.24  2011-02-02 15:13:51  joergr
-** Moved documentation of valid values for the VMs that can be checked to a
-** central place, i.e. DcmElement::checkVM().
-**
-** Revision 1.23  2010-11-05 09:34:11  joergr
-** Added support for checking the value multiplicity "9" (see Supplement 131).
-**
-** Revision 1.22  2010-10-14 13:15:42  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.21  2010-04-23 15:26:13  joergr
-** Specify an appropriate default value for the "vm" parameter of checkValue().
-**
-** Revision 1.20  2010-04-23 14:25:27  joergr
-** Added new method to all VR classes which checks whether the stored value
-** conforms to the VR definition and to the specified VM.
-**
-** Revision 1.19  2010-04-22 09:31:30  joergr
-** Revised misleading parameter documentation for the checkValue() method.
-**
-** Revision 1.18  2010-04-22 08:59:10  joergr
-** Added support for further VM values ("1-8", "1-99", "16", "32") to be checked.
-**
-** Revision 1.17  2010-03-01 09:08:45  uli
-** Removed some unnecessary include directives in the headers.
-**
-** Revision 1.16  2009-08-03 09:05:30  joergr
-** Added methods that check whether a given string value conforms to the VR and
-** VM definitions of the DICOM standards.
-**
-** Revision 1.15  2008-07-17 11:19:49  onken
-** Updated copyFrom() documentation.
-**
-** Revision 1.14  2008-07-17 10:30:23  onken
-** Implemented copyFrom() method for complete DcmObject class hierarchy, which
-** permits setting an instance's value from an existing object. Implemented
-** assignment operator where necessary.
-**
-** Revision 1.13  2005-12-08 16:28:55  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.12  2004/07/01 12:28:25  meichel
-** Introduced virtual clone method for DcmObject and derived classes.
-**
-** Revision 1.11  2002/12/06 12:49:14  joergr
-** Enhanced "print()" function by re-working the implementation and replacing
-** the boolean "showFullData" parameter by a more general integer flag.
-** Added doc++ documentation.
-** Made source code formatting more consistent with other modules/files.
-**
-** Revision 1.10  2002/04/11 12:25:09  joergr
-** Enhanced DICOM date, time and date/time classes. Added support for new
-** standard date and time functions.
-**
-** Revision 1.9  2001/10/10 15:16:40  joergr
-** Added new flag to date/time routines allowing to choose whether the old
-** prior V3.0 format for the corresponding DICOM VRs is supported or not.
-**
-** Revision 1.8  2001/10/01 15:01:38  joergr
-** Introduced new general purpose functions to get/set person names, date, time
-** and date/time.
-**
-** Revision 1.7  2001/06/01 15:48:49  meichel
-** Updated copyright header
-**
-** Revision 1.6  2000/03/08 16:26:22  meichel
-** Updated copyright header.
-**
-** Revision 1.5  1999/03/31 09:24:58  meichel
-** Updated copyright header in module dcmdata
-**
-** Revision 1.4  1998/11/12 16:47:47  meichel
-** Implemented operator= for all classes derived from DcmObject.
-**
-** Revision 1.3  1996/01/05 13:23:04  andreas
-** - changed to support new streaming facilities
-** - more cleanups
-** - merged read / write methods for block and file transfer
-**
-*/

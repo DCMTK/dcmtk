@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:14 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -198,76 +191,3 @@ class DiARGBPixelTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diargpxt.h,v $
- * Revision 1.22  2011-11-17 16:13:14  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.21  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2005/12/08 16:01:25  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.19  2004/04/21 10:00:31  meichel
- * Minor modifications for compilation with gcc 3.4.0
- *
- * Revision 1.18  2003/12/23 16:06:21  joergr
- * Replaced additional post-increment/decrement operators by pre-increment/
- * decrement operators.
- *
- * Revision 1.17  2003/12/23 12:38:51  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.16  2003/12/23 11:15:07  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.15  2002/06/26 16:16:07  joergr
- * Enhanced handling of corrupted pixel data and/or length.
- * Corrected decoding of multi-frame, planar images.
- *
- * Revision 1.14  2001/11/09 16:39:37  joergr
- * Removed 'inline' specifier from certain methods.
- *
- * Revision 1.13  2001/06/01 15:49:27  meichel
- * Updated copyright header
- *
- * Revision 1.12  2000/04/27 13:15:12  joergr
- * Dcmimage library code now consistently uses ofConsole for error output.
- *
- * Revision 1.11  2000/03/08 16:21:48  meichel
- * Updated copyright header.
- *
- * Revision 1.10  1999/04/28 12:51:54  joergr
- * Corrected some typos, comments and formatting.
- *
- * Revision 1.9  1999/02/03 16:47:54  joergr
- * Moved global functions maxval() and determineRepresentation() to class
- * DicomImageClass (as static methods).
- *
- * Revision 1.8  1999/01/20 14:36:22  joergr
- * Replaced invocation of getCount() by member variable Count where possible.
- *
- * Revision 1.7  1998/12/14 17:08:43  joergr
- * Added support for signed values as second entry in look-up tables
- * (= first value mapped).
- *
- * Revision 1.6  1998/11/27 13:40:11  joergr
- * Added copyright message.
- *
- * Revision 1.5  1998/07/01 08:39:18  joergr
- * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
- * options), e.g. add copy constructors.
- *
- * Revision 1.4  1998/05/11 14:53:08  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

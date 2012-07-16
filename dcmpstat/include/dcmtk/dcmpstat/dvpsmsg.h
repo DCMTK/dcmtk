@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSIPCMessage
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:50 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVPSMSG_H
@@ -278,33 +271,3 @@ private:
 
 
 #endif
-
-/*
- *  $Log: dvpsmsg.h,v $
- *  Revision 1.8  2012-01-06 10:05:50  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.7  2010-10-14 13:16:36  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.6  2010-10-07 14:31:36  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved).
- *
- *  Revision 1.5  2005/12/08 16:03:52  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.4  2003/07/04 13:27:38  meichel
- *  Replaced forward declarations for OFString with explicit includes,
- *    needed when compiling with HAVE_STD_STRING
- *
- *  Revision 1.3  2001/06/01 15:50:18  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/11/08 18:38:15  meichel
- *  Updated dcmpstat IPC protocol for additional message parameters
- *
- *  Revision 1.1  2000/10/10 12:24:36  meichel
- *  Added extensions for IPC message communication
- *
- *
- */

@@ -73,12 +73,6 @@
 **
 ** Module Prefix: DIMSE_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:36 $
-** CVS/RCS Revision:    $Revision: 1.15 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
 */
 
 /*
@@ -462,64 +456,3 @@ DIMSE_findProvider(
     /* return result value */
     return cond;
 }
-
-/*
-** CVS Log
-** $Log: dimfind.cc,v $
-** Revision 1.15  2010-12-01 08:26:36  joergr
-** Added OFFIS copyright header (beginning with the year 1994).
-**
-** Revision 1.14  2010-10-14 13:14:28  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.13  2009-11-18 11:53:59  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.12  2005-12-08 15:44:42  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.11  2002/11/27 13:04:40  meichel
-** Adapted module dcmnet to use of new header file ofstdinc.h
-**
-** Revision 1.10  2001/11/01 13:49:05  wilkens
-** Added lots of comments.
-**
-** Revision 1.9  2001/10/12 10:18:34  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.8  2000/02/23 15:12:34  meichel
-** Corrected macro for Borland C++ Builder 4 workaround.
-**
-** Revision 1.7  2000/02/01 10:24:09  meichel
-** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
-**   workaround for bug in compiler header files.
-**
-** Revision 1.6  1998/08/10 08:53:44  meichel
-** renamed member variable in DIMSE structures from "Status" to
-**   "DimseStatus". This is required if dcmnet is used together with
-**   <X11/Xlib.h> where Status is #define'd as int.
-**
-** Revision 1.5  1998/01/27 10:51:44  meichel
-** Removed some unused variables, meaningless const modifiers
-**   and unreached statements.
-**
-** Revision 1.4  1997/07/21 08:47:18  andreas
-** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-**   with one unique boolean type OFBool.
-**
-** Revision 1.3  1996/04/25 16:11:15  hewett
-** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
-** architectures).  Added some protection to inclusion of sys/socket.h (due
-** to MIPS/Ultrix).
-**
-** Revision 1.2  1996/04/22 10:02:59  hewett
-** Corrected memory leak whereby response ids where not being deleted.
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/

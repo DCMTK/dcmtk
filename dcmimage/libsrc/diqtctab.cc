@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:14 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -551,44 +544,3 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
 
   str = buf;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diqtctab.cc,v $
- * Revision 1.10  2010-10-14 13:14:14  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.9  2009-11-25 14:44:52  joergr
- * Removed inclusion of header file "ofconsol.h".
- *
- * Revision 1.8  2005/12/08 15:42:28  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2003/12/17 16:34:57  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.6  2002/12/11 18:10:21  joergr
- * Added extern "C" declaration to qsort functions to avoid warnings reported
- * by Sun CC 5.2.
- *
- * Revision 1.5  2002/12/09 13:39:19  joergr
- * Renamed local variable to avoid name clash with function parameter "sum".
- *
- * Revision 1.4  2002/11/27 14:16:58  meichel
- * Adapted module dcmimage to use of new header file ofstdinc.h
- *
- * Revision 1.3  2002/08/20 12:20:24  meichel
- * Adapted code to new loadFile and saveFile methods, thus removing direct
- *   use of the DICOM stream classes.
- *
- * Revision 1.2  2002/05/15 09:53:33  meichel
- * Minor corrections to avoid warnings on Sun CC 2.0.1
- *
- * Revision 1.1  2002/01/25 13:32:10  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

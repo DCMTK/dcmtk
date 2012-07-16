@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for the data dictionary
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-17 14:49:12 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -113,17 +106,3 @@ OFTEST(dcmdata_usingDataDictionary)
 
 #undef checkDictionary
 }
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tdict.cc,v $
- * Revision 1.2  2011-08-17 14:49:12  uli
- * Removed some accidentally committed test code.
- *
- * Revision 1.1  2011-08-17 14:35:59  uli
- * Added a small test for the data dictionary.
- *
- *
- *
- */

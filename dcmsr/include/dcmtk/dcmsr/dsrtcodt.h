@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRReferencedDateTimeList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:03 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -105,57 +98,3 @@ class DCMTK_DCMSR_EXPORT DSRReferencedDateTimeList
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtcodt.h,v $
- *  Revision 1.15  2012-06-11 08:53:03  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.14  2012-01-06 09:13:12  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.13  2011-08-02 06:26:32  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.12  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.10  2007-11-15 16:33:19  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.9  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.8  2005/12/08 16:05:20  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.7  2003/08/07 12:51:14  joergr
- *  Added new putString() method.
- *
- *  Revision 1.6  2003/06/03 10:16:44  meichel
- *  Renamed local variables to avoid name clashes with STL
- *
- *  Revision 1.5  2001/09/26 13:04:11  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.4  2001/06/01 15:51:04  meichel
- *  Updated copyright header
- *
- *  Revision 1.3  2000/11/06 11:19:18  joergr
- *  Added parameter to print() method specifying the item separator character.
- *
- *  Revision 1.2  2000/11/01 16:20:24  joergr
- *  Updated comments/formatting.
- *
- *  Revision 1.1  2000/10/26 14:23:24  joergr
- *  Added support for TCOORD content item.
- *
- *
- *
- */

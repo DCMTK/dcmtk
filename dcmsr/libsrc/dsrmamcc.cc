@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRMammographyCadSRConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -128,50 +121,3 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrmamcc.cc,v $
- *  Revision 1.12  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2010-06-09 16:35:12  joergr
- *  Removed references to CP 767.
- *
- *  Revision 1.10  2009-08-07 08:36:36  joergr
- *  Added missing relationship content constraint introduced with DICOM 2007.
- *
- *  Revision 1.9  2007-11-30 16:57:50  joergr
- *  Updated relationship content constraints according to CP 767.
- *
- *  Revision 1.8  2007/11/15 16:57:31  joergr
- *  Removed preliminary patch for TID 4023 (since not yet approved). Documented
- *  modification required for CP 492 (has already been added by the last commit).
- *
- *  Revision 1.7  2007/11/15 16:45:42  joergr
- *  Added support for output in XHTML 1.1 format. -> incorrect log entry
- *
- *  Revision 1.6  2006/03/24 11:11:45  joergr
- *  Added full support for CP 545, i.e. allow by-reference HAS PROPERTIES
- *  relationships.
- *
- *  Revision 1.5  2005/12/08 15:47:58  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.4  2005/07/27 16:55:04  joergr
- *  Added workaround to allow by-reference relationships as needed for some
- *  Mammography CAD SR templates.
- *
- *  Revision 1.3  2004/11/18 13:55:52  joergr
- *  Added workaround to fix issue with inconsistent definitions in DICOM part 3
- *  and part 16 regarding Mammography CAD SR.
- *
- *  Revision 1.2  2003/10/09 13:00:41  joergr
- *  Added check for root template identifier when reading an SR document.
- *
- *  Revision 1.1  2003/09/15 14:15:36  joergr
- *  Added content relationship constraint checking support for Mammography CAD
- *  SR and Chest CAD SR.
- *
- */

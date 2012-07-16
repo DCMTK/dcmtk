@@ -17,13 +17,6 @@
  *
  *  Purpose: Handling of transfer syntaxes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:15 $
- *  CVS/RCS Revision: $Revision: 1.28 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCXFER_H
@@ -323,78 +316,3 @@ private:
 extern DCMTK_DCMDATA_EXPORT const E_ByteOrder gLocalByteOrder;
 
 #endif // DCXFER_H
-
-/*
- * CVS/RCS Log:
- * $Log: dcxfer.h,v $
- * Revision 1.28  2011-12-14 09:04:15  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.27  2011-09-28 14:47:48  joergr
- * Introduced new isLossy() and isLossless() methods in order to check whether
- * a transfer syntax uses a lossy or lossless compression (if any at all).
- *
- * Revision 1.26  2011-02-11 13:33:11  joergr
- * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
- *
- * Revision 1.25  2011-02-11 11:56:31  joergr
- * Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
- *
- * Revision 1.24  2010-10-14 13:15:43  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.23  2010-09-15 08:46:16  joergr
- * Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
- * referenced transfer syntaxes (Supplement 106).
- *
- * Revision 1.22  2010-09-02 12:12:43  joergr
- * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
- *
- * Revision 1.21  2008-06-23 12:09:13  joergr
- * Fixed inconsistencies in Doxygen API documentation.
- *
- * Revision 1.20  2008-04-23 06:39:37  meichel
- * Added new method DcmXfer::isRetired that returns true for
- *   retired transfer syntaxes.
- *
- * Revision 1.19  2007/11/29 14:30:19  meichel
- * Write methods now handle large raw data elements (such as pixel data)
- *   without loading everything into memory. This allows very large images to
- *   be sent over a network connection, or to be copied without ever being
- *   fully in memory.
- *
- * Revision 1.18  2005/12/08 16:29:17  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.17  2005/10/25 08:55:32  meichel
- * Updated list of UIDs and added support for new transfer syntaxes
- *   and storage SOP classes.
- *
- * Revision 1.16  2004/04/06 18:01:50  joergr
- * Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
- * Supplements (42 and 47) and Correction Proposals (CP 25).
- *
- * Revision 1.15  2002/08/27 16:55:41  meichel
- * Initial release of new DICOM I/O stream classes that add support for stream
- *   compression (deflated little endian explicit VR transfer syntax)
- *
- * Revision 1.14  2001/11/08 16:17:30  meichel
- * Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
- *
- * Revision 1.13  2001/06/01 15:48:55  meichel
- * Updated copyright header
- *
- * Revision 1.12  2001/01/17 10:20:36  meichel
- * Added toolkit support for JPEG-LS transfer syntaxes
- *
- * Revision 1.11  2000/04/14 16:01:23  meichel
- * Minor changes for thread safety.
- *
- * Revision 1.10  2000/03/08 16:26:28  meichel
- * Updated copyright header.
- *
- * Revision 1.9  1999/03/31 09:25:13  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

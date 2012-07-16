@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomMonochrome1Image (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -159,63 +152,3 @@ DiImage *DiMono1Image::createMono(const double,
 {
     return createImage(0, 0);
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dimo1img.cc,v $
- * Revision 1.14  2010-10-14 13:14:18  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.13  2007-09-04 11:11:07  joergr
- * Fixed wrong typecast in createScale() that filtered out negative clipping
- * coordinates for the top left hand corner.
- *
- * Revision 1.12  2005/12/08 15:42:54  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.11  2004/02/06 11:10:39  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.10  2003/12/08 17:38:27  joergr
- * Updated CVS header.
- *
- * Revision 1.9  2003/12/08 14:50:52  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.8  2002/12/09 13:34:50  joergr
- * Renamed parameter/local variable to avoid name clashes with global
- * declaration left and/or right (used for as iostream manipulators).
- *
- * Revision 1.7  2001/06/01 15:49:56  meichel
- * Updated copyright header
- *
- * Revision 1.6  2000/03/08 16:24:29  meichel
- * Updated copyright header.
- *
- * Revision 1.5  1999/08/25 16:43:07  joergr
- * Added new feature: Allow clipping region to be outside the image
- * (overlapping).
- *
- * Revision 1.4  1999/04/28 15:02:25  joergr
- * Added experimental support to create grayscale images with more than 256
- * shades of gray to be displayed on a consumer monitor (use pastel colors).
- *
- * Revision 1.3  1999/01/20 14:52:50  joergr
- * Added new output method to fill external memory buffer with rendered pixel
- * data.
- *
- * Revision 1.2  1998/12/14 17:35:57  joergr
- * Added support for presentation shapes.
- *
- * Revision 1.1  1998/11/27 16:07:33  joergr
- * Added copyright message.
- * Added methods and constructors for flipping and rotating, changed for
- * scaling and clipping.
- *
- * Revision 1.5  1998/05/11 14:52:31  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

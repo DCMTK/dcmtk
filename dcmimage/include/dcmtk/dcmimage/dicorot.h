@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomColorRotateTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:14 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -112,65 +105,3 @@ class DiColorRotateTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dicorot.h,v $
- * Revision 1.16  2011-11-17 16:13:14  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.15  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.14  2010-03-01 09:08:46  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.13  2009-10-14 10:25:13  joergr
- * Fixed minor issues in log output. Also updated copyright date (if required).
- *
- * Revision 1.12  2009-10-13 14:08:33  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.11  2006-08-15 16:35:01  meichel
- * Updated the code in module dcmimage to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.10  2005/12/08 16:01:36  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.9  2004/04/21 10:00:31  meichel
- * Minor modifications for compilation with gcc 3.4.0
- *
- * Revision 1.8  2004/02/06 11:18:18  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.7  2003/12/23 11:44:32  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.6  2001/11/09 16:45:00  joergr
- * Updated/Enhanced comments.
- *
- * Revision 1.5  2001/06/01 15:49:30  meichel
- * Updated copyright header
- *
- * Revision 1.4  2000/12/08 14:06:01  joergr
- * Added new checking routines to avoid crashes when processing corrupted image
- * data.
- *
- * Revision 1.3  2000/03/08 16:21:51  meichel
- * Updated copyright header.
- *
- * Revision 1.2  1999/04/28 12:51:59  joergr
- * Corrected some typos, comments and formatting.
- *
- * Revision 1.1  1998/11/27 14:59:36  joergr
- * Added copyright message.
- * Added methods and classes for flipping and rotating, changed for
- * scaling and clipping.
- *
- *
- */

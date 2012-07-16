@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-12 11:59:04 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -1105,95 +1098,3 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
   dbCheckFindIdentifier_ = dbCheckFindIdentifier;
   dbCheckMoveIdentifier_ = dbCheckMoveIdentifier;
 }
-
-
-/*
- * CVS Log
- * $Log: dcmqrsrv.cc,v $
- * Revision 1.16  2012-03-12 11:59:04  joergr
- * Output debug message in case access to a storage area is not permitted.
- *
- * Revision 1.15  2011-03-17 09:46:26  joergr
- * Added support for MPEG4 transfer syntaxes to network tools.
- *
- * Revision 1.14  2011-02-11 13:33:28  joergr
- * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
- *
- * Revision 1.13  2011-02-04 12:57:41  uli
- * Made sure all members are initialized in the constructor (-Weffc++).
- *
- * Revision 1.12  2010-10-14 13:14:36  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.11  2010-09-24 13:34:17  joergr
- * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
- * resulting name changes are mainly caused by the fact that the corresponding
- * SOP Class is now retired.
- *
- * Revision 1.10  2010-09-09 16:54:32  joergr
- * Further code clean-up and minor changes to log messages.
- *
- * Revision 1.9  2010-09-09 15:00:03  joergr
- * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
- *
- * Revision 1.8  2010-09-02 12:13:00  joergr
- * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
- *
- * Revision 1.7  2010-06-03 10:34:57  joergr
- * Replaced calls to strerror() by new helper function OFStandard::strerror()
- * which results in using the thread safe version of strerror() if available.
- *
- * Revision 1.6  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.5  2009-08-21 09:54:11  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.4  2009-08-05 14:54:54  meichel
- * Fixed bug that caused dcmqrscp to accept image transmissions to read-only
- *   storage areas when multiple presentation contexts were proposed for a
- *   single SOP class.
- *
- * Revision 1.3  2009-02-06 15:25:43  joergr
- * Added support for JPEG-LS and MPEG2 transfer syntaxes.
- *
- * Revision 1.2  2006/06/23 10:24:43  meichel
- * All Store SCPs in DCMTK now store the source application entity title in the
- *   metaheader, both in normal and in bit-preserving mode.
- *
- * Revision 1.1  2005/12/16 12:41:35  joergr
- * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
- * Sun CC 2.0.1.
- *
- * Revision 1.7  2005/12/08 15:47:13  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2005/11/29 11:27:20  meichel
- * Added new flag keepDBHandleDuringAssociation_ which allows to determine
- *   whether a DB handle is kept open for a complete association or a single
- *   DIMSE message only. Also improved error handling of file locking.
- *
- * Revision 1.5  2005/11/29 10:54:52  meichel
- * Added minimal support for compressed transfer syntaxes to dcmqrscp.
- *   No on-the-fly decompression is performed, but compressed images can
- *   be stored and retrieved.
- *
- * Revision 1.4  2005/11/17 13:44:40  meichel
- * Added command line options for DIMSE and ACSE timeouts
- *
- * Revision 1.3  2005/10/25 08:56:18  meichel
- * Updated list of UIDs and added support for new transfer syntaxes
- *   and storage SOP classes.
- *
- * Revision 1.2  2005/04/22 15:36:32  meichel
- * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
- *   to allow configuration retrieval based on calling aetitle.
- *
- * Revision 1.1  2005/03/30 13:34:53  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for managing file system interaction.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-04-11 14:44:40 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef WlmFileSystemInteractionManager_h
@@ -451,94 +444,3 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 };
 
 #endif
-
-/*
-** CVS Log
-** $Log: wlfsim.h,v $
-** Revision 1.20  2012-04-11 14:44:40  uli
-** Use OFVector instead of OFOrderedSet for the file list.
-**
-** Revision 1.19  2011-12-14 12:14:13  uli
-** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
-**
-** Revision 1.18  2010-10-14 13:16:39  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.17  2010-08-09 13:29:39  joergr
-** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
-** the official "keyword" is used for the attribute name which results in a
-** number of minor changes (e.g. "PatientsName" is now called "PatientName").
-**
-** Revision 1.16  2009-11-24 10:40:01  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.15  2009-11-02 15:50:25  joergr
-** Changed forward declaration from "class" to "struct" in order to avoid
-** warning messages reported by VisualStudio 2008.
-**
-** Revision 1.14  2009-09-30 08:40:34  uli
-** Make dcmwlm's include headers self-sufficient by including all
-** needed headers directly.
-**
-** Revision 1.13  2006-12-15 14:49:21  onken
-** Removed excessive use char* and C-array in favour of OFString and
-** OFList. Simplified some implementation details.
-**
-** Revision 1.12  2006/01/27 15:06:32  joergr
-** Fixed issue with missing type 2 attributes in worklist files being reported
-** as incomplete.  Now, the attributes are inserted automatically if required.
-** Removed email address from CVS log.
-**
-** Revision 1.11  2005/12/08 16:05:42  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.10  2005/09/23 12:56:40  wilkens
-** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
-**
-** Revision 1.9  2005/06/16 08:06:51  meichel
-** Removed redundant class name, needed for gcc 3.4
-**
-** Revision 1.8  2005/05/04 11:34:31  wilkens
-** Added two command line options --enable-file-reject (default) and
-** --disable-file-reject to wlmscpfs: these options can be used to enable or
-** disable a file rejection mechanism which makes sure only complete worklist files
-** will be used during the matching process. A worklist file is considered to be
-** complete if it contains all necessary type 1 information which the SCP might
-** have to return to an SCU in a C-Find response message.
-**
-** Revision 1.7  2004/01/07 08:32:28  wilkens
-** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
-** equally named attributes in sequences always the same value will be returned.
-** Added functionality that also more than one item will be returned in sequence
-** type return key attributes.
-**
-** Revision 1.6  2003/12/23 13:04:36  wilkens
-** Integrated new matching key attributes into wlmscpfs.
-**
-** Revision 1.5  2003/07/02 09:17:55  wilkens
-** Updated documentation to get rid of doxygen warnings.
-**
-** Revision 1.4  2002/12/16 11:08:35  wilkens
-** Added missing #include "osconfig.h" to certain files.
-**
-** Revision 1.3  2002/12/09 13:41:43  joergr
-** Renamed parameter to avoid name clash with global function index().
-** Added private undefined copy constructor and/or assignment operator.
-**
-** Revision 1.2  2002/08/12 10:56:08  wilkens
-** Made some modifications in in order to be able to create a new application
-** which contains both wlmscpdb and ppsscpdb and another application which
-** contains both wlmscpfs and ppsscpfs.
-**
-** Revision 1.1  2002/08/05 09:09:58  wilkens
-** Modfified the project's structure in order to be able to create a new
-** application which contains both wlmscpdb and ppsscpdb.
-**
-** Revision 1.1  2002/07/17 13:10:21  wilkens
-** Corrected some minor logical errors in the wlmscpdb sources and completely
-** updated the wlmscpfs so that it does not use the original wlistctn sources
-** any more but standard wlm sources which are now used by all three variants
-** of wlmscps.
-**
-**
-*/

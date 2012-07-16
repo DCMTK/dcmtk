@@ -17,13 +17,6 @@
  *
  *  Purpose: 
  *    class DcmAssociationConfigurationFile
- * 
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 08:09:34 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
  *
  */
 
@@ -490,34 +483,3 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
   return result;
 }
 #undef TO_UCHAR
-
-
-/*
- * CVS/RCS Log
- * $Log: dcasccff.cc,v $
- * Revision 1.7  2010-10-20 08:09:34  uli
- * Also made sure toupper() and tolower() get a valid argument.
- *
- * Revision 1.6  2010-10-20 07:41:35  uli
- * Made sure isalpha() & friends are only called with valid arguments.
- *
- * Revision 1.5  2010-10-14 13:14:27  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2005/12/08 15:44:26  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2003/08/11 18:31:46  joergr
- * Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
- *
- * Revision 1.2  2003/06/18 11:53:42  meichel
- * Fixed bug in association configuration file parser
- *
- * Revision 1.1  2003/06/10 14:30:15  meichel
- * Initial release of class DcmAssociationConfiguration and support
- *   classes. This class maintains a list of association negotiation
- *   profiles that can be addressed by symbolic keys. The profiles may
- *   be read from a configuration file.
- *
- *
- */

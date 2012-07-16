@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -425,78 +418,3 @@ int main(int argc, char *argv[])
 
   return 0;
 }
-
-
-
-/*
- * CVS/RCS Log:
- * $Log: img2dcm.cc,v $
- * Revision 1.20  2010-10-14 13:13:30  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.19  2010-10-06 09:14:23  joergr
- * Added text on the fact that the --key option also supports attribute paths.
- * Introduced meaningful sub groups for the processing command line options.
- *
- * Revision 1.18  2009-11-13 13:20:23  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.17  2009-11-04 09:58:06  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.16  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.15  2009-08-21 09:25:13  joergr
- * Added parameter 'writeMode' to save/write methods which allows for specifying
- * whether to write a dataset or fileformat as well as whether to update the
- * file meta information or to create a new file meta information header.
- *
- * Revision 1.14  2009-07-16 14:26:25  onken
- * Added img2dcm input plugin for the BMP graphics format (at the moment only
- * support for 24 Bit RGB).
- *
- * Revision 1.13  2009-07-10 13:16:10  onken
- * Added path functionality for --key option and lets the code make use
- * of the DcmPath classes.
- *
- * Revision 1.12  2009-04-24 12:20:42  joergr
- * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
- *
- * Revision 1.11  2009-04-21 14:02:49  joergr
- * Fixed minor inconsistencies in manpage / syntax usage.
- *
- * Revision 1.10  2009-03-31 10:47:41  onken
- * Added NULL pointer check.
- *
- * Revision 1.9  2008-10-29 18:03:33  joergr
- * Fixed minor inconsistencies.
- *
- * Revision 1.8  2008-09-25 14:35:34  joergr
- * Moved checking on presence of the data dictionary.
- *
- * Revision 1.7  2008-09-25 11:19:48  joergr
- * Added support for printing the expanded command line arguments.
- * Always output the resource identifier of the command line tool in debug mode.
- *
- * Revision 1.6  2008-01-16 16:32:14  onken
- * Fixed some empty or doubled log messages in libi2d files.
- *
- * Revision 1.5  2008-01-16 15:19:41  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.4  2008-01-14 16:51:11  joergr
- * Fixed minor inconsistencies.
- *
- * Revision 1.3  2008-01-11 14:16:04  onken
- * Added various options to i2dlib. Changed logging to use a configurable
- * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
- * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
- * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
- * need for templates any more). Added some bug fixes.
- *
- * Revision 1.1  2007/11/08 16:00:34  onken
- * Initial checkin of img2dcm application and corresponding library i2dlib.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-25 11:54:03 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -522,86 +515,3 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 
     return 0;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcmcjpls.cc,v $
- * Revision 1.12  2011-02-25 11:54:03  uli
- * Move the CharLS version string to a central place.
- *
- * Revision 1.11  2010-10-14 13:13:40  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2010-10-05 08:25:40  uli
- * Update dcmjpls to newest CharLS snapshot.
- *
- * Revision 1.9  2009-10-07 13:16:47  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.8  2009-09-04 13:37:00  meichel
- * Updated libcharls in module dcmjpls to CharLS revision 27770.
- *
- * Revision 1.7  2009-08-21 12:07:27  joergr
- * Added type cast to integer variable in order to avoid compiler warnings
- * reported by MSVC.
- *
- * Revision 1.6  2009-08-21 10:05:10  joergr
- * Added parameter 'writeMode' to save/write methods which allows for specifying
- * whether to write a dataset or fileformat as well as whether to update the
- * file meta information or to create a new file meta information header.
- * Added check making sure that a DICOMDIR file is never compressed.
- * Made error messages more consistent with other compression tools.
- *
- * Revision 1.5  2009-08-20 14:45:06  meichel
- * Updated libcharls in module dcmjpls to CharLS revision 26807.
- *
- * Revision 1.4  2009-08-05 10:24:54  joergr
- * Made syntax usage more consistent with other DCMTK compression tools.
- * Fixed wrong reference to JPEG-LS implementation and added revision number.
- *
- * Revision 1.3  2009-07-31 10:18:37  meichel
- * Line interleaved JPEG-LS mode now default. This mode works correctly
- *   when decompressing images with the LOCO-I reference implementation.
- *
- * Revision 1.2  2009-07-31 09:14:52  meichel
- * Added codec parameter and command line options that allow to control
- *   the interleave mode used in the JPEG-LS bitstream when compressing
- *   color images.
- *
- * Revision 1.1  2009-07-29 14:46:45  meichel
- * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
- *
- * Revision 1.10  2009-03-19 12:14:49  joergr
- * Made error message more consistent with other DCMTK compression tools.
- * Replaced '\n' by OFendl where appropriate.
- *
- * Revision 1.9  2008-09-25 15:38:27  joergr
- * Fixed outdated comment.
- *
- * Revision 1.8  2008-09-25 14:23:11  joergr
- * Moved output of resource identifier in order to avoid printing the same
- * information twice.
- *
- * Revision 1.7  2008-09-25 13:47:29  joergr
- * Added support for printing the expanded command line arguments.
- * Always output the resource identifier of the command line tool in debug mode.
- *
- * Revision 1.6  2007/06/20 12:37:37  meichel
- * Completed implementation of encoder, which now supports lossless
- *   "raw" and "cooked" and near-lossless "cooked" modes.
- *
- * Revision 1.5  2007/06/15 14:35:45  meichel
- * Renamed CMake project and include directory from dcmjpgls to dcmjpls
- *
- * Revision 1.4  2007/06/14 12:36:14  meichel
- * Further code clean-up. Updated doxygen comments.
- *
- * Revision 1.3  2007/06/13 16:41:07  meichel
- * Code clean-up and removal of dead code
- *
- * Revision 1.2  2007/06/13 16:22:53  joergr
- * Fixed a couple of inconsistencies.
- *
- *
- */

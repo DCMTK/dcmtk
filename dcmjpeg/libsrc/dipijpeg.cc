@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:59 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -246,66 +239,3 @@ OFString DiJPEGPlugin::getLibraryVersionString()
     /* create version information */
     return "IJG, Version " JVERSION " (modified)";
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dipijpeg.cc,v $
- * Revision 1.16  2011-04-18 07:00:59  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.15  2011-03-03 11:17:16  uli
- * Avoid a warning about an always-true expression in an if statement.
- *
- * Revision 1.14  2010-10-14 13:14:21  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.13  2010-02-22 11:39:54  uli
- * Remove some unneeded includes.
- *
- * Revision 1.12  2009-10-07 12:44:33  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.11  2009-08-19 12:19:19  meichel
- * Unlike some other compilers, Sun Studio 11 on Solaris
- *   declares longjmp() in namespace std. Added code to handle this case.
- *
- * Revision 1.10  2006-08-16 16:30:21  meichel
- * Updated all code in module dcmjpeg to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.9  2005/12/08 15:43:25  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.8  2004/02/06 11:20:59  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.7  2003/10/13 13:25:49  meichel
- * Added workaround for name clash of typedef "boolean" in the IJG header files
- *   and the standard headers for Borland C++.
- *
- * Revision 1.6  2002/12/11 14:55:24  meichel
- * Further code correction to avoid warning on MSVC6.
- *
- * Revision 1.5  2002/12/11 13:37:14  meichel
- * Minor code correction fixing a warning re setjmp and variable
- *   register allocation issued by gcc 3.2 -Wuninitialized
- *
- * Revision 1.4  2002/11/27 15:39:59  meichel
- * Adapted module dcmjpeg to use of new header file ofstdinc.h
- *
- * Revision 1.3  2002/09/19 08:35:51  joergr
- * Added static method getLibraryVersionString().
- *
- * Revision 1.2  2001/12/18 09:48:55  meichel
- * Modified configure test for "const" support of the C compiler
- *   in order to avoid a macro recursion error on Sun CC 2.0.1
- *
- * Revision 1.1  2001/11/27 18:27:19  joergr
- * Added support for plugable output formats in class DicomImage. First
- * implementation is JPEG.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:14 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -111,67 +104,3 @@ DiColorPixel::DiColorPixel(const DiColorPixel *pixel,
 DiColorPixel::~DiColorPixel()
 {
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dicopx.cc,v $
- * Revision 1.19  2010-10-14 13:14:14  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.18  2009-10-14 10:23:56  joergr
- * Fixed minor issues in log output. Also updated copyright date (if required).
- *
- * Revision 1.17  2009-10-13 14:08:33  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.16  2006-08-15 16:35:01  meichel
- * Updated the code in module dcmimage to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.15  2005/12/08 15:42:23  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.14  2004/06/03 09:08:01  joergr
- * Changed error message on unexpected attribute PlanarConfiguration into a
- * warning message.
- *
- * Revision 1.13  2003/12/23 10:54:28  joergr
- * Updated copyright header.
- *
- * Revision 1.12  2002/06/26 16:29:45  joergr
- * Enhanced handling of corrupted pixel data and/or length.
- *
- * Revision 1.11  2001/11/09 16:49:38  joergr
- * Removed unused constructor.
- *
- * Revision 1.10  2001/06/01 15:49:35  meichel
- * Updated copyright header
- *
- * Revision 1.9  2000/04/28 12:40:03  joergr
- * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
- *
- * Revision 1.8  2000/04/27 13:15:57  joergr
- * Dcmimage library code now consistently uses ofConsole for error output.
- *
- * Revision 1.7  2000/03/08 16:21:56  meichel
- * Updated copyright header.
- *
- * Revision 1.6  2000/03/03 14:07:55  meichel
- * Implemented library support for redirecting error messages into memory
- *   instead of printing them to stdout/stderr for GUI applications.
- *
- * Revision 1.5  1999/04/28 13:20:13  joergr
- * Introduced new scheme for the debug level variable: now each level can be
- * set separately (there is no "include" relationship).
- *
- * Revision 1.4  1998/11/27 14:29:32  joergr
- * Added copyright message.
- * Introduced global debug level for dcmimage module to control error output.
- *
- * Revision 1.3  1998/05/11 14:52:27  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

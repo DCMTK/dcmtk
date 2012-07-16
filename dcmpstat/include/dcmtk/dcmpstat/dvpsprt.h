@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -318,48 +311,3 @@ private:
 };
 
 #endif
-
-/*
- *  $Log: dvpsprt.h,v $
- *  Revision 1.13  2012-01-06 10:05:50  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.12  2010-10-14 13:16:36  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2009-11-24 14:12:57  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.10  2009-09-30 10:42:38  uli
- *  Make dcmpstat's include headers self-sufficient by including all
- *  needed headers directly and stop using dctk.h
- *
- *  Revision 1.9  2005-12-08 16:03:58  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2004/02/04 15:49:09  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log. Removed leading
- *  underscore characters from preprocessor symbols (reserved symbols).
- *
- *  Revision 1.7  2003/09/05 10:38:32  meichel
- *  Print SCP now supports TLS connections and the Verification Service Class.
- *
- *  Revision 1.6  2002/04/16 14:02:03  joergr
- *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *  Revision 1.5  2001/10/12 13:46:52  meichel
- *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
- *
- *  Revision 1.4  2001/06/01 15:50:20  meichel
- *  Updated copyright header
- *
- *  Revision 1.3  2000/06/07 13:17:45  meichel
- *  added binary and textual log facilities to Print SCP.
- *
- *  Revision 1.2  2000/06/02 16:00:50  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.1  2000/05/31 12:56:36  meichel
- *  Added initial Print SCP support
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:02 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -458,80 +451,3 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrnumvl.h,v $
- *  Revision 1.21  2012-06-11 08:53:02  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.20  2012-02-20 14:31:27  joergr
- *  Replaced tab by space character.
- *
- *  Revision 1.19  2012-02-20 14:08:39  joergr
- *  Minor changes of source code formatting, documentation and the like.
- *
- *  Revision 1.18  2012-01-06 09:13:10  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.17  2011-12-15 14:47:50  joergr
- *  Added support for additional representations of a numeric value according to
- *  CP-1064 (Float VR in numeric SR content items).
- *
- *  Revision 1.16  2011-08-02 06:26:31  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.15  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.14  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.13  2007-11-15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.12  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.11  2006/05/11 09:18:21  joergr
- *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
- *
- *  Revision 1.10  2005/12/08 16:05:11  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.9  2004/11/22 16:39:09  meichel
- *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
- *
- *  Revision 1.8  2003/08/07 12:43:44  joergr
- *  Added readXML functionality.
- *
- *  Revision 1.7  2002/12/10 13:20:07  joergr
- *  Added support for the Numeric Value Qualifier Code Sequence (introduced with
- *  CP 260).
- *
- *  Revision 1.6  2001/09/26 13:04:09  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.5  2001/06/01 15:51:02  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/11/06 11:17:40  joergr
- *  Moved some protected methods to public part.
- *
- *  Revision 1.3  2000/11/01 16:23:22  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.2  2000/10/18 17:05:12  joergr
- *  Added methods allowing direct access to certain content item values.
- *  Added doc++ comments.
- *  Made some functions inline.
- *
- *  Revision 1.1  2000/10/13 07:49:29  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

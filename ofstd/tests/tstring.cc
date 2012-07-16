@@ -32,14 +32,6 @@
  *  along with this library; see the file COPYING.  If not, write to the Free
  *  Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:58 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
@@ -218,48 +210,3 @@ OFTEST(ofstd_OFString_identity_3)
 {
   identitytest(X+Y+N+X+Y+N, "A string that will be used in identitytest but is otherwise just another useless string.");
 }
-
-
-/*
-**
-** CVS/RCS Log:
-** $Log: tstring.cc,v $
-** Revision 1.11  2011-05-25 10:05:58  uli
-** Imported oftest and converted existing tests to oftest.
-**
-** Revision 1.10  2010-10-14 13:15:16  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.9  2009-09-28 14:08:32  joergr
-** Added support for strings that contain null bytes ('\0') in order to be more
-** compliant with the standard C++ string class.
-**
-** Revision 1.8  2006-08-14 16:42:48  meichel
-** Updated all code in module ofstd to correctly compile if the standard
-**   namespace has not included into the global one with a "using" directive.
-**
-** Revision 1.7  2005/12/08 15:49:10  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.6  2003/07/04 13:31:52  meichel
-** Fixed issues with compiling with HAVE_STD_STRING
-**
-** Revision 1.5  2002/06/20 12:04:39  meichel
-** Changed toolkit to use OFStandard::atof instead of atof, strtod or
-**   sscanf for all string to double conversions that are supposed to
-**   be locale independent
-**
-** Revision 1.4  2002/05/24 09:48:29  joergr
-** Added "const" modifier to char pointer to avoid warnings reported by gcc
-** 2.95.3 with additional options.
-**
-** Revision 1.3  2000/03/03 14:02:52  meichel
-** Implemented library support for redirecting error messages into memory
-**   instead of printing them to stdout/stderr for GUI applications.
-**
-** Revision 1.2  1998/11/27 12:42:10  joergr
-** Added copyright message to source files and changed CVS header.
-**
-**
-**
-*/

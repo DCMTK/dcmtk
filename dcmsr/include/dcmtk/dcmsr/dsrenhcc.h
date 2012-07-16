@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSREnhancedSRConstraintChecker
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:07 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -92,25 +85,3 @@ class DCMTK_DCMSR_EXPORT DSREnhancedSRConstraintChecker
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrenhcc.h,v $
- *  Revision 1.5  2012-01-06 09:13:07  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.4  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.3  2005-12-08 16:05:03  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.2  2003/10/09 12:56:42  joergr
- *  Added check for root template identifier when reading an SR document.
- *
- *  Revision 1.1  2003/09/15 14:22:04  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- */

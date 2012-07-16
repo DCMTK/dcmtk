@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:39 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -758,27 +751,3 @@ OFString DcmSpecificCharacterSet::convertToLengthLimitedOctalString(const char *
     // return string by-value (in order to avoid another parameter)
     return octalString;
 }
-
-/*
- *
- *  CVS/RCS Log:
- *  $Log: dcspchrs.cc,v $
- *  Revision 1.4  2011-11-08 15:51:39  joergr
- *  Added support for converting files, datasets and element values to any DICOM
- *  character set that does not require code extension techniques (if compiled
- *  with and supported by libiconv), not only to UTF-8 as before.
- *
- *  Revision 1.3  2011-11-02 16:18:36  joergr
- *  Fixed minor issue with wrong/insufficient log output in case of delimiters.
- *
- *  Revision 1.2  2011-11-01 14:54:05  joergr
- *  Added support for code extensions (escape sequences) according to ISO 2022
- *  to the character set conversion code.
- *
- *  Revision 1.1  2011-10-26 16:13:01  joergr
- *  Added helper class for converting between different DICOM character sets.
- *  This initial version only supports the conversion to UTF-8 (Unicode) and only
- *  from DICOM characters sets without code extension techniques (i.e. ISO 2022).
- *
- *
- */

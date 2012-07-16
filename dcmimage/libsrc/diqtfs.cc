@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 12:47:34 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -106,33 +99,3 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
 
   return EC_Normal;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diqtfs.cc,v $
- * Revision 1.7  2011-10-11 12:47:34  uli
- * Renamed myrand_r(int*) a to rand_r(int&).
- *
- * Revision 1.6  2011-10-11 09:57:42  uli
- * Move OFFileNameCreator::myrand_r to class OFStandard.
- *
- * Revision 1.5  2010-10-14 13:14:14  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2005/12/08 15:42:29  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2003/12/17 16:34:57  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.2  2002/11/27 14:16:58  meichel
- * Adapted module dcmimage to use of new header file ofstdinc.h
- *
- * Revision 1.1  2002/01/25 13:32:10  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

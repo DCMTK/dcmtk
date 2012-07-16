@@ -17,13 +17,6 @@
  *
  *  Purpose: (STATUS: OK)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -75,45 +68,3 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
   }
   return EPI_Unknown;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: djutils.cc,v $
- * Revision 1.10  2012-02-15 14:50:42  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.9  2011-04-18 07:00:59  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.8  2010-11-01 08:55:56  uli
- * Moved variable declarations in front of their loop.
- *
- * Revision 1.7  2010-10-20 07:41:35  uli
- * Made sure isalpha() & friends are only called with valid arguments.
- *
- * Revision 1.6  2010-10-14 13:14:22  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2009-10-07 12:44:34  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.4  2005-12-08 15:43:51  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2005/11/30 14:13:14  onken
- * Added OFCondition constant for "unsupported color space conversions"
- *
- * Revision 1.2  2002/11/27 15:40:01  meichel
- * Adapted module dcmjpeg to use of new header file ofstdinc.h
- *
- * Revision 1.1  2001/11/13 15:58:35  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

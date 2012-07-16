@@ -17,13 +17,6 @@
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMJPLS_DJLSUTILS_H
@@ -156,64 +149,3 @@ extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSUnsupportedImageType;
 extern DCMTK_DCMJPLS_EXPORT const OFConditionConst EC_JLSTooMuchCompressedData;
 
 #endif
-
-/*
- * CVS/RCS Log:
- * $Log: djlsutil.h,v $
- * Revision 1.11  2012-02-15 14:50:42  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.10  2011-12-14 10:55:35  uli
- * Add some changes which were missing in the previous commit.
- *
- * Revision 1.9  2011-12-14 10:44:09  uli
- * Make it possible to rightly build dcmjpls as a DLL
- *
- * Revision 1.8  2011-04-18 07:00:59  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.7  2011-02-25 11:54:03  uli
- * Move the CharLS version string to a central place.
- *
- * Revision 1.6  2010-10-14 13:17:19  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2010-03-01 10:35:28  uli
- * Renamed include guards to avoid name clash with e.g. dcmjpeg.
- *
- * Revision 1.4  2010-02-25 08:50:38  uli
- * Updated to latest CharLS version.
- *
- * Revision 1.3  2009-10-07 13:16:47  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.2  2009-07-31 09:05:43  meichel
- * Added more detailed error messages, minor code clean-up
- *
- * Revision 1.1  2009-07-29 14:46:46  meichel
- * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
- *
- * Revision 1.2  2007-06-20 12:37:37  meichel
- * Completed implementation of encoder, which now supports lossless
- *   "raw" and "cooked" and near-lossless "cooked" modes.
- *
- * Revision 1.1  2007/06/15 14:35:45  meichel
- * Renamed CMake project and include directory from dcmjpgls to dcmjpls
- *
- * Revision 1.4  2007/06/15 10:39:15  meichel
- * Completed implementation of decoder, which now correctly processes all
- *   of the NEMA JPEG-LS sample images, including fragmented frames.
- *
- * Revision 1.3  2007/06/14 12:36:14  meichel
- * Further code clean-up. Updated doxygen comments.
- *
- * Revision 1.2  2007/06/13 16:41:07  meichel
- * Code clean-up and removal of dead code
- *
- *
- */

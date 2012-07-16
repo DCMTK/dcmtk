@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: SiNullProfile
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:14:12 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef SINULLPR_H
@@ -85,27 +78,3 @@ public:
 
 #endif
 #endif
-
-/*
- *  $Log: sinullpr.h,v $
- *  Revision 1.6  2011-12-14 12:14:12  uli
- *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
- *
- *  Revision 1.5  2010-10-14 13:17:25  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.4  2005-12-08 16:04:40  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.3  2003/06/04 14:21:03  meichel
- *  Simplified include structure to avoid preprocessor limitation
- *    (max 32 #if levels) on MSVC5 with STL.
- *
- *  Revision 1.2  2001/06/01 15:50:49  meichel
- *  Updated copyright header
- *
- *  Revision 1.1  2000/11/07 16:48:56  meichel
- *  Initial release of dcmsign module for DICOM Digital Signatures
- *
- *
- */

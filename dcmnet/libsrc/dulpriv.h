@@ -63,10 +63,6 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-**
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:37 $
-** Revision:      $Revision: 1.11 $
-** Status:        $State: Exp $
 */
 
 #ifndef DULPRIVATE_H
@@ -116,49 +112,3 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,
 		DUL_BLOCKOPTIONS block, int timeout, unsigned char *type);
 
 #endif
-
-/*
-** CVS Log
-** $Log: dulpriv.h,v $
-** Revision 1.11  2010-12-01 08:26:37  joergr
-** Added OFFIS copyright header (beginning with the year 1994).
-**
-** Revision 1.10  2010-10-14 13:19:29  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.9  2009-11-18 11:53:59  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.8  2005-12-08 15:48:09  meichel
-** Updated Makefiles to correctly install header files
-**
-** Revision 1.7  2004/02/25 12:31:17  meichel
-** Added global option flag for compatibility with very old DCMTK releases in the
-**   DICOM upper layer and ACSE code. Default is automatic handling, which should
-**   work in most cases.
-**
-** Revision 1.6  2001/10/12 10:18:41  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.5  2001/09/26 12:29:04  meichel
-** Implemented changes in dcmnet required by the adaptation of dcmdata
-**   to class OFCondition.  Removed some unused code.
-**
-** Revision 1.4  2000/03/03 14:11:26  meichel
-** Implemented library support for redirecting error messages into memory
-**   instead of printing them to stdout/stderr for GUI applications.
-**
-** Revision 1.3  1997/07/21 08:47:25  andreas
-** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-**   with one unique boolean type OFBool.
-**
-** Revision 1.2  1997/01/13 15:53:13  hewett
-** Added missing function prototypes (required for CodeWarrior 10).
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/

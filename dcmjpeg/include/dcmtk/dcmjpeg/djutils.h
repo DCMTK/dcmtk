@@ -17,13 +17,6 @@
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJUTILS_H
@@ -218,42 +211,3 @@ public:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djutils.h,v $
- * Revision 1.9  2012-02-15 14:50:42  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.8  2011-12-14 10:33:21  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.7  2011-04-18 07:00:58  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.6  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2010-03-24 14:58:48  joergr
- * Added new options for the color space conversion during decompression based
- * on the color model that is "guessed" by the underlying JPEG library (IJG).
- *
- * Revision 1.4  2009-10-07 12:44:33  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.3  2005-12-08 16:59:38  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2005/11/30 14:13:13  onken
- * Added OFCondition constant for "unsupported color space conversions"
- *
- * Revision 1.1  2001/11/13 15:56:30  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

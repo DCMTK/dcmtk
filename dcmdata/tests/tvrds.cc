@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for class DcmDecimalString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:15 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -96,20 +89,3 @@ OFTEST(dcmdata_decimalString_4)
     OFCHECK(decStr.getFloat64Vector(doubleVals).bad());
     OFCHECK_EQUAL(doubleVals.size(), 4);
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tvrds.cc,v $
- * Revision 1.3  2011-10-18 14:00:15  joergr
- * Added support for embedded NULL bytes in string element values.
- *
- * Revision 1.2  2011-10-13 15:12:12  joergr
- * Commented out 2nd test since the required "dcmdata" method is not yet there.
- *
- * Revision 1.1  2011-10-13 13:44:02  joergr
- * Added tests for class DcmDecimalString, especially for getFloat64Vector().
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose: 
  *    class DcmUIDHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -130,28 +123,6 @@ OFBool DcmUIDHandler::isValidUID() const
       ++c;
     } while (*c);
     return OFTrue;
-  }  
+  }
   return OFFalse;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: dccfuidh.cc,v $
- * Revision 1.4  2010-10-14 13:14:28  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2010-06-25 09:15:19  uli
- * Fixed issues with compiling with HAVE_STD_STRING.
- *
- * Revision 1.2  2005-12-08 15:44:33  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2003/06/10 14:30:15  meichel
- * Initial release of class DcmAssociationConfiguration and support
- *   classes. This class maintains a list of association negotiation
- *   profiles that can be addressed by symbolic keys. The profiles may
- *   be read from a configuration file.
- *
- *
- */

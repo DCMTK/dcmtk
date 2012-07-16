@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSGraphicObject
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:50 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVPSGR_H
@@ -145,42 +138,3 @@ private:
 };
 
 #endif
-
-/*
- *  $Log: dvpsgr.h,v $
- *  Revision 1.11  2012-01-06 10:05:50  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.10  2010-10-14 13:16:36  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.9  2010-10-07 14:31:35  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved).
- *
- *  Revision 1.8  2009-11-24 14:12:57  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.7  2005-12-08 16:03:47  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.6  2001/09/26 15:36:11  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.5  2001/06/01 15:50:16  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/06/02 16:00:47  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.3  2000/03/08 16:28:52  meichel
- *  Updated copyright header.
- *
- *  Revision 1.2  1998/12/14 16:10:30  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:28  meichel
- *  Initial Release.
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:33 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -870,68 +863,3 @@ OFCondition DVSignatureHandler::createSignature(
 }
 
 #endif
-
-
-/*
- *  $Log: dvsighdl.cc,v $
- *  Revision 1.17  2010-10-14 13:14:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2010-03-01 09:08:49  uli
- *  Removed some unnecessary include directives in the headers.
- *
- *  Revision 1.15  2006-08-15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.14  2005/12/08 15:46:59  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.13  2004/02/04 15:57:49  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log.
- *
- *  Revision 1.12  2002/12/20 14:52:00  wilkens
- *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
- *  compiler SC 2.0.1.
- *
- *  Revision 1.11  2002/05/02 14:10:22  joergr
- *  Added support for standard and non-standard string streams (which one is
- *  supported is detected automatically via the configure mechanism).
- *
- *  Revision 1.10  2002/04/16 14:02:23  joergr
- *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *  Revision 1.9  2001/12/04 18:02:25  meichel
- *  Adapted dcmpstat signature code to changed interface in dcmsign
- *
- *  Revision 1.8  2001/09/26 15:36:36  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.7  2001/06/05 10:30:56  joergr
- *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
- *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
- *  version does not define _WIN32 any more.
- *
- *  Revision 1.6  2001/05/25 10:07:35  meichel
- *  Modified dcmpstat signature handler to also compile without OpenSSL
- *
- *  Revision 1.5  2001/02/13 09:55:45  joergr
- *  Minor purifications in "signature validation overview" HTML page.
- *
- *  Revision 1.4  2001/01/29 17:34:01  joergr
- *  Fixed bug in createSignature method.
- *
- *  Revision 1.3  2001/01/29 14:55:47  meichel
- *  Added new methods for creating signatures and checking the signature
- *    status in module dcmpstat.
- *
- *  Revision 1.2  2001/01/26 10:43:14  meichel
- *  Introduced additional (fourth) status flag for signature validation
- *    describing signatures that are valid but untrustworthy (unknown CA).
- *
- *  Revision 1.1  2001/01/25 15:18:10  meichel
- *  Added initial support for verification of digital signatures
- *    in presentation states, images and structured reports to module dcmpstat.
- *
- *
- */

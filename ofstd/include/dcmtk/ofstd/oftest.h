@@ -22,13 +22,6 @@
  *
  *  Purpose: Provide a test framework for the toolkit
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-19 08:41:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -523,33 +516,3 @@ public: \
 //@}
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: oftest.h,v $
- * Revision 1.7  2012-06-19 08:41:09  joergr
- * Replaced use of OFListIterator by OFListConstIterator for variable
- * declaration in order to compile when HAVE_STL or HAVE_STL_LIST is defined.
- *
- * Revision 1.6  2012-06-04 06:58:57  uli
- * Added an 'exhaustive' test mode for running slow tests.
- *
- * Revision 1.5  2012-04-25 15:12:54  joergr
- * Now, also error log messages are disabled by default.
- *
- * Revision 1.4  2011-07-06 14:28:46  uli
- * Changed the default log level for tests to ERROR.
- *
- * Revision 1.3  2011-06-29 16:33:41  joergr
- * Fixed various issues that are reported when compiled with "gcc -Weffc++".
- *
- * Revision 1.2  2011-06-08 07:11:11  uli
- * Corrected some file purpose descriptions.
- *
- * Revision 1.1  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSGraphicObject
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -264,58 +257,3 @@ OFCondition DVPSGraphicObject::setFilled(OFBool filled)
   else result=graphicFilled.putString("N");
   return result;
 }
-
-
-/*
- *  $Log: dvpsgr.cc,v $
- *  Revision 1.14  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.13  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.12  2006-08-15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.11  2005/12/08 15:46:30  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.10  2001/09/26 15:36:27  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.9  2001/06/01 15:50:31  meichel
- *  Updated copyright header
- *
- *  Revision 1.8  2000/06/02 16:01:01  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.7  2000/05/31 13:02:37  meichel
- *  Moved dcmpstat macros and constants into a common header file
- *
- *  Revision 1.6  2000/03/08 16:29:05  meichel
- *  Updated copyright header.
- *
- *  Revision 1.5  2000/03/03 14:13:59  meichel
- *  Implemented library support for redirecting error messages into memory
- *    instead of printing them to stdout/stderr for GUI applications.
- *
- *  Revision 1.4  1999/07/22 16:39:59  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *  Revision 1.3  1998/12/22 17:57:16  meichel
- *  Implemented Presentation State interface for overlays,
- *    VOI LUTs, VOI windows, curves. Added test program that
- *    allows to add curve data to DICOM images.
- *
- *  Revision 1.2  1998/12/14 16:10:43  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:42  meichel
- *  Initial Release.
- *
- *
- */
-
-

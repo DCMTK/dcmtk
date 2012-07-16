@@ -17,13 +17,6 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJDIJG8_H
@@ -133,33 +126,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djdijg8.h,v $
- * Revision 1.7  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.6  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2009-11-18 16:17:54  uli
- * Use more than just the INFO log level.
- *
- * Revision 1.4  2005-12-08 16:59:24  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2005/11/30 14:08:57  onken
- * Added check to decline automatic IJG color space conversion of signed pixel
- * data, because IJG lib only handles unsigned input for conversions.
- *
- * Revision 1.2  2001/11/19 15:13:28  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:56:23  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for classes DcmDate, DcmTime and DcmDateTime
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:56 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -142,36 +135,3 @@ OFTEST(dcmdata_dateTime)
     dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/);
     OFCHECK_EQUAL(string, "2002-04-10 00:00:00");
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tvrdatim.cc,v $
- * Revision 1.9  2011-05-25 10:05:56  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.8  2010-10-14 13:15:07  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2006/08/15 15:50:10  meichel
- * Updated all code in module dcmdata to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.6  2005/12/08 15:42:14  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2004/02/04 16:53:23  joergr
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.4  2002/07/16 14:22:24  joergr
- * Added test case.
- *
- * Revision 1.3  2002/05/24 09:50:13  joergr
- * Renamed some parameters/variables to avoid ambiguities.
- *
- * Revision 1.2  2002/04/16 13:46:10  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *
- */

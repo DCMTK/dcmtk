@@ -17,13 +17,6 @@
  *
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-15 15:26:56 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 // this file is not and should not be protected against multiple inclusion
@@ -375,65 +368,3 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 #endif
 #endif
-
-
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofstdinc.h,v $
- * Revision 1.16  2011-11-15 15:26:56  joergr
- * Added support for the following standard headers: locale, map, memory, vector
- *
- * Revision 1.15  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.14  2010-03-11 08:37:24  uli
- * Use _vsnprintf() on MSVC6 since it doesn't know vsnprintf().
- *
- * Revision 1.13  2007-02-19 15:16:16  meichel
- * Namespace std is not imported into the default namespace anymore,
- *   unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.
- *
- * Revision 1.12  2006/08/14 16:42:02  meichel
- * Defined two new macros: STD_NAMESPACE is defined to std:: if the standard
- *   namespace exists and empty otherwise. OFendl is defined as std::endl if
- *   the standard namespace exists and as endl otherwise.
- *
- * Revision 1.11  2005/12/08 16:06:05  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.10  2004/08/03 11:45:09  meichel
- * Added macros INCLUDE_LIBC and INCLUDE_UNISTD that correctly include libc.h
- *
- * Revision 1.9  2004/05/07 10:46:32  meichel
- * Removed unneeded semicolon, reported by gcc 3.4
- *
- * Revision 1.8  2003/12/11 13:40:22  meichel
- * Added support for including <new> or <new.h>
- *
- * Revision 1.7  2003/10/13 13:38:44  meichel
- * Activated Borland stdlib workaround for compiler versions other than 4.
- *
- * Revision 1.6  2002/12/16 16:20:45  meichel
- * Added configure test that checks if extern "C" inclusion
- *   of <math.h> fails, e.g. on HP/UX 10 and WIN32
- *
- * Revision 1.5  2002/12/11 15:54:47  meichel
- * Added empty namespace std declaration, needed on MSVC.
- *
- * Revision 1.4  2002/11/28 17:16:39  meichel
- * Including <math.h> without extern "C" on Win32 to avoid problem with MSVC5.
- *
- * Revision 1.3  2002/11/27 17:21:18  meichel
- * Fixed bug in ofstack inclusion code
- *
- * Revision 1.2  2002/11/27 12:33:34  meichel
- * Now including <strings.h> even if <string.h> is present.
- *
- * Revision 1.1  2002/11/27 11:20:52  meichel
- * Added new file ofstdinc.h that encapsulates the inclusion
- *   of old style vs. ISO C++ standard header files.
- *
- *
- */

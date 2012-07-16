@@ -20,13 +20,6 @@
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *   Used to display an "overview" of available worklist files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2011-12-16 16:36:44 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -136,33 +129,3 @@ int main(int argc, char *argv[])
     } /* for */
     return 0;
 }
-
-
-/*
- * CVS/RCS Log
- *   $Log: readoviw.cc,v $
- *   Revision 1.6  2011-12-16 16:36:44  meichel
- *   Minor changes for MSVC6 compatibility
- *
- *   Revision 1.5  2011-07-06 11:08:48  uli
- *   Fixed various compiler warnings.
- *
- *   Revision 1.4  2010-10-14 13:20:03  joergr
- *   Updated copyright header. Added reference to COPYRIGHT file.
- *
- *   Revision 1.3  2010-08-09 13:32:08  joergr
- *   Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- *   the official "keyword" is used for the attribute name which results in a
- *   number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- *   Revision 1.2  2005/12/08 15:48:38  meichel
- *   Changed include path schema for all DCMTK header files
- *
- *   Revision 1.1  2002/12/03 12:17:35  wilkens
- *   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
- *   so that dcmwlm can now completely replace wlistctn in the public domain part
- *   of dcmtk. Pertaining to this replacement requirement, another optional return
- *   key attribute was integrated into the wlm utilities.
- *
- *
- */

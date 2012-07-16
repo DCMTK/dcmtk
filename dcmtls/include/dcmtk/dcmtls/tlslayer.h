@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:15 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef TLSLAYER_H
@@ -254,44 +247,3 @@ private:
 #endif /* WITH_OPENSSL */
 
 #endif
-
-/*
- *  $Log: tlslayer.h,v $
- *  Revision 1.11  2011-12-14 11:45:15  uli
- *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- *  Revision 1.10  2011-04-18 07:01:05  uli
- *  Use global variables for the logger objects. This removes the thread-unsafe
- *  static local variables which were used before.
- *
- *  Revision 1.9  2010-10-14 13:17:27  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.8  2009-11-18 12:11:19  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.7  2006-08-15 16:02:55  meichel
- *  Updated the code in module dcmtls to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.6  2005/12/08 16:05:38  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.5  2003/12/05 10:38:55  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved
- *  symbols).
- *
- *  Revision 1.4  2003/07/04 13:28:32  meichel
- *  Added include for ofstream.h, to make sure ofstream is correctly defined
- *
- *  Revision 1.3  2001/06/01 15:51:12  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/10/10 12:13:31  meichel
- *  Added routines for printing certificates and connection parameters.
- *
- *  Revision 1.1  2000/08/10 14:50:26  meichel
- *  Added initial OpenSSL support.
- *
- *
- */

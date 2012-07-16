@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -237,37 +230,3 @@ private:
 };
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: diqtctab.h,v $
- * Revision 1.8  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.7  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2005/12/08 16:01:45  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2003/12/23 12:15:40  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Updated copyright header.
- *
- * Revision 1.4  2003/07/04 13:25:40  meichel
- * Replaced forward declarations for OFString with explicit includes,
- *   needed when compiling with HAVE_STD_STRING
- *
- * Revision 1.3  2003/06/12 15:09:41  joergr
- * Fixed inconsistent API documentation reported by Doxygen.
- *
- * Revision 1.2  2002/05/15 09:53:29  meichel
- * Minor corrections to avoid warnings on Sun CC 2.0.1
- *
- * Revision 1.1  2002/01/25 13:32:04  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

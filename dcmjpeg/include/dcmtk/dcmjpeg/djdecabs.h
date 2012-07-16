@@ -17,13 +17,6 @@
  *
  *  Purpose: abstract base class for decompression classes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJDECABS_H
@@ -90,24 +83,3 @@ public:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djdecabs.h,v $
- * Revision 1.5  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.4  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2005-12-08 16:59:14  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2005/11/30 14:12:27  onken
- * Added decode() parameter denoting whether input is signed or unsigned
- *
- * Revision 1.1  2001/11/13 15:56:18  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

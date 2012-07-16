@@ -17,13 +17,6 @@
  *
  *  Purpose: Definitions for generating UUIDs, as defined by ITU-T X.667
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-05 13:52:27 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -368,23 +361,3 @@ OFBool OFUUID::operator==(const OFUUID& o) const
 
     return memcmp(&own, &other, sizeof(struct BinaryRepresentation)) == 0;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofuuid.cc,v $
- * Revision 1.4  2012-01-05 13:52:27  joergr
- * Added explicit type casts to keep VisualStudio 2005 quiet.
- *
- * Revision 1.3  2011-12-07 16:43:26  joergr
- * Added explicit type cast to keep VisualStudio 2008 from moaning. Other fixes.
- *
- * Revision 1.2  2011-12-07 14:25:53  uli
- * Could someone please hand me a brown paper bag?
- *
- * Revision 1.1  2011-12-07 14:16:28  uli
- * Added a new class for generating Universally Unique Identifiers.
- *
- *
- */

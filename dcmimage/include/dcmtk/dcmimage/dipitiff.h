@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -151,36 +144,3 @@ class DCMTK_DCMIMAGE_EXPORT DiTIFFPlugin
 
 #endif
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dipitiff.h,v $
- * Revision 1.8  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.7  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2010-03-01 09:08:46  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.5  2005-12-08 16:01:43  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.4  2003/12/17 18:18:08  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols).
- *
- * Revision 1.3  2002/09/19 08:34:53  joergr
- * Added static method getLibraryVersionString().
- *
- * Revision 1.2  2001/12/06 10:10:59  meichel
- * Removed references to tiffconf.h which does not exist on all installations
- *
- * Revision 1.1  2001/11/30 16:47:56  meichel
- * Added TIFF export option to dcm2pnm and dcmj2pnm
- *
- *
- */

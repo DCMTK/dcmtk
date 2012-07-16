@@ -70,13 +70,6 @@
 ** Purpose:
 **      Supplementary DUL functions.
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:36 $
-** CVS/RCS Revision:    $Revision: 1.17 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
 */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -170,74 +163,3 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 
     return assocWaiting;
 }
-
-/*
-** CVS Log
-** $Log: dulextra.cc,v $
-** Revision 1.17  2010-12-01 08:26:36  joergr
-** Added OFFIS copyright header (beginning with the year 1994).
-**
-** Revision 1.16  2010-10-14 13:14:29  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.15  2005/12/08 15:44:50  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.14  2003/07/03 14:21:10  meichel
-** Added special handling for FD_SET() on MinGW, which expects an
-**   unsigned first argument.
-**
-** Revision 1.13  2002/11/27 13:04:44  meichel
-** Adapted module dcmnet to use of new header file ofstdinc.h
-**
-** Revision 1.12  2001/10/12 10:18:38  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.11  2000/08/10 14:50:57  meichel
-** Added initial OpenSSL support.
-**
-** Revision 1.10  2000/02/23 15:12:46  meichel
-** Corrected macro for Borland C++ Builder 4 workaround.
-**
-** Revision 1.9  2000/02/01 10:24:13  meichel
-** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
-**   workaround for bug in compiler header files.
-**
-** Revision 1.8  1999/01/07 14:25:03  meichel
-** Changed sequence of include files in some dcmnet modules
-**   to keep the Unixware compiler happy.
-**
-** Revision 1.7  1997/07/21 08:47:22  andreas
-** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-**   with one unique boolean type OFBool.
-**
-** Revision 1.6  1997/07/04 11:44:34  meichel
-** Configure now also tests <sys/select.h> if available
-**   when searching for a select() prototype.
-**   Updated files using select() to include <sys/select.h> and
-**   <sys/types.h> if available (needed for AIX).
-**
-** Revision 1.5  1996/12/03 15:29:48  meichel
-** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
-**
-** Revision 1.4  1996/06/20 07:35:50  hewett
-** Removed inclusion of system header already included by dcompat.h
-** and made sure that dcompat.h is always included (via dicom.h).
-**
-** Revision 1.3  1996/05/03 10:31:54  hewett
-** Move some common system include files out to include/dcompat.h which were
-** causing problems due to multiple inclusion on some machines.
-**
-** Revision 1.2  1996/04/25 16:11:19  hewett
-** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
-** architectures).  Added some protection to inclusion of sys/socket.h (due
-** to MIPS/Ultrix).
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/

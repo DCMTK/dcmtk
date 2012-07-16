@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:02 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -327,62 +320,3 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrcsidl.h,v $
- *  Revision 1.16  2012-06-11 08:53:02  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.15  2012-01-06 09:13:05  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.14  2011-12-09 16:09:50  joergr
- *  Fixed various comments (Doxygen documentation).
- *
- *  Revision 1.13  2011-08-02 06:26:31  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.12  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2010-02-22 11:39:55  uli
- *  Remove some unneeded includes.
- *
- *  Revision 1.10  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.9  2007-11-15 16:33:19  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.8  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.7  2006/05/11 09:18:21  joergr
- *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
- *
- *  Revision 1.6  2005/12/08 16:04:57  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.5  2004/11/22 16:39:09  meichel
- *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
- *
- *  Revision 1.4  2004/04/07 12:02:53  joergr
- *  Added missing member variables to constructor's member initialization list
- *  to avoid warnings reported by gcc.
- *
- *  Revision 1.3  2004/01/16 09:57:33  joergr
- *  Added clear() method to struct ItemStruct.
- *
- *  Revision 1.2  2003/12/16 16:18:35  joergr
- *  Added note on coding scheme identfication and private coding schemes.
- *
- *  Revision 1.1  2003/09/10 13:16:13  joergr
- *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
- *  required by CP 324.
- *
- *
- */

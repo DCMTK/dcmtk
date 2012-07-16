@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomCIELABFunction (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:50:21 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -150,60 +143,3 @@ class DCMTK_DCMIMGLE_EXPORT DiCIELABFunction
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diciefn.h,v $
- * Revision 1.14  2011-12-14 09:50:21  uli
- * Make it possible to properly build dcmimgle as a DLL.
- *
- * Revision 1.13  2010-10-14 13:16:25  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2005/12/08 16:47:33  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.11  2003/12/08 18:15:58  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.10  2002/07/19 08:24:21  joergr
- * Enhanced/corrected comments.
- *
- * Revision 1.9  2002/07/18 12:26:30  joergr
- * Added support for hardcopy and softcopy input devices (camera and scanner).
- * Added polygonal curve fitting algorithm as an alternate interpolation
- * method.
- *
- * Revision 1.8  2002/07/02 16:23:41  joergr
- * Added support for hardcopy devices to the calibrated output routines.
- *
- * Revision 1.7  2001/06/01 15:49:39  meichel
- * Updated copyright header
- *
- * Revision 1.6  2000/03/08 16:24:13  meichel
- * Updated copyright header.
- *
- * Revision 1.5  2000/03/06 18:18:59  joergr
- * Moved get-method to base class, renamed method and made method virtual to
- * avoid hiding of methods (reported by Sun CC 4.2).
- *
- * Revision 1.4  1999/10/18 15:05:49  joergr
- * Enhanced command line tool dcmdspfn (added new options).
- *
- * Revision 1.3  1999/10/18 10:15:49  joergr
- * Moved min/max value determination to display function base class. Now the
- * actual min/max values are also used for GSDFunction (instead of first and
- * last luminance value).
- *
- * Revision 1.2  1999/09/17 12:08:22  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- *
- * Revision 1.1  1999/09/10 08:50:22  joergr
- * Added support for CIELAB display function. Restructured class hierarchy
- * for display functions.
- *
- *
- */

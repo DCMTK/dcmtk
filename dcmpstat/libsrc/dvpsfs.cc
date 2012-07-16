@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -839,63 +832,3 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
   sp.overridePresentationLUTSettings(illumination, reflectedAmbientLight, 
      referencedPresentationLUTInstanceUID, referencedPresentationLUTAlignment);
 }
-
-/*
- *  $Log: dvpsfs.cc,v $
- *  Revision 1.17  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.15  2006-08-15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.14  2005/12/08 15:46:25  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.13  2003/06/04 12:30:28  meichel
- *  Added various includes needed by MSVC5 with STL
- *
- *  Revision 1.12  2003/03/12 17:34:22  meichel
- *  Updated DcmObject::print() flags
- *
- *  Revision 1.11  2002/11/27 15:48:09  meichel
- *  Adapted module dcmpstat to use of new header file ofstdinc.h
- *
- *  Revision 1.10  2001/11/28 13:56:53  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.9  2001/09/26 15:36:24  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.8  2001/06/01 15:50:30  meichel
- *  Updated copyright header
- *
- *  Revision 1.7  2001/05/25 10:07:56  meichel
- *  Corrected some DIMSE error status codes for Print SCP
- *
- *  Revision 1.6  2000/09/06 08:55:36  meichel
- *  Updated Print SCP to accept and silently ignore group length attributes.
- *
- *  Revision 1.5  2000/06/08 10:44:34  meichel
- *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
- *    Empty film boxes (pages) are not written to file anymore.
- *
- *  Revision 1.4  2000/06/07 13:17:06  meichel
- *  now using DIMSE status constants and log facilities defined in dcmnet
- *
- *  Revision 1.3  2000/06/02 16:00:59  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.2  2000/06/02 12:45:05  joergr
- *  Removed const type specifier to avoid compiler warnings reported by MSVC.
- *
- *  Revision 1.1  2000/05/31 12:58:11  meichel
- *  Added initial Print SCP support
- *
- *
- */
-

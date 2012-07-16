@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:14:12 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -824,71 +817,3 @@ OFCondition DcmSignature::getCurrentDataElementsSigned(DcmAttributeTag& desig)
 DCMTK_DCMSIGN_EXPORT int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
-
-/*
- *  $Log: dcsignat.cc,v $
- *  Revision 1.7  2011-12-14 12:14:12  uli
- *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
- *
- *  Revision 1.6  2010-10-14 13:14:38  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.5  2010-03-01 09:08:50  uli
- *  Removed some unnecessary include directives in the headers.
- *
- *  Revision 1.4  2009-04-29 12:21:42  joergr
- *  Fixed memory leak in method verifyCurrent().
- *
- *  Revision 1.3  2005/12/08 15:47:17  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.2  2003/07/09 13:59:50  meichel
- *  Removed unused variable
- *
- *  Revision 1.1  2002/12/20 14:53:35  wilkens
- *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
- *  compiler SC 2.0.1.
- *
- *  Revision 1.12  2002/12/16 12:57:48  meichel
- *  Minor modification to shut up linker on MacOS X when compiling
- *    without OpenSSL support
- *
- *  Revision 1.11  2002/08/27 17:21:01  meichel
- *  Initial release of new DICOM I/O stream classes that add support for stream
- *    compression (deflated little endian explicit VR transfer syntax)
- *
- *  Revision 1.10  2002/08/20 12:22:26  meichel
- *  Adapted code to new loadFile and saveFile methods, thus removing direct
- *    use of the DICOM stream classes.
- *
- *  Revision 1.9  2002/04/11 12:58:09  joergr
- *  Replaced direct call of system routines by new standard date and time
- *  functions.
- *
- *  Revision 1.8  2002/01/08 10:28:16  joergr
- *  Corrected spelling of function dcmGenerateUniqueIdentifier().
- *
- *  Revision 1.7  2001/12/04 18:41:08  meichel
- *  Updated DcmItem::insert() calls to always remove old element if present
- *    (which should never be the case anyway).
- *
- *  Revision 1.6  2001/11/16 15:50:52  meichel
- *  Adapted digital signature code to final text of supplement 41.
- *
- *  Revision 1.5  2001/09/26 14:30:23  meichel
- *  Adapted dcmsign to class OFCondition
- *
- *  Revision 1.4  2001/06/01 15:50:52  meichel
- *  Updated copyright header
- *
- *  Revision 1.3  2000/12/12 16:46:32  meichel
- *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
- *
- *  Revision 1.2  2000/11/07 18:07:07  joergr
- *  Minor code purifications to keep Sun CC 2.0.1 quiet.
- *
- *  Revision 1.1  2000/11/07 16:49:02  meichel
- *  Initial release of dcmsign module for DICOM Digital Signatures
- *
- *
- */

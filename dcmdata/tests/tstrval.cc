@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for various "string value" methods
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:03:05 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -72,15 +65,3 @@ OFTEST(dcmdata_getValueFromString)
     OFCHECK_EQUAL(DcmElement::getValueFromString("\\aa\\b\0bb\\", 4, 9, str), 9);
     OFCHECK_EQUAL(str, OFString("b\0bb", 4));
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tstrval.cc,v $
- * Revision 1.1  2011-10-18 14:03:05  joergr
- * Added test program for various "string value" methods.
- *
- *
- *
- */

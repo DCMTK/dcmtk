@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for character encoding conversion (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-24 16:12:44 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -496,52 +489,3 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
     }
     return count;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofchrenc.cc,v $
- * Revision 1.12  2012-05-24 16:12:44  joergr
- * Added Windows-specific support for converting between wide character encoding
- * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
- *
- * Revision 1.11  2012-02-28 08:35:37  joergr
- * Fixed compilation issue on MinGW/MSYS systems (modified #ifdef statement).
- *
- * Revision 1.10  2011-11-17 16:13:19  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.9  2011-11-09 14:05:39  joergr
- * Avoid wrong error message / status code that a conversion descriptor cannot
- * be closed when libiconv is not available.
- *
- * Revision 1.8  2011-10-28 09:32:48  joergr
- * Restructured code of OFCharacterEncoding in order to allow particular classes
- * to access more low-level functions, e.g. for opening multiple conversion
- * descriptors at the same time. This will be needed for ISO 2022 support.
- *
- * Revision 1.7  2011-10-27 09:21:39  uli
- * Fixed some compiler warnings when libiconv was not found.
- *
- * Revision 1.6  2011-10-25 17:14:00  joergr
- * Be prepared that older versions of locale_charset() might return NULL.
- *
- * Revision 1.5  2011-10-25 07:10:04  joergr
- * Added new convert method that accepts a C string and its length as input.
- *
- * Revision 1.4  2011-10-24 15:07:34  joergr
- * Added static method counting the characters in a given UTF-8 string.
- *
- * Revision 1.3  2011-10-24 13:03:09  joergr
- * Changed name of status code constant for "illegal character encoding".
- *
- * Revision 1.2  2011-10-24 12:49:34  joergr
- * Made sure that iconvctl() is really supported by the libiconv toolkit.
- *
- * Revision 1.1  2011-10-21 09:14:59  joergr
- * Added class for managing and converting between different character encodings
- * based on the libiconv toolkit.
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:50 $
- *  CVS/RCS Revision: $Revision: 1.25 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVPSIB_H
@@ -388,89 +381,3 @@ private:
 };
 
 #endif
-
-/*
- *  $Log: dvpsib.h,v $
- *  Revision 1.25  2012-01-06 10:05:50  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.24  2010-10-14 13:16:36  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.23  2010-10-07 14:31:35  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved).
- *
- *  Revision 1.22  2009-11-24 14:12:57  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.21  2005-12-08 16:03:50  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.20  2001/09/26 15:36:12  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.19  2001/06/01 15:50:17  meichel
- *  Updated copyright header
- *
- *  Revision 1.18  2000/07/04 15:58:01  joergr
- *  Added support for overriding the presentation LUT settings made for the
- *  image boxes.
- *
- *  Revision 1.17  2000/06/14 11:28:13  joergr
- *  Added methods to access the attributes Polarity and Requested Image Size.
- *
- *  Revision 1.16  2000/06/08 10:44:29  meichel
- *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
- *    Empty film boxes (pages) are not written to file anymore.
- *
- *  Revision 1.15  2000/06/07 14:17:41  joergr
- *  Added methods to access the image polarity attribute.
- *
- *  Revision 1.14  2000/06/02 16:00:47  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.13  2000/05/31 12:56:38  meichel
- *  Added initial Print SCP support
- *
- *  Revision 1.12  2000/03/08 16:28:53  meichel
- *  Updated copyright header.
- *
- *  Revision 1.11  1999/10/07 17:21:47  meichel
- *  Reworked management of Presentation LUTs in order to create tighter
- *    coupling between Softcopy and Print.
- *
- *  Revision 1.10  1999/09/24 15:23:44  meichel
- *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
- *    when operating in spool mode.
- *
- *  Revision 1.9  1999/09/17 14:33:56  meichel
- *  Completed print spool functionality including Supplement 22 support
- *
- *  Revision 1.8  1999/09/15 17:43:27  meichel
- *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
- *    and dcmpsprt applications.
- *
- *  Revision 1.7  1999/09/10 12:46:46  meichel
- *  Added implementations for a number of print API methods.
- *
- *  Revision 1.6  1999/09/09 14:57:32  thiel
- *  Added methods for print spooler
- *
- *  Revision 1.5  1999/09/01 16:14:40  meichel
- *  Added support for requested image size to print routines
- *
- *  Revision 1.4  1999/08/31 14:09:10  meichel
- *  Added get/set methods for stored print attributes
- *
- *  Revision 1.3  1999/08/27 15:57:55  meichel
- *  Added methods for saving hardcopy images and stored print objects
- *    either in file or in the local database.
- *
- *  Revision 1.2  1999/08/26 09:30:59  thiel
- *  Add extensions for the usage of the StoredPrint
- *
- *  Revision 1.1  1999/07/30 13:34:47  meichel
- *  Added new classes managing Stored Print objects
- *
- *
- */

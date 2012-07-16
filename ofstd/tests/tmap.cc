@@ -17,13 +17,6 @@
  *
  *  Purpose: test programm for class OFMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 07:14:59 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -79,25 +72,3 @@ OFTEST(ofstd_OFMap)
     OFCHECK_EQUAL(m.size(), 2);
     OFCHECK_EQUAL(m[3], 3);
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tmap.cc,v $
- * Revision 1.4  2011-11-01 07:14:59  joergr
- * Fixed typo in a comment.
- *
- * Revision 1.3  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.2  2010-10-14 13:15:15  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.1  2009-09-29 13:59:34  uli
- * Fix an invalid iterator use in OFMap. A iterator was used after it was passed
- * to erase().
- * Add a test case which verifies some of OFMap's implementation.
- *
- *
- */

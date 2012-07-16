@@ -17,13 +17,6 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 14:15:16 $
- *  CVS/RCS Revision: $Revision: 1.23 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
@@ -566,94 +559,3 @@ OFCondition DcmFindSCU::findSCU(
     /* return */
     return cond;
 }
-
-
-/*
- * CVS Log
- * $Log: dfindscu.cc,v $
- * Revision 1.23  2011-10-04 14:15:16  joergr
- * Avoid double output of particular error messages to the logger.
- *
- * Revision 1.22  2011-09-29 13:12:01  joergr
- * Introduced new network-related error codes, e.g. in case that none of the
- * proposed presentation contexts were accepted by the association acceptor.
- *
- * Revision 1.21  2011-09-29 09:04:25  joergr
- * Output message ID of request and DIMSE status of response messages to the
- * INFO logger (if DEBUG level is not enabled). All tools and classes in the
- * "dcmnet" module now use (more or less) the same output in verbose mode.
- *
- * Revision 1.20  2011-09-22 08:46:29  joergr
- * Output status detail information (if any) to the DEBUG logger and not to the
- * WARN or INFO logger. This is now consistent for all DCMTK network tools.
- *
- * Revision 1.19  2011-09-21 13:09:22  joergr
- * Added explicit typecast in order to correctly output the presentation context
- * ID to the logger.
- *
- * Revision 1.18  2011-09-19 10:31:56  joergr
- * Made output of C-FIND responses to logger more consistent with movescu.
- *
- * Revision 1.17  2011-08-19 09:35:47  joergr
- * Added support for specifying the directory where the response messages are
- * stored. Also output the name of the created file to the logger.
- *
- * Revision 1.16  2011-08-19 07:40:32  joergr
- * Output C-FIND response messages to a separate logger (on INFO level).
- *
- * Revision 1.15  2011-04-18 07:00:59  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.14  2011-03-24 14:54:22  joergr
- * Added support for deflated transfer syntax (zlib compression) on outgoing
- * associations.
- *
- * Revision 1.13  2010-11-01 10:42:44  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.12  2010-10-14 13:14:28  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.11  2010-09-09 09:46:33  joergr
- * Fixed wrong typecast on callback data in progressCallback() function.
- *
- * Revision 1.10  2010-05-18 16:15:43  joergr
- * Slightly modified log messages and log levels in order to be more consistent.
- * Replaced '\n' by OFendl in log messages.
- *
- * Revision 1.9  2010-01-26 13:39:13  uli
- * Use DIMSE_dumpMessage() for some more log messages.
- *
- * Revision 1.8  2009-11-18 11:53:59  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.7  2009-09-04 13:53:09  meichel
- * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
- *
- * Revision 1.6  2009-07-13 09:44:26  onken
- * Removed misleading comment about dcmnet DIMSE return code and changed
- * corresponding OFCondition check from EC_Normal to .good().
- *
- * Revision 1.5  2009-07-10 13:21:09  onken
- * Moved override key functionality to DcmPathProcessor.
- *
- * Revision 1.4  2009-07-08 16:14:32  onken
- * Added support for specifying tag paths as override keys.
- *
- * Revision 1.3  2007-10-19 10:56:33  onken
- * Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
- * tag-value combination if the value contained whitespace characters.
- *
- * Revision 1.2  2007/10/18 16:14:34  onken
- * - Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
- * tag-value combination if the value contained whitespace characters.
- *
- * Revision 1.1  2007/02/19 13:13:28  meichel
- * Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet
- *   library, and a short command line tool that only evaluates command line
- *   parameters and then makes use of this class. This facilitates re-use of the
- *   findscu code in other applications.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: codec parameter for RLE
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCRLECP_H
@@ -139,32 +132,3 @@ private:
 
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: dcrlecp.h,v $
- * Revision 1.7  2011-12-14 09:04:13  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.6  2010-10-14 13:15:42  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2009-11-04 09:58:07  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.4  2008-06-23 12:09:13  joergr
- * Fixed inconsistencies in Doxygen API documentation.
- *
- * Revision 1.3  2005/12/08 16:28:35  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2005/07/26 17:08:33  meichel
- * Added option to RLE decoder that allows to correctly decode images with
- *   incorrect byte order of byte segments (LSB instead of MSB).
- *
- * Revision 1.1  2002/06/06 14:52:35  meichel
- * Initial release of the new RLE codec classes
- *   and the dcmcrle/dcmdrle tools in module dcmdata
- *
- *
- */

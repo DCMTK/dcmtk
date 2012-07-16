@@ -18,13 +18,6 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class provider engines.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:14:13 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef WlmActivityManager_h
@@ -224,74 +217,3 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
 };
 
 #endif
-
-/*
-** CVS Log
-** $Log: wlmactmg.h,v $
-** Revision 1.19  2011-12-14 12:14:13  uli
-** Make it possible to precisely build dcmsign and dcmwlm as DLLs.
-**
-** Revision 1.18  2010-10-14 13:16:39  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.17  2009-11-24 10:40:01  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.16  2009-09-30 08:40:34  uli
-** Make dcmwlm's include headers self-sufficient by including all
-** needed headers directly.
-**
-** Revision 1.15  2006-12-15 14:49:21  onken
-** Removed excessive use char* and C-array in favour of OFString and
-** OFList. Simplified some implementation details.
-**
-** Revision 1.14  2006/08/14 15:30:58  onken
-** Added WIN32 multiprocess mode to wlmscpfs.
-**
-** Revision 1.13  2005/12/08 16:05:43  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.12  2005/11/17 13:45:39  meichel
-** Added command line options for DIMSE and ACSE timeouts
-**
-** Revision 1.11  2003/07/02 09:17:55  wilkens
-** Updated documentation to get rid of doxygen warnings.
-**
-** Revision 1.10  2002/12/16 11:08:36  wilkens
-** Added missing #include "osconfig.h" to certain files.
-**
-** Revision 1.9  2002/12/12 16:48:35  wilkens
-** Added some code to avoid compiler warning (unreachable code) on Sun CC 2.0.1.
-**
-** Revision 1.8  2002/08/05 09:09:59  wilkens
-** Modfified the project's structure in order to be able to create a new
-** application which contains both wlmscpdb and ppsscpdb.
-**
-** Revision 1.7  2002/07/17 13:10:37  wilkens
-** Corrected some minor logical errors in the wlmscpdb sources and completely
-** updated the wlmscpfs so that it does not use the original wlistctn sources
-** any more but standard wlm sources which are now used by all three variants
-** of wlmscps.
-**
-** Revision 1.6  2002/06/10 11:25:06  wilkens
-** Made some corrections to keep gcc 2.95.3 quiet.
-**
-** Revision 1.5  2002/04/18 14:20:09  wilkens
-** Modified Makefiles. Updated latest changes again. These are the latest
-** sources. Added configure file.
-**
-** Revision 1.4  2002/01/08 19:10:04  joergr
-** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
-** Currently only the "file version" of the worklist SCP is supported on
-** Unix systems.
-**
-** Revision 1.3  2002/01/08 17:45:34  joergr
-** Reformatted source files (replaced Windows newlines by Unix ones, replaced
-** tabulator characters by spaces, etc.)
-**
-** Revision 1.2  2002/01/08 17:35:39  joergr
-** Reworked database support after trials at the hospital (modfied by MC/JR on
-** 2002-01-08).
-**
-**
-*/

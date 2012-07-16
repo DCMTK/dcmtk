@@ -17,13 +17,6 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-09-30 14:41:58 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -747,91 +740,3 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
   } else return EC_MemoryExhausted;
   return EC_Normal;
 }
-
-/*
- * CVS/RCS Log:
- * $Log: djcodecd.cc,v $
- * Revision 1.16  2011-09-30 14:41:58  uli
- * Improved log output and moved to DEBUG log level.
- *
- * Revision 1.15  2010-10-14 13:14:24  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.14  2010-10-12 12:32:22  uli
- * Avoid redundant findAndGet*() calls.
- *
- * Revision 1.13  2010-10-12 10:17:32  uli
- * Added working implementation of DJLSDecoderBase::decodeFrame().
- *
- * Revision 1.12  2010-10-05 10:15:19  uli
- * Fixed all remaining warnings from -Wall -Wextra -pedantic.
- *
- * Revision 1.11  2010-10-05 08:25:41  uli
- * Update dcmjpls to newest CharLS snapshot.
- *
- * Revision 1.10  2010-09-24 13:40:18  joergr
- * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
- * resulting name changes are mainly caused by the fact that the corresponding
- * SOP Class is now retired.
- *
- * Revision 1.9  2010-08-19 08:04:29  uli
- * Removed unused variables.
- *
- * Revision 1.8  2010-01-19 15:19:06  uli
- * Made file names fit into 8.3 format.
- *
- * Revision 1.7  2009-11-25 13:56:33  joergr
- * Removed unused implementation of method determineDecompressedColorModel().
- *
- * Revision 1.6  2009-11-17 16:56:35  joergr
- * Added new method that allows for determining the color model of the
- * decompressed image.
- *
- * Revision 1.5  2009-10-07 13:16:47  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.4  2009-09-08 11:19:45  meichel
- * Fixed bug affecting decompression of images with 8 bits/sample on big
- *   endian machines
- *
- * Revision 1.3  2009-08-10 09:38:06  meichel
- * All decompression codecs now replace NumberOfFrames if larger than one
- *   or present in the original image.
- *
- * Revision 1.2  2009-07-31 09:05:43  meichel
- * Added more detailed error messages, minor code clean-up
- *
- * Revision 1.1  2009-07-29 14:46:47  meichel
- * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
- *
- * Revision 1.8  2008-08-15 09:19:57  meichel
- * Decoder now gracefully handles the case of faulty images where value of
- *   NumberOfFrames is larger than the number of compressed fragments, if and only
- *   if there is just a single fragment per frame.
- *
- * Revision 1.7  2008-05-29 10:54:05  meichel
- * Implemented new method DcmPixelData::getUncompressedFrame
- *   that permits frame-wise access to compressed and uncompressed
- *   objects without ever loading the complete object into main memory.
- *   For this new method to work with compressed images, all classes derived from
- *   DcmCodec need to implement a new method decodeFrame(). For now, only
- *   dummy implementations returning an error code have been defined.
- *
- * Revision 1.6  2007/06/20 12:37:23  meichel
- * Fixed include files and dependencies
- *
- * Revision 1.5  2007/06/15 14:35:45  meichel
- * Renamed CMake project and include directory from dcmjpgls to dcmjpls
- *
- * Revision 1.4  2007/06/15 10:39:15  meichel
- * Completed implementation of decoder, which now correctly processes all
- *   of the NEMA JPEG-LS sample images, including fragmented frames.
- *
- * Revision 1.3  2007/06/14 12:36:14  meichel
- * Further code clean-up. Updated doxygen comments.
- *
- * Revision 1.2  2007/06/13 16:41:07  meichel
- * Code clean-up and removal of dead code
- *
- *
- */

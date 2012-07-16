@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-15 08:04:58 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -90,15 +83,3 @@ OFTEST(dcmdata_uniqueIdentifier_2)
   OFCHECK(sopInstanceUID.getOFString(value, 1).good());
   OFCHECK_EQUAL(value, "5.6.7.8 ");
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tvrui.cc,v $
- * Revision 1.1  2011-11-15 08:04:58  joergr
- * Added regression tests for class DcmUniqueIdentifier.
- *
- *
- *
- */

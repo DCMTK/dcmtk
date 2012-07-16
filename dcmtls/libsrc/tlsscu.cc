@@ -17,13 +17,6 @@
  *
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
@@ -369,24 +362,3 @@ OFString DcmTLSSCU::getDHParam() const
 
 
 #endif // WITH_OPENSSL
-
-
-/*
-** CVS Log
-** $Log: tlsscu.cc,v $
-** Revision 1.5  2011-02-04 12:57:41  uli
-** Made sure all members are initialized in the constructor (-Weffc++).
-**
-** Revision 1.4  2010-12-16 08:34:06  joergr
-** Fixed initialization of OFString variable (reported by gcc 2.95.3).
-**
-** Revision 1.3  2010-10-14 13:14:46  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.2  2010-06-22 15:50:09  joergr
-** Introduced new enumeration type to be used for closeAssociation().
-**
-** Revision 1.1  2010-04-29 16:17:56  onken
-** Added new class DcmTLSSCU as base class for developing TLS-enabled SCUs.
-**
-*/

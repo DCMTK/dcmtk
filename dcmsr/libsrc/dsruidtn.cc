@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:07 $
- *  CVS/RCS Revision: $Revision: 1.24 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -146,90 +139,3 @@ OFCondition DSRUIDRefTreeNode::checkValue(const OFString &uidValue) const
         result = DcmUniqueIdentifier::checkStringValue(uidValue, "1");
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsruidtn.cc,v $
- *  Revision 1.24  2012-06-11 08:53:07  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.23  2011-03-22 16:55:19  joergr
- *  Added support for colored output to the print() method - Unix only.
- *
- *  Revision 1.22  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.21  2009-10-13 14:57:52  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.20  2007-11-15 16:43:43  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.19  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.18  2005/12/08 15:48:20  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.17  2003/09/15 14:13:42  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *  Revision 1.16  2003/08/07 17:29:13  joergr
- *  Removed libxml dependency from header files. Simplifies linking (MSVC).
- *
- *  Revision 1.15  2003/08/07 15:21:53  joergr
- *  Added brackets around "bitwise and" operator/operands to avoid warnings
- *  reported by MSVC5.
- *
- *  Revision 1.14  2003/08/07 14:15:38  joergr
- *  Added readXML functionality.
- *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
- *  is defined).
- *
- *  Revision 1.13  2003/06/04 14:26:54  meichel
- *  Simplified include structure to avoid preprocessor limitation
- *    (max 32 #if levels) on MSVC5 with STL.
- *
- *  Revision 1.12  2001/11/09 16:20:48  joergr
- *  Added preliminary support for Mammography CAD SR.
- *
- *  Revision 1.11  2001/10/10 15:30:06  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.10  2001/09/26 13:04:29  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.9  2001/05/07 16:14:26  joergr
- *  Updated CVS header.
- *
- *  Revision 1.8  2001/02/02 14:41:50  joergr
- *  Added new option to dsr2xml allowing to specify whether value and/or
- *  relationship type are to be encoded as XML attributes or elements.
- *
- *  Revision 1.7  2000/11/07 18:33:32  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.6  2000/11/01 16:37:07  joergr
- *  Added support for conversion to XML. Optimized HTML rendering.
- *
- *  Revision 1.5  2000/10/26 14:37:00  joergr
- *  Added support for "Comprehensive SR".
- *
- *  Revision 1.4  2000/10/23 15:04:47  joergr
- *  Added clear() method.
- *
- *  Revision 1.3  2000/10/18 17:24:22  joergr
- *  Moved read and write methods to base class.
- *
- *  Revision 1.2  2000/10/16 12:10:23  joergr
- *  Reformatted print output.
- *
- *  Revision 1.1  2000/10/13 07:52:28  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

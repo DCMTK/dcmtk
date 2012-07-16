@@ -17,13 +17,6 @@
  *
  *  Purpose: Implementation of DICOMDIR image support (plugin)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -124,22 +117,3 @@ OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: ddpiimpl.cc,v $
- *  Revision 1.4  2010-10-14 13:14:21  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.3  2009-11-25 13:36:05  joergr
- *  Adapted code for new approach to access individual frames of a DICOM image.
- *
- *  Revision 1.2  2005-12-08 15:43:24  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.1  2003/08/12 13:14:54  joergr
- *  Added plugable image support for the new DICOMDIR class.
- *
- *
- */

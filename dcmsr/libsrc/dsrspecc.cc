@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRSpectaclePrescriptionReportConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -87,16 +80,3 @@ OFBool DSRSpectaclePrescriptionReportConstraintChecker::checkContentRelationship
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrspecc.cc,v $
- *  Revision 1.2  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.1  2010-09-30 08:56:28  joergr
- *  Added support for the Spectacle Prescription Report IOD.
- *
- *
- */

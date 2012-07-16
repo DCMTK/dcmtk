@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-10 15:09:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -644,85 +637,3 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
         stream << tmpString;
     return stream;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: oftime.cc,v $
- * Revision 1.22  2012-05-10 15:09:11  joergr
- * Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
- * with additional flags.
- *
- * Revision 1.21  2011-11-30 08:35:09  joergr
- * Made setISOFormattedeTime() more robust with regard to input values. Fixed
- * an issue with determining the local time zone (introduced with last commit).
- *
- * Revision 1.20  2011-11-29 15:57:32  joergr
- * Added support for the optional time zone to setISOFormattedTime(). Also made
- * sure that all time zones in the range of -12 to +14 are regarded as valid.
- *
- * Revision 1.19  2011-08-16 13:51:36  joergr
- * Fixed wrong use of #if statement.
- *
- * Revision 1.18  2011-08-16 13:22:12  joergr
- * Replaced system-dependent checks by the defines for localtime_r and gmtime_r.
- *
- * Revision 1.17  2010-10-14 13:14:53  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.16  2009-08-19 11:55:45  meichel
- * Added additional includes needed for Sun Studio 11 on Solaris.
- *
- * Revision 1.15  2006-08-14 16:42:46  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.14  2005/12/08 15:49:03  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.13  2004/01/16 10:35:18  joergr
- * Added setISOFormattedXXX() methods for Date, Time and DateTime.
- *
- * Revision 1.12  2003/12/18 16:28:22  joergr
- * Fixed bug in timezone calculation (difference of local time from UTC).
- *
- * Revision 1.11  2003/12/17 15:23:18  joergr
- * Fixed bug/inconsistency in comparison operators of class OFTime. Now the
- * "time overflow" is handled correctly.
- *
- * Revision 1.10  2003/09/17 17:01:11  joergr
- * Renamed variable "string" to avoid name clash with STL class.
- *
- * Revision 1.9  2003/09/15 12:15:07  joergr
- * Made comparison operators const.
- *
- * Revision 1.8  2003/07/09 13:58:04  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.7  2002/12/04 10:40:50  meichel
- * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
- *   double to string conversions that are supposed to be locale independent
- *
- * Revision 1.6  2002/11/27 11:23:12  meichel
- * Adapted module ofstd to use of new header file ofstdinc.h
- *
- * Revision 1.5  2002/07/18 12:14:20  joergr
- * Corrected typos.
- *
- * Revision 1.4  2002/05/24 09:44:27  joergr
- * Renamed some parameters/variables to avoid ambiguities.
- *
- * Revision 1.3  2002/04/19 10:42:55  joergr
- * Added new helper routines to get the milli and micro seconds part as well as
- * the integral value of seconds.
- *
- * Revision 1.2  2002/04/15 09:41:52  joergr
- * Removed "include <sys/types.h>" from implementation file.
- * Added "include <windows.h>" for Windows systems.
- *
- * Revision 1.1  2002/04/11 12:14:34  joergr
- * Introduced new standard classes providing date and time functions.
- *
- *
- */

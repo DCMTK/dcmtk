@@ -17,13 +17,6 @@
  *
  *  Purpose: Contains preprocessor definitions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:49 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -43,12 +36,3 @@
 
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: dpdefine.h,v $
- * Revision 1.1  2012-01-06 10:05:49  uli
- * Make it possible to build dcmpstat as a DLL.
- *
- */

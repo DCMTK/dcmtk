@@ -18,13 +18,6 @@
  *  Purpose: Template class for administrating an ordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:18 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFOrderedSet_h
@@ -504,44 +497,3 @@ template <class T> class OFOrderedSet : public OFSet<T>
 
 
 #endif
-
-/*
-** CVS/RCS Log:
-** $Log: ofoset.h,v $
-** Revision 1.12  2011-11-17 16:13:18  joergr
-** Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
-**
-** Revision 1.11  2010-10-14 13:15:50  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.10  2005/12/08 16:06:00  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.9  2004/04/21 10:00:52  meichel
-** Minor modifications for compilation with gcc 3.4.0
-**
-** Revision 1.8  2002/12/17 17:01:33  wilkens
-** Modified code again to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template
-** errors).
-**
-** Revision 1.7  2002/12/16 10:40:24  wilkens
-** Removed superfluous implementation files and modified header and make files.
-**
-** Revision 1.6  2002/12/13 12:26:50  wilkens
-** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template errors).
-**
-** Revision 1.5  2002/12/09 13:03:55  joergr
-** Renamed parameter to avoid name clash with global function index().
-**
-** Revision 1.4  2002/07/09 18:29:45  wilkens
-** Added some more functionality.
-**
-** Revision 1.2  2002/07/02 15:41:33  wilkens
-** Made some modifications to keep gcc version egcs-2.91.66 quiet.
-**
-** Revision 1.1  2002/07/02 15:19:54  wilkens
-** Added container classes OFOrderedSet and OFUnorderedSet which
-** are based on the new abstract class OFSet.
-**
-**
-*/

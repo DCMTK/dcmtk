@@ -18,13 +18,6 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -86,27 +79,3 @@ private:
 };
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofcrc32.h,v $
- * Revision 1.5  2011-12-14 08:54:00  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.4  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2005/12/08 16:05:53  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2003/12/05 10:37:41  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright date where appropriate.
- *
- * Revision 1.1  2002/01/08 10:18:48  joergr
- * Added general purpose class which computes a CRC32 checksum on arbitrary
- * data.
- *
- *
- */

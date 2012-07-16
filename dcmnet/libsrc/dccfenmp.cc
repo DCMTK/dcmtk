@@ -19,13 +19,6 @@
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:07:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -220,41 +213,3 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
   }
   return result;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: dccfenmp.cc,v $
- * Revision 1.9  2011-02-04 12:07:46  uli
- * Made sure we only save assignable classes in STL containers.
- *
- * Revision 1.8  2010-10-14 13:14:28  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2009-09-28 13:28:15  joergr
- * Moved general purpose definition file from module dcmdata to ofstd, and
- * added new defines in order to make the usage easier.
- *
- * Revision 1.6  2005/12/08 15:44:28  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2004/05/06 16:36:30  joergr
- * Added typecasts to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.4  2004/05/05 12:57:58  meichel
- * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
- *
- * Revision 1.3  2004/04/14 11:59:50  joergr
- * Added explicit type cast to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.2  2003/06/18 08:16:17  meichel
- * Added comparison operators to keep MSVC5 compiler happy
- *
- * Revision 1.1  2003/06/10 14:30:15  meichel
- * Initial release of class DcmAssociationConfiguration and support
- *   classes. This class maintains a list of association negotiation
- *   profiles that can be addressed by symbolic keys. The profiles may
- *   be read from a configuration file.
- *
- *
- */

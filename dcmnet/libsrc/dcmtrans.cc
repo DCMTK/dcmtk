@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-10 11:10:55 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -365,64 +358,3 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
   }
   return "unknown error code";
 }
-
-/*
- *  $Log: dcmtrans.cc,v $
- *  Revision 1.16  2012-02-10 11:10:55  joergr
- *  Introduced a new timeout of 60 seconds for the send() function in order to
- *  make sure that the association is terminated if the sender looses the
- *  connection to the receiver. This can be disabled by DISABLE_SEND_TIMEOUT.
- *
- *  Revision 1.15  2012-02-10 11:09:10  joergr
- *  Moved setting of timeout for recv() function to the DcmTransportConnection
- *  constructor. The previous commit was not really solving the problem.
- *
- *  Revision 1.14  2010-10-14 13:14:28  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.13  2010-08-24 10:06:04  uli
- *  Fixed some resource leaks in dcmtls (FDs and memory was leaked).
- *
- *  Revision 1.12  2009-11-18 11:53:59  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.11  2009-01-29 11:39:20  joergr
- *  Fixed issue with missing invalidation of socket variable during close method.
- *  Please note that this is only required if the connection objects exists after
- *  the TCP/IP connection has been closed (which is currently not the case).
- *
- *  Revision 1.10  2006/08/15 16:04:29  meichel
- *  Updated the code in module dcmnet to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.9  2005/12/08 15:44:35  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2003/07/03 14:21:10  meichel
- *  Added special handling for FD_SET() on MinGW, which expects an
- *    unsigned first argument.
- *
- *  Revision 1.7  2002/11/27 13:04:38  meichel
- *  Adapted module dcmnet to use of new header file ofstdinc.h
- *
- *  Revision 1.6  2001/06/01 15:50:05  meichel
- *  Updated copyright header
- *
- *  Revision 1.5  2000/12/12 16:44:49  meichel
- *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
- *
- *  Revision 1.4  2000/10/10 12:06:56  meichel
- *  Updated transport layer error codes and routines for printing
- *    connection parameters.
- *
- *  Revision 1.3  2000/09/05 16:52:41  joergr
- *  Removed unnecessary '#ifdef HAVE_WINDOWS_H' statements.
- *
- *  Revision 1.2  2000/09/05 15:24:18  joergr
- *  Adapted source code to compile on Windows (MSVC++ 5.0).
- *
- *  Revision 1.1  2000/08/10 14:50:56  meichel
- *  Added initial OpenSSL support.
- *
- *
- */

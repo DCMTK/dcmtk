@@ -17,13 +17,6 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:14 $
- *  CVS/RCS Revision: $Revision: 1.31 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMVR_H
@@ -342,83 +335,3 @@ private:
 
 
 #endif /* !DCMVR_H */
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcvr.h,v $
- * Revision 1.31  2011-12-14 09:04:14  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.30  2011-10-18 14:15:12  joergr
- * Removed global helper functions that were replaced in a previously commit.
- *
- * Revision 1.29  2011-06-07 07:22:13  uli
- * Enhance the documentation for DcmVR::getValidEVR().
- *
- * Revision 1.28  2010-10-14 13:15:42  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.27  2010-03-01 09:08:45  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.26  2008-06-23 12:09:13  joergr
- * Fixed inconsistencies in Doxygen API documentation.
- *
- * Revision 1.25  2007/11/29 14:30:35  meichel
- * Updated doxygen API documentation
- *
- * Revision 1.24  2005/12/08 16:28:50  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.23  2005/11/15 18:28:02  meichel
- * Added new global flag dcmEnableUnknownVRConversion that enables the automatic
- *   re-conversion of defined length UN elements read in an explicit VR transfer
- *   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,
- *   i.e. to retain the previous behavior.
- *
- * Revision 1.22  2005/11/15 16:59:24  meichel
- * Added new pseudo VR type EVR_lt that is used for LUT Data when read in
- *   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
- *
- * Revision 1.21  2003/06/12 13:31:46  joergr
- * Fixed inconsistent API documentation reported by Doxygen.
- *
- * Revision 1.20  2003/03/21 13:06:46  meichel
- * Minor code purifications for warnings reported by MSVC in Level 4
- *
- * Revision 1.19  2002/12/06 12:20:19  joergr
- * Added support for new value representation Other Float String (OF).
- *
- * Revision 1.18  2002/11/27 12:07:24  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.17  2001/06/01 15:48:47  meichel
- * Updated copyright header
- *
- * Revision 1.16  2000/04/14 15:42:56  meichel
- * Global VR generation flags are now derived from OFGlobal and, thus,
- *   safe for use in multi-thread applications.
- *
- * Revision 1.15  2000/03/08 16:26:21  meichel
- * Updated copyright header.
- *
- * Revision 1.14  2000/02/29 11:48:38  meichel
- * Removed support for VS value representation. This was proposed in CP 101
- *   but never became part of the standard.
- *
- * Revision 1.13  2000/02/23 15:11:42  meichel
- * Corrected macro for Borland C++ Builder 4 workaround.
- *
- * Revision 1.12  2000/02/01 10:12:03  meichel
- * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
- *   workaround for bug in compiler header files.
- *
- * Revision 1.11  1999/06/10 10:44:51  meichel
- * Replaced some #if statements by more robust #ifdef
- *
- * Revision 1.10  1999/03/31 09:24:54  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

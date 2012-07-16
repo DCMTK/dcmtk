@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomOverlayImage (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:50:22 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -62,42 +55,3 @@ class DCMTK_DCMIMGLE_EXPORT DiOverlayImage
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diovlimg.h,v $
- * Revision 1.9  2011-12-14 09:50:22  uli
- * Make it possible to properly build dcmimgle as a DLL.
- *
- * Revision 1.8  2010-10-14 13:16:26  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2005-12-08 16:48:02  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2003/12/09 10:06:26  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.5  2001/06/01 15:49:49  meichel
- * Updated copyright header
- *
- * Revision 1.4  2000/03/08 16:24:22  meichel
- * Updated copyright header.
- *
- * Revision 1.3  1999/09/17 12:46:58  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- *
- * Revision 1.2  1999/03/24 17:20:20  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.1  1998/11/27 15:43:13  joergr
- * Added copyright message.
- *
- * Revision 1.2  1998/05/11 14:53:25  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

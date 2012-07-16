@@ -17,13 +17,6 @@
  *
  *  Purpose:
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -542,35 +535,3 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
 
   return result;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: dcasccfg.cc,v $
- * Revision 1.7  2010-10-14 13:14:28  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2010-09-09 08:32:06  joergr
- * Fixed typo in OFCondition constants for SCP/SCU role selection failures.
- *
- * Revision 1.5  2010-08-26 09:23:38  joergr
- * Fixed incorrect behavior of association acceptors during SCP/SCU role
- * selection negotiation.
- *
- * Revision 1.4  2005-12-08 15:44:27  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2003/08/14 10:58:49  meichel
- * Added check if association configuration profile is valid for SCP use
- *
- * Revision 1.2  2003/07/03 15:43:48  meichel
- * Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
- *
- * Revision 1.1  2003/06/10 14:30:15  meichel
- * Initial release of class DcmAssociationConfiguration and support
- *   classes. This class maintains a list of association negotiation
- *   profiles that can be addressed by symbolic keys. The profiles may
- *   be read from a configuration file.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-03 13:31:49 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -360,73 +353,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: msgserv.cc,v $
- * Revision 1.20  2011-08-03 13:31:49  joergr
- * Added macro that allows for disabling the port permission check in SCPs.
- *
- * Revision 1.19  2010-11-03 12:32:07  uli
- * Fixed some more warnings by gcc with by additional flags.
- *
- * Revision 1.18  2010-10-14 13:15:09  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.17  2010-06-02 12:31:12  joergr
- * Appended missing OFStringStream_ends to the end of output streams because
- * this is required when OFOStringStream is mapped to ostrstream.
- *
- * Revision 1.16  2010-04-29 10:44:56  joergr
- * Use printError() method for command line parsing errors only. In all other
- * cases use log output. Added flag for exclusive options to --help.
- * Fixed issue with syntax usage (e.g. layout and formatting).
- *
- * Revision 1.15  2009-11-24 14:12:59  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.14  2009-08-19 14:46:14  meichel
- * Added additional includes needed for Sun Studio 11 on Solaris.
- *
- * Revision 1.13  2006/08/15 16:57:02  meichel
- * Updated the code in module dcmpstat to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.12  2006/07/27 14:42:59  joergr
- * Prepended prefix "PF_" to parseLine() flags.
- *
- * Revision 1.11  2005/12/14 17:43:42  meichel
- * Adapted code for compilation with TCP wrappers to NetBSD
- *
- * Revision 1.10  2005/12/12 15:14:34  meichel
- * Added code needed for compilation with TCP wrappers on OpenBSD
- *
- * Revision 1.9  2005/12/08 15:47:00  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.8  2005/11/14 18:07:38  meichel
- * Included cstdlib, needed on HP/UX 10.
- *
- * Revision 1.7  2004/04/21 17:15:45  joergr
- * Included "dcompat" header file required for definition of bzero() on IRIX 5.
- *
- * Revision 1.6  2004/02/13 14:02:08  joergr
- * Added "#include <sys/time.h>" to compile with gcc 2.95.x on Linux 2.2.x.
- *
- * Revision 1.5  2002/11/27 15:48:19  meichel
- * Adapted module dcmpstat to use of new header file ofstdinc.h
- *
- * Revision 1.4  2001/06/01 15:50:43  meichel
- * Updated copyright header
- *
- * Revision 1.3  2000/12/12 16:45:41  meichel
- * Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
- *
- * Revision 1.2  2000/11/08 18:38:32  meichel
- * Updated dcmpstat IPC protocol for additional message parameters
- *
- * Revision 1.1  2000/10/10 12:24:13  meichel
- * Implemented test server for IPC message communication
- *
- */

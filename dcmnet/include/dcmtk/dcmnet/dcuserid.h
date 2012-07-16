@@ -18,13 +18,6 @@
  * Purpose:
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
- * Last Update:         $Author: uli $
- * Update Date:         $Date: 2011-12-14 11:45:14 $
- * CVS/RCS Revision:    $Revision: 1.11 $
- * Status:              $State: Exp $
- *
- * CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCUSERID_H
@@ -371,43 +364,3 @@ private:
 };
 
 #endif // DCUSERID_H
-
-/*
-** CVS/RCS Log:
-** $Log: dcuserid.h,v $
-** Revision 1.11  2011-12-14 11:45:14  uli
-** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
-**
-** Revision 1.10  2011-08-08 12:27:46  onken
-** Added further doxygen documentation.
-**
-** Revision 1.9  2011-08-08 12:10:09  onken
-** Made assignment operator private and added public copy constructor.
-** Fixed doxygen documentation.
-**
-** Revision 1.8  2011-08-08 09:55:42  onken
-** Added dumb assignment operator in order to keep VS compilers quiet.
-**
-** Revision 1.7  2010-10-14 13:17:22  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.6  2010-10-05 11:01:04  uli
-** Removed a unused copy-constructor and a unused operator=.
-**
-** Revision 1.5  2010-09-14 11:42:14  uli
-** Verify the length fields in the PDUs that we receive.
-**
-** Revision 1.4  2009-09-29 14:34:16  uli
-** Include only the needed headers in dcuserid.h and not dctk.h.
-**
-** Revision 1.3  2008-10-07 09:08:13  onken
-** Fixed possible memory leak in user identity classes and added code for
-** accessing user identity from the server's side. Thanks to "Pim"
-**
-** Revision 1.2  2008-04-17 16:09:32  onken
-** Added some const definitions to functions.
-**
-** Revision 1.1  2008-04-17 15:28:33  onken
-** Reworked and extended User Identity Negotiation code.
-**
-*/

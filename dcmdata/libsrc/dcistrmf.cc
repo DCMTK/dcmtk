@@ -18,13 +18,6 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 11:44:27 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -264,48 +257,3 @@ DcmInputStreamFactory *DcmInputTempFileStreamFactory::clone() const
 {
     return new DcmInputTempFileStreamFactory(*this);
 }
-
-/*
- * CVS/RCS Log:
- * $Log: dcistrmf.cc,v $
- * Revision 1.11  2012-02-20 11:44:27  joergr
- * Added initial support for wide character strings (UTF-16) used for filenames
- * by the Windows operating system.
- *
- * Revision 1.10  2010-11-08 09:49:03  uli
- * Fixed even more gcc warnings caused by additional compiler flags.
- *
- * Revision 1.9  2010-10-14 13:14:08  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.8  2010-10-04 14:44:42  joergr
- * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
- * in all cases where OFMutex, OFReadWriteLock, etc. are used).
- *
- * Revision 1.7  2008-05-29 10:39:41  meichel
- * Implemented new classes DcmTempFileHandler and DcmInputTempFileStreamFactory
- *   that perform thread-safe reference counted life cycle management of a
- *   temporary file and are needed for DcmElement temporary file extensions to come.
- *
- * Revision 1.6  2007/02/19 15:45:31  meichel
- * Class DcmInputStream and related classes are now safe for use with
- *   large files (2 GBytes or more) if supported by compiler and operating system.
- *
- * Revision 1.5  2005/12/08 15:41:14  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.4  2004/02/04 16:34:09  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.3  2002/11/27 12:06:48  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.2  2002/09/19 08:32:29  joergr
- * Added explicit type casts to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.1  2002/08/27 16:55:49  meichel
- * Initial release of new DICOM I/O stream classes that add support for stream
- *   compression (deflated little endian explicit VR transfer syntax)
- *
- *
- */

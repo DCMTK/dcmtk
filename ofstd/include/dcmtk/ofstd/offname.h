@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFFNAME_H
@@ -81,46 +74,3 @@ private:
 };
 
 #endif
-
-/*
- *  $Log: offname.h,v $
- *  Revision 1.12  2011-12-14 08:54:00  uli
- *  Make it possible to correctly build ofstd as a DLL.
- *
- *  Revision 1.11  2011-10-11 10:57:29  uli
- *  Made sure that makeFilename() influences the caller's seed.
- *
- *  Revision 1.10  2011-10-11 09:57:42  uli
- *  Move OFFileNameCreator::myrand_r to class OFStandard.
- *
- *  Revision 1.9  2010-10-14 13:15:50  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.8  2005/12/08 16:05:56  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.7  2003/12/05 10:37:41  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved
- *  symbols). Updated copyright date where appropriate.
- *
- *  Revision 1.6  2003/06/12 13:15:59  joergr
- *  Fixed inconsistent API documentation reported by Doxygen.
- *
- *  Revision 1.5  2001/06/01 15:51:34  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/10/10 12:01:04  meichel
- *  Implemented thread safe random number generator, needed on systems
- *    where threads but no Posix rand_r function are available.
- *
- *  Revision 1.3  2000/03/08 16:36:01  meichel
- *  Updated copyright header.
- *
- *  Revision 1.2  1999/03/22 09:00:50  joergr
- *  Added/Changed comments.
- *
- *  Revision 1.1  1999/03/03 13:58:04  meichel
- *  Implemented new class for automatically creating filenames.
- *
- *
- */

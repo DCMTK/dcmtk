@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-26 17:47:50 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -315,31 +308,3 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dcspchrs.h,v $
- * Revision 1.5  2012-01-26 17:47:50  joergr
- * Removed outdated comment on the main class and revised some other comments.
- *
- * Revision 1.4  2011-12-14 09:04:13  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.3  2011-11-08 15:51:38  joergr
- * Added support for converting files, datasets and element values to any DICOM
- * character set that does not require code extension techniques (if compiled
- * with and supported by libiconv), not only to UTF-8 as before.
- *
- * Revision 1.2  2011-11-01 14:53:59  joergr
- * Added support for code extensions (escape sequences) according to ISO 2022
- * to the character set conversion code.
- *
- * Revision 1.1  2011-10-26 16:12:59  joergr
- * Added helper class for converting between different DICOM character sets.
- * This initial version only supports the conversion to UTF-8 (Unicode) and only
- * from DICOM characters sets without code extension techniques (i.e. ISO 2022).
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -268,48 +261,3 @@ OFBool DcmStack::operator==(const DcmStack& arg) const
   }
   return OFTrue;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcstack.cc,v $
- * Revision 1.20  2010-10-14 13:14:09  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.19  2009-11-04 09:58:10  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.18  2005-12-08 15:41:37  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.17  2004/02/04 16:44:23  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.16  2003/06/02 16:52:26  meichel
- * Cleaned up implementation of DcmStack, added doc++ comments
- *
- * Revision 1.15  2002/11/27 12:06:52  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.14  2002/04/16 13:43:21  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- * Revision 1.13  2001/06/01 15:49:09  meichel
- * Updated copyright header
- *
- * Revision 1.12  2000/03/08 16:26:41  meichel
- * Updated copyright header.
- *
- * Revision 1.11  2000/02/23 15:12:02  meichel
- * Corrected macro for Borland C++ Builder 4 workaround.
- *
- * Revision 1.10  2000/02/01 10:12:10  meichel
- * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
- *   workaround for bug in compiler header files.
- *
- * Revision 1.9  1999/03/31 09:25:39  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -268,69 +261,3 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinatesValue
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrscovl.h,v $
- *  Revision 1.18  2012-06-11 08:53:02  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.17  2012-01-06 09:13:11  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.16  2011-12-16 16:58:33  joergr
- *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
- *  SCOORD3D content items.
- *
- *  Revision 1.15  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.14  2010-09-28 14:03:37  joergr
- *  Updated comment on the requirements for POLYLINE according to CP-233.
- *
- *  Revision 1.13  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.12  2007-11-15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.11  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.10  2005/12/08 16:05:17  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.9  2003/08/07 18:01:42  joergr
- *  Removed libxml dependency from header files.
- *
- *  Revision 1.8  2003/08/07 12:47:10  joergr
- *  Added readXML functionality.
- *
- *  Revision 1.7  2001/09/26 13:04:11  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.6  2001/06/01 15:51:03  meichel
- *  Updated copyright header
- *
- *  Revision 1.5  2000/11/06 11:18:09  joergr
- *  Moved some protected methods to public part.
- *
- *  Revision 1.4  2000/11/01 16:23:24  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.3  2000/10/18 17:07:30  joergr
- *  Added methods allowing direct access to certain content item values.
- *  Added doc++ comments.
- *  Made some functions inline.
- *
- *  Revision 1.2  2000/10/16 11:57:23  joergr
- *  Added methods allowing direct access to certain content item values.
- *
- *  Revision 1.1  2000/10/13 07:49:32  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

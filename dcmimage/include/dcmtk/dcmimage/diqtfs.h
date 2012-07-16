@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -215,9 +208,9 @@ private:
 
   /** boolean flag indicating in which direction (left to right/right to left) 
    *  the FS distribution should be done. Flag is inverted after each row.
-   */  
+   */
   int fs_direction;
-  
+
   /// number of columns in image
   unsigned long columns;
 
@@ -225,30 +218,3 @@ private:
 
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: diqtfs.h,v $
- * Revision 1.6  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.5  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2005/12/08 16:01:46  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2003/12/23 12:16:59  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Updated copyright header.
- *
- * Revision 1.2  2002/05/15 09:53:30  meichel
- * Minor corrections to avoid warnings on Sun CC 2.0.1
- *
- * Revision 1.1  2002/01/25 13:32:04  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

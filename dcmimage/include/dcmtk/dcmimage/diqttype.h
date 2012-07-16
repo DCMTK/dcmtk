@@ -17,13 +17,6 @@
  *
  *  Purpose: typdefs and constants for the color quantization classes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -79,32 +72,3 @@ enum DcmRepresentativeColorType
 };
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: diqttype.h,v $
- * Revision 1.7  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.6  2010-10-14 13:16:30  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2009-11-25 14:36:20  joergr
- * Added new source and header file for the module logger.
- *
- * Revision 1.4  2009-10-13 14:08:33  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.3  2005-12-08 16:01:55  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2003/12/23 12:21:09  joergr
- * Updated copyright header.
- *
- * Revision 1.1  2002/01/25 13:32:08  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-21 09:24:44 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFFILE_H
@@ -1143,77 +1136,3 @@ private:
 };
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: offile.h,v $
- * Revision 1.19  2012-02-21 09:24:44  joergr
- * Added fast, non-throwing swap function to OFFilename class.
- *
- * Revision 1.18  2012-02-20 11:44:28  joergr
- * Added initial support for wide character strings (UTF-16) used for filenames
- * by the Windows operating system.
- *
- * Revision 1.17  2010-12-17 10:50:30  joergr
- * Check whether "feof" and "ferror" are defined as macros (e.g. on IRIX 6.3).
- *
- * Revision 1.16  2010-12-15 11:29:07  uli
- * Made OFFile compile successfully on HP-UX.
- *
- * Revision 1.15  2010-12-08 16:04:35  joergr
- * Disable currently unused wide character file I/O functions in order to avoid
- * problems with old compilers (e.g. gcc 2.95.3).
- *
- * Revision 1.14  2010-12-06 13:02:49  joergr
- * Fixed issue with large file support for current Cygwin systems (1.7.7-1).
- *
- * Revision 1.13  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2010-06-02 12:55:30  joergr
- * Introduced new helper function strerror() which is used as a wrapper to the
- * various approaches found on different systems.
- *
- * Revision 1.11  2010-04-26 12:22:30  uli
- * Fixed a some minor doxygen warnings.
- *
- * Revision 1.10  2009-09-24 07:10:52  meichel
- * Fixed bug in class OFFile that caused undefined behaviour
- *   once fclose() failed
- *
- * Revision 1.9  2009-08-10 07:52:09  meichel
- * Some modifications needed to make class OFFile compile on MinGW.
- *
- * Revision 1.8  2009-03-12 11:37:54  joergr
- * Fixed various Doxygen API documentation issues.
- *
- * Revision 1.7  2009-02-13 12:56:18  joergr
- * Added private undefined copy constructor and assignment operator in order to
- * avoid compiler warnings (reported by gcc with additional flags).
- *
- * Revision 1.6  2009-01-30 13:49:01  joergr
- * Replaced checking of macro WIN32 by _WIN32.
- *
- * Revision 1.5  2008-05-29 10:37:11  meichel
- *  Fixed compile error on Cygwin where no wide-char FILE functions are available
- *
- * Revision 1.4  2008-02-07 16:57:46  meichel
- * Class OFFile now makes use of HAVE_CHARP_STRERROR_R to use the
- *   correct version of strerror_r.
- *
- * Revision 1.3  2007/06/06 13:55:58  onken
- * Fixed compilation for Mac OS X with making large file support function calls
- * implicit for this OS (Mac OS X misleadingly defines _LARGEFILE64_SOURCE).
- *
- * Revision 1.2  2007/02/19 16:03:47  meichel
- * Added constructor to class OFFile that takes FILE * as argument.
- *
- * Revision 1.1  2006/08/21 12:40:44  meichel
- * Added new class OFFile that provides a simple encapsulation layer for
- *   FILE based stream I/O and, in particular, provides long file support
- *   (LFS) if available on the underlying operating system platform through
- *   a single API.
- *
- *
- */

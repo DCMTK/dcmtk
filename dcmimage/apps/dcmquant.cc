@@ -17,13 +17,6 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:33 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -521,92 +514,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcmquant.cc,v $
- * Revision 1.22  2010-10-14 13:13:33  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.21  2010-03-24 15:07:25  joergr
- * Added missing command line options for the color space conversion.
- *
- * Revision 1.20  2009-10-14 10:26:37  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.19  2009-10-13 14:08:33  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.18  2009-08-21 09:28:02  joergr
- * Added parameter 'writeMode' to save/write methods which allows for specifying
- * whether to write a dataset or fileformat as well as whether to update the
- * file meta information or to create a new file meta information header.
- * Use helper function checkConflict() where appropriate.
- *
- * Revision 1.17  2009-04-21 14:04:12  joergr
- * Fixed minor inconsistencies in manpage / syntax usage.
- *
- * Revision 1.16  2008-09-25 12:47:58  joergr
- * Added support for printing the expanded command line arguments.
- * iAlways output the resource identifier of the command line tool in debug mode.
- *
- * Revision 1.15  2006/08/15 16:35:00  meichel
- * Updated the code in module dcmimage to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.14  2006/07/27 13:59:24  joergr
- * Changed parameter "exclusive" of method addOption() from type OFBool into an
- * integer parameter "flags". Option "--help" is no longer an exclusive option
- * by default.
- *
- * Revision 1.13  2005/12/08 15:42:17  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.12  2005/12/02 09:31:17  joergr
- * Added new command line option that ignores the transfer syntax specified in
- * the meta header and tries to detect the transfer syntax automatically from
- * the dataset.
- * Added new command line option that checks whether a given file starts with a
- * valid DICOM meta header.
- *
- * Revision 1.11  2004/08/24 14:55:23  meichel
- * Removed duplicate code
- *
- * Revision 1.10  2003/12/05 10:50:52  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.9  2003/05/20 09:27:22  joergr
- * Removed unused helper functions (dcutils.*).
- *
- * Revision 1.8  2003/04/25 13:15:54  joergr
- * Fixed inconsistency regarding the default option for frame selection.
- *
- * Revision 1.7  2002/11/27 14:16:53  meichel
- * Adapted module dcmimage to use of new header file ofstdinc.h
- *
- * Revision 1.6  2002/11/26 08:44:56  meichel
- * Replaced all includes for "zlib.h" with <zlib.h>
- *   to avoid inclusion of zlib.h in the makefile dependencies.
- *
- * Revision 1.5  2002/09/23 18:01:19  joergr
- * Added new command line option "--version" which prints the name and version
- * number of external libraries used (incl. preparation for future support of
- * 'config.guess' host identifiers).
- *
- * Revision 1.4  2002/08/27 17:19:07  meichel
- * Added options --frame and --all-frames
- *
- * Revision 1.3  2002/08/20 12:20:21  meichel
- * Adapted code to new loadFile and saveFile methods, thus removing direct
- *   use of the DICOM stream classes.
- *
- * Revision 1.2  2002/01/25 17:50:34  joergr
- * Corrected wrong table spacing in the syntax output of the dcmquant tool.
- *
- * Revision 1.1  2002/01/25 13:32:01  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

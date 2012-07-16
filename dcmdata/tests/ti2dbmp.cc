@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for class I2DBmpSource
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 08:29:59 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -325,30 +318,3 @@ OFTEST(dcmdata_i2d_bmp)
     /* Remove our temporary file */
     unlink(temporaryFile);
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ti2dbmp.cc,v $
- * Revision 1.2  2011-06-07 08:29:59  uli
- * Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
- *
- * Revision 1.1  2011-05-25 10:05:55  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.4  2010-12-16 12:52:34  joergr
- * Added explicit type cast in order to keep VisualStudio 2005 quiet.
- *
- * Revision 1.3  2010-12-06 11:26:43  uli
- * Fixed the i2dbmp test case for windows by opening files in binary mode.
- *
- * Revision 1.2  2010-10-14 13:15:05  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.1  2010-06-11 09:34:17  uli
- * Added test for i2d's BMP code.
- *
- *
- *
- */

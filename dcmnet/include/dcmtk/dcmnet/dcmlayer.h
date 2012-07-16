@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DcmTransportLayer
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:14 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMLAYER_H
@@ -111,37 +104,3 @@ private:
 
 
 #endif
-
-/*
- *  $Log: dcmlayer.h,v $
- *  Revision 1.9  2011-12-14 11:45:14  uli
- *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- *  Revision 1.8  2010-10-14 13:17:22  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.7  2005/12/08 16:02:16  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.6  2004/08/03 11:42:43  meichel
- *  Headers libc.h and unistd.h are now included via ofstdinc.h
- *
- *  Revision 1.5  2003/12/05 10:39:45  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved
- *  symbols).
- *
- *  Revision 1.4  2003/06/12 15:16:10  joergr
- *  Fixed inconsistent API documentation reported by Doxygen.
- *
- *  Revision 1.3  2001/06/01 15:50:04  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/10/10 12:06:53  meichel
- *  Updated transport layer error codes and routines for printing
- *    connection parameters.
- *
- *  Revision 1.1  2000/08/10 14:50:52  meichel
- *  Added initial OpenSSL support.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:16 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -118,67 +111,3 @@ class DiMonoFlipTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dimoflt.h,v $
- * Revision 1.16  2011-11-17 16:13:16  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.15  2010-10-14 13:16:26  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.14  2010-03-01 09:08:47  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.13  2009-10-28 14:38:16  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.12  2009-10-28 09:53:40  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.11  2006-08-15 16:30:11  meichel
- * Updated the code in module dcmimgle to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.10  2005/12/08 16:47:49  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.9  2004/04/21 10:00:36  meichel
- * Minor modifications for compilation with gcc 3.4.0
- *
- * Revision 1.8  2003/12/08 18:41:55  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.7  2001/06/01 15:49:44  meichel
- * Updated copyright header
- *
- * Revision 1.6  2000/09/12 10:04:44  joergr
- * Corrected bug: wrong parameter for attribute search routine led to crashes
- * when multiple pixel data attributes were contained in the dataset (e.g.
- * IconImageSequence). Added new checking routines to avoid crashes when
- * processing corrupted image data.
- *
- * Revision 1.5  2000/03/08 16:24:18  meichel
- * Updated copyright header.
- *
- * Revision 1.4  1999/09/17 12:24:46  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- *
- * Revision 1.3  1999/03/24 17:20:08  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.2  1999/02/11 16:02:12  joergr
- * Corrected some typos and formatting.
- *
- * Revision 1.1  1998/11/27 14:57:47  joergr
- * Added copyright message.
- * Added methods and classes for flipping and rotating, changed for
- * scaling and clipping.
- *
- *
- */

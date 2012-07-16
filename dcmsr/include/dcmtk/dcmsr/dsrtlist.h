@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRListOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:32 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -264,57 +257,3 @@ template<class T> class DSRListOfItems
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtlist.h,v $
- *  Revision 1.15  2011-08-02 06:26:32  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.14  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.13  2005-12-08 16:05:27  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.12  2003/08/07 12:55:13  joergr
- *  Updated documentation to get rid of doxygen warnings.
- *
- *  Revision 1.11  2003/07/11 13:44:00  joergr
- *  Added workaround to get rid of "implicit typename" warnings on gcc 3.x
- *  (introduced macro OFLIST_TYPENAME).
- *
- *  Revision 1.10  2003/06/04 12:40:01  meichel
- *  Replaced protected inheritance from OFList with protected aggregation
- *
- *  Revision 1.9  2003/06/03 10:16:44  meichel
- *  Renamed local variables to avoid name clashes with STL
- *
- *  Revision 1.8  2001/10/10 15:27:41  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.7  2001/09/26 13:04:13  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.6  2001/05/07 16:13:24  joergr
- *  Updated CVS header.
- *
- *  Revision 1.5  2001/01/25 11:48:11  joergr
- *  Added method to insert item into a list.
- *
- *  Revision 1.4  2000/12/12 14:17:13  joergr
- *  Renamed method to avoid ambiguity reported by gcc 2.7.
- *
- *  Revision 1.3  2000/10/26 14:19:38  joergr
- *  Fixed bug: index in search routine was starting from 0 not 1.
- *
- *  Revision 1.2  2000/10/18 17:08:44  joergr
- *  Added doc++ comments.
- *
- *  Revision 1.1  2000/10/13 07:49:34  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

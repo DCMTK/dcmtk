@@ -17,13 +17,6 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-23 12:00:28 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -383,85 +376,3 @@ inline OFBool operator!= (const OFCondition& lhs, const OFConditionConst& rhs)
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofcond.h,v $
- * Revision 1.20  2012-02-23 12:00:28  joergr
- * Fixed Doxygen documentation issue: Appended "\" in case "." does not mark
- * the end of a sentence.
- *
- * Revision 1.19  2012-02-17 10:03:04  joergr
- * Added missing "stdlib" include, required for free() on some Linux systems.
- *
- * Revision 1.18  2012-02-15 14:50:46  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.17  2012-02-15 11:31:50  uli
- * Removed OFCONDITION_STRICT_MODE since DCMTK didn't compile in this mode.
- *
- * Revision 1.16  2011-12-14 08:54:00  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.15  2011-11-28 11:15:45  joergr
- * Added general condition constant for invalid filenames.
- *
- * Revision 1.14  2011-11-16 13:50:36  uli
- * Added a new class for managing temporary files.
- *
- * Revision 1.13  2011-10-28 09:32:47  joergr
- * Restructured code of OFCharacterEncoding in order to allow particular classes
- * to access more low-level functions, e.g. for opening multiple conversion
- * descriptors at the same time. This will be needed for ISO 2022 support.
- *
- * Revision 1.12  2011-10-24 13:03:07  joergr
- * Changed name of status code constant for "illegal character encoding".
- *
- * Revision 1.11  2011-10-21 09:14:57  joergr
- * Added class for managing and converting between different character encodings
- * based on the libiconv toolkit.
- *
- * Revision 1.10  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.9  2005/12/08 16:05:50  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.8  2003/12/05 10:37:41  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright date where appropriate.
- *
- * Revision 1.7  2003/07/09 13:57:43  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.6  2003/07/04 13:31:51  meichel
- * Fixed issues with compiling with HAVE_STD_STRING
- *
- * Revision 1.5  2003/06/12 13:15:59  joergr
- * Fixed inconsistent API documentation reported by Doxygen.
- *
- * Revision 1.4  2001/11/09 15:44:39  joergr
- * Removed ";" from macro definition to avoid compiler warnings reported by
- * Sun CC 2.0.1.
- *
- * Revision 1.3  2001/10/12 10:42:26  meichel
- * Introduced conditional define OFCONDITION_STRICT_MODE in which the
- *   compatibility options related to the transition to OFCondition are disabled:
- *   No OFCondition default constructor, no typedefs for E_Condition, CONDITION,
- *   no macros for SUCCESS and condition aliases.
- *
- * Revision 1.2  2001/09/25 17:07:24  meichel
- * Disabled implicit conversion to bool, added default constructor
- *   to class OFCondition.
- *
- * Revision 1.1  2001/08/23 16:08:37  meichel
- * Initial release of class OFCondition, a generic approach for condition codes
- *
- *
- */

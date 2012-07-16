@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:16 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -352,91 +345,3 @@ class DiRotateTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dirotat.h,v $
- * Revision 1.22  2011-11-17 16:13:16  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.21  2010-10-14 13:16:27  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2010-03-01 09:08:47  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.19  2009-10-28 14:38:17  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.18  2009-10-28 09:53:40  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.17  2006-08-15 16:30:11  meichel
- * Updated the code in module dcmimgle to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.16  2005/12/08 16:48:08  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.15  2005/06/15 08:23:54  joergr
- * Fixed bug which prevented rotateTopDown() from rotating multi-frame images
- * correctly (only the first frame was actually rotated).
- *
- * Revision 1.14  2004/04/21 10:00:36  meichel
- * Minor modifications for compilation with gcc 3.4.0
- *
- * Revision 1.13  2004/02/06 11:07:50  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.12  2003/12/23 15:53:22  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.11  2003/12/09 10:14:54  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.10  2001/06/01 15:49:50  meichel
- * Updated copyright header
- *
- * Revision 1.9  2000/09/12 10:04:45  joergr
- * Corrected bug: wrong parameter for attribute search routine led to crashes
- * when multiple pixel data attributes were contained in the dataset (e.g.
- * IconImageSequence). Added new checking routines to avoid crashes when
- * processing corrupted image data.
- *
- * Revision 1.8  2000/03/08 16:24:24  meichel
- * Updated copyright header.
- *
- * Revision 1.7  2000/03/02 12:51:37  joergr
- * Rewrote variable initialization in class contructors to avoid warnings
- * reported on Irix.
- *
- * Revision 1.6  1999/09/17 13:07:20  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- * Enhanced efficiency of some "for" loops.
- *
- * Revision 1.5  1999/03/24 17:17:20  joergr
- * Removed debug code.
- * Added/Modified comments and formatting.
- *
- * Revision 1.4  1999/01/20 15:12:47  joergr
- * Added debug code to measure time of some routines.
- *
- * Revision 1.3  1998/12/16 16:38:49  joergr
- * Added additional case to copy pixels.
- *
- * Revision 1.2  1998/12/14 17:30:49  joergr
- * Added (missing) implementation of methods to rotate images/frames without
- * creating a new DicomImage.
- *
- * Revision 1.1  1998/11/27 14:57:46  joergr
- * Added copyright message.
- * Added methods and classes for flipping and rotating, changed for
- * scaling and clipping.
- *
- *
- */

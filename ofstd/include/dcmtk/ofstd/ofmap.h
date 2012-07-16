@@ -18,13 +18,6 @@
  *  Purpose: Defines a template map class with interfaces similar to the C++
  *           Standard
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-04-16 07:59:36 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFMAP_H
@@ -270,42 +263,3 @@ public:
 
 #endif
 #endif
-
-
-/*
-** CVS/RCS Log:
-** $Log: ofmap.h,v $
-** Revision 1.10  2012-04-16 07:59:36  uli
-** Fixed several assignment operators in STL replacement classes.
-**
-** Revision 1.9  2012-01-18 10:37:59  uli
-** Fixed OFPair to compile again on MSC6.
-**
-** Revision 1.8  2011-11-09 10:57:59  uli
-** Fixed warnings from -Weffc++ and OFPair<OFString, void*>.
-**
-** Revision 1.7  2011-07-06 07:21:19  uli
-** Improved OFMap's and OFPair's standard conformance.
-**
-** Revision 1.6  2010-11-08 09:49:03  uli
-** Fixed even more gcc warnings caused by additional compiler flags.
-**
-** Revision 1.5  2010-10-14 13:15:50  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.4  2010-10-08 12:27:07  uli
-** Fixed all doxygen warnings for OFPair and OFauto_ptr.
-**
-** Revision 1.3  2010-08-06 08:41:36  uli
-** Fixed some more compiler warnings.
-**
-** Revision 1.2  2009-09-29 13:59:34  uli
-** Fix an invalid iterator use in OFMap. A iterator was used after it was passed
-** to erase().
-** Add a test case which verifies some of OFMap's implementation.
-**
-** Revision 1.1  2009-08-19 10:52:08  joergr
-** Added new class OFMap required for upcoming module "oflog".
-**
-**
-*/

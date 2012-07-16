@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:33 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -337,63 +330,3 @@ OFCondition DVPSSoftcopyVOI::setVOILUT(
   useLUT = OFTrue;
   return EC_Normal;
 }
-
-/*
- *  $Log: dvpssv.cc,v $
- *  Revision 1.16  2010-10-14 13:14:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.15  2009-11-24 14:12:59  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.14  2009-09-30 10:42:39  uli
- *  Make dcmpstat's include headers self-sufficient by including all
- *  needed headers directly and stop using dctk.h
- *
- *  Revision 1.13  2006-08-15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.12  2005/12/08 15:46:49  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.11  2003/06/04 12:30:29  meichel
- *  Added various includes needed by MSVC5 with STL
- *
- *  Revision 1.10  2002/12/04 10:41:37  meichel
- *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
- *    double to string conversions that are supposed to be locale independent
- *
- *  Revision 1.9  2001/11/28 13:57:03  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.8  2001/09/26 15:36:33  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.7  2001/06/01 15:50:39  meichel
- *  Updated copyright header
- *
- *  Revision 1.6  2000/06/02 16:01:07  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.5  2000/05/31 13:02:39  meichel
- *  Moved dcmpstat macros and constants into a common header file
- *
- *  Revision 1.4  2000/03/08 16:29:11  meichel
- *  Updated copyright header.
- *
- *  Revision 1.3  2000/03/03 14:14:06  meichel
- *  Implemented library support for redirecting error messages into memory
- *    instead of printing them to stdout/stderr for GUI applications.
- *
- *  Revision 1.2  1999/10/05 12:10:59  joergr
- *  Fixed bug in DVPSSoftcopyVOI::setVOIWindow(). Window width = 1 was
- *  rejected.
- *
- *  Revision 1.1  1999/07/22 16:40:03  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *
- */
-

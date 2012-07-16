@@ -17,13 +17,6 @@
  *
  *  Purpose: Interface of class DcmShortText
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:15 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -136,89 +129,3 @@ class DCMTK_DCMDATA_EXPORT DcmShortText
 
 
 #endif // DCVRST_H
-
-/*
-** CVS/RCS Log:
-** $Log: dcvrst.h,v $
-** Revision 1.20  2011-12-14 09:04:15  uli
-** Make it possible to accurately build dcmdata and libi2d as DLLs.
-**
-** Revision 1.19  2010-10-14 13:15:43  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.18  2010-04-23 15:26:13  joergr
-** Specify an appropriate default value for the "vm" parameter of checkValue().
-**
-** Revision 1.17  2010-04-23 14:25:27  joergr
-** Added new method to all VR classes which checks whether the stored value
-** conforms to the VR definition and to the specified VM.
-**
-** Revision 1.16  2009-08-03 09:05:30  joergr
-** Added methods that check whether a given string value conforms to the VR and
-** VM definitions of the DICOM standards.
-**
-** Revision 1.15  2008-07-17 11:19:49  onken
-** Updated copyFrom() documentation.
-**
-** Revision 1.14  2008-07-17 10:30:23  onken
-** Implemented copyFrom() method for complete DcmObject class hierarchy, which
-** permits setting an instance's value from an existing object. Implemented
-** assignment operator where necessary.
-**
-** Revision 1.13  2005-12-08 16:29:10  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.12  2004/07/01 12:28:25  meichel
-** Introduced virtual clone method for DcmObject and derived classes.
-**
-** Revision 1.11  2002/12/06 12:49:19  joergr
-** Enhanced "print()" function by re-working the implementation and replacing
-** the boolean "showFullData" parameter by a more general integer flag.
-** Added doc++ documentation.
-** Made source code formatting more consistent with other modules/files.
-**
-** Revision 1.10  2001/09/25 17:19:34  meichel
-** Adapted dcmdata to class OFCondition
-**
-** Revision 1.9  2001/06/01 15:48:53  meichel
-** Updated copyright header
-**
-** Revision 1.8  2000/03/08 16:26:26  meichel
-** Updated copyright header.
-**
-** Revision 1.7  1999/03/31 09:25:08  meichel
-** Updated copyright header in module dcmdata
-**
-** Revision 1.6  1998/11/12 16:47:55  meichel
-** Implemented operator= for all classes derived from DcmObject.
-**
-** Revision 1.5  1997/09/11 15:13:17  hewett
-** Modified getOFString method arguments by removing a default value
-** for the pos argument.  By requiring the pos argument to be provided
-** ensures that callers realise getOFString only gets one component of
-** a multi-valued string.
-**
-** Revision 1.4  1997/08/29 08:32:44  andreas
-** - Added methods getOFString and getOFStringArray for all
-**   string VRs. These methods are able to normalise the value, i. e.
-**   to remove leading and trailing spaces. This will be done only if
-**   it is described in the standard that these spaces are not relevant.
-**   These methods do not test the strings for conformance, this means
-**   especially that they do not delete spaces where they are not allowed!
-**   getOFStringArray returns the string with all its parts separated by \
-**   and getOFString returns only one value of the string.
-**   CAUTION: Currently getString returns a string with trailing
-**   spaces removed (if dcmEnableAutomaticInputDataCorrection == OFTrue) and
-**   truncates the original string (since it is not copied!). If you rely on this
-**   behaviour please change your application now.
-**   Future changes will ensure that getString returns the original
-**   string from the DICOM object (NULL terminated) inclusive padding.
-**   Currently, if you call getOF... before calling getString without
-**   normalisation, you can get the original string read from the DICOM object.
-**
-** Revision 1.3  1996/01/05 13:23:10  andreas
-** - changed to support new streaming facilities
-** - more cleanups
-** - merged read / write methods for block and file transfer
-**
-*/

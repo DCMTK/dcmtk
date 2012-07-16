@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:05 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -713,72 +706,3 @@ OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateId
         result = TreeNode->setTemplateIdentification(templateIdentifier, mappingResource, check);
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrcitem.cc,v $
- *  Revision 1.19  2012-06-11 08:53:05  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.18  2012-02-14 11:07:26  joergr
- *  Added support for Observation UID (0040,A171) to content items (CP-1147).
- *
- *  Revision 1.17  2012-01-26 14:08:14  joergr
- *  Converted (static) class variable to member variable in order to avoid crash
- *  on Windows systems (OFCondition instances cannot be used in global objects).
- *
- *  Revision 1.16  2011-11-30 14:21:34  joergr
- *  Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
- *
- *  Revision 1.15  2010-10-14 13:14:40  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.14  2005-12-08 15:47:39  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.13  2003/10/30 17:59:37  joergr
- *  Added full support for the ContentTemplateSequence (read/write, get/set
- *  template identification). Template constraints are not checked yet.
- *
- *  Revision 1.12  2003/08/07 13:11:03  joergr
- *  Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- *  Revision 1.11  2001/09/26 13:04:17  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.10  2001/05/07 16:14:21  joergr
- *  Updated CVS header.
- *
- *  Revision 1.9  2001/01/18 15:54:12  joergr
- *  Added support for digital signatures.
- *
- *  Revision 1.8  2000/11/20 13:22:23  joergr
- *  Fixed minor bugs (string related memory problems when used with JNI).
- *
- *  Revision 1.7  2000/11/07 18:26:45  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.6  2000/10/26 14:26:00  joergr
- *  Added support for "Comprehensive SR".
- *  Added support for TCOORD content item.
- *
- *  Revision 1.5  2000/10/20 10:14:57  joergr
- *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
- *
- *  Revision 1.4  2000/10/18 17:12:06  joergr
- *  Added methods allowing direct access to certain content item values.
- *
- *  Revision 1.3  2000/10/17 12:35:41  joergr
- *  Added method checking content item for validity/completeness.
- *  Renamed methods for composite objects.
- *
- *  Revision 1.2  2000/10/16 12:01:03  joergr
- *  Added methods allowing direct access to certain content item values.
- *
- *  Revision 1.1  2000/10/13 07:52:16  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

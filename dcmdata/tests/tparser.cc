@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-05-07 10:06:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -376,46 +369,3 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
         OFCHECK_FAIL(cond.text());
     }
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tparser.cc,v $
- * Revision 1.11  2012-05-07 10:06:54  uli
- * Added a test for the new functions for accessing parent objects and items.
- *
- * Revision 1.10  2012-04-11 14:25:51  uli
- * Fix a narrowing conversion error with gcc 4.7.0. Yay for C++11.
- *
- * Revision 1.9  2012-03-12 13:58:29  joergr
- * Added new parser flag that allows for reading corrupted datasets where the
- * sequence and/or item delimitation items are incorrect (e.g. mixed up).
- *
- * Revision 1.8  2011-11-16 13:50:36  uli
- * Added a new class for managing temporary files.
- *
- * Revision 1.7  2011-08-23 14:24:31  joergr
- * Fixed another inconsistent test name.
- *
- * Revision 1.6  2011-08-08 11:04:06  joergr
- * Added test cases for new parser flag "dcmPreferVRFromDataDictionary".
- *
- * Revision 1.5  2011-08-01 19:39:54  onken
- * Fixed CVS log at end of file.
- *
- * Revision 1.4  2011-08-01 19:36:40  onken
- * Added deletion of temporary files in case tests fail.
- *
- * Revision 1.3  2011-08-01 19:32:58  onken
- * Changed random file name generation to avoid warning about mktemp on
- * linux systems.
- *
- * Revision 1.2  2011-07-07 12:51:18  joergr
- * Added missing extern "C" declaration for mktemp(), e.g. required for MSVC++.
- *
- * Revision 1.1  2011-07-06 12:25:03  uli
- * Added tests for some bugs which we recently fixed.
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-12 12:02:30 $
- *  CVS/RCS Revision: $Revision: 1.25 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -338,95 +331,3 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrdoctr.h,v $
- *  Revision 1.25  2012-01-12 12:02:30  joergr
- *  Added note that the dataset passed to the write method is not cleared.
- *
- *  Revision 1.24  2012-01-06 09:13:06  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.23  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.22  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.21  2008-05-19 09:46:40  joergr
- *  Reset flag for all content items whether they are target of a by-reference
- *  relationship (required for an reproducible behavior).
- *  Changed parameters of checkByReferenceRelationships() method.
- *
- *  Revision 1.20  2007/11/15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.19  2007/05/11 14:50:05  joergr
- *  Enhanced debug output when detecting by-reference relationships to non-
- *  existing content items.
- *
- *  Revision 1.18  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.17  2006/05/11 09:18:21  joergr
- *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
- *
- *  Revision 1.16  2005/12/08 16:05:01  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.15  2005/07/27 16:36:38  joergr
- *  Added methods that allow to go to a named node, i.e. using a given concept
- *  name.
- *
- *  Revision 1.14  2004/11/22 16:39:09  meichel
- *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
- *
- *  Revision 1.13  2003/09/15 14:18:54  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *  Revision 1.12  2003/08/07 12:35:27  joergr
- *  Added readXML functionality.
- *  Updated documentation to get rid of doxygen warnings.
- *
- *  Revision 1.11  2002/04/11 13:02:34  joergr
- *  Corrected typo and/or enhanced documentation.
- *
- *  Revision 1.10  2001/11/09 16:10:49  joergr
- *  Added preliminary support for Mammography CAD SR.
- *
- *  Revision 1.9  2001/09/26 13:04:07  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.8  2001/04/03 08:24:01  joergr
- *  Added new command line option: ignore relationship content constraints
- *  specified for each SR document class.
- *
- *  Revision 1.7  2001/01/25 11:48:43  joergr
- *  Corrected typos / enhanced comments.
- *
- *  Revision 1.6  2001/01/18 15:53:34  joergr
- *  Added support for digital signatures.
- *
- *  Revision 1.5  2000/11/07 18:14:29  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.4  2000/11/01 16:23:20  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.3  2000/10/18 17:02:57  joergr
- *  Added doc++ comments.
- *
- *  Revision 1.2  2000/10/16 16:31:45  joergr
- *  Added doc++ comments.
- *
- *  Revision 1.1  2000/10/13 07:49:26  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

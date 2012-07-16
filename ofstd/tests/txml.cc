@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for xmlParser
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-29 13:05:37 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -87,19 +80,3 @@ OFTEST(ofstd_xmlParser)
     OFCHECK(!rootNode.getChildNode("parent").getChildNode("child", 1).isEmpty());
     OFCHECK(rootNode.getChildNode("parent").getChildNode("child" ,2).isEmpty());
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: txml.cc,v $
- * Revision 1.2  2012-06-29 13:05:37  joergr
- * Added some more simple tests for the integrated XML parser.
- *
- * Revision 1.1  2011-11-24 09:53:43  joergr
- * Added first version of a simple non-validating XML parser written by Frank
- * Vanden Berghen. This parser is intended to be used for configuration files
- * and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
- *
- *
- */

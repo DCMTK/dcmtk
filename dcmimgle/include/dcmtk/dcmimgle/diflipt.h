@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomFlipTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:16 $
- *  CVS/RCS Revision: $Revision: 1.24 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -339,95 +332,3 @@ class DiFlipTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diflipt.h,v $
- * Revision 1.24  2011-11-17 16:13:16  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.23  2010-10-14 13:16:26  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.22  2010-03-01 09:08:46  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.21  2009-10-28 14:38:16  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.20  2009-10-28 09:53:40  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.19  2006-08-15 16:30:11  meichel
- * Updated the code in module dcmimgle to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.18  2005/12/08 16:47:39  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.17  2005/06/15 08:25:18  joergr
- * Fixed bug which prevented flipHorzVert() from flipping multi-frame images
- * correctly (only the first frame was actually flipped).
- *
- * Revision 1.16  2004/04/21 10:00:36  meichel
- * Minor modifications for compilation with gcc 3.4.0
- *
- * Revision 1.15  2004/02/06 11:07:50  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.14  2003/12/23 15:53:22  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.13  2003/12/08 18:55:45  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.12  2001/06/01 15:49:41  meichel
- * Updated copyright header
- *
- * Revision 1.11  2000/09/12 10:04:44  joergr
- * Corrected bug: wrong parameter for attribute search routine led to crashes
- * when multiple pixel data attributes were contained in the dataset (e.g.
- * IconImageSequence). Added new checking routines to avoid crashes when
- * processing corrupted image data.
- *
- * Revision 1.10  2000/03/08 16:24:15  meichel
- * Updated copyright header.
- *
- * Revision 1.9  2000/03/02 12:51:36  joergr
- * Rewrote variable initialization in class contructors to avoid warnings
- * reported on Irix.
- *
- * Revision 1.8  1999/09/17 12:10:55  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- * Enhanced efficiency of some "for" loops.
- *
- * Revision 1.7  1999/05/03 11:09:28  joergr
- * Minor code purifications to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.6  1999/04/28 14:46:54  joergr
- * Removed debug code.
- *
- * Revision 1.5  1999/03/24 17:20:00  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.4  1999/02/03 17:01:16  joergr
- * Removed some debug code.
- *
- * Revision 1.3  1999/01/20 14:59:05  joergr
- * Added debug code to measure time of some routines.
- *
- * Revision 1.2  1998/12/16 16:27:54  joergr
- * Added additional case to copy pixels.
- *
- * Revision 1.1  1998/11/27 14:57:46  joergr
- * Added copyright message.
- * Added methods and classes for flipping and rotating, changed for
- * scaling and clipping.
- *
- *
- */

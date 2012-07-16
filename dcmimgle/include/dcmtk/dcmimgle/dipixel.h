@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomPixel (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:50:22 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -127,55 +120,3 @@ class DCMTK_DCMIMGLE_EXPORT DiPixel
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dipixel.h,v $
- * Revision 1.14  2011-12-14 09:50:22  uli
- * Make it possible to properly build dcmimgle as a DLL.
- *
- * Revision 1.13  2010-10-14 13:16:27  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2010-03-01 09:08:47  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.11  2005-12-08 16:48:04  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.10  2004/10/19 12:58:24  joergr
- * Enhanced API documentation.
- *
- * Revision 1.9  2004/02/06 11:07:50  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.8  2003/12/09 10:07:16  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.7  2002/06/26 16:06:08  joergr
- * Enhanced handling of corrupted pixel data and/or length.
- *
- * Revision 1.6  2001/06/01 15:49:50  meichel
- * Updated copyright header
- *
- * Revision 1.5  2000/03/08 16:24:23  meichel
- * Updated copyright header.
- *
- * Revision 1.4  1999/09/17 12:47:51  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- *
- * Revision 1.3  1999/03/24 17:20:22  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.2  1999/01/20 15:12:10  joergr
- * Replaced invocation of getCount() by member variable Count where possible.
- *
- * Revision 1.1  1998/11/27 15:32:37  joergr
- * Added copyright message.
- * Introduced new pixel base class.
- *
- *
- */

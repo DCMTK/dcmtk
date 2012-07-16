@@ -18,13 +18,6 @@
  *  Purpose: Template class for administrating an unordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-04-11 10:17:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFUnorderedSet_h
@@ -442,28 +435,3 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 };
 
 #endif
-
-/*
-** CVS/RCS Log:
-** $Log: ofuoset.h,v $
-** Revision 1.8  2012-04-11 10:17:41  uli
-** Minor change to make gcc 4.7.0 happy.
-**
-** Revision 1.7  2010-10-14 13:15:51  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.6  2005/12/12 09:24:27  meichel
-** Added explicit references to parent template class, needed for
-**   gcc 3.4.2 (MinGW port)
-**
-** Revision 1.5  2005/12/08 16:06:12  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.4  2002/12/16 10:40:25  wilkens
-** Removed superfluous implementation files and modified header and make files.
-**
-** Revision 1.3  2002/07/09 18:29:47  wilkens
-** Added some more functionality.
-**
-**
-*/

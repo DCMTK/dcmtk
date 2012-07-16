@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:06 $
- *  CVS/RCS Revision: $Revision: 1.24 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -355,93 +348,3 @@ OFCondition DSRSpatialCoordinatesValue::checkFiducialUID(const OFString &fiducia
     return fiducialUID.empty() ? EC_Normal
                                : DcmUniqueIdentifier::checkStringValue(fiducialUID, "1");
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrscovl.cc,v $
- *  Revision 1.24  2012-06-11 08:53:06  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.23  2011-12-16 16:58:34  joergr
- *  Added support for optional attribute Fiducial UID (0070,031A) to SCOORD and
- *  SCOORD3D content items.
- *
- *  Revision 1.22  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.21  2010-09-28 14:03:41  joergr
- *  Updated comment on the requirements for POLYLINE according to CP-233.
- *
- *  Revision 1.20  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.19  2007-11-15 16:45:42  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.18  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.17  2006/07/25 13:37:48  joergr
- *  Added new optional flags for the HTML rendering of SR documents:
- *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
- *  HF_renderSectionTitlesInline.
- *
- *  Revision 1.16  2005/12/08 15:48:06  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.15  2003/10/17 16:10:43  joergr
- *  Fixed wrong wording in a warning message ("too less" -> "too few").
- *
- *  Revision 1.14  2003/08/07 15:21:53  joergr
- *  Added brackets around "bitwise and" operator/operands to avoid warnings
- *  reported by MSVC5.
- *
- *  Revision 1.13  2003/08/07 13:46:04  joergr
- *  Added readXML functionality.
- *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
- *  is defined).
- *
- *  Revision 1.12  2002/12/05 13:53:30  joergr
- *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
- *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
- *
- *  Revision 1.11  2001/10/10 15:30:01  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.10  2001/09/26 13:04:24  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.9  2001/05/07 16:14:25  joergr
- *  Updated CVS header.
- *
- *  Revision 1.8  2001/02/13 16:35:28  joergr
- *  Minor corrections in XML output (newlines, etc.).
- *
- *  Revision 1.7  2000/11/06 11:33:45  joergr
- *  Removed additional check (according to CP).
- *
- *  Revision 1.6  2000/11/01 16:37:03  joergr
- *  Added support for conversion to XML. Optimized HTML rendering.
- *
- *  Revision 1.5  2000/10/26 14:34:39  joergr
- *  Use method isShort() to decide whether a content item can be rendered
- *  "inline" or not.
- *
- *  Revision 1.4  2000/10/19 16:06:42  joergr
- *  Added optional module name to read method to provide more detailed warning
- *  messages.
- *
- *  Revision 1.3  2000/10/18 17:22:09  joergr
- *  Added check for read methods (VM and type).
- *
- *  Revision 1.2  2000/10/16 12:08:29  joergr
- *  Reformatted print output.
- *
- *  Revision 1.1  2000/10/13 07:52:25  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

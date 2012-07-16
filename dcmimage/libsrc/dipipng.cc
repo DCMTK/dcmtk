@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-16 11:45:49 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -240,38 +233,3 @@ OFString DiPNGPlugin::getLibraryVersionString()
 int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: dipipng.cc,v $
- * Revision 1.9  2011-12-16 11:45:49  joergr
- * Added support for 16 bits per sample to PNG image export.
- *
- * Revision 1.8  2010-10-14 13:14:14  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2010-08-06 08:41:36  uli
- * Fixed some more compiler warnings.
- *
- * Revision 1.6  2005-12-08 15:42:26  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2004/04/07 12:07:52  joergr
- * Additional modifications for new-style type casts.
- *
- * Revision 1.4  2004/02/06 11:20:00  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.3  2004/01/21 12:57:32  meichel
- * Adapted PNG export plugin to new configure test, fixed issue with local
- *   variable that could be clobbered by longjmp().
- *
- * Revision 1.2  2003/12/17 16:34:57  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.1  2003/02/11 13:18:38  meichel
- * Added PNG export option to dcm2pnm and dcmj2pnm
- *
- *
- */

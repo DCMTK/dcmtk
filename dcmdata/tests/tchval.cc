@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for checkStringValue() methods
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-14 11:17:50 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -235,40 +228,3 @@ OFTEST(dcmdata_checkStringValue)
   hugeString[hugeString.length() / 2] = '\t';
   CHECK_BAD ( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tchval.cc,v $
- * Revision 1.2  2011-12-14 11:17:50  joergr
- * Fixed wrong definition of value representation Date Time (DT): All trailing
- * components can be omitted, i.e. the shortest DT value consists of "YYYY".
- *
- * Revision 1.1  2011-05-25 10:05:55  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.7  2010-10-14 13:15:05  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2010-09-02 10:26:17  uli
- * Added a test for UT VR with an invalid character.
- *
- * Revision 1.5  2010-08-26 12:18:09  uli
- * Added a test that breaks DcmUnlimitedText. This has to be fixed.
- *
- * Revision 1.4  2010-08-26 08:39:50  uli
- * Added a test that breaks DcmUnlimitedText. This has to be fixed.
- *
- * Revision 1.3  2010-04-23 14:34:45  joergr
- * Renamed static helper function checkValue() to checkStringValue().
- *
- * Revision 1.2  2010-01-07 17:49:31  joergr
- * Added tests for old time format "HH:MM:SS.FFFFFF".
- *
- * Revision 1.1  2009-08-03 09:07:59  joergr
- * Added methods that check whether a given string value conforms to the VR and
- * VM definitions of the DICOM standards.
- *
- *
- */

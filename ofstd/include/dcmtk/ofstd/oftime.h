@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for time functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:01 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -439,59 +432,3 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stre
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: oftime.h,v $
- * Revision 1.14  2011-12-14 08:54:01  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.13  2011-11-30 08:35:11  joergr
- * Made setISOFormattedeTime() more robust with regard to input values. Fixed
- * an issue with determining the local time zone (introduced with last commit).
- *
- * Revision 1.12  2011-11-29 15:57:30  joergr
- * Added support for the optional time zone to setISOFormattedTime(). Also made
- * sure that all time zones in the range of -12 to +14 are regarded as valid.
- *
- * Revision 1.11  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2009-08-19 11:55:45  meichel
- * Added additional includes needed for Sun Studio 11 on Solaris.
- *
- * Revision 1.9  2006-08-14 16:42:26  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.8  2005/12/08 16:06:09  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2004/01/16 10:30:39  joergr
- * Added setISOFormattedXXX() methods for Date, Time and DateTime.
- *
- * Revision 1.6  2003/12/17 15:18:48  joergr
- * Fixed bug/inconsistency in comparison operators of class OFTime. Now the
- * "time overflow" is handled correctly.
- *
- * Revision 1.5  2003/09/15 12:12:56  joergr
- * Fixed incorrect/improper comments of the comparision operators. Enhanced
- * comment of the default constructor. Made comparison operators const.
- *
- * Revision 1.4  2002/05/24 09:43:05  joergr
- * Renamed some parameters/variables to avoid ambiguities.
- *
- * Revision 1.3  2002/04/19 10:42:51  joergr
- * Added new helper routines to get the milli and micro seconds part as well as
- * the integral value of seconds.
- *
- * Revision 1.2  2002/04/15 09:38:59  joergr
- * Added "include <sys/types.h>" for struct time_t (required for MSVC).
- *
- * Revision 1.1  2002/04/11 12:12:24  joergr
- * Introduced new standard classes providing date and time functions.
- *
- *
- */

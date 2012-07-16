@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQuantColorHashTable
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -120,26 +113,3 @@ private:
 
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: diqthash.h,v $
- * Revision 1.5  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.4  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2005/12/08 16:01:47  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2003/12/23 12:17:26  joergr
- * Updated copyright header.
- *
- * Revision 1.1  2002/01/25 13:32:05  meichel
- * Initial release of new color quantization classes and
- *   the dcmquant tool in module dcmimage.
- *
- *
- */

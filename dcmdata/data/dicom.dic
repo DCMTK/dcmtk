@@ -17,11 +17,6 @@
 #  Purpose:
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2012-04-12 15:00:09 $
-#  CVS/RCS Revision: $Revision: 1.22 $
-#  Status:           $State: Exp $
-#
 # This file contains the complete data dictionary from the 2011 edition of the
 # DICOM standard.  This also includes the definitions from the DICOS (Digital
 # Imaging and Communications in Security) standard.

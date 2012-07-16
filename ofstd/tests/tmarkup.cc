@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for "convert to markup"-code in OFStandard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-14 10:40:46 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -117,17 +110,3 @@ OFTEST(ofstd_markup_5)
     OFStandard::convertToMarkupString(sourceStr, resultStr, OFFalse /* convertNonASCII */, OFStandard::MM_XHTML, OFFalse /* newlineAllowed */);
     OFCHECK_EQUAL(resultStr, "This is a test" /* string is truncated at the NULL byte */);
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tmarkup.cc,v $
- * Revision 1.2  2011-10-14 10:40:46  joergr
- * Replaced the "o umlaut" encoded in ISO 8859-1 with its octal representation.
- *
- * Revision 1.1  2011-10-12 12:03:04  joergr
- * Added tests for convertToMarkupString() method.
- *
- *
- */

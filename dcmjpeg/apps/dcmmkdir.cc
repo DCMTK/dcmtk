@@ -37,13 +37,6 @@
  *  - 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
  *  - Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:38 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -52,25 +45,3 @@
 
 // include full implementation of "dcmgpdir"
 #include "../../dcmdata/apps/dcmgpdir.cc"
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcmmkdir.cc,v $
- * Revision 1.5  2010-10-14 13:13:38  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2008-09-25 13:53:24  joergr
- * Updated comment header (list of supported profiles).
- *
- * Revision 1.3  2005/12/08 15:43:23  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2004/01/16 14:28:01  joergr
- * Updated copyright header.
- *
- * Revision 1.1  2001/11/19 13:08:10  joergr
- * Moved dcmmkdir tool to dcmjpeg module.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-25 08:39:31 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef MDFCONEN_H
@@ -230,95 +223,3 @@ private:
 };
 
 #endif // MDFCONEN_H
-
-
-/*
-** CVS/RCS Log:
-** $Log: mdfconen.h,v $
-** Revision 1.21  2011-08-25 08:39:31  onken
-** Added dcmodify option tgat permits creation of files from scratch.
-**
-** Revision 1.20  2011-02-04 12:07:46  uli
-** Made sure we only save assignable classes in STL containers.
-**
-** Revision 1.19  2010-10-14 13:17:52  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.18  2010-05-20 15:45:21  joergr
-** Removed some unnecessary include directives.
-**
-** Revision 1.17  2009-11-04 09:58:06  uli
-** Switched to logging mechanism provided by the "new" oflog module
-**
-** Revision 1.16  2009-01-15 16:11:55  onken
-** Reworked dcmodify to work with the new DcmPath classes for supporting
-** wildcard paths and automatic insertion of missing attributes and items.
-** Added options for private tag handling and modification of UN values and
-** for ignoring errors resulting from missing tags during modify and erase
-** operations. Further cleanups.
-**
-** Revision 1.15  2008-06-23 13:39:16  joergr
-** Fixed inconsistencies in Doxygen API documentation.
-**
-** Revision 1.14  2006/12/06 09:31:49  onken
-** Added "--no-backup" option to prevent dcmodify from creating backup files
-**
-** Revision 1.13  2006/11/23 15:32:58  onken
-** Made member variables private (before: protected)
-**
-** Revision 1.12  2005/12/08 15:46:50  meichel
-** Updated Makefiles to correctly install header files
-**
-** Revision 1.11  2005/12/02 09:19:26  joergr
-** Added new command line option that checks whether a given file starts with a
-** valid DICOM meta header.
-**
-** Revision 1.10  2004/11/05 17:17:24  onken
-** Added input and output options for dcmodify. minor code enhancements.
-**
-** Revision 1.9  2004/10/22 16:53:26  onken
-** - fixed ignore-errors-option
-** - major enhancements for supporting private tags
-** - removed '0 Errors' output
-** - modifications to groups 0000,0001,0002,0003,0005 and 0007 are blocked,
-**   removing tags with group 0001,0003,0005 and 0007 is still possible
-** - UID options:
-**   - generate new study, series and instance UIDs
-**   - When changing UIDs in dataset, related metaheader tags are updated
-**     automatically
-** - minor code improvements
-**
-** Revision 1.8  2004/04/19 14:45:07  onken
-** Restructured code to avoid default parameter values for "complex types" like
-** OFString. Required for Sun CC 2.0.1.
-**
-** Revision 1.7  2003/12/10 16:19:20  onken
-** Changed API of MdfDatasetManager, so that its transparent for user, whether
-** he wants to modify itemtags or tags at 1. level.
-**
-** Complete rewrite of MdfConsoleEngine. It doesn't support a batchfile any more,
-** but now a user can give different modify-options at the same time on
-** commandline. Other purifications and simplifications were made.
-**
-** Revision 1.6  2003/11/11 10:55:51  onken
-** - debug-mechanism doesn't use debug(..) any more
-** - comments purified
-** - headers adjustet to debug-modifications
-**
-** Revision 1.5  2003/10/13 14:51:49  onken
-** improved backup-strategy
-**
-** Revision 1.4  2003/10/01 14:04:03  onken
-** Corrected doxygen-information in headerfiles
-**
-** Revision 1.3  2003/09/19 12:43:54  onken
-** major bug fixes, corrections for "dcmtk-coding-style", better error-handling
-**
-** Revision 1.2  2003/07/09 12:13:13  meichel
-** Included dcmodify in MSVC build system, updated headers
-**
-** Revision 1.1  2003/06/26 09:17:18  onken
-** Added commandline-application dcmodify.
-**
-**
-*/

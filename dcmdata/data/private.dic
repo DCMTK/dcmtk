@@ -17,11 +17,6 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2011-03-01 10:04:21 $
-#  CVS/RCS Revision: $Revision: 1.13 $
-#  Status:           $State: Exp $
-#
 #
 # Dictionary of Private Tags
 #

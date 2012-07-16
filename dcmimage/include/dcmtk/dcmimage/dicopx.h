@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomColorPixel (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -172,74 +165,3 @@ class DCMTK_DCMIMAGE_EXPORT DiColorPixel
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dicopx.h,v $
- * Revision 1.21  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.20  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.19  2010-03-01 09:08:46  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.18  2009-11-25 14:36:20  joergr
- * Added new source and header file for the module logger.
- *
- * Revision 1.17  2008-05-13 10:03:34  joergr
- * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
- * format for color-by-plane output.
- *
- * Revision 1.16  2005/12/08 16:01:34  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.15  2004/10/19 12:57:47  joergr
- * Enhanced API documentation.
- *
- * Revision 1.14  2003/12/17 18:18:08  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols).
- *
- * Revision 1.13  2002/09/12 14:10:37  joergr
- * Replaced "createPixelData" by "getPixelData" which uses a new dcmdata
- * routine and is therefore more efficient.
- *
- * Revision 1.12  2002/08/29 12:57:49  joergr
- * Added method that creates pixel data in DICOM format.
- *
- * Revision 1.11  2002/01/29 17:07:08  joergr
- * Added optional flag to the "Windows DIB" methods allowing to switch off the
- * scanline padding.
- *
- * Revision 1.10  2001/11/09 16:44:01  joergr
- * Enhanced and renamed createTrueColorDIB() method.
- * Updated/Enhanced comments.
- *
- * Revision 1.9  2001/06/01 15:49:29  meichel
- * Updated copyright header
- *
- * Revision 1.8  2000/03/08 16:21:51  meichel
- * Updated copyright header.
- *
- * Revision 1.7  1999/04/29 09:31:13  joergr
- * Moved color related image files back to non-public part.
- *
- * Revision 1.1  1999/04/28 14:57:32  joergr
- * Moved files from dcmimage module to dcmimgle to support new pastel color
- * output format.
- *
- * Revision 1.5  1999/01/20 14:44:04  joergr
- * Corrected some typos and formatting.
- *
- * Revision 1.4  1998/11/27 13:47:54  joergr
- * Added copyright message. Added method to directly create java AWT bitmaps.
- *
- * Revision 1.3  1998/05/11 14:53:13  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

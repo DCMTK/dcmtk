@@ -17,13 +17,6 @@
  *
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-05 16:25:38 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -143,52 +136,3 @@ typedef STD_NAMESPACE istrstream OFIStringStream;
 #endif /* USE_STRINGSTREAM */
 
 #endif /* OFSTREAM_H */
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofstream.h,v $
- * Revision 1.12  2012-01-05 16:25:38  joergr
- * Fixed issue with output of strings with embedded NULL bytes to the logger.
- * Fixed issue with old stringstream classes (reported by VisualStudio 2005).
- *
- * Revision 1.11  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2007/02/19 15:16:16  meichel
- * Namespace std is not imported into the default namespace anymore,
- *   unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.
- *
- * Revision 1.9  2006/08/15 15:52:23  meichel
- * Updated all code in module dcmdata to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.8  2006/08/14 16:42:02  meichel
- * Defined two new macros: STD_NAMESPACE is defined to std:: if the standard
- *   namespace exists and empty otherwise. OFendl is defined as std::endl if
- *   the standard namespace exists and as endl otherwise.
- *
- * Revision 1.7  2005/12/08 16:06:06  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2004/05/07 10:46:32  meichel
- * Removed unneeded semicolon, reported by gcc 3.4
- *
- * Revision 1.5  2004/01/16 10:30:12  joergr
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.4  2003/12/05 10:37:41  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright date where appropriate.
- *
- * Revision 1.3  2002/12/11 15:54:48  meichel
- * Added empty namespace std declaration, needed on MSVC.
- *
- * Revision 1.2  2002/05/02 14:05:50  joergr
- * Added support for standard and non-standard string streams (which one is
- * supported is detected automatically via the configure mechanism).
- *
- * Revision 1.1  2002/04/16 13:36:03  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- */

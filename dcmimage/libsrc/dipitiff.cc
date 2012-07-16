@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-08 13:26:43 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -213,51 +206,3 @@ OFString DiTIFFPlugin::getLibraryVersionString()
 int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dipitiff.cc,v $
- * Revision 1.12  2010-12-08 13:26:43  uli
- * Explicitely check for libtiff 3.7.0 or newer.
- *
- * Revision 1.11  2010-10-14 13:14:14  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2010-06-07 12:49:51  onken
- * Fixed crash in dcmimage's TIFF plugin on some windows systems
- * that was caused by closing the output file more than once.
- *
- * Revision 1.9  2009-08-06 12:33:56  meichel
- * Fixed bug that caused TIFF export in dcm2pnm to fail on Win32
- *   for newer releases of libtiff (3.7.4 and newer)
- *
- * Revision 1.8  2005-12-08 15:42:27  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2004/02/06 11:20:00  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.6  2003/12/17 16:34:57  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.5  2002/12/16 12:58:21  meichel
- * Minor modification to shut up linker on MacOS X when compiling
- *   without OpenSSL support
- *
- * Revision 1.4  2002/09/19 08:34:07  joergr
- * Added static method getLibraryVersionString().
- *
- * Revision 1.3  2002/08/29 16:00:56  meichel
- * Fixed DiTIFFPlugin::write(): libtiff's TIFFFdOpen() expects a HANDLE
- *   instead of a file descriptor when compiled on WIN32.
- *
- * Revision 1.2  2001/12/06 10:11:00  meichel
- * Removed references to tiffconf.h which does not exist on all installations
- *
- * Revision 1.1  2001/11/30 16:47:57  meichel
- * Added TIFF export option to dcm2pnm and dcmj2pnm
- *
- *
- */

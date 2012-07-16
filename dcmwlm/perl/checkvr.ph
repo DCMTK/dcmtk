@@ -22,24 +22,6 @@
 #   This module contains perl procedures which check (more or less)
 #   the correctness of strings as DICOM value representations.
 #
-# Last Update:      $Author: joergr $
-# Update Date:      $Date: 2010-10-14 13:02:01 $
-# CVS/RCS Revision: $Revision: 1.2 $
-# Status:           $State: Exp $
-#
-# CVS/RCS Log
-#   $Log: checkvr.ph,v $
-#   Revision 1.2  2010-10-14 13:02:01  joergr
-#   Updated copyright header. Added reference to COPYRIGHT file.
-#
-#   Revision 1.1  2002/12/03 12:16:04  wilkens
-#   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
-#   so that dcmwlm can now completely replace wlistctn in the public domain part
-#   of dcmtk. Pertaining to this replacement requirement, another optional return
-#   key attribute was integrated into the wlm utilities.
-#
-#
-#
 
 #
 # string stripWS(string S)

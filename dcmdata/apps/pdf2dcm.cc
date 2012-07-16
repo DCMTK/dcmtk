@@ -17,13 +17,6 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:47 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -601,80 +594,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-/*
-** CVS/RCS Log:
-** $Log: pdf2dcm.cc,v $
-** Revision 1.20  2011-07-06 11:08:47  uli
-** Fixed various compiler warnings.
-**
-** Revision 1.19  2011-05-30 16:01:36  joergr
-** Replaced Modality value "OT" by "DOC" which is more appropriate (see CP-749).
-**
-** Revision 1.18  2010-10-14 13:13:30  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.17  2010-08-09 13:04:19  joergr
-** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
-** the official "keyword" is used for the attribute name which results in a
-** number of minor changes (e.g. "PatientsName" is now called "PatientName").
-**
-** Revision 1.16  2009-11-13 13:20:23  joergr
-** Fixed minor issues in log output.
-**
-** Revision 1.15  2009-11-04 09:58:06  uli
-** Switched to logging mechanism provided by the "new" oflog module
-**
-** Revision 1.14  2009-10-12 09:35:43  joergr
-** Changed prefix of UIDs created for series and studies (now using constants
-** SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
-** in these cases).
-**
-** Revision 1.13  2009-08-11 08:13:35  joergr
-** Slightly modified code in order to avoid warning messages on MSVC compiler.
-**
-** Revision 1.12  2009-08-10 11:04:22  joergr
-** Use helper functions checkDependence() and checkConflict() where appropriate.
-**
-** Revision 1.11  2009-08-10 10:25:23  joergr
-** Replaced '\n' by OFendl where appropriate.
-**
-** Revision 1.10  2009-04-21 14:02:49  joergr
-** Fixed minor inconsistencies in manpage / syntax usage.
-**
-** Revision 1.9  2008-09-25 14:38:48  joergr
-** Moved output of resource identifier in order to avoid printing the same
-** information twice.
-**
-** Revision 1.8  2008-09-25 11:19:48  joergr
-** Added support for printing the expanded command line arguments.
-** Always output the resource identifier of the command line tool in debug mode.
-**
-** Revision 1.7  2008-04-30 12:38:42  meichel
-** Fixed compile errors due to changes in attribute tag names
-**
-** Revision 1.6  2006/08/15 15:50:56  meichel
-** Updated all code in module dcmdata to correctly compile when
-**   all standard C++ classes remain in namespace std.
-**
-** Revision 1.5  2006/07/27 13:52:42  joergr
-** Changed parameter "exclusive" of method addOption() from type OFBool into an
-** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
-** Option "--help" is no longer an exclusive option by default.
-**
-** Revision 1.4  2005/12/08 15:40:53  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.3  2005/11/28 15:28:54  meichel
-** File dcdebug.h is not included by any other header file in the toolkit
-**   anymore, to minimize the risk of name clashes of macro debug().
-**
-** Revision 1.2  2005/10/26 13:33:49  joergr
-** Slightly modified code to use more of the "new" helper functions.
-**
-** Revision 1.1  2005/10/25 13:01:02  meichel
-** Added new tool pdf2dcm that allows to convert PDF files to DICOM
-**   Encapsulated PDF Storage SOP instances.
-**
-*/

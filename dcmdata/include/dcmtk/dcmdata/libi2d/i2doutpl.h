@@ -17,13 +17,6 @@
  *
  *  Purpose: Base class for converter from image file to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2012-05-04 09:32:31 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef I2DOUTPL_H
@@ -227,61 +220,3 @@ protected:
 };
 
 #endif // #ifndef I2DOUTPL_H
-
-/*
- * CVS/RCS Log:
- * $Log: i2doutpl.h,v $
- * Revision 1.14  2012-05-04 09:32:31  onken
- * Cleaned up includes. Fixed plugin functionality to receive list of supported
- * SOP classes.
- *
- * Revision 1.13  2011-12-14 09:04:16  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.12  2011-04-18 07:00:58  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.11  2010-11-01 10:42:44  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.10  2010-10-14 13:15:46  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.9  2010-03-01 09:08:45  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.8  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.7  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.6  2009-03-31 11:31:05  onken
- * Corrected commit message.
- *
- * Revision 1.5  2009-03-31 11:29:54  onken
- * Added possibility to also insert type 2 elements with a default value
- * when automatically inserting missing values (feature currently not in use).
- *
- * Revision 1.4  2009-01-16 09:51:55  onken
- * Completed doxygen documentation for libi2d.
- *
- * Revision 1.3  2008-01-16 16:32:23  onken
- * Fixed some empty or doubled log messages in libi2d files.
- *
- * Revision 1.2  2008-01-16 15:10:20  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.2  2008-01-11 14:17:53  onken
- * Added various options to i2dlib. Changed logging to use a configurable
- * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
- * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
- * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
- * need for templates any more). Added some bug fixes.
- *
- * Revision 1.1  2007/11/08 15:58:55  onken
- * Initial checkin of img2dcm application and corresponding library i2dlib.
- *
- *
- */

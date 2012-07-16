@@ -17,13 +17,6 @@
  *
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -192,89 +185,3 @@ class DiCubicSpline
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: displint.h,v $
- * Revision 1.21  2010-10-14 13:16:27  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2010-03-01 09:08:47  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.19  2005-12-08 16:48:10  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.18  2003/12/23 15:53:22  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.17  2003/12/08 19:20:47  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.16  2002/07/18 12:30:59  joergr
- * Removed unused code.
- *
- * Revision 1.15  2001/06/01 15:49:51  meichel
- * Updated copyright header
- *
- * Revision 1.14  2000/03/08 16:24:24  meichel
- * Updated copyright header.
- *
- * Revision 1.13  2000/02/02 14:33:54  joergr
- * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
- *
- * Revision 1.12  1999/10/21 08:29:42  joergr
- * Renamed template type definition from 'T3' to 'T3_' to avoid naming
- * conflicts.
- *
- * Revision 1.11  1999/10/20 18:38:50  joergr
- * Eliminated default values for template types since this features is not
- * supported by SunCC 4.x (temporarily introduced '#define' instead).
- *
- * Revision 1.10  1999/10/15 09:38:31  joergr
- * Fixed typos.
- *
- * Revision 1.9  1999/10/14 19:05:17  joergr
- * Fixed typo.
- *
- * Revision 1.8  1999/10/01 13:25:35  joergr
- * Enhanced template class for cubic spline interpolation to support
- * non-floating point classes/types as y-coordinates.
- *
- * Revision 1.7  1999/07/23 14:11:25  joergr
- * Added preliminary support for 2D bi-cubic spline interpolation (currently
- * not used).
- *
- * Revision 1.6  1999/05/03 11:09:31  joergr
- * Minor code purifications to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.5  1999/04/29 13:49:08  joergr
- * Renamed class CubicSpline to DiCubicSpline.
- *
- * Revision 1.4  1999/03/24 17:20:26  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.3  1999/03/22 08:52:43  joergr
- * Added/Changed comments.
- *
- * Revision 1.2  1999/02/25 16:17:16  joergr
- * Initialize local variables to avoid compiler warnings (reported by gcc
- * 2.7.2.1 on Linux).
- *
- * Revision 1.1  1999/02/11 16:36:29  joergr
- * Renamed file to indicate the use of templates.
- *
- * Revision 1.2  1999/02/09 14:21:54  meichel
- * Removed default parameters from template functions, required for Sun CC 4.2
- *
- * Revision 1.1  1999/02/04 17:59:23  joergr
- * Added support for calibration according to Barten transformation (incl.
- * a DISPLAY file describing the monitor characteristic).
- *
- *
- */

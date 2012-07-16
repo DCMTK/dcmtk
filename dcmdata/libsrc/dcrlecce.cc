@@ -17,13 +17,6 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -437,70 +430,3 @@ OFCondition DcmRLECodecEncoder::determineDecompressedColorModel(
 {
     return EC_IllegalCall;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: dcrlecce.cc,v $
- * Revision 1.16  2010-10-14 13:14:09  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.15  2010-03-01 09:08:45  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.14  2009-11-17 16:41:26  joergr
- * Added new method that allows for determining the color model of the
- * decompressed image.
- *
- * Revision 1.13  2009-11-04 09:58:10  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.12  2008-05-29 10:46:16  meichel
- * Implemented new method DcmPixelData::getUncompressedFrame
- *   that permits frame-wise access to compressed and uncompressed
- *   objects without ever loading the complete object into main memory.
- *   For this new method to work with compressed images, all classes derived from
- *   DcmCodec need to implement a new method decodeFrame(). For now, only
- *   dummy implementations returning an error code have been defined.
- *
- * Revision 1.11  2005/12/08 15:41:30  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.10  2004/08/24 14:54:20  meichel
- *  Updated compression helper methods. Image type is not set to SECONDARY
- *   any more, support for the purpose of reference code sequence added.
- *
- * Revision 1.9  2004/02/04 16:43:42  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.8  2003/08/14 09:01:06  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.7  2003/03/21 13:08:04  meichel
- * Minor code purifications for warnings reported by MSVC in Level 4
- *
- * Revision 1.6  2002/12/04 10:41:01  meichel
- * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
- *   double to string conversions that are supposed to be locale independent
- *
- * Revision 1.5  2002/11/27 12:06:51  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.4  2002/08/27 16:55:56  meichel
- * Initial release of new DICOM I/O stream classes that add support for stream
- *   compression (deflated little endian explicit VR transfer syntax)
- *
- * Revision 1.3  2002/07/18 12:15:40  joergr
- * Added explicit type casts to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.2  2002/06/27 15:15:43  meichel
- * Modified RLE encoder to make it usable for other purposes than
- *   DICOM encoding as well (e.g. PostScript, TIFF)
- *
- * Revision 1.1  2002/06/06 14:52:41  meichel
- * Initial release of the new RLE codec classes
- *   and the dcmcrle/dcmdrle tools in module dcmdata
- *
- *
- */

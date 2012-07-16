@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRXMLCursor
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:17 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -142,36 +135,3 @@ class DCMTK_DCMSR_EXPORT DSRXMLCursor
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrxmlc.h,v $
- *  Revision 1.8  2012-01-06 09:13:17  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.7  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.6  2005-12-08 16:05:35  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.5  2003/10/06 09:51:43  joergr
- *  Replaced wrong newline character sequence.
- *
- *  Revision 1.4  2003/09/04 10:14:30  joergr
- *  Combined two #include "ofstdinc.h" statements.
- *
- *  Revision 1.3  2003/09/03 16:00:11  meichel
- *  Added standard includes needed on Win32
- *
- *  Revision 1.2  2003/08/29 12:52:02  joergr
- *  Replaced inclusion of unistd.h by cstddef/stddef.h to compile under Windows
- *  with libxml support (required for definition of NULL).
- *
- *  Revision 1.1  2003/08/07 12:16:37  joergr
- *  Added interface classes hiding the access to libxml (document and cursor
- *  class).
- *
- *
- */

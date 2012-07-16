@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-15 13:59:58 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -718,73 +711,3 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
         DCMSR_ERROR("Parsing node " << getFullNodePath(cursor, tmpString) << " (" << result.text() << ")");
     }
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrxmld.cc,v $
- *  Revision 1.19  2010-12-15 13:59:58  uli
- *  Fixed a problem with a missing prototype for vsnprintf on HP-UX.
- *
- *  Revision 1.18  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.17  2010-09-28 13:21:40  joergr
- *  Made sure that no NULL pointer is passed to the OFString constructor.
- *
- *  Revision 1.16  2010-06-15 14:34:51  uli
- *  Don't fail to compile if libxml does not support schemas.
- *
- *  Revision 1.15  2009-10-28 08:42:40  uli
- *  Use a local variable for buffering libxml error messages instead of a
- *  static one.
- *
- *  Revision 1.14  2009-10-14 10:49:33  joergr
- *  Fixed minor issues in log output. Also updated copyright date (if required).
- *
- *  Revision 1.13  2009-10-13 14:57:52  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.12  2008-04-25 15:37:20  joergr
- *  Include header file for XML Schemas only if Schema support is enabled.
- *
- *  Revision 1.11  2005/12/16 15:46:43  meichel
- *  Declared libxml2 callback functions as extern "C"
- *
- *  Revision 1.10  2005/12/08 15:48:25  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.9  2004/09/03 08:50:48  joergr
- *  Replaced tabs by spaces.
- *
- *  Revision 1.8  2004/08/04 12:12:18  joergr
- *  Disabled support for XML Schema if not compiled into libxml2 library.
- *
- *  Revision 1.7  2004/04/07 12:04:48  joergr
- *  Adapted code to avoid warnings reported by gcc when compiling without libxml
- *  support.
- *
- *  Revision 1.6  2004/03/25 17:32:41  joergr
- *  Solved issue with function pointer to std::fprintf or fprintf, respectively.
- *
- *  Revision 1.5  2004/01/21 11:56:20  meichel
- *  Using std::fprintf instead of fprintf as function pointer if configure
- *    symbol HAVE_PROTOTYPE_STD__FPRINTF is defined, needed on Borland Builder.
- *
- *  Revision 1.4  2004/01/05 14:37:00  joergr
- *  Renamed XML attribute "ref_id" to "ref".
- *
- *  Revision 1.3  2003/12/01 15:47:28  joergr
- *  Changed XML encoding of by-reference relationships if flag
- *  XF_valueTypeAsAttribute is set.
- *
- *  Revision 1.2  2003/08/07 15:21:53  joergr
- *  Added brackets around "bitwise and" operator/operands to avoid warnings
- *  reported by MSVC5.
- *
- *  Revision 1.1  2003/08/07 14:49:36  joergr
- *  Added interface classes hiding the access to libxml (document and cursor
- *  class).
- *
- *
- */

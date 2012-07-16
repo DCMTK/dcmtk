@@ -17,13 +17,6 @@
  *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:16 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef I2DBMPS_H
@@ -236,40 +229,3 @@ protected:
 };
 
 #endif // #ifndef I2DBMPS_H
-
-/*
- * CVS/RCS Log:
- * $Log: i2dbmps.h,v $
- * Revision 1.10  2011-12-14 09:04:16  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.9  2010-11-15 13:58:43  uli
- * Fixed some errors in doxygen comments.
- *
- * Revision 1.8  2010-10-14 13:15:46  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2010-10-01 10:21:05  uli
- * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
- *
- * Revision 1.6  2010-06-01 10:33:53  uli
- * Added support for indexed-color BMP images (bit depths 1, 4 and 8).
- *
- * Revision 1.5  2010-05-25 12:40:06  uli
- * Added support for 16bpp BMP images to libi2d
- *
- * Revision 1.4  2010-05-21 14:43:07  uli
- * Added support for 32bpp BMP images to libi2d.
- *
- * Revision 1.3  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.2  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.1  2009-07-16 14:25:28  onken
- * Added img2dcm input plugin for the BMP graphics format (at the moment only
- * support for 24 Bit RGB).
- *
- *
- */

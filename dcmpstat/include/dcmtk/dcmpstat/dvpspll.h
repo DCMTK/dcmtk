@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:50 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVPSPLL_H
@@ -140,53 +133,3 @@ private:
 
 
 #endif
-
-/*
- *  $Log: dvpspll.h,v $
- *  Revision 1.14  2012-01-06 10:05:50  uli
- *  Make it possible to build dcmpstat as a DLL.
- *
- *  Revision 1.13  2010-10-14 13:16:36  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.12  2010-10-07 14:31:36  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved).
- *
- *  Revision 1.11  2009-11-24 14:12:57  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.10  2009-09-30 10:42:38  uli
- *  Make dcmpstat's include headers self-sufficient by including all
- *  needed headers directly and stop using dctk.h
- *
- *  Revision 1.9  2005-12-08 16:03:56  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2003/06/04 10:18:06  meichel
- *  Replaced private inheritance from template with aggregation
- *
- *  Revision 1.7  2001/09/26 15:36:14  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.6  2001/06/01 15:50:19  meichel
- *  Updated copyright header
- *
- *  Revision 1.5  2000/06/02 16:00:49  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.4  2000/05/31 12:56:39  meichel
- *  Added initial Print SCP support
- *
- *  Revision 1.3  2000/03/08 16:28:54  meichel
- *  Updated copyright header.
- *
- *  Revision 1.2  2000/02/29 12:16:15  meichel
- *  Fixed bug in dcmpstat library that caused Monochrome1 images
- *    to be printed inverse if a Presentation LUT was applied.
- *
- *  Revision 1.1  1999/10/07 17:21:49  meichel
- *  Reworked management of Presentation LUTs in order to create tighter
- *    coupling between Softcopy and Print.
- *
- *
- */

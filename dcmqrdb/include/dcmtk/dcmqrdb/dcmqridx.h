@@ -17,13 +17,6 @@
  *
  *  Purpose: enums and structures used for the database index file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:58:34 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DATAPRIV_H
@@ -394,37 +387,3 @@ private:
 
 
 #endif
-
-/*
- * CVS Log
- * $Log: dcmqridx.h,v $
- * Revision 1.7  2011-12-14 12:58:34  uli
- * Make it possible to build dcmqrdb as a DLL.
- *
- * Revision 1.6  2010-10-14 13:16:41  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2010-08-09 13:23:00  joergr
- * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- * the official "keyword" is used for the attribute name which results in a
- * number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- * Revision 1.4  2009-01-30 14:45:02  joergr
- * Uncommented initialization of array variables in order to avoid compiler
- * warnings reported by VisualStudio 2005.
- *
- * Revision 1.3  2008-04-15 15:43:37  meichel
- * Fixed endless recursion bug in the index file handling code when
- *   the index file does not exist
- *
- * Revision 1.2  2005/12/08 16:04:24  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2005/03/30 13:34:50  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

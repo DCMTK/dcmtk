@@ -20,13 +20,6 @@
  *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall
  *  not be used directly in applications. No identification exists.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:15 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCVRPOBW_H
@@ -230,75 +223,3 @@ private:
 
 };
 #endif
-
-/*
-** CVS/RCS Log:
-** $Log: dcvrpobw.h,v $
-** Revision 1.19  2011-12-14 09:04:15  uli
-** Make it possible to accurately build dcmdata and libi2d as DLLs.
-**
-** Revision 1.18  2010-10-14 13:15:43  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.17  2008-07-17 11:19:49  onken
-** Updated copyFrom() documentation.
-**
-** Revision 1.16  2008-07-17 10:30:23  onken
-** Implemented copyFrom() method for complete DcmObject class hierarchy, which
-** permits setting an instance's value from an existing object. Implemented
-** assignment operator where necessary.
-**
-** Revision 1.15  2007-11-29 14:30:19  meichel
-** Write methods now handle large raw data elements (such as pixel data)
-**   without loading everything into memory. This allows very large images to
-**   be sent over a network connection, or to be copied without ever being
-**   fully in memory.
-**
-** Revision 1.14  2007/06/07 09:00:59  joergr
-** Fixed incorrect comment.
-**
-** Revision 1.13  2005/12/08 16:29:06  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.12  2004/07/01 12:28:25  meichel
-** Introduced virtual clone method for DcmObject and derived classes.
-**
-** Revision 1.11  2002/09/12 14:07:16  joergr
-** Added method "createUint8Array" which works similar to the 16 bit variant.
-**
-** Revision 1.10  2002/08/27 16:55:40  meichel
-** Initial release of new DICOM I/O stream classes that add support for stream
-**   compression (deflated little endian explicit VR transfer syntax)
-**
-** Revision 1.9  2001/09/25 17:19:33  meichel
-** Adapted dcmdata to class OFCondition
-**
-** Revision 1.8  2001/06/01 15:48:52  meichel
-** Updated copyright header
-**
-** Revision 1.7  2001/05/10 12:52:56  meichel
-** Added public createUint16Array() method in class DcmPolymorphOBOW.
-**
-** Revision 1.6  2000/11/07 16:56:11  meichel
-** Initial release of dcmsign module for DICOM Digital Signatures
-**
-** Revision 1.5  2000/03/08 16:26:25  meichel
-** Updated copyright header.
-**
-** Revision 1.4  1999/03/31 09:25:05  meichel
-** Updated copyright header in module dcmdata
-**
-** Revision 1.3  1998/11/12 16:47:53  meichel
-** Implemented operator= for all classes derived from DcmObject.
-**
-** Revision 1.2  1997/07/31 06:59:00  andreas
-** Error correction and additonal functionality for
-** DcmPolymorphOBOW to support getting and putting of Uint8 and
-** Uint16 data independent of the VR.
-**
-** Revision 1.1  1997/07/21 07:54:00  andreas
-** - Support for CP 14. PixelData and OverlayData can have VR OW or OB
-**   (depending on the transfer syntax). New internal value
-**   representation (only for ident()) for OverlayData.
-**
-*/

@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2012-05-04 09:32:38 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -738,71 +731,3 @@ Image2Dcm::~Image2Dcm()
 {
   DCMDATA_LIBI2D_DEBUG("Freeing memory");
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: i2d.cc,v $
- * Revision 1.17  2012-05-04 09:32:38  onken
- * Cleaned up includes. Fixed plugin functionality to receive list of supported
- * SOP classes.
- *
- * Revision 1.16  2011-04-18 07:00:58  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.15  2010-11-01 10:42:44  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.14  2010-10-14 13:18:23  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.13  2010-08-09 13:06:03  joergr
- * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- * the official "keyword" is used for the attribute name which results in a
- * number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- * Revision 1.12  2010-03-25 09:26:58  onken
- * Pixel data is now already marked with the correct transfer syntax in
- * memory not only when writing to disk. This permits conversion in
- * memory, e. g. for sending the converted DICOM images directly over
- * the network.
- *
- * Revision 1.11  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.10  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.9  2009-09-04 13:53:09  meichel
- * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
- *
- * Revision 1.8  2009-08-05 08:51:02  joergr
- * Replaced numeric tag by pre-defined tag name (DCM_PixelDataProviderURL).
- * Fixed various inconsistencies in condition text values and log messages.
- *
- * Revision 1.7  2009-07-16 14:23:23  onken
- * Extended Image2Dcm engine to also work for uncompressed pixel data input.
- *
- * Revision 1.6  2009-07-10 13:16:07  onken
- * Added path functionality for --key option and lets the code make use
- * of the DcmPath classes.
- *
- * Revision 1.5  2009-03-31 13:05:27  onken
- * Changed implementation of lossy compression attribute detection and writing.
- *
- * Revision 1.3  2009-03-27 17:49:20  onken
- * Attribute "Pixel Aspect Ratio" (as found in JFIF header) is now written
- * to DICOM dataset if not equal to 1.
- *
- * Revision 1.2  2008-01-16 16:32:31  onken
- * Fixed some empty or doubled log messages in libi2d files.
- *
- * Revision 1.1  2008-01-16 14:36:02  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.1  2007/11/08 15:55:17  onken
- * Initial checkin of img2dcm application and corresponding library i2dlib.
- *
- *
- */

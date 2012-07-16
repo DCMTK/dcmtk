@@ -17,13 +17,6 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 14:28:46 $
- *  CVS/RCS Revision: $Revision: 1.17 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -264,71 +257,3 @@ void OFLog::addOptions(OFCommandLine &cmd)
     cmd.addOption("--log-config", "-lc", 1, "[f]ilename: string",
                                             "use config file f for the logger");
 }
-
-/*
- *
- * CVS/RCS Log:
- * $Log: oflog.cc,v $
- * Revision 1.17  2011-07-06 14:28:46  uli
- * Changed the default log level for tests to ERROR.
- *
- * Revision 1.16  2011-06-15 08:45:22  uli
- * Moved log4cplus into namespace dcmtk::log4cplus.
- *
- * Revision 1.15  2010-12-06 09:47:30  uli
- * Fixed crash in oflog on Mac OS X 10.4.1 with gcc 4.0.1 due to different order
- * of execution of global destructors.
- *
- * Revision 1.14  2010-10-14 13:14:51  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.13  2010-10-08 12:37:34  uli
- * Fixed an invalid use of OFauto_ptr.
- *
- * Revision 1.12  2010-05-14 12:29:55  uli
- * Added new function OFLog::reconfigure() which reinterprets the logger config
- * file. This can e.g. be useful for logging to a different file after fork().
- *
- * Revision 1.11  2010-01-20 15:18:05  uli
- * Added variables for the appname, date, time, hostname and pid to logger.cfg.
- *
- * Revision 1.10  2009-12-23 12:14:49  joergr
- * Changed output of option --arguments.
- *
- * Revision 1.9  2009-12-08 15:38:59  uli
- * Renaming files to make them fit into 8.3 format
- *
- * Revision 1.8  2009-09-17 14:33:57  joergr
- * Made sure that log4cplus' internal quiet mode is always set appropriately.
- *
- * Revision 1.7  2009-09-16 10:01:06  joergr
- * Changed OFLogger's copy constructor: use "const &" for the parameter.
- *
- * Revision 1.6  2009-09-15 13:02:04  joergr
- * Added initialization of Winsock DLL in order to use gethostname() et al.
- *
- * Revision 1.5  2009-09-14 10:52:31  joergr
- * Introduced new placeholder for the pattern layout: %P can be used to output
- * only the first character of the log level. Used for the default layout.
- * Slightly changed evaluation of log-related command line options.
- * Removed (now) unused helper function toLogMode().
- *
- * Revision 1.4  2009-09-07 10:02:20  joergr
- * Moved --arguments option and corresponding output to oflog module in order
- * to use the correct output stream. Fixed issue with --quiet mode.
- * Moved output of resource identifier back from oflog to the application.
- *
- * Revision 1.3  2009-09-04 12:45:41  joergr
- * Changed default behavior of the logger: output log messages to stderr (not
- * stdout) and flush stream immediately; removed "EARLY STARTUP" prefix from
- * messages which was only used for testing purposes.
- *
- * Revision 1.2  2009-08-20 10:43:30  joergr
- * Added more checks when reading a log configuration from file.
- *
- * Revision 1.1  2009-08-19 11:58:22  joergr
- * Added new module "oflog" which is based on log4cplus.
- *
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 18:03:22 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -200,53 +193,3 @@ OFTEST(ofstd_OFDateTime)
     dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/);
     COUT << "current date/time (YYYYMMDDHHMMSS.FFFFFF&ZZZZ): " << tmpString << OFendl;
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tofdatim.cc,v $
- * Revision 1.14  2011-11-29 18:03:22  joergr
- * Enhanced some existing test cases and added two new OFDateTime tests.
- *
- * Revision 1.13  2011-11-29 16:06:27  joergr
- * Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
- *
- * Revision 1.12  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.11  2010-10-14 13:15:15  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2008-05-21 16:32:42  joergr
- * Reimplemented tests for OFDate, OFTime and OFDateTime classes.
- *
- * Revision 1.9  2006/08/14 16:42:48  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.8  2005/12/08 15:49:05  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2004/01/16 10:37:09  joergr
- * Added setISOFormattedXXX() methods for Date, Time and DateTime.
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.6  2003/12/17 15:24:57  joergr
- * Added test cases for comparing both time and date/time values.
- *
- * Revision 1.5  2003/09/17 17:01:44  joergr
- * Renamed variable "string" to avoid name clash with STL class.
- *
- * Revision 1.4  2002/05/24 09:45:13  joergr
- * Renamed some parameters/variables to avoid ambiguities.
- *
- * Revision 1.3  2002/04/19 10:42:58  joergr
- * Added new helper routines to get the milli and micro seconds part as well as
- * the integral value of seconds.
- *
- * Revision 1.2  2002/04/16 13:37:00  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *
- */

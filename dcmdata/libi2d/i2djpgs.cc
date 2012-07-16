@@ -17,13 +17,6 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-15 11:23:47 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -901,69 +894,3 @@ I2DJpegSource::~I2DJpegSource()
   closeFile();
   clearMap();
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: i2djpgs.cc,v $
- * Revision 1.19  2011-11-15 11:23:47  joergr
- * Output information to debug logger when skipping application segments (APPn).
- * Also added explicit type cast to integer variables when output to the logger.
- *
- * Revision 1.18  2011-04-18 07:00:58  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.17  2011-02-11 13:33:14  joergr
- * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
- *
- * Revision 1.16  2010-11-29 13:10:00  uli
- * Fixed stack overflow in libi2d with some JPEG data streams.
- *
- * Revision 1.15  2010-10-14 13:18:23  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.14  2010-08-05 08:38:10  uli
- * Fixed some warnings from -Wold-style-cast.
- *
- * Revision 1.13  2009-11-13 13:23:30  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.12  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.11  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.10  2009-09-17 06:55:10  joergr
- * Used static cast operator where appropriate and changed suffix from "L" to
- * "UL" for large integer constants.
- *
- * Revision 1.9  2009-08-26 07:45:52  joergr
- * Added suffix "L" to large integer constants in order to avoid warnings
- * reported by gcc 4.3.2.
- *
- * Revision 1.8  2009-04-20 16:02:35  joergr
- * Fixed typo.
- *
- * Revision 1.7  2009-03-31 13:27:03  onken
- * Small fix regarding lossy compression parameters.
- *
- * Revision 1.4  2009-02-18 12:22:11  meichel
- * Minor changes needed for VC6
- *
- * Revision 1.3  2008-03-10 13:10:01  onken
- * Changed OFListIterator to OFListConstIterator in order to complile when
- * HAVE_STL is defined.
- *
- * Revision 1.2  2008-01-16 16:32:31  onken
- * Fixed some empty or doubled log messages in libi2d files.
- *
- * Revision 1.1  2008-01-16 14:38:17  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.1  2007/11/08 15:55:17  onken
- * Initial checkin of img2dcm application and corresponding library i2dlib.
- *
- *
- */

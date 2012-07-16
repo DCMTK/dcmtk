@@ -18,13 +18,6 @@
  *  Purpose: Test program for testing path features of DcmItem
  *           and DcmSequenceOfItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-05 14:08:59 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
@@ -360,67 +353,3 @@ OFTEST(dcmdata_pathAccess)
     OFCHECK_FAIL("Wrong length");
   }
 }
-
-/*
- * CVS/RCS Log:
- * $Log: tpath.cc,v $
- * Revision 1.5  2011-08-05 14:08:59  joergr
- * Fixed output of test program in debug mode.
- *
- * Revision 1.4  2011-08-05 10:20:37  joergr
- * Renamed test logger in order to reflect the current name of the program.
- *
- * Revision 1.3  2011-07-06 13:04:18  uli
- * Fixed some inconsistencies in test names.
- *
- * Revision 1.2  2011-06-07 08:29:59  uli
- * Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
- *
- * Revision 1.1  2011-05-25 10:05:55  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.13  2010-10-14 13:15:05  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2010-08-23 07:22:56  meichel
- * Minor changes needed for compilation on MSVC6
- *
- * Revision 1.11  2010-08-10 07:08:22  joergr
- * Re-added newline character removed by last commit and moved another newline
- * to the right place.
- *
- * Revision 1.10  2010-08-09 17:53:02  onken
- * Fixed path test.
- *
- * Revision 1.9  2010-08-09 13:41:54  joergr
- * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- * the official "keyword" is used for the attribute name which results in a
- * number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- * Revision 1.8  2009-11-04 09:58:11  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.7  2009-04-20 16:03:12  joergr
- * Fixed typo.
- *
- * Revision 1.6  2008-12-12 11:44:41  onken
- * Moved path access functions to separate classes
- *
- * Revision 1.5  2008-12-05 13:28:55  onken
- * Changed test application to test splitted findOrCreate() path API.
- *
- * Revision 1.4  2008-12-04 16:56:38  onken
- * Extended application to also test new findOrCreatePath() wildcard features.
- *
- * Revision 1.3  2008-11-21 16:18:32  onken
- * Changed implementation of findOrCreatePath() to make use of function
- * newDicomElement() which also knows how to handle EVRs like ox correctly.
- *
- * Revision 1.2  2008-10-15 16:07:08  onken
- * Fixed CVS information in source's header comment.
- *
- * Revision 1.1  2008-10-15 15:59:02  onken
- * Added test program for testing DcmItem's and DcmSequenceOfItem's path access
- * features.
- *
- */

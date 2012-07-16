@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomHSVImage (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:13:19 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -77,45 +70,3 @@ class DCMTK_DCMIMAGE_EXPORT DiHSVImage
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dihsvimg.h,v $
- * Revision 1.12  2011-12-14 10:13:19  uli
- * Make it possible to nicely build dcmimage as a DLL.
- *
- * Revision 1.11  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.10  2009-11-25 14:38:55  joergr
- * Adapted code for new approach to access individual frames of a DICOM image.
- *
- * Revision 1.9  2005/12/08 16:01:38  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.8  2003/12/17 18:11:15  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols).
- *
- * Revision 1.7  2001/11/09 16:45:59  joergr
- * Updated/Enhanced comments.
- *
- * Revision 1.6  2001/06/01 15:49:30  meichel
- * Updated copyright header
- *
- * Revision 1.5  2000/03/08 16:21:52  meichel
- * Updated copyright header.
- *
- * Revision 1.4  1999/04/28 12:52:00  joergr
- * Corrected some typos, comments and formatting.
- *
- * Revision 1.3  1998/11/27 13:51:30  joergr
- * Added copyright message.
- *
- * Revision 1.2  1998/05/11 14:53:15  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

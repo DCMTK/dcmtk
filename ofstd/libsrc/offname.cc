@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 12:47:34 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -144,57 +137,3 @@ unsigned int OFFilenameCreator::hashString(const char *str)
   }
   return result;
 }
-
-/*
- *  $Log: offname.cc,v $
- *  Revision 1.15  2011-10-11 12:47:34  uli
- *  Renamed myrand_r(int*) a to rand_r(int&).
- *
- *  Revision 1.14  2011-10-11 10:57:29  uli
- *  Made sure that makeFilename() influences the caller's seed.
- *
- *  Revision 1.13  2011-10-11 09:57:42  uli
- *  Move OFFileNameCreator::myrand_r to class OFStandard.
- *
- *  Revision 1.12  2010-10-14 13:14:53  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2005/12/08 15:48:57  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.10  2003/07/09 13:58:04  meichel
- *  Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- *  Revision 1.9  2002/11/27 11:23:10  meichel
- *  Adapted module ofstd to use of new header file ofstdinc.h
- *
- *  Revision 1.8  2001/06/01 15:51:38  meichel
- *  Updated copyright header
- *
- *  Revision 1.7  2000/10/12 08:13:17  joergr
- *  Added explicit typecast to avoid compiler warnings.
- *
- *  Revision 1.6  2000/10/10 12:01:07  meichel
- *  Implemented thread safe random number generator, needed on systems
- *    where threads but no Posix rand_r function are available.
- *
- *  Revision 1.5  2000/04/14 15:20:16  meichel
- *  If compiled on Unix platforms with -D_REENTRANT, OFFilenameCreator uses
- *    the reentrant Posix routine rand_r instead of rand and srand.
- *
- *  Revision 1.4  2000/03/08 16:36:06  meichel
- *  Updated copyright header.
- *
- *  Revision 1.3  2000/02/23 15:13:48  meichel
- *  Corrected macro for Borland C++ Builder 4 workaround.
- *
- *  Revision 1.2  2000/02/01 10:09:40  meichel
- *  Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
- *    workaround for bug in compiler header files.
- *
- *  Revision 1.1  1999/03/03 13:58:11  meichel
- *  Implemented new class for automatically creating filenames.
- *
- *
- */
-

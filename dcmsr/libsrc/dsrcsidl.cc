@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:05 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -587,76 +580,3 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrcsidl.cc,v $
- *  Revision 1.20  2012-06-11 08:53:05  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.19  2012-05-29 14:02:18  joergr
- *  Slightly modified code for using methods from class DcmSequenceOfItems.
- *
- *  Revision 1.18  2011-12-09 16:11:14  joergr
- *  Removed numerous explicit typecasts because they are not needed any longer.
- *
- *  Revision 1.17  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2010-09-29 08:32:26  joergr
- *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
- *  checkElementValue().
- *
- *  Revision 1.15  2009-10-14 10:49:32  joergr
- *  Fixed minor issues in log output. Also updated copyright date (if required).
- *
- *  Revision 1.14  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.13  2009-09-04 13:53:09  meichel
- *  Minor const iterator related changes needed to compile with VC6 with HAVE_STL
- *
- *  Revision 1.12  2008-07-17 12:00:09  joergr
- *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
- *
- *  Revision 1.11  2008-04-29 13:59:21  joergr
- *  Harmonized capitalization of warning messages.
- *
- *  Revision 1.10  2007/11/15 16:45:42  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.9  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.8  2006/05/11 09:16:49  joergr
- *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
- *
- *  Revision 1.7  2005/12/08 15:47:46  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.6  2004/11/22 16:39:12  meichel
- *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
- *
- *  Revision 1.5  2004/01/16 10:02:19  joergr
- *  Report more warnings when reading from XML document.
- *
- *  Revision 1.4  2003/10/14 15:32:13  joergr
- *  Uncommented name of unused parameter to get rid of a warning reported by
- *  Borland C++ 5.5.
- *
- *  Revision 1.3  2003/10/09 17:47:54  joergr
- *  Renamed OFFIS_PRIVATE_CODING_xxx macros to OFFIS_CODING_xxx.
- *
- *  Revision 1.2  2003/09/15 13:55:45  joergr
- *  Made XML output more consistent: changed XML tag name from "identifier" to
- *  "id".
- *
- *  Revision 1.1  2003/09/10 13:18:43  joergr
- *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
- *  required by CP 324.
- *
- *
- */

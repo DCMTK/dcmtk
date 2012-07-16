@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-09 13:16:10 $
- *  CVS/RCS Revision: $Revision: 1.23 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -1096,84 +1089,3 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
     }
     DCMPSTAT_DUMP(str);
 }
-
-/*
- *  $Log: dvpsprt.cc,v $
- *  Revision 1.23  2011-09-09 13:16:10  joergr
- *  Output error message on bad command type to ERROR instead of INFO logger.
- *
- *  Revision 1.22  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.21  2009-11-24 14:12:59  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.20  2006-08-15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.19  2005/12/08 15:46:42  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.18  2004/02/04 15:57:49  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log.
- *
- *  Revision 1.17  2003/09/05 10:38:34  meichel
- *  Print SCP now supports TLS connections and the Verification Service Class.
- *
- *  Revision 1.16  2003/06/04 12:30:28  meichel
- *  Added various includes needed by MSVC5 with STL
- *
- *  Revision 1.15  2002/04/16 14:02:22  joergr
- *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *  Revision 1.14  2002/04/11 13:13:45  joergr
- *  Replaced direct call of system routines by new standard date and time
- *  functions.
- *
- *  Revision 1.13  2002/01/08 10:38:56  joergr
- *  Corrected spelling of function dcmGenerateUniqueIdentifier().
- *  Changed prefix of UIDs created for series and studies (now using constants
- *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
- *  in these cases).
- *
- *  Revision 1.12  2001/11/28 13:56:59  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.11  2001/10/12 13:46:56  meichel
- *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
- *
- *  Revision 1.10  2001/09/28 13:49:37  joergr
- *  Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
- *
- *  Revision 1.9  2001/09/26 15:36:30  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.8  2001/06/01 15:50:35  meichel
- *  Updated copyright header
- *
- *  Revision 1.7  2001/05/25 10:07:58  meichel
- *  Corrected some DIMSE error status codes for Print SCP
- *
- *  Revision 1.6  2000/09/06 08:55:38  meichel
- *  Updated Print SCP to accept and silently ignore group length attributes.
- *
- *  Revision 1.5  2000/07/12 16:39:42  meichel
- *  Print SCP now writes PrinterCharacteristicsSequence when saving Stored Prints.
- *
- *  Revision 1.4  2000/06/08 10:44:36  meichel
- *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
- *    Empty film boxes (pages) are not written to file anymore.
- *
- *  Revision 1.3  2000/06/07 13:17:28  meichel
- *  added binary and textual log facilities to Print SCP.
- *
- *  Revision 1.2  2000/06/02 16:01:04  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.1  2000/05/31 12:58:12  meichel
- *  Added initial Print SCP support
- *
- *
- */

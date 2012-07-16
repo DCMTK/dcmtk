@@ -18,13 +18,6 @@
  *  Purpose: Test code of double/ascii conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -157,34 +150,3 @@ OFTEST(ofstd_ftoa)
     OFCHECK_EQUAL(s, buf);
   }
 }
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tftoa.cc,v $
- * Revision 1.1  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.6  2010-10-14 13:15:16  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2006/08/14 16:42:48  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.4  2005/12/08 15:49:08  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2002/12/09 13:11:39  joergr
- * Added copy constructor and private undefined assignment operator.
- *
- * Revision 1.2  2002/12/05 11:18:45  meichel
- * Modified code to avoid a "sorry, not implemented" error on Sun CC 2.0.1
- *
- * Revision 1.1  2002/12/04 09:13:04  meichel
- * Implemented a locale independent function OFStandard::ftoa() that
- *   converts double to string and offers all the flexibility of the
- *   sprintf family of functions.
- *
- *
- */

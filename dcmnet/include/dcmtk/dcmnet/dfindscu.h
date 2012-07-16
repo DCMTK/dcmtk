@@ -17,13 +17,6 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:14 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DFINDSCU_H
@@ -332,37 +325,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS Log
- * $Log: dfindscu.h,v $
- * Revision 1.8  2011-12-14 11:45:14  uli
- * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- * Revision 1.7  2011-08-19 09:35:45  joergr
- * Added support for specifying the directory where the response messages are
- * stored. Also output the name of the created file to the logger.
- *
- * Revision 1.6  2011-02-04 11:24:40  uli
- * Added private undefined functions where gcc's -Weffc++ warns otherwise.
- *
- * Revision 1.5  2010-10-14 13:17:22  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2009-11-18 11:53:58  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.3  2009-07-10 13:21:04  onken
- * Moved override key functionality to DcmPathProcessor.
- *
- * Revision 1.2  2009-07-08 16:14:25  onken
- * Added support for specifying tag paths as override keys.
- *
- * Revision 1.1  2007-02-19 13:13:28  meichel
- * Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet
- *   library, and a short command line tool that only evaluates command line
- *   parameters and then makes use of this class. This facilitates re-use of the
- *   findscu code in other applications.
- *
- *
- */

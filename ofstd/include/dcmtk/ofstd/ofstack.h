@@ -14,16 +14,9 @@
  *  Module:  ofstd
  *
  *  Author:  Andreas Barth
- *              
+ *
  *  Purpose:
  *      Defines a template stack class with interfaces similar to the C++ Standard
- *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-04-16 07:59:36 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
  *
  */
 
@@ -282,82 +275,3 @@ private:
 
 #endif
 #endif
-
-/*
-** CVS/RCS Log:
-** $Log: ofstack.h,v $
-** Revision 1.20  2012-04-16 07:59:36  uli
-** Fixed several assignment operators in STL replacement classes.
-**
-** Revision 1.19  2011-12-14 08:54:00  uli
-** Make it possible to correctly build ofstd as a DLL.
-**
-** Revision 1.18  2010-10-14 13:15:50  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.17  2005/12/08 16:06:03  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.16  2003/08/14 14:41:39  meichel
-** OFStack now explicitly defined as std::stack if compiling with HAVE_STL
-**
-** Revision 1.15  2003/07/09 13:57:43  meichel
-** Adapted type casts to new-style typecast operators defined in ofcast.h
-**
-** Revision 1.14  2002/11/27 11:23:06  meichel
-** Adapted module ofstd to use of new header file ofstdinc.h
-**
-** Revision 1.13  2002/07/10 11:50:40  meichel
-** Added vitual destructor to class OFStackLink
-**
-** Revision 1.12  2001/12/03 15:09:09  meichel
-** Completed doc++ documentation
-**
-** Revision 1.11  2001/07/03 14:35:01  meichel
-** Fixed memory leak in ofstack.h
-**
-** Revision 1.10  2001/06/01 15:51:35  meichel
-** Updated copyright header
-**
-** Revision 1.9  2000/10/12 08:11:35  joergr
-** Added assignment operator to class OFStack.
-** Declared (unimplemented) copy constructor and assignment operator in class
-** OFStackLink to avoid compiler warnings (e.g. on Sun CC 2.0.1).
-**
-** Revision 1.8  2000/10/10 12:01:21  meichel
-** Created/updated doc++ comments
-**
-** Revision 1.7  2000/03/08 16:36:02  meichel
-** Updated copyright header.
-**
-** Revision 1.6  1998/11/27 12:42:52  joergr
-** Added copyright message to source files and changed CVS header.
-**
-** Revision 1.5  1998/07/02 10:11:31  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/02/06 15:07:40  meichel
-** Removed many minor problems (name clashes, unreached code)
-**   reported by Sun CC4 with "+w" or Sun CC2.
-**
-** Revision 1.3  1997/09/11 15:43:16  hewett
-** Minor changes to eliminate warnings when compiled under the
-** Signus GnuWin32 envionment.  Changed order of initialisers
-** for OFListLink and OFStackLink.  Make ~OFLisBase and ~OFStackBase
-** virtual destructors.
-**
-** Revision 1.2  1997/07/21 09:02:24  andreas
-** - New copy constructor for class OFStack
-**
-** Revision 1.1  1997/07/02 11:51:15  andreas
-** - Preliminary release of the OFFIS Standard Library.
-**   In the future this library shall contain a subset of the
-**   ANSI C++ Library (Version 3) that works on a lot of different
-**   compilers. Additionally this library shall include classes and
-**   functions that are often used. All classes and functions begin
-**   with OF... This library is independent of the DICOM development and
-**   shall contain no DICOM specific stuff.
-**
-**
-*/

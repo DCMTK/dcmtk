@@ -17,13 +17,6 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.27 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -135,80 +128,3 @@ OFCondition DimseCondition::push(
   return DimseCondition::push(newCondition.module(), newCondition.code(),
     newCondition.status(), newCondition.text(), subCondition);
 }
-
-/*
- * CVS Log
- * $Log: cond.cc,v $
- * Revision 1.27  2012-02-15 14:50:42  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.26  2011-10-10 14:01:29  uli
- * Moved SCU-specific error condition to the correct place.
- *
- * Revision 1.25  2011-10-06 14:16:10  joergr
- * Now also SOP instances from DICOM datasets can be added to the transfer list.
- * This allows for sending datasets created or received in memory.
- *
- * Revision 1.24  2011-09-29 13:12:01  joergr
- * Introduced new network-related error codes, e.g. in case that none of the
- * proposed presentation contexts were accepted by the association acceptor.
- *
- * Revision 1.23  2011-09-28 13:29:02  joergr
- * Introduced a couple of new network-related error codes (aka OFCondition).
- *
- * Revision 1.22  2011-08-03 13:31:46  joergr
- * Added macro that allows for disabling the port permission check in SCPs.
- *
- * Revision 1.21  2010-10-14 13:14:27  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2010-09-09 08:32:06  joergr
- * Fixed typo in OFCondition constants for SCP/SCU role selection failures.
- *
- * Revision 1.19  2010-08-26 09:22:24  joergr
- * Fixed incorrect behavior of association acceptors during SCP/SCU role
- * selection negotiation.
- *
- * Revision 1.18  2009-11-18 11:53:59  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.17  2008-09-08 13:17:13  joergr
- * Fixed typo in OFCondition text string.
- *
- * Revision 1.16  2008-04-17 15:27:35  onken
- * Reworked and extended User Identity Negotiation code.
- *
- * Revision 1.15  2006-08-15 16:04:29  meichel
- * Updated the code in module dcmnet to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.14  2005/12/08 15:44:25  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.13  2004/02/04 15:35:17  joergr
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.12  2002/12/10 11:00:59  meichel
- * Removed error code DUL_NETWORKINITIALIZED which is not used anymore
- *
- * Revision 1.11  2002/11/27 13:04:37  meichel
- * Adapted module dcmnet to use of new header file ofstdinc.h
- *
- * Revision 1.10  2002/05/02 14:07:37  joergr
- * Added support for standard and non-standard string streams (which one is
- * supported is detected automatically via the configure mechanism).
- *
- * Revision 1.9  2002/04/16 13:57:31  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- * Revision 1.8  2001/10/12 10:18:30  meichel
- * Replaced the CONDITION types, constants and functions in the dcmnet module
- *   by an OFCondition based implementation which eliminates the global condition
- *   stack.  This is a major change, caveat emptor!
- *
- *
- */

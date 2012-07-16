@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomMonoOutputPixel (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:50:22 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -162,84 +155,3 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoOutputPixel
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dimoopx.h,v $
- * Revision 1.22  2011-12-14 09:50:22  uli
- * Make it possible to properly build dcmimgle as a DLL.
- *
- * Revision 1.21  2010-10-14 13:16:26  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2010-03-01 09:08:47  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.19  2006-08-15 16:30:11  meichel
- * Updated the code in module dcmimgle to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.18  2005/12/08 16:47:53  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.17  2004/02/06 11:07:50  joergr
- * Distinguish more clearly between const and non-const access to pixel data.
- *
- * Revision 1.16  2004/01/05 14:52:20  joergr
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.15  2003/12/08 18:44:05  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- *
- * Revision 1.14  2002/11/27 14:08:05  meichel
- * Adapted module dcmimgle to use of new header file ofstdinc.h
- *
- * Revision 1.13  2002/04/16 13:53:11  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- * Revision 1.12  2001/06/01 15:49:46  meichel
- * Updated copyright header
- *
- * Revision 1.11  2000/03/08 16:24:19  meichel
- * Updated copyright header.
- *
- * Revision 1.10  2000/02/23 15:12:15  meichel
- * Corrected macro for Borland C++ Builder 4 workaround.
- *
- * Revision 1.9  2000/02/01 10:52:37  meichel
- * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
- *   workaround for bug in compiler header files.
- *
- * Revision 1.8  1999/10/06 13:41:21  joergr
- * Added method to renmoved reference to (internally handles) pixel data.
- *
- * Revision 1.7  1999/09/17 12:26:52  joergr
- * Added/changed/completed DOC++ style comments in the header files.
- *
- * Revision 1.6  1999/07/23 14:05:55  joergr
- * Enhanced handling of corrupted pixel data (wrong length).
- *
- * Revision 1.5  1999/03/24 17:20:13  joergr
- * Added/Modified comments and formatting.
- *
- * Revision 1.4  1999/02/11 16:37:56  joergr
- * Added routine to check whether particular grayscale values are unused in
- * the output data.
- *
- * Revision 1.3  1999/02/03 17:30:30  joergr
- * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
- *
- * Revision 1.2  1999/01/20 15:07:02  joergr
- * Replaced invocation of getCount() by member variable Count where possible.
- *
- * Revision 1.1  1998/11/27 15:25:48  joergr
- * Added copyright message.
- *
- * Revision 1.3  1998/05/11 14:53:22  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

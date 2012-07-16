@@ -21,13 +21,6 @@
  *
  *    Module Prefix: DIMSE_
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-10 07:53:53 $
- *  CVS/RCS Revision: $Revision: 1.18 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -1175,72 +1168,3 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_dire
 
     return str;
 }
-
-/*
- * CVS Log
- * $Log: dimdump.cc,v $
- * Revision 1.18  2011-10-10 07:53:53  joergr
- * Added missing DIMSE-N status code "Attribute Value out of Range" (0116h) used
- * for Print Management. Also fixed some other small inconsistencies regarding
- * the DIMSE status codes.
- *
- * Revision 1.17  2010-10-14 13:14:28  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.16  2010-10-13 08:08:15  joergr
- * Replaced copyright header since source code has been rewritten completely.
- * Previously: "Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM"
- *
- * Revision 1.15  2010-09-30 09:50:53  joergr
- * Added missing call to DIMSE_dumpMessage_start() for C-GET-RQ message.
- *
- * Revision 1.14  2010-06-14 16:00:21  joergr
- * Slightly modified output of DIMSE_dumpMessage_end().
- *
- * Revision 1.13  2009-12-08 16:44:25  joergr
- * Slightly modified some log messages.
- *
- * Revision 1.12  2009-11-18 11:53:59  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.11  2009-08-04 10:05:58  joergr
- * Added optional parameter to printCStore() functions that allows for printing
- * the Presentation Context ID.
- *
- * Revision 1.10  2009-04-07 09:09:22  joergr
- * Fixed issue with unknown UID in uid2name().
- *
- * Revision 1.9  2006/08/15 16:04:29  meichel
- * Updated the code in module dcmnet to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.8  2005/12/08 15:44:40  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.7  2003/03/12 17:35:04  meichel
- * Updated DcmObject::print() flags
- *
- * Revision 1.6  2002/11/27 13:04:39  meichel
- * Adapted module dcmnet to use of new header file ofstdinc.h
- *
- * Revision 1.5  2000/06/07 08:57:54  meichel
- * dcmnet DIMSE routines now allow to retrieve raw command sets as DcmDataset
- *   objects, e.g. for logging purposes. Added enhanced message dump functions.
- *
- * Revision 1.4  2000/02/23 15:12:32  meichel
- * Corrected macro for Borland C++ Builder 4 workaround.
- *
- * Revision 1.3  2000/02/01 10:24:09  meichel
- * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
- *   workaround for bug in compiler header files.
- *
- * Revision 1.2  1998/08/10 08:53:42  meichel
- * renamed member variable in DIMSE structures from "Status" to
- *   "DimseStatus". This is required if dcmnet is used together with
- *   <X11/Xlib.h> where Status is #define'd as int.
- *
- * Revision 1.1.1.1  1996/03/26 18:38:45  hewett
- * Initial Release.
- *
- *
- */

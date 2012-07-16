@@ -17,13 +17,6 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 08:29:59 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -427,51 +420,3 @@ OFTEST(dcmdata_partialElementAccess)
 #endif
     delete[] buffer;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: tpread.cc,v $
- * Revision 1.3  2011-06-07 08:29:59  uli
- * Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
- *
- * Revision 1.2  2011-06-07 08:16:40  uli
- * Don't leave behind temporary files after the test.
- *
- * Revision 1.1  2011-05-25 10:05:55  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.10  2010-12-20 11:19:40  joergr
- * Fixed wrong console application description (apparently copied from another
- * tool) and output the resource identifier in debug mode to the logger.
- *
- * Revision 1.9  2010-11-01 10:42:44  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.8  2010-10-14 13:15:07  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2010-10-04 12:51:34  joergr
- * Added explicit type cast in order to keep VisualStudio 2008 quiet.
- *
- * Revision 1.6  2010-08-23 07:22:56  meichel
- * Minor changes needed for compilation on MSVC6
- *
- * Revision 1.5  2010-08-05 08:38:10  uli
- * Fixed some warnings from -Wold-style-cast.
- *
- * Revision 1.4  2009-11-04 09:58:11  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.3  2008-09-25 15:43:22  joergr
- * Added support for printing the expanded command line arguments.
- * Always output the resource identifier of the command line tool in debug mode.
- *
- * Revision 1.2  2007/07/11 10:42:28  joergr
- * Fixed layout and other minor issues of the usage output (--help).
- *
- * Revision 1.1  2007/07/11 08:52:22  meichel
- * Added regression test for new method DcmElement::getPartialValue.
- *
- *
- */

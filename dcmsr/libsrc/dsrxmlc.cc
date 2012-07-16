@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRXMLCursor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -117,20 +110,3 @@ DSRXMLCursor DSRXMLCursor::getChild() const
 #endif
     return cursor;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrxmlc.cc,v $
- *  Revision 1.3  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.2  2005-12-08 15:48:24  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.1  2003/08/07 14:49:36  joergr
- *  Added interface classes hiding the access to libxml (document and cursor
- *  class).
- *
- *
- */

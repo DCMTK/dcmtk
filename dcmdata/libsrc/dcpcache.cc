@@ -18,13 +18,6 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -111,33 +104,3 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
     }
   }
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcpcache.cc,v $
- * Revision 1.7  2010-10-14 13:14:08  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2006/07/24 15:43:52  meichel
- * Fixed memory leak in private tag lookup cache.
- *
- * Revision 1.5  2005/12/08 15:41:24  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.4  2004/10/20 15:56:15  meichel
- * Changed private inheritance from OFList to class member,
- *   needed for compilation with HAVE_STL.
- *
- * Revision 1.3  2004/02/04 16:40:48  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.2  2003/06/12 18:22:23  joergr
- * Modified code to use const_iterators where appropriate (required for STL).
- *
- * Revision 1.1  2002/07/23 14:21:34  meichel
- * Added support for private tag data dictionaries to dcmdata
- *
- *
- */

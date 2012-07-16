@@ -17,13 +17,6 @@
  * Purpose:
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
- * Last Update:         $Author: uli $
- * Update Date:         $Date: 2011-02-04 12:57:40 $
- * CVS/RCS Revision:    $Revision: 1.10 $
- * Status:              $State: Exp $
- *
- * CVS/RCS Log at end of file
- *
  */
 
 
@@ -642,39 +635,3 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
   }
   m_rspLength = 0;
 }
-
-/*
-** CVS/RCS Log:
-** $Log: dcuserid.cc,v $
-** Revision 1.10  2011-02-04 12:57:40  uli
-** Made sure all members are initialized in the constructor (-Weffc++).
-**
-** Revision 1.9  2010-11-01 10:42:44  uli
-** Fixed some compiler warnings reported by gcc with additional flags.
-**
-** Revision 1.8  2010-10-14 13:14:28  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.7  2010-10-05 11:01:04  uli
-** Removed a unused copy-constructor and a unused operator=.
-**
-** Revision 1.6  2010-10-05 10:15:20  uli
-** Fixed all remaining warnings from -Wall -Wextra -pedantic.
-**
-** Revision 1.5  2010-09-14 11:42:14  uli
-** Verify the length fields in the PDUs that we receive.
-**
-** Revision 1.4  2009-11-18 11:53:59  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.3  2008-10-07 09:08:15  onken
-** Fixed possible memory leak in user identity classes and added code for
-** accessing user identity from the server's side. Thanks to "Pim"
-**
-** Revision 1.2  2008-04-17 16:09:13  onken
-** Added some const definitions to functions.
-**
-** Revision 1.1  2008-04-17 15:27:35  onken
-** Reworked and extended User Identity Negotiation code.
-**
-*/

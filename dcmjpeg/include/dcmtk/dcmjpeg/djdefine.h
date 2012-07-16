@@ -17,13 +17,6 @@
  *
  *  Purpose: Contains preprocessor definitions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -43,13 +36,3 @@
 
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: djdefine.h,v $
- * Revision 1.1  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- *
- */

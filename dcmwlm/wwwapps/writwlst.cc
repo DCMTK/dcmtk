@@ -19,13 +19,6 @@
  *   Program to create a worklist file from a WWW CGI perl script generated
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-01-30 10:09:14 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -581,52 +574,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-/*
- * CVS/RCS Log
- *   $Log: writwlst.cc,v $
- *   Revision 1.12  2012-01-30 10:09:14  joergr
- *   Fixed issue reported on Mac OS X with Clang: Only define the macro MAX() if
- *   not yet defined somewhere else.
- *
- *   Revision 1.11  2011-08-18 12:03:17  joergr
- *   Replaced function max() by macro MAX() in order to compile with VisualStudio.
- *
- *   Revision 1.10  2010-11-01 13:37:32  uli
- *   Fixed some compiler warnings reported by gcc with additional flags.
- *
- *   Revision 1.9  2010-10-14 13:20:03  joergr
- *   Updated copyright header. Added reference to COPYRIGHT file.
- *
- *   Revision 1.8  2010-08-09 13:32:08  joergr
- *   Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- *   the official "keyword" is used for the attribute name which results in a
- *   number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- *   Revision 1.7  2009-11-24 10:40:01  uli
- *   Switched to logging mechanism provided by the "new" oflog module.
- *
- *   Revision 1.6  2008-04-30 12:38:43  meichel
- *   Fixed compile errors due to changes in attribute tag names
- *
- *   Revision 1.5  2006/08/15 16:15:48  meichel
- *   Updated the code in module dcmwlm to correctly compile when
- *     all standard C++ classes remain in namespace std.
- *
- *   Revision 1.4  2005/12/08 15:48:40  meichel
- *   Changed include path schema for all DCMTK header files
- *
- *   Revision 1.3  2005/03/09 18:04:14  joergr
- *   Fixed spelling error.
- *
- *   Revision 1.2  2002/12/13 13:43:26  meichel
- *   Removed unused code reported by the MIPSpro 7.3 optimizer
- *
- *   Revision 1.1  2002/12/03 12:17:37  wilkens
- *   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
- *   so that dcmwlm can now completely replace wlistctn in the public domain part
- *   of dcmtk. Pertaining to this replacement requirement, another optional return
- *   key attribute was integrated into the wlm utilities.
- *
- *
- */

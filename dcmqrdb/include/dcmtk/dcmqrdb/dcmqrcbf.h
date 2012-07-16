@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveFindContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:58:34 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMQRCBF_H
@@ -99,27 +92,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS Log
- * $Log: dcmqrcbf.h,v $
- * Revision 1.5  2011-12-14 12:58:34  uli
- * Make it possible to build dcmqrdb as a DLL.
- *
- * Revision 1.4  2010-10-14 13:16:41  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2009-08-21 09:50:07  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.2  2005/12/08 16:04:16  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2005/03/30 13:34:50  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

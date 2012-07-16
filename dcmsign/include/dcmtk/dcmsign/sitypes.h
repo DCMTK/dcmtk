@@ -18,13 +18,6 @@
  *  Purpose:
  *    consts, typedefs and enums for dcmsign
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:43 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef SITYPES_H
@@ -133,41 +126,3 @@ extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoTr
 
 #endif
 #endif
-
-/*
- *  $Log: sitypes.h,v $
- *  Revision 1.9  2012-02-15 14:50:43  uli
- *  Removed dependency on static initialization order from OFCondition.
- *  All static condition objects are now created via makeOFConditionConst()
- *  in a way that doesn't need a constructor to run. This should only break
- *  code which defines its own condition objects, all other changes are
- *  backwards compatible.
- *
- *  Revision 1.8  2011-12-14 12:14:12  uli
- *  Make it possible to precisely build dcmsign and dcmwlm as DLLs.
- *
- *  Revision 1.7  2010-10-14 13:17:25  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.6  2005-12-08 16:04:47  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.5  2001/11/16 15:50:51  meichel
- *  Adapted digital signature code to final text of supplement 41.
- *
- *  Revision 1.4  2001/09/26 14:30:23  meichel
- *  Adapted dcmsign to class OFCondition
- *
- *  Revision 1.3  2001/06/01 15:50:51  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2001/01/25 15:11:44  meichel
- *  Added class SiCertificateVerifier in dcmsign which allows to check
- *    whether a certificate from a digital signature is trusted, i.e. issued
- *    by a known CA and not contained in a CRL.
- *
- *  Revision 1.1  2000/11/07 16:49:00  meichel
- *  Initial release of dcmsign module for DICOM Digital Signatures
- *
- *
- */

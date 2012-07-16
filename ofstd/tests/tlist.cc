@@ -17,13 +17,6 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -263,49 +256,3 @@ OFTEST(ofstd_OFList_2)
   OFCHECK(ff.empty());
 
 }
-
-
-/*
-**
-** CVS/RCS Log:
-** $Log: tlist.cc,v $
-** Revision 1.13  2011-05-25 10:05:57  uli
-** Imported oftest and converted existing tests to oftest.
-**
-** Revision 1.12  2010-10-14 13:15:15  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.11  2006/08/14 16:42:48  meichel
-** Updated all code in module ofstd to correctly compile if the standard
-**   namespace has not included into the global one with a "using" directive.
-**
-** Revision 1.10  2005/12/08 15:49:04  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.9  2004/01/16 10:37:23  joergr
-** Removed acknowledgements with e-mail addresses from CVS log.
-**
-** Revision 1.8  2003/08/14 09:01:20  meichel
-** Adapted type casts to new-style typecast operators defined in ofcast.h
-**
-** Revision 1.7  2002/11/27 11:23:13  meichel
-** Adapted module ofstd to use of new header file ofstdinc.h
-**
-** Revision 1.6  2002/04/16 13:37:00  joergr
-** Added configurable support for C++ ANSI standard includes (e.g. streams).
-**
-** Revision 1.5  2001/06/01 15:51:40  meichel
-** Updated copyright header
-**
-** Revision 1.4  2000/03/08 16:36:07  meichel
-** Updated copyright header.
-**
-** Revision 1.3  2000/03/03 14:02:52  meichel
-** Implemented library support for redirecting error messages into memory
-**   instead of printing them to stdout/stderr for GUI applications.
-**
-** Revision 1.2  1998/11/27 12:42:09  joergr
-** Added copyright message to source files and changed CVS header.
-**
-**
-*/

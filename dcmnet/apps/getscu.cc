@@ -17,13 +17,6 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2012-02-10 14:54:38 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
@@ -612,42 +605,3 @@ static void prepareTS(E_TransferSyntax ts,
       break;
   }
 }
-
-
-/*
-** CVS Log
-** $Log: getscu.cc,v $
-** Revision 1.10  2012-02-10 14:54:38  onken
-** Removed duplicate log message when closing an association.
-**
-** Revision 1.9  2011-12-16 16:36:44  meichel
-** Minor changes for MSVC6 compatibility
-**
-** Revision 1.8  2011-09-26 08:13:53  joergr
-** Moved --verbose-pc option to the end of the "general options" section.
-**
-** Revision 1.7  2011-09-21 12:57:47  joergr
-** Removed TCP wrapper support (libwrap) which is not really useful for an SCU.
-**
-** Revision 1.6  2011-09-21 11:06:28  joergr
-** Removed option --disable-host-lookup which is not really useful for an SCU.
-**
-** Revision 1.5  2011-09-09 08:58:11  joergr
-** Replaced local list of supported storage SOP classes by the global variable
-** dcmLongSCUStorageSOPClassUIDs, which is maintained at a central location.
-**
-** Revision 1.4  2011-09-07 12:40:45  joergr
-** Made more clear that option --key also supports path expressions.
-**
-** Revision 1.3  2011-08-25 15:05:04  joergr
-** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
-** some possible memory leaks and made the FIND/MOVE/GET code more consistent.
-**
-** Revision 1.2  2011-08-25 12:51:22  joergr
-** Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
-**
-** Revision 1.1  2011-08-25 09:31:32  onken
-** Added C-GET functionality to DcmSCU class and accompanying getscu
-** commandline application.
-**
-*/

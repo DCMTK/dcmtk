@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:15 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -477,79 +470,3 @@ DCMTK_DCMTLS_EXPORT void tlslayer_dummy_function()
 }
 
 #endif /* WITH_OPENSSL */
-
-/*
- *  $Log: tlslayer.cc,v $
- *  Revision 1.21  2011-12-14 11:45:15  uli
- *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- *  Revision 1.20  2011-04-18 07:01:05  uli
- *  Use global variables for the logger objects. This removes the thread-unsafe
- *  static local variables which were used before.
- *
- *  Revision 1.19  2010-10-14 13:14:46  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.18  2010-08-05 08:38:11  uli
- *  Fixed some warnings from -Wold-style-cast.
- *
- *  Revision 1.17  2010-06-02 12:32:58  joergr
- *  Appended missing OFStringStream_ends to the end of output streams because
- *  this is required when OFOStringStream is mapped to ostrstream.
- *
- *  Revision 1.16  2010-02-22 11:39:55  uli
- *  Remove some unneeded includes.
- *
- *  Revision 1.15  2009-12-18 13:15:45  joergr
- *  Fixed issue with beta version of OpenSSL 1.0 (const declaration changed).
- *
- *  Revision 1.14  2009-11-18 12:11:19  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.13  2009-01-30 13:53:53  joergr
- *  Replaced checking of macro WINDOWS by _WIN32.
- *
- *  Revision 1.12  2006/08/15 16:02:56  meichel
- *  Updated the code in module dcmtls to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.11  2005/12/08 15:48:28  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.10  2005/11/23 16:10:28  meichel
- *  Added support for AES ciphersuites in TLS module. All TLS-enabled
- *    tools now support the "AES TLS Secure Transport Connection Profile".
- *
- *  Revision 1.9  2003/12/18 17:16:05  meichel
- *  Added standard includes needed by Borland Builder
- *
- *  Revision 1.8  2001/06/05 10:32:55  joergr
- *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
- *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
- *  version does not define _WIN32 any more.
- *
- *  Revision 1.7  2001/06/01 15:51:13  meichel
- *  Updated copyright header
- *
- *  Revision 1.6  2000/11/14 13:54:29  meichel
- *  Renamed callback functions to avoid linker name clashes
- *
- *  Revision 1.5  2000/11/08 11:21:13  meichel
- *  iFixed trailing garbage characters problem in extracting validity
- *    information from a X.509 certificate.
- *
- *  Revision 1.4  2000/10/19 08:12:29  meichel
- *  Fixed dcmtls module so that openssl headers are includes only
- *    if the symbol WITH_OPENSSL is defined.
- *
- *  Revision 1.3  2000/10/11 16:15:35  meichel
- *  Updated includes for Win32 environment
- *
- *  Revision 1.2  2000/10/10 12:13:35  meichel
- *  Added routines for printing certificates and connection parameters.
- *
- *  Revision 1.1  2000/08/10 14:50:29  meichel
- *  Added initial OpenSSL support.
- *
- *
- */

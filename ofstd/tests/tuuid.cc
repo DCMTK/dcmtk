@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for OFUUID
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-12 13:41:24 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -120,19 +113,3 @@ OFTEST(ofstd_OFUUID_2)
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationOID), "2.25.329800735698586629295641978511506172918");
     OFCHECK_EQUAL(a.toString(str, OFUUID::ER_RepresentationURN), "urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: tuuid.cc,v $
- * Revision 1.3  2011-12-12 13:41:24  joergr
- * Added missing header file for memcmp(), needed by gcc 4.4.3 on Linux.
- *
- * Revision 1.2  2011-12-07 14:25:53  uli
- * Could someone please hand me a brown paper bag?
- *
- * Revision 1.1  2011-12-07 14:16:28  uli
- * Added a new class for generating Universally Unique Identifiers.
- *
- *
- */

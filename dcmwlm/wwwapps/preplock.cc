@@ -35,13 +35,6 @@
  *   whole file, which must be a successfully opened perl  file  descriptor.
  *   See perl man page for details.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-17 10:07:45 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -99,32 +92,3 @@ int main()
 #endif
   return 0;
 }
-
-/*
- * CVS/RCS Log
- *   $Log: preplock.cc,v $
- *   Revision 1.6  2010-12-17 10:07:45  joergr
- *   Include another system header (stdio.h) needed for IRIX 6.3 with gcc 2.95.3.
- *
- *   Revision 1.5  2010-10-14 13:20:03  joergr
- *   Updated copyright header. Added reference to COPYRIGHT file.
- *
- *   Revision 1.4  2009-08-19 11:55:44  meichel
- *   Added additional includes needed for Sun Studio 11 on Solaris.
- *
- *   Revision 1.3  2005-12-08 15:48:37  meichel
- *   Changed include path schema for all DCMTK header files
- *
- *   Revision 1.2  2003/07/03 14:26:57  meichel
- *   When compiling on MinGW, only issues "die" command since the flock
- *     family of functions is not available on this platform and, therefore,
- *     preplock cannot be made to work.
- *
- *   Revision 1.1  2002/12/03 12:17:35  wilkens
- *   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
- *   so that dcmwlm can now completely replace wlistctn in the public domain part
- *   of dcmtk. Pertaining to this replacement requirement, another optional return
- *   key attribute was integrated into the wlm utilities.
- *
- *
- */

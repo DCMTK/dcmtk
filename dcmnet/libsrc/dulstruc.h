@@ -63,9 +63,6 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:37 $
-** Revision:      $Revision: 1.13 $
-** Status:        $State: Exp $
 */
 
 #ifndef DULSTRUC_H
@@ -326,57 +323,3 @@ typedef struct dul_datapdu {
 #define EXTRACT_SHORT_BIG(A,B)  { (B) = (unsigned short)(A)[1] | (((unsigned short)(A)[0]) << 8); }
 
 #endif // #ifndef DULSTRUC_H
-
-/*
-** CVS Log
-** $Log: dulstruc.h,v $
-** Revision 1.13  2010-12-01 08:26:37  joergr
-** Added OFFIS copyright header (beginning with the year 1994).
-**
-** Revision 1.12  2010-10-14 13:19:29  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.11  2008-04-17 15:27:36  onken
-** Reworked and extended User Identity Negotiation code.
-**
-** Revision 1.10  2007-09-07 08:47:54  onken
-** Added basic support for Extended Negotiation of User Identity. Added #ifndef
-** guard to header file.
-**
-** Revision 1.9  2005/12/08 15:48:09  meichel
-** Updated Makefiles to correctly install header files
-**
-** Revision 1.8  2004/02/25 12:31:17  meichel
-** Added global option flag for compatibility with very old DCMTK releases in the
-**   DICOM upper layer and ACSE code. Default is automatic handling, which should
-**   work in most cases.
-**
-** Revision 1.7  2002/11/26 15:37:03  meichel
-** Changed DUL code to always send A-ASSOCIATE user information sub-items
-**   in ascending order.
-**
-** Revision 1.6  2001/10/12 10:18:41  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.5  2000/08/10 14:50:59  meichel
-** Added initial OpenSSL support.
-**
-** Revision 1.4  2000/06/07 08:57:27  meichel
-** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
-**   RQ/AC/RJ PDUs, e.g. for logging purposes.
-**
-** Revision 1.3  1999/04/19 08:39:01  meichel
-** Added experimental support for extended SOP class negotiation.
-**
-** Revision 1.2  1997/07/07 08:11:37  andreas
-** - Changed macros EXTRACT_LONG_BIG and EXTRACT_SHORT_BIG to avoid
-**   compiler warnings on SUN-CC and Windows NT/95
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/
-

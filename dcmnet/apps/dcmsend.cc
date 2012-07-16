@@ -17,13 +17,6 @@
  *
  *  Purpose: Simple Storage Service Class User
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-28 14:16:37 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -594,18 +587,3 @@ int main(int argc, char *argv[])
     cleanup();
     return EXITCODE_NO_ERROR;
 }
-
-
-/*
- * CVS Log
- * $Log: dcmsend.cc,v $
- * Revision 1.2  2011-11-28 14:16:37  joergr
- * Added new option/mode that allows for sending all DICOM files referenced
- * from a DICOMDIR without accessing the files for association negotiation.
- *
- * Revision 1.1  2011-10-05 13:53:38  joergr
- * Added new command line tool "dcmsend", which is a Simple Storage Service
- * Class User based on the recently introduced network class DcmStorageSCU.
- *
- *
- */

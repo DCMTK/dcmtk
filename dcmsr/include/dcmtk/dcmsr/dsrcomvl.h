@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:02 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -293,68 +286,3 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrcomvl.h,v $
- *  Revision 1.14  2012-06-11 08:53:02  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.13  2012-01-06 09:13:04  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.12  2011-08-02 06:26:31  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.11  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.10  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.9  2007-11-15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.8  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.7  2005/12/08 16:04:55  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.6  2003/08/07 18:01:42  joergr
- *  Removed libxml dependency from header files.
- *
- *  Revision 1.5  2003/08/07 12:22:37  joergr
- *  Added readXML functionality.
- *
- *  Revision 1.4  2001/09/26 13:04:05  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.3  2001/06/01 15:50:59  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/11/01 16:13:55  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.1  2000/10/20 10:13:26  joergr
- *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
- *
- *  Revision 1.4  2000/10/19 16:02:37  joergr
- *  Renamed some set methods.
- *
- *  Revision 1.3  2000/10/18 17:06:00  joergr
- *  Added methods allowing direct access to certain content item values.
- *  Added doc++ comments.
- *  Made some functions inline.
- *
- *  Revision 1.2  2000/10/16 11:57:23  joergr
- *  Added methods allowing direct access to certain content item values.
- *
- *  Revision 1.1  2000/10/13 07:49:30  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

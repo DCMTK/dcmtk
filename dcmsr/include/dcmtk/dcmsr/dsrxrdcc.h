@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:17 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -92,25 +85,3 @@ class DCMTK_DCMSR_EXPORT DSRXRayRadiationDoseSRConstraintChecker
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrxrdcc.h,v $
- *  Revision 1.5  2012-01-06 09:13:17  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.4  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.3  2008-01-08 09:35:35  joergr
- *  Fixed reference to wrong SR IOD in API documentation.
- *
- *  Revision 1.2  2005/12/08 16:05:37  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.1  2005/11/30 12:05:59  joergr
- *  Added support for X-Ray Radiation Dose SR documents.
- *
- *
- */

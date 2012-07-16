@@ -17,13 +17,6 @@
  *
  *  Purpose: Contains preprocessor definitions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:11 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -43,12 +36,3 @@
 
 
 #endif // DCDEFINE_H
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcdefine.h,v $
- * Revision 1.10  2011-12-14 09:04:11  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- */

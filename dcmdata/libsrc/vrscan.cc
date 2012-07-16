@@ -17,13 +17,6 @@
  *
  *  Purpose: Interface to the VR scanner.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -96,28 +89,3 @@ int vrscan::scan(const OFString& vr, const OFString& value)
 
     return result;
 }
-
-
-/*
-** CVS/RCS Log:
-** $Log: vrscan.cc,v $
-** Revision 1.8  2010-10-14 13:14:11  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.7  2010-09-02 12:02:06  uli
-** Use longjmp() for error handling in the VR scanner.
-**
-** Revision 1.6  2010-09-02 10:16:02  uli
-** The VR scanner now only copies the input data once, not twice.
-**
-** Revision 1.5  2010-09-02 09:49:38  uli
-** Add the VR prefix into the scanner instead of adding it in the caller.
-**
-** Revision 1.4  2010-09-02 09:23:15  uli
-** Made the VR scanner reentrant again.
-**
-** Revision 1.3  2010-08-26 12:29:48  uli
-** Ported vrscan from ancient flex++ to current flex version.
-**
-**
-*/

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRMacularGridThicknessAndVolumeReportConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -109,16 +102,3 @@ OFBool DSRMacularGridThicknessAndVolumeReportConstraintChecker::checkContentRela
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrmaccc.cc,v $
- *  Revision 1.2  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.1  2010-09-30 08:56:46  joergr
- *  Added support for the Macular Grid Thickness and Volume Report IOD.
- *
- *
- */

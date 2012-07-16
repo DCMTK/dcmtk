@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRColonCadSRConstraintChecker
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -92,19 +85,3 @@ class DCMTK_DCMSR_EXPORT DSRColonCadSRConstraintChecker
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrcolcc.h,v $
- *  Revision 1.3  2012-01-06 09:13:04  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.2  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.1  2010-09-28 14:08:14  joergr
- *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
- *
- *
- */

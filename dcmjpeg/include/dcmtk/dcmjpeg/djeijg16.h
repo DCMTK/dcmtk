@@ -17,13 +17,6 @@
  *
  *  Purpose: compression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJEIJG16_H
@@ -168,29 +161,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djeijg16.h,v $
- * Revision 1.6  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.5  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2009-11-18 16:17:54  uli
- * Use more than just the INFO log level.
- *
- * Revision 1.3  2005-12-08 16:59:26  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2001/11/19 15:13:28  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:56:24  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: singleton class that registers RLE decoder.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCRLEDRG_H
@@ -85,28 +78,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: dcrledrg.h,v $
- * Revision 1.9  2011-12-14 09:04:13  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.8  2010-10-14 13:15:42  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2009-11-04 09:58:07  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.6  2005-12-08 16:28:37  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2005/07/26 17:08:33  meichel
- * Added option to RLE decoder that allows to correctly decode images with
- *   incorrect byte order of byte segments (LSB instead of MSB).
- *
- * Revision 1.4  2004/02/04 16:00:22  joergr
- * Added CVS log entry at the end of the file.
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose: Test code of ascii/double conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-22 10:08:36 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -121,36 +114,3 @@ OFTEST(ofstd_atof)
     }
   }
 }
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tatof.cc,v $
- * Revision 1.2  2011-08-22 10:08:36  uli
- * Fixed atof test with MSC6.
- *
- * Revision 1.1  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.6  2010-10-14 13:15:16  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2006/08/14 16:42:48  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.4  2005/12/08 15:49:07  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2002/11/27 11:23:13  meichel
- * Adapted module ofstd to use of new header file ofstdinc.h
- *
- * Revision 1.2  2002/07/18 12:13:25  joergr
- * Changed value of double constant to avoid compilation error (out of range)
- * reported by Sun CC 2.0.1.
- *
- * Revision 1.1  2002/06/20 12:04:00  meichel
- * Created test application for OFStandard::atof()
- *
- *
- */

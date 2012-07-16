@@ -17,13 +17,6 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCSWAP_H
@@ -90,55 +83,3 @@ inline void swap4Bytes(Uint8 * toSwap)
 }
 
 #endif // DCSWAP_H
-
-/*
- * CVS/RCS Log:
- * $Log: dcswap.h,v $
- * Revision 1.20  2011-12-14 09:04:13  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.19  2010-10-14 13:15:42  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.18  2010-03-01 09:08:44  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.17  2009-11-04 09:58:07  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.16  2007-11-29 14:30:35  meichel
- * Updated doxygen API documentation
- *
- * Revision 1.15  2005/12/08 16:28:43  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.14  2002/11/27 12:07:23  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.13  2001/11/01 14:41:43  wilkens
- * Added lots of comments.
- *
- * Revision 1.12  2001/09/25 17:19:29  meichel
- * Adapted dcmdata to class OFCondition
- *
- * Revision 1.11  2001/06/01 15:48:44  meichel
- * Updated copyright header
- *
- * Revision 1.10  2000/03/08 16:26:18  meichel
- * Updated copyright header.
- *
- * Revision 1.9  2000/02/23 15:11:39  meichel
- * Corrected macro for Borland C++ Builder 4 workaround.
- *
- * Revision 1.8  2000/02/01 10:12:02  meichel
- * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
- *   workaround for bug in compiler header files.
- *
- * Revision 1.7  1999/06/10 10:44:50  meichel
- * Replaced some #if statements by more robust #ifdef
- *
- * Revision 1.6  1999/03/31 09:24:48  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

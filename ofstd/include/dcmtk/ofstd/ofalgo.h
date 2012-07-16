@@ -19,13 +19,6 @@
  *      Defines template algorithms for contaimer classes with
  *      interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-27 12:55:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFALGO_H
@@ -219,18 +212,3 @@ ForwardIterator OF_AdjacentFind(ForwardIterator first, ForwardIterator last,
 #endif
 
 #endif /* OFALGO_H */
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofalgo.h,v $
- * Revision 1.7  2012-06-27 12:55:10  joergr
- * Fixed wrong name of #include guard (was OFITER_H instead of OFALGO_H).
- *
- * Revision 1.6  2010-10-14 15:15:49  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2005-12-08 17:05:45  meichel
- * Changed include path schema for all DCMTK header files
- *
- */

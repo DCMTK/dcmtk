@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for class DcmPersonName
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -91,18 +84,3 @@ OFTEST(dcmdata_personName)
   OFCHECK_EQUAL(p, "Dr.");
   OFCHECK_EQUAL(s, "");
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tvrpn.cc,v $
- * Revision 1.2  2011-12-02 11:02:53  joergr
- * Various fixes after first commit of the Native DICOM Model format support.
- *
- * Revision 1.1  2011-12-01 13:13:56  onken
- * Added support for Application Hosting's Native DICOM Model xml format
- * to dcm2xml.
- *
- *
- */

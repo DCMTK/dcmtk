@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRImplantationPlanSRDocumentConstraintChecker
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -93,19 +86,3 @@ class DCMTK_DCMSR_EXPORT DSRImplantationPlanSRDocumentConstraintChecker
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrimpcc.h,v $
- *  Revision 1.3  2012-01-06 09:13:08  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.2  2011-06-16 12:53:12  joergr
- *  Updated copyright date.
- *
- *  Revision 1.1  2010-11-05 11:06:53  joergr
- *  Added support for new Implantation Plan SR Document Storage SOP Class.
- *
- *
- */

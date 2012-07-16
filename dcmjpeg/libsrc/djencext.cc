@@ -17,13 +17,6 @@
  *
  *  Purpose: Codec class for encoding JPEG Extended Sequential (lossy, 8/12-bit)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:20 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -91,25 +84,3 @@ DJEncoder *DJEncoderExtended::createEncoderInstance(
     result = new DJCompressIJG8Bit(*cp, EJM_sequential, rp->getQuality());
   return result;
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: djencext.cc,v $
- * Revision 1.5  2011-02-11 13:33:20  joergr
- * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
- *
- * Revision 1.4  2010-10-14 13:14:22  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2010-06-01 16:17:57  onken
- * Added some comments and line breaks (improved code readability).
- *
- * Revision 1.2  2005-12-08 15:43:43  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2001/11/13 15:58:31  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

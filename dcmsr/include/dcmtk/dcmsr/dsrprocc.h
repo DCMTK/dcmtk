@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRProcedureLogConstraintChecker
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:10 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -92,23 +85,3 @@ class DCMTK_DCMSR_EXPORT DSRProcedureLogConstraintChecker
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrprocc.h,v $
- *  Revision 1.4  2012-01-06 09:13:10  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.3  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.2  2005-12-08 16:05:13  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.1  2003/10/09 12:53:12  joergr
- *  Added support for Procedure Log.
- *
- *
- *
- */

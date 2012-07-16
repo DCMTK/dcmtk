@@ -17,13 +17,6 @@
  *
  *  Purpose: Defines a class which manages a temporary file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-18 14:58:23 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -140,23 +133,3 @@ void OFTempFile::getTempPath(OFString& sPath)
     sPath = "/tmp";
 #endif
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: oftempf.cc,v $
- * Revision 1.4  2012-01-18 14:58:23  uli
- * Don't use P_tmpdir because in MSC6 this define breaks OFTempFile.
- *
- * Revision 1.3  2011-11-17 11:43:02  joergr
- * Made sure that the new OFTempFile class also compiles on Windows.
- *
- * Revision 1.2  2011-11-17 09:34:58  joergr
- * Made sure that the OFCondition member variable gets initialized in the
- * constructor.
- *
- * Revision 1.1  2011-11-16 13:50:37  uli
- * Added a new class for managing temporary files.
- *
- *
- */

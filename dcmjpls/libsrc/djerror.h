@@ -17,13 +17,6 @@
  *
  *  Purpose: Helper function than converts between CharLS and dcmjpgls errors
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJERROR_H
@@ -78,31 +71,3 @@ public:
 };
 
 #endif
-
-/*
- * CVS/RCS Log:
- * $Log: djerror.h,v $
- * Revision 1.6  2012-02-15 14:50:42  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.5  2010-10-14 13:20:24  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2010-02-25 08:50:38  uli
- * Updated to latest CharLS version.
- *
- * Revision 1.3  2010-01-19 15:19:06  uli
- * Made file names fit into 8.3 format.
- *
- * Revision 1.2  2009-10-07 13:16:47  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.1  2009-07-31 09:05:43  meichel
- * Added more detailed error messages, minor code clean-up
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: OFConfigFileNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 08:09:34 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -641,45 +634,3 @@ OFConfigFile::~OFConfigFile()
   delete anchor_;
   delete[] buffer_;
 }
-
-
-/*
- *  $Log: ofconfig.cc,v $
- *  Revision 1.10  2010-10-20 08:09:34  uli
- *  Also made sure toupper() and tolower() get a valid argument.
- *
- *  Revision 1.9  2010-10-14 13:14:53  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.8  2010-01-06 14:58:37  uli
- *  Fix a use-after-free bug in OFConfigFile on invalid config files.
- *
- *  Revision 1.7  2009-02-13 13:11:23  joergr
- *  Added initialization of member variables to class OFConfigFileCursor in order
- *  to avoid compiler warnings (reported by gcc with additional flags).
- *
- *  Revision 1.6  2008-04-16 09:37:30  meichel
- *  class OFConfigFile now supports an ordered mode where multiple
- *    configuration files can be loaded and can replace entries of other.
- *    Also added function to print content of configuration in reloadable format.
- *
- *  Revision 1.5  2008-04-15 15:46:30  meichel
- *  class OFConfigFile now supports flexible tree depths and configurable
- *    comment characters and can, therefore, fully replace the equivalent
- *    code in module dcmprint.
- *
- *  Revision 1.4  2005/12/08 15:48:52  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.3  2003/07/09 13:58:04  meichel
- *  Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- *  Revision 1.2  2003/05/12 12:54:55  meichel
- *  Fixed off-by-one bug in for loop
- *
- *  Revision 1.1  2003/04/29 10:14:08  meichel
- *  Moved configuration file parser from module dcmpstat to ofstd and renamed
- *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
- *
- *
- */

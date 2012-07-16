@@ -17,13 +17,6 @@
  *
  *  Purpose: Implementation of class DcmCharString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -204,62 +197,3 @@ OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converte
     }
     return status;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcchrstr.cc,v $
- * Revision 1.19  2011-11-08 15:51:38  joergr
- * Added support for converting files, datasets and element values to any DICOM
- * character set that does not require code extension techniques (if compiled
- * with and supported by libiconv), not only to UTF-8 as before.
- *
- * Revision 1.18  2011-11-01 14:54:04  joergr
- * Added support for code extensions (escape sequences) according to ISO 2022
- * to the character set conversion code.
- *
- * Revision 1.17  2011-10-26 16:20:19  joergr
- * Added method that allows for converting a dataset or element value to UTF-8.
- *
- * Revision 1.16  2011-10-18 14:00:12  joergr
- * Added support for embedded NULL bytes in string element values.
- *
- * Revision 1.15  2010-10-20 16:44:16  joergr
- * Use type cast macros (e.g. OFstatic_cast) where appropriate.
- *
- * Revision 1.14  2010-10-14 13:14:06  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.13  2008-07-17 10:31:31  onken
- * Implemented copyFrom() method for complete DcmObject class hierarchy, which
- * permits setting an instance's value from an existing object. Implemented
- * assignment operator where necessary.
- *
- * Revision 1.12  2006-12-15 14:14:44  joergr
- * Added new method that checks whether a DICOM object or element is affected
- * by SpecificCharacterSet (0008,0005).
- *
- * Revision 1.11  2006/12/13 13:59:49  joergr
- * Added new optional parameter "checkAllStrings" to method containsExtended
- * Characters().
- *
- * Revision 1.10  2006/05/11 08:47:05  joergr
- * Moved checkForNonASCIICharacters() from application to library.
- *
- * Revision 1.9  2005/12/08 15:40:57  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.8  2002/12/06 13:08:18  joergr
- * Made source code formatting more consistent with other modules/files.
- *
- * Revision 1.7  2001/06/01 15:48:59  meichel
- * Updated copyright header
- *
- * Revision 1.6  2000/03/08 16:26:30  meichel
- * Updated copyright header.
- *
- * Revision 1.5  1999/03/31 09:25:17  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

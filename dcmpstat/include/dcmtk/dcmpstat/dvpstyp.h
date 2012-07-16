@@ -20,13 +20,6 @@
  *           DVPSPresentationLUTType, DVPSRotationType,
  *           DVPSShutterType
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:37 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DVPSTYP_H
@@ -528,78 +521,3 @@ enum DVPSVerifyAndSignMode
 
 
 #endif
-
-/*
- *  $Log: dvpstyp.h,v $
- *  Revision 1.21  2010-10-14 13:16:37  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.20  2010-10-07 14:31:36  joergr
- *  Removed leading underscore characters from preprocessor symbols (reserved).
- *
- *  Revision 1.19  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.18  2005-12-08 16:04:10  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.17  2002/11/27 15:48:01  meichel
- *  Adapted module dcmpstat to use of new header file ofstdinc.h
- *
- *  Revision 1.16  2001/01/29 17:32:31  joergr
- *  Added method to verify and digitally sign structured reports.
- *
- *  Revision 1.15  2001/01/26 10:43:11  meichel
- *  Introduced additional (fourth) status flag for signature validation
- *    describing signatures that are valid but untrustworthy (unknown CA).
- *
- *  Revision 1.14  2001/01/25 15:18:05  meichel
- *  Added initial support for verification of digital signatures
- *    in presentation states, images and structured reports to module dcmpstat.
- *
- *  Revision 1.13  2000/10/10 12:23:41  meichel
- *  Added extensions for TLS encrypted communication
- *
- *  Revision 1.12  2000/07/07 13:38:45  joergr
- *  Removed unused enum type.
- *
- *  Revision 1.11  2000/06/05 16:22:52  joergr
- *  Implemented log message methods.
- *
- *  Revision 1.10  2000/05/31 12:56:40  meichel
- *  Added initial Print SCP support
- *
- *  Revision 1.9  2000/05/30 13:48:00  joergr
- *  Added interface methods to support the following new features:
- *    - write/filter log messages (not yet implemented)
- *
- *  Revision 1.8  2000/03/08 16:28:58  meichel
- *  Updated copyright header.
- *
- *  Revision 1.7  1999/09/10 09:02:33  joergr
- *  Added support for CIELAB display function. New methods to handle display
- *  functions. Old methods are marked as retired and should be removed asap.
- *
- *  Revision 1.6  1999/09/10 07:36:39  thiel
- *  Added Presentation LUT Shape LIN OD
- *
- *  Revision 1.5  1999/08/31 14:09:13  meichel
- *  Added get/set methods for stored print attributes
- *
- *  Revision 1.4  1999/07/22 16:39:15  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *  Revision 1.3  1998/12/22 17:57:08  meichel
- *  Implemented Presentation State interface for overlays,
- *    VOI LUTs, VOI windows, curves. Added test program that
- *    allows to add curve data to DICOM images.
- *
- *  Revision 1.2  1998/12/14 16:10:37  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:36  meichel
- *  Initial Release.
- *
- *
- */

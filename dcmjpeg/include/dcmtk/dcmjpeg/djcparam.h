@@ -17,13 +17,6 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:20 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJCPARAM_H
@@ -408,55 +401,3 @@ private:
 
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djcparam.h,v $
- * Revision 1.13  2011-12-14 10:33:20  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.12  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.11  2010-06-01 16:17:49  onken
- * Added some comments and line breaks (improved code readability).
- *
- * Revision 1.10  2010-03-24 15:01:34  joergr
- * Fixed minor formatting issues in API documentation.
- *
- * Revision 1.9  2009-10-07 12:44:33  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.8  2006-03-29 15:58:52  meichel
- * Added support for decompressing images with 16 bits/pixel compressed with
- *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
- *
- * Revision 1.7  2005/12/08 16:59:13  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2005/11/29 15:57:05  onken
- * Added commandline options --accept-acr-nema and --accept-palettes
- * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
- * these options. Thanks to Gilles Mevel for suggestion.
- *
- * Revision 1.4  2005/11/29 08:50:34  onken
- * Added support for "true" lossless compression in dcmjpeg, that doesn't
- *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
- *   avoid losses in quality caused by color space conversions or modality
- *   transformations etc.
- * Corresponding commandline option in dcmcjpeg (new default)
- *
- * Revision 1.3  2002/12/09 13:51:26  joergr
- * Renamed parameter/local variable to avoid name clashes with global
- * declaration left and/or right (used for as iostream manipulators).
- *
- * Revision 1.2  2001/11/19 15:13:26  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:56:17  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

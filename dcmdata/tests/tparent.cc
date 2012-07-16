@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for parent element handling
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-05-07 10:06:54 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -190,13 +183,3 @@ OFTEST(dcmdata_elementParent)
     delete elem;
     testParents(ff);
 }
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tparent.cc,v $
- * Revision 1.1  2012-05-07 10:06:54  uli
- * Added a test for the new functions for accessing parent objects and items.
- *
- *
- */

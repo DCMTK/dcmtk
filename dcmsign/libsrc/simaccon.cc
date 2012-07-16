@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: SiMACConstructor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:38 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -201,50 +194,3 @@ OFCondition SiMACConstructor::encodeDataset(
 int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
-
-/*
- *  $Log: simaccon.cc,v $
- *  Revision 1.12  2010-10-14 13:14:38  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.11  2010-10-04 13:23:07  joergr
- *  Added explicit type cast in order to keep VisualStudio 2008 quiet.
- *
- *  Revision 1.10  2007-11-29 14:42:21  meichel
- *  Write methods now handle large raw data elements (such as pixel data)
- *    without loading everything into memory. This allows very large images to
- *    be sent over a network connection, or to be copied without ever being
- *    fully in memory.
- *
- *  Revision 1.9  2007/02/19 16:53:45  meichel
- *  Class DcmOutputStream and related classes are now safe for use with
- *    large files (2 GBytes or more) if supported by compiler and operating system.
- *
- *  Revision 1.8  2005/12/08 15:47:24  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.7  2002/12/16 12:57:51  meichel
- *  Minor modification to shut up linker on MacOS X when compiling
- *    without OpenSSL support
- *
- *  Revision 1.6  2002/08/27 17:21:01  meichel
- *  Initial release of new DICOM I/O stream classes that add support for stream
- *    compression (deflated little endian explicit VR transfer syntax)
- *
- *  Revision 1.5  2001/11/16 15:50:54  meichel
- *  Adapted digital signature code to final text of supplement 41.
- *
- *  Revision 1.4  2001/09/26 14:30:25  meichel
- *  Adapted dcmsign to class OFCondition
- *
- *  Revision 1.3  2001/06/01 15:50:54  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/11/07 18:07:08  joergr
- *  Minor code purifications to keep Sun CC 2.0.1 quiet.
- *
- *  Revision 1.1  2000/11/07 16:49:05  meichel
- *  Initial release of dcmsign module for DICOM Digital Signatures
- *
- *
- */

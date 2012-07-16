@@ -17,13 +17,6 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:22 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -164,46 +157,3 @@ void DJEncoderRegistration::cleanup()
 
   }
 }
-
-
-/*
- * CVS/RCS Log
- * $Log: djencode.cc,v $
- * Revision 1.10  2010-10-14 13:14:22  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.9  2009-10-07 12:44:34  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.8  2006-03-29 15:58:52  meichel
- * Added support for decompressing images with 16 bits/pixel compressed with
- *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
- *
- * Revision 1.7  2005/12/08 15:43:45  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.6  2005/11/29 15:56:55  onken
- * Added commandline options --accept-acr-nema and --accept-palettes
- * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
- * these options. Thanks to Gilles Mevel for suggestion.
- *
- * Revision 1.4  2005/11/29 08:48:45  onken
- * Added support for "true" lossless compression in dcmjpeg, that doesn't
- *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
- *   avoid losses in quality caused by color space conversions or modality
- *   transformations etc.
- * Corresponding commandline option in dcmcjpeg (new default)
- *
- * Revision 1.3  2001/12/04 17:10:20  meichel
- * Fixed codec registration: flag registered was never set to true
- *
- * Revision 1.2  2001/11/19 15:13:32  meichel
- * Introduced verbose mode in module dcmjpeg. If enabled, warning
- *   messages from the IJG library are printed on ofConsole, otherwise
- *   the library remains quiet.
- *
- * Revision 1.1  2001/11/13 15:58:32  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

@@ -17,12 +17,6 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:10 $
- *  CVS/RCS Revision: $Revision: 1.39 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
  *
  */
 
@@ -361,95 +355,3 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
     }
     return result;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcvr.cc,v $
- * Revision 1.39  2010-10-14 13:14:10  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.38  2010-03-01 09:08:45  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.37  2010-02-22 11:39:54  uli
- * Remove some unneeded includes.
- *
- * Revision 1.36  2009-12-04 17:08:11  joergr
- * Sightly modified some log messages.
- *
- * Revision 1.35  2009-11-04 09:58:10  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.34  2006-08-15 15:49:54  meichel
- * Updated all code in module dcmdata to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.33  2005/12/08 15:41:44  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.32  2005/11/15 18:28:04  meichel
- * Added new global flag dcmEnableUnknownVRConversion that enables the automatic
- *   re-conversion of defined length UN elements read in an explicit VR transfer
- *   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,
- *   i.e. to retain the previous behavior.
- *
- * Revision 1.31  2005/11/15 16:59:25  meichel
- * Added new pseudo VR type EVR_lt that is used for LUT Data when read in
- *   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
- *
- * Revision 1.30  2004/02/04 16:47:59  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.29  2003/06/04 12:41:07  meichel
- * Cleaned up usage of boolean constants
- *
- * Revision 1.28  2003/03/21 13:08:04  meichel
- * Minor code purifications for warnings reported by MSVC in Level 4
- *
- * Revision 1.27  2002/12/06 13:00:31  joergr
- * Added support for new value representation Other Float String (OF).
- *
- * Revision 1.26  2002/11/27 12:06:54  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.25  2002/04/16 13:43:23  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- * Revision 1.24  2001/11/02 13:18:52  meichel
- * Removed character sequences that could be interpreted as ISO C++ trigraphs
- *
- * Revision 1.23  2001/09/28 14:21:40  joergr
- * Replaced "cerr" by "CERR".
- *
- * Revision 1.22  2001/06/01 15:49:13  meichel
- * Updated copyright header
- *
- * Revision 1.21  2000/04/14 15:42:58  meichel
- * Global VR generation flags are now derived from OFGlobal and, thus,
- *   safe for use in multi-thread applications.
- *
- * Revision 1.20  2000/03/08 16:26:44  meichel
- * Updated copyright header.
- *
- * Revision 1.19  2000/03/03 14:05:38  meichel
- * Implemented library support for redirecting error messages into memory
- *   instead of printing them to stdout/stderr for GUI applications.
- *
- * Revision 1.18  2000/02/29 11:49:30  meichel
- * Removed support for VS value representation. This was proposed in CP 101
- *   but never became part of the standard.
- *
- * Revision 1.17  2000/02/03 16:35:12  joergr
- * Fixed bug: encapsulated data (pixel items) have never been loaded using
- * method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
- * never printed with 'dcmdump'.
- * Corrected bug that caused wrong calculation of group length for sequence
- * of items (e.g. encapsulated pixel data).
- *
- * Revision 1.16  1999/03/31 09:25:45  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveGetContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 12:58:34 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCMQRCBG_H
@@ -173,40 +166,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS Log
- * $Log: dcmqrcbg.h,v $
- * Revision 1.9  2011-12-14 12:58:34  uli
- * Make it possible to build dcmqrdb as a DLL.
- *
- * Revision 1.8  2011-02-04 11:24:40  uli
- * Added private undefined functions where gcc's -Weffc++ warns otherwise.
- *
- * Revision 1.7  2010-10-14 13:16:41  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.5  2009-08-21 09:50:07  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.4  2006/04/05 08:22:24  joergr
- * Fixed issue with initialization of OFString member variables.
- *
- * Revision 1.3  2005/12/15 08:32:49  joergr
- * Fixed issue with initialization of array member variables, reported by egcs
- * on Solaris. Fixed missing/wrong initialization of member variables.
- *
- * Revision 1.2  2005/12/08 16:04:17  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2005/03/30 13:34:50  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

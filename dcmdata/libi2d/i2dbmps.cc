@@ -18,13 +18,6 @@
  *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-16 13:03:58 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -622,56 +615,3 @@ I2DBmpSource::~I2DBmpSource()
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Closing BMP file and cleaning up memory");
   closeFile();
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: i2dbmps.cc,v $
- * Revision 1.15  2011-06-16 13:03:58  joergr
- * Added suffix "UL" to integer constant in order to avoid a compiler warning.
- *
- * Revision 1.14  2010-12-06 10:24:18  uli
- * Fixed a correct warning from Intel Compiler 11.1 for shifting a Uint8 by 8.
- *
- * Revision 1.13  2010-10-14 13:18:23  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2010-08-05 08:38:10  uli
- * Fixed some warnings from -Wold-style-cast.
- *
- * Revision 1.11  2010-06-08 14:39:12  uli
- * Check for premature file ending while reading the pixel data.
- *
- * Revision 1.10  2010-06-08 14:34:45  uli
- * Correctly calculate the row length for images with bpp below 8.
- *
- * Revision 1.9  2010-06-04 12:06:25  uli
- * Fixed a warning with VisualStudio 2008 about an implicit cast.
- *
- * Revision 1.8  2010-06-01 12:59:48  uli
- * Generate a better error message if an image exceeds 65535 rows or columns.
- *
- * Revision 1.7  2010-06-01 10:33:53  uli
- * Added support for indexed-color BMP images (bit depths 1, 4 and 8).
- *
- * Revision 1.6  2010-05-25 12:40:06  uli
- * Added support for 16bpp BMP images to libi2d
- *
- * Revision 1.5  2010-05-21 14:43:07  uli
- * Added support for 32bpp BMP images to libi2d.
- *
- * Revision 1.4  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.3  2009-09-30 08:05:25  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.2  2009-08-13 09:00:20  onken
- * Fixed minor formatting issues and bug that caused some images being
- * converted upside down.
- *
- * Revision 1.1  2009-07-16 14:25:38  onken
- * Added img2dcm input plugin for the BMP graphics format (at the moment only
- * support for 24 Bit RGB).
- *
- */

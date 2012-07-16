@@ -18,13 +18,6 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-06-04 06:58:57 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -402,41 +395,3 @@ OFTEST_FLAGS(ofstd_OFFile, EF_Slow)
     return;
   }
 }
-
-/*
- * CVS/RCS Log:
- * $Log: toffile.cc,v $
- * Revision 1.10  2012-06-04 06:58:57  uli
- * Added an 'exhaustive' test mode for running slow tests.
- *
- * Revision 1.9  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.8  2010-12-20 12:05:20  joergr
- * Added explicit type casts in order to keep gcc 2.95.3 quiet.
- *
- * Revision 1.7  2010-12-13 13:08:37  uli
- * Fix toffile by moving some casts to the correct position.
- *
- * Revision 1.6  2010-12-06 13:10:27  joergr
- * Restructured calculation of seek position in order to avoid warning messages.
- *
- * Revision 1.5  2010-11-22 13:08:08  uli
- * Use a macro instead of repeating the filename of the test file.
- *
- * Revision 1.4  2010-10-14 13:15:15  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2010-08-05 08:38:11  uli
- * Fixed some warnings from -Wold-style-cast.
- *
- * Revision 1.2  2009-08-07 16:18:48  meichel
- * Fixed some seek offset computations in SEEK_END tests
- *
- * Revision 1.1  2006/08/21 12:41:10  meichel
- * Added test application that checks whether class OFFile can correctly
- *   process large files (> 4 GBytes), including emulations of fseek and ftell,
- *   which are non-trivial on certain platforms such as Win32.
- *
- *
- */

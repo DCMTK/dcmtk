@@ -47,13 +47,6 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -270,88 +263,3 @@ extern DCMTK_OFSTD_EXPORT OFOStringStream CERR;
 #endif /* DCMTK_GUI */
 
 #endif /* OFCONSOL_H */
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofconsol.h,v $
- * Revision 1.22  2011-12-14 08:54:00  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.21  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.20  2010-10-04 14:44:47  joergr
- * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
- * in all cases where OFMutex, OFReadWriteLock, etc. are used).
- *
- * Revision 1.19  2006/08/14 16:42:26  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.18  2005/12/08 16:05:52  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.17  2004/01/21 11:50:10  meichel
- * Fixed DOS CR/LF in preprocessor directives
- *
- * Revision 1.16  2004/01/16 10:30:12  joergr
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.15  2003/12/17 17:38:39  meichel
- * Changed definition of COUT and CERR macros to allow redirection to file.
- *
- * Revision 1.14  2003/12/05 10:37:41  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright date where appropriate.
- *
- * Revision 1.13  2002/11/27 11:23:05  meichel
- * Adapted module ofstd to use of new header file ofstdinc.h
- *
- * Revision 1.12  2002/05/16 15:56:33  meichel
- * Changed ofConsole into singleton implementation that can safely
- *   be used prior to start of main, i.e. from global constructors
- *
- * Revision 1.11  2002/05/16 08:16:44  meichel
- * changed return type of OFConsole::setCout() and OFConsole::setCerr()
- *   to pointer instead of reference.
- *
- * Revision 1.10  2002/05/02 14:05:50  joergr
- * Added support for standard and non-standard string streams (which one is
- * supported is detected automatically via the configure mechanism).
- *
- * Revision 1.9  2002/04/16 13:36:02  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- * Revision 1.8  2001/06/01 15:51:33  meichel
- * Updated copyright header
- *
- * Revision 1.7  2000/12/13 15:14:25  joergr
- * Introduced dummy parameter for "default" constructor of class OFConsole
- * to "convince" linker of gcc 2.5.8 (NeXTSTEP) to allocate memory for global
- * variable 'ofConsole'.
- *
- * Revision 1.6  2000/10/10 12:01:21  meichel
- * Created/updated doc++ comments
- *
- * Revision 1.5  2000/09/26 13:46:12  meichel
- * Simplified inline code in ofconsol.h, required by Sun CC 2.x
- *
- * Revision 1.4  2000/06/21 15:47:54  meichel
- * Including stdlib.h, required for Sun CC 4.2
- *
- * Revision 1.3  2000/04/14 15:41:40  meichel
- * Added unprotected get methods, required for the cmdata debug facility.
- *
- * Revision 1.2  2000/04/14 15:16:08  meichel
- * Added new class OFConsole and global instance ofConsole which provide
- *   access to standard output and error streams in a way that allows multiple
- *   threads to safely create output concurrently.
- *
- * Revision 1.1  2000/03/03 14:02:47  meichel
- * Implemented library support for redirecting error messages into memory
- *   instead of printing them to stdout/stderr for GUI applications.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage/dcmjpls library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-16 11:45:53 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -32,19 +25,3 @@
 
 // include full implementation of "dcm2pnm"
 #include "../../dcmimage/apps/dcm2pnm.cc"
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcml2pnm.cc,v $
- * Revision 1.3  2011-12-16 11:45:53  joergr
- * Added support for 16 bits per sample to PNG image export.
- *
- * Revision 1.2  2010-10-14 13:13:40  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.1  2010-10-12 13:12:58  uli
- * Added dcml2pnm which is a dcmjpls-enabled dcm2pnm.
- *
- *
- */

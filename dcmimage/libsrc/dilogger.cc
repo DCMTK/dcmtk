@@ -17,13 +17,6 @@
  *
  *  Purpose: Logger (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-06 16:56:59 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -37,25 +30,3 @@
  *--------------------*/
 
 OFLogger DCM_dcmimageLogger = OFLog::getLogger("dcmtk.dcmimage");
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dilogger.cc,v $
- * Revision 1.4  2011-12-06 16:56:59  joergr
- * Updated outdated comment after the module's logger has been changed from a
- * global function with a static variable to a global variable.
- *
- * Revision 1.3  2011-04-18 07:00:58  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.2  2010-10-14 13:14:14  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.1  2009-11-25 16:48:46  joergr
- * Added new source and header file for the module logger.
- *
- *
- */

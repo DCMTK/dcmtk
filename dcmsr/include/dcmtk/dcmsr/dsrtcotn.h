@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRTCoordTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:12 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -146,58 +139,3 @@ class DCMTK_DCMSR_EXPORT DSRTCoordTreeNode
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtcotn.h,v $
- *  Revision 1.15  2012-01-06 09:13:12  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.14  2011-08-02 06:26:32  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.13  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.12  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.11  2007-11-15 16:33:30  joergr
- *  Added support for output in XHTML 1.1 format.
- *
- *  Revision 1.10  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.9  2005/12/08 16:05:22  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2003/09/15 14:18:54  joergr
- *  Introduced new class to facilitate checking of SR IOD relationship content
- *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *  Revision 1.7  2003/08/07 12:52:21  joergr
- *  Added readXML functionality. Added support for Chest CAD SR.
- *
- *  Revision 1.6  2001/11/09 16:10:52  joergr
- *  Added preliminary support for Mammography CAD SR.
- *
- *  Revision 1.5  2001/09/26 13:04:12  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.4  2001/06/01 15:51:04  meichel
- *  Updated copyright header
- *
- *  Revision 1.3  2000/11/07 18:14:31  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.2  2000/11/01 16:23:26  joergr
- *  Added support for conversion to XML.
- *
- *  Revision 1.1  2000/10/26 14:23:25  joergr
- *  Added support for TCOORD content item.
- *
- *
- *
- */

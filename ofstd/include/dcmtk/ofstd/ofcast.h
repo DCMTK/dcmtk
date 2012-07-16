@@ -17,13 +17,6 @@
  *
  *  Purpose: Portable macros for new-style typecasts
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.3 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFCAST_H
@@ -56,19 +49,3 @@
 #endif
 
 #endif
-
-/*
- * CVS/RCS Log:
- * $Log: ofcast.h,v $
- * Revision 1.3  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.2  2005/12/08 16:05:47  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2003/07/09 12:26:02  meichel
- * Added new header file ofcast.h which defines portable macros
- *   for new-style typecast operators
- *
- *
- */

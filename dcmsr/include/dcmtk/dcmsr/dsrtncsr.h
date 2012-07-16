@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRTreeNodeCursor
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:13 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -222,53 +215,3 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtncsr.h,v $
- *  Revision 1.14  2012-01-06 09:13:13  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.13  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.12  2005-12-08 16:05:28  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.11  2005/07/27 16:36:14  joergr
- *  Added flag to iterate() method indicating whether to perform a "deep search".
- *
- *  Revision 1.10  2003/08/07 12:55:46  joergr
- *  Updated documentation to get rid of doxygen warnings.
- *
- *  Revision 1.9  2001/12/18 09:55:06  meichel
- *  Introduced typedef to avoid warning on Sun CC 2.0.1
- *
- *  Revision 1.8  2001/03/28 09:06:56  joergr
- *  Fixed bug in cycle/loop detection "algorithm".
- *
- *  Revision 1.7  2000/11/09 20:32:08  joergr
- *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
- *
- *  Revision 1.6  2000/11/07 18:14:31  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.5  2000/10/26 14:20:49  joergr
- *  Generalized routine to get and search for position strings ("1.2.3").
- *
- *  Revision 1.4  2000/10/18 17:09:06  joergr
- *  Made some functions inline.
- *
- *  Revision 1.3  2000/10/16 16:31:08  joergr
- *  Updated comments.
- *
- *  Revision 1.2  2000/10/16 11:57:00  joergr
- *  Added doc++ comments.
- *
- *  Revision 1.1  2000/10/13 07:49:34  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

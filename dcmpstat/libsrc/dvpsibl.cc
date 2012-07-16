@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.31 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -584,112 +577,6 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
   {
     if ((*first)->getImageBoxPosition() > 0) return OFFalse;
     ++first;
-  }  
+  }
   return OFTrue;
 }
-
-/*
- *  $Log: dvpsibl.cc,v $
- *  Revision 1.31  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.30  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.29  2008-04-30 12:38:43  meichel
- *  Fixed compile errors due to changes in attribute tag names
- *
- *  Revision 1.28  2005/12/08 15:46:34  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.27  2004/02/04 15:57:49  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log.
- *
- *  Revision 1.26  2003/06/12 18:23:11  joergr
- *  Modified code to use const_iterators where appropriate (required for STL).
- *
- *  Revision 1.25  2003/06/04 10:18:07  meichel
- *  Replaced private inheritance from template with aggregation
- *
- *  Revision 1.24  2002/01/08 10:35:45  joergr
- *  Corrected spelling of function dcmGenerateUniqueIdentifier().
- *
- *  Revision 1.23  2001/11/28 13:56:57  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.22  2001/09/26 15:36:28  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.21  2001/06/01 15:50:33  meichel
- *  Updated copyright header
- *
- *  Revision 1.20  2000/07/04 16:06:47  joergr
- *  Added support for overriding the presentation LUT settings made for the
- *  image boxes.
- *
- *  Revision 1.19  2000/06/14 11:29:00  joergr
- *  Added methods to access the attributes Polarity and Requested Image Size.
- *
- *  Revision 1.18  2000/06/08 10:44:35  meichel
- *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
- *    Empty film boxes (pages) are not written to file anymore.
- *
- *  Revision 1.17  2000/06/07 14:26:46  joergr
- *  Added methods to access the image polarity attribute.
- *
- *  Revision 1.16  2000/06/02 16:01:02  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.15  2000/05/31 12:58:15  meichel
- *  Added initial Print SCP support
- *
- *  Revision 1.14  2000/03/08 16:29:07  meichel
- *  Updated copyright header.
- *
- *  Revision 1.13  2000/03/07 16:23:37  joergr
- *  Removed type specifier 'const' to make Sun CC 2.0.1 happy.
- *
- *  Revision 1.12  2000/03/06 15:53:24  meichel
- *  Fixed unassigned variable usage problem
- *
- *  Revision 1.11  2000/03/03 14:14:00  meichel
- *  Implemented library support for redirecting error messages into memory
- *    instead of printing them to stdout/stderr for GUI applications.
- *
- *  Revision 1.10  1999/10/07 17:21:59  meichel
- *  Reworked management of Presentation LUTs in order to create tighter
- *    coupling between Softcopy and Print.
- *
- *  Revision 1.9  1999/09/24 15:24:07  meichel
- *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
- *    when operating in spool mode.
- *
- *  Revision 1.8  1999/09/17 14:33:52  meichel
- *  Completed print spool functionality including Supplement 22 support
- *
- *  Revision 1.7  1999/09/15 17:43:34  meichel
- *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
- *    and dcmpsprt applications.
- *
- *  Revision 1.6  1999/09/10 12:46:56  meichel
- *  Added implementations for a number of print API methods.
- *
- *  Revision 1.5  1999/09/01 16:15:08  meichel
- *  Added support for requested image size to print routines
- *
- *  Revision 1.4  1999/08/31 14:09:27  meichel
- *  Added get/set methods for stored print attributes
- *
- *  Revision 1.3  1999/08/27 15:57:49  meichel
- *  Added methods for saving hardcopy images and stored print objects
- *    either in file or in the local database.
- *
- *  Revision 1.2  1999/08/26 09:29:48  thiel
- *  Extensions for the usage of the StoredPrint
- *
- *  Revision 1.1  1999/07/30 13:34:57  meichel
- *  Added new classes managing Stored Print objects
- *
- *
- */

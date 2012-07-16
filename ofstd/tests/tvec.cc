@@ -17,13 +17,6 @@
  *
  *  Purpose: test programm for class OFVec
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:59 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -123,25 +116,3 @@ OFTEST(ofstd_OFVector)
             OFCHECK_EQUAL(*it, 6);
     }
 }
-
-
-/*
-**
-** CVS/RCS Log:
-** $Log: tvec.cc,v $
-** Revision 1.4  2011-05-25 10:05:59  uli
-** Imported oftest and converted existing tests to oftest.
-**
-** Revision 1.3  2010-10-14 13:15:16  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.2  2010-10-08 13:52:14  uli
-** Fixed an invalid copyright date.
-**
-** Revision 1.1  2010-10-08 13:25:33  uli
-** Implement OFVector.
-**
-**
-**
-**
-*/

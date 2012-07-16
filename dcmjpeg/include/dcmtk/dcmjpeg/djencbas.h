@@ -17,13 +17,6 @@
  *
  *  Purpose: Codec class for encoding JPEG Baseline (lossy, 8-bit)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 10:33:21 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DJENCBAS_H
@@ -91,21 +84,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: djencbas.h,v $
- * Revision 1.4  2011-12-14 10:33:21  uli
- * Make it possible to decently build dcmjpeg as a DLL.
- *
- * Revision 1.3  2010-10-14 13:17:17  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.2  2005-12-08 16:59:29  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2001/11/13 15:56:25  meichel
- * Initial release of module dcmjpeg
- *
- *
- */

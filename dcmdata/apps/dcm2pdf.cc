@@ -17,13 +17,6 @@
  *
  *  Purpose: Exctract PDF file from DICOM encapsulated PDF storage object
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 08:32:21 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -360,37 +353,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcm2pdf.cc,v $
- * Revision 1.8  2010-10-21 08:32:21  joergr
- * Renamed variable to avoid warning reported by gcc with additional flags.
- *
- * Revision 1.7  2010-10-14 13:13:30  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2009-11-13 13:20:23  joergr
- * Fixed minor issues in log output.
- *
- * Revision 1.5  2009-11-04 09:58:05  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.4  2008-09-25 14:38:48  joergr
- * Moved output of resource identifier in order to avoid printing the same
- * information twice.
- *
- * Revision 1.3  2008-09-25 11:19:48  joergr
- * Added support for printing the expanded command line arguments.
- * Always output the resource identifier of the command line tool in debug mode.
- *
- * Revision 1.2  2007/07/11 10:41:21  joergr
- * Fixed layout and other minor issues of the usage output (--help).
- *
- * Revision 1.1  2007/07/11 09:10:29  meichel
- * Added new tool dcm2pdf that extracts a PDF document from a DICOM
- *   Encapsulated PDF file, i.e. is the counterpart to pdf2dcm.
- *
- *
- */

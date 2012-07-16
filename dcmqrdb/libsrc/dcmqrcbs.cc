@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:35 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -188,39 +181,3 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
         status = rsp->DimseStatus;
     }
 }
-
-
-/*
- * CVS Log
- * $Log: dcmqrcbs.cc,v $
- * Revision 1.8  2010-10-14 13:14:35  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2010-09-09 15:00:03  joergr
- * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
- *
- * Revision 1.6  2009-12-02 16:21:18  joergr
- * Slightly modified output of progress bar.
- *
- * Revision 1.5  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.4  2009-08-21 09:53:52  joergr
- * Added parameter 'writeMode' to save/write methods which allows for specifying
- * whether to write a dataset or fileformat as well as whether to update the
- * file meta information or to create a new file meta information header.
- *
- * Revision 1.3  2005/12/15 12:38:06  joergr
- * Removed naming conflicts.
- *
- * Revision 1.2  2005/12/08 15:47:07  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2005/03/30 13:34:53  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

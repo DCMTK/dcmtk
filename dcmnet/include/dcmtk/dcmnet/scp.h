@@ -18,13 +18,6 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 14:02:32 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef SCP_H
@@ -843,79 +836,3 @@ private:
 };
 
 #endif // SCP_H
-
-/*
- *  CVS/RCS Log:
- *  $Log: scp.h,v $
- *  Revision 1.20  2012-02-20 14:02:32  joergr
- *  Fixed typo in comment.
- *
- *  Revision 1.19  2011-12-14 11:45:15  uli
- *  Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- *  Revision 1.18  2011-11-10 17:00:48  joergr
- *  Fixed a couple of typos in comments and made some parameters "const".
- *
- *  Revision 1.17  2011-10-05 15:42:11  ogazzar
- *  Added a function to respond to N-Action request.
- *
- *  Revision 1.16  2011-09-22 13:49:03  joergr
- *  Fixed incorrect comment on return code of some sendXXXRequest() methods.
- *
- *  Revision 1.15  2011-09-22 11:11:25  joergr
- *  Removed "dcmtls" headers, which were used/needed in a previous version.
- *
- *  Revision 1.14  2011-09-06 16:11:06  ogazzar
- *  Added functions to handle N-ACTION and to send N-EVENT-REPORT requests.
- *
- *  Revision 1.13  2011-08-05 08:25:29  onken
- *  Added function to find out whether current process was "forked" under
- *  windows as a child. Added functions to switch between blocking and
- *  non-blocking TCP/IP connection mode. Also permits giving a timeout
- *  for non-blocking mode (default is 1000 seconds as it was hardcoded before).
- *  DcmSCP now listens in TCP/IP blocking mode per default! This is since
- *  it is expected that most users like to have the server running endlessly.
- *  Renamed member and functions for DIMSE blocking mode in order to be clearly
- *  distinguishable from TCP/IP blocking mode. Moved message about disabled
- *  dcmdata autocorrection to listen() function in order to (have the possibility
- *  to) suppress it in the child processes. Added some debug output and
- *  documentation.
- *
- *  Revision 1.12  2011-06-21 07:31:35  onken
- *  Fixed small documentation issue.
- *
- *  Revision 1.11  2011-06-20 16:44:53  onken
- *  Fixed documentation of notifyDIMSEError() and sendSTOREResponse().
- *
- *  Revision 1.10  2011-02-04 12:57:40  uli
- *  Made sure all members are initialized in the constructor (-Weffc++).
- *
- *  Revision 1.9  2010-10-14 13:17:22  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.8  2010-10-07 12:54:07  joergr
- *  Fixed minor Doxygen API documentation issues (added backslash in order to
- *  avoid that the short description ends at the first period).
- *
- *  Revision 1.7  2010-06-22 15:44:55  joergr
- *  Added support for handling N-EVENT-REPORT request.
- *  Added support for stopping after the current association is finished.
- *  Further code cleanup. Renamed some methods, variables, types and so on.
- *
- *  Revision 1.6  2010-06-18 14:50:33  joergr
- *  Added support for the SCP/SCU role selection negotiation.
- *
- *  Revision 1.5  2010-06-17 17:06:30  joergr
- *  Aligned SCP class with existing SCU class. Some further code cleanups.
- *  Changed default profile from "Default" to "DEFAULT". Revised documentation.
- *
- *  Revision 1.4  2010-04-29 16:14:59  onken
- *  Added function for responding to storage requests to SCP class.
- *
- *  Revision 1.3  2009-12-21 17:00:32  onken
- *  Fixed API documentation to keep doxygen quiet.
- *
- *  Revision 1.1  2009-12-17 09:02:43  onken
- *  Added base classes for SCU and SCP implementations.
- *
- */

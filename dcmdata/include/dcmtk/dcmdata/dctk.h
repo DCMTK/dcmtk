@@ -17,13 +17,6 @@
  *
  *  Purpose: include most dcmdata files that are usually required
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:15:12 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCTK_H
@@ -103,49 +96,3 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 
 #endif /* DCTK_H */
-
-/*
- * CVS/RCS Log:
- * $Log: dctk.h,v $
- * Revision 1.19  2011-10-18 14:15:12  joergr
- * Removed global helper functions that were replaced in a previously commit.
- *
- * Revision 1.18  2010-10-14 13:15:42  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.17  2009-11-04 09:58:07  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.16  2009-09-28 13:29:38  joergr
- * Moved general purpose definition file from module dcmdata to ofstd, and
- * added new defines in order to make the usage easier.
- *
- * Revision 1.15  2005/12/08 16:28:46  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.14  2005/11/28 15:28:56  meichel
- * File dcdebug.h is not included by any other header file in the toolkit
- *   anymore, to minimize the risk of name clashes of macro debug().
- *
- * Revision 1.13  2002/12/06 12:19:30  joergr
- * Added support for new value representation Other Float String (OF).
- *
- * Revision 1.12  2002/08/27 16:55:40  meichel
- * Initial release of new DICOM I/O stream classes that add support for stream
- *   compression (deflated little endian explicit VR transfer syntax)
- *
- * Revision 1.11  2001/06/01 15:48:45  meichel
- * Updated copyright header
- *
- * Revision 1.10  2000/03/08 16:26:19  meichel
- * Updated copyright header.
- *
- * Revision 1.9  2000/02/29 11:48:38  meichel
- * Removed support for VS value representation. This was proposed in CP 101
- *   but never became part of the standard.
- *
- * Revision 1.8  1999/03/31 09:24:50  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSReferencedImage
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -263,77 +256,3 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
   referencedFrameNumber.putString(aString.c_str());
   flushCache();
 }
-
-
-/*
- *  $Log: dvpsri.cc,v $
- *  Revision 1.20  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.19  2009-11-24 14:12:59  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.18  2009-09-30 10:42:39  uli
- *  Make dcmpstat's include headers self-sufficient by including all
- *  needed headers directly and stop using dctk.h
- *
- *  Revision 1.17  2006-08-15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.16  2005/12/08 15:46:43  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.15  2003/10/15 16:57:14  meichel
- *  Updated error messages generated while parsing presentation states
- *
- *  Revision 1.14  2002/11/27 15:48:12  meichel
- *  Adapted module dcmpstat to use of new header file ofstdinc.h
- *
- *  Revision 1.13  2002/08/20 12:41:01  meichel
- *  Added explicit includes for header files included implicitly
- *    via dcstream before.
- *
- *  Revision 1.12  2001/09/26 15:36:31  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.11  2001/06/01 15:50:36  meichel
- *  Updated copyright header
- *
- *  Revision 1.10  2000/06/02 16:01:05  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.9  2000/05/31 13:02:38  meichel
- *  Moved dcmpstat macros and constants into a common header file
- *
- *  Revision 1.8  2000/03/08 16:29:09  meichel
- *  Updated copyright header.
- *
- *  Revision 1.7  2000/03/06 16:08:08  meichel
- *  Changed a couple of definitions that implied that Uint32 or size_t are long
- *
- *  Revision 1.6  2000/03/03 14:14:03  meichel
- *  Implemented library support for redirecting error messages into memory
- *    instead of printing them to stdout/stderr for GUI applications.
- *
- *  Revision 1.5  1999/07/30 13:34:59  meichel
- *  Added new classes managing Stored Print objects
- *
- *  Revision 1.4  1999/07/22 16:40:00  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *  Revision 1.3  1999/01/15 17:32:56  meichel
- *  added methods to DVPresentationState allowing to access the image
- *    references in the presentation state.  Also added methods allowing to
- *    get the width and height of the attached image.
- *
- *  Revision 1.2  1998/12/14 16:10:45  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:45  meichel
- *  Initial Release.
- *
- *
- */
-

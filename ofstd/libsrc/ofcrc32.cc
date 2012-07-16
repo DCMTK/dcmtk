@@ -18,13 +18,6 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -104,23 +97,3 @@ const unsigned int OFCRC32::crctab[256] =
   0x5d681b02L, 0x2a6f2b94L, 0xb40bbe37L, 0xc30c8ea1L, 0x5a05df1bL,
   0x2d02ef8dL
 };
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofcrc32.cc,v $
- * Revision 1.4  2010-10-14 13:14:53  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2005/12/08 15:48:54  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2003/07/09 13:58:04  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.1  2002/01/08 10:18:57  joergr
- * Added general purpose class which computes a CRC32 checksum on arbitrary
- * data.
- *
- *
- */

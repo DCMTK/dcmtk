@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRReferencedDateTimeList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:06 $
- *  CVS/RCS Revision: $Revision: 1.19 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -165,70 +158,3 @@ OFCondition DSRReferencedDateTimeList::putString(const char *stringValue)
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtcodt.cc,v $
- *  Revision 1.19  2012-06-11 08:53:06  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.18  2012-01-06 09:13:18  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.17  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.16  2010-09-29 15:16:51  joergr
- *  Enhanced checking and reporting of standard violations in write() methods.
- *
- *  Revision 1.15  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.14  2008-04-30 12:38:43  meichel
- *  Fixed compile errors due to changes in attribute tag names
- *
- *  Revision 1.13  2007/11/15 16:43:43  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.12  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.11  2005/12/08 15:48:10  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.10  2003/08/07 13:54:02  joergr
- *  Added new putString() method.
- *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
- *
- *  Revision 1.9  2003/07/11 14:41:38  joergr
- *  Renamed member variable.
- *
- *  Revision 1.8  2003/06/04 14:26:54  meichel
- *  Simplified include structure to avoid preprocessor limitation
- *    (max 32 #if levels) on MSVC5 with STL.
- *
- *  Revision 1.7  2003/06/04 12:40:02  meichel
- *  Replaced protected inheritance from OFList with protected aggregation
- *
- *  Revision 1.6  2003/06/03 10:16:46  meichel
- *  Renamed local variables to avoid name clashes with STL
- *
- *  Revision 1.5  2001/10/10 15:30:02  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.4  2001/09/26 13:04:25  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.3  2001/06/01 15:51:10  meichel
- *  Updated copyright header
- *
- *  Revision 1.2  2000/11/06 11:34:24  joergr
- *  Added parameter to print() method specifying the item separator character.
- *
- *  Revision 1.1  2000/10/26 14:40:27  joergr
- *  Added support for TCOORD content item.
- *
- *
- */

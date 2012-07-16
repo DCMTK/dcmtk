@@ -17,13 +17,6 @@
  *
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 10:05:49 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -902,84 +895,3 @@ class DCMTK_DCMPSTAT_EXPORT DVStudyCache
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dvcache.h,v $
- * Revision 1.21  2012-01-06 10:05:49  uli
- * Make it possible to build dcmpstat as a DLL.
- *
- * Revision 1.20  2010-10-14 13:16:35  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.19  2010-10-07 14:31:35  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved).
- *
- * Revision 1.18  2009-09-07 12:51:40  joergr
- * Converted Windows line breaks to Unix format.
- *
- * Revision 1.17  2009-09-04 13:53:09  meichel
- * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
- *
- * Revision 1.16  2005-12-08 16:03:30  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.15  2005/04/04 10:11:57  meichel
- * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
- *   the index database
- *
- * Revision 1.14  2001/06/01 15:50:11  meichel
- * Updated copyright header
- *
- * Revision 1.13  2000/10/16 11:39:10  joergr
- * Added method allowing to select an instance by instance UID and SOP class
- * UID (without series and study UID). Required for composite references in
- * DICOM SR.
- *
- * Revision 1.12  2000/06/30 09:08:39  joergr
- * Fixed bug in database cache routines (re. study status).
- *
- * Revision 1.11  2000/05/30 13:37:15  joergr
- * Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
- * according to the DICOM standard).
- *
- * Revision 1.10  2000/03/08 16:28:47  meichel
- * Updated copyright header.
- *
- * Revision 1.9  1999/09/08 17:03:00  joergr
- * Added support for new instance types in database (grayscale hardcopy and
- * stored print).
- *
- * Revision 1.8  1999/08/17 10:32:54  joergr
- * Added Doc++ styled comments.
- * Corrected wrong return type for method 'getImageSize()'.
- *
- * Revision 1.7  1999/05/03 11:01:08  joergr
- * Minor code purifications to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.6  1999/04/29 15:25:36  joergr
- * Added PresentationLabel to index file.
- *
- * Revision 1.5  1999/04/27 11:20:49  joergr
- * Add remaining member variables to member initialization list to avoid
- * compiler warnings.
- *
- * Revision 1.4  1999/02/24 20:14:39  joergr
- * Added support for presentation state caching (e.g. pstate description).
- * Removed unused methods.
- *
- * Revision 1.3  1999/02/19 18:56:08  joergr
- * Added new methods to interate through Caches (getFirst/getNext) - needed
- * for delete routines in Interface class.
- *
- * Revision 1.2  1999/02/19 09:45:19  joergr
- * Changed some comments, corrected typos and formatting.
- *
- * Revision 1.1  1999/02/18 18:50:18  joergr
- * Re-implemented methods to access index file (delete methods are still
- * missing).
- *
- *
- */

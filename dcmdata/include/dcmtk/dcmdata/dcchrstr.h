@@ -17,13 +17,6 @@
  *
  *  Purpose: Interface of class DcmCharString
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -152,75 +145,3 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
 
 
 #endif // DCCHRSTR_H
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcchrstr.h,v $
- * Revision 1.22  2011-12-14 09:04:11  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.21  2011-11-14 11:11:42  joergr
- * Slightly improved API documentation on containsExtendedCharacters() and
- * isAffectedBySpecificCharacterSet().
- *
- * Revision 1.20  2011-11-08 15:51:37  joergr
- * Added support for converting files, datasets and element values to any DICOM
- * character set that does not require code extension techniques (if compiled
- * with and supported by libiconv), not only to UTF-8 as before.
- *
- * Revision 1.19  2011-11-01 14:53:59  joergr
- * Added support for code extensions (escape sequences) according to ISO 2022
- * to the character set conversion code.
- *
- * Revision 1.18  2011-10-26 16:20:18  joergr
- * Added method that allows for converting a dataset or element value to UTF-8.
- *
- * Revision 1.17  2011-10-18 14:00:09  joergr
- * Added support for embedded NULL bytes in string element values.
- *
- * Revision 1.16  2010-10-14 13:15:40  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.15  2008-07-17 11:19:48  onken
- * Updated copyFrom() documentation.
- *
- * Revision 1.14  2008-07-17 10:30:22  onken
- * Implemented copyFrom() method for complete DcmObject class hierarchy, which
- * permits setting an instance's value from an existing object. Implemented
- * assignment operator where necessary.
- *
- * Revision 1.13  2006-12-15 14:18:07  joergr
- * Added new method that checks whether a DICOM object or element is affected
- * by SpecificCharacterSet (0008,0005).
- *
- * Revision 1.12  2006/12/13 13:58:15  joergr
- * Added new optional parameter "checkAllStrings" to method containsExtended
- * Characters().
- *
- * Revision 1.11  2006/05/11 08:52:09  joergr
- * Moved checkForNonASCIICharacters() from application to library.
- *
- * Revision 1.10  2005/12/08 16:28:00  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.9  2004/07/01 12:28:25  meichel
- * Introduced virtual clone method for DcmObject and derived classes.
- *
- * Revision 1.8  2002/12/06 12:49:08  joergr
- * Enhanced "print()" function by re-working the implementation and replacing
- * the boolean "showFullData" parameter by a more general integer flag.
- * Added doc++ documentation.
- * Made source code formatting more consistent with other modules/files.
- *
- * Revision 1.7  2001/06/01 15:48:33  meichel
- * Updated copyright header
- *
- * Revision 1.6  2000/03/08 16:26:11  meichel
- * Updated copyright header.
- *
- * Revision 1.5  1999/03/31 09:24:30  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

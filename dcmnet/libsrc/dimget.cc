@@ -10,12 +10,6 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-10-14 13:14:28 $
-** CVS/RCS Revision:    $Revision: 1.8 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
 */
 
 /* 
@@ -375,36 +369,3 @@ DIMSE_getProvider(
     delete rspIds;       
     return cond;
 }
-
-/*
-** CVS Log
-** $Log: dimget.cc,v $
-** Revision 1.8  2010-10-14 13:14:28  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.7  2009-11-18 11:53:59  uli
-** Switched to logging mechanism provided by the "new" oflog module.
-**
-** Revision 1.6  2005-12-08 15:44:43  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.5  2002/11/27 13:04:41  meichel
-** Adapted module dcmnet to use of new header file ofstdinc.h
-**
-** Revision 1.4  2001/10/12 10:18:34  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.3  2000/02/23 15:12:35  meichel
-** Corrected macro for Borland C++ Builder 4 workaround.
-**
-** Revision 1.2  2000/02/01 10:24:10  meichel
-** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
-**   workaround for bug in compiler header files.
-**
-** Revision 1.1  1999/04/19 08:37:27  meichel
-** Added experimental support for C-GET.
-**
-**
-*/

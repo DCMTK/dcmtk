@@ -17,13 +17,6 @@
  *
  *  Purpose: 
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:14 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCASCCFG_H
@@ -185,27 +178,3 @@ private:
 };
 
 #endif
-
-/*
- * CVS/RCS Log
- * $Log: dcasccfg.h,v $
- * Revision 1.5  2011-12-14 11:45:14  uli
- * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- * Revision 1.4  2010-10-14 13:17:22  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.3  2005/12/08 16:02:09  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.2  2003/08/14 10:58:49  meichel
- * Added check if association configuration profile is valid for SCP use
- *
- * Revision 1.1  2003/06/10 14:27:33  meichel
- * Initial release of class DcmAssociationConfiguration and support
- *   classes. This class maintains a list of association negotiation
- *   profiles that can be addressed by symbolic keys. The profiles may
- *   be read from a configuration file.
- *
- *
- */

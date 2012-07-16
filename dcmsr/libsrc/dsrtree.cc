@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -246,35 +239,3 @@ size_t DSRTree::removeNode()
     }
     return nodeID;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtree.cc,v $
- *  Revision 1.8  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.7  2005-12-08 15:48:18  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.6  2003/08/07 14:11:57  joergr
- *  Added comment.
- *
- *  Revision 1.5  2001/03/28 09:07:42  joergr
- *  Fixed bug in cycle/loop detection "algorithm".
- *
- *  Revision 1.4  2001/02/16 16:58:50  joergr
- *  Fixed another small bug in method removeNode().
- *
- *  Revision 1.3  2001/01/25 18:46:37  joergr
- *  Fixed bug in method removeNode().
- *
- *  Revision 1.2  2000/11/07 18:33:32  joergr
- *  Enhanced support for by-reference relationships.
- *
- *  Revision 1.1  2000/10/13 07:52:27  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

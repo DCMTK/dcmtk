@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-09 15:32:03 $
- *  CVS/RCS Revision: $Revision: 1.16 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -1062,63 +1055,3 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 {
    return GroupName_.c_str();
 }
-
-/*
- * CVS Log
- * $Log: dcmqrcnf.cc,v $
- * Revision 1.16  2011-11-09 15:32:03  uli
- * Added a destructor to DcmQueryRetrieveConfig.
- *
- * Revision 1.15  2011-04-18 07:01:04  uli
- * Use global variables for the logger objects. This removes the thread-unsafe
- * static local variables which were used before.
- *
- * Revision 1.14  2010-12-15 13:59:58  uli
- * Fixed a problem with a missing prototype for vsnprintf on HP-UX.
- *
- * Revision 1.13  2010-10-20 07:41:36  uli
- * Made sure isalpha() & friends are only called with valid arguments.
- *
- * Revision 1.12  2010-10-14 13:14:35  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.11  2010-09-09 17:20:42  joergr
- * Removed unused (or never used?) configuration entries.
- *
- * Revision 1.10  2010-09-09 16:54:32  joergr
- * Further code clean-up and minor changes to log messages.
- *
- * Revision 1.9  2010-06-25 09:15:19  uli
- * Fixed issues with compiling with HAVE_STD_STRING.
- *
- * Revision 1.8  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.7  2009-08-21 09:54:11  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.6  2005/12/16 13:10:24  meichel
- * Added type safety code for 64bit platforms
- *
- * Revision 1.5  2005/12/14 14:29:42  joergr
- * Including ctype if present, needed for Solaris.
- *
- * Revision 1.4  2005/12/08 15:47:08  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2005/04/07 14:38:22  joergr
- * Initialize member variables for user and group name.
- *
- * Revision 1.2  2005/04/04 13:15:13  meichel
- * Added username/groupname configuration option that allows to start the
- *   image database as root and let it call setuid/setgid to execute under an
- *   unprivileged account once the listen socket has been opened.
- *
- * Revision 1.1  2005/03/30 13:34:53  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-03-06 08:38:45 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DSTORSCU_H
@@ -537,31 +530,3 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 };
 
 #endif // DCMSTORSCU_H
-
-
-/*
- * CVS Log
- * $Log: dstorscu.h,v $
- * Revision 1.6  2012-03-06 08:38:45  joergr
- * Fixed Doxygen documentation issues: Appended "\" in case "." does not mark
- * the end of a sentence. Also made documentation on DICOMDIR use clearer.
- *
- * Revision 1.5  2011-12-14 11:45:15  uli
- * Make it possible to perfectly build dcmnet and dcmtls a DLLs.
- *
- * Revision 1.4  2011-11-28 14:16:40  joergr
- * Added new option/mode that allows for sending all DICOM files referenced
- * from a DICOMDIR without accessing the files for association negotiation.
- *
- * Revision 1.3  2011-10-19 13:26:44  joergr
- * Fixed some typos and other minor issues regarding the comments.
- *
- * Revision 1.2  2011-10-06 14:16:08  joergr
- * Now also SOP instances from DICOM datasets can be added to the transfer list.
- * This allows for sending datasets created or received in memory.
- *
- * Revision 1.1  2011-10-05 13:33:34  joergr
- * Added easy-to-use interface class for a Storage Service Class User (SCU).
- *
- *
- */

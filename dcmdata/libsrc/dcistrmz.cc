@@ -17,13 +17,6 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-01 13:21:18 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -423,53 +416,3 @@ void dcistrmz_dummy_function()
 }
 
 #endif /* WITH_ZLIB */
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcistrmz.cc,v $
- * Revision 1.13  2010-12-01 13:21:18  uli
- * Fixed build problem with MSC6 when zlib support is enabled.
- *
- * Revision 1.12  2010-10-14 13:14:08  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.11  2010-08-05 08:38:10  uli
- * Fixed some warnings from -Wold-style-cast.
- *
- * Revision 1.10  2010-02-22 11:39:54  uli
- * Remove some unneeded includes.
- *
- * Revision 1.9  2009-11-04 09:58:09  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.8  2007-02-19 15:45:31  meichel
- * Class DcmInputStream and related classes are now safe for use with
- *   large files (2 GBytes or more) if supported by compiler and operating system.
- *
- * Revision 1.7  2006/08/15 15:49:54  meichel
- * Updated all code in module dcmdata to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.6  2005/12/08 15:41:15  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2004/04/07 12:19:14  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- *
- * Revision 1.4  2002/12/20 14:55:34  wilkens
- * Inserted three casts in order to get rid of compiler warning on Solaris 2.5.1
- * using compiler SC 2.0.1.
- *
- * Revision 1.3  2002/09/19 08:32:28  joergr
- * Added explicit type casts to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.2  2002/08/29 15:57:49  meichel
- * Updated zlib-related classes to correctly compile when WITH_ZLIB is undefined
- *
- * Revision 1.1  2002/08/27 16:55:50  meichel
- * Initial release of new DICOM I/O stream classes that add support for stream
- *   compression (deflated little endian explicit VR transfer syntax)
- *
- *
- */

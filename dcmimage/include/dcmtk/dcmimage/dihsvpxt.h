@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 16:13:14 $
- *  CVS/RCS Revision: $Revision: 1.26 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -215,89 +208,3 @@ class DiHSVPixelTemplate
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: dihsvpxt.h,v $
- * Revision 1.26  2011-11-17 16:13:14  joergr
- * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
- *
- * Revision 1.25  2010-10-14 13:16:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.24  2010-03-01 09:08:46  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.23  2009-11-25 14:31:21  joergr
- * Removed inclusion of header file "ofconsol.h".
- *
- * Revision 1.22  2009-10-14 10:25:14  joergr
- * Fixed minor issues in log output. Also updated copyright date (if required).
- *
- * Revision 1.21  2009-10-13 14:08:33  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.20  2006-08-15 16:35:01  meichel
- * Updated the code in module dcmimage to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.19  2005/12/08 16:01:39  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.18  2004/04/21 10:00:31  meichel
- * Minor modifications for compilation with gcc 3.4.0
- *
- * Revision 1.17  2003/12/23 11:48:23  joergr
- * Adapted type casts to new-style typecast operators defined in ofcast.h.
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright header.
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.16  2002/06/26 16:18:10  joergr
- * Enhanced handling of corrupted pixel data and/or length.
- * Corrected decoding of multi-frame, planar images.
- *
- * Revision 1.15  2001/11/09 16:47:01  joergr
- * Removed 'inline' specifier from certain methods.
- *
- * Revision 1.14  2001/06/01 15:49:30  meichel
- * Updated copyright header
- *
- * Revision 1.13  2000/04/28 12:39:32  joergr
- * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
- *
- * Revision 1.12  2000/04/27 13:15:13  joergr
- * Dcmimage library code now consistently uses ofConsole for error output.
- *
- * Revision 1.11  2000/03/08 16:21:52  meichel
- * Updated copyright header.
- *
- * Revision 1.10  2000/03/03 14:07:52  meichel
- * Implemented library support for redirecting error messages into memory
- *   instead of printing them to stdout/stderr for GUI applications.
- *
- * Revision 1.9  1999/09/17 14:03:45  joergr
- * Enhanced efficiency of some "for" loops.
- *
- * Revision 1.8  1999/04/28 12:47:04  joergr
- * Introduced new scheme for the debug level variable: now each level can be
- * set separately (there is no "include" relationship).
- *
- * Revision 1.7  1999/02/03 16:54:27  joergr
- * Moved global functions maxval() and determineRepresentation() to class
- * DicomImageClass (as static methods).
- *
- * Revision 1.6  1999/01/20 14:46:15  joergr
- * Replaced invocation of getCount() by member variable Count where possible.
- *
- * Revision 1.5  1998/11/27 13:51:50  joergr
- * Added copyright message.
- *
- * Revision 1.4  1998/05/11 14:53:16  joergr
- * Added CVS/RCS header to each file.
- *
- *
- */

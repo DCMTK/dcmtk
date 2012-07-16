@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:07 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -102,57 +95,3 @@ class DCMTK_DCMSR_EXPORT DSRImageFrameList
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrimgfr.h,v $
- *  Revision 1.15  2012-01-06 09:13:07  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.14  2011-08-02 06:26:31  joergr
- *  Fixed typos and/or minor formatting issues.
- *
- *  Revision 1.13  2010-10-14 13:16:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.12  2009-10-13 14:57:50  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.11  2007-11-15 16:33:19  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.10  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.9  2005/12/08 16:05:04  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2003/08/07 12:36:58  joergr
- *  Added new putString() method.
- *
- *  Revision 1.7  2003/06/03 10:16:44  meichel
- *  Renamed local variables to avoid name clashes with STL
- *
- *  Revision 1.6  2001/09/26 13:04:08  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.5  2001/06/01 15:51:01  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/11/06 11:16:06  joergr
- *  Added parameter to print() method specifying the item separator character.
- *
- *  Revision 1.3  2000/11/01 16:19:20  joergr
- *  Updated comments/formatting.
- *
- *  Revision 1.2  2000/10/18 17:03:28  joergr
- *  Added doc++ comments.
- *
- *  Revision 1.1  2000/10/13 07:49:27  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

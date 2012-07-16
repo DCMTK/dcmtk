@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRTreeNode, DSRTree
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-01-06 09:13:14 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -193,44 +186,3 @@ class DCMTK_DCMSR_EXPORT DSRTree
 
 
 #endif
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtree.h,v $
- *  Revision 1.11  2012-01-06 09:13:14  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.10  2010-10-14 13:16:33  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.9  2005-12-08 16:05:29  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2003/12/17 17:40:17  meichel
- *  Changed order of inheritance to avoid internal compiler error on Borland Builder.
- *
- *  Revision 1.7  2003/08/07 12:56:22  joergr
- *  Updated documentation to get rid of doxygen warnings.
- *
- *  Revision 1.6  2002/04/11 13:02:34  joergr
- *  Corrected typo and/or enhanced documentation.
- *
- *  Revision 1.5  2001/06/01 15:51:06  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/11/01 16:22:11  joergr
- *  Now derive "protected" from base class DSRTypes instead of "public".
- *
- *  Revision 1.3  2000/10/18 17:09:29  joergr
- *  Made some functions inline.
- *
- *  Revision 1.2  2000/10/16 11:56:10  joergr
- *  Added doc++ comments.
- *
- *  Revision 1.1  2000/10/13 07:49:35  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

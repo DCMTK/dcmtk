@@ -17,13 +17,6 @@
  *
  *  Purpose: Create sample structured reports using the dcmsr API
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:11 $
- *  CVS/RCS Revision: $Revision: 1.29 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -1263,80 +1256,3 @@ static void generate_19(DSRDocument *doc)
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_RETIRED_UltrasoundImageStorage, "1.2.840.113663.19950725083017.0.0.0"));
     doc->getCurrentRequestedProcedureEvidence().addItem("1.2.840.113663.19950725.1.0", "1.2.840.113663.19950725.1.0.0", UID_RETIRED_UltrasoundImageStorage, "1.2.840.113663.19950725083017.0.0.0");
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: mkreport.cc,v $
- *  Revision 1.29  2010-10-14 13:15:11  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.28  2010-08-09 13:27:21  joergr
- *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
- *  the official "keyword" is used for the attribute name which results in a
- *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
- *
- *  Revision 1.27  2009-10-13 14:57:52  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.26  2006-08-15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.25  2005/12/08 15:48:27  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.24  2004/01/05 14:38:05  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log.
- *
- *  Revision 1.23  2003/10/09 17:48:35  joergr
- *  Added identification information on UCUM coding scheme (see CP 372).
- *
- *  Revision 1.22  2003/09/10 13:19:05  joergr
- *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
- *  required by CP 324.
- *
- *  Revision 1.21  2003/08/07 14:19:12  joergr
- *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
- *
- *  Revision 1.20  2002/05/14 08:17:47  joergr
- *  Added new command line option to create "all" reports with one call.
- *
- *  Revision 1.19  2002/05/07 13:02:12  joergr
- *  Added support for the Current Requested Procedure Evidence Sequence and the
- *  Pertinent Other Evidence Sequence to the dcmsr module.
- *
- *  Revision 1.18  2002/04/16 13:51:59  joergr
- *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- *  Revision 1.17  2002/04/11 13:06:08  joergr
- *  Use the new loadFile() and saveFile() routines from the dcmdata library.
- *
- *  Revision 1.16  2001/12/14 10:37:53  joergr
- *  Re-structured test program to "co-operate" with gcc on Irix 5.
- *
- *  Revision 1.15  2001/10/10 15:31:46  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.14  2001/09/28 14:15:01  joergr
- *  Replaced "cerr" by "CERR". Replaced "cout" by "COUT".
- *
- *  Revision 1.13  2001/09/26 13:19:11  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.12  2001/09/26 13:04:34  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.11  2001/07/02 12:58:04  joergr
- *  Replaced non-standard characters in report "05" and "15".
- *
- *  Revision 1.10  2001/06/13 13:44:47  joergr
- *  Added check for data dictionary to command line tool.
- *
- *  Revision 1.9  2001/06/13 10:09:55  joergr
- *  Added SpecificCharacterSet attribute to report "05".
- *
- *  Revision 1.8  2001/03/28 09:05:44  joergr
- *  Added new sample report (valid structured report with cycle/loop).
- *
- */

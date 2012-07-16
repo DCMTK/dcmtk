@@ -21,13 +21,6 @@
  *           class T must have copy constructor and assignment operator.
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.8 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -134,37 +127,3 @@ private:
 
 
 #endif
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofglobal.h,v $
- * Revision 1.8  2010-10-14 13:15:50  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2010-10-04 14:44:47  joergr
- * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
- * in all cases where OFMutex, OFReadWriteLock, etc. are used).
- *
- * Revision 1.6  2005/12/08 16:05:57  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2003/12/05 10:37:41  joergr
- * Removed leading underscore characters from preprocessor symbols (reserved
- * symbols). Updated copyright date where appropriate.
- *
- * Revision 1.4  2001/06/01 15:51:34  meichel
- * Updated copyright header
- *
- * Revision 1.3  2000/10/10 12:01:21  meichel
- * Created/updated doc++ comments
- *
- * Revision 1.2  2000/05/30 17:03:38  meichel
- * Added default constructor for Mutex to initializer list in OFGlobal.
- *
- * Revision 1.1  2000/04/14 15:17:48  meichel
- * Created new templace class OFGlobal which allows to easily implement
- *   mutex protected global flags.
- *
- *
- */

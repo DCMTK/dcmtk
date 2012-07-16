@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-06 12:52:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -138,33 +131,3 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrxrdcc.cc,v $
- *  Revision 1.7  2011-04-06 12:52:10  joergr
- *  Added support for CP 1076, which adds a new "PNAME has properties" row to the
- *  relationship content constraints table.
- *
- *  Revision 1.6  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.5  2010-02-05 15:18:36  joergr
- *  Updated reference to row numbers in comments (based on the current edition
- *  of the DICOM standard). Added missing "else" statement.
- *
- *  Revision 1.4  2008-03-11 11:10:17  joergr
- *  Fixed wrong CVS log entry.
- *
- *  Revision 1.3  2007/11/29 13:48:12  joergr
- *  Added support for Supplement 127 (CT Radiation Dose Reporting).
- *
- *  Revision 1.2  2005/12/08 15:48:26  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.1  2005/11/30 12:06:26  joergr
- *  Added support for X-Ray Radiation Dose SR documents.
- *
- *
- */

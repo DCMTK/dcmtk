@@ -17,13 +17,6 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 14:50:43 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -84,50 +77,3 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 DcmQueryRetrieveOptions::~DcmQueryRetrieveOptions()
 {
 }
-
-/*
- * CVS Log
- * $Log: dcmqropt.cc,v $
- * Revision 1.10  2012-02-15 14:50:43  uli
- * Removed dependency on static initialization order from OFCondition.
- * All static condition objects are now created via makeOFConditionConst()
- * in a way that doesn't need a constructor to run. This should only break
- * code which defines its own condition objects, all other changes are
- * backwards compatible.
- *
- * Revision 1.9  2011-10-10 13:50:08  uli
- * Slightly improved the error condition names and definition.
- *
- * Revision 1.8  2010-10-14 13:14:36  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2009-11-24 10:10:42  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.6  2009-08-21 09:54:11  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.5  2005/12/08 15:47:11  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.4  2005/11/29 11:27:20  meichel
- * Added new flag keepDBHandleDuringAssociation_ which allows to determine
- *   whether a DB handle is kept open for a complete association or a single
- *   DIMSE message only. Also improved error handling of file locking.
- *
- * Revision 1.3  2005/11/29 10:54:52  meichel
- * Added minimal support for compressed transfer syntaxes to dcmqrscp.
- *   No on-the-fly decompression is performed, but compressed images can
- *   be stored and retrieved.
- *
- * Revision 1.2  2005/11/17 13:44:40  meichel
- * Added command line options for DIMSE and ACSE timeouts
- *
- * Revision 1.1  2005/03/30 13:34:53  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

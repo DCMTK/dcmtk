@@ -20,6 +20,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.16 (schlachter)
 
+- Removed outdated CVS/RCS keywords.
+  Affects: (almost everything)
+
 - Fixed a pre-processor check for HAVE_WINDOWS_H.
   Affects: ofstd/libsrc/ofconapp.cc
 

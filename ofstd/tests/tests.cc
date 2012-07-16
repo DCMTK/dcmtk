@@ -17,13 +17,6 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-06-04 06:58:57 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -74,44 +67,3 @@ OFTEST_REGISTER(ofstd_testPaths);
 OFTEST_REGISTER(ofstd_thread);
 OFTEST_REGISTER(ofstd_xmlParser);
 OFTEST_MAIN("ofstd")
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tests.cc,v $
- * Revision 1.10  2012-06-04 06:58:57  uli
- * Added an 'exhaustive' test mode for running slow tests.
- *
- * Revision 1.9  2012-05-24 16:12:46  joergr
- * Added Windows-specific support for converting between wide character encoding
- * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
- *
- * Revision 1.8  2011-12-07 14:16:28  uli
- * Added a new class for generating Universally Unique Identifiers.
- *
- * Revision 1.7  2011-11-29 16:06:27  joergr
- * Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
- *
- * Revision 1.6  2011-11-24 09:53:43  joergr
- * Added first version of a simple non-validating XML parser written by Frank
- * Vanden Berghen. This parser is intended to be used for configuration files
- * and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
- *
- * Revision 1.5  2011-10-24 15:07:36  joergr
- * Added static method counting the characters in a given UTF-8 string.
- *
- * Revision 1.4  2011-10-21 09:15:03  joergr
- * Added class for managing and converting between different character encodings
- * based on the libiconv toolkit.
- *
- * Revision 1.3  2011-10-12 12:03:04  joergr
- * Added tests for convertToMarkupString() method.
- *
- * Revision 1.2  2011-07-06 13:04:18  uli
- * Fixed some inconsistencies in test names.
- *
- * Revision 1.1  2011-05-25 10:05:57  uli
- * Imported oftest and converted existing tests to oftest.
- *
- *
- */

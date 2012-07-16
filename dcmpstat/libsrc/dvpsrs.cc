@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.18 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -223,68 +216,3 @@ OFCondition DVPSReferencedSeries::getImageReference(
   }
   return result;
 }
-
-/*
- *  $Log: dvpsrs.cc,v $
- *  Revision 1.18  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.17  2009-11-24 14:12:59  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.16  2009-09-30 10:42:39  uli
- *  Make dcmpstat's include headers self-sufficient by including all
- *  needed headers directly and stop using dctk.h
- *
- *  Revision 1.15  2009-08-26 08:15:30  joergr
- *  Added explicit braces to avoid ambiguous else (reported by gcc 4.3.2).
- *
- *  Revision 1.14  2006/08/15 16:57:02  meichel
- *  Updated the code in module dcmpstat to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.13  2005/12/08 15:46:45  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.12  2003/06/04 12:30:28  meichel
- *  Added various includes needed by MSVC5 with STL
- *
- *  Revision 1.11  2001/09/26 15:36:31  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.10  2001/06/01 15:50:36  meichel
- *  Updated copyright header
- *
- *  Revision 1.9  2000/06/02 16:01:06  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.8  2000/05/31 13:02:38  meichel
- *  Moved dcmpstat macros and constants into a common header file
- *
- *  Revision 1.7  2000/03/08 16:29:09  meichel
- *  Updated copyright header.
- *
- *  Revision 1.6  2000/03/03 14:14:04  meichel
- *  Implemented library support for redirecting error messages into memory
- *    instead of printing them to stdout/stderr for GUI applications.
- *
- *  Revision 1.5  1999/09/24 11:13:52  meichel
- *  Fixed problems related to DcmElement::getOFString on empty strings.
- *
- *  Revision 1.4  1999/07/22 16:40:01  meichel
- *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
- *
- *  Revision 1.3  1999/01/15 17:32:57  meichel
- *  added methods to DVPresentationState allowing to access the image
- *    references in the presentation state.  Also added methods allowing to
- *    get the width and height of the attached image.
- *
- *  Revision 1.2  1998/12/14 16:10:47  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:46  meichel
- *  Initial Release.
- *
- *
- */

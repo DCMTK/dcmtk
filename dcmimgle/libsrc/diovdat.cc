@@ -17,13 +17,6 @@
  *
  *  Purpose: DicomOverlayData (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.7 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -71,34 +64,3 @@ DiOverlayData::~DiOverlayData()
     delete[] Planes;
     delete[] DataBuffer;
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: diovdat.cc,v $
- * Revision 1.7  2010-10-14 13:14:18  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.6  2005/12/08 15:43:03  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2003/12/23 16:03:18  joergr
- * Replaced post-increment/decrement operators by pre-increment/decrement
- * operators where appropriate (e.g. 'i++' by '++i').
- *
- * Revision 1.4  2003/12/08 17:43:04  joergr
- * Updated copyright header.
- *
- * Revision 1.3  2001/06/01 15:49:59  meichel
- * Updated copyright header
- *
- * Revision 1.2  2000/03/08 16:24:32  meichel
- * Updated copyright header.
- *
- * Revision 1.1  1999/09/17 14:21:33  joergr
- * Splitted file diovlay.h into two files (one for each class).
- *
- *
- *
- */

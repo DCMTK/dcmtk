@@ -17,13 +17,6 @@
  *
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-28 14:16:43 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -1267,24 +1260,3 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
     }
     return status;
 }
-
-
-/*
- * CVS Log
- * $Log: dstorscu.cc,v $
- * Revision 1.4  2011-11-28 14:16:43  joergr
- * Added new option/mode that allows for sending all DICOM files referenced
- * from a DICOMDIR without accessing the files for association negotiation.
- *
- * Revision 1.3  2011-10-06 14:16:10  joergr
- * Now also SOP instances from DICOM datasets can be added to the transfer list.
- * This allows for sending datasets created or received in memory.
- *
- * Revision 1.2  2011-10-05 15:20:58  joergr
- * Enhanced code that checks for valid and supported Storage SOP Classes.
- *
- * Revision 1.1  2011-10-05 13:33:29  joergr
- * Added easy-to-use interface class for a Storage Service Class User (SCU).
- *
- *
- */

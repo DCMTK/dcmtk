@@ -17,13 +17,6 @@
  *
  *  Purpose: Implementation of class DcmOtherFloat
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-07 14:37:59 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -147,43 +140,3 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
     /* always report success */
     return EC_Normal;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcvrof.cc,v $
- * Revision 1.10  2011-12-07 14:37:59  uli
- * Use an UUID instead of an UID for the BulkData XML output.
- *
- * Revision 1.9  2011-12-02 15:46:29  joergr
- * Made sure that the BulkData XML element is not written for empty values.
- *
- * Revision 1.8  2011-12-02 09:54:18  joergr
- * Added dedicated writeXML() method for OF elements because the VM is always 1.
- *
- * Revision 1.7  2010-10-20 16:44:17  joergr
- * Use type cast macros (e.g. OFstatic_cast) where appropriate.
- *
- * Revision 1.6  2010-10-14 13:14:10  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.5  2010-04-23 14:30:34  joergr
- * Added new method to all VR classes which checks whether the stored value
- * conforms to the VR definition and to the specified VM.
- *
- * Revision 1.4  2009-11-04 09:58:11  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.3  2008-07-17 10:31:32  onken
- * Implemented copyFrom() method for complete DcmObject class hierarchy, which
- * permits setting an instance's value from an existing object. Implemented
- * assignment operator where necessary.
- *
- * Revision 1.2  2005-12-08 15:41:58  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.1  2002/12/06 12:07:02  joergr
- * Added support for new value representation Other Float String (OF).
- *
- *
- */

@@ -17,13 +17,6 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.15 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCSTACK_H
@@ -157,37 +150,3 @@ private:
 
 
 #endif  // DCSTACK_H
-
-
-/*
- * CVS/RCS Log:
- * $Log: dcstack.h,v $
- * Revision 1.15  2011-12-14 09:04:13  uli
- * Make it possible to accurately build dcmdata and libi2d as DLLs.
- *
- * Revision 1.14  2010-10-14 13:15:42  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.13  2010-03-01 09:08:44  uli
- * Removed some unnecessary include directives in the headers.
- *
- * Revision 1.12  2005-12-08 16:28:42  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.11  2004/04/14 11:50:21  joergr
- * Added const qualifier to parameter to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.10  2003/06/02 16:52:20  meichel
- * Cleaned up implementation of DcmStack, added doc++ comments
- *
- * Revision 1.9  2001/06/01 15:48:44  meichel
- * Updated copyright header
- *
- * Revision 1.8  2000/03/08 16:26:18  meichel
- * Updated copyright header.
- *
- * Revision 1.7  1999/03/31 09:24:47  meichel
- * Updated copyright header in module dcmdata
- *
- *
- */

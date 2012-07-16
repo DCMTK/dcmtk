@@ -17,13 +17,6 @@
  *
  *  Purpose: test program for OFCharacterEncoding
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-24 16:12:46 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -231,32 +224,3 @@ OFTEST(ofstd_OFCharacterEncoding_8)
     OFCHECK_EQUAL(resultStr, "J\366rg");
 #endif
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tchrenc.cc,v $
- * Revision 1.6  2012-05-24 16:12:46  joergr
- * Added Windows-specific support for converting between wide character encoding
- * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
- *
- * Revision 1.5  2012-05-10 15:09:12  joergr
- * Added explicit type casts to avoid warnings reported by gcc 4.4.5 (Linux)
- * with additional flags.
- *
- * Revision 1.4  2011-10-25 07:10:05  joergr
- * Added new convert method that accepts a C string and its length as input.
- *
- * Revision 1.3  2011-10-24 15:07:36  joergr
- * Added static method counting the characters in a given UTF-8 string.
- *
- * Revision 1.2  2011-10-24 12:49:36  joergr
- * Made sure that iconvctl() is really supported by the libiconv toolkit.
- *
- * Revision 1.1  2011-10-21 09:15:03  joergr
- * Added class for managing and converting between different character encodings
- * based on the libiconv toolkit.
- *
- *
- */

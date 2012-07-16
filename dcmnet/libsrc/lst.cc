@@ -17,13 +17,6 @@
  *
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-03 09:16:56 $
- *  CVS/RCS Revision: $Revision: 1.9 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -153,30 +146,3 @@ void *LST_Position(LST_HEAD ** lst, void *node)
 {
   return (*lst)->position(node);
 }
-
-
-/*
- * CVS Log
- * $Log: lst.cc,v $
- * Revision 1.9  2011-05-03 09:16:56  uli
- * Remove a pointless return value from some function. This helps in static code
- * analysis to ensure memory is never lost.
- *
- * Revision 1.8  2010-10-14 13:14:29  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.7  2009-09-04 13:53:09  meichel
- * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
- *
- * Revision 1.6  2005-12-08 15:44:55  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2003/06/02 16:44:11  meichel
- * Renamed local variables to avoid name clashes with STL
- *
- * Revision 1.4  2001/10/12 10:17:36  meichel
- * Re-implemented the LST module (double linked list functions)
- *   used in the dcmnet module from scratch based on OFList.
- *
- *
- */

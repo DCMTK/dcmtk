@@ -17,13 +17,6 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 13:37:32 $
- *  CVS/RCS Revision: $Revision: 1.20 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -405,82 +398,3 @@ int main( int argc, char *argv[] )
   // return result
   return( returnValue );
 }
-
-//-------------------------------------------------------------------------------------------------
-
-
-/*
- * CVS Log
- * $Log: dcmqrti.cc,v $
- * Revision 1.20  2010-11-01 13:37:32  uli
- * Fixed some compiler warnings reported by gcc with additional flags.
- *
- * Revision 1.19  2010-10-14 13:13:47  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.18  2010-09-09 14:59:30  joergr
- * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
- *
- * Revision 1.17  2009-11-24 10:10:41  uli
- * Switched to logging mechanism provided by the "new" oflog module.
- *
- * Revision 1.16  2009-11-18 12:17:30  uli
- * Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
- *
- * Revision 1.15  2009-08-21 09:49:41  joergr
- * Replaced tabs by spaces and updated copyright date.
- *
- * Revision 1.14  2009-08-19 11:56:32  meichel
- * Function passed as 4th parameter to qsort() now declared extern "C",
- *   needed for Sun Studio 11 on Solaris.
- *
- * Revision 1.13  2009-04-24 12:29:29  joergr
- * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
- *
- * Revision 1.12  2009-04-21 14:11:45  joergr
- * Fixed minor inconsistencies in manpage / syntax usage.
- *
- * Revision 1.11  2008-09-25 15:34:37  joergr
- * Added support for printing the expanded command line arguments.
- * Always output the resource identifier of the command line tool in debug mode.
- *
- * Revision 1.10  2006/10/27 09:01:30  joergr
- * Fixed wrong name of configuration file.
- *
- * Revision 1.9  2006/08/15 16:09:33  meichel
- * Updated the code in module dcmqrdb to correctly compile when
- *   all standard C++ classes remain in namespace std.
- *
- * Revision 1.8  2006/07/27 14:48:05  joergr
- * Fixed typo.
- *
- * Revision 1.7  2006/07/27 14:47:05  joergr
- * Changed parameter "exclusive" of method addOption() from type OFBool into an
- * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
- * Option "--help" is no longer an exclusive option by default.
- *
- * Revision 1.6  2006/07/17 11:38:03  joergr
- * Modified behaviour of option "--config": By default, the file "dcmqrscp.cfg"
- * in the configuration directory (e.g. "/usr/local/etc") is used.
- *
- * Revision 1.5  2005/12/08 15:47:03  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.4  2005/11/17 13:44:59  meichel
- * Added command line options for DIMSE and ACSE timeouts
- *
- * Revision 1.3  2005/11/16 14:59:00  meichel
- * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
- *   the responsiveness of the tools if the peer blocks during assoc negotiation.
- *
- * Revision 1.2  2005/06/16 08:05:48  meichel
- * Fixed typo in method name
- *
- * Revision 1.1  2005/03/30 13:34:44  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

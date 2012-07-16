@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-02-20 14:08:40 $
- *  CVS/RCS Revision: $Revision: 1.21 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -176,78 +169,3 @@ OFCondition DSRImageFrameList::putString(const char *stringValue)
     }
     return result;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrimgfr.cc,v $
- *  Revision 1.21  2012-02-20 14:08:40  joergr
- *  Minor changes of source code formatting, documentation and the like.
- *
- *  Revision 1.20  2012-01-06 09:13:18  uli
- *  Make it possible to build dcmsr as a DLL.
- *
- *  Revision 1.19  2010-10-14 13:14:41  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.18  2010-09-29 15:16:50  joergr
- *  Enhanced checking and reporting of standard violations in write() methods.
- *
- *  Revision 1.17  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.16  2007-11-15 16:43:43  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.15  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.14  2005/12/08 15:47:53  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.13  2003/08/07 13:34:35  joergr
- *  Added new putString() method.
- *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
- *
- *  Revision 1.12  2003/07/11 14:41:38  joergr
- *  Renamed member variable.
- *
- *  Revision 1.11  2003/06/04 14:26:54  meichel
- *  Simplified include structure to avoid preprocessor limitation
- *    (max 32 #if levels) on MSVC5 with STL.
- *
- *  Revision 1.10  2003/06/04 12:40:02  meichel
- *  Replaced protected inheritance from OFList with protected aggregation
- *
- *  Revision 1.9  2003/06/03 10:16:46  meichel
- *  Renamed local variables to avoid name clashes with STL
- *
- *  Revision 1.8  2002/11/27 14:36:18  meichel
- *  Adapted module dcmsr to use of new header file ofstdinc.h
- *
- *  Revision 1.7  2002/08/20 12:53:56  meichel
- *  Added explicit includes for header files included implicitly
- *    via dcstream before.
- *
- *  Revision 1.6  2001/10/10 15:29:55  joergr
- *  Additonal adjustments for new OFCondition class.
- *
- *  Revision 1.5  2001/09/26 13:04:21  meichel
- *  Adapted dcmsr to class OFCondition
- *
- *  Revision 1.4  2001/06/01 15:51:08  meichel
- *  Updated copyright header
- *
- *  Revision 1.3  2000/11/06 11:32:04  joergr
- *  Added parameter to print() method specifying the item separator character.
- *
- *  Revision 1.2  2000/10/18 17:18:24  joergr
- *  Added comments.
- *
- *  Revision 1.1  2000/10/13 07:52:20  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

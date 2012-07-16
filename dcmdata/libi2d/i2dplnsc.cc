@@ -17,13 +17,6 @@
  *
  *  Purpose: Implements conversion from image into new DICOM SC IODs
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2012-05-04 09:32:38 $
- *  CVS/RCS Revision: $Revision: 1.6 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -265,28 +258,3 @@ OFCondition I2DOutputPlugNewSC::insertSCMultiFrameAttribs(DcmDataset *targetData
 I2DOutputPlugNewSC::~I2DOutputPlugNewSC()
 {
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: i2dplnsc.cc,v $
- * Revision 1.6  2012-05-04 09:32:38  onken
- * Cleaned up includes. Fixed plugin functionality to receive list of supported
- * SOP classes.
- *
- * Revision 1.5  2010-10-14 13:18:23  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.4  2009-11-04 09:58:08  uli
- * Switched to logging mechanism provided by the "new" oflog module
- *
- * Revision 1.3  2009-09-30 08:05:26  uli
- * Stop including dctk.h in libi2d's header files.
- *
- * Revision 1.2  2008-01-16 16:32:31  onken
- * Fixed some empty or doubled log messages in libi2d files.
- *
- * Revision 1.1  2008-01-16 14:40:02  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- */

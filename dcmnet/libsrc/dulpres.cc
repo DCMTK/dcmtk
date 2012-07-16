@@ -56,9 +56,6 @@
 ** Author, Date:    Stephen M. Moore, 15-Apr-93
 ** Intent:          This module contains routines for the user to
 **                  build and manipulate the public DUL structures.
-** Last Update:     $Author: uli $, $Date: 2011-05-03 09:16:56 $
-** Revision:        $Revision: 1.15 $
-** Status:          $State: Exp $
 */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -153,65 +150,3 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
     (*ctx)->proposedTransferSyntax = lst;
     return EC_Normal;
 }
-
-/*
-** CVS Log
-** $Log: dulpres.cc,v $
-** Revision 1.15  2011-05-03 09:16:56  uli
-** Remove a pointless return value from some function. This helps in static code
-** analysis to ensure memory is never lost.
-**
-** Revision 1.14  2010-12-01 08:26:37  joergr
-** Added OFFIS copyright header (beginning with the year 1994).
-**
-** Revision 1.13  2010-10-14 13:14:29  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.12  2005/12/08 15:44:53  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.11  2002/11/27 13:04:46  meichel
-** Adapted module dcmnet to use of new header file ofstdinc.h
-**
-** Revision 1.10  2002/11/26 15:37:02  meichel
-** Changed DUL code to always send A-ASSOCIATE user information sub-items
-**   in ascending order.
-**
-** Revision 1.9  2001/10/12 10:18:40  meichel
-** Replaced the CONDITION types, constants and functions in the dcmnet module
-**   by an OFCondition based implementation which eliminates the global condition
-**   stack.  This is a major change, caveat emptor!
-**
-** Revision 1.8  2000/02/23 15:12:51  meichel
-** Corrected macro for Borland C++ Builder 4 workaround.
-**
-** Revision 1.7  2000/02/01 10:24:14  meichel
-** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
-**   workaround for bug in compiler header files.
-**
-** Revision 1.6  1999/03/29 11:20:08  meichel
-** Cleaned up dcmnet code for char* to const char* assignments.
-**
-** Revision 1.5  1997/07/04 09:24:57  meichel
-** Simplified some sizeof() constructs to avoid compiler warnings
-**   on the IBM xlC compiler (AIX 3.x).
-**
-** Revision 1.4  1996/06/20 07:35:52  hewett
-** Removed inclusion of system header already included by dcompat.h
-** and made sure that dcompat.h is always included (via dicom.h).
-**
-** Revision 1.3  1996/05/03 10:31:56  hewett
-** Move some common system include files out to include/dcompat.h which were
-** causing problems due to multiple inclusion on some machines.
-**
-** Revision 1.2  1996/04/25 16:11:21  hewett
-** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
-** architectures).  Added some protection to inclusion of sys/socket.h (due
-** to MIPS/Ultrix).
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/

@@ -18,13 +18,6 @@
  *  Purpose: Template class for administrating a set of elements of an
  *           arbitrary type.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFSET_H
@@ -257,45 +250,3 @@ template <class T> class OFSet
 
 
 #endif
-
-/*
-** CVS/RCS Log:
-** $Log: ofset.h,v $
-** Revision 1.13  2010-10-14 13:15:50  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.12  2010-10-05 08:36:51  joergr
-** Fixed various Doxygen API documentation issues.
-**
-** Revision 1.11  2010-03-01 09:08:51  uli
-** Removed some unnecessary include directives in the headers.
-**
-** Revision 1.10  2005-12-08 16:06:01  meichel
-** Changed include path schema for all DCMTK header files
-**
-** Revision 1.9  2005/07/01 10:01:50  wilkens
-** Modified a couple of "delete" statements to "delete[]" in order to get rid of
-** valgrind's "Mismatched free() / delete / delete []" error messages.
-**
-** Revision 1.8  2002/12/18 09:06:41  wilkens
-** Had forgotten to delete some superfluous code. Did it now.
-**
-** Revision 1.7  2002/12/17 17:01:34  wilkens
-** Modified code again to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template
-** errors).
-**
-** Revision 1.6  2002/12/16 10:40:25  wilkens
-** Removed superfluous implementation files and modified header and make files.
-**
-** Revision 1.5  2002/12/13 12:26:51  wilkens
-** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template errors).
-**
-** Revision 1.4  2002/12/09 13:07:03  joergr
-** Renamed parameter to avoid name clash with global function index().
-** Initialize member variables in the member initialization list.
-**
-** Revision 1.3  2002/07/09 18:29:46  wilkens
-** Added some more functionality.
-**
-**
-*/

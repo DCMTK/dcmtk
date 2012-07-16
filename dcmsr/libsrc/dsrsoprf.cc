@@ -19,13 +19,6 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-06-11 08:53:06 $
- *  CVS/RCS Revision: $Revision: 1.23 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -1516,94 +1509,3 @@ OFCondition DSRSOPInstanceReferenceList::checkPurposeOfReference(const DSRCodedE
     return purposeOfReference.isEmpty() ? EC_Normal
                                         : purposeOfReference.checkCurrentValue();
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrsoprf.cc,v $
- *  Revision 1.23  2012-06-11 08:53:06  joergr
- *  Added optional "check" parameter to "set" methods and enhanced documentation.
- *
- *  Revision 1.22  2012-05-29 14:02:18  joergr
- *  Slightly modified code for using methods from class DcmSequenceOfItems.
- *
- *  Revision 1.21  2012-05-25 08:53:29  joergr
- *  Added support for optional Retrieve Location UID (0040,E011) to the class
- *  DSRSOPInstanceReferenceList since it is required for IHE XDS-I (see CP-958).
- *
- *  Revision 1.20  2011-12-09 16:04:44  joergr
- *  Added support for optional Purpose of Reference Code Sequence (0040,A170) to
- *  class DSRSOPInstanceReferenceList.
- *
- *  Revision 1.19  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.18  2010-09-29 08:32:26  joergr
- *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
- *  checkElementValue().
- *
- *  Revision 1.17  2009-10-14 10:49:32  joergr
- *  Fixed minor issues in log output. Also updated copyright date (if required).
- *
- *  Revision 1.16  2009-10-13 14:57:51  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.15  2009-09-04 13:53:10  meichel
- *  Minor const iterator related changes needed to compile with VC6 with HAVE_STL
- *
- *  Revision 1.14  2008-07-17 12:00:09  joergr
- *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
- *
- *  Revision 1.13  2007-11-15 16:43:43  joergr
- *  Fixed coding style to be more consistent.
- *
- *  Revision 1.12  2006/08/15 16:40:03  meichel
- *  Updated the code in module dcmsr to correctly compile when
- *    all standard C++ classes remain in namespace std.
- *
- *  Revision 1.11  2006/05/11 09:16:49  joergr
- *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
- *
- *  Revision 1.10  2005/12/15 16:53:48  joergr
- *  Added explicit type cast, required for Sun CC 2.0.1 on Solaris.
- *
- *  Revision 1.9  2005/12/08 15:48:07  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2005/07/27 16:34:26  joergr
- *  Added method that allows to add a DICOM dataset to the list of references.
- *
- *  Revision 1.7  2004/11/22 16:39:12  meichel
- *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
- *
- *  Revision 1.6  2004/04/16 13:33:52  joergr
- *  Added explicit typecast to result of dereferencing operator to keep Sun CC
- *  2.0.1 happy.
- *
- *  Revision 1.5  2003/08/07 15:21:53  joergr
- *  Added brackets around "bitwise and" operator/operands to avoid warnings
- *  reported by MSVC5.
- *
- *  Revision 1.4  2003/08/07 13:51:53  joergr
- *  Added readXML functionality.
- *  Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.
- *  series with no instances or studies with no series) are automatically
- *  removed from the list and "degenerated" (i.e. not stricly hierarchical)
- *  sequence structures are now also supported.
- *  Adapted type casts to new-style typecast operators defined in ofcast.h.
- *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
- *
- *  Revision 1.3  2002/05/24 09:52:02  joergr
- *  Added missing member variables to member initialization list (warnings
- *  reported by gcc 2.95.3 with additional options).
- *
- *  Revision 1.2  2002/05/14 08:16:29  joergr
- *  Added removeItem() methods.
- *
- *  Revision 1.1  2002/05/07 12:54:28  joergr
- *  Added support for the Current Requested Procedure Evidence Sequence and the
- *  Pertinent Other Evidence Sequence to the dcmsr module.
- *
- *
- */

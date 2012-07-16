@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DSRTreeNodeCursor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-23 10:06:30 $
- *  CVS/RCS Revision: $Revision: 1.11 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -373,46 +366,3 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
     }
     return position;
 }
-
-
-/*
- *  CVS/RCS Log:
- *  $Log: dsrtncsr.cc,v $
- *  Revision 1.11  2012-05-23 10:06:30  joergr
- *  Simplified code of assignment operator since OFList::operator=() now exists.
- *
- *  Revision 1.10  2010-10-14 13:14:42  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.9  2005-12-08 15:48:17  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.8  2005/07/27 16:38:57  joergr
- *  Added flag to iterate() method indicating whether to perform a "deep search".
- *
- *  Revision 1.7  2003/08/07 14:11:20  joergr
- *  Renamed parameters/variables "string" to avoid name clash with STL class.
- *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
- *
- *  Revision 1.6  2001/03/28 09:07:42  joergr
- *  Fixed bug in cycle/loop detection "algorithm".
- *
- *  Revision 1.5  2001/02/13 16:34:35  joergr
- *  Corrected wrong implementation of getLevel() - started from 0 instead of 1.
- *
- *  Revision 1.4  2000/11/07 18:29:45  joergr
- *  Moved some protected method to public part.
- *
- *  Revision 1.3  2000/10/26 14:35:39  joergr
- *  Generalized routine to get and search for position strings ("1.2.3").
- *
- *  Revision 1.2  2000/10/16 12:09:55  joergr
- *  Added new options: number nested items instead of indenting them, print SOP
- *  instance UID of referenced composite objects.
- *
- *  Revision 1.1  2000/10/13 07:52:27  joergr
- *  Added new module 'dcmsr' providing access to DICOM structured reporting
- *  documents (supplement 23).  Doc++ documentation not yet completed.
- *
- *
- */

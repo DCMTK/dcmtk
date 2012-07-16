@@ -17,13 +17,6 @@
  *
  *  Purpose: Defines a template vector class based on the STL vector class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-04-16 07:59:36 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFVECTOR_H
@@ -368,23 +361,3 @@ public:
 #endif
 
 #endif
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofvector.h,v $
- * Revision 1.4  2012-04-16 07:59:36  uli
- * Fixed several assignment operators in STL replacement classes.
- *
- * Revision 1.3  2010-10-14 13:15:51  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.2  2010-10-08 13:25:33  uli
- * Implement OFVector.
- *
- * Revision 1.1  2010-04-26 11:57:35  joergr
- * Added initial definitions for using the STL vector class. Please note that
- * there is currently no alternative implementation to this standard class.
- *
- *
- */

@@ -18,13 +18,6 @@
  *  Purpose: Class declarations for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 09:04:13 $
- *  CVS/RCS Revision: $Revision: 1.12 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef DCPATH_H
@@ -508,49 +501,3 @@ private:
 
 
 #endif // DCPATH_H
-
-/*
-** CVS/RCS Log:
-** $Log: dcpath.h,v $
-** Revision 1.12  2011-12-14 09:04:13  uli
-** Make it possible to accurately build dcmdata and libi2d as DLLs.
-**
-** Revision 1.11  2011-10-28 08:05:39  joergr
-** Minor stylistic changes regarding parameter declaration and documentation.
-**
-** Revision 1.10  2010-10-14 13:15:41  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.9  2010-08-09 13:02:56  joergr
-** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
-** the official "keyword" is used for the attribute name which results in a
-** number of minor changes (e.g. "PatientsName" is now called "PatientName").
-**
-** Revision 1.8  2009-11-04 09:58:07  uli
-** Switched to logging mechanism provided by the "new" oflog module
-**
-** Revision 1.7  2009-09-29 12:55:17  uli
-** Include only the needed headers in dcpath.h and dcpath.cc
-**
-** Revision 1.6  2009-07-10 13:12:30  onken
-** Added override key functionality used by tools like findscu to the more
-** central DcmPathProcessor class.
-**
-** Revision 1.5  2009-07-08 16:09:30  onken
-** Cleaned up code for private reservation checking and added option for
-** disabling item wildcards for searching/creating tag paths.
-**
-** Revision 1.4  2009-01-15 16:04:06  onken
-** Added options for handling of private tags and fixed bug for deleting
-** tags on main level.
-**
-** Revision 1.3  2009-01-12 12:37:45  onken
-** Fixed iterators to also compile with STL classes being enabled.
-**
-** Revision 1.2  2008-12-12 13:16:03  onken
-** Fixed doxygen documentation.
-**
-** Revision 1.1  2008-12-12 11:44:40  onken
-** Moved path access functions to separate classes
-**
-*/

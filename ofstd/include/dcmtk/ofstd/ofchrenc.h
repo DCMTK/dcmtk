@@ -17,13 +17,6 @@
  *
  *  Purpose: Class for character encoding conversion (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2012-05-24 16:12:42 $
- *  CVS/RCS Revision: $Revision: 1.10 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 
@@ -407,45 +400,3 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 
 
 #endif
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: ofchrenc.h,v $
- * Revision 1.10  2012-05-24 16:12:42  joergr
- * Added Windows-specific support for converting between wide character encoding
- * (UTF-16) and UTF-8. No external library is required for this, e.g. libiconv.
- *
- * Revision 1.9  2011-12-14 08:54:00  uli
- * Make it possible to correctly build ofstd as a DLL.
- *
- * Revision 1.8  2011-11-07 07:45:40  joergr
- * Fixed problematical typo in a comment ("get" -> "set").
- *
- * Revision 1.7  2011-10-28 09:32:46  joergr
- * Restructured code of OFCharacterEncoding in order to allow particular classes
- * to access more low-level functions, e.g. for opening multiple conversion
- * descriptors at the same time. This will be needed for ISO 2022 support.
- *
- * Revision 1.6  2011-10-27 09:21:39  uli
- * Fixed some compiler warnings when libiconv was not found.
- *
- * Revision 1.5  2011-10-25 17:13:59  joergr
- * Be prepared that older versions of locale_charset() might return NULL.
- *
- * Revision 1.4  2011-10-25 07:10:02  joergr
- * Added new convert method that accepts a C string and its length as input.
- *
- * Revision 1.3  2011-10-24 15:07:33  joergr
- * Added static method counting the characters in a given UTF-8 string.
- *
- * Revision 1.2  2011-10-24 12:49:33  joergr
- * Made sure that iconvctl() is really supported by the libiconv toolkit.
- *
- * Revision 1.1  2011-10-21 09:14:57  joergr
- * Added class for managing and converting between different character encodings
- * based on the libiconv toolkit.
- *
- *
- */

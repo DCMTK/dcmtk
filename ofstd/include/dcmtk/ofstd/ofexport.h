@@ -17,13 +17,6 @@
  *
  *  Purpose: common defines for import and exporting symbols
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2012-02-15 11:37:42 $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef OFEXPORT_H
@@ -55,14 +48,3 @@
 
 
 #endif
-
-/*
- * CVS/RCS Log:
- * $Log: ofexport.h,v $
- * Revision 1.2  2012-02-15 11:37:42  uli
- * Don't use C++ comments in file included from C.
- *
- * Revision 1.1  2012-02-01 09:49:18  uli
- * Moved some definitions to a file that can be included from C.
- *
- */

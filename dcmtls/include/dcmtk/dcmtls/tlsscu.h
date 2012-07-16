@@ -17,13 +17,6 @@
  *
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-12-14 11:45:15 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #ifndef TLSSCU_H
@@ -242,24 +235,3 @@ private:
 #endif // WITH_OPENSSL
 
 #endif // TLSSCU_H
-
-
-/*
-** CVS Log
-** $Log: tlsscu.h,v $
-** Revision 1.5  2011-12-14 11:45:15  uli
-** Make it possible to perfectly build dcmnet and dcmtls a DLLs.
-**
-** Revision 1.4  2010-10-14 13:17:27  joergr
-** Updated copyright header. Added reference to COPYRIGHT file.
-**
-** Revision 1.3  2010-10-01 12:25:29  uli
-** Fixed most compiler warnings in remaining modules.
-**
-** Revision 1.2  2010-06-22 15:49:38  joergr
-** Introduced new enumeration type to be used for closeAssociation().
-**
-** Revision 1.1  2010-04-29 16:18:00  onken
-** Added new class DcmTLSSCU as base class for developing TLS-enabled SCUs.
-**
-*/

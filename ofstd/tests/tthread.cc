@@ -19,13 +19,6 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-14 13:28:19 $
- *  CVS/RCS Revision: $Revision: 1.4 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -590,74 +583,3 @@ OFTEST(ofstd_thread)
   rwlocker_test();  // may assume that mutexes, semaphores and read/write locks work correctly
   tsdata_test();
 }
-
-
-/*
- *
- * CVS/RCS Log:
- * $Log: tthread.cc,v $
- * Revision 1.4  2011-10-14 13:28:19  uli
- * Fixed a memory leak due to unjoined threads.
- *
- * Revision 1.3  2011-08-19 12:07:02  uli
- * Speed up the thread test by polling more often for events.
- *
- * Revision 1.2  2011-06-15 07:31:25  uli
- * Made sure thread 2 can't run before thread 1 in the semaphore test.
- *
- * Revision 1.1  2011-05-25 10:05:59  uli
- * Imported oftest and converted existing tests to oftest.
- *
- * Revision 1.15  2011-01-05 12:31:30  uli
- * Remove all windows line endings that were recently introduced.
- *
- * Revision 1.14  2011-01-05 11:03:45  onken
- * Updated thread test in order to reflect missing OFSemaphore class
- * on Mac OS X.
- *
- * Revision 1.13  2010-10-14 13:15:16  joergr
- * Updated copyright header. Added reference to COPYRIGHT file.
- *
- * Revision 1.12  2010-06-04 13:58:42  uli
- * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
- *
- * Revision 1.11  2006-08-14 16:42:48  meichel
- * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
- *
- * Revision 1.10  2005/12/08 15:49:12  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.9  2004/01/16 10:37:23  joergr
- * Removed acknowledgements with e-mail addresses from CVS log.
- *
- * Revision 1.8  2003/08/14 09:01:20  meichel
- * Adapted type casts to new-style typecast operators defined in ofcast.h
- *
- * Revision 1.7  2003/06/06 09:44:14  meichel
- * Added static sleep function in class OFStandard. This replaces the various
- *   calls to sleep(), Sleep() and usleep() throughout the toolkit.
- *
- * Revision 1.6  2002/04/16 13:37:02  joergr
- * Added configurable support for C++ ANSI standard includes (e.g. streams).
- *
- * Revision 1.5  2002/04/11 12:17:19  joergr
- * Removed obsolete return statements to keep Sun CC 2.0.1 quiet.
- *
- * Revision 1.4  2001/09/28 12:42:39  joergr
- * Replaced "cerr" by "CERR".
- *
- * Revision 1.3  2001/06/05 10:32:21  joergr
- * Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
- * __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
- * version does not define _WIN32 any more.
- *
- * Revision 1.2  2001/06/01 15:51:42  meichel
- * Updated copyright header
- *
- * Revision 1.1  2000/03/29 16:41:27  meichel
- * Added new classes providing an operating system independent abstraction
- *   for threads, thread specific data, semaphores, mutexes and read/write locks.
- *
- *
- */

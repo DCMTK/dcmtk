@@ -17,13 +17,6 @@
  *
  *  Purpose: Simple non-validating XML parser
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 /**
@@ -3014,15 +3007,3 @@ unsigned char *XMLParserBase64Tool::decode(XMLCSTR data, int *outlen, XMLError *
     if(!decode(data,(unsigned char*)buf,len,xe)){ return NULL; }
     return (unsigned char*)buf;
 }
-
-
-/*
- * CVS/RCS Log:
- * $Log: ofxml.cc,v $
- * Revision 1.1  2011-11-24 09:53:41  joergr
- * Added first version of a simple non-validating XML parser written by Frank
- * Vanden Berghen. This parser is intended to be used for configuration files
- * and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
- *
- *
- */

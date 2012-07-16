@@ -19,13 +19,6 @@
  *    this file derives the preprocessor symbols required to compile
  *    the IJG library from the central DCMTK configuration file osconfig.h
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:19:12 $
- *  CVS/RCS Revision: $Revision: 1.5 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -78,25 +71,3 @@
 #define NO_GETENV
 
 #endif /* JPEG_INTERNALS */
-
-/*
- *  $Log: jconfig12.h,v $
- *  Revision 1.5  2010-10-14 13:19:12  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.4  2005/12/08 15:47:55  meichel
- *  Updated Makefiles to correctly install header files
- *
- *  Revision 1.3  2001/12/18 09:48:48  meichel
- *  Modified configure test for "const" support of the C compiler
- *    in order to avoid a macro recursion error on Sun CC 2.0.1
- *
- *  Revision 1.2  2001/11/19 14:55:55  meichel
- *  Disabled JPEGMEM environment variable in dcmjpeg IJG code
- *    since it is not required and getenv() is thread unsafe on some systems.
- *
- *  Revision 1.1  2001/11/13 15:56:40  meichel
- *  Initial release of module dcmjpeg
- *
- *
- */

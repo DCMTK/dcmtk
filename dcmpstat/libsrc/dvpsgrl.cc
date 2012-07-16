@@ -18,13 +18,6 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.14 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -162,53 +155,3 @@ DVPSGraphicObject *DVPSGraphicObject_PList::removeGraphicObject(size_t idx)
   }
   return NULL;
 }
-
-/*
- *  $Log: dvpsgrl.cc,v $
- *  Revision 1.14  2010-10-14 13:14:32  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
- *
- *  Revision 1.13  2009-11-24 14:12:58  uli
- *  Switched to logging mechanism provided by the "new" oflog module.
- *
- *  Revision 1.12  2005-12-08 15:46:31  meichel
- *  Changed include path schema for all DCMTK header files
- *
- *  Revision 1.11  2004/02/04 15:57:49  joergr
- *  Removed acknowledgements with e-mail addresses from CVS log.
- *
- *  Revision 1.10  2003/09/05 08:37:46  meichel
- *  Fixed minor issue that caused certain error messages during the
- *    parse process on a GSPS object to be "swallowed".
- *
- *  Revision 1.9  2003/06/12 18:23:11  joergr
- *  Modified code to use const_iterators where appropriate (required for STL).
- *
- *  Revision 1.8  2003/06/04 10:18:07  meichel
- *  Replaced private inheritance from template with aggregation
- *
- *  Revision 1.7  2001/11/28 13:56:55  joergr
- *  Check return value of DcmItem::insert() statements where appropriate to
- *  avoid memory leaks when insert procedure fails.
- *
- *  Revision 1.6  2001/09/26 15:36:27  meichel
- *  Adapted dcmpstat to class OFCondition
- *
- *  Revision 1.5  2001/06/01 15:50:32  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/06/02 16:01:01  meichel
- *  Adapted all dcmpstat classes to use OFConsole for log and error output
- *
- *  Revision 1.3  2000/03/08 16:29:06  meichel
- *  Updated copyright header.
- *
- *  Revision 1.2  1998/12/14 16:10:44  meichel
- *  Implemented Presentation State interface for graphic layers,
- *    text and graphic annotations, presentation LUTs.
- *
- *  Revision 1.1  1998/11/27 14:50:43  meichel
- *  Initial Release.
- *
- *
- */
