@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.16 (schlachter)
+
+- Fixed a pre-processor check for HAVE_WINDOWS_H.
+  Affects: ofstd/libsrc/ofconapp.cc
+
 **** Changes from 2012.07.13 (riesmeier)
 
 - Removed file extensions and quotations marks from Windows standard library

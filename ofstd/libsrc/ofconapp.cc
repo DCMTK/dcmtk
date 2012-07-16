@@ -136,7 +136,7 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
             setlocale(LC_CTYPE, "C");
         }
 #endif
-#if HAVE_WINDOWS_H
+#ifdef HAVE_WINDOWS_H
         /* determine system's current code pages */
         (*output) << "Code page: " << GetOEMCP() << " (OEM) / " << GetACP() << " (ANSI)" << OFendl;
 #endif
