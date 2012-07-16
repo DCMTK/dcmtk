@@ -50,6 +50,7 @@ OPTION(DCMTK_WITH_PRIVATE_TAGS "Configure DCMTK with support for DICOM private t
 OPTION(DCMTK_WITH_THREADS "Configure DCMTK with support for multi-threading." ON)
 OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen." ON)
 OPTION(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
+OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
 
 # Mark various settings as "advanced"
 MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
@@ -58,6 +59,8 @@ MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMT
 IF(NOT WIN32)
   # support for wide char file I/O functions is currently Windows-specific
   MARK_AS_ADVANCED(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
+  # support for wide char main function is Windows-specific
+  MARK_AS_ADVANCED(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
 ENDIF(NOT WIN32)
 
 ENABLE_TESTING()
@@ -231,6 +234,7 @@ IF(WIN32)
   IF(MINGW)
     SET(WIN32_STD_OBJECTS CRT_noglob)
   ELSE(MINGW)
+    # additional library needed for wildcard expansion; for wchar_t* support, use 'wsetargv'
     SET(WIN32_STD_OBJECTS setargv)
   ENDIF(MINGW)
   # settings for Borland C++

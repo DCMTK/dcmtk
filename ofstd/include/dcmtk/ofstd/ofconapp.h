@@ -70,7 +70,8 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
      *  if the command line has only one argument, namely "--help" or the specified shortcut,
      *  (in all cases) the usage is printed (see printUsage).
      *
-     ** @param  cmd       reference to the OFCommandLine object
+     ** @param  cmd       reference to the OFCommandLine object.  Should be valid at least as
+     *                    long as this object exists.
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument array (argv[])
      *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::PF_NoCommandFiles)
@@ -84,13 +85,39 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
                             const int flags = 0,
                             const int startPos = 1);
 
+#ifdef HAVE_WINDOWS_H
+
+    /** parse command line.
+     *  This is a Windows-specific version supporting the wide character encoding (UTF-16).
+     *  If the command line has no argument (in case at least one argument is required) and
+     *  if the command line has only one argument, namely "--help" or the specified shortcut,
+     *  (in all cases) the usage is printed (see printUsage).
+     *
+     ** @param  cmd       reference to the OFCommandLine object.  Should be valid at least as
+     *                    long as this object exists.
+     *  @param  argCount  number of arguments (argc)
+     *  @param  argValue  pointer to argument array (argv[])
+     *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::PF_NoCommandFiles)
+     *  @param  startPos  first argument to be parsed (default: 1, i.e. omit program name)
+     *
+     ** @return status of parsing process, true if successful, false otherwise
+     */
+    OFBool parseCommandLine(OFCommandLine &cmd,
+                            int argCount,
+                            wchar_t *argValue[],
+                            const int flags = 0,
+                            const int startPos = 1);
+
+#endif  // HAVE_WINDOWS_H
+
     /** print header of console application (consisting of identifier, name and description)
      *
      ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue.
      *                    If compiled with 'libiconv' support, the current locale's character
-     *                    encoding is also shown.  On Windows systems, the current OEM and
-     *                    ANSI code page identifiers are also printed.  Finally, if the DEBUG
-     *                    macro is defined, a note on the presence of debug code is given.
+     *                    encoding is also shown.  On Windows systems, either the current OEM
+     *                    and ANSI code page identifiers are printed or "Unicode (UTF-16)" if
+     *                    support is enabled.  Finally, if the DEBUG macro is defined, a note
+     *                    on the presence of debug code is given.
      *  @param  stdError  print to standard error stream if OFTrue (default: standard output)
      */
     void printHeader(const OFBool hostInfo = OFFalse,
@@ -183,6 +210,13 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
     void checkConflict(const char *firstOpt,
                        const char *secondOpt,
                        OFBool condition);
+
+
+ protected:
+
+    /** check parse status of previously parsed command line
+     */
+    OFBool checkParseStatus(const OFCommandLine::E_ParseStatus status);
 
 
  private:

@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.16 (riesmeier)
+
+- Added support for Windows-specific wide character encoding (UTF-16) to the
+  command line interface. Currently, none of the command line tools actually
+  supports this particular representation of Unicode, though.
+  Affects: CMake/DCMTK.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/docs/macros.txt
+           dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+           dcmdata/libsrc/cmdlnarg.cc
+           ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/ofconapp.cc
+
 **** Changes from 2012.07.16 (schlachter)
 
 - Fixed a pre-processor check for HAVE_WINDOWS_H.
@@ -8,7 +25,7 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.13 (riesmeier)
 
-- Removed file extensions and quotations marks from Windows standard library
+- Removed file extensions and quotation marks from Windows standard library
   and object files.
   Affects: CMake/DCMTK.cmake
 

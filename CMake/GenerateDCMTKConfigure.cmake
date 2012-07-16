@@ -25,6 +25,15 @@ ELSE(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
   MESSAGE(STATUS "Info: Wide char file I/O functions will be disabled")
 ENDIF(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
 
+# Wide char main function
+IF(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
+  SET(WIDE_CHAR_MAIN_FUNCTION 1)
+  MESSAGE(STATUS "Info: Wide char main function for command line tools will be enabled")
+ELSE(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
+  SET(WIDE_CHAR_MAIN_FUNCTION "")
+  MESSAGE(STATUS "Info: Wide char main function for command line tools will be disabled")
+ENDIF(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
+
 # Standard C++ headers (currently hard-coded)
 #IF(VTK_USE_ANSI_STDLIB)
   SET(USE_STD_CXX_INCLUDES 1)

@@ -379,7 +379,7 @@ USING_STD_NAMESPACE
     compile with this macro defined.
 
 WIDE_CHAR_FILE_IO_FUNCTIONS
-  Affects: ofstd
+  Affected: ofstd
   Type of modification: Activates feature
   Explanation: In addition to the standard file I/O functions, the OFFile class
     also defines the corresponding wide character functions from C99 standard.
@@ -388,8 +388,18 @@ WIDE_CHAR_FILE_IO_FUNCTIONS
     default.  When using CMake, you can enable this macro by setting the CMake
     option DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS to "on".
 
+WIDE_CHAR_MAIN_FUNCTION
+  Affected: currently not used
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: On Windows (at least for MSVC), a different main function has
+    to be used in order to get the command line arguments with wide character
+    encoding (UTF-16).  By defining this flag, the macro DCMTK_MAIN_FUNCTION
+    expands to wmain() instead of main().  When using CMake, you can enable
+    this macro by setting the CMake option DCMTK_WIDE_CHAR_MAIN_FUNCTION to
+    "on".  Usually, WIDE_CHAR_FILE_IO_FUNCTIONS should also be enabled.
+
 WRITE_VERY_LARGE_CHUNKS
-  Affects: dcmdata
+  Affected: dcmdata
   Type of modification: Re-activated behaviour of earlier DCMTK releases
   Explanation: On Windows (at least for some versions of MSVC), calls to
     fwrite() for more than 67,076,095 bytes (a bit less than 64 MByte) fail if
@@ -401,7 +411,7 @@ WRITE_VERY_LARGE_CHUNKS
     benefits on other platforms.
 
 ZLIB_ENCODE_RFC1950_HEADER
-  Affects: dcmdata
+  Affected: dcmdata
   Type of modification: Activates experimental or rarely used feature
   Explanation: When this macro is defined, the deflated ZLIB format is created
     instead of the deflated bitstream format (i.e. RFC 1950 instead of RFC

@@ -35,9 +35,23 @@
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/offile.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+
+/*--------------------*
+ *  macro definition  *
+ *--------------------*/
+
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(HAVE_WINDOWS_H)
+// Windows-specific version supporting wide character encoding (UTF-16)
+# define DCMTK_MAIN_FUNCTION int wmain(int argc, wchar_t *argv[])
+#else
+// default version supporting various character encodings (incl. UTF-8)
+# define DCMTK_MAIN_FUNCTION int main(int argc, char *argv[])
+#endif
 
 
 /*--------------------*
@@ -265,10 +279,10 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     /** adds an item to the list of valid options
      *  (without additional values)
      *
-     ** @param  longOpt     long option name
-     *  @param  shortOpt    short option name
-     *  @param  optDescr    description of command line option (use '\n' for line break)
-     *  @param  flags       optional flags (see AF_xxx below)
+     ** @param  longOpt   long option name
+     *  @param  shortOpt  short option name
+     *  @param  optDescr  description of command line option (use '\n' for line break)
+     *  @param  flags     optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
      */
@@ -297,9 +311,9 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     /** adds an item to the list of valid options
      *  (without short name and additional values)
      *
-     ** @param  longOpt    long option name
-     *  @param  optDescr   description of command line option (use '\n' for line break)
-     *  @param  flags       optional flags (see AF_xxx below)
+     ** @param  longOpt   long option name
+     *  @param  optDescr  description of command line option (use '\n' for line break)
+     *  @param  flags     optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
      */
@@ -440,15 +454,26 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *  which does not require any mandatory parameter.  Examples for typical
      *  exclusive options are "--help" and "--version".
      *
-     ** @return OFTrue if an exclusive option is used
+     ** @return OFTrue if an exclusive option is used, OFFalse otherwise
      */
     OFBool hasExclusiveOption() const
     {
         return ExclusiveOption;
     }
 
+    /** checks whether the wide character version of parseLine() has been used.
+     *  Support for wide character encoding is Windows-specific (i.e. UTF-16) because other
+     *  operating systems use UTF-8 for Unicode support.
+     *
+     ** @return OFTrue if wide char version of parseLine() has been used, OFFalse otherwise
+     */
+    OFBool getWideCharMode() const
+    {
+        return WideCharMode;
+    }
 
- // --- find/get parameter (parameter is an argument which is no option)
+
+  // --- find/get parameter (parameter is an argument which is no option)
 
     /** checks whether specified parameter exists in the command line.
      *
@@ -581,22 +606,34 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     /** gets value of specified parameter as C string.
      *
      ** @param  pos    position of parameter (1..n)
-     *  @param  param  reference to variable where the value should be stored
+     *  @param  value  reference to variable where the value should be stored
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
     E_ParamValueStatus getParam(const int pos,
-                                const char *&param);
+                                const char *&value);
 
     /** gets value of specified parameter as C++ string.
      *
      ** @param  pos    position of parameter (1..n)
-     *  @param  param  reference to variable where the value should be stored
+     *  @param  value  reference to variable where the value should be stored
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
     E_ParamValueStatus getParam(const int pos,
-                                OFCmdString &param);
+                                OFCmdString &value);
+
+    /** gets value of specified parameter as an instance of OFFilename.
+     *  Please note that on Windows systems the returned filename might also contain a wide character
+     *  version (UTF-16) as an alternative representation.  See getWideCharMode().
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
+     */
+    E_ParamValueStatus getParam(const int pos,
+                                OFFilename &filename);
 
 
  // --- find/get option (option is an argument which starts with an option character, see above)
@@ -778,12 +815,22 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      */
     E_ValueStatus getValue(OFCmdString &value);
 
+    /** returns next argument as an instance of OFFilename.
+     *  Please note that on Windows systems the returned filename might also contain a wide character
+     *  version (UTF-16) as an alternative representation.  See getWideCharMode().
+     *
+     ** @param  value  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
+     */
+    E_ValueStatus getValue(OFFilename &filename);
+
 
  // --- parsing command line
 
-    /** parses specified command line arguments (argc, argv).
-     *  Additionally create internal structures for evaluation and return status indicating any errors
-     *  occuring during the parse process.
+    /** parses specified command line arguments (argc, argv).  Sets 'WideCharMode' to OFFalse.
+     *  Additionally, create internal structures for evaluation and return status indicating any errors
+     *  that occurred during the parse process.
      *
      ** @param  argCount  number of command line arguments stored in argValue
      *  @param  argValue  array where the command line arguments are stored
@@ -797,6 +844,31 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
                             char *argValue[],
                             const int flags = 0,
                             const int startPos = 1);
+
+#ifdef HAVE_WINDOWS_H
+
+    /** parses specified command line arguments (argc, argv).  Sets 'WideCharMode' to OFTrue.
+     *  This is a Windows-specific version supporting the wide character encoding (UTF-16).  Internally,
+     *  all character strings are stored in UTF-8, because this Unicode encoding is supported by DICOM.
+     *  However, there are getValue() and getParam() methods that allow for accessing filenames with
+     *  wide character encoding (UTF-16).
+     *  Additionally, create internal structures for evaluation and return status indicating any errors
+     *  that occurred during the parse process.
+     *
+     ** @param  argCount  number of command line arguments stored in argValue
+     *  @param  argValue  array where the command line arguments are stored
+     *  @param  flags     optional flags affecting the parse process (see PF_xxx below)
+     *  @param  startPos  index of first argument which should be parsed (starting from 0, default: 1)
+     *
+     ** @return status of parse process, PS_Normal if successful (use getStatusString for error string).
+     *          If an exclusive option is used the status code PS_ExclusiveOption is returned.
+     */
+    E_ParseStatus parseLine(int argCount,
+                            wchar_t *argValue[],
+                            const int flags = 0,
+                            const int startPos = 1);
+
+#endif  // HAVE_WINDOWS_H
 
 
  // --- get usage/status strings
@@ -867,6 +939,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     /// (useful if option is only checked depending on another option)
     static const int AF_NoWarning;
 
+
  protected:
 
     /** checks whether given option is valid (starting with an option char and not followed by a number)
@@ -888,10 +961,26 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     void storeParameter(const OFString &param,
                         const int directOption = 0);
 
+    /** parse the given argument list and check it for known options/parameters
+     */
+    E_ParseStatus parseArgumentList(OFList<OFString> &argList,
+                                    const int flags);
+
     /** check whether 'argValue' points to command file and parse content if so
      */
     E_ParseStatus parseCommandFile(const char *argValue,
                                    OFList<OFString> &argList);
+
+#ifdef HAVE_WINDOWS_H
+
+    /** check whether 'argValue' points to command file and parse content if so.
+     *  This is a Windows-specific version supporting wide char encoding (UTF-16).
+     */
+    E_ParseStatus parseCommandFile(const wchar_t *argValue,
+                                   const OFString &strValue,
+                                   OFList<OFString> &argList);
+
+#endif  // HAVE_WINDOWS_H
 
     /** packs the two 16 bit values into one 32 bit value
      */
@@ -952,6 +1041,8 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
 
     /// OFTrue if an "exclusive" option is used in the command line, OFFalse otherwise
     OFBool ExclusiveOption;
+    /// OFTrue if wide character version of parseLine() has been used, OFFalse otherwise
+    OFBool WideCharMode;
 
     /// width of column for long option names
     int LongColumn;

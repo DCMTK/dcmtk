@@ -30,9 +30,14 @@
 #define OFFILE_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofstd.h"      /* for class OFStandard */
+
+#ifdef HAVE_WINDOWS_H
+#include "dcmtk/ofstd/ofchrenc.h"   /* for class OFCharacterEncoding */
+#endif
 
 #define INCLUDE_UNISTD
 #define INCLUDE_CSTDIO
@@ -108,41 +113,58 @@ typedef int offile_errno_t;
 class OFFilename
 {
 public:
-  /** constructor expecting a conventional character string
-   *  @param filename filename to be stored (8-bit characters)
+  /** default constructor
    */
-  OFFilename(const char *filename)
+  OFFilename()
     : filename_(NULL)
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     , wfilename_(NULL)
 #endif
   {
-    if (filename != NULL)
-      filename_ = strdup(filename);
+  }
+
+  /** constructor expecting a conventional character string
+   *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
+   *  @param convert  convert given filename to wide character encoding as an
+   *    alternative representation
+   */
+  OFFilename(const char *filename,
+             const OFBool convert = OFFalse)
+    : filename_(NULL)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
+    , wfilename_(NULL)
+#endif
+  {
+    set(filename, convert);
   }
 
   /** constructor expecting a character string as an OFString instance
-   *  @param filename filename to be stored (8-bit characters)
+   *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
+   *  @param convert  convert given filename to wide character encoding as an
+   *    alternative representation.  Only works on Windows systems.
    */
-  OFFilename(const OFString &filename)
+  OFFilename(const OFString &filename,
+             const OFBool convert = OFFalse)
     : filename_(NULL)
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     , wfilename_(NULL)
 #endif
   {
-    filename_ = strdup(filename.c_str());
+    set(filename, convert);
   }
 
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string
    *  @param filename filename to be stored (e.g. 16-bit characters)
+   *  @param convert  convert given filename to UTF-8 encoding as an
+   *    alternative representation.  Only works on Windows systems.
    */
-  OFFilename(const wchar_t *filename)
+  OFFilename(const wchar_t *filename,
+             const OFBool convert = OFFalse)
     : filename_(NULL),
       wfilename_(NULL)
   {
-    if (filename != NULL)
-      wfilename_ = _wcsdup(filename);
+    set(filename, convert);
   }
 #endif
 
@@ -151,13 +173,13 @@ public:
    */
   OFFilename(const OFFilename &arg)
     : filename_(NULL)
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     , wfilename_(NULL)
 #endif
   {
     if (arg.filename_ != NULL)
       filename_ = strdup(arg.filename_);
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     if (arg.wfilename_ != NULL)
       wfilename_ = _wcsdup(arg.wfilename_);
 #endif
@@ -167,10 +189,7 @@ public:
    */
   ~OFFilename()
   {
-    free(filename_);
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
-    free(wfilename_);
-#endif
+    clear();
   }
 
   /** assignment operator
@@ -183,12 +202,24 @@ public:
     {
       free(filename_);
       filename_ = (arg.filename_ != NULL) ? strdup(arg.filename_) : NULL;
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
       free(wfilename_);
       wfilename_ = (arg.wfilename_ != NULL) ? _wcsdup(arg.wfilename_) : NULL;
 #endif
     }
     return *this;
+  }
+
+  /** clear currently stored filename
+   */
+  void clear()
+  {
+    free(filename_);
+    filename_ = NULL;
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
+    free(wfilename_);
+    wfilename_ = NULL;
+#endif
   }
 
   /** fast, non-throwing swap function. The time complexity of this function
@@ -200,7 +231,7 @@ public:
     char *charPointer = filename_;
     filename_ = arg.filename_;
     arg.filename_ = charPointer;
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     wchar_t *wideCharPointer = wfilename_;
     wfilename_ = arg.wfilename_;
     arg.wfilename_ = wideCharPointer;
@@ -213,9 +244,9 @@ public:
   OFBool isEmpty() const
   {
     OFBool result = (filename_ == NULL) || (filename_[0] == '\0');
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     if (result)
-        result = (wfilename_ == NULL) || (wfilename_[0] == L'\0');
+      result = (wfilename_ == NULL) || (wfilename_[0] == L'\0');
 #endif
     return result;
   }
@@ -225,7 +256,7 @@ public:
    */
   inline OFBool usesWideChars() const
   {
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     return (wfilename_ != NULL);
 #else
     return OFFalse;
@@ -240,7 +271,7 @@ public:
     return filename_;
   }
 
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** get stored filename consisting of wide characters
    *  @return wide char filename (might be NULL if none is stored)
    */
@@ -250,10 +281,77 @@ public:
   }
 #endif
 
+  /** replace currently stored filename by given value
+   *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
+   *  @param convert  convert given filename to wide character encoding as an
+   *    alternative representation.  Only works on Windows systems.
+   */
+  void set(const char *filename,
+           const OFBool convert = OFFalse)
+  {
+    clear();
+    if (filename != NULL)
+    {
+      filename_ = strdup(filename);
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
+#ifdef HAVE_WINDOWS_H
+      if (convert)
+      {
+        wchar_t *tmpString = NULL;
+        size_t strLen = 0;
+        /* convert UTF-8 representaion to wide character encoding */
+        OFCharacterEncoding::convertToWideCharString(filename, strlen(filename),
+          tmpString, strLen, OFCharacterEncoding::CPC_UTF8);
+        wfilename_ = _wcsdup(tmpString);
+        delete[] tmpString;
+      }
+#endif
+#endif
+    }
+  }
+
+  /** replace currently stored filename by given value
+   *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
+   *  @param convert  convert given filename to wide character encoding as an
+   *    alternative representation).  Only works on Windows systems.
+   */
+  void set(const OFString &filename,
+           const OFBool convert = OFFalse)
+  {
+    set(filename.c_str(), convert);
+  }
+
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
+  /** replace currently stored filename by given value
+   *  @param filename filename to be stored (e.g. 16-bit characters)
+   *  @param convert  convert given filename to UTF-8 encoding as an alternative
+   *    representation.  Only works on Windows systems.
+   */
+  void set(const wchar_t *filename,
+           const OFBool convert = OFFalse)
+  {
+    clear();
+    if (filename != NULL)
+    {
+      wfilename_ = _wcsdup(filename);
+#ifdef HAVE_WINDOWS_H
+      if (convert)
+      {
+        OFString tmpString;
+        /* convert wide character encoding to UTF-8 representation */
+        OFCharacterEncoding::convertFromWideCharString(filename, wcslen(filename),
+          tmpString, OFCharacterEncoding::CPC_UTF8);
+        filename_ = strdup(tmpString.c_str());
+      }
+#endif
+    }
+  }
+#endif
+
 private:
-  /// filename consisting of conventional characters (8-bit)
+  /// filename consisting of conventional characters (8-bit, e.g. UTF-8)
   char *filename_;
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /// filename consisting of wide characters (e.g. 16-bit on Windows)
   wchar_t *wfilename_;
 #endif

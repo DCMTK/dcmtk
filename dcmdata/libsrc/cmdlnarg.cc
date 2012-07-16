@@ -28,6 +28,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dctypes.h"
 
@@ -77,7 +78,7 @@ void prepareCmdLineArgs(int& argc, char* argv[],
     }
 }
 
-#else
+#else // HAVE_EMPTY_ARGC_ARGV
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -160,7 +161,21 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* no need to process the arguments */
 }
 
-#endif
+
+#ifdef HAVE_WINDOWS_H
+
+void prepareCmdLineArgs(int& argc, wchar_t** /* argv */,
+                        const char* progname)
+{
+    // value of parameters is ignored anyway
+    char** argv = NULL;
+    prepareCmdLineArgs(argc, argv, progname);
+}
+
+#endif // HAVE_WINDOWS_H
+
+
+#endif // HAVE_EMPTY_ARGC_ARGV
 
 
 /*

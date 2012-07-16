@@ -66,28 +66,21 @@ OFConsoleApplication::~OFConsoleApplication()
 }
 
 
-OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
-                                              int argCount,
-                                              char *argValue[],
-                                              const int flags,
-                                              const int startPos)
+OFBool OFConsoleApplication::checkParseStatus(const OFCommandLine::E_ParseStatus status)
 {
-    /* store reference to given cmdline object */
-    CmdLine = &cmd;
-    OFCommandLine::E_ParseStatus status = cmd.parseLine(argCount, argValue, flags, startPos);
     OFBool result = OFFalse;
     switch (status)
     {
         case OFCommandLine::PS_NoArguments:
             /* check whether to print the "usage text" or not */
-            if (cmd.getMinParamCount() > 0)
+            if ((CmdLine != NULL) && (CmdLine->getMinParamCount() > 0))
                 printUsage();
             else
                 result = OFTrue;
             break;
         case OFCommandLine::PS_ExclusiveOption:
             /* check whether to print the "usage text" or not */
-            if (cmd.findOption("--help"))
+            if ((CmdLine != NULL) && (CmdLine->findOption("--help")))
                 printUsage();
             else
                 result = OFTrue;
@@ -96,15 +89,47 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
             result = OFTrue;
             break;
         default:
+            /* an error occurred while parsing the command line */
+            if (CmdLine != NULL)
             {
                 OFString str;
-                cmd.getStatusString(status, str);
+                CmdLine->getStatusString(status, str);
                 printError(str.c_str());
             }
             break;
     }
     return result;
 }
+
+
+OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
+                                              int argCount,
+                                              char *argValue[],
+                                              const int flags,
+                                              const int startPos)
+{
+    /* store reference to given command line object */
+    CmdLine = &cmd;
+    /* parse command line and check status */
+    return checkParseStatus(cmd.parseLine(argCount, argValue, flags, startPos));
+}
+
+
+#ifdef HAVE_WINDOWS_H
+
+OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
+                                              int argCount,
+                                              wchar_t *argValue[],
+                                              const int flags,
+                                              const int startPos)
+{
+    /* store reference to given command line object */
+    CmdLine = &cmd;
+    /* parse command line and check status */
+    return checkParseStatus(cmd.parseLine(argCount, argValue, flags, startPos));
+}
+
+#endif  // HAVE_WINDOWS_H
 
 
 void OFConsoleApplication::printHeader(const OFBool hostInfo,
@@ -127,18 +152,23 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
         const char *currentLocale = setlocale(LC_CTYPE, NULL);
         if (setlocale(LC_CTYPE, "") != NULL)
         {
-          OFCharacterEncoding converter;
-          (*output) << "Character encoding: " << converter.getLocaleEncoding() << OFendl;
-          /* reset locale to the previous setting or to the default (7-bit ASCII) */
-          if (currentLocale != NULL)
-            setlocale(LC_CTYPE, currentLocale);
-          else
-            setlocale(LC_CTYPE, "C");
+            OFCharacterEncoding converter;
+            (*output) << "Character encoding: " << converter.getLocaleEncoding() << OFendl;
+            /* reset locale to the previous setting or to the default (7-bit ASCII) */
+            if (currentLocale != NULL)
+                setlocale(LC_CTYPE, currentLocale);
+            else
+                setlocale(LC_CTYPE, "C");
         }
 #endif
 #ifdef HAVE_WINDOWS_H
-        /* determine system's current code pages */
-        (*output) << "Code page: " << GetOEMCP() << " (OEM) / " << GetACP() << " (ANSI)" << OFendl;
+        if ((CmdLine != NULL) && (CmdLine->getWideCharMode()))
+        {
+            (*output) << "Character encoding: Unicode (UTF-16)" << OFendl;
+        } else {
+            /* determine system's current code pages */
+            (*output) << "Code page: " << GetOEMCP() << " (OEM) / " << GetACP() << " (ANSI)" << OFendl;
+        }
 #endif
 #ifdef DEBUG
         /* indicate that debug code is present */
