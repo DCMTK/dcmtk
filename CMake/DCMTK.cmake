@@ -232,7 +232,7 @@ ENDIF(WIN32)
 IF(WIN32)
   SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
   IF(NOT DEFINED MINGW)
-    # additional library needed for wildcard expansion; for wchar_t* support, use 'wsetargv'
+    # additional object file needed for wildcard expansion; for wchar_t* support, use 'wsetargv'
     SET(WIN32_STD_OBJECTS setargv)
   ENDIF(NOT DEFINED MINGW)
   # settings for Borland C++

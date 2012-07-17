@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.17 (riesmeier)
+
+- Fixed incorrect term im comment (replaced "library" by "object file").
+  Affects: CMake/DCMTK.cmake
+
 **** Changes from 2012.07.16 (riesmeier)
 
 - Added support for Windows-specific wide character encoding (UTF-16) to the
