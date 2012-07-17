@@ -3,13 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.17 (riesmeier)
 
+- Added further options to DCMTK's CMake configuration file for ext. projects
+  (DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS and DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS).
+  Affects: CMake/DCMTKConfig.cmake.in
+
 - Added new section with additional options (DCMTK_WIDE_CHAR_MAIN_FUNCTION).
   Affects: CMake/DCMTKConfig.cmake.in
 
 - Removed superfluous quotation marks in SET() value.
   Affects: CMake/DCMTKConfig.cmake.in
 
-- Fixed incorrect term im comment (replaced "library" by "object file").
+- Fixed incorrect term in comment (replaced "library" by "object file").
   Affects: CMake/DCMTK.cmake
 
 **** Changes from 2012.07.16 (riesmeier)
