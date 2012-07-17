@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.17 (riesmeier)
 
+- Added new section with additional options (DCMTK_WIDE_CHAR_MAIN_FUNCTION).
+  Affects: CMake/DCMTKConfig.cmake.in
+
 - Removed superfluous quotation marks in SET() value.
   Affects: CMake/DCMTKConfig.cmake.in
 
