@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.19 (onken)
+
+- Added error code for private module dcmenc.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+
 **** Changes from 2012.07.17 (riesmeier)
 
 - Added further options to DCMTK's CMake configuration file for ext. projects

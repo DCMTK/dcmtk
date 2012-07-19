@@ -59,6 +59,7 @@ const unsigned short OFM_dcmppscu = 24;
 const unsigned short OFM_dcmstscp = 25;
 const unsigned short OFM_dcmqrdbx = 26;
 const unsigned short OFM_dcmkosel = 27;
+const unsigned short OFM_dcmenc   = 28;
 
 // condition constants
 
