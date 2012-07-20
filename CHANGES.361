@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.20 (riesmeier)
+
+- Added support for Windows-specific wide character encoding (UTF-16) to the
+  fileExists() method.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2012.07.19 (onken)
 
 - Added error code for private module dcmenc.

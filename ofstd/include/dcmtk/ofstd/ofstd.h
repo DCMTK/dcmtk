@@ -186,10 +186,13 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** check whether the given file exists.
      *  This function also checks that the specified path points to file and not to
      *  a directory (or the like).
-     *  @param fileName name of the file to be checked
+     *  @param fileName name of the file to be checked. This filename may contain wide
+     *    characters if support enabled. Since there are various constructors for the
+     *    OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
+     *    directly to this parameter.
      *  @return OFTrue if file exists, OFFalse otherwise
      */
-    static OFBool fileExists(const OFString &fileName);
+    static OFBool fileExists(const OFFilename &fileName);
 
     /** check whether the given directory exists.
      *  This function also checks that the specified path points to directory and

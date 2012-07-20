@@ -132,7 +132,7 @@ BEGIN_EXTERN_C
 #include <fnmatch.h>     /* for fnmatch() */
 #endif
 #ifdef HAVE_IEEEFP_H
-#include <ieeefp.h>     /* for finite() on Solaris 2.5.1 */
+#include <ieeefp.h>      /* for finite() on Solaris 2.5.1 */
 #endif
 END_EXTERN_C
 
@@ -401,15 +401,21 @@ OFBool OFStandard::pathExists(const OFString &pathName)
 }
 
 
-OFBool OFStandard::fileExists(const OFString &fileName)
+OFBool OFStandard::fileExists(const OFFilename &fileName)
 {
     OFBool result = OFFalse;
-    /* check for valid file name */
-    if (!fileName.empty())
+    /* check for valid file name (avoid NULL or empty string) */
+    if (!fileName.isEmpty())
     {
 #ifdef HAVE_WINDOWS_H
         /* get file attributes */
-        DWORD fileAttr = GetFileAttributes(fileName.c_str());
+        DWORD fileAttr;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        if (fileName.usesWideChars())
+            fileAttr = GetFileAttributesW(fileName.getWideCharPointer());
+        else
+#endif
+            fileAttr = GetFileAttributes(fileName.getCharPointer());
         if (fileAttr != 0xffffffff)
         {
             /* check file type (not a directory?) */
@@ -417,7 +423,7 @@ OFBool OFStandard::fileExists(const OFString &fileName)
         }
 #else
         /* check whether path exists (but does not point to a directory) */
-        result = pathExists(fileName) && !dirExists(fileName);
+        result = pathExists(fileName.getCharPointer()) && !dirExists(fileName.getCharPointer());
 #endif /* HAVE_WINDOWS_H */
     }
     return result;
@@ -723,18 +729,18 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 
 OFBool OFStandard::deleteFile(const OFFilename &filename)
 {
-  int err = -1;
-  /* avoid NULL or empty string passed to unlink() */
-  if (!filename.isEmpty())
-  {
+    int err = -1;
+    /* avoid NULL or empty string passed to unlink() */
+    if (!filename.isEmpty())
+    {
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
-    if (filename.usesWideChars())
-      err = _wunlink(filename.getWideCharPointer());
-    else
+        if (filename.usesWideChars())
+            err = _wunlink(filename.getWideCharPointer());
+        else
 #endif
-      err = unlink(filename.getCharPointer());
-  }
-  return (err == 0);
+            err = unlink(filename.getCharPointer());
+    }
+    return (err == 0);
 }
 
 
