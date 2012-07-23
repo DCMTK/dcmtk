@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.23 (riesmeier)
+
+- Moved implementation of class OFFilename to a separate source file.
+  Added:   ofstd/libsrc/offile.cc
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/Makefile.dep
+
 **** Changes from 2012.07.23 (schlachter)
 
 - Finished conversion to new macros for common tasks on libraries/executables.
