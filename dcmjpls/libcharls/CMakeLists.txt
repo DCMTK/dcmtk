@@ -3,11 +3,7 @@ INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/libcharls ${ofstd_SOURCE_DIR}/include)
 
 # create library from source files
 ADD_LIBRARY(charls header intrface jpegls)
-
-# set proper version information for shared library
-IF(BUILD_SHARED_LIBS)
-  SET_TARGET_PROPERTIES(charls PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
-ENDIF(BUILD_SHARED_LIBS)
+DCMTK_SETUP_LIBRARY(charls)
 
 # declare installation files
 INSTALL(TARGETS charls

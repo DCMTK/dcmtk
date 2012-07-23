@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.23 (schlachter)
+
+- Finished conversion to new macros for common tasks on libraries/executables.
+  Affects: dcmdata/libi2d/CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+
 **** Changes from 2012.07.20 (riesmeier)
 
 - Added support for Windows-specific wide character encoding (UTF-16) to the
