@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.07.23 (riesmeier)
 
+- Added output stream operator for class OFFilename.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/libsrc/offile.cc
+
 - Moved implementation of class OFFilename to a separate source file.
   Added:   ofstd/libsrc/offile.cc
   Affects: ofstd/include/dcmtk/ofstd/offile.h

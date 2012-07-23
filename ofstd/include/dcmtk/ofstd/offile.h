@@ -238,6 +238,15 @@ inline void swap(OFFilename &lhs, OFFilename &rhs)
   lhs.swap(rhs);
 }
 
+/** output filename to the given stream.
+ *  Only the string of conventional characters (e.g. ASCII or UTF-8) is printed since
+ *  we do not expect the output stream (console or logger) to support wide characters.
+ *  @param stream output stream
+ *  @param filename OFFilename object to print
+ *  @return reference to the output stream
+ */
+DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFFilename &filename);
+
 
 /** this class provides a simple C++ encapsulation layer for stdio FILE pointers.
  *  All stdio functions on files are directly mapped into member functions.

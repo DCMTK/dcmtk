@@ -196,3 +196,10 @@ void OFFilename::set(const wchar_t *filename,
     }
 }
 #endif
+
+
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFFilename &filename)
+{
+  stream << OFSTRING_GUARD(filename.getCharPointer());
+  return stream;
+}
