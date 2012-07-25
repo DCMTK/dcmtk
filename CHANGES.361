@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.25 (riesmeier)
+
+- Fixed confusing log message when processing a softcopy presentation state.
+  Thanks to forum user "HackerNeo" for the original report.
+  Affects: dcmimgle/libsrc/dimomod.cc
+
 **** Changes from 2012.07.23 (riesmeier)
 
 - Added output stream operator for class OFFilename.

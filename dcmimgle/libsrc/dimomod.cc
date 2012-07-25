@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -50,8 +50,11 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
 {
     if (Init(docu, pixel))
     {
-        if (!(docu->getFlags() & CIF_UsePresentationState) &&           // ignore modality LUT and rescaling
-            !(docu->getFlags() & CIF_IgnoreModalityTransformation))
+        if (docu->getFlags() & CIF_IgnoreModalityTransformation)        // ignore modality LUT and rescaling
+        {
+            DCMIMGLE_INFO("configuration flag set ... ignoring possible modality transform");
+        }
+        else if (!(docu->getFlags() & CIF_UsePresentationState))        // ignore modality LUT and rescaling
         {
             const char *sopClassUID = NULL;                             // check for XA and XRF image (ignore MLUT)
             if ((docu->getValue(DCM_SOPClassUID, sopClassUID) == 0) || (sopClassUID == NULL) ||
@@ -96,8 +99,6 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             } else {
                 DCMIMGLE_INFO("processing XA or XRF image ... ignoring possible modality transform");
             }
-        } else {
-            DCMIMGLE_INFO("configuration flag set ... ignoring possible modality transform");
         }
         determineRepresentation(docu);
     }
