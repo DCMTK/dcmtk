@@ -55,6 +55,7 @@ END_EXTERN_C
 // Windows-specific code page identifiers
 const unsigned int OFCharacterEncoding::CPC_ANSI   = CP_ACP;
 const unsigned int OFCharacterEncoding::CPC_OEM    = CP_OEMCP;
+const unsigned int OFCharacterEncoding::CPC_ASCII  = 20127;
 const unsigned int OFCharacterEncoding::CPC_Latin1 = 28591;
 const unsigned int OFCharacterEncoding::CPC_UTF8   = CP_UTF8;
 #endif

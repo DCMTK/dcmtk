@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.26 (riesmeier)
+
+- Added definition for US-ASCII (7-bit) Windows code page.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+
 **** Changes from 2012.07.25 (riesmeier)
 
 - Fixed confusing log message when processing a softcopy presentation state.

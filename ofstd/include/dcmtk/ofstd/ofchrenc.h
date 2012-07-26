@@ -167,6 +167,8 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
     static const unsigned int CPC_ANSI;
     /// current system OEM code page.  See Windows function GetOEMCP().
     static const unsigned int CPC_OEM;
+    /// code page for US-ASCII (7-bit)
+    static const unsigned int CPC_ASCII;
     /// code page for ISO 8859-1 (Latin-1)
     static const unsigned int CPC_Latin1;
     /// code page for UTF-8
