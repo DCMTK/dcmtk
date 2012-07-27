@@ -1,6 +1,10 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.07.27 (schlamelcher)
+- Fixed VC6 protected scope vs nested classes issue in dcmsr.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+
 **** Changes from 2012.07.26 (riesmeier)
 
 - Added definition for US-ASCII (7-bit) Windows code page.
