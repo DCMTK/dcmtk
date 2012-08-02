@@ -97,6 +97,18 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                 }
                 checkRescaling(pixel);
             } else {
+                /* David Clunie on comp.protocols.dicom (13.12.2000):
+                   Modality LUTs in XA and XRF objects are totally screwy and
+                   do not follow the normal rules. [...] A Modality LUT may be
+                   included with the image to allow it to be scaled back to its
+                   proportional value to X-Ray beamintensity. In otherwords,
+                   for the objects that use this module (XA and XRF), the
+                   Modality LUT is used BACKWARDS. It is used to convert
+                   stored pixels to X-Ray beamintensityspace, but it is NOT
+                   APPLIED to stored pixels for the purpose of display (or
+                   more specifically prior to application of the VOI LUT Module
+                   attributes to the storedpixeldata).
+                */
                 DCMIMGLE_INFO("processing XA or XRF image ... ignoring possible modality transform");
             }
         }

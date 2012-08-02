@@ -1,7 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.02 (onken)
+
+- Explained why Modality LUT is not used for rendering of XA and XRF images.
+  Affects: dcmimgle/libsrc/dimomod.cc
+
 **** Changes from 2012.07.27 (schlamelcher)
+
 - Fixed VC6 protected scope vs nested classes issue in dcmsr.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
 
