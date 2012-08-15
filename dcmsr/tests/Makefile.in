@@ -25,8 +25,9 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
 	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
-objs = mkreport.o
-progs = mkreport
+tstobjs = tests.o tsrtree.o
+objs = mkreport.o $(tstobjs)
+progs = mkreport tests
 
 
 all: $(progs)
@@ -34,8 +35,12 @@ all: $(progs)
 mkreport: mkreport.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ mkreport.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+tests: $(tstobjs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(tstobjs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
-check:
+
+check: tests
+	./tests
 
 install: all
 

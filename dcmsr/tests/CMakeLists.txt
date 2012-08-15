@@ -3,6 +3,12 @@ LINK_DIRECTORIES(${dcmsr_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${d
 
 # declare executables
 ADD_EXECUTABLE(mkreport mkreport)
+ADD_EXECUTABLE(dcmsr_tests tests tsrtree)
 
 # make sure executables are linked to the corresponding libraries
-TARGET_LINK_LIBRARIES(mkreport dcmsr dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${LIBXML_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+FOREACH(PROGRAM mkreport dcmsr_tests)
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmsr dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${LIBXML_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+ENDFOREACH(PROGRAM)
+
+# This macro parses tests.cc and registers all tests
+DCMTK_ADD_TESTS(dcmsr)
