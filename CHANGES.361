@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.15 (riesmeier)
+
+- Fixed issue with addNode(), especially when using the AM_beforeCurrent mode.
+  Thanks to forum user "zaq" for the report and suggested fix.
+  Affects: dcmsr/libsrc/dsrtree.cc
+
 **** Changes from 2012.08.02 (onken)
 
 - Explained why Modality LUT is not used for rendering of XA and XRF images.

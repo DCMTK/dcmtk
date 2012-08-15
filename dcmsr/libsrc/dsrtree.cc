@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,17 +98,26 @@ size_t DSRTree::addNode(DSRTreeNode *node,
     {
         if (NodeCursor != NULL)
         {
+            /* update references based on 'addMode' */
             switch (addMode)
             {
                 case AM_afterCurrent:
                     node->Prev = NodeCursor;
                     node->Next = NodeCursor->Next;
+                    /* connect to current node */
+                    if (NodeCursor->Next != NULL)
+                        (NodeCursor->Next)->Prev = node;
                     NodeCursor->Next = node;
                     ++Position;
                     break;
                 case AM_beforeCurrent:
                     node->Prev = NodeCursor->Prev;
                     node->Next = NodeCursor;
+                    /* connect to current node */
+                    if ((NodeCursor->Prev != NULL) && (Position > 1))
+                        (NodeCursor->Prev)->Next = node;
+                    else if (!NodeCursorStack.empty() && (Position == 1))
+                        NodeCursorStack.top()->Down = node;
                     NodeCursor->Prev = node;
                     break;
                 case AM_belowCurrent:
