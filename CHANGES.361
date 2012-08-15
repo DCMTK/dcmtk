@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.15 (onken)
+
+- Fixed issue reading meta header due to wrong use of read transfer syntax.
+  Thanks to forum user "nmoraes" for the bug report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2012.08.15 (riesmeier)
 
 - Added initial regression tests for class DSRTree and DSRTreeNodeCursor.

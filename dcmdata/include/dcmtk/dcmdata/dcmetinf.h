@@ -141,7 +141,10 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
 
     /** read object from a stream.
      *  @param inStream DICOM input stream
-     *  @param xfer transfer syntax to use when parsing
+     *  @param xfer transfer syntax to use when parsing. EXS_Unknown will
+     *              lead to reading the preamble (if any) and parsing
+     *              metaheader using detected transfer syntax, usually
+     *              Explicit VR Little Endian.
      *  @param glenc handling of group length parameters
      *  @param maxReadLength attribute values larger than this value are skipped
      *    while parsing and read later upon first access if the stream type supports
