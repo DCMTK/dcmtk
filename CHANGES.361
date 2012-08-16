@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.16 (riesmeier)
+
+- Added clarifying note that DICONDE tags are now official part of DICOM.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/data/diconde.dic
+
 **** Changes from 2012.08.15 (onken)
 
 - Fixed issue reading meta header due to wrong use of read transfer syntax.
