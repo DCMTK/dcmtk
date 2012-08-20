@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,7 +63,7 @@ static void testElementLengthForElem(DcmElement& elem, const char *type,
 
 static void testElementLengthForVR(DcmEVR vr, offile_off_t len)
 {
-    const DcmTag tag(DCM_PatientName, DcmVR(vr));
+    const DcmTag tag(DCM_PatientName, vr);
 
     // Test all the calcElementLength and write implementations
     DcmUnlimitedText ut(tag);
@@ -93,14 +93,16 @@ OFTEST(dcmdata_elementLength_pixelItem)
 {
     // EVR_pixelItem only makes sense for class DcmPixelItem.
     // In fact, it enforces that VR in the constructor.
-    DcmPixelItem pi(DcmTag(DCM_PatientName, DcmVR(EVR_pixelItem)));
+    const DcmTag tag(DCM_PatientName, EVR_pixelItem);
+    DcmPixelItem pi(tag);
     testElementLengthForElem(pi, "PixelItem", 8);
 }
 
 OFTEST(dcmdata_elementLength_pixelSequence)
 {
     // DcmPixelSequence forces EVR_OB, no point in trying other VRs.
-    DcmPixelSequence ps(DcmTag(DCM_PatientName, DcmVR(EVR_OB)));
+    const DcmTag tag(DCM_PatientName, EVR_OB);
+    DcmPixelSequence ps(tag);
     testElementLengthForElem(ps, "PixelSeq", 20);
 }
 
