@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.22 (riesmeier)
+
+- Added missing libiconv include directory (if option enabled).
+  Thanks to Richard Flay <richardf@acres.com.au> for the report.
+  Affects: ofstd/CMakeLists.txt
+
 **** Changes from 2012.08.20 (riesmeier)
 
 - Fixed compilation issue with gcc 3.3 (initialization of non-const reference).
