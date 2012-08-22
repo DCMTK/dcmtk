@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.08.22 (riesmeier)
 
+- Made sure that SET_TARGET_PROPERTIES() is not called for MinGW/MSYS systems.
+  Affects: CMake/dcmtkMacros.cmake
+
 - Added missing libiconv include directory (if option enabled).
   Thanks to Richard Flay <richardf@acres.com.au> for the report.
   Affects: ofstd/CMakeLists.txt
