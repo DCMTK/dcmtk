@@ -27,7 +27,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofchrenc.h"
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
@@ -39,7 +39,7 @@
 
 #define COMMAND_FILE_PREFIX '@'
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 #define WIDE_COMMAND_FILE_PREFIX L'@'
 #endif
 
@@ -1155,7 +1155,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
 }
 
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
 // Windows-specific version with wide character strings (UTF-16)
 OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argValue,
@@ -1250,7 +1250,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
     return result;
 }
 
-#endif  // HAVE_WINDOWS_H
+#endif  // HAVE_WINDOWS_H ...
 
 
 OFCommandLine::E_ParseStatus OFCommandLine::parseArgumentList(OFList<OFString> &argList,
@@ -1339,7 +1339,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
 }
 
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
 // Windows-specific version with wide character strings (UTF-16)
 OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
@@ -1383,7 +1383,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
     return parseArgumentList(argList, flags);
 }
 
-#endif  // HAVE_WINDOWS_H
+#endif  // HAVE_WINDOWS_H ...
 
 
 void OFCommandLine::getSyntaxString(OFString &syntaxStr) const

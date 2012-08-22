@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2012.08.22 (riesmeier)
 
+- Temporarily disabled support for Windows-specific wide character encoding on
+  MinGW/MSYS systems in order to compile on such environments. However, this
+  only applies to the OFCommandLine and OFConsoleApplication classes.
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/ofconapp.cc
+
 - Made sure that SET_TARGET_PROPERTIES() is not called for MinGW/MSYS systems.
   Affects: CMake/dcmtkMacros.cmake
 

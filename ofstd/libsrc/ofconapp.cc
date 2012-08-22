@@ -108,7 +108,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 }
 
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
 OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
                                               int argCount,
@@ -122,7 +122,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
     return checkParseStatus(cmd.parseLine(argCount, argValue, flags, startPos));
 }
 
-#endif  // HAVE_WINDOWS_H
+#endif  // HAVE_WINDOWS_H ...
 
 
 void OFConsoleApplication::printHeader(const OFBool hostInfo,

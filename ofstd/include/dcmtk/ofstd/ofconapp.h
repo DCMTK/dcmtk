@@ -78,7 +78,7 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
                             const int flags = 0,
                             const int startPos = 1);
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
     /** parse command line.
      *  This is a Windows-specific version supporting the wide character encoding (UTF-16).
@@ -101,7 +101,7 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
                             const int flags = 0,
                             const int startPos = 1);
 
-#endif  // HAVE_WINDOWS_H
+#endif  // HAVE_WINDOWS_H ...
 
     /** print header of console application (consisting of identifier, name and description)
      *

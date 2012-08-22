@@ -38,7 +38,7 @@
  *  macro definition  *
  *--------------------*/
 
-#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(HAVE_WINDOWS_H)
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 // Windows-specific version supporting wide character encoding (UTF-16)
 # define DCMTK_MAIN_FUNCTION int wmain(int argc, wchar_t *argv[])
 #else
@@ -838,7 +838,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
                             const int flags = 0,
                             const int startPos = 1);
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
     /** parses specified command line arguments (argc, argv).  Sets 'WideCharMode' to OFTrue.
      *  This is a Windows-specific version supporting the wide character encoding (UTF-16).  Internally,
@@ -861,7 +861,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
                             const int flags = 0,
                             const int startPos = 1);
 
-#endif  // HAVE_WINDOWS_H
+#endif  // HAVE_WINDOWS_H ...
 
 
  // --- get usage/status strings
@@ -964,7 +964,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     E_ParseStatus parseCommandFile(const char *argValue,
                                    OFList<OFString> &argList);
 
-#ifdef HAVE_WINDOWS_H
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
     /** check whether 'argValue' points to command file and parse content if so.
      *  This is a Windows-specific version supporting wide char encoding (UTF-16).
@@ -973,7 +973,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
                                    const OFString &strValue,
                                    OFList<OFString> &argList);
 
-#endif  // HAVE_WINDOWS_H
+#endif  // HAVE_WINDOWS_H ...
 
     /** packs the two 16 bit values into one 32 bit value
      */
