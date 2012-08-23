@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.23 (schlachter)
+
+- Add BUILD_FOR_SHARED_LIBS flag to the CMake build system. With this flag the
+  built static libraries can be linked into a single shared library. The DCMTK
+  symbols get exported from this library and can be used outside of it.
+  Affects: CMake/DCMTK.cmake
+           CMake/dcmtkMacros.cmake
+           CMake/osconfig.h.in
+           ofstd/include/dcmtk/ofstd/ofexport.h
+
 **** Changes from 2012.08.22 (riesmeier)
 
 - Temporarily disabled support for Windows-specific wide character encoding on

@@ -15,6 +15,9 @@
 /* Define when building a shared library */
 #cmakedefine DCMTK_SHARED @DCMTK_SHARED@
 
+/* Define when building static libraries that later be linked into a single shared library. */
+#cmakedefine DCMTK_STATIC_FOR_SHARED @DCMTK_STATIC_FOR_SHARED@
+
 /* Define when the compiler supports hidden visibility */
 #cmakedefine HAVE_HIDDEN_VISIBILITY @HAVE_HIDDEN_VISIBILITY@
 

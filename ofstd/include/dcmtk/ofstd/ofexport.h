@@ -29,7 +29,10 @@
 #ifdef _WIN32
 /* Defines needed for building DLLs on windows */
 #define DCMTK_DECL_EXPORT __declspec(dllexport)
+/* Only use dllimport when DCMTK gets linked into multiple shared libraries. */
+#ifndef DCMTK_STATIC_FOR_SHARED
 #define DCMTK_DECL_IMPORT __declspec(dllimport)
+#endif
 #elif defined(HAVE_HIDDEN_VISIBILITY)
 /* GCC hides everything when given -fvisibility=hidden. The symbols which
  * should be visible have to get a default visibility again.
