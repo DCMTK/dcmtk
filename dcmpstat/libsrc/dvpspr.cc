@@ -548,7 +548,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
       OFString temp_str;
       T_ASC_RejectParameters rej;
       ASC_getRejectParameters(params, &rej);
-      DCMPSTAT_INFO("Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
+      DCMPSTAT_WARN("Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
     } else {
       if (cond.bad()) 
       {
@@ -567,7 +567,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
                         
   if ((cond.good()) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
   {                     
-    DCMPSTAT_INFO("Peer does not support Basic Grayscale Print Management, aborting association.");
+    DCMPSTAT_WARN("Peer does not support Basic Grayscale Print Management, aborting association.");
     abortAssociation();
     cond = DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }

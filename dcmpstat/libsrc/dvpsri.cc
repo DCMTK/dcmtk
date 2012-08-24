@@ -71,23 +71,23 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
   if (referencedSOPClassUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty");
+    DCMPSTAT_WARN("presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty");
   }
   else if (referencedSOPClassUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1");
+    DCMPSTAT_WARN("presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1");
   }
 
   if (referencedSOPInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty");
+    DCMPSTAT_WARN("presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty");
   }
   else if (referencedSOPInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1");
+    DCMPSTAT_WARN("presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1");
   }
 
   return result;
@@ -116,7 +116,7 @@ OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
     if (currentUID != sopclassuid)
     {
       result = OFFalse;
-      DCMPSTAT_INFO("images of different SOP classes referenced in presentation state");
+      DCMPSTAT_WARN("images of different SOP classes referenced in presentation state");
     }
   }
   return result;

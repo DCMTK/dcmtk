@@ -549,12 +549,12 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
 
     if (EC_Normal != rescaleSlope.getFloat64(slope, 0))
     {
-      DCMPSTAT_INFO("unable to evaluate Modality Rescale Slope, ignoring.");
+      DCMPSTAT_WARN("unable to evaluate Modality Rescale Slope, ignoring.");
       slope = 1.0;
     }
     if (EC_Normal != rescaleIntercept.getFloat64(intercept, 0))
     {
-      DCMPSTAT_INFO("unable to evaluate Modality Rescale Slope, ignoring.");
+      DCMPSTAT_WARN("unable to evaluate Modality Rescale Slope, ignoring.");
       intercept = 0.0;
     }
     image = new DicomImage(dataset, dataset->getOriginalXfer(),
@@ -1529,7 +1529,7 @@ void DVPresentationState::renderPixelData(OFBool display)
          previewImage->setNoVoiTransformation();
      }
      if (!result)
-       DCMPSTAT_INFO("unable to set VOI transformation, ignoring.");
+       DCMPSTAT_WARN("unable to set VOI transformation, ignoring.");
   } /* VOI transform */
 
   if (! currentImagePLUTValid)
@@ -1574,7 +1574,7 @@ void DVPresentationState::renderPixelData(OFBool display)
       result = currentImage->flipImage();
       if (previewImage != NULL) previewImage->flipImage();
       if (!result)
-        DCMPSTAT_INFO("unable to flip image horizontally, ignoring.");
+        DCMPSTAT_WARN("unable to flip image horizontally, ignoring.");
       currentImageFlip = OFFalse;
     }
     signed int srot=0;
@@ -1591,14 +1591,14 @@ void DVPresentationState::renderPixelData(OFBool display)
       if (previewImage != NULL)
         previewImage->rotateImage(srot);
       if (!result)
-        DCMPSTAT_INFO("unable to rotate image by " << srot << " degrees, ignoring.");
+        DCMPSTAT_WARN("unable to rotate image by " << srot << " degrees, ignoring.");
     }
     currentImageRotation = DVPSR_0_deg;
 
     // deactivate all overlays first
     result = currentImage->removeAllOverlays();
     if (!result)
-      DCMPSTAT_INFO("unable to disable external overlays, ignoring.");
+      DCMPSTAT_WARN("unable to disable external overlays, ignoring.");
 
     size_t numOverlays = overlayList.size();
     DVPSOverlay *overlay = NULL;
@@ -1614,7 +1614,7 @@ void DVPresentationState::renderPixelData(OFBool display)
           if (activateOverlayHelper(*overlay, *currentImage).bad())
           {
             if (!result)
-              DCMPSTAT_INFO("unable to set external overlay group 0x"
+              DCMPSTAT_WARN("unable to set external overlay group 0x"
                 << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring.");
           }
         }
@@ -1624,7 +1624,7 @@ void DVPresentationState::renderPixelData(OFBool display)
           if (activateOverlayHelper(*overlay, *currentImage, OFTrue, bitmapShutterPValue).bad())
           {
             if (!result)
-              DCMPSTAT_INFO("unable to activate bitmap shutter 0x"
+              DCMPSTAT_WARN("unable to activate bitmap shutter 0x"
                 << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring.");
           }
         }
@@ -1751,7 +1751,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     result = currentImage->rotateImage(rot);
     if (previewImage != NULL) previewImage->rotateImage(rot);
     if (!result)
-      DCMPSTAT_INFO("unable to rotate image by " << rot << " degrees, ignoring.");
+      DCMPSTAT_WARN("unable to rotate image by " << rot << " degrees, ignoring.");
   }
 
   if (flp)
@@ -1759,7 +1759,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     result = currentImage->flipImage();
     if (previewImage != NULL) previewImage->flipImage();
     if (!result)
-      DCMPSTAT_INFO("unable to flip image horizontally, ignoring.");
+      DCMPSTAT_WARN("unable to flip image horizontally, ignoring.");
   }
 
   currentImageRotation = pstateRotation;
@@ -1921,7 +1921,7 @@ DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
   DVPSDisplayedArea * area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
   if (area==NULL)
   {
-      DCMPSTAT_INFO("no displayed area selection item for current image found, creating default.");
+      DCMPSTAT_WARN("no displayed area selection item for current image found, creating default.");
       if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
       {
         area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);

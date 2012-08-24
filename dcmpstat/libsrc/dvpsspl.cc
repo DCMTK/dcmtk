@@ -107,12 +107,12 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
         list_.push_back(newSP);
       } else delete newSP;
     } else {
-      DCMPSTAT_INFO("cannot update film box, out of memory.");
+      DCMPSTAT_WARN("cannot update film box, out of memory.");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     }
   } else {
     // film box does not exist or wrong instance UID
-    DCMPSTAT_INFO("cannot update film box, object not found.");
+    DCMPSTAT_WARN("cannot update film box, object not found.");
     rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -152,7 +152,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
         {
           delete rspDataset;
           rspDataset = NULL;
-          DCMPSTAT_INFO("cannot update basic grayscale image box, image position collision.");
+          DCMPSTAT_WARN("cannot update basic grayscale image box, image position collision.");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         } else {
           if (EC_Normal == cfg.saveFileFormatToDB(imageFile))
@@ -167,13 +167,13 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
       } else {
         delete rspDataset;
         rspDataset = NULL;
-        DCMPSTAT_INFO("cannot update basic grayscale image box, out of memory.");
+        DCMPSTAT_WARN("cannot update basic grayscale image box, out of memory.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
     }
   } else {
     // image box does not exist or wrong instance UID
-    DCMPSTAT_INFO("cannot update basic grayscale image box, object not found.");
+    DCMPSTAT_WARN("cannot update basic grayscale image box, object not found.");
     rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -217,13 +217,13 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
           rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
         }
       } else {
-        DCMPSTAT_INFO("cannot print basic film box, out of memory.");
+        DCMPSTAT_WARN("cannot print basic film box, out of memory.");
         rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
     }
   } else {
     // film box does not exist or wrong instance UID
-    DCMPSTAT_INFO("cannot print film box, object not found.");
+    DCMPSTAT_WARN("cannot print film box, object not found.");
     rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -261,7 +261,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
              rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
            }
          } else {
-           DCMPSTAT_INFO("cannot print basic film session, out of memory.");
+           DCMPSTAT_WARN("cannot print basic film session, out of memory.");
            rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
          }
       }
@@ -269,7 +269,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
     }
   } else {
     // no film boxes to print
-    DCMPSTAT_INFO("cannot print film session, no film box.");
+    DCMPSTAT_WARN("cannot print film session, no film box.");
     rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFS_Fail_NoFilmBox;
   }
 }
@@ -292,7 +292,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxDelete(T_DIMSE_Message& rq, T_DI
     list_.erase(first);
   } else {
     // film box does not exist or wrong instance UID
-    DCMPSTAT_INFO("cannot delete film box with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
+    DCMPSTAT_WARN("cannot delete film box with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }

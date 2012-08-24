@@ -67,64 +67,64 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
   if (graphicAnnotationUnits.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty");
   }
   else if (graphicAnnotationUnits.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1");
   }
 
   if (graphicDimensions.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicDimensions VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicDimensions VM != 1");
   } else {
     Uint16 dimension=0;
     if ((EC_Normal != graphicDimensions.getUint16(dimension,0))||(dimension != 2))
     {
       result=EC_IllegalCall;
-      DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicDimensions != 2");
+      DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicDimensions != 2");
     }
   }
   
   if (numberOfGraphicPoints.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty");
   }
   else if (numberOfGraphicPoints.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1");
   }
   
   if (graphicData.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicData absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicData absent or empty");
   }
   else if (graphicData.getVM() < 2)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicData VM < 2");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicData VM < 2");
   }
   
   if (graphicType.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicType absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicType absent or empty");
   }
   else if (graphicType.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicType VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicType VM != 1");
   }
   
   if ((graphicFilled.getLength() > 0)&&(graphicFilled.getVM() != 1))
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicFilled present but VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicFilled present but VM != 1");
   }
   
   return result;

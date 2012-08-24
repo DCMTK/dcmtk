@@ -101,7 +101,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
          }
       } else {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("VOI LUT SQ does not have exactly one item in presentation state");
+        DCMPSTAT_WARN("VOI LUT SQ does not have exactly one item in presentation state");
       }
     }
   }
@@ -119,17 +119,17 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
       if (windowWidth.getLength() == 0)
       {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("windowCenter present but windowWidth absent or empty in presentation state");
+        DCMPSTAT_WARN("windowCenter present but windowWidth absent or empty in presentation state");
       }
       else if (windowWidth.getVM() != 1)
       {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("windowCenter present but windowWidth VM != 1 in presentation state");
+        DCMPSTAT_WARN("windowCenter present but windowWidth VM != 1 in presentation state");
       }
       if (windowCenter.getVM() != 1)
       {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("windowCenter present but VM != 1 in presentation state");
+        DCMPSTAT_WARN("windowCenter present but VM != 1 in presentation state");
       }
     } else useLUT = OFTrue;
     
@@ -139,24 +139,24 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
       if (! useLUT)
       {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("both VOI window and LUT present in presentation state");
+        DCMPSTAT_WARN("both VOI window and LUT present in presentation state");
       }
 
       if (voiLUTDescriptor.getLength() == 0)
       {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("voiLUTData present but voiLUTDescriptor absent or empty in presentation state");
+        DCMPSTAT_WARN("voiLUTData present but voiLUTDescriptor absent or empty in presentation state");
       }
       else if (voiLUTDescriptor.getVM() != 3)
       {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("voiLUTData present but voiLUTDescriptor VM != 3 in presentation state");
+        DCMPSTAT_WARN("voiLUTData present but voiLUTDescriptor VM != 3 in presentation state");
       }
     } 
     else if (useLUT)
     {
         result=EC_IllegalCall;
-        DCMPSTAT_INFO("neither VOI window nor LUT present in presentation state");
+        DCMPSTAT_WARN("neither VOI window nor LUT present in presentation state");
     }
   }
   return result;
@@ -287,7 +287,7 @@ OFCondition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
 {
   if (wWidth < 1.0) 
   {
-    DCMPSTAT_INFO("Window Width < 1 not allowed.");
+    DCMPSTAT_WARN("Window Width < 1 not allowed.");
     return EC_IllegalCall;
   }
   DcmDecimalString wc(DCM_WindowCenter);

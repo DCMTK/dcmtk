@@ -67,41 +67,41 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
   if (graphicLayer.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayer absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayer absent or empty");
   }
   else if (graphicLayer.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayer VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayer VM != 1");
   }
  
   if (graphicLayerOrder.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty");
   }
   else if (graphicLayerOrder.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1");
   }
 
   if (graphicLayerRecommendedDisplayGrayscaleValue.getVM()>1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1");
   }
 
   if ((graphicLayerRecommendedDisplayRGBValue.getVM()>0)&&(graphicLayerRecommendedDisplayRGBValue.getVM() != 3))
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3");
   }
 
   if (graphicLayerDescription.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1");
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1");
   }
 
   return result;

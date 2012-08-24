@@ -126,7 +126,7 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
 {
   if (size() == 0)
   {
-    DCMPSTAT_INFO("referenced image SQ contains empty item in presentation state");
+    DCMPSTAT_WARN("referenced image SQ contains empty item in presentation state");
     return OFFalse;
   }
   OFBool result = OFTrue;

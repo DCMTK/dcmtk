@@ -66,27 +66,27 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
   if (seriesInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty");
+    DCMPSTAT_WARN("presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty");
   }
   else if (seriesInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1");
+    DCMPSTAT_WARN("presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1");
   }
   else if (retrieveAETitle.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with retrieveAETitle VM > 1");
+    DCMPSTAT_WARN("presentation state contains a referenced series SQ item with retrieveAETitle VM > 1");
   }
   else if (storageMediaFileSetID.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1");
+    DCMPSTAT_WARN("presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1");
   }
   else if (storageMediaFileSetUID.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1");
+    DCMPSTAT_WARN("presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1");
   }
 
   return result;

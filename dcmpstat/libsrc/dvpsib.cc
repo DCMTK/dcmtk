@@ -171,7 +171,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
          READ_FROM_DATASET2(DcmLongString, patientID)
       } else {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("found ReferencedImageSequence in Stored Print Image Box with number of items != 1");
+        DCMPSTAT_WARN("found ReferencedImageSequence in Stored Print Image Box with number of items != 1");
       }
     }
   }
@@ -195,12 +195,12 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
            if (NULL == presentationLUTList.findPresentationLUT(aString.c_str()))
            {
              result=EC_IllegalCall;
-             DCMPSTAT_INFO("ImageBoxContentSequence presentation LUT reference cannot be resolved");
+             DCMPSTAT_WARN("ImageBoxContentSequence presentation LUT reference cannot be resolved");
            }
          }
       } else {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("found ImageBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1");
+        DCMPSTAT_WARN("found ImageBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1");
       }
     }
   }
@@ -213,7 +213,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
     if (EC_Normal == dset.search(DCM_RETIRED_ReferencedImageOverlayBoxSequence, stack, ESM_fromHere, OFFalse))
     {
       result=EC_IllegalCall;
-      DCMPSTAT_INFO("Stored Print: retired ReferencedImageOverlayBoxSequence not supported");
+      DCMPSTAT_WARN("Stored Print: retired ReferencedImageOverlayBoxSequence not supported");
 
     }
   }
@@ -225,42 +225,42 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
     if ((sOPInstanceUID.getLength() == 0)||(sOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("SOPInstanceUID missing or incorrect in Stored Print Image Box");
+        DCMPSTAT_WARN("SOPInstanceUID missing or incorrect in Stored Print Image Box");
     }
     if ((imageBoxPosition.getLength() == 0)||(imageBoxPosition.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("ImageBoxPosition missing or incorrect in Stored Print Image Box");
+        DCMPSTAT_WARN("ImageBoxPosition missing or incorrect in Stored Print Image Box");
     }
     if (retrieveAETitle.getLength() == 0)
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("RetrieveAETitle missing in Stored Print Image Box");
+        DCMPSTAT_WARN("RetrieveAETitle missing in Stored Print Image Box");
     }
     if ((referencedSOPClassUID.getLength() == 0)||(referencedSOPClassUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("ReferencedSOPClassUID missing or incorrect in Stored Print Image Box");
+        DCMPSTAT_WARN("ReferencedSOPClassUID missing or incorrect in Stored Print Image Box");
     }
     if ((referencedSOPInstanceUID.getLength() == 0)||(referencedSOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("ReferencedSOPInstanceUID missing or incorrect in Stored Print Image Box");
+        DCMPSTAT_WARN("ReferencedSOPInstanceUID missing or incorrect in Stored Print Image Box");
     }
     if ((studyInstanceUID.getLength() == 0)||(studyInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("StudyInstanceUID missing or incorrect in Stored Print Image Box");
+        DCMPSTAT_WARN("StudyInstanceUID missing or incorrect in Stored Print Image Box");
     }
     if ((seriesInstanceUID.getLength() == 0)||(seriesInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("SeriesInstanceUID missing or incorrect in Stored Print Image Box");
+        DCMPSTAT_WARN("SeriesInstanceUID missing or incorrect in Stored Print Image Box");
     }
     if (referencedFrameNumber.getVM() > 1)
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("ReferencedFrameNumber VM>1 in Stored Print Image Box");
+        DCMPSTAT_WARN("ReferencedFrameNumber VM>1 in Stored Print Image Box");
     }
   }
 
@@ -278,37 +278,37 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
   if (sOPInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: SOPInstanceUID empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: SOPInstanceUID empty");
   }
   if (imageBoxPosition.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: ImageBoxPosition empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: ImageBoxPosition empty");
   }
   if (retrieveAETitle.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: RetrieveAETitle empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: RetrieveAETitle empty");
   }
   if (referencedSOPClassUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: ReferencedSOPClassUID empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: ReferencedSOPClassUID empty");
   }
   if (referencedSOPInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: ReferencedSOPInstanceUID empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: ReferencedSOPInstanceUID empty");
   }
   if (studyInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: StudyInstanceUID empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: StudyInstanceUID empty");
   }
   if (seriesInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Image Box: SeriesInstanceUID empty");
+    DCMPSTAT_WARN("cannot write Stored Print Image Box: SeriesInstanceUID empty");
   }
 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
@@ -678,7 +678,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       // the image box position is checked elsewhere
       ADD_TO_PDATASET(DcmUnsignedShort, imageBoxPosition)
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: attribute (2020,0010) Image Position missing.");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: attribute (2020,0010) Image Position missing.");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -707,7 +707,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       }
       if (! found)
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal magnification type: '" << theMagnification.c_str() << "'");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal magnification type: '" << theMagnification.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -740,13 +740,13 @@ OFBool DVPSImageBoxContent::printSCPSet(
       }
       if (numSmoothings == 0)
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: smoothing type requested but not supported.");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: smoothing type requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
       else if (! found)
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal smoothing type: '" << theSmoothing.c_str() << "'");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal smoothing type: '" << theSmoothing.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -767,7 +767,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);
       if (numConfigurationInformation == 0) // we don't support configuration information
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: configuration information requested but not supported.");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: configuration information requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       } else {
@@ -784,7 +784,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         }
         if (! found)
         {
-          DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal configuration information: '" << theConfiguration.c_str() << "'");
+          DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal configuration information: '" << theConfiguration.c_str() << "'");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -807,7 +807,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       polarity.getOFString(thePolarity, 0, OFTrue);
       if ((thePolarity != "NORMAL")&&(thePolarity != "REVERSE"))
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal polarity: '" << thePolarity.c_str() << "'");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal polarity: '" << thePolarity.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -824,7 +824,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
     {
       if (! cfg.getTargetPrinterSupportsRequestedImageSize(cfgname))
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: requested image size not supported.");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: requested image size not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -845,7 +845,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
     {
       if (! cfg.getTargetPrinterSupportsDecimateCrop(cfgname))
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: requested decimate/crop behaviour not supported.");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: requested decimate/crop behaviour not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -857,7 +857,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         requestedDecimateCropBehavior.getOFString(theBehaviour, 0, OFTrue);
         if ((theBehaviour != "DECIMATE")&&(theBehaviour != "CROP")&&(theBehaviour != "FAIL"))
         {
-          DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal decimate/crop behaviour: '" << theBehaviour.c_str() << "'");
+          DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal decimate/crop behaviour: '" << theBehaviour.c_str() << "'");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         } else {
@@ -879,12 +879,12 @@ OFBool DVPSImageBoxContent::printSCPSet(
          DcmItem *item = seq->getItem(0);
          result = printSCPEvaluateBasicGrayscaleImageSequence(cfg, cfgname, item, rsp, imageDataset, align, presentationLUTnegotiated);
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: basic grayscale image sequence number of items != 1");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: basic grayscale image sequence number of items != 1");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: basic grayscale image sequence missing.");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: basic grayscale image sequence missing.");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -910,7 +910,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       else if (currentTag == DCM_BasicGrayscaleImageSequence) /* OK */ ;
       else
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: unsupported attribute received:\n"
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: unsupported attribute received:\n"
             << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
@@ -979,12 +979,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         ADD_TO_PDATASET(DcmUnsignedShort, samplesPerPixel)
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal samples per pixel value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal samples per pixel value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: samples per pixel missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: samples per pixel missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1002,12 +1002,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         ADD_TO_PDATASET(DcmUnsignedShort, rows)
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal rows value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal rows value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: rows missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: rows missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1025,12 +1025,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         ADD_TO_PDATASET(DcmUnsignedShort, columns)
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal columns value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal columns value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: columns missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: columns missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1053,13 +1053,13 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         OFBool supports12Bit = cfg.getTargetPrinterSupports12BitTransmission(cfgname);
         if ((bitsStoredValue == 12)&&(! supports12Bit))
         {
-          DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: image transmission with 12 bits/pixel not supported.");
+          DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: image transmission with 12 bits/pixel not supported.");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         } else {
           if (presentationLUTnegotiated && (cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) && (! matchesPresentationLUT(align)))
           {
-            DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: image data with " << bitsStoredValue << " bits/pixel does not match characteristics of active Presentation LUT.");
+            DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: image data with " << bitsStoredValue << " bits/pixel does not match characteristics of active Presentation LUT.");
             rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
             result = OFFalse;
           } else {
@@ -1067,12 +1067,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           }
         }
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal bits stored value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal bits stored value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: bits stored missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: bits stored missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1090,12 +1090,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         ADD_TO_PDATASET(DcmUnsignedShort, bitsAllocated)
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal bits allocated value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal bits allocated value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: bits allocated missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: bits allocated missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1113,12 +1113,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         ADD_TO_PDATASET(DcmUnsignedShort, highBit)
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal high bit value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal high bit value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: high bit missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: high bit missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1136,12 +1136,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         ADD_TO_PDATASET(DcmUnsignedShort, pixelRepresentation)
       } else {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal pixel representation value: " << val);
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal pixel representation value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: pixel representation missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: pixel representation missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1158,14 +1158,14 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       photometricInterpretation.getOFString(theColorModel, 0, OFTrue);
       if ((theColorModel != "MONOCHROME1")&&(theColorModel != "MONOCHROME2"))
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal photometric interpretation: '" << theColorModel.c_str() << "'");
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal photometric interpretation: '" << theColorModel.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, photometricInterpretation)
       }
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: photometric interpretation missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: photometric interpretation missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1180,7 +1180,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       pixelAspectRatio = *((DcmIntegerString *)(stack.top()));
       if (pixelAspectRatio.getVM() != 2)
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal pixel aspect ratio, VM=: '" << pixelAspectRatio.getVM());
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: illegal pixel aspect ratio, VM=: '" << pixelAspectRatio.getVM());
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -1211,13 +1211,13 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           pixelData->putUint8Array(pxdata8, oldPxData->getLength()/sizeof(Uint8));
           rspDataset->insert(pixelData, OFTrue /*replaceOld*/);
         } else {
-          DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: cannot access pixel data");
+          DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: cannot access pixel data");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
           result = OFFalse;
         }
       } else writeresult=EC_MemoryExhausted;
     } else {
-      DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: pixel data missing in basic grayscale image sequence");
+      DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: pixel data missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
@@ -1245,7 +1245,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       else if (currentTag == DCM_PixelData) /* OK */ ;
       else
       {
-        DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: unsupported attribute in basic grayscale image sequence:\n"
+        DCMPSTAT_WARN("cannot update Basic Grayscale Image Box: unsupported attribute in basic grayscale image sequence:\n"
             << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;

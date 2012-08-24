@@ -1,6 +1,36 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.24 (schlachter)
+
+- Improved logging levels in module dcmpstat.
+  Affects: dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsab.cc
+           dcmpstat/libsrc/dvpsal.cc
+           dcmpstat/libsrc/dvpscf.cc
+           dcmpstat/libsrc/dvpsda.cc
+           dcmpstat/libsrc/dvpsfs.cc
+           dcmpstat/libsrc/dvpsga.cc
+           dcmpstat/libsrc/dvpsgl.cc
+           dcmpstat/libsrc/dvpsgr.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpspl.cc
+           dcmpstat/libsrc/dvpspl2.cc
+           dcmpstat/libsrc/dvpspll.cc
+           dcmpstat/libsrc/dvpspr.cc
+           dcmpstat/libsrc/dvpsprt.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmpstat/libsrc/dvpsspl.cc
+           dcmpstat/libsrc/dvpssv.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dvpstx.cc
+
 **** Changes from 2012.08.23 (schlachter)
 
 - Add BUILD_FOR_SHARED_LIBS flag to the CMake build system. With this flag the

@@ -56,7 +56,7 @@ OFCondition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
   if (activationLayer.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a curve or overlay activation layer with VM > 1");
+    DCMPSTAT_WARN("presentation state contains a curve or overlay activation layer with VM > 1");
   }
 
   return result;

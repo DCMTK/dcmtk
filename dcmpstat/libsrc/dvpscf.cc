@@ -169,7 +169,7 @@ static DVPSPeerType getConfigTargetType(const char *val)
   if (ostring=="STORAGE")       result=DVPSE_storage; else
   if (ostring=="RECEIVER")      result=DVPSE_receiver; else
   {
-    DCMPSTAT_INFO("unsupported peer type in config file: '" << val << "', ignoring.");
+    DCMPSTAT_WARN("unsupported peer type in config file: '" << val << "', ignoring.");
   }
   return result;
 }

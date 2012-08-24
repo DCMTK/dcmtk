@@ -243,7 +243,7 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
     list_.erase(first);
   } else {
     // presentation LUT does not exist or wrong instance UID
-    DCMPSTAT_INFO("cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
+    DCMPSTAT_WARN("cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }

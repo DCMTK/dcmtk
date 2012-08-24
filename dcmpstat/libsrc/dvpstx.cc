@@ -78,69 +78,69 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
   if (unformattedTextValue.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with unformattedTextValue absent or empty");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with unformattedTextValue absent or empty");
   }
   else if (unformattedTextValue.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with unformattedTextValue VM != 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with unformattedTextValue VM != 1");
   }
 
   if (boundingBoxAnnotationUnits.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with boundingBoxAnnotationUnits VM > 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with boundingBoxAnnotationUnits VM > 1");
   }
 
   if (anchorPointAnnotationUnits.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with anchorPointAnnotationUnits VM > 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with anchorPointAnnotationUnits VM > 1");
   }
 
   if (anchorPointVisibility.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with anchorPointVisibility VM > 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with anchorPointVisibility VM > 1");
   }
 
   if (boundingBoxTLHC.getVM() ==1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with boundingBoxTLHC VM == 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with boundingBoxTLHC VM == 1");
   }
   else if (boundingBoxTLHC.getVM() > 2)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with boundingBoxTLHC VM > 2");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with boundingBoxTLHC VM > 2");
   }
 
   if (boundingBoxBRHC.getVM() ==1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with boundingBoxBRHC VM == 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with boundingBoxBRHC VM == 1");
   }
   else if (boundingBoxBRHC.getVM() > 2)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with boundingBoxBRHC VM > 2");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with boundingBoxBRHC VM > 2");
   }
 
   if (boundingBoxTextHorizontalJustification.getVM() > 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1");
   }
 
   if (anchorPoint.getVM() ==1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with anchorPoint VM == 1");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with anchorPoint VM == 1");
   }
   else if (anchorPoint.getVM() > 2)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with anchorPoint VM > 2");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with anchorPoint VM > 2");
   }
 
   /* test for the various type 1c conditions */
@@ -149,38 +149,38 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
      && ((boundingBoxTLHC.getVM() >0) || (boundingBoxBRHC.getVM() >0)))
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty");
   }
 
   if ((boundingBoxTextHorizontalJustification.getVM() == 0)
      && ((boundingBoxTLHC.getVM() >0) || (boundingBoxBRHC.getVM() >0)))
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty");
   }
 
   if ((anchorPointAnnotationUnits.getVM() == 0) && (anchorPoint.getVM() >0)) 
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with anchor point but anchorPointAnnotationUnits absent or empty");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with anchor point but anchorPointAnnotationUnits absent or empty");
   }
 
   if ((anchorPointVisibility.getVM() == 0) && (anchorPoint.getVM() >0)) 
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item with anchor point but anchorPointVisibility absent or empty");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item with anchor point but anchorPointVisibility absent or empty");
   }
 
   if ((boundingBoxTLHC.getVM() == 0) && (anchorPoint.getVM() == 0)) 
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item without bounding box and anchor point");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item without bounding box and anchor point");
   }
 
   if ((boundingBoxBRHC.getVM() == 0) && (anchorPoint.getVM() == 0)) 
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a text object SQ item without bounding box and anchor point");
+    DCMPSTAT_WARN("presentation state contains a text object SQ item without bounding box and anchor point");
   }
 
   return result;

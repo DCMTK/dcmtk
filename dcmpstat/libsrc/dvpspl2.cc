@@ -89,18 +89,18 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
       	result = image->setPresentationLutShape(ESP_Identity);
       }
       if (!result)
-        DCMPSTAT_INFO("unable to set identity presentation LUT shape, ignoring.");
+        DCMPSTAT_WARN("unable to set identity presentation LUT shape, ignoring.");
       break;
     case DVPSP_inverse:
       if (!printLUT)
         result = image->setPresentationLutShape(ESP_Inverse);
       if (!result)
-        DCMPSTAT_INFO("unable to set inverse presentation LUT shape, ignoring.");
+        DCMPSTAT_WARN("unable to set inverse presentation LUT shape, ignoring.");
       break;      
     case DVPSP_lin_od:
       result = image->setPresentationLutShape(ESP_LinOD);
       if (!result)
-        DCMPSTAT_INFO("unable to set linear optical density presentation LUT shape, ignoring.");
+        DCMPSTAT_WARN("unable to set linear optical density presentation LUT shape, ignoring.");
       break;
     case DVPSP_table:
       if (printLUT)
@@ -108,7 +108,7 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
       else
         result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
       if (!result)
-        DCMPSTAT_INFO("unable to set presentation LUT, ignoring.");
+        DCMPSTAT_WARN("unable to set presentation LUT, ignoring.");
       break;
   }
   if (result) return OFTrue; else return OFFalse;
@@ -121,7 +121,7 @@ OFBool DVPSPresentationLUT::activateInverseLUT(DicomImage *image)
   {
       result = image->setInversePresentationLut(presentationLUTData, presentationLUTDescriptor);
       if (!result)
-        DCMPSTAT_INFO("unable to set inverse presentation LUT, ignoring.");
+        DCMPSTAT_WARN("unable to set inverse presentation LUT, ignoring.");
   }
   if (result) return OFTrue; else return OFFalse;
 }

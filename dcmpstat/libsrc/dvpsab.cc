@@ -87,17 +87,17 @@ OFCondition DVPSAnnotationContent::read(DcmItem &dset)
     if ((sOPInstanceUID.getLength() == 0)||(sOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("SOPInstanceUID missing or incorrect in Stored Print Annotation");
+        DCMPSTAT_WARN("SOPInstanceUID missing or incorrect in Stored Print Annotation");
     }
     if ((annotationPosition.getLength() == 0)||(annotationPosition.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("AnnotationPosition missing or incorrect in Stored Print Annotation");
+        DCMPSTAT_WARN("AnnotationPosition missing or incorrect in Stored Print Annotation");
     }
     if ((textString.getLength() == 0)||(textString.getVM() != 1))
     {
         result=EC_TagNotFound;
-        DCMPSTAT_INFO("TextString missing or incorrect in Stored Print Annotation");
+        DCMPSTAT_WARN("TextString missing or incorrect in Stored Print Annotation");
     }
   }
 
@@ -113,17 +113,17 @@ OFCondition DVPSAnnotationContent::write(DcmItem &dset)
   if (sOPInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Annotation: SOPInstanceUID empty");
+    DCMPSTAT_WARN("cannot write Stored Print Annotation: SOPInstanceUID empty");
   }
   if (annotationPosition.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Annotation: AnnotationPosition empty");
+    DCMPSTAT_WARN("cannot write Stored Print Annotation: AnnotationPosition empty");
   }
   if (textString.getLength() == 0)
   {
     result=EC_TagNotFound;
-    DCMPSTAT_INFO("cannot write Stored Print Annotation: TextString empty");
+    DCMPSTAT_WARN("cannot write Stored Print Annotation: TextString empty");
   }
 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)

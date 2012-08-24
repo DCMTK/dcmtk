@@ -65,18 +65,18 @@ OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
   if (graphicAnnotationLayer.getLength() == 0)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty");
+    DCMPSTAT_WARN("presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty");
   }
   else if (graphicAnnotationLayer.getVM() != 1)
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1");
+    DCMPSTAT_WARN("presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1");
   }
 
   if ((textObjectList.size() ==0)&&(graphicObjectList.size() ==0))
   {
     result=EC_IllegalCall;
-    DCMPSTAT_INFO("presentation state contains a graphic annotation SQ item without any graphic or text objects");
+    DCMPSTAT_WARN("presentation state contains a graphic annotation SQ item without any graphic or text objects");
   }
   
   return result;

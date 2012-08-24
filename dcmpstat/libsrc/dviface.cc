@@ -674,7 +674,7 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
             {
                 result = EC_IllegalCall;
                 DCMPSTAT_LOGFILE("Save presentation state to database failed: could not register in index file");
-                DCMPSTAT_DEBUG("Unable to register presentation state '" << imageFileName << "' in database");
+                DCMPSTAT_WARN("Unable to register presentation state '" << imageFileName << "' in database");
             }
         }
     }
@@ -704,7 +704,7 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
                         {
                             result = EC_IllegalCall;
                             DCMPSTAT_LOGFILE("Save presentation state to database failed: could not register image in index file");
-                            DCMPSTAT_DEBUG("Unable to register image '" << imageFileName << "' in database");
+                            DCMPSTAT_WARN("Unable to register image '" << imageFileName << "' in database");
                         } else {
                             imageInDatabase = OFTrue;
                         }
@@ -800,7 +800,7 @@ OFCondition DVInterface::saveStructuredReport()
             {
                 result = EC_IllegalCall;
                 DCMPSTAT_LOGFILE("Save structured report to database failed: could not register in index file");
-                DCMPSTAT_DEBUG("Unable to register structured report '" << filename << "' in database");
+                DCMPSTAT_WARN("Unable to register structured report '" << filename << "' in database");
             }
         }
     }
@@ -2673,7 +2673,7 @@ OFCondition DVInterface::saveDICOMImage(
        {
          result = EC_IllegalCall;
          DCMPSTAT_LOGFILE("Save image to database failed: could not register in index file");
-         DCMPSTAT_DEBUG("Unable to register secondary capture image '" << imageFileName << "' in database");
+         DCMPSTAT_WARN("Unable to register secondary capture image '" << imageFileName << "' in database");
        }
      }
   }
@@ -2831,7 +2831,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
        {
          result = EC_IllegalCall;
          DCMPSTAT_LOGFILE("Save hardcopy grayscale image to database failed: could not register in index file");
-         DCMPSTAT_DEBUG("Unable to register hardcopy grayscale image '" << imageFileName << "' in database");
+         DCMPSTAT_WARN("Unable to register hardcopy grayscale image '" << imageFileName << "' in database");
        }
      }
   }
@@ -2884,7 +2884,7 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
        {
          result = EC_IllegalCall;
          DCMPSTAT_LOGFILE("Save fileformat to database failed: could not register in index file");
-         DCMPSTAT_DEBUG("Unable to register file '" << imageFileName << "' in database");
+         DCMPSTAT_WARN("Unable to register file '" << imageFileName << "' in database");
        }
      }
   }
@@ -3062,7 +3062,7 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
        {
          result = EC_IllegalCall;
          DCMPSTAT_LOGFILE("Save stored print to database failed: could not register in index file");
-         DCMPSTAT_DEBUG("Unable to register stored print object '" << imageFileName << "' in database");
+         DCMPSTAT_WARN("Unable to register stored print object '" << imageFileName << "' in database");
        }
      }
   }

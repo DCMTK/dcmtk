@@ -124,7 +124,7 @@ OFBool DVPSReferencedSeries_PList::isValid()
 {
   if (list_.size() == 0)
   {
-    DCMPSTAT_INFO("referenced series SQ is empty in presentation state");
+    DCMPSTAT_WARN("referenced series SQ is empty in presentation state");
     return OFFalse;
   }
 
