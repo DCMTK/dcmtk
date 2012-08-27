@@ -3735,6 +3735,33 @@ OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag& tag,
 }
 
 
+OFCondition DcmItem::putAndInsertTagKey(const DcmTag& tag,
+                                        const DcmTagKey &value,
+                                        const unsigned long pos,
+                                        const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    /* create new element */
+    if (tag.getEVR() == EVR_AT)
+    {
+        DcmElement *elem = new DcmAttributeTag(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putTagVal(value, pos);
+            /* insert into dataset/item */
+            if (status.good())
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status.bad())
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
 // ********************************
 
 

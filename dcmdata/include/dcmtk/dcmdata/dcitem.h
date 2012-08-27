@@ -1111,6 +1111,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                          const unsigned long count,
                                          const OFBool replaceOld = OFTrue);
 
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: AT
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertTagKey(const DcmTag &tag,
+                                   const DcmTagKey &value,
+                                   const unsigned long pos = 0,
+                                   const OFBool replaceOld = OFTrue);
 
     /* --- insertXXX functions: insert new element --- */
 

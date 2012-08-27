@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.27 (riesmeier)
+
+- Added new helper method putAndInsertTagKey() for elements with a VR of "AT".
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2012.08.24 (schlachter)
 
 - Improved logging levels in module dcmpstat.
