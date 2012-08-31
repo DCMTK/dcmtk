@@ -1,4 +1,4 @@
-.TH "dsr2xml" 1 "Tue May 15 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2xml" 1 "Fri Aug 31 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2xml \- Convert DICOM SR file and data set to XML 
@@ -211,6 +211,8 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&.
 .PP
 Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity)\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&.
+.SS "Limitations"
+The XML Schema \fIdsr2xml\&.xsd\fP does not support all variations of the \fBdsr2xml\fP output format\&. However, the default output format should work\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -236,4 +238,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBxml2dsr\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2000-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

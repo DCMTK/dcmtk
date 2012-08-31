@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.08.31 (riesmeier)
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2012.08.28 (riesmeier)
 
 - Made settings for libsndfile more consistent with other external libraries.
