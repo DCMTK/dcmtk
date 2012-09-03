@@ -697,7 +697,7 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
                     << " lower=" << OFstatic_cast(void *, *firstRec));
 #endif
 
-                /* insert at begining */
+                /* insert at beginning */
                 toDirSQ.prepend( subRecord );
 
                 nextRec = subRecord;

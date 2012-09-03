@@ -10,7 +10,7 @@
 # Type 2C: Same as 2, if a certain condition (see standard) is met. If the     #
 #          condition is not met, LEAVE OUT line                                #
 # Type 3:  User optional, CAN be written (if it should not, delete line).      #
-#          The value written can be choosen freely, but has to conform to      #
+#          The value written can be chosen freely, but has to conform to       #
 #          element's VR (see standard)                                         #
 ################################################################################
 

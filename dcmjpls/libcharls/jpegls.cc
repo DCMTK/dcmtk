@@ -20,7 +20,7 @@ signed char* JlsContext::_tableC = CreateTableC();
 // used to determine how large runs should be encoded at a time.
 const int J[32]			= {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-// Default bin sizes for JPEG-LS statistical modeling. Can be overriden at compression time, however this is rarely done.
+// Default bin sizes for JPEG-LS statistical modeling. Can be overridden at compression time, however this is rarely done.
 const int BASIC_T1		= 3;
 const int BASIC_T2		= 7;
 const int BASIC_T3		= 21;

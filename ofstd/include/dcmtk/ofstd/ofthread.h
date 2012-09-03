@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -550,7 +550,7 @@ private:
   /** the lock on which we are operating */
   OFReadWriteLock& theLock;
 
-  /** did we sucessfully lock the lock? */
+  /** did we successfully lock the lock? */
   OFBool locked;
 
   /** unimplemented private copy constructor */

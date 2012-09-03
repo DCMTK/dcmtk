@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -190,8 +190,8 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
      *
      ** @param  idx  ignore global min/max values if false (0)
      *
-     ** @return true if sucessful (1 = window has changed,
-     *                             2 = new window is the same as previous one),
+     ** @return true if successful (1 = window has changed,
+     *                              2 = new window is the same as previous one),
      *          false otherwise
      */
     int setMinMaxWindow(const int idx = 1);
@@ -206,8 +206,8 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
      *  @param  height    height in pixels of the rectangular ROI (minimum: 1)
      *  @param  frame     index of the frame to be used for the calculation
      *
-     ** @return true if sucessful (1 = window has changed,
-     *                             2 = new window is the same as previous one),
+     ** @return true if successful (1 = window has changed,
+     *                              2 = new window is the same as previous one),
      *          false otherwise
      */
     int setRoiWindow(const unsigned long left_pos,
@@ -241,8 +241,8 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
      *  @param  width        width of specified window
      *  @param  explanation  window explanation (optional)
      *
-     ** @return true if sucessful (1 = window has changed,
-     *                             2 = new window is the same as previous one),
+     ** @return true if successful (1 = window has changed,
+     *                              2 = new window is the same as previous one),
      *          false otherwise
      */
     int setWindow(const double center,

@@ -286,7 +286,7 @@ findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
 \endverbatim
 
 This call queries a worklist server at host caesar for any planned procedures
-for CT modalities by specifing tag (0040,0100) "Scheduled Procedure Step
+for CT modalities by specifying tag (0040,0100) "Scheduled Procedure Step
 Sequence" and an attribute "Modality" in the first item of this sequence with
 value "CT".  Details on this path notation can be found in the documentation
 of \b dcmodify.
@@ -393,6 +393,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("length encoding in sequences and items:");
       cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
       cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
-      cmd.addOption("--write-oversized",     "+eo",    "write oversized explict length sequences\nand items with undefined length (default)");
+      cmd.addOption("--write-oversized",     "+eo",    "write oversized explicit length sequences\nand items with undefined length (default)");
       cmd.addOption("--abort-oversized",     "-eo",    "abort on oversized explicit sequences/items");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");

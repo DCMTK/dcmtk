@@ -1135,7 +1135,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             OFBool accessPossible = OFFalse;
 
             /* check that we actually do have access to the element's value.
-             * If the element is unaccessable (which would mean that the value resides
+             * If the element is unaccessible (which would mean that the value resides
              * in file and access to the file fails), write an empty element with
              * zero length.
              */

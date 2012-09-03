@@ -738,7 +738,7 @@ public:
   OFBool getProgressNotificationMode() const;
 
   /** Returns whether SCU is configured to create a TLS connection with the SCP
-   *  @return OFFalse for this class but may be overriden by derived classes
+   *  @return OFFalse for this class but may be overridden by derived classes
    */
   OFBool getTLSEnabled() const;
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,7 +149,7 @@ class DiColorOutputPixelTemplate
      *
      ** @param  plane  number of the plane to be retrieved (0..2)
      *
-     ** @return pointer to beginning of plane if sucessful, NULL otherwise
+     ** @return pointer to beginning of plane if successful, NULL otherwise
      */
     inline const void *getPlane(const int plane) const
     {

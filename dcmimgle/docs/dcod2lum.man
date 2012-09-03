@@ -39,7 +39,7 @@ out-file  softcopy characteristic curve file to be written
 
 \section notes NOTES
 
-The format of both input and ouput file is described the documentation of the
+The format of both input and output file is described the documentation of the
 \b dcmdspfn command line tool.  In addition, the \e data folder contains
 sample characteristics file monitors, cameras, printers and scanners.
 
@@ -56,6 +56,6 @@ sample characteristics file monitors, cameras, printers and scanners.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

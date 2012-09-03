@@ -218,7 +218,7 @@ compressed bits per sample (always +ba with +tl):
   +bs   --bits-force-16
           force 16 bits/sample (lossless only)
 
-compression color space conversion (overriden by +tl):
+compression color space conversion (overridden by +tl):
 
   +cy   --color-ybr
           use YCbCr for color images if lossy (default)
@@ -556,7 +556,7 @@ windowing etc., there are a some issues to consider:
 
 \li Only source images with Bits Allocated 8 or 16 are supported
 \li Options for color space conversions, windowing or pixel scaling are
-    ignored or overriden
+    ignored or overridden
 \li Photometric Interpretations YBR_FULL_422, YBR_PARTIAL_422, YBR_PARTIAL_420,
     YBR_ICT, YBR_RCT are not supported
 \li The encoder changes automatically Planar Configuration from 1 to 0 if
@@ -668,6 +668,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

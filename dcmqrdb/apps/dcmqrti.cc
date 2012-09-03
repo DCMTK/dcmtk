@@ -375,7 +375,7 @@ int main( int argc, char *argv[] )
       }
       else
       {
-        OFLOG_ERROR(dcmqrtiLogger, "ti: no accessable databases");
+        OFLOG_ERROR(dcmqrtiLogger, "ti: no accessible databases");
         returnValue = 1;
       }
     }

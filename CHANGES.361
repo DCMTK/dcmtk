@@ -1,6 +1,39 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.03 (riesmeier)
+
+- Fixed minor spelling errors.
+  Thanks to Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr> for the patch.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/data/SC.dump
+           dcmdata/data/VLP.dump
+           dcmdata/docs/img2dcm.man
+           dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmimage/include/dcmtk/dcmimage/dicoopx.h
+           dcmimage/include/dcmtk/dcmimage/dicoopxt.h
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dcod2lum.man
+           dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpls/libcharls/jpegls.cc
+           dcmnet/docs/findscu.man
+           dcmnet/docs/storescp.man
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dccfenmp.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+           ofstd/include/dcmtk/ofstd/ofthread.h
+
 **** Changes from 2012.08.31 (riesmeier)
 
 - Updated man pages for new development snapshot.

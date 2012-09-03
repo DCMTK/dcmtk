@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2011, OFFIS e.V.
+ *  Copyright (C) 2008-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -239,7 +239,7 @@ public:
 
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
-   *  pointers for each sucessfully found or inserted paths. Every list
+   *  pointers for each successfully found or inserted paths. Every list
    *  contains pointers pointing to all the objects along the path
    *  starting from the object given as parameter. The pointer to the
    *  starting object will not be part of the result.
@@ -342,7 +342,7 @@ protected:
 
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
-   *  pointers for each sucessfully found or inserted paths. Every list
+   *  pointers for each successfully found or inserted paths. Every list
    *  contains pointers pointing to all the objects along the path
    *  starting from the object given as parameter. The pointer to the
    *  starting object will not be part of the result.
@@ -378,7 +378,7 @@ protected:
 
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
-   *  pointers for each sucessfully found or inserted paths. Every list
+   *  pointers for each successfully found or inserted paths. Every list
    *  contains pointers pointing to all the objects along the path
    *  starting from the object given as parameter. The pointer to the
    *  starting object will not be part of the result.

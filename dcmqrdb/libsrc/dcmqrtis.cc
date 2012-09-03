@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2126,7 +2126,7 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 
       if( dbEntry->peerTitleCount > 0 )
       {
-        // add database to list, it is accessable by something
+        // add database to list, it is accessible by something
         if( dbEntries == NULL )
           dbEntries = (TI_DBEntry**) malloc( sizeof( TI_DBEntry* ) );
         else

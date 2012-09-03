@@ -253,7 +253,7 @@ New Study and Series Instance UIDs are generated <b>if necessary</b> after
 applying the \e --study-from and \e --series options. If Study Instance UID or
 Series Instance UID are not present after these steps, they are newly generated,
 independently from each other.
-A contrary behaviour is choosen for the SOP Instance UID that one could expect
+A contrary behaviour is chosen for the SOP Instance UID that one could expect
 to be taken over when using the \e --dataset-from option. This is \b not the
 case, the SOP Instance UID is \b not copied to the new object. This should
 be the desirable behaviour for most use cases. However, if a certain SOP
@@ -491,6 +491,6 @@ images
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

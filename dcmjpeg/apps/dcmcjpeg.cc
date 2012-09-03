@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--bits-force-12",       "+bt",    "force 12 bits/sample (not with baseline)");
       cmd.addOption("--bits-force-16",       "+bs",    "force 16 bits/sample (lossless only)");
 
-    cmd.addSubGroup("compression color space conversion (overriden by +tl):");
+    cmd.addSubGroup("compression color space conversion (overridden by +tl):");
       cmd.addOption("--color-ybr",           "+cy",    "use YCbCr for color images if lossy (default)");
       cmd.addOption("--color-rgb",           "+cr",    "use RGB for color images if lossy");
       cmd.addOption("--monochrome",          "+cm",    "convert color images to monochrome");

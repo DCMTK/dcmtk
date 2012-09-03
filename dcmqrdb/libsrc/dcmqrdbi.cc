@@ -383,7 +383,7 @@ static long DB_lseek(int fildes, long offset, int whence)
     ** we should not be seeking to an offset < 0
     */
     if (offset < 0) {
-        DCMQRDB_ERROR("*** DB ALERT: attempt to seek before begining of file");
+        DCMQRDB_ERROR("*** DB ALERT: attempt to seek before beginning of file");
     }
 
     /* get the current position */

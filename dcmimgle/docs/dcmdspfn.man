@@ -124,7 +124,7 @@ The ambient light value possibly defined in the characteristics file is also
 used for the calculation.  In this case the value is part of the file comment
 header as well as the number of DDL (device driving level) values, the
 absolute luminance range (measured in candela per square meter) and the range
-of the JND index (just noticable difference) in case of GSDF.  Alternatively,
+of the JND index (just noticeable difference) in case of GSDF.  Alternatively,
 the ambient light value can be specified as a command line option.  When
 setting the two luminance values instead of reading a monitor characteristic
 file as input the luminance range is linearly divided by the number of DDLs.
@@ -196,6 +196,6 @@ longish and confusing command lines (an example is provided in file
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

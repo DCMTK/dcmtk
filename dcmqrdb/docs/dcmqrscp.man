@@ -113,7 +113,7 @@ association negotiation:
 
   # This option causes dcmqrscp to refuse storage presentations
   # contexts for AE Titles if another association has already
-  # sucessfully negotiated storage presentation contexts for the
+  # successfully negotiated storage presentation contexts for the
   # AE Title.  This option should only be needed for debugging
   # since the dcmqrscp database back-end sequentialises access via
   # file-locking.
@@ -943,6 +943,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

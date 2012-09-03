@@ -939,7 +939,7 @@ int main(int argc, char *argv[])
 
     if ((opt_cfgID == 0)&&(! opt_terminate))
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "paramter receiver-id required unless --terminate is specified");
+        OFLOG_FATAL(dcmpsrcvLogger, "parameter receiver-id required unless --terminate is specified");
         return 10;
     }
 

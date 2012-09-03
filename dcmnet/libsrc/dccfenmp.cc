@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -169,7 +169,7 @@ OFCondition DcmExtendedNegotiationMap::checkConsistency(
   if (!entry)
   {
     // error: key undefined
-    OFString s("extended negotation key undefined: ");
+    OFString s("extended negotiation key undefined: ");
     s += key;
     return makeOFCondition(OFM_dcmnet, 1039, OF_error, s.c_str());
   }

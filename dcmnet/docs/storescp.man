@@ -729,7 +729,7 @@ described above and \e -od (\e --output-directory) defines the directory in
 which \b storescp stores incoming DICOM objects.  Note that the service name
 ("acr-nema" in this example) determines the port number on which DICOM
 associations are accepted and must be defined in <em>/etc/services</em>.
-When runnning from inetd, the stdout and stderr streams are discarded.
+When running from inetd, the stdout and stderr streams are discarded.
 However, you can still configure logging via the \e --log-config
 option (see below).
 
@@ -811,6 +811,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
