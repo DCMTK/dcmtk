@@ -696,8 +696,8 @@ static int DB_TagSupported (DcmTagKey tag)
     int i;
 
     for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        return (OFTrue);
+        if (TbFindAttr[i]. tag == tag)
+            return (OFTrue);
 
     return (OFFalse);
 
@@ -713,8 +713,8 @@ static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
     int i;
 
     for (i = 0; i < NbFindAttr; i++)
-    if ((TbFindAttr[i]. level == level) && (TbFindAttr[i]. keyAttr == UNIQUE_KEY))
-        break;
+        if ((TbFindAttr[i]. level == level) && (TbFindAttr[i]. keyAttr == UNIQUE_KEY))
+            break;
 
     if (i < NbFindAttr) {
         *tag = TbFindAttr[i].tag;
@@ -734,8 +734,8 @@ static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
     int i;
 
     for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        break;
+        if (TbFindAttr[i]. tag == tag)
+            break;
 
     if (i < NbFindAttr) {
         *level = TbFindAttr[i]. level;
@@ -754,8 +754,8 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
     int i;
 
     for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        break;
+        if (TbFindAttr[i]. tag == tag)
+            break;
 
     if (i < NbFindAttr) {
         *keyAttr = TbFindAttr[i]. keyAttr;
@@ -774,8 +774,8 @@ static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
     int i;
 
     for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        break;
+        if (TbFindAttr[i]. tag == tag)
+            break;
 
     if (i < NbFindAttr) {
         *keyAttr = TbFindAttr[i]. keyClass;
@@ -815,7 +815,7 @@ static void DB_RemoveEnclosingSpaces (char *string)
     ** If not found, string is empty
     */
 
-    for (pc2 = string; (*pc2 != '\0') && (*pc2 == ' '); pc2++);
+    for (pc2 = string; (*pc2 != '\0') && (*pc2 == ' '); pc2++)  /* loop with empty body */;
     if (*pc2 == '\0') {
         string [0] = '\0';
         return;
@@ -830,11 +830,11 @@ static void DB_RemoveEnclosingSpaces (char *string)
         *pc1 = '\0';
     }
 
-    /** Ship trailing spaces
+    /** Skip trailing spaces
      */
 
-    for (pc2 = string + strlen (string) - 1; *pc2 == ' '; pc2--);
-        pc2++;
+    for (pc2 = string + strlen (string) - 1; *pc2 == ' '; pc2--)  /* loop with empty body */;
+    pc2++;
     *pc2 = '\0';
 }
 

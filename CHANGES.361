@@ -28,6 +28,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.05 (riesmeier)
 
+- Adapted indentation and added comments to make more clear that the for loop
+  has an empty body.
+  Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
 - Removed warning about extraneous parentheses (clang compiler).
   Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for the report and fix.
   Affects: dcmdata/libi2d/i2djpgs.cc

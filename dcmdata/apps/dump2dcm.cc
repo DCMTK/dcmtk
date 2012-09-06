@@ -216,8 +216,10 @@ isaCommentLine(const char *s)
     OFBool isComment = OFFalse; /* assumption */
     int len = strlen(s);
     int i = 0;
-    for (i = 0; i < len && isspace(TO_UCHAR(s[i])); i++) /*loop*/;
-        isComment = (s[i] == DCM_DumpCommentChar);
+    // skip leading spaces
+    for (i = 0; i < len && isspace(TO_UCHAR(s[i])); i++) /* loop with empty body */;
+    // check for comment character
+    isComment = (s[i] == DCM_DumpCommentChar);
     return isComment;
 }
 
