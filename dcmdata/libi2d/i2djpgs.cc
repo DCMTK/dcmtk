@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2011, OFFIS e.V.
+ *  Copyright (C) 2007-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -406,7 +406,7 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
   while (entry != m_jpegFileMap.end())
   {
     marker = (*entry)->marker;
-    if ( (marker == E_JPGMARKER_APP0) )
+    if ( marker == E_JPGMARKER_APP0 )
     {
       DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Skipping application segment APP0");
       bytePosJFIF = (*entry)->bytePos - 1; // include first byte of marker (FF)

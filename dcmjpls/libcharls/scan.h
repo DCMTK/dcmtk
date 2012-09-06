@@ -779,7 +779,7 @@ ProcessLine* JlsCodec<TRAITS,STRATEGY>::CreateProcess(void* pvoidOut)
 	if (Info().colorTransform == 0)
 		return new ProcessTransformed<TransformNone<OFTypename TRAITS::SAMPLE> >(pvoidOut, Info(), TransformNone<SAMPLE>());
 
-	if ((Info().bitspersample == sizeof(SAMPLE)*8))
+	if (Info().bitspersample == sizeof(SAMPLE)*8)
 	{
 		switch(Info().colorTransform)
 		{

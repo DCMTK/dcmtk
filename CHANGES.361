@@ -28,6 +28,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.05 (riesmeier)
 
+- Removed warning about extraneous parentheses (clang compiler).
+  Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for the report and fix.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+           dcmjpls/libcharls/scan.h
+
 - Fixed wrong size value in memset() call, which caused only the first bytes
   of the memory area to be initialized.
   Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for the report and fix.
