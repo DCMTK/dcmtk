@@ -28,6 +28,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.05 (riesmeier)
 
+- Replaced 8-bit characters (ISO 8859-1) with their octal representation.
+  Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.
+  Affects: dcmdata/tests/tchval.cc
+           dcmdata/tests/tvrpn.cc
+           dcmsr/tests/mkreport.cc
+
 - Replaced non-ASCII character by its ASCII equivalent.
   Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.
   Affects: docs/ANNOUNCE.352

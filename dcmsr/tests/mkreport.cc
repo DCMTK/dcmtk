@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -669,7 +669,7 @@ static void generate_05(DSRDocument *doc)
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_20", OFFIS_CODING_SCHEME_DESIGNATOR, "History of present Illness"));
-    doc->getTree().getCurrentContentItem().setStringValue("This 19-year-old black female, nulligravida, was admitted to the hospital on June 14, 1999 with fever of 102°, left lower quadrant pain, vaginal discharge, constipation, and a tender left adnexal mass. Her past history and family history were unremarkable. Present pain had started 2 to 3 weeks prior (starting on May 30, 1999) and lasted for 6 days. She had taken contraceptive pills in the past, but had stopped because she was not sexually active.");
+    doc->getTree().getCurrentContentItem().setStringValue("This 19-year-old black female, nulligravida, was admitted to the hospital on June 14, 1999 with fever of 102\260, left lower quadrant pain, vaginal discharge, constipation, and a tender left adnexal mass. Her past history and family history were unremarkable. Present pain had started 2 to 3 weeks prior (starting on May 30, 1999) and lasted for 6 days. She had taken contraceptive pills in the past, but had stopped because she was not sexually active.");
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_21", OFFIS_CODING_SCHEME_DESIGNATOR, "Physical Examination"));
@@ -685,7 +685,7 @@ static void generate_05(DSRDocument *doc)
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_24", OFFIS_CODING_SCHEME_DESIGNATOR, "Hospital Course and Treatment"));
-    doc->getTree().getCurrentContentItem().setStringValue("Initially, she was given cephalothin 2 gm IV q6h, and kanamycin 0.5 gm IM b.i.d. Over the next 2 days the patient's condition improved. Her pain decreased, and her temperature came down to normal int he morning and spiked to 101° in the evening. Repeat CBC showed Hb 7.8, Hct 23.5. The pregnancy test was negative. On the second night following the admission, her temperature spiked to 104º. The patient was started on antituberculosis treatment, consisting of isoniazid 300 mg/day, ethambutol 600 mg b.i.d., and rifampin 600 mg daily. She became afebrile on the sixth postoperative day and was discharged on July 15, 1999, in good condition. She will be seen in the office in one week.");
+    doc->getTree().getCurrentContentItem().setStringValue("Initially, she was given cephalothin 2 gm IV q6h, and kanamycin 0.5 gm IM b.i.d. Over the next 2 days the patient's condition improved. Her pain decreased, and her temperature came down to normal int he morning and spiked to 101\260 in the evening. Repeat CBC showed Hb 7.8, Hct 23.5. The pregnancy test was negative. On the second night following the admission, her temperature spiked to 104\260. The patient was started on antituberculosis treatment, consisting of isoniazid 300 mg/day, ethambutol 600 mg b.i.d., and rifampin 600 mg daily. She became afebrile on the sixth postoperative day and was discharged on July 15, 1999, in good condition. She will be seen in the office in one week.");
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_25", OFFIS_CODING_SCHEME_DESIGNATOR, "Surgical Procedures"));
@@ -1138,7 +1138,7 @@ static void generate_17(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Siemens, DR");
 
-    doc->setPatientName("Offenmüller^Peter");
+    doc->setPatientName("Offenm\374ller^Peter");
     doc->setPatientSex("M");
     doc->setPatientBirthDate("19280302");
     doc->setPatientID("SMS280302");

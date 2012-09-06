@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,7 +46,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "AE-04", DcmApplicationEntity::checkStringValue("AE-Title  ", "1") )
   CHECK_GOOD( "AE-05", DcmApplicationEntity::checkStringValue(" AE Title ", "1") )
   CHECK_GOOD( "AE-06", DcmApplicationEntity::checkStringValue("A \\ B", "2") )
-  CHECK_BAD ( "AE-07", DcmApplicationEntity::checkStringValue("Jörg", "1") )
+  CHECK_BAD ( "AE-07", DcmApplicationEntity::checkStringValue("J\366rg", "1") )
   CHECK_BAD ( "AE-08", DcmApplicationEntity::checkStringValue("1234567890-ABCDE ") )
   CHECK_GOOD( "AE-09", DcmApplicationEntity::checkStringValue("\\ AE \\", "3-3n") )
 
@@ -69,7 +69,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "CS-04", DcmCodeString::checkStringValue("\\TEST 1234567890", "2") )
   CHECK_GOOD( "CS-05", DcmCodeString::checkStringValue("\\ ", "2") )
   CHECK_BAD ( "CS-06", DcmCodeString::checkStringValue("\\TEST 1234567890 A", "2") )
-  CHECK_BAD ( "CS-07", DcmCodeString::checkStringValue("Jörg", "1-2") )
+  CHECK_BAD ( "CS-07", DcmCodeString::checkStringValue("J\366rg", "1-2") )
   CHECK_BAD ( "CS-08", DcmCodeString::checkStringValue("Joerg", "1-2") )
   CHECK_GOOD( "CS-09", DcmCodeString::checkStringValue("MARCO \\ JOERG", "1-2") )
   CHECK_GOOD( "CS-10", DcmCodeString::checkStringValue("MARCO\\ MICHAEL \\JOERG\\") )
@@ -149,25 +149,25 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "LO-03", DcmLongString::checkStringValue("ABC 123 abc _+-/", "1") )
   CHECK_GOOD( "LO-04", DcmLongString::checkStringValue("  ", "1") )
   CHECK_GOOD( "LO-05", DcmLongString::checkStringValue("ABC\\123", "2") )
-  CHECK_GOOD( "LO-06", DcmLongString::checkStringValue(" Jörg Riesmeier ", "1") )
+  CHECK_GOOD( "LO-06", DcmLongString::checkStringValue(" J\366rg Riesmeier ", "1") )
 //  CHECK_BAD ( "LO-07", DcmLongString::checkStringValueu("OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany, http://www.offis.de/", "1") )
   CHECK_GOOD( "LO-08", DcmLongString::checkStringValue("\\ _2_ \\ _3_ \\ _4_ \\ _5_ \\", "6") )
   CHECK_GOOD( "LO-09", DcmLongString::checkStringValue("ESC\033aping", "1") )
   CHECK_BAD ( "LO-10", DcmLongString::checkStringValue("not allowed: \r\014", "1") )
 
   /* test "Long Text" */
-  CHECK_GOOD( "LT-01", DcmLongText::checkStringValue(" Hallo \\ 12345 \\ äöüß ") )
+  CHECK_GOOD( "LT-01", DcmLongText::checkStringValue(" Hallo \\ 12345 \\ \344\366\374\337 ") )
 
   /* test "Person Name" */
-  CHECK_GOOD( "PN-01", DcmPersonName::checkStringValue("A^Riesmeier^^=R^Jörg", "1") )
-  CHECK_GOOD( "PN-02", DcmPersonName::checkStringValue("A^Riesmeier^^=R^Jörg\\", "1-n") )
-  CHECK_BAD ( "PN-03", DcmPersonName::checkStringValue("A^Riesmeier^^=R^Jörg\\", "1") )
-  CHECK_GOOD( "PN-03", DcmPersonName::checkStringValue("Eichelberg^Marco^^Dr.=Onken^Michael^=Riesmeier^Jörg^^Dr.^", "1") )
+  CHECK_GOOD( "PN-01", DcmPersonName::checkStringValue("A^Riesmeier^^=R^J\366rg", "1") )
+  CHECK_GOOD( "PN-02", DcmPersonName::checkStringValue("A^Riesmeier^^=R^J\366rg\\", "1-n") )
+  CHECK_BAD ( "PN-03", DcmPersonName::checkStringValue("A^Riesmeier^^=R^J\366rg\\", "1") )
+  CHECK_GOOD( "PN-03", DcmPersonName::checkStringValue("Eichelberg^Marco^^Dr.=Onken^Michael^=Riesmeier^J\366rg^^Dr.^", "1") )
   CHECK_GOOD( "PN-05", DcmPersonName::checkStringValue("Eichelberg\\Onken\\Riesmeier", "3", OFTrue) )
   CHECK_BAD ( "PN-06", DcmPersonName::checkStringValue(" ") )
   CHECK_GOOD( "PN-07", DcmPersonName::checkStringValue(" A") )
   CHECK_GOOD( "PN-08", DcmPersonName::checkStringValue("^^^^") )
-  CHECK_GOOD( "PN-09", DcmPersonName::checkStringValue("^ Jörg ^") )
+  CHECK_GOOD( "PN-09", DcmPersonName::checkStringValue("^ J\366rg ^") )
   CHECK_GOOD( "PN-10", DcmPersonName::checkStringValue("^^^^MD ") )
   CHECK_BAD ( "PN-11", DcmPersonName::checkStringValue("^^^^^") )
 
@@ -177,7 +177,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "SH-03", DcmShortString::checkStringValue("ABC 123 abc _+-/", "1") )
   CHECK_GOOD( "SH-04", DcmShortString::checkStringValue("  ", "1") )
   CHECK_GOOD( "SH-05", DcmShortString::checkStringValue("ABC\\123", "2") )
-  CHECK_GOOD( "SH-06", DcmShortString::checkStringValue(" Jörg Riesmeier ", "1") )
+  CHECK_GOOD( "SH-06", DcmShortString::checkStringValue(" J\366rg Riesmeier ", "1") )
 //  CHECK_BAD ( "SH-07", DcmShortString::checkStringValue("OFFIS e.V., Oldenburg", "1") )
   CHECK_GOOD( "SH-08", DcmShortString::checkStringValue("\\ _2_ \\ _3_ \\ _4_ \\ _5_ \\", "6") )
   CHECK_BAD ( "SH-09", DcmShortString::checkStringValue(" ", "2") )
@@ -186,7 +186,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_BAD ( "SH-12", DcmShortString::checkStringValue("not allowed: \n\010\r\014", "1") )
 
   /* test "Short Text" */
-  CHECK_GOOD( "ST-01", DcmShortText::checkStringValue(" umlaut characters are allowed: ÄÖÜäöü\naccented characters also: áàéèíìâêô\rand control characters, of course, including \033=ESC ") )
+  CHECK_GOOD( "ST-01", DcmShortText::checkStringValue(" umlaut characters are allowed: \304\326\334\344\366\374\naccented characters also: \341\340\351\350\355\354\342\352\364\rand control characters, of course, including \033=ESC ") )
   CHECK_BAD ( "ST-02", DcmShortText::checkStringValue(" other control characters are not allowed: \013 \010 \200 ") )
 
   /* test "Time" */
