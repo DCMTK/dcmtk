@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,7 +31,6 @@
 
 class WlmDataSource;
 class OFCondition;
-class OFConsole;
 
 /** This class encapsulates data structures and operations for basic worklist management service
  *  class providers.

@@ -11,8 +11,6 @@ Changes between releases are documented here.
            ofstd/include/dcmtk/ofstd/ofpwd.h
            ofstd/libsrc/ofstd.cc
 
-**** Changes from 2012.09.06 (onken)
-
 - Added files that were missing in re-entrant patch commit.
   Added:   ofstd/include/dcmtk/ofstd/ofgrph.h
            ofstd/include/dcmtk/ofstd/ofpwd.h
@@ -44,6 +42,10 @@ Changes between releases are documented here.
            ofstd/libsrc/ofxml.cc
 
 **** Changes from 2012.09.06 (riesmeier)
+
+- Removed useless forward declaration of class OFConsole.
+  Affects: dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h
 
 - Replaced 8-bit characters (ISO 8859-1) with their octal representation.
   Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.

@@ -32,7 +32,6 @@ template <class T> class OFOrderedSet;
 struct WlmSuperiorSequenceInfoType;
 class DcmDataset;
 class DcmTagKey;
-class OFConsole;
 class OFCondition;
 class DcmItem;
 
