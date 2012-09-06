@@ -153,14 +153,11 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);
-              ofConsole.lockCout() << OFendl << "External libraries used:";
-              ofConsole.unlockCout();
+              COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-              ofConsole.lockCout() << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-              ofConsole.unlockCout();
+              COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-              ofConsole.lockCout() << " none" << OFendl;
-              ofConsole.unlockCout();
+              COUT << " none" << OFendl;
 #endif
               return 0;
           }

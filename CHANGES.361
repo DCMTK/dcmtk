@@ -43,6 +43,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.06 (riesmeier)
 
+- Replaced outdated use of ofConsole by COUT.
+  Affects: dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/pdf2dcm.cc
+
 - Added further classes that might be of interest.
   Affects: dcmdata/docs/dcmdata.dox
 
