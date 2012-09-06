@@ -43,6 +43,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.06 (riesmeier)
 
+- Removed outdated comment on the use or non-use of ofConsole.
+  Affects: dcmdata/libsrc/dcvr.cc
+
 - Removed useless forward declaration of class OFConsole.
   Affects: dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
            dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h

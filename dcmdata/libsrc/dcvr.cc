@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,8 +151,6 @@ DcmVRDict_checker::DcmVRDict_checker()
     for (int i=0; i<DcmVRDict_DIM; i++) {
         if (DcmVRDict[i].vr != i) {
             error_found = OFTrue;
-            // we can't use ofConsole here because this piece of code
-            // might be called before ofConsole is initialized.
             DCMDATA_FATAL("DcmVRDict: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName);
             abort();
         }
