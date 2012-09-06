@@ -28,6 +28,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.05 (riesmeier)
 
+- Fixed wrong parameter name in documentation of fdopen() and removed non-ASCII
+  character.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 - Adapted indentation and added comments to make more clear that the for loop
   has an empty body.
   Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.

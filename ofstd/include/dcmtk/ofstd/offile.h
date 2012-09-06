@@ -348,18 +348,18 @@ public:
     return result;
   }
 
-  /** associates a stream with the existing file descriptor, fildes. The mode
-   *  of the stream (one of the values "r", "r+", "w", "w+", "a", "a+") must be
+  /** associates a stream with the existing file descriptor 'fd'. The mode of
+   *  the stream (one of the values "r", "r+", "w", "w+", "a", "a+") must be
    *  compatible with the mode of the file descriptor. The file position
-   *  indicator of the new stream is set to that belong­ ing to fildes, and the
+   *  indicator of the new stream is set to that belonging to 'fd', and the
    *  error and end-of-file indicators are cleared. Modes "w" or "w+" do not
    *  cause truncation of the file. The file descriptor is not dup'ed, and
-   *  will be closed when the stream created by fdopen is closed. The result of
-   *  applying fdopen to a shared memory object is undefined.
+   *  will be closed when the stream created by fdopen is closed. The result
+   *  of applying fdopen to a shared memory object is undefined.
    *  @param fd file descriptor
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
-   *  @return true if stream was successfully created, false otherwise, in which
-   *    case the error code is set.
+   *  @return true if stream was successfully created, false otherwise, in
+   *    which case the error code is set.
    */
   OFBool fdopen(int fd, const char *modes)
   {
