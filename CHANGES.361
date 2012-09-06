@@ -43,6 +43,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.06 (riesmeier)
 
+- Added further classes that might be of interest.
+  Affects: dcmdata/docs/dcmdata.dox
+
 - Removed outdated comment on the use or non-use of ofConsole.
   Affects: dcmdata/libsrc/dcvr.cc
 

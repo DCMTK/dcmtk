@@ -11,6 +11,11 @@ The main interface classes are:
 \li \b DcmItem
 \li \b DcmElement
 
+Here are some further classes that are of interest:
+\li \b DcmTag
+\li \b DcmTagKey
+\li \b DicomDirInterface
+
 \section Tools
 
 This module contains the following command line tools:
