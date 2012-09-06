@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.06 (onken)
 
+- Fixed build for Visual Studio, broken by re-entrant patch.
+  Minor changes to avoid Visual Studio compiler warnings.
+  Affects: dcmqrdb/apps/dcmqrscp.cc
+           ofstd/include/dcmtk/ofstd/ofgrph.h
+           ofstd/include/dcmtk/ofstd/ofnetdb.h
+           ofstd/include/dcmtk/ofstd/ofpwd.h
+           ofstd/libsrc/ofstd.cc
+
+**** Changes from 2012.09.06 (onken)
+
 - Added files that were missing in re-entrant patch commit.
   Added:   ofstd/include/dcmtk/ofstd/ofgrph.h
            ofstd/include/dcmtk/ofstd/ofpwd.h

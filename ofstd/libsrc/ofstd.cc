@@ -2044,6 +2044,7 @@ OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
 #endif
 };
 
+#ifdef HAVE_GRP_H
 OFStandard::OFGroup OFStandard::getGrNam( const char* name )
 {
 #ifdef HAVE_GETGRNAM_R
@@ -2067,7 +2068,9 @@ OFStandard::OFGroup OFStandard::getGrNam( const char* name )
     return OFGroup( NULL );
 #endif
 };
+#endif // HAVE_GRP_H
 
+#ifdef HAVE_PWD_H
 OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
 {
 #ifdef HAVE_GETPWNAM_R
@@ -2091,6 +2094,7 @@ OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
     return OFPasswd( NULL );
 #endif
 };
+#endif // HAVE_PWD_H
 
 OFStandard::OFHostent::OFHostent()
 : h_name()
@@ -2102,34 +2106,13 @@ OFStandard::OFHostent::OFHostent()
 {
 }
 
-OFStandard::OFGroup::OFGroup()
-: gr_name()
-, gr_passwd()
-, gr_mem()
-, gr_gid()
-, ok( OFFalse )
-{
-}
-
-OFStandard::OFPasswd::OFPasswd()
-: pw_name()
-, pw_passwd()
-, pw_gecos()
-, pw_dir()
-, pw_shell()
-, pw_uid()
-, pw_gid()
-, ok( OFFalse )
-{
-}
-
 OFStandard::OFHostent::OFHostent( hostent* const h )
 : h_name()
 , h_aliases()
 , h_addr_list()
 , h_addrtype()
 , h_length()
-, ok( h )
+, ok(h != NULL)
 {
     if( ok )
     {
@@ -2143,12 +2126,25 @@ OFStandard::OFHostent::OFHostent( hostent* const h )
     }
 }
 
+OFBool OFStandard::OFHostent::operator!() const { return !ok; }
+OFStandard::OFHostent::operator OFBool() const { return ok; }
+
+#ifdef HAVE_GRP_H
+OFStandard::OFGroup::OFGroup()
+: gr_name()
+, gr_passwd()
+, gr_mem()
+, gr_gid()
+, ok( OFFalse )
+{
+}
+
 OFStandard::OFGroup::OFGroup( group* const g )
 : gr_name()
 , gr_passwd()
 , gr_mem()
 , gr_gid()
-, ok( g )
+, ok( g != NULL )
 {
     if( ok )
     {
@@ -2160,6 +2156,24 @@ OFStandard::OFGroup::OFGroup( group* const g )
     }
 }
 
+OFBool OFStandard::OFGroup::operator!() const { return !ok; }
+OFStandard::OFGroup::operator OFBool() const { return ok; }
+
+#endif // #ifdef HAVE_GRP_H
+
+#ifdef HAVE_PWD_H
+OFStandard::OFPasswd::OFPasswd()
+: pw_name()
+, pw_passwd()
+, pw_gecos()
+, pw_dir()
+, pw_shell()
+, pw_uid()
+, pw_gid()
+, ok( OFFalse )
+{
+}
+
 OFStandard::OFPasswd::OFPasswd( passwd* const p )
 : pw_name()
 , pw_passwd()
@@ -2168,7 +2182,7 @@ OFStandard::OFPasswd::OFPasswd( passwd* const p )
 , pw_shell()
 , pw_uid()
 , pw_gid()
-, ok( p )
+, ok( p != NULL )
 {
     if( ok )
     {
@@ -2182,9 +2196,7 @@ OFStandard::OFPasswd::OFPasswd( passwd* const p )
     }
 }
 
-OFBool OFStandard::OFHostent::operator!() const { return !ok; }
-OFStandard::OFHostent::operator OFBool() const { return ok; }
-OFBool OFStandard::OFGroup::operator!() const { return !ok; }
-OFStandard::OFGroup::operator OFBool() const { return ok; }
 OFBool OFStandard::OFPasswd::operator!() const { return !ok; }
 OFStandard::OFPasswd::operator OFBool() const { return ok; }
+
+#endif // HAVE_PWD_H

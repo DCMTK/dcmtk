@@ -23,6 +23,9 @@
 #ifndef OFGRP_H
 #define OFGRP_H
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
+
+#ifdef HAVE_GRP_H // Only makes sense if we have this header
+
 BEGIN_EXTERN_C
 #ifdef HAVE_GRP_H
 #include <grp.h>
@@ -43,10 +46,11 @@ END_EXTERN_C
  *  the overloaded operators "operator !" and "operator OFBool", therefore it behaves quite
  *  the same way as pointers in this regard.
  *  @note the downside of this non POD class is it leads to some unnecessary string copy
- *    operations. The resutling performancy penalty should be insignificant, howerver implementing
+ *    operations. The resutling performancy penalty should be insignificant, however implementing
  *    this class based on auto_ptr / unique_ptr or using c++11 move sematics would prevent that,
  *    if somebody thinks it is necessary.
  */
+
 class OFStandard::OFGroup
 {
 public:
@@ -87,5 +91,7 @@ private:
     /// internal state, OFTrue when valid.
     OFBool ok;
 };
+
+#endif // HAVE_GRP_H
 
 #endif // OFGRP_H

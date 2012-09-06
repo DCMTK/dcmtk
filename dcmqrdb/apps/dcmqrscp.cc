@@ -684,7 +684,7 @@ main(int argc, char *argv[])
     setuid(getuid());
 #endif
 
-#ifdef HAVE_SETUID
+#if defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
      OFStandard::OFGroup grp;
      OFStandard::OFPasswd pwd;
      const char *opt_UserName = NULL;
@@ -716,7 +716,7 @@ main(int argc, char *argv[])
          return 10;
        }
      }
-#endif
+#endif // defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
 
 #ifdef WITH_SQL_DATABASE
     // use SQL database
