@@ -151,6 +151,10 @@ END_EXTERN_C
 #include <process.h>     /* needed for declaration of getpid() */
 #endif
 
+#include "dcmtk/ofstd/ofnetdb.h"
+#include "dcmtk/ofstd/ofgrp.h"
+#include "dcmtk/ofstd/ofpwd.h"
+
 // --- ftoa() processing flags ---
 
 const unsigned int OFStandard::ftoa_format_e  = 0x01;
@@ -693,7 +697,12 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
     if (dirPtr != NULL)
     {
         struct dirent *entry = NULL;
+#ifdef HAVE_READDIR_R
+        dirent d = {};
+        while (!readdir_r(dirPtr, &d, &entry) && entry)
+#else
         while ((entry = readdir(dirPtr)) != NULL)
+#endif
         {
             /* filter out current and parent directory */
             if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
@@ -1984,3 +1993,198 @@ int OFStandard::rand_r(unsigned int &seed)
   seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
   return OFstatic_cast(int, seed);
 }
+
+#define MAX_NAME 65536
+
+OFStandard::OFHostent OFStandard::getHostByName( const char* name )
+{
+#ifdef HAVE_GETHOSTBYNAME_R
+    unsigned size = 32;
+    char* tmp = new char[size];
+    hostent* res = NULL;
+    hostent buf = {NULL};
+    int err = 0;
+    while( gethostbyname_r( name, &buf, tmp, size, &res, &err ) == ERANGE )
+    {
+        delete[] tmp;
+        if( size >= MAX_NAME )
+            return NULL;
+        tmp = new char[size*=2];
+    }
+    OFHostent h( res );
+    delete[] tmp;
+    return h;
+#else
+    return OFHostent( gethostbyname( name ) );
+#endif
+};
+
+OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
+                                     int len,
+                                     int type )
+{
+#ifdef HAVE_GETHOSTBYADDR_R
+    unsigned size = 32;
+    char* tmp = new char[size];
+    hostent* res = NULL;
+    hostent buf = {NULL};
+    int err = 0;
+    while( gethostbyaddr_r( addr, len, type, &buf, tmp, size, &res, &err ) == ERANGE )
+    {
+        delete[] tmp;
+        if( size >= MAX_NAME )
+            return NULL;
+        tmp = new char[size*=2];
+    }
+    OFHostent h( res );
+    delete[] tmp;
+    return h;
+#else
+    return OFHostent( gethostbyaddr( addr, len, type ) );
+#endif
+};
+
+OFStandard::OFGroup OFStandard::getGrNam( const char* name )
+{
+#ifdef HAVE_GETGRNAM_R
+    unsigned size = 32;
+    char* tmp = new char[size];
+    group* res = NULL;
+    group buf = {NULL};
+    while( getgrnam_r( name, &buf, tmp, size, &res ) == ERANGE )
+    {
+        delete[] tmp;
+        if( size >= MAX_NAME )
+            return NULL;
+        tmp = new char[size*=2];
+    }
+    OFGroup g( res );
+    delete[] tmp;
+    return g;
+#elif defined HAVE_GETGRNAM
+    return OFGroup( getgrnam( name ) );
+#else
+    return OFGroup( NULL );
+#endif
+};
+
+OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
+{
+#ifdef HAVE_GETPWNAM_R
+    unsigned size = 32;
+    char* tmp = new char[size];
+    passwd* res = NULL;
+    passwd buf = {NULL};
+    while( getpwnam_r( name, &buf, tmp, size, &res ) == ERANGE )
+    {
+        delete[] tmp;
+        if( size >= MAX_NAME )
+            return NULL;
+        tmp = new char[size*=2];
+    }
+    OFPasswd p( res );
+    delete[] tmp;
+    return p;
+#elif defined HAVE_GETPWNAM
+    return OFPasswd( getpwnam( name ) );
+#else
+    return OFPasswd( NULL );
+#endif
+};
+
+OFStandard::OFHostent::OFHostent()
+: h_name()
+, h_aliases()
+, h_addr_list()
+, h_addrtype()
+, h_length()
+, ok( OFFalse )
+{
+}
+
+OFStandard::OFGroup::OFGroup()
+: gr_name()
+, gr_passwd()
+, gr_mem()
+, gr_gid()
+, ok( OFFalse )
+{
+}
+
+OFStandard::OFPasswd::OFPasswd()
+: pw_name()
+, pw_passwd()
+, pw_gecos()
+, pw_dir()
+, pw_shell()
+, pw_uid()
+, pw_gid()
+, ok( OFFalse )
+{
+}
+
+OFStandard::OFHostent::OFHostent( hostent* const h )
+: h_name()
+, h_aliases()
+, h_addr_list()
+, h_addrtype()
+, h_length()
+, ok( h )
+{
+    if( ok )
+    {
+        h_name     = h->h_name;
+        h_addrtype = h->h_addrtype;
+        h_length   = h->h_length;
+        for( char** a = h->h_aliases; *a; ++a )
+            h_aliases.push_back( *a );
+        for( char** a = h->h_addr_list; *a; ++a )
+            h_addr_list.push_back( OFString( *a, h_length ) );
+    }
+}
+
+OFStandard::OFGroup::OFGroup( group* const g )
+: gr_name()
+, gr_passwd()
+, gr_mem()
+, gr_gid()
+, ok( g )
+{
+    if( ok )
+    {
+        gr_name   = g->gr_name;
+        gr_passwd = g->gr_passwd;
+        gr_gid    = g->gr_gid;
+        for( char** m = g->gr_mem; *m; ++m )
+            gr_mem.push_back( *m );
+    }
+}
+
+OFStandard::OFPasswd::OFPasswd( passwd* const p )
+: pw_name()
+, pw_passwd()
+, pw_gecos()
+, pw_dir()
+, pw_shell()
+, pw_uid()
+, pw_gid()
+, ok( p )
+{
+    if( ok )
+    {
+        pw_name   = p->pw_name;
+        pw_passwd = p->pw_passwd;
+        pw_uid    = p->pw_uid;
+        pw_gid    = p->pw_gid;
+        pw_gecos  = p->pw_gecos;
+        pw_dir    = p->pw_dir;
+        pw_shell  = p->pw_shell;
+    }
+}
+
+OFBool OFStandard::OFHostent::operator!() const { return !ok; }
+OFStandard::OFHostent::operator OFBool() const { return ok; }
+OFBool OFStandard::OFGroup::operator!() const { return !ok; }
+OFStandard::OFGroup::operator OFBool() const { return ok; }
+OFBool OFStandard::OFPasswd::operator!() const { return !ok; }
+OFStandard::OFPasswd::operator OFBool() const { return ok; }

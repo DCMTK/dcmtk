@@ -41,13 +41,11 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-
 /*------------------------*
  *  forward declarations  *
  *------------------------*/
 
 class OFFilename;
-
 
 /*---------------------*
  *  class declaration  *
@@ -76,6 +74,10 @@ class DCMTK_OFSTD_EXPORT OFStandard
         /// XML (Extensible Markup Language)
         MM_XML
     };
+
+    class OFHostent;
+    class OFGroup;
+    class OFPasswd;
 
     // --- string functions ---
 
@@ -639,6 +641,32 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /// maximum value that can be returned by rand_r()
     static const unsigned int rand_max;
 
+    /** Thread-safe version of gethostbyname.
+     *  @param name the host name.
+     *  @return a OFStandard::OFHostent object.
+     */
+    static OFHostent getHostByName( const char* name );
+
+    /** Thread-safe version of gethostbyaddr.
+     *  @param addr see manpage.
+     *  @param len see manpage.
+     *  @param type see manpage.
+     *  @return a OFStandard::OFHostent object.
+     */
+    static OFHostent getHostByAddr( const char* addr, int len, int type );
+
+    /** Thread-safe version of getgrnam.
+     *  @param name the group name.
+     *  @return a OFStandard::OFGroup object.
+     */
+    static OFGroup getGrNam( const char* name );
+
+    /** Thread-safe version of getpwnam.
+     *  @param name the username.
+     *  @return a OFStandard::OFPasswd object.
+     */
+    static OFPasswd getPwNam( const char* name );
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
@@ -668,6 +696,5 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static unsigned int my_sleep(unsigned int seconds);
 };
-
 
 #endif

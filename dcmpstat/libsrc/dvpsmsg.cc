@@ -36,6 +36,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate<> */
 #include "dcmtk/dcmdata/dcswap.h"      /* for swapIfNecessary() */
 #include "dcmtk/dcmnet/dcmtrans.h"    /* for class DcmTransportConnection */
+#include "dcmtk/ofstd/ofnetdb.h"
 
 /* --------------- class DVPSIPCMessage --------------- */
 
@@ -282,13 +283,13 @@ void DVPSIPCClient::requestConnection()
   int s = socket(AF_INET, SOCK_STREAM, 0);
   if (s < 0) return;
 
-  struct hostent *hp = gethostbyname("localhost");
-  if (NULL == hp) return;
+  OFStandard::OFHostent hp = OFStandard::getHostByName("localhost");
+  if (!hp) return;
 
   struct sockaddr_in server;
   server.sin_family = AF_INET;
   server.sin_port = (unsigned short) htons(port);
-  memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
+  memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
 
   if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0)
   {

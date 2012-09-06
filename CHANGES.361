@@ -1,6 +1,31 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.06 (schlamelcher)
+
+- Changed non-reentrant functions to re-entrant counterparts where possible.
+  Added:   ofstd/include/dcmtk/ofstd/ofgrp.h
+           ofstd/include/dcmtk/ofstd/ofpwd.h
+           ofstd/include/dcmtk/ofstd/ofnetdb.h
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmnet/libsrc/dcompat.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/libsrc/dvpsmsg.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/libsrc/dcmqrptb.cc
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/ofstd.cc
+           ofstd/libsrc/ofxml.cc
+
 **** Changes from 2012.09.05 (riesmeier)
 
 - Fixed minor linguistic error.

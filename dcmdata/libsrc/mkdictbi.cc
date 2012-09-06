@@ -132,7 +132,7 @@ getUserName(char* userString, int maxLen)
     return userString;
 #else
     char* s;
-    s = getlogin(); // thread unsafe
+    s = getlogin(); // thread unsafe?
     if (s == NULL) s = "<no-utmp-entry>";
     return strncpy(userString, s, maxLen);
 #endif

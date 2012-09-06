@@ -153,6 +153,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofnetdb.h"
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<OFBool> dcmStrictRoleSelection(OFFalse);
@@ -1548,7 +1549,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
     int nfound, connected;
     struct sockaddr from;
-    struct hostent *remote = NULL;
+    OFStandard::OFHostent remote;
     struct linger sockarg;
 
 #ifdef HAVE_FORK
@@ -1878,8 +1879,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
        ((int) from.sa_data[4]) & 0xff,
        ((int) from.sa_data[5]) & 0xff);
 
-    if (! dcmDisableGethostbyaddr.get()) remote = gethostbyaddr(&from.sa_data[2], 4, 2);
-    if (remote == NULL)
+    if (! dcmDisableGethostbyaddr.get())
+       remote = OFStandard::getHostByAddr(&from.sa_data[2], 4, 2);
+    if (!remote)
     {
         // reverse DNS lookup disabled or host not found, use numerical address
         OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address,
@@ -1888,13 +1890,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     }
     else
     {
-        client_dns_name = remote->h_name;
+        client_dns_name = remote.h_name.c_str();
 
         char node[128];
         if ((*network)->options & DUL_FULLDOMAINNAME)
-            OFStandard::strlcpy(node, remote->h_name, sizeof(node));
+            OFStandard::strlcpy(node, remote.h_name.c_str(), sizeof(node));
         else {
-            if (sscanf(remote->h_name, "%[^.]", node) != 1)
+            if (sscanf(remote.h_name.c_str(), "%[^.]", node) != 1)
                 node[0] = '\0';
         }
 

@@ -57,6 +57,7 @@ END_EXTERN_C
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/oftime.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -227,11 +228,12 @@ static associationType negotiateAssociation(
     }
     else
     {
-      time_t t = time(NULL);
+      OFTime t;
+      t.setCurrentTime();
       OFLOG_INFO(dcmpsrcvLogger, "Association Received (" << (*assoc)->params->DULparams.callingPresentationAddress
              << ":" << (*assoc)->params->DULparams.callingAPTitle << " -> "
              << (*assoc)->params->DULparams.calledAPTitle
-             << ") " << ctime(&t));
+             << ") " << t);
 
       ASC_setAPTitles((*assoc)->params, NULL, NULL, aetitle);
       /* Application Context Name */

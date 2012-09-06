@@ -55,12 +55,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_IO_H
 #include <io.h>
 #endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-#ifdef HAVE_GRP_H
-#include <grp.h>
-#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofconapp.h"
@@ -73,6 +67,8 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
+#include "dcmtk/ofstd/ofgrp.h"
+#include "dcmtk/ofstd/ofpwd.h"
 
 #ifdef WITH_SQL_DATABASE
 #include "dcmtk/dcmqrdbx/dcmqrdbq.h"
@@ -688,35 +684,35 @@ main(int argc, char *argv[])
     setuid(getuid());
 #endif
 
-#if defined(HAVE_GETGRNAM) && defined(HAVE_GETPWNAM) && defined(HAVE_SETUID)
-     struct group *grp = NULL;
-     struct passwd *pwd = NULL;
+#ifdef HAVE_SETUID
+     OFStandard::OFGroup grp;
+     OFStandard::OFPasswd pwd;
      const char *opt_UserName = NULL;
      const char *opt_GroupName = NULL;
 
      if (((opt_GroupName = config.getGroupName()) != NULL) && strlen(opt_GroupName) > 0)
      {
-       if (!(grp = getgrnam(opt_GroupName)))
+       if (!(grp = OFStandard::getGrNam(opt_GroupName)))
        {
          OFLOG_FATAL(dcmqrscpLogger, "bad group name " << opt_GroupName);
          return 10;
        }
-       if (setgid(grp->gr_gid) == -1)
+       if (setgid(grp.gr_gid) == -1)
        {
-         OFLOG_FATAL(dcmqrscpLogger, "setgid: Unable to set group id to group " << (unsigned)grp->gr_gid);
+         OFLOG_FATAL(dcmqrscpLogger, "setgid: Unable to set group id to group " << (unsigned)grp.gr_gid);
          return 10;
        }
      }
      if (((opt_UserName = config.getUserName()) != NULL) && strlen(opt_UserName) > 0)
      {
-       if (!(pwd = getpwnam(opt_UserName)))
+       if (!(pwd = OFStandard::getPwNam(opt_UserName)))
        {
          OFLOG_FATAL(dcmqrscpLogger, "bad user name " << opt_UserName);
          return 10;
        }
-       if (setuid(pwd->pw_uid) == -1)
+       if (setuid(pwd.pw_uid) == -1)
        {
-         OFLOG_FATAL(dcmqrscpLogger, "setuid: Unable to set user id to user " << (unsigned)pwd->pw_uid);
+         OFLOG_FATAL(dcmqrscpLogger, "setuid: Unable to set user id to user " << (unsigned)pwd.pw_uid);
          return 10;
        }
      }

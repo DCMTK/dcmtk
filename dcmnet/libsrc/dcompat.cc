@@ -381,7 +381,7 @@ int access(const char* path, int /* amode */)
 
 #endif
 
-
+#if 0 // never called, replaced by OFStandard::strerror()
 #ifndef HAVE_STRERROR
 
 #warning Your system does not seem to have the strerror() function
@@ -411,7 +411,7 @@ char *strerror(int errornum)
 }
 
 #endif /* ! HAVE_STRERROR */
-
+#endif
 
 #ifndef HAVE_TEMPNAM
 /*

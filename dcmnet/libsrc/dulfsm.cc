@@ -116,6 +116,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/ofstd/ofnetdb.h"
 
 /* At least Solaris doesn't define this */
 #ifndef INADDR_NONE
@@ -2181,7 +2182,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     char node[128];
     int  port;
     struct sockaddr_in server;
-    struct hostent *hp;
+    OFStandard::OFHostent hp;
     int s;
     struct linger sockarg;
 
@@ -2203,14 +2204,14 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     server.sin_family = AF_INET;
 
 #ifdef NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
-    hp = gethostbyname(node);
-    if (hp == NULL)
+    hp = OFStandard::getHostByName(node);
+    if (!hp)
     {
         char buf2[4095]; // node could be a long string
         sprintf(buf2, "Attempt to connect to unknown host: %s", node);
         return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
     }
-    (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
+    (void) memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
 #else
     /*
      * Under Win95 gethostbyname will not accept an IP address e.g.
@@ -2224,14 +2225,14 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         server.sin_addr.s_addr = addr;
     } else {
         // must be a host name
-        hp = gethostbyname(node);
-        if (hp == NULL)
+        hp = OFStandard::getHostByName(node);
+        if (!hp)
         {
           char buf2[4095]; // node could be a long string
           sprintf(buf2, "Attempt to connect to unknown host: %s", node);
           return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
         }
-        (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
+        (void) memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
     }
 #endif
 

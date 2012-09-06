@@ -322,10 +322,11 @@ char myIsTextWideChar(const void *b, int len) { return FALSE; }
         char *myWideCharToMultiByte(const wchar_t *s)
         {
             const wchar_t *ss=s;
-            int i=(int)wcsrtombs(NULL,&ss,0,NULL);
+            STD_NAMESPACE mbstate_t buf = STD_NAMESPACE mbstate_t();
+            int i=(int)wcsrtombs(NULL,&ss,0,&buf);
             if (i<0) return NULL;
             char *d=(char *)malloc(i+1);
-            wcsrtombs(d,&s,i,NULL);
+            wcsrtombs(d,&s,i,&buf);
             d[i]=0;
             return d;
         }
