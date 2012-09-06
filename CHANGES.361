@@ -26,7 +26,7 @@ Changes between releases are documented here.
            ofstd/libsrc/ofstd.cc
            ofstd/libsrc/ofxml.cc
 
-**** Changes from 2012.09.05 (riesmeier)
+**** Changes from 2012.09.06 (riesmeier)
 
 - Replaced 8-bit characters (ISO 8859-1) with their octal representation.
   Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for pointing this out.
