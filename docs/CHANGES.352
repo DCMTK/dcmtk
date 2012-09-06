@@ -3574,7 +3574,7 @@ Release 3.5.2 (Public Release - 2002-12-23)
 **** Changes from 2002.03.15 (eichelberg)
 
 - Fixed incorrect debug message.
-  Thanks to Gilles Mével <Gilles.Mevel@etiam.com> for the bug report and fix.
+  Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report and fix.
   Affects: dcmdata/libsrc/dcsequen.cc
 
 **** Changes from 2002.02.27 (eichelberg)
