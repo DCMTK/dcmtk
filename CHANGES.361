@@ -28,6 +28,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.05 (riesmeier)
 
+- Fixed wrong size value in memset() call, which caused only the first bytes
+  of the memory area to be initialized.
+  Thanks to Hans J. Johnson <hans-johnson@uiowa.edu> for the report and fix.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 - Fixed minor linguistic error.
   Thanks to Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr> for the patch.
   Affects: dcmimgle/libsrc/diimage.cc

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -862,7 +862,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
     unsigned char
-        *buffer=NULL,
+        * buffer = NULL,
         pduType,
         pduReserve;
     unsigned long
@@ -873,7 +873,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
         * prvCtx;
     DUL_PRESENTATIONCONTEXT
         * userPresentationCtx,
-        *requestedPresentationCtx;
+        * requestedPresentationCtx;
     DUL_SUBITEM
         * subItem;
     PRV_SCUSCPROLE
@@ -923,7 +923,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             userPresentationCtx = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
             if (userPresentationCtx == NULL) return EC_MemoryExhausted;
 
-            (void) memset(userPresentationCtx, 0, sizeof(userPresentationCtx));
+            (void) memset(userPresentationCtx, 0, sizeof(DUL_PRESENTATIONCONTEXT));
             userPresentationCtx->result = prvCtx->result;
             userPresentationCtx->presentationContextID = prvCtx->contextID;
             userPresentationCtx->proposedTransferSyntax = NULL;
