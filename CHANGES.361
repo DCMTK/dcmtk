@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.05 (riesmeier)
+
+- Fixed minor linguistic error.
+  Thanks to Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr> for the patch.
+  Affects: dcmimgle/libsrc/diimage.cc
+
 **** Changes from 2012.09.03 (riesmeier)
 
 - Fixed minor spelling errors.
