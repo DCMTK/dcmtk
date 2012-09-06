@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.06 (onken)
+
+- Added files that were missing in re-entrant patch commit.
+  Added:   ofstd/include/dcmtk/ofstd/ofgrph.h
+           ofstd/include/dcmtk/ofstd/ofpwd.h
+           ofstd/include/dcmtk/ofstd/ofnetdb.h
+
 **** Changes from 2012.09.06 (schlamelcher)
 
 - Changed non-reentrant functions to re-entrant counterparts where possible.
