@@ -4,8 +4,8 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-04-12 16:58:29
-**   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
+**   Date: 2012-09-07 12:29:45
+**   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
 **         ../data/private.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-04-12 16:58:29";
+const char* dcmBuiltinDictBuildDate = "2012-09-07 12:29:45";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -22973,6 +22973,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ContourImageSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x3006, 0x0018, 0x3006, 0x0018,
+      EVR_SQ, "PredecessorStructureSetSequence", 1, 1, "CP_1137",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x3006, 0x0020, 0x3006, 0x0020,
       EVR_SQ, "StructureSetROISequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -23726,15 +23730,31 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0088, 0x300a, 0x0088,
-      EVR_FL, "BeamDosePointDepth", 1, 1, "DICOM_2011",
+      EVR_FL, "RETIRED_BeamDosePointDepth", 1, 1, "CP_1138/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0089, 0x300a, 0x0089,
-      EVR_FL, "BeamDosePointEquivalentDepth", 1, 1, "DICOM_2011",
+      EVR_FL, "RETIRED_BeamDosePointEquivalentDepth", 1, 1, "CP_1138/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x008a, 0x300a, 0x008a,
-      EVR_FL, "BeamDosePointSSD", 1, 1, "DICOM_2011",
+      EVR_FL, "RETIRED_BeamDosePointSSD", 1, 1, "CP_1138/retired",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x008c, 0x300a, 0x008c,
+      EVR_SQ, "BeamDoseVerificationControlPointSequence", 1, 1, "CP_1138",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x008d, 0x300a, 0x008d,
+      EVR_FL, "AverageBeamDosePointDepth", 1, 1, "CP_1138",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x008e, 0x300a, 0x008e,
+      EVR_FL, "AverageBeamDosePointEquivalentDepth", 1, 1, "CP_1138",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x008f, 0x300a, 0x008f,
+      EVR_FL, "AverageBeamDosePointSSD", 1, 1, "CP_1138",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x00a0, 0x300a, 0x00a0,
@@ -24315,6 +24335,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x021a, 0x300a, 0x021a,
       EVR_DS, "ActiveSourceLength", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x021b, 0x300a, 0x021b,
+      EVR_SH, "SourceModel", 1, 1, "CP_1204",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x021c, 0x300a, 0x021c,
+      EVR_LO, "SourceDescription", 1, 1, "CP_1204",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0222, 0x300a, 0x0222,

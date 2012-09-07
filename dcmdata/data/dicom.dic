@@ -24,7 +24,7 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 152.
-# - CP 1064, 1123, 1147, 1188.
+# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1204.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3285,7 +3285,7 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1064, 1123, 1147, 1188
+# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1204
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
@@ -3293,9 +3293,22 @@
 #
 (0010,0200)	CS	QualityControlSubject	1	CP_1123
 #
+(3006,0018)	SQ	PredecessorStructureSetSequence	1	CP_1137
+#
+(300A,0088)	FL	RETIRED_BeamDosePointDepth	1	CP_1138/retired
+(300A,0089)	FL	RETIRED_BeamDosePointEquivalentDepth	1	CP_1138/retired
+(300A,008A)	FL	RETIRED_BeamDosePointSSD	1	CP_1138/retired
+(300A,008C)	SQ	BeamDoseVerificationControlPointSequence	1	CP_1138
+(300A,008D)	FL	AverageBeamDosePointDepth	1	CP_1138
+(300A,008E)	FL	AverageBeamDosePointEquivalentDepth	1	CP_1138
+(300A,008F)	FL	AverageBeamDosePointSSD	1	CP_1138
+#
 (0040,A171)	UI	ObservationUID	1	CP_1147
 #
 (300A,00EF)	SH	CompensatorTrayID	1	CP_1188
+#
+(300A,021B)	SH	SourceModel	1	CP_1204
+(300A,021C)	LO	SourceDescription	1	CP_1204
 #
 #---------------------------------------------------------------------------
 #

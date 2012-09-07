@@ -4,8 +4,8 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-04-12 16:58:25
-**   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
+**   Date: 2012-09-07 12:28:45
+**   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
 **         ../data/private.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-04-12 16:58:25"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-09-07 12:28:45"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3604
+** Number of entries: 3611
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2997,6 +2997,7 @@
 #define DCM_RTReferencedStudySequence            DcmTagKey(0x3006, 0x0012)
 #define DCM_RTReferencedSeriesSequence           DcmTagKey(0x3006, 0x0014)
 #define DCM_ContourImageSequence                 DcmTagKey(0x3006, 0x0016)
+#define DCM_PredecessorStructureSetSequence      DcmTagKey(0x3006, 0x0018)
 #define DCM_StructureSetROISequence              DcmTagKey(0x3006, 0x0020)
 #define DCM_ROINumber                            DcmTagKey(0x3006, 0x0022)
 #define DCM_ReferencedFrameOfReferenceUID        DcmTagKey(0x3006, 0x0024)
@@ -3185,9 +3186,13 @@
 #define DCM_BeamDoseSpecificationPoint           DcmTagKey(0x300a, 0x0082)
 #define DCM_BeamDose                             DcmTagKey(0x300a, 0x0084)
 #define DCM_BeamMeterset                         DcmTagKey(0x300a, 0x0086)
-#define DCM_BeamDosePointDepth                   DcmTagKey(0x300a, 0x0088)
-#define DCM_BeamDosePointEquivalentDepth         DcmTagKey(0x300a, 0x0089)
-#define DCM_BeamDosePointSSD                     DcmTagKey(0x300a, 0x008a)
+#define DCM_RETIRED_BeamDosePointDepth           DcmTagKey(0x300a, 0x0088)
+#define DCM_RETIRED_BeamDosePointEquivalentDepth DcmTagKey(0x300a, 0x0089)
+#define DCM_RETIRED_BeamDosePointSSD             DcmTagKey(0x300a, 0x008a)
+#define DCM_BeamDoseVerificationControlPointSequence DcmTagKey(0x300a, 0x008c)
+#define DCM_AverageBeamDosePointDepth            DcmTagKey(0x300a, 0x008d)
+#define DCM_AverageBeamDosePointEquivalentDepth  DcmTagKey(0x300a, 0x008e)
+#define DCM_AverageBeamDosePointSSD              DcmTagKey(0x300a, 0x008f)
 #define DCM_NumberOfBrachyApplicationSetups      DcmTagKey(0x300a, 0x00a0)
 #define DCM_BrachyApplicationSetupDoseSpecificationPoint DcmTagKey(0x300a, 0x00a2)
 #define DCM_BrachyApplicationSetupDose           DcmTagKey(0x300a, 0x00a4)
@@ -3333,6 +3338,8 @@
 #define DCM_SourceManufacturer                   DcmTagKey(0x300a, 0x0216)
 #define DCM_ActiveSourceDiameter                 DcmTagKey(0x300a, 0x0218)
 #define DCM_ActiveSourceLength                   DcmTagKey(0x300a, 0x021a)
+#define DCM_SourceModel                          DcmTagKey(0x300a, 0x021b)
+#define DCM_SourceDescription                    DcmTagKey(0x300a, 0x021c)
 #define DCM_SourceEncapsulationNominalThickness  DcmTagKey(0x300a, 0x0222)
 #define DCM_SourceEncapsulationNominalTransmission DcmTagKey(0x300a, 0x0224)
 #define DCM_SourceIsotopeName                    DcmTagKey(0x300a, 0x0226)

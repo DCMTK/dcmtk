@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.07 (riesmeier)
+
+- Added support for CP-1137, CP-1138 and CP-1204 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2012.09.06 (onken)
 
 - Fixed build for Visual Studio, broken by re-entrant patch.
