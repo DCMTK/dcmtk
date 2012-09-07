@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.07 (riesmeier)
 
+- Changed value of DCMTK_PACKAGE_DATE from "CVS" to "DEV".
+  Affects: CMake/DCMTK.cmake
+           config/configure
+           config/configure.in
+
 - Fixed some tag key constants of recently retired attributes (CP-1138).
   Affects: dcmrt/libsrc/drtrbs8.cc
 
