@@ -21,9 +21,9 @@
 DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     BeamDose(DCM_BeamDose),
-    BeamDosePointDepth(DCM_BeamDosePointDepth),
-    BeamDosePointEquivalentDepth(DCM_BeamDosePointEquivalentDepth),
-    BeamDosePointSSD(DCM_BeamDosePointSSD),
+    BeamDosePointDepth(DCM_RETIRED_BeamDosePointDepth),
+    BeamDosePointEquivalentDepth(DCM_RETIRED_BeamDosePointEquivalentDepth),
+    BeamDosePointSSD(DCM_RETIRED_BeamDosePointSSD),
     BeamDoseSpecificationPoint(DCM_BeamDoseSpecificationPoint),
     BeamMeterset(DCM_BeamMeterset),
     ReferencedBeamNumber(DCM_ReferencedBeamNumber)

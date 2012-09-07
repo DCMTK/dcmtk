@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.07 (riesmeier)
 
+- Fixed some tag key constants of recently retired attributes (CP-1138).
+  Affects: dcmrt/libsrc/drtrbs8.cc
+
 - Added support for CP-1137, CP-1138 and CP-1204 to data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
