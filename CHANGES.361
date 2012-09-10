@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.10 (riesmeier)
 
+- Replaced remaining tabs by spaces and fixed indention.
+  Affects: dcmnet/libsrc/dimcmd.cc
+
 - Fixed some minor inconsistencies between the data dictionary and part 6 of
   the DICOM standard. This mainly affects the spelling of the attribute names.
   Also added some tags that were missing because they are not used in part 3.
