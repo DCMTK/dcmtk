@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-10 10:28:25
+**   Date: 2012-09-10 12:15:52
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-09-10 10:28:25";
+const char* dcmBuiltinDictBuildDate = "2012-09-10 12:15:52";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -12130,7 +12130,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1044, 0x0022, 0x1044,
-      EVR_SQ, "OphthalmicUltrasoundAxialMethodCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1050, 0x0022, 0x1050,
@@ -12238,7 +12238,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1135, 0x0022, 0x1135,
-      EVR_SQ, "SourceOfRefractiveMeasurementsCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfRefractiveErrorDataCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1140, 0x0022, 0x1140,
@@ -19108,11 +19108,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0048, 0x021e, 0x0048, 0x021e,
-      EVR_SL, "RowPositionInTotalImagePixelMatrix", 1, 1, "DICOM_2011",
+      EVR_SL, "ColumnPositionInTotalImagePixelMatrix", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0048, 0x021f, 0x0048, 0x021f,
-      EVR_SL, "ColumnPositionInTotalImagePixelMatrix", 1, 1, "DICOM_2011",
+      EVR_SL, "RowPositionInTotalImagePixelMatrix", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0048, 0x0301, 0x0048, 0x0301,

@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.10 (riesmeier)
 
+- Reverted tag definition for Row/ColumnPositionInTotalImagePixelMatrix after
+  rechecking with DICOM WG-6 and comparing with Supplement 145 (WSI). Also
+  changed attributes names for tags (0022,1044) and (0022,1135) in order to
+  be consistent with part 6 of the DICOM 2011 standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Replaced remaining tabs by spaces and fixed indention.
   Affects: dcmnet/libsrc/dimcmd.cc
 

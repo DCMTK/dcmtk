@@ -1254,7 +1254,8 @@
 (0022,1037)	FL	TargetRefraction	1	DICOM_2011
 (0022,1039)	CS	RefractiveProcedureOccurred	1	DICOM_2011
 (0022,1040)	SQ	RefractiveSurgeryTypeCodeSequence	1	DICOM_2011
-(0022,1044)	SQ	OphthalmicUltrasoundAxialMethodCodeSequence	1	DICOM_2011
+# name of the following attribute is 'OphthalmicUltrasoundMethodCodeSequence' in part 3
+(0022,1044)	SQ	OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence	1	DICOM_2011
 (0022,1050)	SQ	OphthalmicAxialLengthMeasurementsSequence	1	DICOM_2011
 (0022,1053)	FL	IOLPower	1	DICOM_2011
 (0022,1054)	FL	PredictedRefractiveError	1	DICOM_2011
@@ -1281,7 +1282,8 @@
 (0022,1132)	SQ	SourceOfLensThicknessDataCodeSequence	1	DICOM_2011
 (0022,1133)	SQ	SourceOfAnteriorChamberDepthDataCodeSequence	1	DICOM_2011
 (0022,1134)	SQ	SourceOfRefractiveMeasurementsSequence	1	DICOM_2011
-(0022,1135)	SQ	SourceOfRefractiveMeasurementsCodeSequence	1	DICOM_2011
+# name of the following attribute is 'SourceOfRefractiveMeasurementsCodeSequence' in part 3
+(0022,1135)	SQ	SourceOfRefractiveErrorDataCodeSequence	1	DICOM_2011
 (0022,1140)	CS	OphthalmicAxialLengthMeasurementModified	1	DICOM_2011
 (0022,1150)	SQ	OphthalmicAxialLengthDataSourceCodeSequence	1	DICOM_2011
 (0022,1153)	SQ	OphthalmicAxialLengthAcquisitionMethodCodeSequence	1	DICOM_2011
@@ -1911,8 +1913,8 @@
 (0048,0202)	US	BottomRightHandCornerOfLocalizerArea	2	DICOM_2011
 (0048,0207)	SQ	OpticalPathIdentificationSequence	1	DICOM_2011
 (0048,021A)	SQ	PlanePositionSlideSequence	1	DICOM_2011
-(0048,021E)	SL	RowPositionInTotalImagePixelMatrix	1	DICOM_2011
-(0048,021F)	SL	ColumnPositionInTotalImagePixelMatrix	1	DICOM_2011
+(0048,021E)	SL	ColumnPositionInTotalImagePixelMatrix	1	DICOM_2011
+(0048,021F)	SL	RowPositionInTotalImagePixelMatrix	1	DICOM_2011
 (0048,0301)	CS	PixelOriginInterpretation	1	DICOM_2011
 (0050,0004)	CS	CalibrationImage	1	DICOM_2011
 (0050,0010)	SQ	DeviceSequence	1	DICOM_2011
