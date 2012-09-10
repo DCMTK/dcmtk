@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-10 08:50:54
+**   Date: 2012-09-10 10:28:25
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-09-10 08:50:54";
+const char* dcmBuiltinDictBuildDate = "2012-09-10 10:28:25";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -86,7 +86,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0800, 0x0000, 0x0800,
-      EVR_US, "DataSetType", 1, 1, "DICOM_2011",
+      EVR_US, "CommandDataSetType", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0850, 0x0000, 0x0850,
@@ -134,19 +134,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x1020, 0x0000, 0x1020,
-      EVR_US, "NumberOfRemainingSubOperations", 1, 1, "DICOM_2011",
+      EVR_US, "NumberOfRemainingSuboperations", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x1021, 0x0000, 0x1021,
-      EVR_US, "NumberOfCompletedSubOperations", 1, 1, "DICOM_2011",
+      EVR_US, "NumberOfCompletedSuboperations", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x1022, 0x0000, 0x1022,
-      EVR_US, "NumberOfFailedSubOperations", 1, 1, "DICOM_2011",
+      EVR_US, "NumberOfFailedSuboperations", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x1023, 0x0000, 0x1023,
-      EVR_US, "NumberOfWarningSubOperations", 1, 1, "DICOM_2011",
+      EVR_US, "NumberOfWarningSuboperations", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x1030, 0x0000, 0x1030,
@@ -12114,7 +12114,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1035, 0x0022, 0x1035,
-      EVR_SQ, "SourceofOphthalmicAxialLengthCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfOphthalmicAxialLengthCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1037, 0x0022, 0x1037,
@@ -12130,7 +12130,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1044, 0x0022, 0x1044,
-      EVR_SQ, "OphthalmicUltrasoundMethodCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "OphthalmicUltrasoundAxialMethodCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1050, 0x0022, 0x1050,
@@ -12167,6 +12167,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0022, 0x1093, 0x0022, 0x1093,
       EVR_LO, "IOLManufacturer", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1094, 0x0022, 0x1094,
+      EVR_LO, "LensConstantDescription", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1095, 0x0022, 0x1095,
@@ -12222,19 +12226,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1132, 0x0022, 0x1132,
-      EVR_SQ, "SourceofLensThicknessDataCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfLensThicknessDataCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1133, 0x0022, 0x1133,
-      EVR_SQ, "SourceofAnteriorChamberDepthDataCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfAnteriorChamberDepthDataCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1134, 0x0022, 0x1134,
-      EVR_SQ, "SourceofRefractiveMeasurementsSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfRefractiveMeasurementsSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1135, 0x0022, 0x1135,
-      EVR_SQ, "SourceofRefractiveMeasurementsCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfRefractiveMeasurementsCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1140, 0x0022, 0x1140,
@@ -12245,8 +12249,12 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "OphthalmicAxialLengthDataSourceCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0022, 0x1153, 0x0022, 0x1153,
+      EVR_SQ, "OphthalmicAxialLengthAcquisitionMethodCodeSequence", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0022, 0x1155, 0x0022, 0x1155,
-      EVR_FL, "SignaltoNoiseRatio", 1, 1, "DICOM_2011",
+      EVR_FL, "SignalToNoiseRatio", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1159, 0x0022, 0x1159,
@@ -12299,6 +12307,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0022, 0x1265, 0x0022, 0x1265,
       EVR_SQ, "OphthalmicAxialLengthQualityMetricTypeCodeSequence", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1273, 0x0022, 0x1273,
+      EVR_LO, "OphthalmicAxialLengthQualityMetricTypeDescription", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1300, 0x0022, 0x1300,
@@ -13021,6 +13033,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0024, 0x0098, 0x0024, 0x0098,
       EVR_FL, "QuantifiedDefect", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0100, 0x0024, 0x0100,
+      EVR_FL, "AgeCorrectedSensitivityDeviationProbabilityValue", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0024, 0x0102, 0x0024, 0x0102,

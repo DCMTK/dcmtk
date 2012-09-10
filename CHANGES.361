@@ -3,7 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.10 (riesmeier)
 
-- Fixed wrong attribute tags for Row/ColumnsPositionInTotalImagePixelMatrix.
+- Fixed some minor inconsistencies between the data dictionary and part 6 of
+  the DICOM standard. This mainly affects the spelling of the attribute names.
+  Also added some tags that were missing because they are not used in part 3.
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmnet/libsrc/dimcmd.cc
+
+- Fixed wrong attribute tags for Row/ColumnPositionInTotalImagePixelMatrix.
   Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h

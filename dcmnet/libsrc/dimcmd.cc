@@ -430,7 +430,7 @@ buildCommonRQ(DcmDataset *obj, Uint16 command, Uint16 messageID,
     OFCondition cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
     cond = addUS(obj, DCM_CommandField, command); RET(cond);
     cond = addUS(obj, DCM_MessageID, messageID); RET(cond);
-    cond = addUS(obj, DCM_DataSetType, dataSetType); RET(cond);
+    cond = addUS(obj, DCM_CommandDataSetType, dataSetType); RET(cond);
 
     return EC_Normal;
 }
@@ -441,7 +441,7 @@ parseCommonRQ(DcmDataset *obj, Uint16 *command, Uint16 *messageID,
 {
     OFCondition cond = getAndDeleteUS(obj, DCM_CommandField, command); RET(cond);
     cond = getAndDeleteUS(obj, DCM_MessageID, messageID); RET(cond);
-    cond = getAndDeleteUS(obj, DCM_DataSetType, dataSetType); RET(cond);
+    cond = getAndDeleteUS(obj, DCM_CommandDataSetType, dataSetType); RET(cond);
 
     return EC_Normal;
 }
@@ -455,7 +455,7 @@ buildCommonRSP(DcmDataset *obj, Uint16 command,
     OFCondition cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
     cond = addUS(obj, DCM_CommandField, command); RET(cond);
     cond = addUS(obj, DCM_MessageIDBeingRespondedTo, messageIDBeingRespondedTo); RET(cond);
-    cond = addUS(obj, DCM_DataSetType, dataSetType); RET(cond);
+    cond = addUS(obj, DCM_CommandDataSetType, dataSetType); RET(cond);
     cond = addUS(obj, DCM_Status, status); RET(cond);
 
     return EC_Normal;
@@ -469,7 +469,7 @@ parseCommonRSP(DcmDataset *obj, Uint16 *command,
     OFCondition cond = getAndDeleteUS(obj, DCM_CommandField, command); RET(cond);
     cond = getAndDeleteUS(obj, DCM_MessageIDBeingRespondedTo,
     	messageIDBeingRespondedTo);	 RET(cond);
-    cond = getAndDeleteUS(obj, DCM_DataSetType, dataSetType); RET(cond);
+    cond = getAndDeleteUS(obj, DCM_CommandDataSetType, dataSetType); RET(cond);
     cond = getAndDeleteUS(obj, DCM_Status, status); RET(cond);
 
     return EC_Normal;
@@ -864,19 +864,19 @@ buildCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
             e->AffectedSOPClassUID, OFFalse); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFREMAININGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfRemainingSubOperations,
+        cond = addUS(obj, DCM_NumberOfRemainingSuboperations,
             e->NumberOfRemainingSubOperations); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfCompletedSubOperations,
+        cond = addUS(obj, DCM_NumberOfCompletedSuboperations,
             e->NumberOfCompletedSubOperations); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFFAILEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfFailedSubOperations,
+        cond = addUS(obj, DCM_NumberOfFailedSuboperations,
             e->NumberOfFailedSubOperations); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFWARNINGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfWarningSubOperations,
+        cond = addUS(obj, DCM_NumberOfWarningSuboperations,
             e->NumberOfWarningSubOperations); RET(cond);
     }
     return cond;
@@ -909,19 +909,19 @@ parseCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
     if (cond.good()) e->opts |= O_GET_AFFECTEDSOPCLASSUID;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSuboperations,
         &e->NumberOfRemainingSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFREMAININGSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSuboperations,
         &e->NumberOfCompletedSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSuboperations,
         &e->NumberOfFailedSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFFAILEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSuboperations,
         &e->NumberOfWarningSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFWARNINGSUBOPERATIONS;
 
@@ -995,19 +995,19 @@ buildCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
             e->AffectedSOPClassUID, OFFalse); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFREMAININGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfRemainingSubOperations,
+        cond = addUS(obj, DCM_NumberOfRemainingSuboperations,
             e->NumberOfRemainingSubOperations); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfCompletedSubOperations,
+        cond = addUS(obj, DCM_NumberOfCompletedSuboperations,
             e->NumberOfCompletedSubOperations); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFFAILEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfFailedSubOperations,
+        cond = addUS(obj, DCM_NumberOfFailedSuboperations,
             e->NumberOfFailedSubOperations); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFWARNINGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfWarningSubOperations,
+        cond = addUS(obj, DCM_NumberOfWarningSuboperations,
             e->NumberOfWarningSubOperations); RET(cond);
     }
     return cond;
@@ -1040,19 +1040,19 @@ parseCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
     if (cond.good()) e->opts |= O_MOVE_AFFECTEDSOPCLASSUID;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSuboperations,
         &e->NumberOfRemainingSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSuboperations,
         &e->NumberOfCompletedSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSuboperations,
         &e->NumberOfFailedSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFFAILEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSubOperations,
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSuboperations,
         &e->NumberOfWarningSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
 
@@ -1069,7 +1069,7 @@ buildCCancelRQ(T_DIMSE_C_CancelRQ * e, DcmDataset * obj)
     OFCondition cond = addUS(obj, DCM_CommandField, DIMSE_C_CANCEL_RQ); RET(cond);
     cond = addUS(obj, DCM_MessageIDBeingRespondedTo,
     	e->MessageIDBeingRespondedTo); RET(cond);
-    cond = addUS(obj, DCM_DataSetType, e->DataSetType); RET(cond);
+    cond = addUS(obj, DCM_CommandDataSetType, e->DataSetType); RET(cond);
 
     return EC_Normal;
 }
@@ -1084,7 +1084,7 @@ parseCCancelRQ(T_DIMSE_C_CancelRQ * e, DcmDataset * obj)
     OFCondition cond = getAndDeleteUS(obj, DCM_CommandField, &cmd); RET(cond);
     cond = getAndDeleteUS(obj, DCM_MessageIDBeingRespondedTo,
         &msgid); RET(cond);
-    cond = getAndDeleteUS(obj, DCM_DataSetType, &dtype); RET(cond);
+    cond = getAndDeleteUS(obj, DCM_CommandDataSetType, &dtype); RET(cond);
 
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
