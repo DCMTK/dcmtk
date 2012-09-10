@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-07 12:28:45
+**   Date: 2012-09-10 08:50:30
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-09-07 12:28:45"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-09-10 08:50:30"
 
 
 /*
@@ -2197,8 +2197,8 @@
 #define DCM_BottomRightHandCornerOfLocalizerArea DcmTagKey(0x0048, 0x0202)
 #define DCM_OpticalPathIdentificationSequence    DcmTagKey(0x0048, 0x0207)
 #define DCM_PlanePositionSlideSequence           DcmTagKey(0x0048, 0x021a)
-#define DCM_ColumnPositionInTotalImagePixelMatrix DcmTagKey(0x0048, 0x021e)
-#define DCM_RowPositionInTotalImagePixelMatrix   DcmTagKey(0x0048, 0x021f)
+#define DCM_RowPositionInTotalImagePixelMatrix   DcmTagKey(0x0048, 0x021e)
+#define DCM_ColumnPositionInTotalImagePixelMatrix DcmTagKey(0x0048, 0x021f)
 #define DCM_PixelOriginInterpretation            DcmTagKey(0x0048, 0x0301)
 #define DCM_CalibrationImage                     DcmTagKey(0x0050, 0x0004)
 #define DCM_DeviceSequence                       DcmTagKey(0x0050, 0x0010)

@@ -1907,8 +1907,8 @@
 (0048,0202)	US	BottomRightHandCornerOfLocalizerArea	2	DICOM_2011
 (0048,0207)	SQ	OpticalPathIdentificationSequence	1	DICOM_2011
 (0048,021A)	SQ	PlanePositionSlideSequence	1	DICOM_2011
-(0048,021E)	SL	ColumnPositionInTotalImagePixelMatrix	1	DICOM_2011
-(0048,021F)	SL	RowPositionInTotalImagePixelMatrix	1	DICOM_2011
+(0048,021E)	SL	RowPositionInTotalImagePixelMatrix	1	DICOM_2011
+(0048,021F)	SL	ColumnPositionInTotalImagePixelMatrix	1	DICOM_2011
 (0048,0301)	CS	PixelOriginInterpretation	1	DICOM_2011
 (0050,0004)	CS	CalibrationImage	1	DICOM_2011
 (0050,0010)	SQ	DeviceSequence	1	DICOM_2011

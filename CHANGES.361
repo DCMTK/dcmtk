@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.10 (riesmeier)
+
+- Fixed wrong attribute tags for Row/ColumnsPositionInTotalImagePixelMatrix.
+  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2012.09.07 (riesmeier)
 
 - Changed value of DCMTK_PACKAGE_DATE from "CVS" to "DEV".
