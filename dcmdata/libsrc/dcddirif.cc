@@ -478,8 +478,8 @@ static OFBool compareSQAttributes(DcmSequenceOfItems *seq1,
 }
 
 
-// get directory record name from type
-static OFString recordTypeToName(const E_DirRecType recordType)
+// get directory record name from type (static)
+OFString DicomDirInterface::recordTypeToName(const E_DirRecType recordType)
 {
     const char *recordName = NULL;
     switch (recordType)

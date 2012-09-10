@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.10 (onken)
+
+- Made static helper function accessible from outside.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2012.09.10 (riesmeier)
 
 - Reverted tag definition for Row/ColumnPositionInTotalImagePixelMatrix after
