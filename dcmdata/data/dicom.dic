@@ -1254,8 +1254,7 @@
 (0022,1037)	FL	TargetRefraction	1	DICOM_2011
 (0022,1039)	CS	RefractiveProcedureOccurred	1	DICOM_2011
 (0022,1040)	SQ	RefractiveSurgeryTypeCodeSequence	1	DICOM_2011
-# name of the following attribute is 'OphthalmicUltrasoundMethodCodeSequence' in part 3
-(0022,1044)	SQ	OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence	1	DICOM_2011
+(0022,1044)	SQ	OphthalmicUltrasoundMethodCodeSequence	1	DICOM_2011
 (0022,1050)	SQ	OphthalmicAxialLengthMeasurementsSequence	1	DICOM_2011
 (0022,1053)	FL	IOLPower	1	DICOM_2011
 (0022,1054)	FL	PredictedRefractiveError	1	DICOM_2011
@@ -1265,6 +1264,7 @@
 (0022,1090)	SQ	IOLPowerSequence	1	DICOM_2011
 (0022,1092)	SQ	LensConstantSequence	1	DICOM_2011
 (0022,1093)	LO	IOLManufacturer	1	DICOM_2011
+# the following attribute will be retired
 (0022,1094)	LO	LensConstantDescription	1	DICOM_2011
 (0022,1095)	LO	ImplantName	1	DICOM_2011
 (0022,1096)	SQ	KeratometryMeasurementTypeCodeSequence	1	DICOM_2011
@@ -1282,10 +1282,10 @@
 (0022,1132)	SQ	SourceOfLensThicknessDataCodeSequence	1	DICOM_2011
 (0022,1133)	SQ	SourceOfAnteriorChamberDepthDataCodeSequence	1	DICOM_2011
 (0022,1134)	SQ	SourceOfRefractiveMeasurementsSequence	1	DICOM_2011
-# name of the following attribute is 'SourceOfRefractiveMeasurementsCodeSequence' in part 3
-(0022,1135)	SQ	SourceOfRefractiveErrorDataCodeSequence	1	DICOM_2011
+(0022,1135)	SQ	SourceOfRefractiveMeasurementsCodeSequence	1	DICOM_2011
 (0022,1140)	CS	OphthalmicAxialLengthMeasurementModified	1	DICOM_2011
 (0022,1150)	SQ	OphthalmicAxialLengthDataSourceCodeSequence	1	DICOM_2011
+# the following attribute will be retired
 (0022,1153)	SQ	OphthalmicAxialLengthAcquisitionMethodCodeSequence	1	DICOM_2011
 (0022,1155)	FL	SignalToNoiseRatio	1	DICOM_2011
 (0022,1159)	LO	OphthalmicAxialLengthDataSourceDescription	1	DICOM_2011
@@ -1300,7 +1300,9 @@
 (0022,1257)	SQ	SelectedSegmentalOphthalmicAxialLengthSequence	1	DICOM_2011
 (0022,1260)	SQ	SelectedTotalOphthalmicAxialLengthSequence	1	DICOM_2011
 (0022,1262)	SQ	OphthalmicAxialLengthQualityMetricSequence	1	DICOM_2011
+# the following attribute will be retired
 (0022,1265)	SQ	OphthalmicAxialLengthQualityMetricTypeCodeSequence	1	DICOM_2011
+# the following attribute will be retired
 (0022,1273)	LO	OphthalmicAxialLengthQualityMetricTypeDescription	1	DICOM_2011
 (0022,1300)	SQ	IntraocularLensCalculationsRightEyeSequence	1	DICOM_2011
 (0022,1310)	SQ	IntraocularLensCalculationsLeftEyeSequence	1	DICOM_2011

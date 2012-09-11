@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-10 12:15:51
+**   Date: 2012-09-11 09:59:54
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-09-10 12:15:51"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-09-11 09:59:54"
 
 
 /*
@@ -1350,7 +1350,7 @@
 #define DCM_TargetRefraction                     DcmTagKey(0x0022, 0x1037)
 #define DCM_RefractiveProcedureOccurred          DcmTagKey(0x0022, 0x1039)
 #define DCM_RefractiveSurgeryTypeCodeSequence    DcmTagKey(0x0022, 0x1040)
-#define DCM_OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence DcmTagKey(0x0022, 0x1044)
+#define DCM_OphthalmicUltrasoundMethodCodeSequence DcmTagKey(0x0022, 0x1044)
 #define DCM_OphthalmicAxialLengthMeasurementsSequence DcmTagKey(0x0022, 0x1050)
 #define DCM_IOLPower                             DcmTagKey(0x0022, 0x1053)
 #define DCM_PredictedRefractiveError             DcmTagKey(0x0022, 0x1054)
@@ -1377,7 +1377,7 @@
 #define DCM_SourceOfLensThicknessDataCodeSequence DcmTagKey(0x0022, 0x1132)
 #define DCM_SourceOfAnteriorChamberDepthDataCodeSequence DcmTagKey(0x0022, 0x1133)
 #define DCM_SourceOfRefractiveMeasurementsSequence DcmTagKey(0x0022, 0x1134)
-#define DCM_SourceOfRefractiveErrorDataCodeSequence DcmTagKey(0x0022, 0x1135)
+#define DCM_SourceOfRefractiveMeasurementsCodeSequence DcmTagKey(0x0022, 0x1135)
 #define DCM_OphthalmicAxialLengthMeasurementModified DcmTagKey(0x0022, 0x1140)
 #define DCM_OphthalmicAxialLengthDataSourceCodeSequence DcmTagKey(0x0022, 0x1150)
 #define DCM_OphthalmicAxialLengthAcquisitionMethodCodeSequence DcmTagKey(0x0022, 0x1153)

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-10 12:15:52
+**   Date: 2012-09-11 09:59:55
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-09-10 12:15:52";
+const char* dcmBuiltinDictBuildDate = "2012-09-11 09:59:55";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -12130,7 +12130,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1044, 0x0022, 0x1044,
-      EVR_SQ, "OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "OphthalmicUltrasoundMethodCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1050, 0x0022, 0x1050,
@@ -12238,7 +12238,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1135, 0x0022, 0x1135,
-      EVR_SQ, "SourceOfRefractiveErrorDataCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "SourceOfRefractiveMeasurementsCodeSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1140, 0x0022, 0x1140,

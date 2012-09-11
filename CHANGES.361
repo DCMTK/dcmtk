@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.11 (riesmeier)
+
+- Reverted attribute names for tags (0022,1044) and (0022,1135) after feedback
+  from DICOM WG-6 or rather the editor of the DICOM standard David Clunie.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2012.09.11 (onken)
 
 - Adapted comments to coding style and re-newed copyright header.
@@ -16,7 +24,7 @@ Changes between releases are documented here.
 
 - Reverted tag definition for Row/ColumnPositionInTotalImagePixelMatrix after
   rechecking with DICOM WG-6 and comparing with Supplement 145 (WSI). Also
-  changed attributes names for tags (0022,1044) and (0022,1135) in order to
+  changed attribute names for tags (0022,1044) and (0022,1135) in order to
   be consistent with part 6 of the DICOM 2011 standard.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
