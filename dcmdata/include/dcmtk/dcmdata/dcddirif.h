@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -551,11 +551,10 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     static const char *getProfileName(const E_ApplicationProfile profile);
 
     /** get string associated with the given directory record entry type.
-     *  @param recordType The record type
-     *  @return Clear text string representing the record type
+     *  @param recordType record type
+     *  @return text string representing the record type
      */
     static OFString recordTypeToName(const E_DirRecType recordType);
-
 
   protected:
 

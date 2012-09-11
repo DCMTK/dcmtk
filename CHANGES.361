@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.11 (onken)
+
+- Adapted comments to coding style and re-newed copyright header.
+  Affects: dcmdata/include/dcmdata/dcddirif.h
+
 **** Changes from 2012.09.10 (onken)
 
 - Made static helper function accessible from outside.
