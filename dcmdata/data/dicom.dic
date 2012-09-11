@@ -352,7 +352,9 @@
 (0014,3011)	DS	InternalDetectorFrameTime	1	DICOM_2011
 (0014,3012)	DS	NumberOfFramesIntegrated	1	DICOM_2011
 (0014,3020)	SQ	DetectorTemperatureSequence	1	DICOM_2011
-(0014,3022)	DS	SensorName	1	DICOM_2011
+# the VR of the following attribute is "ST" according to ASTM E2699-11 (DICONDE),
+# but "DS" according to DICOM PS 3.6-2011; the former makes more sense and is correct
+(0014,3022)	ST	SensorName	1	DICOM_2011
 (0014,3024)	DS	HorizontalOffsetOfSensor	1	DICOM_2011
 (0014,3026)	DS	VerticalOffsetOfSensor	1	DICOM_2011
 (0014,3028)	DS	SensorTemperature	1	DICOM_2011
