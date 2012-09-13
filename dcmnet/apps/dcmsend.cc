@@ -517,7 +517,7 @@ int main(int argc, char *argv[])
                 if (numToBeSent > 0)
                 {
                     OFLOG_WARN(dcmsendLogger, "trying to continue with a new association "
-                        << "in order to sent the remaining " << numToBeSent << " SOP instances");
+                        << "in order to send the remaining " << numToBeSent << " SOP instances");
                 }
             } else {
                 OFLOG_FATAL(dcmsendLogger, "cannot negotiate network association: " << status.text());

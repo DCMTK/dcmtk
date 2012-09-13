@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.13 (riesmeier)
+
+- Fixed small typo in log message.
+  Affects: dcmnet/apps/dcmsend.cc
+
 **** Changes from 2012.09.11 (riesmeier)
 
 - Fixed wrong VR for DICONDE attribute Sensor Name (0014,3022).
