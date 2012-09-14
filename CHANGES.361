@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.14 (riesmeier)
 
+- Added notification method that is called while sending SOP instances.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
 - Fixed minor issue in comment.
   Affects: dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -853,6 +853,8 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     if (!HaltOnUnsuccessfulStoreMode && (status != DIMSE_ILLEGALASSOCIATION))
                         status = EC_Normal;
                 }
+                // notify user of this class that the current SOP instance has been processed
+                notifySOPInstanceSent(**CurrentTransferEntry);
             }
             ++CurrentTransferEntry;
         }
@@ -861,6 +863,12 @@ OFCondition DcmStorageSCU::sendSOPInstances()
         status = NET_EC_NoSOPInstancesToSend;
     }
     return status;
+}
+
+
+void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry &transferEntry)
+{
+    // do nothing in the default implementation
 }
 
 

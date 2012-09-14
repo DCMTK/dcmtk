@@ -301,6 +301,8 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *  transfer is stopped on the first SOP instance that could not be "stored" successfully.
      *  Please note, however, that the DIMSE status is not checked for this purpose, i.e. the
      *  transfer is never stopped when the DIMSE status is different from 0x0000 (success).
+     *  Each time a SOP instance from the transfer list has been processed, the virtual method
+     *  notifySOPInstanceSent() is called, which can be overwritten by a derived class.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition sendSOPInstances();
@@ -499,6 +501,14 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
                                         const OFString &sopInstanceUID,
                                         const OFString &transferSyntaxUID,
                                         const OFBool checkValues);
+
+    /** This method is called each time a SOP instance is sent to a peer.  Since it is called
+     *  after the SOP instance has been processed, the transfer entry passed to this method
+     *  contains current information, e.g. the DIMSE status of the C-STORE response.  This also
+     *  allows for counting the number of successful and failed transfers.
+     *  @param  transferEntry  reference to current transfer entry that has been processed
+     */
+    virtual void notifySOPInstanceSent(const TransferEntry &transferEntry);
 
 
   private:
