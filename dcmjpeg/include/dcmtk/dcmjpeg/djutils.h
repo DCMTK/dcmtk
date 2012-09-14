@@ -70,7 +70,7 @@ enum E_SubSampling
 {
   /// 4:4:4 sampling (no subsampling)
   ESS_444,
-  /// 4:2:2 sampling (horizontal subsampling of chroma components
+  /// 4:2:2 sampling (horizontal subsampling of chroma components)
   ESS_422,
   /// 4:1:1 sampling (horizontal and vertical subsampling of chroma components)
   ESS_411

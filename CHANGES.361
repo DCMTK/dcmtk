@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.14 (riesmeier)
+
+- Fixed minor issue in comment.
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
+
 **** Changes from 2012.09.13 (riesmeier)
 
 - Fixed small typo in log message.
