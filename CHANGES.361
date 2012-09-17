@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.17 (schlachter)
 
+- Fixed a brown-paper-bag typo.
+  Affects: CMake/DCMTK.cmake
+
 - Fixed minor compiler warnings.
   Affects: ofstd/libsrc/ofstd.cc
 
