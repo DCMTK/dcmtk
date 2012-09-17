@@ -2002,7 +2002,7 @@ OFStandard::OFHostent OFStandard::getHostByName( const char* name )
     unsigned size = 32;
     char* tmp = new char[size];
     hostent* res = NULL;
-    hostent buf = {NULL};
+    hostent buf;
     int err = 0;
     while( gethostbyname_r( name, &buf, tmp, size, &res, &err ) == ERANGE )
     {
@@ -2017,7 +2017,7 @@ OFStandard::OFHostent OFStandard::getHostByName( const char* name )
 #else
     return OFHostent( gethostbyname( name ) );
 #endif
-};
+}
 
 OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
                                      int len,
@@ -2042,7 +2042,7 @@ OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
 #else
     return OFHostent( gethostbyaddr( addr, len, type ) );
 #endif
-};
+}
 
 #ifdef HAVE_GRP_H
 OFStandard::OFGroup OFStandard::getGrNam( const char* name )
@@ -2067,7 +2067,7 @@ OFStandard::OFGroup OFStandard::getGrNam( const char* name )
 #else
     return OFGroup( NULL );
 #endif
-};
+}
 #endif // HAVE_GRP_H
 
 #ifdef HAVE_PWD_H
@@ -2093,7 +2093,7 @@ OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
 #else
     return OFPasswd( NULL );
 #endif
-};
+}
 #endif // HAVE_PWD_H
 
 OFStandard::OFHostent::OFHostent()

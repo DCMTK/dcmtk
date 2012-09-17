@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.17 (schlachter)
+
+- Fixed minor compiler warnings.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2012.09.14 (riesmeier)
 
 - Added notification method that is called while sending SOP instances.
