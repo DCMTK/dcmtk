@@ -60,9 +60,8 @@ static void DIMSE_dumpMessage_end(OFString &str, DcmItem *dataset = NULL)
       str += "-----------------------------------------------------------------";
       OFOStringStream stream;
       stream << DcmObject::PrintHelper(*dataset, DCMTypes::PF_shortenLongTagValues) << OFStringStream_ends;
-      OFSTRINGSTREAM_GETSTR(stream, result)
+      OFSTRINGSTREAM_GETOFSTRING(stream, result);
       str += result;
-      OFSTRINGSTREAM_FREESTR(result)
     }
     str += "======================= END DIMSE MESSAGE =======================";
 }

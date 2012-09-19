@@ -121,9 +121,8 @@ public:
         OFOStringStream oss;
         oss << "FAILED test '" << testName_ << "' at " << file << ":" << line
             << ": " << message << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, str)
+        OFSTRINGSTREAM_GETOFSTRING(oss, str)
         results_.push_back(str);
-        OFSTRINGSTREAM_FREESTR(str)
     }
 
 private:
@@ -495,9 +494,8 @@ public: \
         if ((val1) != (val2)) { \
             OFOStringStream oss___; \
             oss___ << "(" << (val1) << ") should equal (" << (val2) << ")" << OFStringStream_ends; \
-            OFSTRINGSTREAM_GETSTR(oss___, str___) \
+            OFSTRINGSTREAM_GETOFSTRING(oss___, str___) \
             OFTestManager::instance().currentTest().recordFailure(__FILE__, __LINE__, str___); \
-            OFSTRINGSTREAM_FREESTR(str___) \
         } \
     } while (0)
 
@@ -508,9 +506,8 @@ public: \
     do { \
         OFOStringStream oss___; \
         oss___ << message << OFStringStream_ends; \
-        OFSTRINGSTREAM_GETSTR(oss___, str___) \
+        OFSTRINGSTREAM_GETOFSTRING(oss___, str___) \
         OFTestManager::instance().currentTest().recordFailure(__FILE__, __LINE__, str___); \
-        OFSTRINGSTREAM_FREESTR(str___) \
     } while (0)
 
 //@}

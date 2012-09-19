@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.19 (schlachter)
+
+- Fixed handling of strings with embedded NULL bytes.
+  Thanks to Heyo Spekker <spekker@icsmed.de> for reporting this issue.
+  Added:   dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.dep
+           dcmnet/tests/tdump.cc
+           dcmnet/tests/tests.cc
+  Affects: dcmnet/CMakeLists.txt
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/tests/Makefile.in
+           ofstd/include/dcmtk/ofstd/oftest.h
+
 **** Changes from 2012.09.19 (riesmeier)
 
 - Added check for consistent UID values in DICOM dataset and transfer list.
