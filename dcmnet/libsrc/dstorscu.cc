@@ -812,6 +812,28 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                 // send SOP instance to the peer using a C-STORE request message
                 if (status.good())
                 {
+                    // check whether UIDs in dataset are consistent with tranfer list
+                    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL) && (dataset != NULL))
+                    {
+                        DCMNET_DEBUG("checking whether SOP Class UID and SOP Instance UID in dataset are consistent with transfer list");
+                        OFString sopClassUID, sopInstanceUID, transferSyntaxUID;
+                        if (getSOPInstanceFromDataset(dataset, dataset->getOriginalXfer(), sopClassUID, sopInstanceUID, transferSyntaxUID).good())
+                        {
+                            // differences are usually a result of inconsistent values in meta-header and dataset
+                            if ((*CurrentTransferEntry)->SOPClassUID != sopClassUID)
+                            {
+                                DCMNET_WARN("SOP Class UID in dataset differs from the one in the transfer list");
+                                DCMNET_DEBUG("- SOP Class UID in DICOM dataset: " << sopClassUID);
+                                DCMNET_DEBUG("- SOP Class UID in transfer list: " << (*CurrentTransferEntry)->SOPClassUID);
+                            }
+                            if ((*CurrentTransferEntry)->SOPInstanceUID != sopInstanceUID)
+                            {
+                                DCMNET_WARN("SOP Instance UID in dataset differs from the one in the transfer list");
+                                DCMNET_DEBUG("- SOP Instance UID in DICOM dataset: " << sopInstanceUID);
+                                DCMNET_DEBUG("- SOP Instance UID in transfer list: " << (*CurrentTransferEntry)->SOPInstanceUID);
+                            }
+                        }
+                    }
                     // call the inherited method from the base class doing the real work
                     status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
                         dataset, (*CurrentTransferEntry)->ResponseStatusCode);

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.19 (riesmeier)
+
+- Added check for consistent UID values in DICOM dataset and transfer list.
+  Differences are usually a result of inconsistent values in meta-header and
+  dataset, so reporting a warning message might be a good idea.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
 **** Changes from 2012.09.17 (schlachter)
 
 - Fixed a brown-paper-bag typo.
