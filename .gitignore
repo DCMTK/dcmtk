@@ -13,6 +13,9 @@ config.log
 config/Makefile.def
 config/include/dcmtk/config/osconfig.h
 
+# Directories created by autoconf
+config/autom4te.cache/
+
 # Ignore all temporary and log files
 *.tmp
 *.log
