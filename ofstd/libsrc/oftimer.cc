@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2011, OFFIS e.V.
+ *  Copyright (C) 1999-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,6 +64,8 @@ double OFTimer::getDiff(double start)
 double OFTimer::getTime()
 {
 #ifdef HAVE_WINDOWS_H
+    // according to MSDN: "The resolution of the GetTickCount function is limited to the resolution
+    // of the system timer, which is typically in the range of 10 milliseconds to 16 milliseconds."
     return OFstatic_cast(double, GetTickCount()) / 1000;
 #else
     timeval c_time;
@@ -82,7 +84,7 @@ STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &
     else if ((timeDiff < 60) && (timeDiff > -60))
         stream << timeDiff << " s";
     else if ((timeDiff < 3600) && (timeDiff > -3600))
-        stream << (timeDiff / 60) << " m";
+        stream << (timeDiff / 60) << " min";
     else
         stream << (timeDiff / 3600) << " h";
     return stream;

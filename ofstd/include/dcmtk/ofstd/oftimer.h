@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2011, OFFIS e.V.
+ *  Copyright (C) 1999-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,10 +79,10 @@ class DCMTK_OFSTD_EXPORT OFTimer
 
 
 /** output the current time difference to the given stream.
- *  The output format is "<numeric value> <unit>" where "unit" is:
+ *  The output format is "<numeric value> <SI unit>" where "SI unit" is:
  *  - "ms" for milliseconds if the time difference is less than 1 second
  *  - "s" for seconds if the time difference is less than 60 seconds
- *  - "m" for minutes if the time difference is less than 3600 seconds
+ *  - "min" for minutes if the time difference is less than 3600 seconds
  *  - "h" for hours otherwise (i.e. the difference is 3600 seconds or more)
  *  @param stream output stream
  *  @param timer OFTimer object to print
