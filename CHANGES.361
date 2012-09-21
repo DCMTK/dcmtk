@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.21 (riesmeier)
 
+- Removed unneeded output of start time to the logger. Each line that is output
+  to the logger has a timestamp if the logger is configured appropriately.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/dcmpsrcv.cc
+
 - Made virtual notification methods protected because they should never be
   called from outside of this class.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
