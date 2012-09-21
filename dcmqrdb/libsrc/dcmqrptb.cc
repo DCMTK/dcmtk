@@ -22,7 +22,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmqrdb/dcmqrptb.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
-#include "dcmtk/ofstd/oftime.h"
 
 /** helper class that describes entries in the process slot table. Internal use only.
  */
@@ -203,24 +202,22 @@ void DcmQueryRetrieveProcessTable::cleanChildren()
 #endif
       if (child < 0)
       {
-          if (errno == ECHILD)
-          {
-            /* no children so don't complain */
-          }
-          else if (errno != 0)
-          {
-            char buf[256];
-            DCMQRDB_ERROR("wait for child process failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
-          }
+        if (errno == ECHILD)
+        {
+          /* no children so don't complain */
+        }
+        else if (errno != 0)
+        {
+          char buf[256];
+          DCMQRDB_ERROR("wait for child process failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        }
       }
       else if (child > 0)
       {
-          OFTime t;
-          t.setCurrentTime();
-          DCMQRDB_INFO("Cleaned up after child (" << child << ") " << t);
+        DCMQRDB_INFO("Cleaned up after child (" << child << ")");
 
-          /* Remove Entry from Process Table */
-          removeProcessFromTable(child);
+        /* Remove Entry from Process Table */
+        removeProcessFromTable(child);
       }
     }
 #else

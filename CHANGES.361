@@ -7,6 +7,8 @@ Changes between releases are documented here.
   to the logger has a timestamp if the logger is configured appropriately.
   Affects: dcmpstat/apps/Makefile.dep
            dcmpstat/apps/dcmpsrcv.cc
+           dcmqrdb/libsrc/Makefile.dep
+           dcmqrdb/libsrc/dcmqrptb.cc
 
 - Made virtual notification methods protected because they should never be
   called from outside of this class.
