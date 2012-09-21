@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.21 (riesmeier)
 
+- Made virtual notification methods protected because they should never be
+  called from outside of this class.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 - Fixed various typos in comments. Also slightly changed formatting and added
   newlines where appropriate.
   Thanks to Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr> for the report.

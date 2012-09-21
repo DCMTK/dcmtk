@@ -111,12 +111,12 @@ private:
   /** Private undefined copy constructor.
    * @param other The find response to copy from
    */
-  QRResponse(const QRResponse& other);
+  QRResponse(const QRResponse &other);
 
   /** Private undefined assignment operator.
    *  @param other The find response that should be assigned from
    */
-  QRResponse& operator=(const QRResponse& other);
+  QRResponse &operator=(const QRResponse &other);
 };
 
 
@@ -165,12 +165,12 @@ private:
   /** Private undefined copy constructor
    *  @param other Response to copy from
    */
-  RetrieveResponse(const RetrieveResponse& other);
+  RetrieveResponse(const RetrieveResponse &other);
 
   /** Private undefined assignment operator
    *  @param other Response that should be assigned from
    */
-  RetrieveResponse& operator=(const RetrieveResponse& other);
+  RetrieveResponse &operator=(const RetrieveResponse &other);
 };
 
 
@@ -395,7 +395,7 @@ public:
    */
   virtual OFCondition handleCGETResponse(const T_ASC_PresentationContextID presID,
                                          RetrieveResponse* response,
-                                         OFBool& continueCGETSession);
+                                         OFBool &continueCGETSession);
 
   /** Function handling a single C-STORE Request. If storage mode is set to disk (default),
    *  this function is called and the incoming object stored to disk.
@@ -411,8 +411,8 @@ public:
    */
   virtual OFCondition handleSTORERequest(const T_ASC_PresentationContextID presID,
                                          DcmDataset *incomingObject,
-                                         OFBool& continueCGETSession,
-                                         Uint16& cStoreReturnStatus);
+                                         OFBool &continueCGETSession,
+                                         Uint16 &cStoreReturnStatus);
 
   /** Function handling a single C-STORE Request. If storage mode is set to bit preserving,
    *  this function is called and the incoming object stored directly to disk, i.e. not stored
@@ -424,20 +424,8 @@ public:
    *          specified), this method will return an error code otherwise EC_Normal.
    */
   virtual OFCondition handleSTORERequestFile(T_ASC_PresentationContextID *presID,
-                                             const OFString& filename,
-                                             T_DIMSE_C_StoreRQ* request);
-
-  /** This function is called if an object was received due to a C-GET request and can be
-   *  overwritten by a user in order to be informed about such an event. The default
-   *  implementation just prints a DEBUG message. Note that this function is not called if
-   *  the SCU is in storage mode DCMSCU_STORAGE_IGNORE.
-   *  @param filename       [in] The filename written
-   *  @param sopClassUID    [in] The SOP Class UID of the object written
-   *  @param sopInstanceUID [in] The SOP Instance UID of the object written
-   */
-  virtual void notifyInstanceStored(const OFString& filename,
-                                    const OFString& sopClassUID,
-                                    const OFString& sopInstanceUID) const;
+                                             const OFString &filename,
+                                             T_DIMSE_C_StoreRQ *request);
 
   /** Sends a C-FIND Request on given presentation context and receives list of responses.
    *  The function receives the first response and then calls the function handleFINDResponse
@@ -483,7 +471,7 @@ public:
    *  @return EC_Normal, if response could be handled. Error code otherwise.
    *          The current implementation always returns EC_Normal.
    */
-  virtual OFCondition handleFINDResponse(const T_ASC_PresentationContextID  presID,
+  virtual OFCondition handleFINDResponse(const T_ASC_PresentationContextID presID,
                                          QRResponse *response,
                                          OFBool &waitForNextResponse);
 
@@ -545,24 +533,6 @@ public:
   virtual OFCondition handleEVENTREPORTRequest(DcmDataset *&reqDataset,
                                                Uint16 &eventTypeID,
                                                const int timeout = 0);
-
-  /** This function is called while sending DIMSE messages, i.e.\ on each PDV of a dataset.
-   *  The default implementation just prints a TRACE message on the number of bytes sent so
-   *  far. By overwriting this method, the progress of the send process can be shown to the
-   *  user in a more appropriate way. The progress notification can also be disabled
-   *  completely by calling setProgressNotificationMode().
-   *  @param byteCount [in] Number of bytes sent so far
-   */
-  virtual void notifySENDProgress(const unsigned long byteCount);
-
-  /** This function is called while receiving DIMSE messages, i.e.\ on each PDV of a dataset.
-   *  The default implementation just prints a TRACE message on the number of bytes received
-   *  so far. By overwriting this method, the progress of the receive process can be shown to
-   *  the user in a more appropriate way. The progress notification can also be disabled
-   *  completely by calling setProgressNotificationMode().
-   *  @param byteCount [in] Number of bytes received so far
-   */
-  virtual void notifyRECEIVEProgress(const unsigned long byteCount);
 
   /** Closes the association created by this SCU. Also resets the current association.
    *  @param closeType [in] Define whether to release or abort the association
@@ -627,7 +597,7 @@ public:
    *                       whether the directory is writeable and readable. Per default, the
    *                       received objects are stored in the current working directory.
    */
-  void setStorageDir(const OFString& storeDir);
+  void setStorageDir(const OFString &storeDir);
 
   /** Set the storage mode to be used. Default is DCMSCU_STORAGE_DISK.
    *  @param storageMode The storage mode to be used.
@@ -840,6 +810,40 @@ protected:
                                OFString &abstractSyntax,
                                OFString &transferSyntax);
 
+  /* ***********************************************************************
+   *  Functions particularly interesting for overwriting in derived classes
+   * *********************************************************************** */
+
+  /** This function is called if an object was received due to a C-GET request and can be
+   *  overwritten by a user in order to be informed about such an event. The default
+   *  implementation just prints a DEBUG message. Note that this function is not called if
+   *  the SCU is in storage mode DCMSCU_STORAGE_IGNORE.
+   *  @param filename       [in] The filename written
+   *  @param sopClassUID    [in] The SOP Class UID of the object written
+   *  @param sopInstanceUID [in] The SOP Instance UID of the object written
+   */
+  virtual void notifyInstanceStored(const OFString &filename,
+                                    const OFString &sopClassUID,
+                                    const OFString &sopInstanceUID) const;
+
+  /** This function is called while sending DIMSE messages, i.e.\ on each PDV of a dataset.
+   *  The default implementation just prints a TRACE message on the number of bytes sent so
+   *  far. By overwriting this method, the progress of the send process can be shown to the
+   *  user in a more appropriate way. The progress notification can also be disabled
+   *  completely by calling setProgressNotificationMode().
+   *  @param byteCount [in] Number of bytes sent so far
+   */
+  virtual void notifySENDProgress(const unsigned long byteCount);
+
+  /** This function is called while receiving DIMSE messages, i.e.\ on each PDV of a dataset.
+   *  The default implementation just prints a TRACE message on the number of bytes received
+   *  so far. By overwriting this method, the progress of the receive process can be shown to
+   *  the user in a more appropriate way. The progress notification can also be disabled
+   *  completely by calling setProgressNotificationMode().
+   *  @param byteCount [in] Number of bytes received so far
+   */
+  virtual void notifyRECEIVEProgress(const unsigned long byteCount);
+
   /** Check given N-EVENT-REPORT request and dataset for validity. This method is called by
    *  handleEVENTREPORTRequest() before sending the response in order to determine the
    *  DIMSE status code to be used for the response message.
@@ -862,7 +866,7 @@ protected:
    */
   virtual OFCondition sendSTOREResponse(T_ASC_PresentationContextID presID,
                                         Uint16 status,
-                                        const T_DIMSE_C_StoreRQ& request);
+                                        const T_DIMSE_C_StoreRQ &request);
 
   /** Helper function that generates a storage filename by extracting SOP Class and SOP
    *  Instance UID from a dataset and combining that with the configured storage directory.
@@ -883,9 +887,9 @@ protected:
    *  @return EC_Normal if ignoring worked, error code otherwise.
    */
   virtual OFCondition ignoreSTORERequest(T_ASC_PresentationContextID presID,
-                                         const T_DIMSE_C_StoreRQ& request);
+                                         const T_DIMSE_C_StoreRQ &request);
 
-  /* Callback functions */
+  /* Callback functions (static) */
 
   /** Callback function used for sending DIMSE messages.
    *  @param callbackContext [in] The desired user callback data

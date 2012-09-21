@@ -218,7 +218,7 @@ OFCondition DcmSCU::initNetwork()
   {
     DCMNET_TRACE("Configured " << numContexts << " presentation contexts from config file");
     if (m_presContexts.size() > 0)
-        DCMNET_TRACE("Adding another " << m_presContexts.size() << " presentation contexts configured for SCU");
+      DCMNET_TRACE("Adding another " << m_presContexts.size() << " presentation contexts configured for SCU");
   }
 
   // Add presentation contexts not originating from config file
@@ -1235,7 +1235,7 @@ OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID /* pres
     return DIMSE_NULLKEY;
 
   DCMNET_DEBUG("Handling C-GET Response");
-  
+
   /* First, perform separate check for 0xCxxx error codes */
   Uint16 highNibble = response->m_status & 0xf000;
   if (highNibble == STATUS_GET_Failed_UnableToProcess)
@@ -1762,8 +1762,8 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     }
   } else {
     DCMNET_ERROR("Expected N-ACTION response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << OFstatic_cast(unsigned int, response.CommandField));
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << OFstatic_cast(unsigned int, response.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
@@ -1799,7 +1799,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     // since we only support synchronous communication, the message ID in the response
     // should be identical to the one in the request
     DCMNET_ERROR("Received response with wrong message ID (" << actionRsp.MessageIDBeingRespondedTo
-        << " instead of " << actionReq.MessageID << ")");
+      << " instead of " << actionReq.MessageID << ")");
     return DIMSE_BADMESSAGE;
   }
 
@@ -1886,8 +1886,8 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     }
   } else {
     DCMNET_ERROR("Expected N-EVENT-REPORT response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << OFstatic_cast(unsigned int, response.CommandField));
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << OFstatic_cast(unsigned int, response.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
@@ -1924,7 +1924,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   if (eventReportRsp.MessageIDBeingRespondedTo != eventReportReq.MessageID)
   {
     DCMNET_ERROR("Received response with wrong message ID (" << eventReportRsp.MessageIDBeingRespondedTo
-        << " instead of " << eventReportReq.MessageID << ")");
+      << " instead of " << eventReportReq.MessageID << ")");
     return DIMSE_BADMESSAGE;
   }
   return cond;
