@@ -476,7 +476,8 @@ replaced at run time:
             peer Storage SCU
 
 The specified command line is executed as a separate process, so that the
-execution of \b storescp will not be held back.
+execution of \b storescp will not be held back.  This behavior can be influenced
+with the \e --exec-sync option.
 
 Option \e --exec-on-eostudy allows to execute a certain command line when all
 DICOM objects that belong to one study have been received by \b storescp.
@@ -515,10 +516,16 @@ options: \e --sort-xxx, \e --exec-on-eostudy and \e --rename-on-eostudy.
 If option \e --eostudy-timeout is specified, the end of a study is considered
 to have occurred not only if two consecutively received DICOM objects d_n and
 d_n+1 do not show the same values in attribute Study Instance UID, but also if
-whithin a time span of x seconds after the reception of a DICOM object d_n, no
+within a time span of x seconds after the reception of a DICOM object d_n, no
 other DICOM object was received over the network.  Note that the amount x of
 seconds (which determines the length of this time span) has to be passed to
 this option as a parameter.
+
+Please note that two consecutive network connections can transfer objects for
+the same study.  The study will only be considered complete when an object of a
+different study is received or the \e --eostudy-timeout is reached.  For this
+reason, the options \e --fork and \e --inet are incompatible with
+\e --exec-on-eostudy, \e --rename-on-eostudy and \e --sort-conc-studies.
 
 \subsection dicom_conformance DICOM Conformance
 

@@ -855,18 +855,16 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--exec-on-eostudy"))
     {
-#ifdef _WIN32
-      app.checkConflict("--exec-on-eostudy", "--fork on Windows systems", opt_forkMode);
-#endif
+      app.checkConflict("--exec-on-eostudy", "--fork", opt_forkMode);
+      app.checkConflict("--exec-on-eostudy", "--inetd", opt_inetd_mode);
       app.checkDependence("--exec-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
       app.checkValue(cmd.getValue(opt_execOnEndOfStudy));
     }
 
     if (cmd.findOption("--rename-on-eostudy"))
     {
-#ifdef _WIN32
-      app.checkConflict("--rename-on-eostudy", "--fork on Windows systems", opt_forkMode);
-#endif
+      app.checkConflict("--rename-on-eostudy", "--fork", opt_forkMode);
+      app.checkConflict("--rename-on-eostudy", "--inetd", opt_inetd_mode);
       app.checkDependence("--rename-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
       opt_renameOnEndOfStudy = OFTrue;
     }

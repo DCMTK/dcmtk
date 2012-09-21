@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.21 (schlachter)
+
+- Added conflict checks between --fork/--inetd and --{rename,exec}-on-eostudy.
+  Thanks to forum user "dimitri" for the report.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 **** Changes from 2012.09.21 (riesmeier)
 
 - Removed unneeded output of start time to the logger. Each line that is output
