@@ -22,29 +22,35 @@
 
 #ifndef OFNETDB_H
 #define OFNETDB_H
+
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
+
 BEGIN_EXTERN_C
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
 END_EXTERN_C
+
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif
+
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofstring.h"
 
-/** A non POD version of struct hostent for thread and memory safe data access.
- *  Wraps the contents of a struct hostent instance to a non POD object containing RAII
- *  style data (e.g. OFString instead of const char*).
- *  To handle the old pointer behavior OFHostent objects can have an invalid state in which case
- *  all members are undefined. You can test if an OFHostent object is invalid or not with
- *  the overloaded operators "operator !" and "operator OFBool", therefore it behaves quite
- *  the same way as pointers in this regard.
- *  @note the downside of this non POD class is it leads to some unnecessary string copy
- *    operations. The resutling performancy penalty should be insignificant, however implementing
- *    this class based on auto_ptr / unique_ptr or using c++11 move sematics would prevent that,
+/** A non-POD version of "struct hostent" for thread and memory safe data
+ *  access. Wraps the contents of a struct hostent instance to a non-POD object
+ *  containing RAII-style data (e.g. OFString instead of const char*).
+ *  To handle the old pointer behavior, OFHostent objects can have an invalid
+ *  state in which case all members are undefined. You can test whether an
+ *  OFHostent object is invalid or not with the overloaded operators
+ *  "operator !" and "operator OFBool". Therefore, it behaves quite the same
+ *  way as pointers in this regard.
+ *  @note The downside of this non-POD class is that it leads to some
+ *    unnecessary string copy operations. The resulting performance penalty
+ *    should be insignificant. However, implementing this class based on
+ *    auto_ptr / unique_ptr or using c++11 move sematics would prevent that,
  *    if somebody thinks it is necessary.
  */
 class OFStandard::OFHostent

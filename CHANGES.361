@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.21 (riesmeier)
+
+- Fixed various typos in comments. Also slightly changed formatting and added
+  newlines where appropriate.
+  Thanks to Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr> for the report.
+  Affects: ofstd/include/dcmtk/ofstd/ofnetdb.h
+
 **** Changes from 2012.09.20 (riesmeier)
 
 - Always use SI units for output, i.e. "min" for minute instead of "m".
