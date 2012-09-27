@@ -91,4 +91,5 @@ OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_2);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_3);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_4);
+OFTEST_REGISTER(dcmdata_attribute_filter);
 OFTEST_MAIN("dcmdata")

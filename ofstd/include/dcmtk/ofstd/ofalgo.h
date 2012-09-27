@@ -74,11 +74,11 @@
 // variable within a namespace using a class of the STL shall have a name
 // of one class of the STL
 #include <algorithm>
-#define OFForEach(InputIterator_type, Function_type, first, last, f) for_each((first), (last), (f))
-#define OFFind(InputIterator_type, T_type, first, last, value) find((first), (last), (value))
-#define OFFindIf(InputIterator_type, Predicate_type, first, last, pred) find_if((first), (last), (pred))
-#define OFAdjacentFind(ForwardIterator_type, first, last) adjacent_find((first), (last))
-#define OFAdjacentFindPred(ForwardIterator_type, BinaryPredicate_type, first, last, pred) adjacent_find((first), (last), (pred))
+#define OFForEach(InputIterator_type, Function_type, first, last, f) STD_NAMESPACE for_each((first), (last), (f))
+#define OFFind(InputIterator_type, T_type, first, last, value) STD_NAMESPACE find((first), (last), (value))
+#define OFFindIf(InputIterator_type, Predicate_type, first, last, pred) STD_NAMESPACE find_if((first), (last), (pred))
+#define OFAdjacentFind(ForwardIterator_type, first, last) STD_NAMESPACE adjacent_find((first), (last))
+#define OFAdjacentFindPred(ForwardIterator_type, BinaryPredicate_type, first, last, pred) STD_NAMESPACE adjacent_find((first), (last), (pred))
 #else
 
 #ifdef HAVE_FUNCTION_TEMPLATE

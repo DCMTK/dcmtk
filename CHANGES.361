@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.27 (schlamelcher)
+
+- Introduced initial dataset filter that filters based on attribute values.
+  Added:   dcmdata/include/dcmtk/dcmdata/dcfilter.h
+           dcmdata/libsrc/dcfilter.cc
+           dcmdata/tests/tfilter.cc
+  Affects: dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.in
+           dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+           ofstd/include/dcmtk/ofstd/ofalgo.h
+
 **** Changes from 2012.09.21 (schlachter)
 
 - Added conflict checks between --fork/--inetd and --{rename,exec}-on-eostudy.
