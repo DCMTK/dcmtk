@@ -14,6 +14,10 @@ Changes between releases are documented here.
            dcmdata/tests/tests.cc
            dcmdata/tests/tparser.cc
 
+- Added a "help" target to the main Makefile.
+  Affects: Makefile
+           config/rootconf
+
 **** Changes from 2012.09.28 (riesmeier)
 
 - Fixed copy-and-paste bug in checkPixelExtension().
