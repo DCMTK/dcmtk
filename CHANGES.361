@@ -8,6 +8,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.28 (riesmeier)
 
+- Fixed copy-and-paste bug in checkPixelExtension().
+  Thanks to Gareth Sylvester-Bradley <garethsb@gmail.com> for the report.
+  Affects: dcmimgle/libsrc/diimage.cc
+
 - Fixed typos and text formatting.
   Affects: dcmdata/tests/tfilter.cc
            ofstd/include/dcmtk/ofstd/ofgrp.h

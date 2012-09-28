@@ -475,7 +475,7 @@ void DiImage::checkPixelExtension()
         else if (PixelWidth < 0)
         {
             DCMIMGLE_WARN("negative value for 'PixelWidth' (" << PixelWidth << ") ... assuming " << -PixelWidth);
-            PixelHeight = -PixelHeight;
+            PixelWidth = -PixelWidth;
         }
     }
 }
