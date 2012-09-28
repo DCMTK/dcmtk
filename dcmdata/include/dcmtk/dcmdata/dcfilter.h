@@ -18,17 +18,23 @@
  *  Purpose: Class for filtering DcmItem objects regarding specific attributes.
  *
  */
+
+
 #ifndef DCFILTER_H
 #define DCFILTER_H
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofalgo.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 
-/** Accept or reject DcmItem objects comparing a specific attribute to a set of values.
- *  DcmAttributeFilter objects can be used to compare a specific attributes against one
- *  or more values -- or to accept any DcmItem if no attribute is specified.
- *  DcmAttributeFilter objects can be used like any funtion taking a DcmItem& or a
- *  DcmFileFormat& object as parameter and returning a bolean value.
+
+/** Accept or reject DcmItem objects by comparing a specific attribute to a set of values.
+ *  DcmAttributeFilter objects can be used to compare a specific attribute with one or more
+ *  values - or to accept any DcmItem if no attribute is specified. DcmAttributeFilter
+ *  objects can be used like any funtion taking a DcmItem& or a DcmFileFormat& object as
+ *  parameter and returning a boolean value.
  */
 class DcmAttributeFilter
 {
@@ -39,15 +45,15 @@ class DcmAttributeFilter
         virtual inline ~FilterInterface() {}
 
         /** apply the actual filter.
-         *  @param value the value to be compared against the range of values.
+         *  @param value the value to be compared with the range of values.
          *  @return OFTrue if value matches one element in the range of values,
          *    OFFalse otherwise.
          */
         virtual OFBool apply( const OFString& value ) = 0;
     };
 
-    /** A range based filter implementation that compares an attribute's value agains
-     *  a range of values defined by two iterators.
+    /** A range-based filter implementation that compares an attribute's value with a
+     *  range of values defined by two iterators.
      *  @tparam Iterator a type matching the STL's ForwardIterator concept.
      */
     template<typename Iterator>
@@ -55,10 +61,8 @@ class DcmAttributeFilter
     {
     public:
         /** construct an IteratorBasedFilter object from two iterators.
-         *  @param begin an iterator refering to the first element in the range of
-         *    values.
-         *  @param end an iterator refering to one past the end in the range of
-         *    values.
+         *  @param begin an iterator referring to the first element in the range of values.
+         *  @param end an iterator referring to one past the end in the range of values.
          */
         IteratorBasedFilter( const Iterator& begin, const Iterator& end )
         : m_Begin( begin ), m_End( end )
@@ -79,20 +83,18 @@ class DcmAttributeFilter
         /// disable copy assignment.
         IteratorBasedFilter& operator=(const IteratorBasedFilter&);
 
-        /// an iterator refering to the first element in the range of values.
+        /// an iterator referring to the first element in the range of values.
         Iterator const m_Begin;
 
-        /// an iterator refering to one past the end in the range of values.
+        /// an iterator referring to one past the end in the range of values.
         Iterator const m_End;
     };
 
     /** helper function to deduce the Iterator type from a container's begin() and end()
      *  method.
      *  @tparam Iterator a type matching the STL's ForwardIterator concept.
-     *  @param begin an iterator refering to the first element in the range of
-     *    values.
-     *  @param end an iterator refering to one past the end in the range of
-     *    values.
+     *  @param begin an iterator referring to the first element in the range of values.
+     *  @param end an iterator referring to one past the end in the range of values.
      *  @return a pointer to a newly created IteratorBasedFilter object.
      */
     template<typename Iterator>
@@ -103,14 +105,14 @@ class DcmAttributeFilter
     }
 
 public:
-    /** construct a DcmAttributeFilter object from two iterators defining the range
-     *  of values.
-     *  @note each value should be comparable against an object of type OFString.
+    /** construct a DcmAttributeFilter object from two iterators defining the range of
+     *  values.
+     *  @note each value should be comparable with an object of type OFString.
      *  @tparam Iterator a type matching the STL's ForwardIterator concept.
-     *  @param tag a DcmTagKey object determining which attribute of a DcmItem should
-     *    be compared against the range of values.
-     *  @param begin an iterator refering to the first element in the range of values.
-     *  @param end an iterator refering to one past the end in the range of values.
+     *  @param tag a DcmTagKey object determining which attribute of a DcmItem should be
+     *    compared with the range of values.
+     *  @param begin an iterator referring to the first element in the range of values.
+     *  @param end an iterator referring to one past the end in the range of values.
      */
     template<typename Iterator>
     DcmAttributeFilter( const DcmTagKey& tag, const Iterator& begin, const Iterator& end )
@@ -120,12 +122,12 @@ public:
 
     }
 
-    /** construct a DcmAttributeFilter object from a container containing the range
-     *  of values.
-     *  @note each value should be comparable against an object of type OFString.
+    /** construct a DcmAttributeFilter object from a container containing the range of
+     *  values.
+     *  @note each value should be comparable with an object of type OFString.
      *  @tparam Container a class matching the STL's Container concept.
-     *  @param tag a DcmTagKey object determining which attribute of a DcmItem should
-     *    be compared against the range of values.
+     *  @param tag a DcmTagKey object determining which attribute of a DcmItem should be
+     *    compared with the range of values.
      *  @param container a container containing the range of values.
      */
     template<typename Container>
@@ -139,21 +141,21 @@ public:
     /// construct a DcmAttributeFilter object that accepts any DcmItem.
     DcmAttributeFilter();
 
-    /** construct a DcmAttributeFilter object that compares the attribute against one
+    /** construct a DcmAttributeFilter object that compares the attribute with one
      *  specific value.
-     *  @param tag a DcmTagKey object determining which attribute of a DcmItem should
-     *    be compared against the value.
-     *  @param value a OFString that is to be compaired against the actual value stored
-     *    in the DcmItem the filter is invoked on.
+     *  @param tag a DcmTagKey object determining which attribute of a DcmItem should be
+     *    compared with the value.
+     *  @param value an OFString that is to be compaired with the actual value stored in
+     *    the DcmItem the filter is invoked on.
      *
      */
     DcmAttributeFilter( const DcmTagKey& tag, const OFString& value );
 
-    /** construct a DcmAttributeFilter object that compares the attribute against one
+    /** construct a DcmAttributeFilter object that compares the attribute with one
      *  specific value.
      *  @param tag a DcmTagKey object determining which attribute of a DcmItem should
-     *    be compared against the value.
-     *  @param value a character string that is to be compaired against the actual value
+     *    be compared with the value.
+     *  @param value a character string that is to be compared with the actual value
      *    stored in the DcmItem the filter is invoked on.
      */
     DcmAttributeFilter( const DcmTagKey& tag, const char* const value );
@@ -167,19 +169,19 @@ public:
      */
     OFBool apply( DcmItem& item ) const;
 
-    /** convenience funtion to enable using DcmAttributeFilter as a functor.
+    /** convenience function to enable using DcmAttributeFilter as a functor.
      *  @param item a DcmItem the filter should accept or reject.
      *  @return OFTrue if the filter accepts the item, OFFalse otherwise.
      */
     OFBool operator()( DcmItem& item ) const;
 
-    /** apply the filter on a DICOM file.
+    /** apply the filter on a DICOM file (represented by a DcmFileFormat instance).
      *  @param dcmfile a DcmFileFormat object the filter should accept or reject.
      *  @return OFTrue if the filter accepts the DICOM file, OFFalse otherwise.
      */
     OFBool apply( DcmFileFormat& dcmfile ) const;
 
-    /** convenience funtion to enable using DcmAttributeFilter as a functor.
+    /** convenience function to enable using DcmAttributeFilter as a functor.
      *  @param dcmfile a DcmFileFormat object the filter should accept or reject.
      *  @return OFTrue if the filter accepts the DICOM file, OFFalse otherwise.
      */
@@ -195,12 +197,13 @@ private:
     /// disable copy assignment.
     DcmAttributeFilter& operator=( const DcmAttributeFilter& );
 
-    /** a DcmTagKey object determining which attribute of a DcmItem should
-     *  be compared against the value.
+    /** a DcmTagKey object determining which attribute of a DcmItem should be compared
+     *  with the value.
      */
     const DcmTagKey m_Tag;
 
     /// a pointer to the actual filter.
     FilterInterface* const m_pFilter;
 };
-#endif //DCFILTER_H
+
+#endif // DCFILTER_H

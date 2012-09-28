@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.28 (riesmeier)
+
+- Fixed numerous typos and added missing "dcmtk/config/osconfig.h" include.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcfilter.h
+           dcmdata/libsrc/dcfilter.cc
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+
 **** Changes from 2012.09.27 (schlamelcher)
 
 - Introduced initial dataset filter that filters based on attribute values.

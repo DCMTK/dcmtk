@@ -18,7 +18,12 @@
  *  Purpose: Implementation of DcmAttributeFilter
  *
  */
+
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcfilter.h"
+
 
 class DcmAttributeFilter::SingleValueFilter : public FilterInterface
 {
