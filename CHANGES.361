@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.09.28 (riesmeier)
 
+- Rebuilt Makefile dependencies (and removed unwanted libxml dependencies).
+  Affects: dcmdata/apps/Makefile.dep
+
 - Fixed numerous typos and added missing "dcmtk/config/osconfig.h" include.
   Affects: dcmdata/include/dcmtk/dcmdata/dcfilter.h
            dcmdata/libsrc/dcfilter.cc
