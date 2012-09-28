@@ -6,6 +6,14 @@ Changes between releases are documented here.
 - Add a CMake cache variable for the list of modules that are built.
   Affects: CMakeLists.txt
 
+- Fixed bug where writing a sequences with VR UN failed.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/tests/dctmacro.h
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tparser.cc
+
 **** Changes from 2012.09.28 (riesmeier)
 
 - Fixed copy-and-paste bug in checkPixelExtension().

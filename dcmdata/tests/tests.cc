@@ -85,6 +85,7 @@ OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_lastItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_notLastItem);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_default);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict);
+OFTEST_REGISTER(dcmdata_parser_undefinedLengthUNSequence);
 OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_1);

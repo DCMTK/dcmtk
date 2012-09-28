@@ -368,4 +368,40 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
     } else {
         OFCHECK_FAIL(cond.text());
     }
+    // Reset to the default value
+    dcmPreferVRFromDataDictionary.set(OFFalse);
+}
+
+OFTEST(dcmdata_parser_undefinedLengthUNSequence)
+{
+    const Uint8 data[] = {
+        // Sequence with undefined length and VR UN => gets read as implicit TS
+        TAG_AND_LENGTH(DCM_IconImageSequence, 'U', 'N', UNDEFINED_LENGTH),
+        ITEM(UNDEFINED_LENGTH),
+        IMPLICIT_TAG_AND_LENGTH(DCM_PatientName, 4),
+        'A', 'B', 'C', 'D',
+        IMPLICIT_TAG_AND_LENGTH(DCM_PixelData, 2),
+        VALUE, VALUE,
+        ITEM_END,
+        SEQUENCE_END
+    };
+    DcmDataset dset;
+    OFCondition cond;
+
+    cond = readDatasetTwice(dset, data, sizeof(data), EXS_JPEGProcess14, EXS_JPEGProcess14);
+    if (cond.good())
+    {
+        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+        OFCHECK_EQUAL(1, dset.card());
+
+        DcmElement *elem = NULL;
+        cond = dset.findAndGetElement(DCM_PatientName, elem, OFTrue);
+        if (cond.good())
+            OFCHECK(elem != NULL);
+        else
+            OFCHECK_FAIL("There should have been a PatientName item, but: " << cond.text());
+    } else {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
 }

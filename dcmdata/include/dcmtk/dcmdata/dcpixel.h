@@ -180,6 +180,13 @@ private:
     /// in write function: pointer to current pixel sequence
     DcmPixelSequence * pixelSeqForWrite;
 
+    /** check if this element should be written unencapsulated, even though an
+     *  encapsulated transfer syntax is used. In other words, this checks if
+     *  this pixel data element is on the main level on the dataset or not.
+     *  @param xfer the transfer syntax that should be used
+     */
+    OFBool writeUnencapsulated(const E_TransferSyntax xfer);
+
     /** This function removes all pixel representations from the list
      *  of pixel representations except the one which was passed. Note
      *  that if parameter leaveInList equals repListEnd, all representations

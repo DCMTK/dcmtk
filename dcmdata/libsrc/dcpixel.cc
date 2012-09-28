@@ -195,7 +195,7 @@ DcmPixelData::calcElementLength(
     errorFlag = EC_Normal;
     Uint32 elementLength = 0;
 
-    if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
+    if (xferSyn.isEncapsulated() && (! writeUnencapsulated(xfer)))
     {
         DcmRepresentationListIterator found;
         errorFlag =
@@ -223,7 +223,7 @@ DcmPixelData::canChooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator resultIt(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
-        (toType.isEncapsulated() && alwaysUnencapsulated && existUnencapsulated) ||
+        (toType.isEncapsulated() && writeUnencapsulated(repType) && existUnencapsulated) ||
         (toType.isEncapsulated() && findRepresentationEntry(findEntry, resultIt) == EC_Normal))
     {
         // representation found
@@ -263,7 +263,7 @@ DcmPixelData::canWriteXfer(
 {
     DcmXfer newXferSyn(newXfer);
     DcmRepresentationListIterator found;
-    OFBool result = existUnencapsulated && (!newXferSyn.isEncapsulated() || alwaysUnencapsulated);
+    OFBool result = existUnencapsulated && (!newXferSyn.isEncapsulated() || writeUnencapsulated(newXfer));
 
     if (!result && newXferSyn.isEncapsulated())
         result = (findConformingEncapsulatedRepresentation(newXferSyn, NULL, found) == EC_Normal);
@@ -282,7 +282,6 @@ DcmPixelData::chooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator result(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
-        (toType.isEncapsulated() && existUnencapsulated && alwaysUnencapsulated) ||
         (toType.isEncapsulated() && findRepresentationEntry(findEntry, result) == EC_Normal))
     {
         // representation found
@@ -302,6 +301,9 @@ DcmPixelData::chooseRepresentation(
             l_error = decode((*original)->repType, (*original)->repParam,
                              (*original)->pixSeq, pixelStack);
     }
+    if (l_error.bad() && toType.isEncapsulated() && existUnencapsulated && writeUnencapsulated(repType))
+        // Encoding failed so this will be written out unencapsulated
+        l_error = EC_Normal;
     return l_error;
 }
 
@@ -517,7 +519,7 @@ DcmPixelData::getLength(const E_TransferSyntax xfer,
     errorFlag = EC_Normal;
     Uint32 valueLength = 0;
 
-    if (xferSyn.isEncapsulated() && !alwaysUnencapsulated)
+    if (xferSyn.isEncapsulated() && !writeUnencapsulated(xfer))
     {
         DcmRepresentationListIterator foundEntry;
         errorFlag = findConformingEncapsulatedRepresentation(
@@ -948,7 +950,7 @@ OFCondition DcmPixelData::write(
   else
   {
     DcmXfer xferSyn(oxfer);
-    if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
+    if (xferSyn.isEncapsulated() && (! writeUnencapsulated(oxfer)))
     {
       if (getTransferState() == ERW_init)
       {
@@ -1004,7 +1006,7 @@ OFCondition DcmPixelData::writeSignatureFormat(
   else if (getTag().isSignable())
   {
     DcmXfer xferSyn(oxfer);
-    if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
+    if (xferSyn.isEncapsulated() && (! writeUnencapsulated(oxfer)))
     {
       if (getTransferState() == ERW_init)
       {
@@ -1120,4 +1122,29 @@ OFCondition DcmPixelData::getDecompressedColorModel(
       }
     }
     return result;
+}
+
+OFBool DcmPixelData::writeUnencapsulated(const E_TransferSyntax xfer)
+{
+    // There are three cases under which a dataset is written out
+    // unencapsulated:
+    //
+    // - It was already read unencapsulated (handled via alwaysUnencapsulated)
+    // - We were told to do so (handled via alwaysUnencapsulated)
+    // - This is not the pixel data element on the main level and it exists
+    //   unencapsulated.
+
+    if (alwaysUnencapsulated)
+        return OFTrue;
+    if (DcmXfer(xfer).isEncapsulated()) {
+        DcmRepresentationListIterator found;
+        OFCondition cond = findConformingEncapsulatedRepresentation(xfer, NULL, found);
+        if (cond.good()) {
+            // We found a suitable encapsulated representation, so encapsulate
+            // this element in the output.
+            return OFFalse;
+        }
+    }
+
+    return existUnencapsulated && isNested();
 }

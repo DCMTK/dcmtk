@@ -27,6 +27,7 @@
 
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcistrmb.h"
+#include "dcmtk/dcmdata/dcostrmb.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 
 
@@ -37,7 +38,7 @@
 #define BIG_ENDIAN_UINT16(w) OFstatic_cast(Uint8, (w) >> 8), OFstatic_cast(Uint8, (w) & 0xff)
 #define BIG_ENDIAN_UINT32(w) BIG_ENDIAN_UINT16((w) >> 16), BIG_ENDIAN_UINT16((w) & 0xffff)
 
-/* Various definitions for "fake generating" DICOM datasets */
+/* Various definitions for "fake generating" DICOM datasets, explicit transfer syntaxes */
 #define RESERVED_BYTES 0, 0
 #define TAG(tag) ENDIAN_UINT16((tag).getGroup()), ENDIAN_UINT16((tag).getElement())
 #define TAG_AND_LENGTH(tag, v, r, length) \
@@ -51,11 +52,23 @@
 #define SEQUENCE_END \
     TAG(DCM_SequenceDelimitationItem), ENDIAN_UINT32(0)
 
+/* Various definitions for "fake generating" DICOM datasets, implicit transfer syntaxes */
+#define IMPLICIT_TAG_AND_LENGTH(tag, length) \
+    TAG(tag), ENDIAN_UINT32(length)
+
 #define UNDEFINED_LENGTH  0xffffffff
 #define UNDEFINED_LENGTH_SHORT 0xffff
 #define VALUE 0x2a
 
 
+/**
+ * Read the dataset from the buffer into a dataset object.
+ * @param dset the dataset to read into
+ * @param buffer the buffer to read from
+ * @param length the length of the buffer
+ * @param ts the transfer syntax that is used
+ * @return EC_Normal if reading worked, else an error
+ */
 static inline OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, size_t length, E_TransferSyntax ts)
 {
     DcmInputBufferStream stream;
@@ -68,6 +81,44 @@ static inline OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, siz
     dset.transferEnd();
 
     return cond;
+}
+
+/**
+ * Read the dataset from the buffer into a dataset object.
+ * The difference to readDataset() is that this function then writes it out into
+ * a buffer again which is read again. So this also tests the write functions.
+ * @param dset the dataset to read itno
+ * @param buffer the buffer to read from
+ * @param length the length of the buffer
+ * @param ts1 the transfer syntax that is used in buffer
+ * @param ts2 the transfer syntax that should be used for the write/read cycle
+ * @return EC_Normal if reading worked, else an error
+ */
+static inline OFCondition readDatasetTwice(DcmDataset& dset, const Uint8* buffer,
+        size_t length, E_TransferSyntax ts1, E_TransferSyntax ts2, E_EncodingType encType = EET_ExplicitLength)
+{
+    OFCondition cond = readDataset(dset, buffer, length, ts1);
+    if (cond.bad())
+        return cond;
+
+    // Write the dataset into a temporary buffer
+    OFVector<Uint8> writeBuffer(length * 2);
+    DcmOutputBufferStream out(&writeBuffer[0], writeBuffer.size());
+    dset.transferInit();
+    cond = dset.write(out, ts1, encType, NULL);
+    dset.transferEnd();
+
+    // To avoid error messages, we must always flush the buffer
+    void *outBuffer;
+    offile_off_t outLength;
+    out.flushBuffer(outBuffer, outLength);
+
+    if (cond.bad())
+        // Writing failed
+        return cond;
+
+    // Now read the dataset again
+    return readDataset(dset, OFstatic_cast(const Uint8 *, outBuffer), outLength, ts2);
 }
 
 
