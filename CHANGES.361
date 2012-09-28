@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.09.28 (schlachter)
+
+- Add a CMake cache variable for the list of modules that are built.
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.09.28 (riesmeier)
 
 - Fixed typos and text formatting.

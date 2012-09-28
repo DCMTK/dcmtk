@@ -12,7 +12,9 @@ INCLUDE(CMake/DCMTK.cmake NO_POLICY_SCOPE)
 #-----------------------------------------------------------------------------
 
 # Modules to be built
-SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt doxygen)
+SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt doxygen
+    CACHE STRING "List of modules that should be built.")
+MARK_AS_ADVANCED(DCMTK_MODULES)
 
 #-----------------------------------------------------------------------------
 # Include directories
