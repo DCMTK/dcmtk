@@ -28,6 +28,7 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcfilter.h"
 
+
 OFTEST( dcmdata_attribute_filter )
 {
     DcmAttributeFilter ct_filter( DCM_SOPClassUID, UID_CTImageStorage );
@@ -51,7 +52,7 @@ OFTEST( dcmdata_attribute_filter )
     // create filter from range (iterators)
     DcmAttributeFilter cr_ct_mr_filter( DCM_SOPClassUID, filter_range + 0, filter_range + 3 );
 
-    // test container (OFVector) based range
+    // test container-based (OFVector) range
     OFVector<OFString> filter_vector;
     filter_vector.push_back( UID_CTImageStorage );
     filter_vector.push_back( UID_MRImageStorage );
@@ -59,7 +60,7 @@ OFTEST( dcmdata_attribute_filter )
     // create filter from range (container)
     DcmAttributeFilter ct_mr_filter( DCM_SOPClassUID, filter_vector );
 
-    // test all range based filters
+    // test all range-based filters
     OFCHECK( cr_ct_mr_filter( item ) );
     OFCHECK( !ct_mr_filter( item ) );
     item.putAndInsertString( DCM_SOPClassUID, UID_CTImageStorage );

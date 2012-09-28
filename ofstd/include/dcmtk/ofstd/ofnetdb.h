@@ -39,9 +39,9 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofstring.h"
 
-/** A non-POD version of "struct hostent" for thread and memory safe data
- *  access. Wraps the contents of a struct hostent instance to a non-POD object
- *  containing RAII-style data (e.g. OFString instead of const char*).
+/** A non-POD version of "struct hostent" for thread- and memory-safe data
+ *  access. Wraps the contents of a "struct hostent" instance to a non-POD
+ *  object containing RAII-style data (e.g. OFString instead of const char*).
  *  To handle the old pointer behavior, OFHostent objects can have an invalid
  *  state in which case all members are undefined. You can test whether an
  *  OFHostent object is invalid or not with the overloaded operators
@@ -91,11 +91,10 @@ private:
     /** the constructor that "sucks out" a struct hostent instance.
      *  @param h the struct hostent instance to clone into this object.
      */
-    OFHostent(hostent*const h);
+    OFHostent(hostent* const h);
 
     /// internal state, OFTrue when valid.
     OFBool ok;
 };
-
 
 #endif // OFNETDB_H
