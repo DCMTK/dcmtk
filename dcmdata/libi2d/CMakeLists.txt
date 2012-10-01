@@ -1,8 +1,7 @@
 # create library from source files
-ADD_LIBRARY(i2d i2d i2dplvlp i2djpgs i2dbmps i2dplsc i2dplnsc)
+DCMTK_ADD_LIBRARY(i2d i2d i2dplvlp i2djpgs i2dbmps i2dplsc i2dplnsc)
 
 TARGET_LINK_LIBRARIES(i2d dcmdata)
-DCMTK_SETUP_LIBRARY(i2d)
 
 # declare installation files
 INSTALL(TARGETS i2d

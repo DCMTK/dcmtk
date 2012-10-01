@@ -33,10 +33,12 @@ ENDMACRO(DCMTK_SETUP_EXECUTABLE)
 #
 # Setup an library
 #
-# DCMTK_SETUP_LIBRARY - macro which adds the needed setup for a library
+# DCMTK_ADD_LIBRARY - macro which adds the needed setup for a library
 # LIBRARY - name of the library that we are called for
+# extra arguments - names of the library's source files
 #
-MACRO(DCMTK_SETUP_LIBRARY LIBRARY)
+MACRO(DCMTK_ADD_LIBRARY LIBRARY)
+    ADD_LIBRARY(${LIBRARY} ${ARGN})
     # set proper version information for shared library
     IF(BUILD_SHARED_LIBS)
         SET_TARGET_PROPERTIES(${LIBRARY} PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
@@ -44,4 +46,4 @@ MACRO(DCMTK_SETUP_LIBRARY LIBRARY)
         # define the foo_EXPORTS-macro even when we are not building shared libs
         SET_TARGET_PROPERTIES(${LIBRARY} PROPERTIES COMPILE_DEFINITIONS "${LIBRARY}_EXPORTS")
     ENDIF(BUILD_SHARED_LIBS)
-ENDMACRO(DCMTK_SETUP_LIBRARY)
+ENDMACRO(DCMTK_ADD_LIBRARY)

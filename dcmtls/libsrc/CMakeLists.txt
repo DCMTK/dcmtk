@@ -1,8 +1,7 @@
 # create library from source files
-ADD_LIBRARY(dcmtls tlslayer tlstrans tlsscu)
+DCMTK_ADD_LIBRARY(dcmtls tlslayer tlstrans tlsscu)
 
 TARGET_LINK_LIBRARIES(dcmtls ofstd dcmdata dcmnet ${OPENSSL_LIBS})
-DCMTK_SETUP_LIBRARY(dcmtls)
 
 # declare installation files
 INSTALL(TARGETS dcmtls
