@@ -24,21 +24,23 @@ ENDMACRO(DCMTK_ADD_TESTS)
 # PROGRAM - name of the executable that we are called for
 #
 MACRO(DCMTK_ADD_EXECUTABLE PROGRAM)
-    ADD_EXECUTABLE(${PROGRAM} ${ARGN})
+    IF(NOT BUILD_SINGLE_SHARED_LIBRARY)
+        ADD_EXECUTABLE(${PROGRAM} ${ARGN})
 
-    # Make wildcard arguments work
-    IF(WIN32 AND NOT MINGW)
-        SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
-    ENDIF(WIN32 AND NOT MINGW)
+        # Make wildcard arguments work
+        IF(WIN32 AND NOT MINGW)
+            SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+        ENDIF(WIN32 AND NOT MINGW)
 
-    # declare installation files
-    INSTALL(TARGETS ${PROGRAM}
-            COMPONENT bin
-            DESTINATION ${DCMTK_INSTALL_BINDIR})
+        # declare installation files
+        INSTALL(TARGETS ${PROGRAM}
+                COMPONENT bin
+                DESTINATION ${DCMTK_INSTALL_BINDIR})
+    ENDIF(NOT BUILD_SINGLE_SHARED_LIBRARY)
 ENDMACRO(DCMTK_ADD_EXECUTABLE)
 
 #
-# Setup an library
+# Setup a library
 #
 # DCMTK_ADD_LIBRARY - macro which adds the needed setup for a library
 # LIBRARY - name of the library that we are called for
@@ -46,7 +48,8 @@ ENDMACRO(DCMTK_ADD_EXECUTABLE)
 #
 MACRO(DCMTK_ADD_LIBRARY LIBRARY)
     # Actually add the library first
-    ADD_LIBRARY(${LIBRARY} ${ARGN})
+    ADD_LIBRARY(${LIBRARY} ${DCMTK_LIBRARY_TYPE} ${ARGN})
+    SET(DCMTK_ALL_LIBRARIES ${DCMTK_ALL_LIBRARIES} ${LIBRARY} CACHE INTERNAL "List of all libraries in the DCMTK")
 
     # set proper version information for shared library
     IF(BUILD_SHARED_LIBS)
@@ -56,10 +59,43 @@ MACRO(DCMTK_ADD_LIBRARY LIBRARY)
         SET_TARGET_PROPERTIES(${LIBRARY} PROPERTIES COMPILE_DEFINITIONS "${LIBRARY}_EXPORTS")
     ENDIF(BUILD_SHARED_LIBS)
 
-    # Declare installation files
-    INSTALL(TARGETS ${LIBRARY}
-            COMPONENT lib
-            RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
-            LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})
+    IF(NOT BUILD_SINGLE_SHARED_LIBRARY)
+        # Declare installation files
+        INSTALL(TARGETS ${LIBRARY}
+                COMPONENT lib
+                RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
+                LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
+                ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})
+    ENDIF(NOT BUILD_SINGLE_SHARED_LIBRARY)
 ENDMACRO(DCMTK_ADD_LIBRARY)
+
+#
+# Specify a library's dependencies
+#
+# DCMTK_TARGET_LINK_LIBRARIES - macro for specifying a library's dependencies
+# LIBRARY - name of the library that we are called for
+# extra arguments - names of the library's dependencies
+#
+MACRO(DCMTK_TARGET_LINK_LIBRARIES LIBRARY)
+    SET(DCMTK_LIBRARY_DEPENDENCIES ${DCMTK_LIBRARY_DEPENDENCIES} ${ARGN} CACHE INTERNAL "Dependencies of the DCMTK libraries")
+    IF(NOT BUILD_SINGLE_SHARED_LIBRARY)
+        TARGET_LINK_LIBRARIES(${LIBRARY} ${ARGN})
+    ENDIF(NOT BUILD_SINGLE_SHARED_LIBRARY)
+ENDMACRO(DCMTK_TARGET_LINK_LIBRARIES)
+
+#
+# Link a target against other DCMTK modules
+#
+# DCMTK_TARGET_LINK_MODULES - macro which adds DCMTK modules to a target's dependencies
+# TARGET - name of the target that we are called for
+# extra arguments - names of the modules that should be added
+#
+MACRO(DCMTK_TARGET_LINK_MODULES TARGET)
+    IF(NOT BUILD_SINGLE_SHARED_LIBRARY)
+        TARGET_LINK_LIBRARIES(${TARGET} ${ARGN})
+    ENDIF(NOT BUILD_SINGLE_SHARED_LIBRARY)
+ENDMACRO(DCMTK_TARGET_LINK_MODULES TARGET)
+
+# This is an ugly hack to simulate global variables
+SET(DCMTK_ALL_LIBRARIES CACHE INTERNAL "List of all libraries in the DCMTK")
+SET(DCMTK_LIBRARY_DEPENDENCIES CACHE INTERNAL "List of all libraries in the DCMTK")

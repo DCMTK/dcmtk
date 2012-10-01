@@ -8,5 +8,6 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2pnm dcmquant dcmscale)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmimage dcmimgle dcmdata oflog ofstd)
+  DCMTK_TARGET_LINK_LIBRARIES(${PROGRAM} ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)

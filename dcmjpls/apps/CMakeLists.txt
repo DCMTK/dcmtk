@@ -11,5 +11,6 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmcjpls dcmdjpls dcml2pnm)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmjpls charls dcmimage dcmimgle dcmdata oflog ofstd ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmjpls charls dcmimage dcmimgle dcmdata oflog ofstd ofstd)
+  DCMTK_TARGET_LINK_LIBRARIES(${PROGRAM} ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
 ENDFOREACH(PROGRAM)

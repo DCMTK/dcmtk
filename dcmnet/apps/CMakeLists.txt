@@ -20,14 +20,16 @@ ENDIF(WITH_OPENSSL)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmsend echoscu findscu getscu movescu storescp storescu termscu)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmnet dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmnet dcmdata oflog ofstd)
+  DCMTK_TARGET_LINK_LIBRARIES(${PROGRAM} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)
 FOREACH(PROGRAM echoscu findscu storescp storescu)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmtls ${OPENSSL_LIBS})
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmtls)
+  DCMTK_TARGET_LINK_LIBRARIES(${PROGRAM} ${OPENSSL_LIBS})
 ENDFOREACH(PROGRAM)
 
 # uncomment the following line if "storescu" is compiled with ON_THE_FLY_COMPRESSION defined
-#TARGET_LINK_LIBRARIES(storescu dcmjpls charls dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle ${LIBTIFF_LIBS} ${LIBPNG_LIBS})
+#DCMTK_TARGET_LINK_MODULES(storescu dcmjpls dcmjpeg dcmimage)
 
 # "dcmsend" always needs compression support
-TARGET_LINK_LIBRARIES(dcmsend dcmjpls charls dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle ${LIBTIFF_LIBS} ${LIBPNG_LIBS})
+DCMTK_TARGET_LINK_MODULES(dcmsend dcmjpls dcmjpeg dcmimage)

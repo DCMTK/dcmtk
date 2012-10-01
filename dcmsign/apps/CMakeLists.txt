@@ -5,4 +5,5 @@ LINK_DIRECTORIES(${dcmsign_BINARY_DIR} ${dcmdata_BINARY_DIR} ${oflog_BINARY_DIR}
 DCMTK_ADD_EXECUTABLE(dcmsign dcmsign)
 
 # make sure executables are linked to the corresponding libraries
-TARGET_LINK_LIBRARIES(dcmsign dcmdsig dcmdata oflog ofstd oflog ${ZLIB_LIBS} ${LIBICONV_LIBS} ${OPENSSL_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+DCMTK_TARGET_LINK_MODULES(dcmsign dcmdsig dcmdata oflog ofstd)
+DCMTK_TARGET_LINK_LIBRARIES(dcmsign ${ZLIB_LIBS} ${LIBICONV_LIBS} ${OPENSSL_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

@@ -8,4 +8,5 @@ LINK_DIRECTORIES(${dcmwlm_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${
 DCMTK_ADD_EXECUTABLE(wlmscpfs wlmscpfs wlcefs)
 
 # make sure executables are linked to the corresponding libraries
-TARGET_LINK_LIBRARIES(wlmscpfs dcmwlm dcmnet dcmtls dcmdata oflog ofstd ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+DCMTK_TARGET_LINK_MODULES(wlmscpfs dcmwlm dcmnet dcmtls dcmdata oflog ofstd)
+DCMTK_TARGET_LINK_LIBRARIES(wlmscpfs ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

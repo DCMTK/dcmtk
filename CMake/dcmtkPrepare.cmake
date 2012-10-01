@@ -1,3 +1,6 @@
+# Set up the build environment.
+# This should be run before the individual modules are created.
+
 # This file should only run once
 IF(DEFINED DCMTK_CONFIGURATION_DONE)
   RETURN()
@@ -35,14 +38,14 @@ SET(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCM
 
 # General build options and settings
 OPTION(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
-OPTION(BUILD_FOR_SHARED_LIBS "Build static libraries which can be linked together into a single shared object." OFF)
-MARK_AS_ADVANCED(BUILD_FOR_SHARED_LIBS)
+OPTION(BUILD_SINGLE_SHARED_LIBRARY "Build a single DCMTK library" OFF)
+MARK_AS_ADVANCED(BUILD_SINGLE_SHARED_LIBRARY)
 SET(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
-IF(BUILD_SHARED_LIBS)
-  # When we are building shared libs, we are building *for* shared libs :-)
-  SET(BUILD_FOR_SHARED_LIBS ON CACHE BOOL "" FORCE)
-ENDIF(BUILD_SHARED_LIBS)
+IF(BUILD_SINGLE_SHARED_LIBRARY)
+  # When we are building a single shared lib, we are building shared libs :-)
+  SET(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+ENDIF(BUILD_SINGLE_SHARED_LIBRARY)
 
 # DCMTK build options
 OPTION(DCMTK_WITH_TIFF "Configure DCMTK with support for TIFF." ON)
@@ -161,12 +164,17 @@ IF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
 
 ENDIF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
 
-IF(BUILD_FOR_SHARED_LIBS)
+IF(BUILD_SHARED_LIBS)
   SET(DCMTK_SHARED ON)
-  IF(NOT BUILD_SHARED_LIBS)
+  IF(BUILD_SINGLE_SHARED_LIBRARY)
     # We are building static code that can be used in a shared lib
     SET(DCMTK_STATIC_FOR_SHARED ON)
-  ENDIF(NOT BUILD_SHARED_LIBS)
+    # Make CMake build object libraries. They are just a list of object files
+    # which aren't linked together yet.
+    SET(DCMTK_LIBRARY_TYPE OBJECT)
+    # This uses object libraries which are new in CMake 2.8.8
+    CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+  ENDIF(BUILD_SINGLE_SHARED_LIBRARY)
 
   OPTION(USE_COMPILER_HIDDEN_VISIBILITY
       "Use hidden visibility support if available" ON)
@@ -183,7 +191,7 @@ IF(BUILD_FOR_SHARED_LIBS)
   ELSE(GXX_SUPPORTS_VISIBILITY AND USE_COMPILER_HIDDEN_VISIBILITY AND NOT WIN32)
     SET(HAVE_HIDDEN_VISIBILITY)
   ENDIF(GXX_SUPPORTS_VISIBILITY AND USE_COMPILER_HIDDEN_VISIBILITY AND NOT WIN32)
-ENDIF(BUILD_FOR_SHARED_LIBS)
+ENDIF(BUILD_SHARED_LIBS)
 
 IF(WIN32)   # special handling for Windows systems
 

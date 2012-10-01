@@ -5,7 +5,7 @@ PROJECT(DCMTK)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 # Check the build system
-INCLUDE(CMake/DCMTK.cmake NO_POLICY_SCOPE)
+INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
 
 #-----------------------------------------------------------------------------
 # General project settings to configure DCMTK build process
@@ -65,6 +65,7 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake.in
 FOREACH(module ${DCMTK_MODULES})
   ADD_SUBDIRECTORY(${module})
 ENDFOREACH(module)
+INCLUDE(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
 
 #-----------------------------------------------------------------------------
 # Installation tasks

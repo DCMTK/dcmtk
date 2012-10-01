@@ -4,4 +4,4 @@ INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${
 # create library from source files
 DCMTK_ADD_LIBRARY(dcmjpls djcparam djdecode djencode djrparam djcodecd djutils djcodece)
 
-TARGET_LINK_LIBRARIES(dcmjpls ofstd oflog dcmdata dcmimgle dcmimage charls)
+DCMTK_TARGET_LINK_MODULES(dcmjpls ofstd oflog dcmdata dcmimgle dcmimage charls)

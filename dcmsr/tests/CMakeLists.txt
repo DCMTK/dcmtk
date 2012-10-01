@@ -7,7 +7,8 @@ DCMTK_ADD_EXECUTABLE(dcmsr_tests tests tsrtree)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM mkreport dcmsr_tests)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmsr dcmimage dcmimgle dcmdata oflog ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${LIBXML_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmsr dcmimage dcmimgle dcmdata oflog ofstd)
+  DCMTK_TARGET_LINK_LIBRARIES(${PROGRAM} ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${LIBXML_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)
 
 # This macro parses tests.cc and registers all tests

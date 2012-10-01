@@ -8,5 +8,6 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmqrscp dcmqridx dcmqrti)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmqrdb dcmnet dcmdata oflog ofstd ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmqrdb dcmnet dcmdata oflog ofstd)
+  DCMTK_TARGET_LINK_LIBRARIES(${PROGRAM} ${OPENSSL_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)

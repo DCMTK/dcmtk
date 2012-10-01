@@ -86,6 +86,48 @@ Changes between releases are documented here.
            dcmwlm/apps/CMakeLists.txt
            dcmwlm/wwwapps/CMakeLists.txt
 
+- Make it possible to build the whole toolkit as a single shared library.
+  Added:   CMake/dcmtkAfterModules.cmake
+           CMake/dcmtkPrepare.cmake
+  Removed: CMake/DCMTK.cmake
+  Affects: CMake/dcmtkMacros.cmake
+           CMakeLists.txt
+           INSTALL
+           dcmdata/apps/CMakeLists.txt
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/tests/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/tests/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           dcmqrdb/libsrc/CMakeLists.txt
+           dcmrt/apps/CMakeLists.txt
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/tests/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           dcmwlm/wwwapps/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/tests/CMakeLists.txt
+
 **** Changes from 2012.10.01 (schlachter)
 
 - Print a warning when reading an UN element as a sequence.

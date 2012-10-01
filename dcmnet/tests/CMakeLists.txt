@@ -5,7 +5,7 @@ LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${dcmdata_BINARY_DIR} ${ofstd_BINARY_DIR} 
 DCMTK_ADD_EXECUTABLE(dcmnet_tests tests tdump)
 
 # make sure executables are linked to the corresponding libraries
-TARGET_LINK_LIBRARIES(dcmnet_tests dcmnet)
+DCMTK_TARGET_LINK_MODULES(dcmnet_tests dcmnet)
 
 # This macro parses tests.cc and registers all tests
 DCMTK_ADD_TESTS(dcmnet)

@@ -587,11 +587,6 @@ perform the following steps:
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
    libraries can be downloaded from http://dicom.offis.de/dcmtk#lib-win.)
-
-   If you want the DCMTK to be built as dynamic link libraries (.dll) instead
-   of static libraries (.lib), set the "BUILD_SHARED_LIBS" option to "ON".
-   Please note that this is currently not supported because it might conflict
-   with the use of external libraries.
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.)
 8. Go "OK" or "Generate".  (CMake will generate new project files in the
@@ -651,6 +646,23 @@ NOTE: This is not (yet) the recommended way since this mechanism is not as
       Please feel free to test it and report any issue.  Due to this, it is only
       sparsely documented.  See the previous section on building the DCMTK with
       CMake on Windows platforms, but note that details may differ.
+
+CMake and shared libraries
+--------------------------
+
+The CMake build system allows building shared libraries instead of static
+libraries.  On Windows systems, these are dynamic link libraries (.dll).
+On Unix systems, these are shared objects (.so).  To enable this, set the
+"BUILD_SHARED_LIB" option to "ON".  Please note that this is currently not
+supported because it might conflict with the use of external libraries.
+
+Additionally, it is possible to produce a single shared library for the whole
+toolkit.  This mode is controlled by the "BUILD_SINGLE_SHARED_LIBRARY" option.
+If you don't want the whole toolkit in a single shared library, the
+"DCMTK_MODULES" cache variable can be modified to select a subset of the
+available modules.  Please note that this option is marked as advanced and thus
+is hidden by default.  Also, when building a single shared library, applications
+and tests cannot be built.
 
 
 HTML DOCUMENTATION AND MAN PAGES
@@ -721,4 +733,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2012-06-28 (Riesmeier)
+Last revised: 2012-10-02 (Schlachter)
