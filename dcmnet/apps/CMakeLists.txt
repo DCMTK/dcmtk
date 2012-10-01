@@ -8,7 +8,7 @@ LINK_DIRECTORIES(${dcmjpls_BINARY_DIR} ${dcmjpeg_BINARY_DIR} ${dcmimage_BINARY_D
 
 # declare executables
 FOREACH(PROGRAM dcmsend echoscu findscu getscu movescu storescp storescu termscu)
-  ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
+  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
 # declare installation files
@@ -22,7 +22,6 @@ ENDIF(WITH_OPENSSL)
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmsend echoscu findscu getscu movescu storescp storescu termscu)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmnet dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
-  DCMTK_SETUP_EXECUTABLE(${PROGRAM})
 ENDFOREACH(PROGRAM)
 FOREACH(PROGRAM echoscu findscu storescp storescu)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmtls ${OPENSSL_LIBS})

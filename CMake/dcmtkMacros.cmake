@@ -20,15 +20,16 @@ ENDMACRO(DCMTK_ADD_TESTS)
 #
 # Setup an executable
 #
-# DCMTK_SETUP_EXECUTABLE - macro which adds the needed setup for an executable
+# DCMTK_ADD_EXECUTABLE - macro which adds the needed setup for an executable
 # PROGRAM - name of the executable that we are called for
 #
-MACRO(DCMTK_SETUP_EXECUTABLE PROGRAM)
+MACRO(DCMTK_ADD_EXECUTABLE PROGRAM)
+    ADD_EXECUTABLE(${PROGRAM} ${ARGN})
     # Make wildcard arguments work
     IF(WIN32 AND NOT MINGW)
         SET_TARGET_PROPERTIES(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
     ENDIF(WIN32 AND NOT MINGW)
-ENDMACRO(DCMTK_SETUP_EXECUTABLE)
+ENDMACRO(DCMTK_ADD_EXECUTABLE)
 
 #
 # Setup an library

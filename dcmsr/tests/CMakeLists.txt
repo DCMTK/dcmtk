@@ -2,8 +2,8 @@
 LINK_DIRECTORIES(${dcmsr_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmimgle_BINARY_DIR} ${dcmimage_BINARY_DIR} ${ZLIB_LIBDIR} ${LIBICONV_LIBDIR} ${LIBXML_LIBDIR} ${LIBTIFF_LIBDIR} ${LIBPNG_LIBDIR})
 
 # declare executables
-ADD_EXECUTABLE(mkreport mkreport)
-ADD_EXECUTABLE(dcmsr_tests tests tsrtree)
+DCMTK_ADD_EXECUTABLE(mkreport mkreport)
+DCMTK_ADD_EXECUTABLE(dcmsr_tests tests tsrtree)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM mkreport dcmsr_tests)

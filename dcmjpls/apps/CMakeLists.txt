@@ -6,7 +6,7 @@ LINK_DIRECTORIES(${dcmjpls_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} $
 
 # declare executables
 FOREACH(PROGRAM dcmcjpls dcmdjpls dcml2pnm)
-  ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
+  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
 # declare installation files
@@ -15,5 +15,4 @@ INSTALL(TARGETS dcmcjpls dcmdjpls dcml2pnm DESTINATION ${DCMTK_INSTALL_BINDIR} C
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmcjpls dcmdjpls dcml2pnm)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmjpls charls dcmimage dcmimgle dcmdata oflog ofstd ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
-  DCMTK_SETUP_EXECUTABLE(${PROGRAM})
 ENDFOREACH(PROGRAM)

@@ -3,7 +3,7 @@ LINK_DIRECTORIES(${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${dcmdata_BINARY_DIR} $
 
 # declare executables
 FOREACH(PROGRAM readoviw readwlst writwlst)
-  ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
+  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
 # declare installation files
@@ -16,7 +16,7 @@ ENDFOREACH(PROGRAM)
 
 # command line tools that do not (yet) work under Windows OS
 IF(NOT WIN32)
-  ADD_EXECUTABLE(preplock preplock)
+  DCMTK_ADD_EXECUTABLE(preplock preplock)
   INSTALL(TARGETS preplock DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
   TARGET_LINK_LIBRARIES(preplock ${WIN32_STD_LIBRARIES})
 ENDIF(NOT WIN32)
