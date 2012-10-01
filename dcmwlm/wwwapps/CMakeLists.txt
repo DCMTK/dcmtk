@@ -6,9 +6,6 @@ FOREACH(PROGRAM readoviw readwlst writwlst)
   DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
-# declare installation files
-INSTALL(TARGETS readoviw readwlst writwlst DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
-
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM readoviw readwlst writwlst)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
@@ -17,6 +14,5 @@ ENDFOREACH(PROGRAM)
 # command line tools that do not (yet) work under Windows OS
 IF(NOT WIN32)
   DCMTK_ADD_EXECUTABLE(preplock preplock)
-  INSTALL(TARGETS preplock DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
   TARGET_LINK_LIBRARIES(preplock ${WIN32_STD_LIBRARIES})
 ENDIF(NOT WIN32)

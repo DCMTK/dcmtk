@@ -6,9 +6,6 @@ FOREACH(PROGRAM dcmdspfn dcod2lum dconvlum)
   DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
-# declare installation files
-INSTALL(TARGETS dcmdspfn dcod2lum dconvlum DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
-
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmdspfn dcod2lum dconvlum)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmimgle dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

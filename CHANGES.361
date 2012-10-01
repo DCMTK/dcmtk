@@ -70,6 +70,22 @@ Changes between releases are documented here.
            dcmwlm/wwwapps/CMakeLists.txt
            ofstd/tests/CMakeLists.txt
 
+- Move the INSTALL()-call into DCMTK_ADD_EXECUTABLE().
+  Affects: CMake/dcmtkMacros.cmake
+           dcmdata/apps/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpls/apps/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           dcmrt/apps/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/wwwapps/CMakeLists.txt
+
 **** Changes from 2012.10.01 (schlachter)
 
 - Print a warning when reading an UN element as a sequence.

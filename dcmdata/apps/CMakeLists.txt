@@ -10,9 +10,6 @@ FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmftest dcmgpdir dump2d
 ENDFOREACH(PROGRAM)
 DCMTK_ADD_EXECUTABLE(dcmodify dcmodify mdfconen mdfdsman)
 
-# declare installation files
-INSTALL(TARGETS dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmftest dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm dcm2pdf img2dcm DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
-
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm dcm2pdf img2dcm)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})

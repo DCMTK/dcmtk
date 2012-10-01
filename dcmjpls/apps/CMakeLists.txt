@@ -9,9 +9,6 @@ FOREACH(PROGRAM dcmcjpls dcmdjpls dcml2pnm)
   DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
-# declare installation files
-INSTALL(TARGETS dcmcjpls dcmdjpls dcml2pnm DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
-
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmcjpls dcmdjpls dcml2pnm)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmjpls charls dcmimage dcmimgle dcmdata oflog ofstd ofstd ${LIBTIFF_LIBS} ${LIBPNG_LIBS} ${ZLIB_LIBS} ${LIBICONV_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})

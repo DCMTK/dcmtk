@@ -12,7 +12,6 @@ FOREACH(PROGRAM dcmsend echoscu findscu getscu movescu storescp storescu termscu
 ENDFOREACH(PROGRAM)
 
 # declare installation files
-INSTALL(TARGETS dcmsend echoscu findscu getscu movescu storescp storescu termscu DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 IF(WITH_OPENSSL)
   IF(WIN32)
     INSTALL(FILES ${OPENSSL_BINDIR}/dcmtkeay.dll ${OPENSSL_BINDIR}/dcmtkssl.dll DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
