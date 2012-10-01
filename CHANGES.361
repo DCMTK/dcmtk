@@ -26,6 +26,29 @@ Changes between releases are documented here.
            dcmwlm/apps/Makefile.in
            dcmwlm/wwwapps/Makefile.in
 
+- Move the INSTALL()-call into DCMTK_ADD_LIBRARY().
+  Affects: CMake/dcmtkMacros.cmake
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmqrdb/libsrc/CMakeLists.txt
+           dcmrt/libsrc/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
 **** Changes from 2012.10.01 (schlachter)
 
 - Print a warning when reading an UN element as a sequence.

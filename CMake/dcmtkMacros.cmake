@@ -38,7 +38,9 @@ ENDMACRO(DCMTK_SETUP_EXECUTABLE)
 # extra arguments - names of the library's source files
 #
 MACRO(DCMTK_ADD_LIBRARY LIBRARY)
+    # Actually add the library first
     ADD_LIBRARY(${LIBRARY} ${ARGN})
+
     # set proper version information for shared library
     IF(BUILD_SHARED_LIBS)
         SET_TARGET_PROPERTIES(${LIBRARY} PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
@@ -46,4 +48,11 @@ MACRO(DCMTK_ADD_LIBRARY LIBRARY)
         # define the foo_EXPORTS-macro even when we are not building shared libs
         SET_TARGET_PROPERTIES(${LIBRARY} PROPERTIES COMPILE_DEFINITIONS "${LIBRARY}_EXPORTS")
     ENDIF(BUILD_SHARED_LIBS)
+
+    # Declare installation files
+    INSTALL(TARGETS ${LIBRARY}
+            COMPONENT lib
+            RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})
 ENDMACRO(DCMTK_ADD_LIBRARY)

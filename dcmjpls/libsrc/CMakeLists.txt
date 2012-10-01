@@ -5,10 +5,3 @@ INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${
 DCMTK_ADD_LIBRARY(dcmjpls djcparam djdecode djencode djrparam djcodecd djutils djcodece)
 
 TARGET_LINK_LIBRARIES(dcmjpls ofstd oflog dcmdata dcmimgle dcmimage charls)
-
-# declare installation files
-INSTALL(TARGETS dcmjpls
-        COMPONENT lib
-        RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
-        LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${DCMTK_INSTALL_LIBDIR})
