@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.01 (schlachter)
+
+- Print a warning when reading an UN element as a sequence.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2012.09.28 (schlachter)
 
 - Add a CMake cache variable for the list of modules that are built.
