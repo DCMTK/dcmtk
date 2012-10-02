@@ -2163,8 +2163,8 @@ OFStandard::OFHostent::OFHostent( hostent* const h )
         h_length   = h->h_length;
         for( char** a = h->h_aliases; *a; ++a )
             h_aliases.push_back( *a );
-        for( char** a = h->h_addr_list; *a; ++a )
-            h_addr_list.push_back( OFString( *a, h_length ) );
+        for( char** b = h->h_addr_list; *b; ++b )
+            h_addr_list.push_back( OFString( *b, h_length ) );
     }
 }
 

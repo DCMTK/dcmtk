@@ -146,6 +146,9 @@ Changes between releases are documented here.
            ofstd/libsrc/CMakeLists.txt
            ofstd/tests/CMakeLists.txt
 
+- Fixed a scope issue with MSC6.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2012.10.01 (schlachter)
 
 - Print a warning when reading an UN element as a sequence.
