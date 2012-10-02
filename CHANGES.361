@@ -7,6 +7,27 @@ Changes between releases are documented here.
   Thanks to Dr. Michael Heber <mheber.aup@t-online.de> for the report.
   Affects: dcmjpls/libcharls/header.cc
 
+- Added some helper functions for speeding up common tasks.
+  Added:   dcmrt/include/dcmtk/dcmrt/drmdose.h
+           dcmrt/include/dcmtk/dcmrt/drmimage.h
+           dcmrt/include/dcmtk/dcmrt/drmplan.h
+           dcmrt/include/dcmtk/dcmrt/drmsrch.h
+           dcmrt/include/dcmtk/dcmrt/drmstrct.h
+           dcmrt/libsrc/drmdose.cc
+           dcmrt/libsrc/drmimage.cc
+           dcmrt/libsrc/drmplan.cc
+           dcmrt/libsrc/drmstrct.cc
+           dcmrt/tests/rtsearch.cc
+           dcmrt/tests/tests.cc
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/docs/dcmrt.dox
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/tests/CMakeLists.txt
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/Makefile.in
+
 **** Changes from 2012.10.08 (riesmeier)
 
 - Added new CMake option BUILD_APPS that allows for disabling the compilation

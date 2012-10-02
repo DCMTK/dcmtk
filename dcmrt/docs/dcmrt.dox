@@ -3,7 +3,8 @@
 \page mod_dcmrt dcmrt: a radiation therapy library and utility apps
 
 This module contains classes to read, write, create, modify and access various
-DICOM Radiation Therapy (RT) objects.
+DICOM Radiation Therapy (RT) objects.  These classes are generated from a
+machine-readable description of the DICOM standard.
 
 The main interface classes are:
 \li \b DRTDoseIOD
@@ -13,6 +14,15 @@ The main interface classes are:
 \li \b DRTTreatmentSummaryRecordIOD
 \li \b DRTIonPlanIOD
 \li \b DRTIonBeamsTreatmentRecordIOD
+
+To simplify working with this low-level interface, there are some hand-written
+classes which provide commonly needed functionality.
+
+These classes are:
+\li \b DRTDose
+\li \b DRTImage
+\li \b DRTPlan
+\li \b DRTStructureSet
 
 \section Tools
 
@@ -44,6 +54,26 @@ if (status.good())
     cerr << "Error: cannot read RT Dose object (" << status.text() << ")" << endl;
 } else
   cerr << "Error: cannot load DICOM file (" << status.text() << ")" << endl;
+\endcode
+
+The following example shows how to load an RT Dose file and access the scaled
+dose image:
+
+\code
+DRTDose rtdose;
+OFCondition status = rtdose.loadFile("rtdose.dcm");
+if (status.good())
+{
+  const unsigned int frame = 0;
+  OFVector<double> doseImage;
+  status = rtdose.getDoseImage(doseImage, frame);
+  if (status.good())
+  {
+    /* do something useful with the dose image */
+  } else
+    cerr << "Error: cannot read RT Dose image (" << status.text() << ")" << endl;
+} else
+  cerr << "Error: cannot load RT Dose object (" << status.text() << ")" << endl;
 \endcode
 
 The following example shows how to load an RT Plan file, change the patient's

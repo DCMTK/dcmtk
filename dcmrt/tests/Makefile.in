@@ -22,8 +22,9 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmrt -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(ICONVLIBS)
 
-objs = drttest.o
-progs = drttest
+test_objs = tests.o rtsearch.o
+objs = drttest.o $(test_objs)
+progs = drttest tests
 
 
 all: $(progs)
@@ -31,9 +32,14 @@ all: $(progs)
 drttest: drttest.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+tests: $(test_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(ICONVLIBS) $(LIBS)
+
 install: all
 
-check:
+
+check: tests
+	./tests
 
 
 clean:

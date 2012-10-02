@@ -15,8 +15,9 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
+dcmimgledir = $(top_srcdir)/../dcmimgle
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include
+LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include
 LOCALDEFS =
 
 objs = drtdose.o drtimage.o drtplan.o drtstruct.o drttreat.o drtionpl.o drtiontr.o drttypes.o \
@@ -39,7 +40,8 @@ objs = drtdose.o drtimage.o drtplan.o drtstruct.o drttreat.o drtionpl.o drtiontr
 	drtrrtps5.o drtrrtps.o drtrses.o drtrshs6.o drtrshs7.o drtrshs.o drtrsis.o drtrsns.o \
 	drtrss.o drtrsss.o drtrsts.o drtrtrs.o drtrvis.o drtrws.o drtsds.o drtshds.o \
 	drtsis.o drtsns.o drtspcs.o drtss.o drtssrs.o drttms0.o drttms9.o drttscds.o \
-	drttsibs.o drttsmds.o drttts.o drtvls.o drtwps.o drtws.o
+	drttsibs.o drttsmds.o drttts.o drtvls.o drtwps.o drtws.o drmdose.o drmimage.o drmplan.o \
+	drmstrct.o
 
 library = libdcmrt.$(LIBEXT)
 
