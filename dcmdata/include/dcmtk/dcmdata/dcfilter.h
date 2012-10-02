@@ -36,7 +36,7 @@
  *  objects can be used like any funtion taking a DcmItem& or a DcmFileFormat& object as
  *  parameter and returning a boolean value.
  */
-class DcmAttributeFilter
+class DCMTK_DCMDATA_EXPORT DcmAttributeFilter
 {
     /// all actual filter implementations must inherit this interface.
     struct FilterInterface

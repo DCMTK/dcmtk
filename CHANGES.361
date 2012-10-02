@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.02 (schlachter)
+
+- Add a missing DCMTK_DCMDATA_EXPORT annotation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcfilter.h
+
 **** Changes from 2012.10.01 (schlachter)
 
 - Print a warning when reading an UN element as a sequence.
