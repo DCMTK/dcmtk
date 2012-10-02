@@ -180,6 +180,9 @@ AC_SUBST(ARFLAGS)
 AC_SUBST(LIBEXT)
 AC_SUBST(BINEXT)
 
+# Try to find a strip utility
+AC_CHECK_PROGS(STRIP, strip, :)
+
 dnl -------------------------------------------------------
 dnl Check special systems
 dnl -------------------------------------------------------

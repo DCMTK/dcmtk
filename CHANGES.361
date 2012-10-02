@@ -6,6 +6,26 @@ Changes between releases are documented here.
 - Add a missing DCMTK_DCMDATA_EXPORT annotation.
   Affects: dcmdata/include/dcmtk/dcmdata/dcfilter.h
 
+- Only strip the installed binaries if a strip utility is available.
+  Thanks to Paolo Marcheschi <paolo.marcheschi@ftgm.it> for the report.
+  Affects: config/Makefile.def.in
+           config/configure
+           config/configure.in
+           config/templates/Makefile.src
+           dcmdata/apps/Makefile.in
+           dcmimage/apps/Makefile.in
+           dcmimgle/apps/Makefile.in
+           dcmjpeg/apps/Makefile.in
+           dcmjpls/apps/Makefile.in
+           dcmnet/apps/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmqrdb/apps/Makefile.in
+           dcmrt/apps/Makefile.in
+           dcmsign/apps/Makefile.in
+           dcmsr/apps/Makefile.in
+           dcmwlm/apps/Makefile.in
+           dcmwlm/wwwapps/Makefile.in
+
 **** Changes from 2012.10.01 (schlachter)
 
 - Print a warning when reading an UN element as a sequence.
