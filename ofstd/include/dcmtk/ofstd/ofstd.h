@@ -180,10 +180,13 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** check whether the given path exists.
      *  This function does not distinguish files from directories (use 'fileExists()'
      *  or 'directoryExists()' if required).
-     *  @param pathName name of the path to be checked
+     *  @param pathName name of the path to be checked. This path name may contain
+     *    wide characters if support enabled. Since there are various constructors
+     *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also
+     *    be passed directly to this parameter.
      *  @return OFTrue if path exists, OFFalse otherwise
      */
-    static OFBool pathExists(const OFString &pathName);
+    static OFBool pathExists(const OFFilename &pathName);
 
     /** check whether the given file exists.
      *  This function also checks that the specified path points to file and not to
@@ -199,24 +202,33 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** check whether the given directory exists.
      *  This function also checks that the specified path points to directory and
      *  not to a file (or the like).
-     *  @param dirName name of the directory to be checked
+     *  @param dirName name of the directory to be checked. This directory name may
+     *    contain wide characters if support enabled. Since there are various
+     *    constructors for the OFFilename class, a "char *", "OFString" or "wchar_t *"
+     *    can also be passed directly to this parameter.
      *  @return OFTrue if directory exists, OFFalse otherwise
      */
-    static OFBool dirExists(const OFString &dirName);
+    static OFBool dirExists(const OFFilename &dirName);
 
     /** check whether the given path is readable.
      *  This function works for both files and directories.
-     *  @param pathName name of the path to be checked
+     *  @param pathName name of the path to be checked. This path name may contain
+     *    wide characters if support enabled. Since there are various constructors
+     *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also
+     *    be passed directly to this parameter.
      *  @return OFTrue if path is readable, OFFalse otherwise
      */
-    static OFBool isReadable(const OFString &pathName);
+    static OFBool isReadable(const OFFilename &pathName);
 
     /** check whether the given path is writeable.
      *  This function works for both files and directories.
-     *  @param pathName name of the path to be checked
+     *  @param pathName name of the path to be checked. This path name may contain
+     *    wide characters if support enabled. Since there are various constructors
+     *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also
+     *    be passed directly to this parameter.
      *  @return OFTrue if path is writeable, OFFalse otherwise
      */
-    static OFBool isWriteable(const OFString &pathName);
+    static OFBool isWriteable(const OFFilename &pathName);
 
     /** get directory name component from given path name.
      *  Extracts the substring before the last path separator. If there is no path

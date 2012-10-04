@@ -374,29 +374,43 @@ OFString &OFStandard::toLower(OFString &value)
 
 // --- file system functions ---
 
-OFBool OFStandard::pathExists(const OFString &pathName)
+OFBool OFStandard::pathExists(const OFFilename &pathName)
 {
     OFBool result = OFFalse;
-    /* check for valid path name */
-    if (!pathName.empty())
+    /* check for valid path name (avoid NULL or empty string) */
+    if (!pathName.isEmpty())
     {
 #if HAVE_ACCESS
-        /* check whether path exists */
-        result = (access(pathName.c_str(), F_OK) == 0);
-#else
+        /* check existence with "access()" */
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (pathName.usesWideChars())
+            result = (_waccess(pathName.getWideCharPointer(), F_OK) == 0);
+        else
+#endif
+            result = (access(pathName.getCharPointer(), F_OK) == 0);
+#else /* HAVE_ACCESS */
 #ifdef HAVE_WINDOWS_H
-        /* check whether path exists */
-        result = (GetFileAttributes(pathName.c_str()) != 0xffffffff);
-#else
+        /* get file attributes */
+        DWORD fileAttr;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (pathName.usesWideChars())
+            fileAttr = GetFileAttributesW(pathName.getWideCharPointer());
+        else
+#endif
+            fileAttr = GetFileAttributes(pathName.getCharPointer());
+        result = (fileAttr != 0xffffffff);
+#else /* HAVE_WINDOWS_H */
 #ifdef HAVE_SYS_STAT_H
         /* check existence with "stat()" */
         struct stat stat_buf;
-        result = (stat(pathName.c_str(), &stat_buf) == 0);
+        result = (stat(pathName.getCharPointer(), &stat_buf) == 0);
 #else
         /* try to open the given "file" (or directory) in read-only mode */
-        FILE* filePtr = fopen(pathName.c_str(), "r");
-        result = (filePtr != NULL);
-        fclose(filePtr);
+        OFFile file;
+        result = file.fopen(pathName, "r");
+        file.fclose();
 #endif /* HAVE_SYS_STAT_H */
 #endif /* HAVE_WINDOWS_H */
 #endif /* HAVE_ACCESS */
@@ -415,6 +429,7 @@ OFBool OFStandard::fileExists(const OFFilename &fileName)
         /* get file attributes */
         DWORD fileAttr;
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
         if (fileName.usesWideChars())
             fileAttr = GetFileAttributesW(fileName.getWideCharPointer());
         else
@@ -425,7 +440,7 @@ OFBool OFStandard::fileExists(const OFFilename &fileName)
             /* check file type (not a directory?) */
             result = ((fileAttr & FILE_ATTRIBUTE_DIRECTORY) == 0);
         }
-#else
+#else /* HAVE_WINDOWS_H */
         /* check whether path exists (but does not point to a directory) */
         result = pathExists(fileName.getCharPointer()) && !dirExists(fileName.getCharPointer());
 #endif /* HAVE_WINDOWS_H */
@@ -434,23 +449,30 @@ OFBool OFStandard::fileExists(const OFFilename &fileName)
 }
 
 
-OFBool OFStandard::dirExists(const OFString &dirName)
+OFBool OFStandard::dirExists(const OFFilename &dirName)
 {
     OFBool result = OFFalse;
-    /* check for valid directory name */
-    if (!dirName.empty())
+    /* check for valid directory name (avoid NULL or empty string) */
+    if (!dirName.isEmpty())
     {
 #ifdef HAVE_WINDOWS_H
         /* get file attributes of the directory */
-        DWORD fileAttr = GetFileAttributes(dirName.c_str());
+        DWORD fileAttr;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (dirName.usesWideChars())
+            fileAttr = GetFileAttributesW(dirName.getWideCharPointer());
+        else
+#endif
+            fileAttr = GetFileAttributes(dirName.getCharPointer());
         if (fileAttr != 0xffffffff)
         {
             /* check file type (is a directory?) */
             result = ((fileAttr & FILE_ATTRIBUTE_DIRECTORY) != 0);
         }
-#else
+#else /* HAVE_WINDOWS_H */
         /* try to open the given directory */
-        DIR *dirPtr = opendir(dirName.c_str());
+        DIR *dirPtr = opendir(dirName.getCharPointer());
         if (dirPtr != NULL)
         {
             result = OFTrue;
@@ -462,33 +484,53 @@ OFBool OFStandard::dirExists(const OFString &dirName)
 }
 
 
-OFBool OFStandard::isReadable(const OFString &pathName)
+OFBool OFStandard::isReadable(const OFFilename &pathName)
 {
-#if HAVE_ACCESS
-    return (access(pathName.c_str(), R_OK) == 0);
-#else
     OFBool result = OFFalse;
-    /* try to open the given "file" (or directory) in read-only mode */
-    FILE* filePtr = fopen(pathName.c_str(), "r");
-    result = (filePtr != NULL);
-    fclose(filePtr);
-    return result;
+    /* check for valid path name (avoid NULL or empty string) */
+    if (!pathName.isEmpty())
+    {
+#if HAVE_ACCESS
+        /* check whether the path is readable using "access()" */
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (pathName.usesWideChars())
+            result = (_waccess(pathName.getWideCharPointer(), R_OK) == 0);
+        else
+#endif
+            result = (access(pathName.getCharPointer(), R_OK) == 0);
+#else /* HAVE_ACCESS */
+        /* try to open the given "file" (or directory) in read-only mode */
+        OFFile file;
+        result = file.fopen(pathName, "r");
 #endif /* HAVE_ACCESS */
+}
+    return result;
 }
 
 
-OFBool OFStandard::isWriteable(const OFString &pathName)
+OFBool OFStandard::isWriteable(const OFFilename &pathName)
 {
-#if HAVE_ACCESS
-    return (access(pathName.c_str(), W_OK) == 0);
-#else
     OFBool result = OFFalse;
-    /* try to open the given "file" (or directory) in write mode */
-    FILE* filePtr = fopen(pathName.c_str(), "w");
-    result = (filePtr != NULL);
-    fclose(filePtr);
-    return result;
+    /* check for valid path name (avoid NULL or empty string) */
+    if (!pathName.isEmpty())
+    {
+#if HAVE_ACCESS
+        /* check whether the path is writable using "access()" */
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (pathName.usesWideChars())
+            result = (_waccess(pathName.getWideCharPointer(), W_OK) == 0);
+        else
+#endif
+            result = (access(pathName.getCharPointer(), W_OK) == 0);
+#else /* HAVE_ACCESS */
+        /* try to open the given "file" (or directory) in write mode */
+        OFFile file;
+        result = file.fopen(pathName, "w");
 #endif /* HAVE_ACCESS */
+    }
+    return result;
 }
 
 
