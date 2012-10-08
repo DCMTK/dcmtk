@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.10.08 (riesmeier)
 
+- Added new CMake option BUILD_APPS that allows for disabling the compilation
+  and installation of the various command line applications.
+  Affects: CMake/dcmtkMacros.cmake
+           CMake/dcmtkPrepare.cmake
+           INSTALL
+
 - Updated information on latest CMake version that has been tested to "2.8.9".
   Affects: CMake/dcmtkPrepare.cmake
 

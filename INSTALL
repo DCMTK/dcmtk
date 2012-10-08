@@ -602,6 +602,11 @@ the executables, libraries, include, support and documentation files to the
 directory specified by the variable "CMAKE_INSTALL_PREFIX" (very similar to
 "make install-all" on Unix systems).
 
+Compilation and installation of the various command line applications
+(including the test programs) can be disabled by setting the "BUILD_APPS"
+option to "OFF" before configuring and generating the project files.  By
+default, all command line applications are built and installed.
+
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
 
@@ -733,4 +738,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2012-10-02 (Schlachter)
+Last revised: 2012-10-08 (Riesmeier)
