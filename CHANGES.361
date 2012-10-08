@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.08 (riesmeier)
+
+- Updated information on latest CMake version that has been tested to "2.8.9".
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2012.10.04 (riesmeier)
 
 - Added support for Windows-specific wide character encoding (UTF-16) to the
