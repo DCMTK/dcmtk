@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.09 (riesmeier)
+
+- Renamed all drtstruct.* files to drtstrct.* to stay within 8.3 characters.
+  Added:   dcmrt/include/dcmtk/dcmrt/drtstrct.h
+           dcmrt/libsrc/drtstrct.cc
+  Removed: dcmrt/include/dcmtk/dcmrt/drtstruct.h
+           dcmrt/libsrc/drtstruct.cc
+  Affects: dcmrt/apps/drtdump.cc
+           dcmrt/apps/Makefile.dep
+           dcmrt/include/dcmtk/dcmrt/drmstrct.h
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/drttest.cc
+
 **** Changes from 2012.10.09 (schlachter)
 
 - Properly initialized member variables in constructor.

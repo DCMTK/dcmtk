@@ -185,7 +185,7 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps3.h \
  ../include/dcmtk/dcmrt/seq/drtss.h ../include/dcmtk/dcmrt/seq/drttts.h \
  ../include/dcmtk/dcmrt/seq/drtbldts.h \
- ../include/dcmtk/dcmrt/seq/drttms9.h ../include/dcmtk/dcmrt/drtstruct.h \
+ ../include/dcmtk/dcmrt/seq/drttms9.h ../include/dcmtk/dcmrt/drtstrct.h \
  ../include/dcmtk/dcmrt/seq/drtrros.h \
  ../include/dcmtk/dcmrt/seq/drtrpps.h \
  ../include/dcmtk/dcmrt/seq/drtrics.h ../include/dcmtk/dcmrt/seq/drtrrs.h \

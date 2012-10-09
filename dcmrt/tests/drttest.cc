@@ -7,7 +7,7 @@
  *
  *  Generated manually
  *  File created on 2008-12-08
- *  Last modified on 2012-01-06 by Riesmeier
+ *  Last modified on 2012-10-09 by Riesmeier
  *
  */
 
@@ -17,7 +17,7 @@
 #include "dcmtk/dcmrt/drtdose.h"
 #include "dcmtk/dcmrt/drtimage.h"
 #include "dcmtk/dcmrt/drtplan.h"
-#include "dcmtk/dcmrt/drtstruct.h"
+#include "dcmtk/dcmrt/drtstrct.h"
 #include "dcmtk/dcmrt/drttreat.h"
 
 #include "dcmtk/dcmdata/dcfilefo.h"

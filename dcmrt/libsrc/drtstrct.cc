@@ -6,14 +6,14 @@
  *  Source file for class DRTStructureSetIOD
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2012-02-01 16:51:15
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"      // make sure OS specific configuration is included first
 
-#include "dcmtk/dcmrt/drtstruct.h"
+#include "dcmtk/dcmrt/drtstrct.h"
 
 
 DRTStructureSetIOD::DRTStructureSetIOD()

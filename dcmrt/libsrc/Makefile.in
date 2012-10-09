@@ -20,7 +20,7 @@ dcmimgledir = $(top_srcdir)/../dcmimgle
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include
 LOCALDEFS =
 
-objs = drtdose.o drtimage.o drtplan.o drtstruct.o drttreat.o drtionpl.o drtiontr.o drttypes.o \
+objs = drtdose.o drtimage.o drtplan.o drtstrct.o drttreat.o drtionpl.o drtiontr.o drttypes.o \
 	drtadcs.o drtads.o drtas1.o drtas5.o drtas6.o drtas7.o drtass.o drtbads.o drtbas.o \
 	drtbcps.o drtbl2.o drtbl5.o drtbldls.o drtbldps.o drtblds1.o drtblds5.o drtblds6.o \
 	drtbldts.o drtbrcss.o drtbrdrs.o drtbrs.o drtbs.o drtcbars.o drtccs.o drtcdrs.o \

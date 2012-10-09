@@ -7,7 +7,7 @@
  *
  *  Generated manually
  *  File created on 2010-05-10
- *  Last modified on 2012-01-06 by Riesmeier
+ *  Last modified on 2012-10-09 by Riesmeier
  *
  */
 
@@ -19,7 +19,7 @@
 #include "dcmtk/dcmrt/drtdose.h"
 #include "dcmtk/dcmrt/drtimage.h"
 #include "dcmtk/dcmrt/drtplan.h"
-#include "dcmtk/dcmrt/drtstruct.h"
+#include "dcmtk/dcmrt/drtstrct.h"
 #include "dcmtk/dcmrt/drttreat.h"
 #include "dcmtk/dcmrt/drtionpl.h"
 #include "dcmtk/dcmrt/drtiontr.h"

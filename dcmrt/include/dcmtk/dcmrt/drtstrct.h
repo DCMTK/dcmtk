@@ -6,13 +6,13 @@
  *  Header file for class DRTStructureSetIOD
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-03-27 17:57:09 
+ *  File created on 2012-03-27 17:57:09
  *
  */
 
 
-#ifndef DRTSTRUCT_H
-#define DRTSTRUCT_H
+#ifndef DRTSTRCT_H
+#define DRTSTRCT_H
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 

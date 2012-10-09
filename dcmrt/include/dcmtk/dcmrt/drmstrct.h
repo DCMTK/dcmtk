@@ -19,11 +19,11 @@
  *
  */
 
-#ifndef DRMSTRUCT_H
-#define DRMSTRUCT_H
+#ifndef DRMSTRCT_H
+#define DRMSTRCT_H
 
 #include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmrt/drtstruct.h"
+#include "dcmtk/dcmrt/drtstrct.h"
 
 
 /**
