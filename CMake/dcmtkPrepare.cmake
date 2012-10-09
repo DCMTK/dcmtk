@@ -168,6 +168,9 @@ ENDIF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
 IF(BUILD_SHARED_LIBS)
   SET(DCMTK_SHARED ON)
   IF(BUILD_SINGLE_SHARED_LIBRARY)
+    # We can't build apps, because there is no way to tell CMake to link apps
+    # against the library.
+    SET(BUILD_APPS OFF CACHE BOOL "" FORCE)
     # We are building static code that can be used in a shared lib
     SET(DCMTK_STATIC_FOR_SHARED ON)
     # Make CMake build object libraries. They are just a list of object files

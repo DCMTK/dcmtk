@@ -54,6 +54,10 @@ Changes between releases are documented here.
            dcmrt/tests/Makefile.dep
            dcmrt/tests/Makefile.in
 
+- Forcefully disable BUILD_APPS when BUILD_SINGLE_SHARED_LIBRARY is enabled.
+  Affects: CMake/dcmtkMacros.cmake
+           CMake/dcmtkPrepare.cmake
+
 **** Changes from 2012.10.08 (riesmeier)
 
 - Added new CMake option BUILD_APPS that allows for disabling the compilation
