@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.09 (schlachter)
+
+- Properly initialized member variables in constructor.
+  Thanks to Dr. Michael Heber <mheber.aup@t-online.de> for the report.
+  Affects: dcmjpls/libcharls/header.cc
+
 **** Changes from 2012.10.08 (riesmeier)
 
 - Added new CMake option BUILD_APPS that allows for disabling the compilation

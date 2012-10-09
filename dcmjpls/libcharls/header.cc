@@ -200,6 +200,7 @@ JLSInputStream::JLSInputStream(const BYTE* pdata, LONG cbyteLength) :
 		_info(),
 		_rect()
 {
+	::memset(&_info, 0, sizeof(_info));
 }
 
 //
