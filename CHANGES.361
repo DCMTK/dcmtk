@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.10 (riesmeier)
+
+- Renamed test program to comply with DCMTK's naming conventions.
+  Added:   dcmrt/tests/tsearch.cc
+  Removed: dcmrt/tests/rtsearch.cc
+  Affects: dcmrt/tests/CMakeLists.txt
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/Makefile.in
+           dcmrt/tests/tests.cc
+
 **** Changes from 2012.10.09 (riesmeier)
 
 - Renamed all drtstruct.* files to drtstrct.* to stay within 8.3 characters.

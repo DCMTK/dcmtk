@@ -28,7 +28,7 @@
 OFTEST(dcmrt_search)
 {
     DRTPlan plan;
-    DRTBeamSequence &seq = plan.getBeamSequence();;
+    DRTBeamSequence &seq = plan.getBeamSequence();
     DRTBeamSequence::Item *item1, *item2, *item3;
     // Get the empty default item
     DRTBeamSequence::Item &empty = seq.getCurrentItem();

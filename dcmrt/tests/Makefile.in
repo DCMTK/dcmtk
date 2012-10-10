@@ -22,7 +22,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmrt -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(ICONVLIBS)
 
-test_objs = tests.o rtsearch.o
+test_objs = tests.o tsearch.o
 objs = drttest.o $(test_objs)
 progs = drttest tests
 

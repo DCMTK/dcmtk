@@ -3,7 +3,7 @@ LINK_DIRECTORIES(${dcmrt_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${d
 
 # declare executables
 DCMTK_ADD_EXECUTABLE(drttest drttest)
-DCMTK_ADD_EXECUTABLE(dcmrt_tests tests rtsearch)
+DCMTK_ADD_EXECUTABLE(dcmrt_tests tests tsearch)
 
 # make sure executables are linked to the corresponding libraries
 DCMTK_TARGET_LINK_MODULES(drttest dcmrt dcmdata oflog ofstd)
