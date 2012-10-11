@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fix linking of DLLs when BUILD_APPS is disabled.
   Affects: CMake/dcmtkMacros.cmake
 
+- Improve example for accessing a dose image.
+  Affects: dcmrt/docs/dcmrt.dox
+
 **** Changes from 2012.10.10 (riesmeier)
 
 - Renamed test program to comply with DCMTK's naming conventions.

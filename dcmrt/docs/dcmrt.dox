@@ -69,7 +69,15 @@ if (status.good())
   status = rtdose.getDoseImage(doseImage, frame);
   if (status.good())
   {
-    /* do something useful with the dose image */
+    OFVector<double>::iterator it = doseImage.begin();
+    for (int y = 0; y < doseImage.getDoseImageHeight(); ++y)
+    {
+      for (int x = 0; x < doseImage.getDoseImageWidth(); ++x)
+      {
+        double value = *it++;
+        /* do something useful with the dose image pixel */
+      }
+    }
   } else
     cerr << "Error: cannot read RT Dose image (" << status.text() << ")" << endl;
 } else
