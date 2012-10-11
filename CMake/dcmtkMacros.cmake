@@ -78,9 +78,8 @@ ENDMACRO(DCMTK_ADD_LIBRARY)
 #
 MACRO(DCMTK_TARGET_LINK_LIBRARIES LIBRARY)
     SET(DCMTK_LIBRARY_DEPENDENCIES ${DCMTK_LIBRARY_DEPENDENCIES} ${ARGN} CACHE INTERNAL "Dependencies of the DCMTK libraries.")
-    IF(BUILD_APPS)
-        TARGET_LINK_LIBRARIES(${LIBRARY} ${ARGN})
-    ENDIF(BUILD_APPS)
+    # The name of this macro doesn't match, but it does just what we need here
+    DCMTK_TARGET_LINK_MODULES(${LIBRARY} ${ARGN})
 ENDMACRO(DCMTK_TARGET_LINK_LIBRARIES)
 
 #
@@ -91,9 +90,16 @@ ENDMACRO(DCMTK_TARGET_LINK_LIBRARIES)
 # extra arguments - names of the modules that should be added
 #
 MACRO(DCMTK_TARGET_LINK_MODULES TARGET)
-    IF(BUILD_APPS)
+    # This macro is called for libraries and apps. Thus, we need some magic.
+    # 1. During "normal builds", always call TARGET_LINK_LIBRARIES()
+    # 2. When BUILD_SINGLE_SHARED_LIBRARY, never call it, because neither the
+    #    libraries nor the apps really exist in this mode
+    # 3. When "just" BUILD_APPS is disabled, only call it for libs, not for apps
+    # These rules boil down to: If CMake knows the target (this handles all
+    # cases for apps) and we aren't building a single library (case 2)
+    IF(TARGET ${TARGET} AND NOT BUILD_SINGLE_SHARED_LIBRARY)
         TARGET_LINK_LIBRARIES(${TARGET} ${ARGN})
-    ENDIF(BUILD_APPS)
+    ENDIF(TARGET ${TARGET} AND NOT BUILD_SINGLE_SHARED_LIBRARY)
 ENDMACRO(DCMTK_TARGET_LINK_MODULES TARGET)
 
 # This is an ugly hack to simulate global variables
