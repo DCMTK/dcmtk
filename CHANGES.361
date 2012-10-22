@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.22 (schlachter)
+
+- Add a missing DCMTK_OFSTD_EXPORT annotation.
+  Affects: ofstd/include/dcmtk/ofstd/ofnetdb.h
+
 **** Changes from 2012.10.11 (schlachter)
 
 - Fix linking of DLLs when BUILD_APPS is disabled.

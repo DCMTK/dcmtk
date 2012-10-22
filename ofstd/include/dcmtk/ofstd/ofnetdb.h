@@ -53,7 +53,7 @@ END_EXTERN_C
  *    auto_ptr / unique_ptr or using c++11 move sematics would prevent that,
  *    if somebody thinks it is necessary.
  */
-class OFStandard::OFHostent
+class DCMTK_OFSTD_EXPORT OFStandard::OFHostent
 {
 public:
     /// default constructor that creates an invalid object.
