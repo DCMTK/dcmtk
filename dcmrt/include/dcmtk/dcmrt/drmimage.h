@@ -232,6 +232,9 @@ public:
     virtual void clear();
 
 private:
+    /// Reset this class image and DICOM object members
+    virtual void reset();
+
     /**
      * Hide DRTImageIOD::read(). DicomImage() doesn't allow the dataset that was
      * used for loading the image to be deleted. Thus, read() cannot work.

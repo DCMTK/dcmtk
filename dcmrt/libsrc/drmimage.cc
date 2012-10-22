@@ -31,16 +31,21 @@ DRTImage::DRTImage()
 
 DRTImage::~DRTImage()
 {
-    clear();
+    reset();
 }
 
-void DRTImage::clear()
+void DRTImage::reset()
 {
     delete image_;
     delete dataset_;
     format_.clear();
     image_ = NULL;
     dataset_ = NULL;
+}
+
+void DRTImage::clear()
+{
+    reset();
     DRTImageIOD::clear();
 }
 
@@ -49,7 +54,7 @@ OFCondition DRTImage::loadFile(const OFFilename &filename,
                                const E_TransferSyntax readXfer)
 {
     /* get rid of the old image before we mess with its dataset */
-    clear();
+    reset();
 
     OFCondition cond = format_.loadFile(filename, readXfer, EGL_noChange,
                                         DCM_MaxReadLength, readMode);
@@ -71,7 +76,7 @@ OFCondition DRTImage::loadFile(const OFFilename &filename,
 OFCondition DRTImage::read(DcmItem *dataset)
 {
     /* get rid of the old image before we mess with its dataset */
-    clear();
+    reset();
 
     dataset_ = dataset;
     OFCondition cond = DRTImageIOD::read(*format_.getDataset());

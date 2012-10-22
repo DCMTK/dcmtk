@@ -76,7 +76,7 @@ OFCondition DRTStructureSet::getContoursForROINumber(OFVector<DRTROIContourSeque
     DRTROIContourSequence& seq = getROIContourSequence();
     OFCondition cond = seq.gotoFirstItem();
 
-    // tbd: This method could easily be moved turned into a template if needed,
+    // tbd: This method could easily be turned into a template if needed,
     // to avoid code duplication
 
     // Go through all items in the sequence...
@@ -101,7 +101,7 @@ OFCondition DRTStructureSet::getContoursForROINumber(OFList<DRTROIContourSequenc
     DRTROIContourSequence& seq = getROIContourSequence();
     OFCondition cond = seq.gotoFirstItem();
 
-    // tbd: This method could easily be moved turned into a template if needed,
+    // tbd: This method could easily be turned into a template if needed,
     // to avoid code duplication
 
     // Go through all items in the sequence...

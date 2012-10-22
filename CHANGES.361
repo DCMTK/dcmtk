@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.10.22 (schlachter)
 
+- Minor improvements and fixes to the medium-level API.
+  Affects: dcmrt/include/dcmtk/dcmrt/drmimage.h
+           dcmrt/libsrc/drmdose.cc
+           dcmrt/libsrc/drmimage.cc
+           dcmrt/libsrc/drmstrct.cc
+
 - Rebuilt Makefile dependencies.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/libi2d/Makefile.dep

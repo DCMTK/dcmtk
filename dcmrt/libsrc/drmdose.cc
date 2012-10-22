@@ -33,7 +33,7 @@ public:
     {
     }
 
-    Sint32 getPixel(Uint32 pixelNumber)
+    double getPixel(Uint32 pixelNumber)
     {
         if (pixelRep_ == 1) {
             DCMRT_TRACE("Accessing signed dose image data");
@@ -56,7 +56,7 @@ public:
 protected:
     // This is supposed to be a template, because getPixelUnsigned has the same
     // code, just a different type. MSC6 doesn't support member function templates.
-    Sint32 getPixelSigned(Uint32 pixelNumber)
+    signedT getPixelSigned(Uint32 pixelNumber)
     {
         signedT result;
         if (pixelData_.getPartialValue(&result, pixelNumber * sizeof(signedT), sizeof(signedT)).bad())
@@ -64,7 +64,7 @@ protected:
         return result;
     }
 
-    Sint32 getPixelUnsigned(Uint32 pixelNumber)
+    unsignedT getPixelUnsigned(Uint32 pixelNumber)
     {
         unsignedT result;
         if (pixelData_.getPartialValue(&result, pixelNumber * sizeof(unsignedT), sizeof(unsignedT)).bad())
@@ -167,10 +167,11 @@ double DRTDose::getUnscaledDose(unsigned int x, unsigned int y, unsigned int fra
     return result;
 }
 
-static OFCondition getImageParameters(const DRTDose& dose, Uint32& frames, Uint16& rows, Uint16& columns, Uint16& bitsStored, Uint16& pixelRep)
+static OFCondition getImageParameters(const DRTDose& dose, Uint32& frames, Uint16& rows, Uint16& columns, Uint16& bitsAllocated, Uint16& pixelRep)
 {
     OFCondition cond = EC_Normal;
     Sint32 tmp;
+    Uint16 bitsStored, highBit;
 
     // tbd: Would be nice to know which getter failed
     if (cond.good())
@@ -180,7 +181,11 @@ static OFCondition getImageParameters(const DRTDose& dose, Uint32& frames, Uint1
     if (cond.good())
         cond = dose.getColumns(columns);
     if (cond.good())
+        cond = dose.getBitsAllocated(bitsAllocated);
+    if (cond.good())
         cond = dose.getBitsStored(bitsStored);
+    if (cond.good())
+        cond = dose.getHighBit(highBit);
     if (cond.good())
         cond = dose.getPixelRepresentation(pixelRep);
     if (cond.good() && pixelRep != 0 && pixelRep != 1)
@@ -193,6 +198,16 @@ static OFCondition getImageParameters(const DRTDose& dose, Uint32& frames, Uint1
         DCMRT_ERROR("Invalid value for NumberOfFrames (" << tmp << "), must be positive");
         cond = RT_EC_InvalidValue;
     }
+    if (cond.good() && bitsStored != bitsAllocated)
+    {
+        DCMRT_ERROR("Different values for BitsStored (" << bitsStored << ") and BitsAllocated (" << bitsAllocated << "), must be the same");
+        cond = RT_EC_InvalidValue;
+    }
+    if (cond.good() && highBit != bitsStored - 1)
+    {
+        DCMRT_ERROR("Invalid value for HighBit (" << highBit << "), must be BitsStored - 1 (" << (bitsStored - 1) << ")");
+        cond = RT_EC_InvalidValue;
+    }
     if (cond.good())
         frames = OFstatic_cast(Uint32, tmp);
     return cond;
@@ -201,10 +216,10 @@ static OFCondition getImageParameters(const DRTDose& dose, Uint32& frames, Uint1
 OFCondition DRTDose::getUnscaledDose(double &result, unsigned int x, unsigned int y, unsigned int frame) const
 {
     Uint32 frames;
-    Uint16 rows, columns, bitsStored, pixelRep;
+    Uint16 rows, columns, bitsAllocated, pixelRep;
     OFCondition cond = EC_Normal;
 
-    cond = getImageParameters(*this, frames, rows, columns, bitsStored, pixelRep);
+    cond = getImageParameters(*this, frames, rows, columns, bitsAllocated, pixelRep);
     if (cond.bad())
         return cond;
     if (columns < x || rows < y || frames < frame)
@@ -212,17 +227,17 @@ OFCondition DRTDose::getUnscaledDose(double &result, unsigned int x, unsigned in
 
     Uint32 pixel_number = frame * columns * rows + y * columns + x;
     DCMRT_TRACE("Getting pixel (" << x << "," << y << ") of frame " << frame << " (index " << pixel_number << ")");
-    if (bitsStored == 16) {
+    if (bitsAllocated == 16) {
         DCMRT_TRACE("Dose image uses 16 bit per pixel");
         PixelDataAccess<Sint16, Uint16> pixel(getPixelData(), pixelRep);
         result = pixel.getPixel(pixel_number);
-    } else if (bitsStored == 32) {
+    } else if (bitsAllocated == 32) {
         DCMRT_TRACE("Dose image uses 32 bit per pixel");
         PixelDataAccess<Sint32, Uint32> pixel(getPixelData(), pixelRep);
         result = pixel.getPixel(pixel_number);
     } else {
         /* RT Dose Images may only have 16 or 32 bits stored */
-        DCMRT_ERROR("Invalid value for BitsStored (" << bitsStored << "), only 16 and 32 allowed");
+        DCMRT_ERROR("Invalid value for BitsAllocated (" << bitsAllocated << "), only 16 and 32 allowed");
         return RT_EC_InvalidValue;
     }
 
@@ -233,13 +248,13 @@ OFCondition DRTDose::getDoseImage(OFVector<double> &result, unsigned int frame) 
 {
     Uint32 frames;
     Uint32 offset, length;
-    Uint16 rows, columns, bitsStored, pixelRep;
+    Uint16 rows, columns, bitsAllocated, pixelRep;
     double doseGridScaling;
     OFCondition cond = EC_Normal;
 
     result.clear();
 
-    cond = getImageParameters(*this, frames, rows, columns, bitsStored, pixelRep);
+    cond = getImageParameters(*this, frames, rows, columns, bitsAllocated, pixelRep);
     if (cond.good())
         cond = getDoseGridScaling(doseGridScaling);
     if (cond.bad())
@@ -252,17 +267,17 @@ OFCondition DRTDose::getDoseImage(OFVector<double> &result, unsigned int frame) 
     offset = frame * length;
     DCMRT_TRACE("Getting dose image for frame " << frame << " (offset=" << offset << ", length=" << length << ")");
 
-    if (bitsStored == 16) {
+    if (bitsAllocated == 16) {
         DCMRT_TRACE("Dose image uses 16 bit per pixel");
         PixelDataAccess<Sint16, Uint16> pixel(getPixelData(), pixelRep);
         cond = pixel.getScaledPixels(result, doseGridScaling, offset, length);
-    } else if (bitsStored == 32) {
+    } else if (bitsAllocated == 32) {
         DCMRT_TRACE("Dose image uses 32 bit per pixel");
         PixelDataAccess<Sint32, Uint32> pixel(getPixelData(), pixelRep);
         cond = pixel.getScaledPixels(result, doseGridScaling, offset, length);
     } else {
         /* RT Dose Images may only have 16 or 32 bits stored */
-        DCMRT_ERROR("Invalid value for BitsStored (" << bitsStored << "), only 16 and 32 allowed");
+        DCMRT_ERROR("Invalid value for BitsAllocated (" << bitsAllocated << "), only 16 and 32 allowed");
         cond = RT_EC_InvalidValue;
     }
 
@@ -313,14 +328,14 @@ Uint16 DRTDose::getDoseImageHeight() const
 OFBool DRTDose::isValid()
 {
     Uint32 frames;
-    Uint16 rows, columns, bitsStored, pixelRep;
+    Uint16 rows, columns, bitsAllocated, pixelRep;
     OFCondition cond = EC_Normal;
 
-    cond = getImageParameters(*this, frames, rows, columns, bitsStored, pixelRep);
+    cond = getImageParameters(*this, frames, rows, columns, bitsAllocated, pixelRep);
     if (cond.bad())
         return OFFalse;
 
-    if (bitsStored != 16 && bitsStored != 32)
+    if (bitsAllocated != 16 && bitsAllocated != 32)
         return OFFalse;
 
     return OFTrue;
