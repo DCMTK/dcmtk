@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1245,13 +1245,15 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_ScheduledProcedureStepEndDate                  (0040,0004)  DA  O  3  (from the Scheduled Procedure Step Module)
 //                    > DCM_ScheduledProcedureStepEndTime                  (0040,0005)  TM  O  3  (from the Scheduled Procedure Step Module)
 //                    > DCM_ScheduledProtocolCodeSequence                  (0040,0008)  SQ  O  1C
-//                    >  > DCM_CodeValue                                   (0008,0100)  SH  O  1C
-//                    >  > DCM_CodingSchemeVersion                         (0008,0103)  SH  O  3
-//                    >  > DCM_CodingSchemeDesignator                      (0080,0102)  SH  O  1C
-//                    >  > DCM_CodeMeaning                                 (0080,0104)  LO  O  3
+//                    > > DCM_CodeValue                                    (0008,0100)  SH  O  1C
+//                    > > DCM_CodingSchemeVersion                          (0008,0103)  SH  O  3
+//                    > > DCM_CodingSchemeDesignator                       (0080,0102)  SH  O  1C
+//                    > > DCM_CodeMeaning                                  (0080,0104)  LO  O  3
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
 //                   DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
 //                   DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
+//                   DCM_StudyDate                                         (0008,0020)  DA  O  3
+//                   DCM_StudyTime                                         (0008,0030)  TM  O  3
 //                   DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
 //                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1
 //                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1
@@ -1267,6 +1269,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2
 //                   DCM_PatientName                                       (0010,0010)  PN  R  1
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
+//                   DCM_IssuerOfPatientID                                 (0010,0021)  LO  O  3  (from the Patient Identification Module)
 //                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
 //                   DCM_PatientSex                                        (0010,0040)  CS  O  2
 //                   DCM_PatientWeight                                     (0010,1030)  DS  O  2
@@ -1374,6 +1377,8 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_RequestedProcedureID                              ||
         elementKey == DCM_RequestedProcedureDescription                     ||
         elementKey == DCM_StudyInstanceUID                                  ||
+        elementKey == DCM_StudyDate                                         ||
+        elementKey == DCM_StudyTime                                         ||
         elementKey == DCM_ReferencedStudySequence                           ||
         elementKey == DCM_RequestedProcedurePriority                        ||
         elementKey == DCM_PatientTransportArrangements                      ||
@@ -1385,6 +1390,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_ReferencedPatientSequence                         ||
         elementKey == DCM_PatientName                                       ||
         elementKey == DCM_PatientID                                         ||
+        elementKey == DCM_IssuerOfPatientID                                 ||
         elementKey == DCM_PatientBirthDate                                  ||
         elementKey == DCM_PatientSex                                        ||
         elementKey == DCM_PatientWeight                                     ||

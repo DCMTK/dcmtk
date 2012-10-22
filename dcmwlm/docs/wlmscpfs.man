@@ -276,6 +276,8 @@ matching keys:
 As return keys the following attributes are currently supported by \b wlmscpfs:
 
 \verbatim
+(0008,0020) StudyDate
+(0008,0030) StudyTime
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
@@ -289,6 +291,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
   (0008,1155) > ReferencedSOPInstanceUID
 (0010,0010) PatientName
 (0010,0020) PatientID
+(0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
 (0010,1000) OtherPatientIDs
@@ -330,10 +333,10 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
   (0040,0006) > ScheduledPerformingPhysicianName
   (0040,0007) > ScheduledProcedureStepDescription
   (0040,0008) > ScheduledProtocolCodeSequence
-    (0008,0100) >  > CodeValue
-    (0008,0102) >  > CodingSchemeDesignator
-    (0008,0103) >  > CodingSchemeVersion
-    (0008,0104) >  > CodeMeaning
+    (0008,0100) > > CodeValue
+    (0008,0102) > > CodingSchemeDesignator
+    (0008,0103) > > CodingSchemeVersion
+    (0008,0104) > > CodeMeaning
   (0040,0009) > ScheduledProcedureStepID
   (0040,0010) > ScheduledStationName
   (0040,0011) > ScheduledProcedureStepLocation
@@ -432,6 +435,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.22 (riesmeier)
+
+- Added support for new optional Return Key Attributes: StudyDate, StudyTime
+  and IssuerOfPatientID. The latter is required for the IHE Eye Care Workflow.
+  Affects: dcmwlm/docs/wlmscpfs.man
+           dcmwlm/include/dcmtk/dcmwlm/wlds.h
+           dcmwlm/libsrc/wlds.cc
+
 **** Changes from 2012.10.22 (schlachter)
 
 - Rebuilt Makefile dependencies (and removed unwanted libiconv dependencies).
