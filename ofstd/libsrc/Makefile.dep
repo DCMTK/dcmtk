@@ -4,9 +4,7 @@ ofchrenc.o: ofchrenc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofdefine.h \
  ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofstd.h \
- ../include/dcmtk/ofstd/oflist.h \
- /usr/local/apps/libiconv-1.14/include/iconv.h \
- /usr/local/apps/libiconv-1.14/include/localcharset.h
+ ../include/dcmtk/ofstd/oflist.h
 ofcmdln.o: ofcmdln.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/ofcast.h \

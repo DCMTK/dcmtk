@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.10.22 (schlachter)
 
+- Rebuilt Makefile dependencies (and removed unwanted libiconv dependencies).
+  Affects: ofstd/libsrc/Makefile.dep
+
 - Minor improvements and fixes to the medium-level API.
   Affects: dcmrt/include/dcmtk/dcmrt/drmimage.h
            dcmrt/libsrc/drmdose.cc
