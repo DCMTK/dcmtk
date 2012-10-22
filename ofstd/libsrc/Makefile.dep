@@ -4,7 +4,9 @@ ofchrenc.o: ofchrenc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofdefine.h \
  ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofstd.h \
- ../include/dcmtk/ofstd/oflist.h
+ ../include/dcmtk/ofstd/oflist.h \
+ /usr/local/apps/libiconv-1.14/include/iconv.h \
+ /usr/local/apps/libiconv-1.14/include/localcharset.h
 ofcmdln.o: ofcmdln.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/ofcast.h \
@@ -22,7 +24,7 @@ ofconapp.o: ofconapp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofstream.h \
  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
  ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/ofstd.h \
- ../include/dcmtk/ofstd/ofcond.h
+ ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/ofchrenc.h
 ofcond.o: ofcond.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofcast.h \
@@ -79,7 +81,9 @@ ofstd.o: ofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofexport.h \
  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofcond.h \
- ../include/dcmtk/ofstd/offile.h
+ ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/ofnetdb.h \
+ ../include/dcmtk/ofstd/ofvector.h ../include/dcmtk/ofstd/ofgrp.h \
+ ../include/dcmtk/ofstd/ofpwd.h
 ofstring.o: ofstring.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofdefine.h \
