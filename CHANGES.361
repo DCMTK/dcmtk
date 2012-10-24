@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.24 (riesmeier)
+
+- Fixed typo in comment.
+  Affects: dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+
 **** Changes from 2012.10.22 (riesmeier)
 
 - Added support for new optional Return Key Attributes: StudyDate, StudyTime
