@@ -7,7 +7,7 @@
  *
  *  Generated manually based on dsrtypes.h
  *  File created on 2008-12-05
- *  Last modified on 2010-11-05 by Riesmeier
+ *  Last modified on 2012-10-24 by Riesmeier
  *
  */
 
@@ -155,7 +155,7 @@ class DCMTK_DCMRT_EXPORT DRTTypes
                                                const OFString &stringValue,
                                                const OFBool allowEmpty = OFTrue);
 
-    /** check element value for correct value multipicity and type
+    /** check element value for correct value multiplicity and type
      *  @param  element     DICOM element to be checked
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
      *                      (See DcmElement::checkVM() for a list of valid values.)
@@ -171,7 +171,7 @@ class DCMTK_DCMRT_EXPORT DRTTypes
                                     const OFCondition &searchCond = EC_Normal,
                                     const char *moduleName = NULL);
 
-    /** get element from dataset and check it for correct value multipicity and type.
+    /** get element from dataset and check it for correct value multiplicity and type.
      *  This functions calls the above one to check the element value.
      *  @param  dataset     reference to DICOM dataset from which the element should be retrieved.
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
@@ -189,7 +189,7 @@ class DCMTK_DCMRT_EXPORT DRTTypes
                                                      const OFString &type,
                                                      const char *moduleName = NULL);
 
-    /** get string value from dataset and check it for correct value multipicity and type.
+    /** get string value from dataset and check it for correct value multiplicity and type.
      *  This functions calls the above one to check the element value.
      *  @param  dataset      reference to DICOM dataset from which the element should be retrieved.
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)

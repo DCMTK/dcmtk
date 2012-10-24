@@ -1208,7 +1208,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                const OFString &stringValue,
                                                const OFBool allowEmpty = OFTrue);
 
-    /** check element value for correct value multipicity and type.
+    /** check element value for correct value multiplicity and type.
      ** @param  delem       DICOM element to be checked
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
      *                      (See DcmElement::checkVM() for a list of valid values.)
@@ -1224,7 +1224,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                     const OFCondition &searchCond = EC_Normal,
                                     const char *moduleName = NULL);
 
-    /** get element from dataset and check it for correct value multipicity and type.
+    /** get element from dataset and check it for correct value multiplicity and type.
      ** @param  dataset     DICOM dataset from which the element should be retrieved.
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  delem       DICOM element used to store the value
@@ -1241,7 +1241,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                      const OFString &type,
                                                      const char *moduleName = NULL);
 
-    /** get string value from dataset and check it for correct value multipicity and type.
+    /** get string value from dataset and check it for correct value multiplicity and type.
      ** @param  dataset      DICOM dataset from which the element should be retrieved.
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
