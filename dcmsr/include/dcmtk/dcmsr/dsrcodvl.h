@@ -72,7 +72,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *                                  a term is defined.  (VR=SH, mandatory)
      *  @param  codingSchemeVersion     version of the coding scheme.  May be used to identify
      *                                  the version of a coding scheme if necessary to resolve
-     *                                  ambiguity in the 'codeValue' or 'codeMeaning.  (VR=SH,
+     *                                  ambiguity in the 'codeValue' or 'codeMeaning'.  (VR=SH,
      *                                  optional)
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.

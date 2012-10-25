@@ -7,6 +7,9 @@ Changes between releases are documented here.
   specific "DCMTK_BINARY_DIR" in an INSTALL() command.
   Affects: CMakeLists.txt
 
+- Added missing ' in a comment.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+
 **** Changes from 2012.10.24 (riesmeier)
 
 - Fixed typo in comment.
