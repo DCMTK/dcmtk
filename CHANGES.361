@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.25 (riesmeier)
+
+- Replaced general CMake variable "CMAKE_CURRENT_BINARY_DIR" by the more
+  specific "DCMTK_BINARY_DIR" in an INSTALL() command.
+  Affects: CMakeLists.txt
+
 **** Changes from 2012.10.24 (riesmeier)
 
 - Fixed typo in comment.
