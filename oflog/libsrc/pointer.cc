@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,51 +20,96 @@
 
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/pointer.h"
-#include "dcmtk/oflog/helpers/threads.h"
-//#include <assert.h>
+#include "dcmtk/oflog/thread/threads.h"
+#include "dcmtk/oflog/thread/impl/syncimpl.h"
+#include "dcmtk/oflog/config/windowsh.h"
+#include <cassert>
+#if defined (DCMTK_LOG4CPLUS_HAVE_INTRIN_H)
+#include <intrin.h>
+#endif
 
 
-namespace dcmtk { namespace log4cplus { namespace helpers {
+namespace dcmtk {
+namespace log4cplus { namespace helpers {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::helpers::SharedObject dtor
+// log4cplus::helpers::SharedObject dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 SharedObject::~SharedObject()
 {
     assert(count == 0);
-    DCMTK_LOG4CPLUS_MUTEX_FREE( access_mutex );
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::helpers::SharedObject public methods
+// log4cplus::helpers::SharedObject public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
 SharedObject::addReference() const
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
-        assert (count >= 0);
-        ++count;
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+#if defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+    ++count;
+
+#elif defined (DCMTK_LOG4CPLUS_HAVE_CXX11_ATOMICS)
+    STD_NAMESPACE atomic_fetch_add_explicit (&count, 1u,
+        STD_NAMESPACE memory_order_relaxed);
+
+#elif defined (DCMTK_LOG4CPLUS_HAVE___SYNC_ADD_AND_FETCH)
+    __sync_add_and_fetch (&count, 1);
+
+#elif defined (_WIN32) && defined (DCMTK_LOG4CPLUS_HAVE_INTRIN_H)
+    _InterlockedIncrement (&count);
+
+#elif defined (_WIN32)
+    InterlockedIncrement (&count);
+
+#else
+    thread::MutexGuard guard (access_mutex);
+    ++count;
+
+#endif
 }
 
 
 void
 SharedObject::removeReference() const
 {
-    bool destroy = false;
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex );
-        assert (count > 0);
-        if (--count == 0)
-            destroy = true;
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
-    if (destroy)
+    assert (count > 0);
+    bool destroy;
+
+#if defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+    destroy = --count == 0;
+
+#elif defined (DCMTK_LOG4CPLUS_HAVE_CXX11_ATOMICS)
+    destroy = STD_NAMESPACE atomic_fetch_sub_explicit (&count, 1u,
+        STD_NAMESPACE memory_order_release) == 1;
+    if (DCMTK_LOG4CPLUS_UNLIKELY (destroy))
+        STD_NAMESPACE atomic_thread_fence (STD_NAMESPACE memory_order_acquire);
+
+#elif defined (DCMTK_LOG4CPLUS_HAVE___SYNC_SUB_AND_FETCH)
+    destroy = __sync_sub_and_fetch (&count, 1) == 0;
+
+#elif defined (_WIN32) && defined (DCMTK_LOG4CPLUS_HAVE_INTRIN_H)
+    destroy = _InterlockedDecrement (&count) == 0;
+
+#elif defined (_WIN32)
+    destroy = InterlockedDecrement (&count) == 0;
+
+#else
+    {
+        thread::MutexGuard guard (access_mutex);
+        destroy = --count == 0;
+    }
+
+#endif
+    if (DCMTK_LOG4CPLUS_UNLIKELY (destroy))
         delete this;
 }
 
 
-} } } // namespace dcmtk { namespace log4cplus { namespace helpers
+} } // namespace log4cplus { namespace helpers
+} // end namespace dcmtk

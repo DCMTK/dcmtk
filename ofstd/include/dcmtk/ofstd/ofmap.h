@@ -259,6 +259,17 @@ public:
         it = values_.insert(values_.end(), val);
         return OFMake_pair(it, true);
     }
+
+    /** swaps the contents of the two maps. The time complexity of this
+     *  function should be constant.
+     *  @param s map to swap with
+     */
+    void swap(OFMap<K, V>& s)
+    {
+        OFList<value_type> own_values = values_;
+        values_ = s.values_;
+        s.values_ = own_values;
+    }
 };
 
 #endif

@@ -62,6 +62,10 @@ public:
     typedef T*       iterator;
     /** the type of constant iterators on this object */
     typedef const T* const_iterator;
+    /** the type of mutable references on this object */
+    typedef T&       reference;
+    /** the type of constant references on this object */
+    typedef const T& const_reference;
 
 protected:
 
@@ -254,6 +258,38 @@ public:
             it++;
             from++;
         }
+    }
+
+    /** get a reference to the first element of this vector.
+     *  @return reference to the first element.
+     */
+    T& front()
+    {
+        return values_[0];
+    }
+
+    /** get a reference to the first element of this vector.
+     *  @return reference to the first element.
+     */
+    const T& front() const
+    {
+        return values_[0];
+    }
+
+    /** get a reference to the last element of this vector.
+     *  @return reference to the last element.
+     */
+    T& back()
+    {
+        return values_[size_ - 1];
+    }
+
+    /** get a reference to the last element of this vector.
+     *  @return reference to the last element.
+     */
+    const T& back() const
+    {
+        return values_[size_ - 1];
     }
 
     /** insert an entry at the end of this object

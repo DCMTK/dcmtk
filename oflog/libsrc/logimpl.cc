@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,35 +18,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "dcmtk/oflog/internal/internal.h"
 #include "dcmtk/oflog/spi/logimpl.h"
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/hierarchy.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/spi/logevent.h"
 #include "dcmtk/oflog/spi/rootlog.h"
-//#include <stdexcept>
-
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-using namespace dcmtk::log4cplus::spi;
+#include "dcmtk/oflog/thread/syncpub.h"
 
 
+namespace dcmtk {
+namespace log4cplus { namespace spi {
 
 //////////////////////////////////////////////////////////////////////////////
 // Logger Constructors and Destructor
 //////////////////////////////////////////////////////////////////////////////
-LoggerImpl::LoggerImpl(const tstring& name_, Hierarchy& h)
+LoggerImpl::LoggerImpl(const log4cplus::tstring& name_, Hierarchy& h)
   : name(name_),
     ll(NOT_SET_LOG_LEVEL),
     parent(NULL),
-    additive(true),
+    additive(true), 
     hierarchy(h)
 {
 }
 
 
-LoggerImpl::~LoggerImpl()
-{
+LoggerImpl::~LoggerImpl() 
+{ 
 }
 
 
@@ -54,7 +53,7 @@ LoggerImpl::~LoggerImpl()
 // Logger Methods
 //////////////////////////////////////////////////////////////////////////////
 
-void
+void 
 LoggerImpl::callAppenders(const InternalLoggingEvent& event)
 {
     int writes = 0;
@@ -67,51 +66,59 @@ LoggerImpl::callAppenders(const InternalLoggingEvent& event)
 
     // No appenders in hierarchy, warn user only once.
     if(!hierarchy.emittedNoAppenderWarning && writes == 0) {
-        getLogLog().error(  DCMTK_LOG4CPLUS_TEXT("No appenders could be found for logger (")
-                          + getName()
-                          + DCMTK_LOG4CPLUS_TEXT(")."));
-        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Please initialize the log4cplus system properly."));
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT("No appenders could be found for logger (") 
+            + getName() 
+            + DCMTK_LOG4CPLUS_TEXT(")."));
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT("Please initialize the log4cplus system properly."));
         hierarchy.emittedNoAppenderWarning = true;
     }
 }
 
 
-void
+void 
 LoggerImpl::closeNestedAppenders()
 {
     SharedAppenderPtrList appenders = getAllAppenders();
-    for(SharedAppenderPtrListIterator it=appenders.begin(); it!=appenders.end(); ++it)
+    for(SharedAppenderPtrList::iterator it=appenders.begin(); it!=appenders.end(); ++it)
     {
         (*it)->close();
     }
 }
 
 
-bool
-LoggerImpl::isEnabledFor(LogLevel ll_) const
+bool 
+LoggerImpl::isEnabledFor(LogLevel loglevel) const
 {
-    if(hierarchy.disableValue >= ll_) {
+    if(hierarchy.disableValue >= loglevel) {
         return false;
     }
-    return ll_ >= getChainedLogLevel();
+    return loglevel >= getChainedLogLevel();
 }
 
 
-void
-LoggerImpl::log(LogLevel ll_,
-                const tstring& message,
-                const char* file,
-                int line,
-                const char* function)
+void 
+LoggerImpl::log(LogLevel loglevel, 
+                const log4cplus::tstring& message,
+                const char* file, 
+                int line)
 {
-    if(isEnabledFor(ll_)) {
-        forcedLog(ll_, message, file, line, function);
+    if(isEnabledFor(loglevel)) {
+        forcedLog(loglevel, message, file, line);
     }
 }
 
 
+void 
+LoggerImpl::log(spi::InternalLoggingEvent const & ev)
+{
+    if (isEnabledFor(ev.getLogLevel ()))
+        forcedLog(ev);
+}
 
-LogLevel
+
+LogLevel 
 LoggerImpl::getChainedLogLevel() const
 {
     for(const LoggerImpl *c=this; c != NULL; c=c->parent.get()) {
@@ -120,45 +127,52 @@ LoggerImpl::getChainedLogLevel() const
         }
     }
 
-    getLogLog().error( DCMTK_LOG4CPLUS_TEXT("LoggerImpl::getChainedLogLevel()- No valid LogLevel found") );
-    //throw STD_NAMESPACE runtime_error("No valid LogLevel found");
-
-    // This can only happen if the root logger is set to NOT_SET_LOG_LEVEL which
-    // should *never* happen. Let's just invent something in this case.
-    return TRACE_LOG_LEVEL;
+    helpers::getLogLog().error(
+        DCMTK_LOG4CPLUS_TEXT("LoggerImpl::getChainedLogLevel()- No valid LogLevel found"),
+        true);
+    return NOT_SET_LOG_LEVEL;
 }
 
 
-Hierarchy&
+Hierarchy& 
 LoggerImpl::getHierarchy() const
-{
-    return hierarchy;
+{ 
+    return hierarchy; 
 }
 
 
-bool
+bool 
 LoggerImpl::getAdditivity() const
-{
-    return additive;
+{ 
+    return additive; 
 }
 
 
-void
-LoggerImpl::setAdditivity(bool additive_)
-{
-    this->additive = additive_;
+void 
+LoggerImpl::setAdditivity(bool additive_) 
+{ 
+    additive = additive_; 
 }
 
 
-void
-LoggerImpl::forcedLog(LogLevel ll_,
-                      const tstring& message,
-                      const char* file,
-                      int line,
-                      const char* function)
+void 
+LoggerImpl::forcedLog(LogLevel loglevel,
+                      const log4cplus::tstring& message,
+                      const char* file, 
+                      int line)
 {
-    callAppenders(InternalLoggingEvent(this->getName(), ll_, message, file, line, function));
+    spi::InternalLoggingEvent & ev = internal::get_ptd ()->forced_log_ev;
+    ev.setLoggingEvent (this->getName(), loglevel, message, file, line);
+    callAppenders(ev);
 }
 
 
+void 
+LoggerImpl::forcedLog(spi::InternalLoggingEvent const & ev)
+{
+    callAppenders(ev);
+}
 
+
+} } // namespace log4cplus { namespace spi {
+} // end namespace dcmtk

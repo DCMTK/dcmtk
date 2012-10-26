@@ -1,3 +1,4 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    stringhelper.h
 // Created: 3/2003
@@ -24,12 +25,16 @@
 #define DCMTK_LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofvector.h"
 
 //#include <algorithm>
 //#include <limits>
-//#include <iterator>
 
 
 namespace dcmtk {
@@ -39,13 +44,13 @@ namespace log4cplus {
         /**
          * Returns <code>s</code> in upper case.
          */
-        DCMTK_LOG4CPLUS_EXPORT tstring toUpper(const tstring& s);
+        DCMTK_LOG4CPLUS_EXPORT log4cplus::tstring toUpper(const log4cplus::tstring& s);
 
 
         /**
          * Returns <code>s</code> in lower case.
          */
-        DCMTK_LOG4CPLUS_EXPORT tstring toLower(const tstring& s);
+        DCMTK_LOG4CPLUS_EXPORT log4cplus::tstring toLower(const log4cplus::tstring& s);
 
 
         /**
@@ -65,7 +70,7 @@ namespace log4cplus {
         inline
         void
         tokenize(const StringType& s, typename StringType::value_type c,
-            OFList<StringType>& result, bool collapseTokens = true)
+            OFVector<StringType>& result, bool collapseTokens = true)
         {
             typedef typename StringType::size_type size_type;
             size_type const slen = s.length();
@@ -117,15 +122,22 @@ namespace log4cplus {
                 if (value == minVal)
                 {
                     intType const r = value / 10;
-                    intType const a = (0-r) * 10;
-                    intType const mod = 0-(a + value);
-                    value = 0-r;
+                    intType const a = (-r) * 10;
+                    intType const mod = -(a + value);
+                    value = -r;
 
-                    *(it - 1) = OFstatic_cast(tchar, DCMTK_LOG4CPLUS_TEXT('0') + mod);
+                    *(it - 1) = DCMTK_LOG4CPLUS_TEXT('0') + OFstatic_cast(tchar, mod);
                     --it;
                 }
                 else
-                    value = 0-value;
+                    value = -value;
+            }
+
+            static inline
+            bool
+            is_negative (intType val)
+            {
+                return val < 0;
             }
         };
 
@@ -135,18 +147,22 @@ namespace log4cplus {
         void
         convertIntegerToString (tstring & str, intType value)
         {
-            if (value == 0)
-                str = DCMTK_LOG4CPLUS_TEXT("0");
-            // We can't use (value < 0) because that could cause a compiler
-            // warning for unsigned types.
-            bool const negative = !(value > 0 || value == 0);
-
             const size_t buffer_size = 30; // More than enough space, even for 64 bit integers
                 // = intTypeLimits::digits10 + 2;
             tchar buffer[buffer_size];
             tchar * it = &buffer[buffer_size];
             tchar const * const buf_end = it;
 
+            if (value == 0)
+            {
+                --it;
+                *it = DCMTK_LOG4CPLUS_TEXT('0');
+            }
+
+            // We can't use (value < 0) because that could cause a compiler
+            // warning for unsigned types.
+            const OFBool isUnsigned = (OFstatic_cast(intType, -1) < 0) ? OFFalse : OFTrue;
+            bool const negative = !(value > 0 || isUnsigned || value == 0);
             if (negative)
                 ConvertIntegerToStringHelper<intType>::step1(it, value);
 
@@ -154,7 +170,7 @@ namespace log4cplus {
             {
                 intType mod = value % 10;
                 value = value / 10;
-                *(it - 1) = OFstatic_cast(tchar, DCMTK_LOG4CPLUS_TEXT('0') + mod);
+                *(it - 1) = DCMTK_LOG4CPLUS_TEXT('0') + OFstatic_cast(tchar, mod);
             }
 
             if (negative)
@@ -163,7 +179,7 @@ namespace log4cplus {
                 *it = DCMTK_LOG4CPLUS_TEXT('-');
             }
 
-            str.assign (OFstatic_cast(tchar const *, it), buf_end - it);
+            str.assign (OFstatic_cast(tchar const *, it), buf_end);
         }
 
 
@@ -180,6 +196,6 @@ namespace log4cplus {
     } // namespace helpers
 
 } // namespace log4cplus
-} // namespace dcmtk
+} // end namespace dcmtk
 
 #endif // DCMTK_LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_

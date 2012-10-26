@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    tstring.h
 // Created: 4/2003
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,21 +25,80 @@
 #define DCMTK_LOG4CPLUS_TSTRING_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/oflog/tchar.h"
 
-#define DCMTK_LOG4CPLUS_TEXT2(STRING) STRING
-#define DCMTK_LOG4CPLUS_TEXT(STRING) DCMTK_LOG4CPLUS_TEXT2(STRING)
+namespace dcmtk
+{
+namespace log4cplus
+{
+
+typedef OFString tstring;
 
 
-namespace dcmtk {
-namespace log4cplus {
-    typedef char tchar;
-    typedef OFString tstring;
+namespace helpers
+{
+
+inline
+OFString
+tostring (char const * str)
+{
+    return OFString (str);
 }
+
+
+inline
+OFString
+tostring (OFString const & str)
+{
+    return str;
 }
+
+
+
+inline
+STD_NAMESPACE wstring
+towstring (wchar_t const * str)
+{
+    return STD_NAMESPACE wstring (str);
+}
+
+inline
+STD_NAMESPACE wstring
+towstring (STD_NAMESPACE wstring const & str)
+{
+    return str;
+}
+
+DCMTK_LOG4CPLUS_EXPORT OFString tostring(const STD_NAMESPACE wstring&);
+DCMTK_LOG4CPLUS_EXPORT OFString tostring(wchar_t const *);
+
+DCMTK_LOG4CPLUS_EXPORT STD_NAMESPACE wstring towstring(const OFString&);
+DCMTK_LOG4CPLUS_EXPORT STD_NAMESPACE wstring towstring(char const *);
+
+} // namespace helpers
+
+#ifdef UNICODE
+
+#define DCMTK_LOG4CPLUS_C_STR_TO_TSTRING(STRING) log4cplus::helpers::towstring(STRING)
+#define DCMTK_LOG4CPLUS_STRING_TO_TSTRING(STRING) log4cplus::helpers::towstring(STRING)
+#define DCMTK_LOG4CPLUS_TSTRING_TO_STRING(STRING) log4cplus::helpers::tostring(STRING)
+
+#else // UNICODE
 
 #define DCMTK_LOG4CPLUS_C_STR_TO_TSTRING(STRING) OFString(STRING)
 #define DCMTK_LOG4CPLUS_STRING_TO_TSTRING(STRING) STRING
 #define DCMTK_LOG4CPLUS_TSTRING_TO_STRING(STRING) STRING
+
+#endif // UNICODE
+
+} // namespace log4cplus
+} // end namespace dcmtk
+
 
 #endif // DCMTK_LOG4CPLUS_TSTRING_HEADER_

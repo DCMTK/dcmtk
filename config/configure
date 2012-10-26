@@ -5980,6 +5980,18 @@ _ACEOF
 fi
 done
 
+for ac_func in mbstowcs wcstombs
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _LARGEFILE_SOURCE value needed for large files" >&5
 $as_echo_n "checking for _LARGEFILE_SOURCE value needed for large files... " >&6; }
 if ${ac_cv_sys_largefile_source+:} false; then :
@@ -6053,7 +6065,7 @@ fi
 
 
 
-for ac_func in ftime gmtime_r localtime_r lstat
+for ac_func in ftime gmtime_r localtime_r lstat nanosleep fcntl
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -8221,12 +8233,36 @@ fi
 
 done
 
+for ac_header in sys/syscall.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "sys/syscall.h" "ac_cv_header_sys_syscall_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_syscall_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_SYSCALL_H 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in sys/time.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_time_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_SYS_TIME_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in sys/timeb.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "sys/timeb.h" "ac_cv_header_sys_timeb_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_timeb_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_TIMEB_H 1
 _ACEOF
 
 fi
@@ -8323,6 +8359,18 @@ do :
 if test "x$ac_cv_header_utime_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_UTIME_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in wchar.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "wchar.h" "ac_cv_header_wchar_h" "$ac_includes_default"
+if test "x$ac_cv_header_wchar_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_WCHAR_H 1
 _ACEOF
 
 fi
@@ -9563,6 +9611,99 @@ if test $ac_cv_struct_tm = sys/time.h; then
 $as_echo "#define TM_IN_SYS_TIME 1" >>confdefs.h
 
 fi
+
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __FUNCTION__ macro" >&5
+$as_echo_n "checking for __FUNCTION__ macro... " >&6; }
+if ${ac_cv_have___FUNCTION___macro+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+          cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+const char * func = __FUNCTION__;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_cv_have___FUNCTION___macro=yes
+else
+  ac_cv_have___FUNCTION___macro=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_have___FUNCTION___macro" >&5
+$as_echo "$ac_cv_have___FUNCTION___macro" >&6; }
+    if test "x$ac_cv_have___FUNCTION___macro" = "xyes"; then
+        $as_echo "#define HAVE___FUNCTION___MACRO 1" >>confdefs.h
+
+    fi
+
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __PRETTY_FUNCTION__ macro" >&5
+$as_echo_n "checking for __PRETTY_FUNCTION__ macro... " >&6; }
+if ${ac_cv_have___PRETTY_FUNCTION___macro+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+          cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+const char * func = __PRETTY_FUNCTION__;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_cv_have___PRETTY_FUNCTION___macro=yes
+else
+  ac_cv_have___PRETTY_FUNCTION___macro=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_have___PRETTY_FUNCTION___macro" >&5
+$as_echo "$ac_cv_have___PRETTY_FUNCTION___macro" >&6; }
+    if test "x$ac_cv_have___PRETTY_FUNCTION___macro" = "xyes"; then
+        $as_echo "#define HAVE___PRETTY_FUNCTION___MACRO 1" >>confdefs.h
+
+    fi
+
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __func__ macro" >&5
+$as_echo_n "checking for __func__ macro... " >&6; }
+if ${ac_cv_have___func___macro+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+          cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+const char * func = __func__;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_cv_have___func___macro=yes
+else
+  ac_cv_have___func___macro=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_have___func___macro" >&5
+$as_echo "$ac_cv_have___func___macro" >&6; }
+    if test "x$ac_cv_have___func___macro" = "xyes"; then
+        $as_echo "#define HAVE___func___MACRO 1" >>confdefs.h
+
+    fi
 
 
 
@@ -12141,7 +12282,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12144 "configure"
+#line 12285 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12613,7 +12754,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12616 "configure"
+#line 12757 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12685,7 +12826,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12688 "configure"
+#line 12829 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12757,7 +12898,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12760 "configure"
+#line 12901 "configure"
 #include "confdefs.h"
 
 template <class T>

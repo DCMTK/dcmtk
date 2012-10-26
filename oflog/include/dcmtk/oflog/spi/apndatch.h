@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    appenderattachable.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,21 +21,25 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
-#define DCMTK__LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
+#ifndef DCMTK_LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
+#define DCMTK_LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/oflog/helpers/pointer.h"
-//#include <vector>
+#include "dcmtk/ofstd/ofvector.h"
 
 namespace dcmtk {
 namespace log4cplus {
     // Forward Declarations
     typedef helpers::SharedObjectPtr<Appender> SharedAppenderPtr;
-    typedef OFList<SharedAppenderPtr> SharedAppenderPtrList;
-    typedef OFListIterator(SharedAppenderPtr) SharedAppenderPtrListIterator;
+    typedef OFVector<log4cplus::SharedAppenderPtr> SharedAppenderPtrList;
 
     namespace spi {
 
@@ -50,14 +55,14 @@ namespace log4cplus {
             virtual void addAppender(SharedAppenderPtr newAppender) = 0;
 
             /**
-             * Get all previously added appenders as an Enumeration.
+             * Get all previously added appenders as an Enumeration.  
              */
             virtual SharedAppenderPtrList getAllAppenders() = 0;
 
             /**
              * Get an appender by name.
              */
-            virtual SharedAppenderPtr getAppender(const tstring& name) = 0;
+            virtual SharedAppenderPtr getAppender(const log4cplus::tstring& name) = 0;
 
             /**
              * Remove all previously added appenders.
@@ -71,9 +76,9 @@ namespace log4cplus {
 
             /**
              * Remove the appender with the name passed as parameter from the
-             * list of appenders.
+             * list of appenders.  
              */
-            virtual void removeAppender(const tstring& name) = 0;
+            virtual void removeAppender(const log4cplus::tstring& name) = 0;
 
           // Dtor
             virtual ~AppenderAttachable() = 0;
@@ -83,5 +88,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // DCMTK__LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
+#endif // DCMTK_LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
 

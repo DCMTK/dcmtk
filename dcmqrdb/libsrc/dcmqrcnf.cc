@@ -30,6 +30,7 @@
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/ofstd/ofmap.h"
 
 OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
 

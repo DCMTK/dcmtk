@@ -150,6 +150,9 @@
    syntax */
 #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
+/* Define to 1 if you have the `fcntl' function. */
+#undef HAVE_FCNTL
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -354,6 +357,9 @@
 /* Define to 1 if you have the <math.h> header file. */
 #undef HAVE_MATH_H
 
+/* Define to 1 if you have the `mbstowcs' function. */
+#undef HAVE_MBSTOWCS
+
 /* Define to 1 if you have the `memcmp' function. */
 #undef HAVE_MEMCMP
 
@@ -374,6 +380,9 @@
 
 /* Define to 1 if you have the `mktemp' function. */
 #undef HAVE_MKTEMP
+
+/* Define to 1 if you have the `nanosleep' function. */
+#undef HAVE_NANOSLEEP
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
@@ -739,6 +748,12 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
+/* Define to 1 if you have the <sys/syscall.h> header file. */
+#undef HAVE_SYS_SYSCALL_H
+
+/* Define to 1 if you have the <sys/timeb.h> header file. */
+#undef HAVE_SYS_TIMEB_H
+
 /* Define to 1 if you have the <sys/time.h> header file. */
 #undef HAVE_SYS_TIME_H
 
@@ -806,11 +821,26 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `waitpid' function. */
 #undef HAVE_WAITPID
 
+/* Define to 1 if you have the <wchar.h> header file. */
+#undef HAVE_WCHAR_H
+
+/* Define to 1 if you have the `wcstombs' function. */
+#undef HAVE_WCSTOMBS
+
 /* Define to 1 if you have the <wctype.h> header file. */
 #undef HAVE_WCTYPE_H
 
 /* Define to 1 if you have the `_findfirst' function. */
 #undef HAVE__FINDFIRST
+
+/* Define if the compiler supports __FUNCTION__. */
+#undef HAVE___FUNCTION___MACRO
+
+/* Define if the compiler supports __PRETTY_FUNCTION__. */
+#undef HAVE___PRETTY_FUNCTION___MACRO
+
+/* Define if the compiler supports __func__. */
+#undef HAVE___func___MACRO
 
 /* Define if libc.h should be treated as a C++ header */
 #undef INCLUDE_LIBC_H_AS_CXX

@@ -248,6 +248,7 @@ AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
 AC_CHECK_FUNCS(vsnprintf)
+AC_CHECK_FUNCS(mbstowcs wcstombs)
 AC_FUNC_FSEEKO
 
 
@@ -268,7 +269,7 @@ AC_CACHE_CHECK([for socklen_t], ac_cv_type_socklen_t,
   fi
 ])
 
-AC_CHECK_FUNCS(ftime gmtime_r localtime_r lstat)
+AC_CHECK_FUNCS(ftime gmtime_r localtime_r lstat nanosleep fcntl)
 AC_CHECK_FUNCS(htons htonl ntohs ntohl)
 AC_CHECK_HEADERS(netinet/in.h)
 AC_CHECK_HEADERS(syslog.h)
@@ -509,7 +510,9 @@ AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_HEADERS(sys/select.h)
 AC_CHECK_HEADERS(sys/socket.h)
 AC_CHECK_HEADERS(sys/stat.h)
+AC_CHECK_HEADERS(sys/syscall.h)
 AC_CHECK_HEADERS(sys/time.h)
+AC_CHECK_HEADERS(sys/timeb.h)
 AC_CHECK_HEADERS(sys/types.h)
 AC_CHECK_HEADERS(sys/utime.h)
 AC_CHECK_HEADERS(sys/utsname.h)
@@ -518,6 +521,7 @@ AC_CHECK_HEADERS(time.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
+AC_CHECK_HEADERS(wchar.h)
 AC_CHECK_HEADERS(wctype.h)
 
 if test $ac_cv_header_libc_h = yes ; then
@@ -733,6 +737,9 @@ AC_CHECK_SIZEOF(float)
 AC_CHECK_SIZEOF(double)
 AC_CHECK_SIZEOF(void *)
 AC_STRUCT_TM
+AC_MY_SYMBOL_EXISTS([__FUNCTION__])
+AC_MY_SYMBOL_EXISTS([__PRETTY_FUNCTION__])
+AC_MY_SYMBOL_EXISTS([__func__])
 
 dnl -------------------------------------------------------
 dnl Checks for prototypes

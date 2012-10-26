@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
-// File:    fileappender.h
+// File:    fileap.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,33 +21,37 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_FILE_APPENDER_HEADER_
-#define DCMTK__LOG4CPLUS_FILE_APPENDER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_FILE_APPENDER_HEADER_
+#define DCMTK_LOG4CPLUS_FILE_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/fstreams.h"
-#include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/helpers/timehelp.h"
+#include "dcmtk/oflog/helpers/lockfile.h"
+#include <fstream>
+#include <locale>
+#include <memory>
 
-#if defined(__DECCXX)
-#   define DCMTK_LOG4CPLUS_OPEN_MODE_TYPE DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::open_mode
-#else
-#   define DCMTK_LOG4CPLUS_OPEN_MODE_TYPE DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::openmode
-#endif
 
 namespace dcmtk
 {
-namespace log4cplus {
+namespace log4cplus
+{
 
     /**
-     * Appends log events to a file.
-     *
+     * Appends log events to a file. 
+     * 
      * <h3>Properties</h3>
      * <dl>
      * <dt><tt>File</tt></dt>
      * <dd>This property specifies output file name.</dd>
-     *
+     * 
      * <dt><tt>ImmediateFlush</tt></dt>
      * <dd>When it is set true, output stream will be flushed after
      * each appended event.</dd>
@@ -56,22 +61,57 @@ namespace log4cplus {
      * instead of being truncated at opening.</dd>
      *
      * <dt><tt>ReopenDelay</tt></dt>
-     * <dd>This property sets a delay after which the appender will
-     * try to reopen log file again, after last logging failure. The
-     * default value is 1 second. Setting the delay to 0 makes the
-     * appender not to try reopening the stream.
+     * <dd>This property sets a delay after which the appender will try
+     * to reopen log file again, after last logging failure.
      * </dd>
+     *
+     * <dt><tt>BufferSize</tt></dt>
+     * <dd>Non-zero value of this property sets up buffering of output
+     * stream using a buffer of given size.
+     * </dd>
+     *
+     * <dt><tt>UseLockFile</tt></dt>
+     * <dd>Set this property to <tt>true</tt> if you want your output
+     * to go into a log file shared by multiple processes. When this
+     * property is set to true then log4cplus uses OS specific
+     * facilities (e.g., <code>lockf()</code>) to provide
+     * inter-process file locking.
+     * \sa Appender
+     * </dd>
+     *
+     * <dt><tt>LockFile</tt></dt>
+     * <dd>This property specifies lock file, file used for
+     * inter-process synchronization of log file access. When this
+     * property is not specified, the value is derived from
+     * <tt>File</tt> property by addition of ".lock" suffix. The
+     * property is only used when <tt>UseLockFile</tt> is set to true.
+     * \sa Appender
+     * </dd>
+     *
+     * <dt><tt>Locale</tt></dt>
+     * <dd>This property specifies a locale name that will be imbued
+     * into output stream. Locale can be specified either by system
+     * specific locale name, e.g., <tt>en_US.UTF-8</tt>, or by one of
+     * four recognized keywords: <tt>GLOBAL</tt>, <tt>DEFAULT</tt>
+     * (which is an alias for <tt>GLOBAL</tt>), <tt>USER</tt> and
+     * <tt>CLASSIC</tt>. When specified locale is not available,
+     * <tt>GLOBAL</tt> is used instead. It is possible to register
+     * additional locale keywords by registering an instance of
+     * <code>spi::LocaleFactory</code> in
+     * <code>spi::LocaleFactoryRegistry</code>.
+     * \sa spi::getLocaleFactoryRegistry()
+     * </dd>
+     *
      * </dl>
      */
     class DCMTK_LOG4CPLUS_EXPORT FileAppender : public Appender {
     public:
       // Ctors
-        FileAppender(const tstring& filename,
-                     DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode = DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc,
+        FileAppender(const log4cplus::tstring& filename, 
+                     STD_NAMESPACE ios_base::openmode mode = STD_NAMESPACE ios_base::trunc,
                      bool immediateFlush = true);
-        FileAppender(const helpers::Properties& properties,
-                     tstring& error,
-                     DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode = DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc);
+        FileAppender(const log4cplus::helpers::Properties& properties,
+                     STD_NAMESPACE ios_base::openmode mode = STD_NAMESPACE ios_base::trunc);
 
       // Dtor
         virtual ~FileAppender();
@@ -79,10 +119,17 @@ namespace log4cplus {
       // Methods
         virtual void close();
 
+      //! Redefine default locale for output stream. It may be a good idea to
+      //! provide UTF-8 locale in case UNICODE macro is defined.
+        virtual STD_NAMESPACE locale imbue(STD_NAMESPACE locale const& loc);
+
+      //! \returns Locale imbued in fstream. 
+        virtual STD_NAMESPACE locale getloc () const;
+
     protected:
         virtual void append(const spi::InternalLoggingEvent& event);
 
-        void open(DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode);
+        void open(STD_NAMESPACE ios_base::openmode mode);
         bool reopen();
 
       // Data
@@ -94,29 +141,34 @@ namespace log4cplus {
          * <code>false</code>, then there is a good chance that the last few
          * logs events are not actually written to persistent media if and
          * when the application crashes.
-         *
+         *  
          * The <code>immediateFlush</code> variable is set to
          * <code>true</code> by default.
          */
         bool immediateFlush;
 
         /**
-         * When any append operation fails, <code>reopenDelay</code> says
-         * for how many seconds the next attempt to re-open the log file and
-         * resume logging will be delayed. If <code>reopenDelay</code> is zero,
-         * each failed append operation will cause log file to be re-opened.
+         * When any append operation fails, <code>reopenDelay</code> says 
+         * for how many seconds the next attempt to re-open the log file and 
+         * resume logging will be delayed. If <code>reopenDelay</code> is zero, 
+         * each failed append operation will cause log file to be re-opened. 
          * By default, <code>reopenDelay</code> is 1 second.
          */
         int reopenDelay;
 
-        tofstream out;
-        tstring filename;
+        unsigned long bufferSize;
+        log4cplus::tchar * buffer;
 
-        helpers::Time reopen_time;
+        log4cplus::tofstream out;
+        log4cplus::tstring filename;
+        log4cplus::tstring localeName;
+
+        log4cplus::helpers::Time reopen_time;
 
     private:
-        void init(const tstring& filename,
-                  DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode);
+        DCMTK_LOG4CPLUS_PRIVATE void init(const log4cplus::tstring& filename,
+            STD_NAMESPACE ios_base::openmode mode,
+            const log4cplus::tstring& lockFileName);
 
       // Disallow copying of instances of this class
         FileAppender(const FileAppender&);
@@ -148,25 +200,25 @@ namespace log4cplus {
     class DCMTK_LOG4CPLUS_EXPORT RollingFileAppender : public FileAppender {
     public:
       // Ctors
-        RollingFileAppender(const tstring& filename,
+        RollingFileAppender(const log4cplus::tstring& filename,
                             long maxFileSize = 10*1024*1024, // 10 MB
                             int maxBackupIndex = 1,
                             bool immediateFlush = true);
-        RollingFileAppender(const helpers::Properties& properties, tstring& error);
+        RollingFileAppender(const log4cplus::helpers::Properties& properties);
 
       // Dtor
         virtual ~RollingFileAppender();
 
     protected:
         virtual void append(const spi::InternalLoggingEvent& event);
-        void rollover();
+        void rollover(bool alreadyLocked = false);
 
       // Data
         long maxFileSize;
         int maxBackupIndex;
 
     private:
-        void init(long maxFileSize, int maxBackupIndex);
+        DCMTK_LOG4CPLUS_PRIVATE void init(long maxFileSize, int maxBackupIndex);
     };
 
 
@@ -198,36 +250,36 @@ namespace log4cplus {
     class DCMTK_LOG4CPLUS_EXPORT DailyRollingFileAppender : public FileAppender {
     public:
       // Ctors
-        DailyRollingFileAppender(const tstring& filename,
+        DailyRollingFileAppender(const log4cplus::tstring& filename,
                                  DailyRollingFileSchedule schedule = DAILY,
                                  bool immediateFlush = true,
                                  int maxBackupIndex = 10);
-        DailyRollingFileAppender(const helpers::Properties& properties, tstring& error);
+        DailyRollingFileAppender(const log4cplus::helpers::Properties& properties);
 
       // Dtor
         virtual ~DailyRollingFileAppender();
-
+        
       // Methods
         virtual void close();
 
     protected:
         virtual void append(const spi::InternalLoggingEvent& event);
-        void rollover();
-        helpers::Time calculateNextRolloverTime(const helpers::Time& t) const;
-        tstring getFilename(const helpers::Time& t) const;
+        void rollover(bool alreadyLocked = false);
+        log4cplus::helpers::Time calculateNextRolloverTime(const log4cplus::helpers::Time& t) const;
+        log4cplus::tstring getFilename(const log4cplus::helpers::Time& t) const;
 
       // Data
         DailyRollingFileSchedule schedule;
-        tstring scheduledFilename;
-        helpers::Time nextRolloverTime;
+        log4cplus::tstring scheduledFilename;
+        log4cplus::helpers::Time nextRolloverTime;
         int maxBackupIndex;
 
     private:
-        void init(DailyRollingFileSchedule schedule);
+        DCMTK_LOG4CPLUS_PRIVATE void init(DailyRollingFileSchedule schedule);
     };
 
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // DCMTK__LOG4CPLUS_FILE_APPENDER_HEADER_
+#endif // DCMTK_LOG4CPLUS_FILE_APPENDER_HEADER_
 

@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    appender.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,42 +25,56 @@
 #define DCMTK_LOG4CPLUS_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
+#include "dcmtk/ofstd/ofaptr.h"
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/pointer.h"
-#include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/spi/filter.h"
+#include "dcmtk/oflog/helpers/lockfile.h"
 
-//#include <memory>
-#include "dcmtk/ofstd/ofaptr.h"
+#include <memory>
 
 
 namespace dcmtk {
 namespace log4cplus {
 
+
+    namespace helpers
+    {
+
+        class Properties;
+
+    }
+
+
     /**
      * This class is used to "handle" errors encountered in an {@link
-     * dcmtk::log4cplus::Appender}.
+     * log4cplus::Appender}.
      */
-    class DCMTK_LOG4CPLUS_EXPORT ErrorHandler {
+    class DCMTK_LOG4CPLUS_EXPORT ErrorHandler
+    {
     public:
-        virtual ~ErrorHandler();
-        virtual void error(const tstring& err) = 0;
+        ErrorHandler ();
+        virtual ~ErrorHandler() = 0;
+        virtual void error(const log4cplus::tstring& err) = 0;
         virtual void reset() = 0;
     };
 
 
-
-    class DCMTK_LOG4CPLUS_EXPORT OnlyOnceErrorHandler : public ErrorHandler,
-                                                  protected helpers::LogLogUser
+    class DCMTK_LOG4CPLUS_EXPORT OnlyOnceErrorHandler
+        : public ErrorHandler
     {
     public:
       // Ctor
-        OnlyOnceErrorHandler() : firstTime(true){}
-
-        virtual void error(const tstring& err);
+        OnlyOnceErrorHandler();
+        virtual ~OnlyOnceErrorHandler ();
+        virtual void error(const log4cplus::tstring& err);
         virtual void reset();
 
     private:
@@ -70,16 +85,37 @@ namespace log4cplus {
     /**
      * Extend this class for implementing your own strategies for printing log
      * statements.
+     *
+     * <h3>Properties</h3>
+     * <dl>
+     * <dt><tt>UseLockFile</tt></dt>
+     * <dd>Set this property to <tt>true</tt> if you want your output
+     * through this appender to be synchronized between multiple
+     * processes. When this property is set to true then log4cplus
+     * uses OS specific facilities (e.g., <code>lockf()</code>) to
+     * provide inter-process locking. With the exception of
+     * FileAppender and its derived classes, it is also necessary to
+     * provide path to a lock file using the <tt>LockFile</tt>
+     * property.
+     * \sa FileAppender
+     * </dd>
+     *
+     * <dt><tt>LockFile</tt></dt>
+     * <dd>This property specifies lock file, file used for
+     * inter-process synchronization of log file access. The property
+     * is only used when <tt>UseLockFile</tt> is set to true. Then it
+     * is mandatory.
+     * \sa FileAppender
+     * </dd>
+     * </dl>
      */
     class DCMTK_LOG4CPLUS_EXPORT Appender
-        : public virtual helpers::SharedObject
-        , protected helpers::LogLogUser
-
+        : public virtual log4cplus::helpers::SharedObject
     {
     public:
       // Ctor
         Appender();
-        Appender(const helpers::Properties properties);
+        Appender(const log4cplus::helpers::Properties & properties);
 
       // Dtor
         virtual ~Appender();
@@ -90,7 +126,7 @@ namespace log4cplus {
         /**
          * Release any resources allocated within the appender such as file
          * handles, network connections, etc.
-         *
+         * 
          * It is a programming error to append to a closed appender.
          */
         virtual void close() = 0;
@@ -100,19 +136,19 @@ namespace log4cplus {
          * delegating actual logging to the subclasses specific {@link
          * #append} method.
          */
-        void doAppend(const spi::InternalLoggingEvent& event);
+        void doAppend(const log4cplus::spi::InternalLoggingEvent& event);
 
         /**
          * Get the name of this appender. The name uniquely identifies the
          * appender.
          */
-        virtual tstring getName();
+        virtual log4cplus::tstring getName();
 
         /**
          * Set the name of this appender. The name is used by other
          * components to identify this appender.
          */
-        virtual void setName(const tstring& name);
+        virtual void setName(const log4cplus::tstring& name);
 
         /**
          * Set the {@link ErrorHandler} for this Appender.
@@ -134,7 +170,7 @@ namespace log4cplus {
 
         /**
          * Returns the layout of this appender. The value may be NULL.
-         *
+         * 
          * This class owns the returned pointer.
          */
         virtual Layout* getLayout();
@@ -142,12 +178,12 @@ namespace log4cplus {
         /**
          * Set the filter chain on this Appender.
          */
-        void setFilter(spi::FilterPtr f) { filter = f; }
+        void setFilter(log4cplus::spi::FilterPtr f) { filter = f; }
 
         /**
          * Get the filter chain on this Appender.
          */
-        spi::FilterPtr getFilter() const { return filter; }
+        log4cplus::spi::FilterPtr getFilter() const { return filter; }
 
         /**
          * Returns this appenders threshold LogLevel. See the {@link
@@ -158,7 +194,7 @@ namespace log4cplus {
         /**
          * Set the threshold LogLevel. All log events with lower LogLevel
          * than the threshold LogLevel are ignored by the appender.
-         *
+         * 
          * In configuration files this option is specified by setting the
          * value of the <b>Threshold</b> option to a LogLevel
          * string, such as "DEBUG", "INFO" and so on.
@@ -181,7 +217,9 @@ namespace log4cplus {
          * method to perform actual logging.
          * @see doAppend method.
          */
-        virtual void append(const spi::InternalLoggingEvent& event) = 0;
+        virtual void append(const log4cplus::spi::InternalLoggingEvent& event) = 0;
+
+        tstring & formatEvent (const log4cplus::spi::InternalLoggingEvent& event) const;
 
       // Data
         /** The layout variable does not need to be set if the appender
@@ -189,17 +227,24 @@ namespace log4cplus {
         OFauto_ptr<Layout> layout;
 
         /** Appenders are named. */
-        tstring name;
+        log4cplus::tstring name;
 
         /** There is no LogLevel threshold filtering by default.  */
         LogLevel threshold;
 
         /** The first filter in the filter chain. Set to <code>null</code>
          *  initially. */
-        spi::FilterPtr filter;
+        log4cplus::spi::FilterPtr filter;
 
         /** It is assumed and enforced that errorHandler is never null. */
         OFauto_ptr<ErrorHandler> errorHandler;
+
+        //! Optional system wide synchronization lock.
+        OFauto_ptr<helpers::LockFile> lockFile;
+
+        //! Use lock file for inter-process synchronization of access
+        //! to log file.
+        bool useLockFile;
 
         /** Is this appender closed? */
         bool closed;

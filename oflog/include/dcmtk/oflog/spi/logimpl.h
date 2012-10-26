@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    loggerimpl.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,16 +21,21 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_SPI_LOGGER_HEADER_
-#define DCMTK__LOG4CPLUS_SPI_LOGGER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_SPI_LOGGER_HEADER_
+#define DCMTK_LOG4CPLUS_SPI_LOGGER_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/oflog/helpers/apndimpl.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 #include "dcmtk/oflog/spi/logfact.h"
-//#include <memory>
-//#include <vector>
+#include <memory>
+#include "dcmtk/ofstd/ofvector.h"
 
 
 namespace dcmtk {
@@ -44,11 +50,11 @@ namespace log4cplus {
          * evaluation.
          *
          * See the <a href="../../../../manual.html">user manual</a> for an
-         * introduction on this class.
+         * introduction on this class. 
          */
         class DCMTK_LOG4CPLUS_EXPORT LoggerImpl
-            : public virtual helpers::SharedObject,
-              public helpers::AppenderAttachableImpl
+            : public virtual log4cplus::helpers::SharedObject,
+              public log4cplus::helpers::AppenderAttachableImpl
         {
         public:
             typedef helpers::SharedObjectPtr<LoggerImpl> SharedLoggerImplPtr;
@@ -59,23 +65,23 @@ namespace log4cplus {
              * Call the appenders in the hierrachy starting at
              * <code>this</code>.  If no appenders could be found, emit a
              * warning.
-             *
+             * 
              * This method calls all the appenders inherited from the
              * hierarchy circumventing any evaluation of whether to log or not
              * to log the particular log request.
-             *
-             * @param event The event to log.
+             *                                   
+             * @param event The event to log. 
              */
             virtual void callAppenders(const InternalLoggingEvent& event);
 
             /**
              * Close all attached appenders implementing the AppenderAttachable
-             * interface.
+             * interface.  
              */
             virtual void closeNestedAppenders();
 
             /**
-             * Check whether this logger is enabled for a given LogLevel passed
+             * Check whether this logger is enabled for a given LogLevel passed 
              * as parameter.
              *
              * @return boolean True if this logger is enabled for <code>ll</code>.
@@ -83,25 +89,26 @@ namespace log4cplus {
             virtual bool isEnabledFor(LogLevel ll) const;
 
             /**
-             * This generic form is intended to be used by wrappers.
+             * This generic form is intended to be used by wrappers. 
              */
-            virtual void log(LogLevel ll, const tstring& message,
-                             const char* file=NULL, int line=-1,
-                             const char* function=NULL);
+            virtual void log(LogLevel ll, const log4cplus::tstring& message,
+                             const char* file=NULL, int line=-1);
+
+            virtual void log(spi::InternalLoggingEvent const &);
 
             /**
              * Starting from this logger, search the logger hierarchy for a
              * "set" LogLevel and return it. Otherwise, return the LogLevel of the
              * root logger.
-             *
+             *                     
              * The Logger class is designed so that this method executes as
              * quickly as possible.
              */
             virtual LogLevel getChainedLogLevel() const;
 
             /**
-             * Returns the assigned LogLevel, if any, for this Logger.
-             *
+             * Returns the assigned LogLevel, if any, for this Logger.  
+             *           
              * @return LogLevel - the assigned LogLevel.
              */
             LogLevel getLogLevel() const { return this->ll; }
@@ -118,9 +125,9 @@ namespace log4cplus {
             virtual Hierarchy& getHierarchy() const;
 
             /**
-             * Return the logger name.
+             * Return the logger name.  
              */
-            tstring getName() const { return name; }
+            log4cplus::tstring const & getName() const { return name; }
 
             /**
              * Get the additivity flag for this Logger instance.
@@ -143,27 +150,28 @@ namespace log4cplus {
              * It is intended to be used by sub-classes only. You should not
              * create loggers directly.
              *
-             * @param name The name of the logger.
+             * @param name The name of the logger.  
              * @param h Hierarchy
              */
-            LoggerImpl(const tstring& name, Hierarchy& h);
+            LoggerImpl(const log4cplus::tstring& name, Hierarchy& h);
 
 
           // Methods
             /**
              * This method creates a new logging event and logs the event
-             * without further checks.
+             * without further checks.  
              */
             virtual void forcedLog(LogLevel ll,
-                                   const tstring& message,
-                                   const char* file=NULL,
-                                   int line=-1,
-                                   const char* function=NULL);
+                                   const log4cplus::tstring& message,
+                                   const char* file=NULL, 
+                                   int line=-1);
+
+            virtual void forcedLog(spi::InternalLoggingEvent const & ev);
 
 
           // Data
             /** The name of this logger */
-            tstring name;
+            log4cplus::tstring name;
 
             /**
              * The assigned LogLevel of this logger.
@@ -172,18 +180,18 @@ namespace log4cplus {
 
             /**
              * The parent of this logger. All loggers have at least one
-             * ancestor which is the root logger.
+             * ancestor which is the root logger. 
              */
             SharedLoggerImplPtr parent;
 
-            /**
+            /** 
              * Additivity is set to true by default, that is children inherit
              * the appenders of their ancestors by default. If this variable is
              * set to <code>false</code> then the appenders found in the
              * ancestors of this logger are not used. However, the children
              * of this logger will inherit its appenders, unless the children
              * have their additivity flag set to <code>false</code> too. See
-             * the user manual for more details.
+             * the user manual for more details. 
              */
             bool additive;
 
@@ -197,9 +205,9 @@ namespace log4cplus {
             LoggerImpl& operator=(const LoggerImpl&);
 
           // Friends
-            friend class dcmtk::log4cplus::Logger;
-            friend class dcmtk::log4cplus::DefaultLoggerFactory;
-            friend class dcmtk::log4cplus::Hierarchy;
+            friend class log4cplus::Logger;
+            friend class log4cplus::DefaultLoggerFactory;
+            friend class log4cplus::Hierarchy;
         };
 
         typedef LoggerImpl::SharedLoggerImplPtr SharedLoggerImplPtr;
@@ -208,6 +216,6 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // DCMTK__LOG4CPLUS_SPI_LOGGER_HEADER_
+#endif // DCMTK_LOG4CPLUS_SPI_LOGGER_HEADER_
 
 

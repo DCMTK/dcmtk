@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,17 +19,20 @@
 // limitations under the License.
 
 #include "dcmtk/oflog/hierlock.h"
+#include "dcmtk/oflog/hierarchy.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/spi/logimpl.h"
+#include "dcmtk/oflog/thread/syncpub.h"
 
 
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-
+namespace dcmtk
+{
+namespace log4cplus
+{
 
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::HierarchyLocker ctor and dtor
+// HierarchyLocker ctor and dtor
 //////////////////////////////////////////////////////////////////////////////
 
 HierarchyLocker::HierarchyLocker(Hierarchy& _h)
@@ -41,33 +44,39 @@ HierarchyLocker::HierarchyLocker(Hierarchy& _h)
     h.initializeLoggerList(loggerList);
 
     // Lock all of the Hierarchy's Loggers' mutexs
-    try {
-            for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
-                DCMTK_LOG4CPLUS_MUTEX_LOCK( (*it).value->appender_list_mutex ) ;
-            }
-        }
-        catch(...) {
-            h.getLogLog().error(DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::ctor()- An error occurred while locking"));
-            // TODO --> We need to unlock any Logger mutex that we were able to lock
-            throw;
-        }
-    }
-
-
-    HierarchyLocker::~HierarchyLocker()
+    LoggerList::iterator it;
+    try
     {
-        try {
-            for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
-            DCMTK_LOG4CPLUS_MUTEX_UNLOCK( (*it).value->appender_list_mutex ) ;
+        for (it = loggerList.begin(); it != loggerList.end(); ++it)
+            it->value->appender_list_mutex.lock ();
+    }
+    catch (...)
+    {
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::ctor()")
+            DCMTK_LOG4CPLUS_TEXT("- An error occurred while locking"));
+        LoggerList::iterator range_end = it;
+        for (it = loggerList.begin (); it != range_end; ++it)
+            it->value->appender_list_mutex.unlock ();
+        throw;
+    }
+}
+ 
+
+HierarchyLocker::~HierarchyLocker()
+{
+    try {
+        for(LoggerList::iterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
+            it->value->appender_list_mutex.unlock ();
         }
     }
     catch(...) {
-        h.getLogLog().error(DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::dtor()- An error occurred while unlocking"));
+        helpers::getLogLog().error(DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::dtor()- An error occurred while unlocking"));
         throw;
     }
 }
 
-void
+void 
 HierarchyLocker::resetConfiguration()
 {
     Logger root = h.getRoot();
@@ -80,45 +89,49 @@ HierarchyLocker::resetConfiguration()
     root.removeAllAppenders();
 
     // repeat
-    for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
-        DCMTK_LOG4CPLUS_MUTEX_UNLOCK( (*it).value->appender_list_mutex ) ;
-        (*it).closeNestedAppenders();
-        (*it).removeAllAppenders();
-        DCMTK_LOG4CPLUS_MUTEX_LOCK( (*it).value->appender_list_mutex ) ;
-        (*it).setLogLevel(NOT_SET_LOG_LEVEL);
-        (*it).setAdditivity(true);
+    for(LoggerList::iterator it=loggerList.begin(); it!=loggerList.end(); ++it)
+    {
+        Logger & logger = *it;
+        
+        logger.closeNestedAppenders();
+        logger.removeAllAppenders();
+        
+        logger.setLogLevel(NOT_SET_LOG_LEVEL);
+        logger.setAdditivity(true);
     }
 }
 
 
-Logger
+Logger 
 HierarchyLocker::getInstance(const tstring& name)
 {
     return h.getInstanceImpl(name, *h.getLoggerFactory());
 }
 
 
-Logger
+Logger 
 HierarchyLocker::getInstance(const tstring& name, spi::LoggerFactory& factory)
 {
     return h.getInstanceImpl(name, factory);
 }
 
 
-void
+void 
 HierarchyLocker::addAppender(Logger& logger, SharedAppenderPtr& appender)
 {
-    for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
+    for(LoggerList::iterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
         if((*it).value == logger.value) {
-            DCMTK_LOG4CPLUS_MUTEX_UNLOCK( logger.value->appender_list_mutex );
+            logger.value->appender_list_mutex.unlock ();
             logger.addAppender(appender);
-            DCMTK_LOG4CPLUS_MUTEX_LOCK( logger.value->appender_list_mutex );
+            logger.value->appender_list_mutex.lock ();
             return;
         }
     }
-
+    
     // I don't have this Logger locked
     logger.addAppender(appender);
 }
 
 
+} // namespace log4cplus
+} // end namespace dcmtk

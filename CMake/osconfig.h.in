@@ -332,6 +332,9 @@
 /* Define to 1 if you have the <math.h> header file. */
 #cmakedefine HAVE_MATH_H @HAVE_MATH_H@
 
+/* Define to 1 if you have the `mbstowcs' function. */
+#cmakedefine HAVE_MBSTOWCS @HAVE_MBSTOWCS@
+
 /* Define to 1 if you have the `memcmp' function. */
 #cmakedefine HAVE_MEMCMP @HAVE_MEMCMP@
 
@@ -484,6 +487,9 @@
 
 /* Define if your system has a prototype for _stricmp in string.h */
 #cmakedefine HAVE_PROTOTYPE__STRICMP @HAVE_PROTOTYPE__STRICMP@
+
+/* Define if your system has a prototype for nanosleep in time.h */
+#cmakedefine HAVE_PROTOTYPE_NANOSLEEP @HAVE_PROTOTYPE_NANOSLEEP@
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #cmakedefine HAVE_PTHREAD_H @HAVE_PTHREAD_H@
@@ -660,6 +666,12 @@
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #cmakedefine HAVE_SYS_STAT_H @HAVE_SYS_STAT_H@
 
+/* Define to 1 if you have the <sys/syscall.h> header file. */
+#cmakedefine HAVE_SYS_SYSCALL_H @HAVE_SYS_SYSCALL_H@
+
+/* Define to 1 if you have the <sys/timeb.h> header file. */
+#cmakedefine HAVE_SYS_TIMEB_H @HAVE_SYS_TIMEB_H@
+
 /* Define to 1 if you have the <sys/time.h> header file. */
 #cmakedefine HAVE_SYS_TIME_H @HAVE_SYS_TIME_H@
 
@@ -708,8 +720,17 @@
 /* Define to 1 if you have the `vprintf' function. */
 #cmakedefine HAVE_VPRINTF @HAVE_VPRINTF@
 
+/* Define to 1 if you have the `_vsnprintf_s' function. */
+#cmakedefine HAVE__VSNPRINTF_S @HAVE__VSNPRINTF_S@
+
+/* Define to 1 if you have the `vfprintf_s' function. */
+#cmakedefine HAVE_VFPRINTF_S @HAVE_VFPRINTF_S@
+
 /* Define to 1 if you have the `vsnprintf' function. */
 #cmakedefine HAVE_VSNPRINTF @HAVE_VSNPRINTF@
+
+/* Define to 1 if you have the `vsprintf_s' function. */
+#cmakedefine HAVE_VSPRINTF_S @HAVE_VSPRINTF_S@
 
 /* Define to 1 if you have the `wait3' function. */
 #cmakedefine HAVE_WAIT3 @HAVE_WAIT3@
@@ -717,11 +738,29 @@
 /* Define to 1 if you have the `waitpid' function. */
 #cmakedefine HAVE_WAITPID @HAVE_WAITPID@
 
+/* Define to 1 if you have the <wchar.h> header file. */
+#cmakedefine HAVE_WCHAR_H @HAVE_WCHAR_H@
+
+/* Define to 1 if you have the `wcstombs' function. */
+#cmakedefine HAVE_WCSTOMBS @HAVE_WCSTOMBS@
+
 /* Define to 1 if you have the <wctype.h> header file. */
 #cmakedefine HAVE_WCTYPE_H @HAVE_WCTYPE_H@
 
 /* Define to 1 if you have the `_findfirst' function. */
 #cmakedefine HAVE__FINDFIRST @HAVE__FINDFIRST@
+
+/* Define to 1 if the compiler supports __FUNCTION__. */
+#cmakedefine HAVE___FUNCTION___MACRO @HAVE___FUNCTION___MACRO@
+
+/* Define to 1 if the compiler supports __PRETTY_FUNCTION__. */
+#cmakedefine HAVE___PRETTY_FUNCTION___MACRO @HAVE___PRETTY_FUNCTION___MACRO@
+
+/* Define to 1 if the compiler supports __func__. */
+#cmakedefine HAVE___func___MACRO @HAVE___func___MACRO@
+
+/* Define to 1 if you have the `nanosleep' function. */
+#cmakedefine HAVE_NANOSLEEP @HAVE_NANOSLEEP@
 
 /* Define if <math.h> fails if included extern "C" */
 #define INCLUDE_MATH_H_AS_CXX 1

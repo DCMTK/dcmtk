@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,21 +18,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//#include <cstring>
-//#include <vector>
-//#include <algorithm>
-#include "dcmtk/oflog/helpers/socket.h"
+
+#include "dcmtk/oflog/config.h"
+#if defined (DCMTK_LOG4CPLUS_USE_BSD_SOCKETS)
+
+#include <cstring>
+#include "dcmtk/ofstd/ofvector.h"
+#include <algorithm>
+#include <cerrno>
+#include "dcmtk/oflog/internal/socket.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/threads.h"
+#include "dcmtk/oflog/thread/syncpub.h"
 #include "dcmtk/oflog/spi/logevent.h"
-
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-
-#ifdef DCMTK_LOG4CPLUS_HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
+#include "dcmtk/oflog/helpers/strhelp.h"
 
 #ifdef DCMTK_LOG4CPLUS_HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -42,39 +40,55 @@
 #include <sys/socket.h>
 #endif
 
+#if defined (DCMTK_LOG4CPLUS_HAVE_NETINET_IN_H)
+#include <netinet/in.h>
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_NETINET_TCP_H)
+#include <netinet/tcp.h>
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_ARPA_INET_H)
+#include <arpa/inet.h>
+#endif
+ 
+#if defined (DCMTK_LOG4CPLUS_HAVE_ERRNO_H)
+#include <errno.h>
+#endif
+
 #ifdef DCMTK_LOG4CPLUS_HAVE_NETDB_H
 #include <netdb.h>
 #endif
 
-#define INCLUDE_CERRNO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDLIB
-//#include <unistd.h>
-#include "dcmtk/ofstd/ofstdinc.h"
+#ifdef DCMTK_LOG4CPLUS_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
-//#include <algorithm>
 
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
+namespace dcmtk {
+namespace log4cplus { namespace helpers {
 
 
 namespace
 {
 
 
-#if !defined (DCMTK_LOG4CPLUS_HAVE_GETADDRINFO)
-static DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE ghbn_mutex = DCMTK_LOG4CPLUS_MUTEX_CREATE;
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+// We need to use log4cplus::thread here to work around compilation
+// problem on AIX.
+static log4cplus::thread::Mutex ghbn_mutex;
+
 #endif
 
 
 static
 int
-get_host_by_name (char const * hostname, OFString* name,
+get_host_by_name (char const * hostname, STD_NAMESPACE string * name,
     struct sockaddr_in * addr)
 {
 #if defined (DCMTK_LOG4CPLUS_HAVE_GETADDRINFO)
     struct addrinfo hints;
-    STD_NAMESPACE memset (&hints, 0, sizeof (hints));
+    memset (&hints, 0, sizeof (hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
@@ -90,19 +104,24 @@ get_host_by_name (char const * hostname, OFString* name,
 
     struct addrinfo const & ai = *res;
     assert (ai.ai_family == AF_INET);
-
+    
     if (name)
         *name = ai.ai_canonname;
 
     if (addr)
-        STD_NAMESPACE memcpy (addr, ai.ai_addr, ai.ai_addrlen);
+        memcpy (addr, ai.ai_addr, ai.ai_addrlen);
 
     freeaddrinfo (res);
 
 #else
-    thread::Guard guard (ghbn_mutex);
+    #if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+    // We need to use log4cplus::thread here to work around
+    // compilation problem on AIX.
+    log4cplus::thread::MutexGuard guard (ghbn_mutex);
 
-    struct hostent * hp = gethostbyname (hostname);
+    #endif
+
+    struct ::hostent * hp = gethostbyname (hostname);
     if (! hp)
         return 1;
     assert (hp->h_addrtype == AF_INET);
@@ -112,8 +131,8 @@ get_host_by_name (char const * hostname, OFString* name,
 
     if (addr)
     {
-	assert (hp->h_length <= (int) sizeof (addr->sin_addr));
-        STD_NAMESPACE memcpy (&addr->sin_addr, hp->h_addr_list[0], hp->h_length);
+        assert (hp->h_length <= sizeof (addr->sin_addr));
+        memcpy (&addr->sin_addr, hp->h_addr_list[0], hp->h_length);
     }
 
 #endif
@@ -130,149 +149,213 @@ get_host_by_name (char const * hostname, OFString* name,
 /////////////////////////////////////////////////////////////////////////////
 
 SOCKET_TYPE
-helpers::openSocket(unsigned short port, SocketState& state)
+openSocket(unsigned short port, SocketState& state)
 {
-    SOCKET_TYPE sock = ::socket(AF_INET, SOCK_STREAM, 0);
+    int sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if(sock < 0) {
-        return INVALID_SOCKET;
+        return INVALID_SOCKET_VALUE;
     }
 
-    struct sockaddr_in server;
+    struct sockaddr_in server = sockaddr_in ();
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons(port);
 
     int optval = 1;
-    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, OFreinterpret_cast(char*, &optval), sizeof(optval) );
-
-    if(bind(sock, OFreinterpret_cast(struct sockaddr*, &server), sizeof(server)) < 0) {
-        return INVALID_SOCKET;
+    socklen_t optlen = sizeof (optval);
+    int ret = setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &optval, optlen );
+    if (ret != 0)
+    {
+        helpers::getLogLog ().warn ("setsockopt() failed: "
+            + helpers::convertIntegerToString (errno));
     }
 
-    if(::listen(sock, 10)) {
-        return INVALID_SOCKET;
-    }
+    int retval = bind(sock, OFreinterpret_cast(struct sockaddr*, &server),
+        sizeof(server));
+    if (retval < 0)
+        goto error;
+
+    if (::listen(sock, 10))
+        goto error;
 
     state = ok;
-    return sock;
+    return to_log4cplus_socket (sock);
+
+error:
+    close (sock);
+    return INVALID_SOCKET_VALUE;
 }
 
 
 SOCKET_TYPE
-helpers::connectSocket(const tstring& hostn,
-                                  unsigned short port, SocketState& state)
+connectSocket(const tstring& hostn, unsigned short port, bool udp, SocketState& state)
 {
     struct sockaddr_in server;
-    SOCKET_TYPE sock;
+    int sock;
     int retval;
 
-    STD_NAMESPACE memset (&server, 0, sizeof (server));
+    memset (&server, 0, sizeof (server));
     retval = get_host_by_name (DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str(),
         0, &server);
     if (retval != 0)
-        return INVALID_SOCKET;
+        return INVALID_SOCKET_VALUE;
 
     server.sin_port = htons(port);
     server.sin_family = AF_INET;
 
-    sock = ::socket(AF_INET, SOCK_STREAM, 0);
+    sock = ::socket(AF_INET, (udp ? SOCK_DGRAM : SOCK_STREAM), 0);
     if(sock < 0) {
-        return INVALID_SOCKET;
+        return INVALID_SOCKET_VALUE;
     }
 
-    while ((retval = ::connect(sock,
-                OFreinterpret_cast(struct sockaddr *, &server), sizeof (server))) == -1
-          && (errno == EINTR))
+    socklen_t namelen = sizeof (server);
+    while (
+        (retval = ::connect(sock, OFreinterpret_cast(struct sockaddr*, &server),
+            namelen))
+        == -1
+        && (errno == EINTR))
         ;
-    if(retval == INVALID_SOCKET) {
+    if (retval == INVALID_OS_SOCKET_VALUE) 
+    {
         ::close(sock);
-        return INVALID_SOCKET;
+        return INVALID_SOCKET_VALUE;
     }
 
     state = ok;
-    return sock;
+    return to_log4cplus_socket (sock);
 }
 
 
+namespace
+{
+
+//! Helper for accept_wrap().
+template <typename T, typename U>
+struct socklen_var
+{
+    typedef T type;
+};
+
+
+template <typename U>
+struct socklen_var<void, U>
+{
+    typedef U type;
+};
+
+
+// Some systems like HP-UX have socklen_t but accept() does not use it
+// as type of its 3rd parameter. This wrapper works around this
+// incompatibility.
+template <typename accept_sockaddr_ptr_type, typename accept_socklen_type>
+static
+SOCKET_TYPE
+accept_wrap (
+    int (* accept_func) (int, accept_sockaddr_ptr_type, accept_socklen_type *),
+    SOCKET_TYPE sock, struct sockaddr * sa, socklen_t * len)
+{
+    typedef typename socklen_var<accept_socklen_type, socklen_t>::type
+        socklen_var_type;
+    socklen_var_type l = OFstatic_cast(socklen_var_type, *len);
+    SOCKET_TYPE result
+        = OFstatic_cast(SOCKET_TYPE,
+            accept_func (sock, sa,
+                OFreinterpret_cast(accept_socklen_type *, &l)));
+    *len = OFstatic_cast(socklen_t, l);
+    return result;
+}
+
+
+} // namespace
+
 
 SOCKET_TYPE
-helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
+acceptSocket(SOCKET_TYPE sock, SocketState& state)
 {
     struct sockaddr_in net_client;
-#ifdef HAVE_DECLARATION_SOCKLEN_T
-    socklen_t len;
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-    int len;
-#else
-    size_t len;
-#endif
-    len = sizeof(net_client);
-    SOCKET_TYPE clientSock;
+    socklen_t len = sizeof(struct sockaddr);
+    int clientSock;
 
-    while(   (clientSock = ::accept(sock, OFreinterpret_cast(struct sockaddr*, &net_client), &len)) == -1
-          && (errno == EINTR))
+    while(
+        (clientSock = accept_wrap (accept, to_os_socket (sock),
+            OFreinterpret_cast(struct sockaddr*, &net_client), &len))
+        == -1
+        && (errno == EINTR))
         ;
 
-    if(clientSock != INVALID_SOCKET) {
+    if(clientSock != INVALID_OS_SOCKET_VALUE) {
         state = ok;
     }
 
-    return clientSock;
+    return to_log4cplus_socket (clientSock);
 }
 
 
 
 int
-helpers::closeSocket(SOCKET_TYPE sock)
+closeSocket(SOCKET_TYPE sock)
 {
-    return ::close(sock);
+    return ::close(to_os_socket (sock));
 }
 
 
 
 long
-helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
+read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
-    long read = 0;
-
+    long res, readbytes = 0;
+ 
     do
-    {
-        long res = ::read(sock, buffer.getBuffer() + read,
-            buffer.getMaxSize() - read);
+    { 
+        res = ::read(to_os_socket (sock), buffer.getBuffer() + readbytes,
+            buffer.getMaxSize() - readbytes);
         if( res <= 0 ) {
             return res;
         }
-        read += res;
-    } while( read < OFstatic_cast(long, buffer.getMaxSize()) );
-
-    return read;
+        readbytes += res;
+    } while( readbytes < OFstatic_cast(long, buffer.getMaxSize()) );
+ 
+    return readbytes;
 }
 
 
 
 long
-helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
+write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 {
 #if defined(MSG_NOSIGNAL)
     int flags = MSG_NOSIGNAL;
 #else
     int flags = 0;
 #endif
-    return ::send( sock, buffer.getBuffer(), buffer.getSize(), flags );
+    return ::send( to_os_socket (sock), buffer.getBuffer(), buffer.getSize(),
+        flags );
+}
+
+
+long
+write(SOCKET_TYPE sock, const STD_NAMESPACE string & buffer)
+{
+#if defined(MSG_NOSIGNAL)
+    int flags = MSG_NOSIGNAL;
+#else
+    int flags = 0;
+#endif
+    return ::send (to_os_socket (sock), buffer.c_str (), buffer.size (),
+        flags);
 }
 
 
 tstring
-helpers::getHostname (bool fqdn)
+getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
     int ret;
-    size_t hn_size = 1024;
-    char *hn = OFstatic_cast(char *, malloc(hn_size));
+    OFVector<char> hn (1024, 0);
 
     while (true)
     {
-        ret = ::gethostname (&hn[0], OFstatic_cast(int, hn_size) - 1);
+        ret = ::gethostname (&hn[0], OFstatic_cast(int, hn.size ()) - 1);
         if (ret == 0)
         {
             hostname = &hn[0];
@@ -280,29 +363,54 @@ helpers::getHostname (bool fqdn)
         }
 #if defined (DCMTK_LOG4CPLUS_HAVE_ENAMETOOLONG)
         else if (ret != 0 && errno == ENAMETOOLONG)
-        {
-            // Our buffer was too short. Retry with buffer twice the size.
-            hn_size *= 2;
-            hn = OFstatic_cast(char *, realloc(hn, hn_size));
-        }
+            // Out buffer was too short. Retry with buffer twice the size.
+            hn.resize (hn.size () * 2, 0);
 #endif
         else
             break;
     }
 
     if (ret != 0 || (ret == 0 && ! fqdn))
-    {
-        tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
-        free(hn);
-        return res;
-    }
+        return DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
 
-    OFString full_hostname;
+    STD_NAMESPACE string full_hostname;
     ret = get_host_by_name (hostname, &full_hostname, 0);
     if (ret == 0)
         hostname = full_hostname.c_str ();
 
-    tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
-    free(hn);
-    return res;
+    return DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
 }
+
+
+int
+setTCPNoDelay (SOCKET_TYPE sock, bool val)
+{
+#if (defined (SOL_TCP) || defined (IPPROTO_TCP)) && defined (TCP_NODELAY)
+#if defined (SOL_TCP)
+    int level = SOL_TCP;
+
+#elif defined (IPPROTO_TCP)
+    int level = IPPROTO_TCP;
+
+#endif
+
+    int result;
+    int enabled = OFstatic_cast(int, val);
+    if ((result = setsockopt(sock, level, TCP_NODELAY, &enabled,
+                sizeof(enabled))) != 0)
+        set_last_socket_error (errno);
+    
+    return result;
+
+#else
+    // No recognizable TCP_NODELAY option.
+    return 0;
+
+#endif
+}
+
+
+} } // namespace log4cplus
+} // end namespace dcmtk
+
+#endif // DCMTK_LOG4CPLUS_USE_BSD_SOCKETS

@@ -222,6 +222,13 @@ public:
     OFString& assign(const char* s, size_t n);
 
     /** constructs a temporary string from the input and assigns it to the current string.
+     *  @param s pointer to an array of char. Must not be NULL.
+     *  @param e pointer to the first element of the array that should not be included.
+     *  @return reference to this object
+     */
+    OFString& assign(const char* s, const char* e);
+
+    /** constructs a temporary string from the input and assigns it to the current string.
      *  @param s pointer to a zero-terminated C string. Must not be NULL.
      *  @return reference to this object
      */

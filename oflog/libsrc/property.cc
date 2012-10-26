@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2002-2009 Tad E. Smith
+// Copyright 2002-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,24 +18,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//#include <cstring>
+#include "dcmtk/oflog/config.h"
+
+#include <cstring>
 #if defined (UNICODE)
-//#  include <cwctype>
+#  include <cwctype>
 #else
-//#  include <cctype>
+#  include <cctype>
 #endif
-#include "dcmtk/oflog/helpers/property.h"
+#if defined (DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF8_FACET) \
+    || defined (DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF16_FACET) \
+    || defined (DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF32_FACET)
+#  include <codecvt>
+#endif
+#include <locale>
+#include <fstream>
+#include <sstream>
+#include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/fstreams.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/helpers/property.h"
+#include "dcmtk/oflog/internal/internal.h"
+#include "dcmtk/oflog/internal/env.h"
+#include "dcmtk/oflog/helpers/loglog.h"
 
 
-namespace dcmtk
-{
-
-namespace log4cplus
-{
+namespace dcmtk {
+namespace log4cplus { namespace helpers {
 
 
-const tchar helpers::Properties::PROPERTIES_COMMENT_CHAR = DCMTK_LOG4CPLUS_TEXT('#');
+const tchar Properties::PROPERTIES_COMMENT_CHAR = DCMTK_LOG4CPLUS_TEXT('#');
 
 
 namespace
@@ -46,7 +58,11 @@ static
 int
 is_space (tchar ch)
 {
+#if defined (UNICODE)
+    return STD_NAMESPACE iswspace (ch);
+#else
     return isspace (OFstatic_cast(unsigned char, ch));
+#endif
 }
 
 
@@ -60,7 +76,7 @@ trim_leading_ws (tstring & str)
         if (! is_space (*it))
             break;
     }
-    str.erase (0, it - str.begin());
+    str.erase (0, it - str.begin ());
 }
 
 
@@ -68,13 +84,13 @@ static
 void
 trim_trailing_ws (tstring & str)
 {
-    tstring::iterator it = str.end();
-    for (; it != str.begin(); --it)
-     {
-        if (! is_space (*(it - 1)))
-             break;
-     }
-    str.resize(it - str.begin());
+    size_t i;
+    for (i = str.length(); i > 0; i--)
+    {
+        if (! is_space (str[i-1]))
+            break;
+    }
+    str.erase (i, str.length() - i);
 }
 
 
@@ -91,55 +107,101 @@ trim_ws (tstring & str)
 
 
 
-namespace helpers
-{
-
 ///////////////////////////////////////////////////////////////////////////////
 // Properties ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-Properties::Properties()
+Properties::Properties() : data()
 {
 }
 
 
 
-Properties::Properties(tistream& input)
+Properties::Properties(tistream& input) : data()
 {
     init(input);
 }
 
 
 
-Properties::Properties(const tstring& inputFile)
+Properties::Properties(const tstring& inputFile, unsigned flags) : data()
 {
-    if (inputFile.length() == 0)
+    if (inputFile.empty ())
         return;
 
-    tifstream file (DCMTK_LOG4CPLUS_TSTRING_TO_STRING(inputFile).c_str());
+    tifstream file;
+
+    switch (flags & fEncodingMask)
+    {
+#if defined (DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF8_FACET) && defined (UNICODE)
+    case fUTF8:
+        file.imbue (
+            STD_NAMESPACE locale (file.getloc (),
+                new STD_NAMESPACE codecvt_utf8<tchar, 0x10FFFF,
+                    OFstatic_cast(STD_NAMESPACE codecvt_mode, STD_NAMESPACE consume_header | STD_NAMESPACE little_endian)>));
+        break;
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF16_FACET) && defined (UNICODE)
+    case fUTF16:
+        file.imbue (
+            STD_NAMESPACE locale (file.getloc (),
+                new STD_NAMESPACE codecvt_utf16<tchar, 0x10FFFF,
+                    OFstatic_cast(STD_NAMESPACE codecvt_mode, STD_NAMESPACE consume_header | STD_NAMESPACE little_endian)>));
+        break;
+
+#elif defined (UNICODE) && defined (WIN32)
+    case fUTF16:
+        file.imbue (
+            STD_NAMESPACE locale (file.getloc (),
+                new STD_NAMESPACE codecvt<wchar_t, wchar_t, STD_NAMESPACE mbstate_t>));
+    break;
+
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF32_FACET) && defined (UNICODE)
+    case fUTF32:
+        file.imbue (
+            STD_NAMESPACE locale (file.getloc (),
+                new STD_NAMESPACE codecvt_utf32<tchar, 0x10FFFF,
+                    OFstatic_cast(STD_NAMESPACE codecvt_mode, STD_NAMESPACE consume_header | STD_NAMESPACE little_endian)>));
+        break;
+#endif
+
+    case fUnspecEncoding:;
+    default:
+        // Do nothing.
+        ;
+    }
+
+    file.open(DCMTK_LOG4CPLUS_FSTREAM_PREFERED_FILE_NAME(inputFile).c_str(),
+        STD_NAMESPACE ios::binary);
+    if (! file.good ())
+        helpers::getLogLog ().error (DCMTK_LOG4CPLUS_TEXT ("could not open file ")
+            + inputFile);
+
     init(file);
 }
 
 
 
-void
-Properties::init(tistream& input)
+void 
+Properties::init(tistream& input) 
 {
     if (! input)
         return;
 
-    // FIXME
     STD_NAMESPACE string buffer_;
     while (STD_NAMESPACE getline (input, buffer_))
     {
-        tstring buffer(buffer_.c_str());
+        tstring buffer(buffer_.c_str(), buffer_.length());
         trim_leading_ws (buffer);
 
         tstring::size_type const buffLen = buffer.size ();
         if (buffLen == 0 || buffer[0] == PROPERTIES_COMMENT_CHAR)
             continue;
-
-        // Check if we have a trailing \r because we are
+        
+        // Check if we have a trailing \r because we are 
         // reading a properties file produced on Windows.
         if (buffer[buffLen-1] == DCMTK_LOG4CPLUS_TEXT('\r'))
             // Remove trailing 'Windows' \r.
@@ -159,31 +221,47 @@ Properties::init(tistream& input)
 
 
 
-Properties::~Properties()
+Properties::~Properties() 
 {
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Properties public methods
+// helpers::Properties public methods
 ///////////////////////////////////////////////////////////////////////////////
 
-tstring
-Properties::getProperty(const tstring& key) const
+
+bool
+Properties::exists(const log4cplus::tstring& key) const
 {
-    StringMap::const_iterator it (data.find(key));
-    if (it == data.end())
-        return DCMTK_LOG4CPLUS_TEXT("");
-    else
-        return it->second;
+    return data.find(key) != data.end();
 }
 
 
+bool
+Properties::exists(tchar const * key) const
+{
+    return data.find(key) != data.end();
+}
+
+
+tstring const &
+Properties::getProperty(const tstring& key) const 
+{
+    return get_property_worker (key);
+}
+
+
+log4cplus::tstring const &
+Properties::getProperty(tchar const * key) const
+{
+    return get_property_worker (key);
+}
+
 
 tstring
-Properties::getProperty(const tstring& key,
-                                 const tstring& defaultVal) const
+Properties::getProperty(const tstring& key, const tstring& defaultVal) const
 {
     StringMap::const_iterator it (data.find (key));
     if (it == data.end ())
@@ -193,10 +271,10 @@ Properties::getProperty(const tstring& key,
 }
 
 
-OFList<tstring>
-Properties::propertyNames() const
+OFVector<tstring>
+Properties::propertyNames() const 
 {
-    OFList<tstring> tmp;
+    OFVector<tstring> tmp;
     for (StringMap::const_iterator it=data.begin(); it!=data.end(); ++it)
         tmp.push_back(it->first);
 
@@ -206,28 +284,27 @@ Properties::propertyNames() const
 
 
 void
-Properties::setProperty(const tstring& key, const tstring& value)
+Properties::setProperty(const log4cplus::tstring& key,
+    const log4cplus::tstring& value)
 {
     data[key] = value;
 }
 
 
 bool
-Properties::removeProperty(const tstring& key)
+Properties::removeProperty(const log4cplus::tstring& key)
 {
-    return (data.erase(key) > 0);
+    return data.erase(key) > 0;
 }
 
 
-Properties
-Properties::getPropertySubset(
-    const tstring& prefix) const
+Properties 
+Properties::getPropertySubset(const log4cplus::tstring& prefix) const
 {
     Properties ret;
-    OFList<tstring> const keys = propertyNames();
     size_t const prefix_len = prefix.size ();
-    for (OFListConstIterator(tstring) it = keys.begin();
-        it != keys.end(); ++it)
+    OFVector<tstring> keys = propertyNames();
+    for (OFVector<tstring>::iterator it=keys.begin(); it!=keys.end(); ++it)
     {
         int result = it->compare (0, prefix_len, prefix);
         if (result == 0)
@@ -237,8 +314,82 @@ Properties::getPropertySubset(
     return ret;
 }
 
-} // namespace helpers
 
-} // namespace log4cplus
+bool
+Properties::getInt (int & val, log4cplus::tstring const & key) const
+{
+    return get_type_val_worker (val, key);
+}
 
-} // namespace dcmtk
+
+bool
+Properties::getUInt (unsigned & val, log4cplus::tstring const & key) const
+{
+    return get_type_val_worker (val, key);
+}
+
+
+bool
+Properties::getLong (long & val, log4cplus::tstring const & key) const
+{
+    return get_type_val_worker (val, key);
+}
+
+
+bool
+Properties::getULong (unsigned long & val, log4cplus::tstring const & key) const
+{
+    return get_type_val_worker (val, key);
+}
+
+
+bool
+Properties::getBool (bool & val, log4cplus::tstring const & key) const
+{
+    if (! exists (key))
+        return false;
+
+    log4cplus::tstring const & prop_val = getProperty (key);
+    return internal::parse_bool (val, prop_val);
+}
+
+
+template <typename StringType>
+log4cplus::tstring const &
+Properties::get_property_worker (StringType const & key) const
+{
+    StringMap::const_iterator it (data.find (key));
+    if (it == data.end ())
+        return log4cplus::internal::empty_str;
+    else
+        return it->second;
+}
+
+
+template <typename ValType>
+bool
+Properties::get_type_val_worker (ValType & val, log4cplus::tstring const & key)
+    const
+{
+    if (! exists (key))
+        return false;
+
+    log4cplus::tstring const & prop_val = getProperty (key);
+    log4cplus::tistringstream iss (STD_NAMESPACE string(prop_val.c_str(), prop_val.length()));
+    ValType tmp_val;
+    tchar ch;
+
+    iss >> tmp_val;
+    if (! iss)
+        return false;
+    iss >> ch;
+    if (iss)
+        return false;
+
+    val = tmp_val;
+    return true;
+}
+
+
+} } // namespace log4cplus { namespace helpers {
+} // end namespace dcmtk

@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,37 +20,55 @@
 
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/layout.h"
+#include "dcmtk/oflog/logmacro.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/spi/factory.h"
 #include "dcmtk/oflog/spi/logevent.h"
+#include "dcmtk/oflog/internal/internal.h"
+#include "dcmtk/oflog/thread/syncpub.h"
+#include <stdexcept>
 
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-using namespace dcmtk::log4cplus::spi;
 
+namespace dcmtk
+{
+namespace log4cplus
+{
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::ErrorHandler dtor
+// log4cplus::ErrorHandler dtor
 ///////////////////////////////////////////////////////////////////////////////
+
+ErrorHandler::ErrorHandler ()
+{ }
+
 
 ErrorHandler::~ErrorHandler()
-{
-}
+{ }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::OnlyOnceErrorHandler public methods
+// log4cplus::OnlyOnceErrorHandler 
 ///////////////////////////////////////////////////////////////////////////////
+
+OnlyOnceErrorHandler::OnlyOnceErrorHandler()
+    : firstTime(true)
+{ }
+
+
+OnlyOnceErrorHandler::~OnlyOnceErrorHandler ()
+{ }
+
 
 void
-OnlyOnceErrorHandler::error(const tstring& err)
+OnlyOnceErrorHandler::error(const log4cplus::tstring& err)
 {
     if(firstTime) {
-        getLogLog().error(err);
+        helpers::getLogLog().error(err);
         firstTime = false;
     }
 }
@@ -66,52 +84,64 @@ OnlyOnceErrorHandler::reset()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::Appender ctors
+// log4cplus::Appender ctors
 ///////////////////////////////////////////////////////////////////////////////
 
 Appender::Appender()
  : layout(new SimpleLayout()),
    name( DCMTK_LOG4CPLUS_TEXT("") ),
    threshold(NOT_SET_LOG_LEVEL),
-   errorHandler(new OnlyOnceErrorHandler()),
+   filter(),
+   errorHandler(new OnlyOnceErrorHandler),
+   lockFile(),
+   useLockFile(false),
    closed(false)
 {
 }
 
 
 
-Appender::Appender(const helpers::Properties properties)
- : layout(new SimpleLayout()),
-   name( DCMTK_LOG4CPLUS_TEXT("") ),
-   threshold(NOT_SET_LOG_LEVEL),
-   errorHandler(new OnlyOnceErrorHandler()),
-   closed(false)
+Appender::Appender(const log4cplus::helpers::Properties & properties)
+    : layout(new SimpleLayout())
+    , name()
+    , threshold(NOT_SET_LOG_LEVEL)
+    , filter()
+    , errorHandler(new OnlyOnceErrorHandler)
+    , lockFile()
+    , useLockFile(false)
+    , closed(false)
 {
-    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("layout") )) {
-        tstring factoryName = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("layout") );
-        LayoutFactory* factory = getLayoutFactoryRegistry().get(factoryName);
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("layout") ))
+    {
+        log4cplus::tstring const & factoryName
+            = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("layout") );
+        spi::LayoutFactory* factory
+            = spi::getLayoutFactoryRegistry().get(factoryName);
         if(factory == 0) {
-            getLogLog().error(  DCMTK_LOG4CPLUS_TEXT("Cannot find LayoutFactory: \"")
-                              + factoryName
-                              + DCMTK_LOG4CPLUS_TEXT("\"") );
+            helpers::getLogLog().error(
+                DCMTK_LOG4CPLUS_TEXT("Cannot find LayoutFactory: \"")
+                + factoryName
+                + DCMTK_LOG4CPLUS_TEXT("\"") );
             return;
         }
 
-        Properties layoutProperties =
+        helpers::Properties layoutProperties =
                 properties.getPropertySubset( DCMTK_LOG4CPLUS_TEXT("layout.") );
         try {
-            tstring error;
-            OFauto_ptr<Layout> newLayout(factory->createObject(layoutProperties, error));
+            OFauto_ptr<Layout> newLayout(factory->createObject(layoutProperties));
             if(newLayout.get() == 0) {
-                getLogLog().error(  DCMTK_LOG4CPLUS_TEXT("Failed to create appender: ")
-                                  + factoryName + " " + error);
+                helpers::getLogLog().error(
+                    DCMTK_LOG4CPLUS_TEXT("Failed to create appender: ")
+                    + factoryName);
             }
             else {
                 layout = newLayout;
             }
         }
-        catch(...) {
-            getLogLog().error(  DCMTK_LOG4CPLUS_TEXT("Exception caught while creating Layout"));
+        catch(STD_NAMESPACE exception const & e) {
+            helpers::getLogLog().error( 
+                DCMTK_LOG4CPLUS_TEXT("Error while creating Layout: ")
+                + DCMTK_LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
             return;
         }
 
@@ -120,39 +150,66 @@ Appender::Appender(const helpers::Properties properties)
     // Support for appender.Threshold in properties configuration file
     if(properties.exists(DCMTK_LOG4CPLUS_TEXT("Threshold"))) {
         tstring tmp = properties.getProperty(DCMTK_LOG4CPLUS_TEXT("Threshold"));
-        tmp = toUpper(tmp);
-        threshold = getLogLevelManager().fromString(tmp);
+        tmp = log4cplus::helpers::toUpper(tmp);
+        threshold = log4cplus::getLogLevelManager().fromString(tmp);
     }
 
     // Configure the filters
-    Properties filterProps = properties.getPropertySubset( DCMTK_LOG4CPLUS_TEXT("filters.") );
-    int filterCount = 0;
-    FilterPtr filterChain;
-    tstring filterName, factoryName;
-    while( filterProps.exists(filterName = convertIntegerToString(++filterCount)) ) {
-        factoryName = filterProps.getProperty(filterName);
-        FilterFactory* factory = getFilterFactoryRegistry().get(factoryName);
+    helpers::Properties filterProps
+        = properties.getPropertySubset( DCMTK_LOG4CPLUS_TEXT("filters.") );
+    unsigned filterCount = 0;
+    spi::FilterPtr filterChain;
+    tstring filterName;
+    while (filterProps.exists(
+        filterName = helpers::convertIntegerToString (++filterCount)))
+    {
+        tstring const & factoryName = filterProps.getProperty(filterName);
+        spi::FilterFactory* factory
+            = spi::getFilterFactoryRegistry().get(factoryName);
 
-        if(factory == 0) {
+        if(! factory)
+        {
             tstring err = DCMTK_LOG4CPLUS_TEXT("Appender::ctor()- Cannot find FilterFactory: ");
-            getLogLog().error(err + factoryName);
+            helpers::getLogLog().error(err + factoryName);
             continue;
         }
-        tstring error;
-        FilterPtr tmp_filter = factory->createObject
-                      (filterProps.getPropertySubset(filterName + DCMTK_LOG4CPLUS_TEXT(".")), error);
-        if(tmp_filter.get() == 0) {
+        spi::FilterPtr tmpFilter = factory->createObject (
+            filterProps.getPropertySubset(filterName + DCMTK_LOG4CPLUS_TEXT(".")));
+        if (! tmpFilter)
+        {
             tstring err = DCMTK_LOG4CPLUS_TEXT("Appender::ctor()- Failed to create filter: ");
-            getLogLog().error(err + filterName + " " + error);
+            helpers::getLogLog().error(err + filterName);
         }
-        if(filterChain.get() == 0) {
-            filterChain = tmp_filter;
-        }
-        else {
-            filterChain->appendFilter(tmp_filter);
-        }
+        if (! filterChain)
+            filterChain = tmpFilter;
+        else
+            filterChain->appendFilter(tmpFilter);
     }
     setFilter(filterChain);
+
+    properties.getBool (useLockFile, DCMTK_LOG4CPLUS_TEXT("UseLockFile"));
+    if (useLockFile)
+    {
+        tstring const & lockFileName
+            = properties.getProperty (DCMTK_LOG4CPLUS_TEXT ("LockFile"));
+        if (! lockFileName.empty ())
+        {
+            try
+            {
+                lockFile.reset (new helpers::LockFile (lockFileName));
+            }
+            catch (STD_NAMESPACE runtime_error const &)
+            {
+                return;
+            }
+        }
+        else
+        {
+            helpers::getLogLog ().debug (
+                DCMTK_LOG4CPLUS_TEXT (
+                    "UseLockFile is true but LockFile is not specified"));
+        }
+    }
 }
 
 
@@ -162,21 +219,20 @@ Appender::~Appender()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::Appender public methods
+// log4cplus::Appender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
 Appender::destructorImpl()
 {
-    getLogLog().debug(  DCMTK_LOG4CPLUS_TEXT("Destroying appender named [")
-                      + name
-                      + DCMTK_LOG4CPLUS_TEXT("]."));
+    helpers::getLogLog().debug(  DCMTK_LOG4CPLUS_TEXT("Destroying appender named [")
+        + name
+        + DCMTK_LOG4CPLUS_TEXT("]."));
 
     // An appender might be closed then destroyed. There is no
     // point in closing twice.
-    if(closed) {
+    if(closed)
         return;
-    }
 
     close();
     closed = true;
@@ -185,31 +241,62 @@ Appender::destructorImpl()
 
 
 void
-Appender::doAppend(const InternalLoggingEvent& event)
+Appender::doAppend(const log4cplus::spi::InternalLoggingEvent& event)
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
-        if(closed) {
-            getLogLog().error(  DCMTK_LOG4CPLUS_TEXT("Attempted to append to closed appender named [")
-                              + name
-                              + DCMTK_LOG4CPLUS_TEXT("]."));
+    thread::MutexGuard guard (access_mutex);
+
+    if(closed) {
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT("Attempted to append to closed appender named [")
+            + name
+            + DCMTK_LOG4CPLUS_TEXT("]."));
+        return;
+    }
+
+    // Check appender's threshold logging level.
+
+    if (! isAsSevereAsThreshold(event.getLogLevel()))
+        return;
+
+    // Evaluate filters attached to this appender.
+
+    if (spi::checkFilter(filter.get(), event) == spi::DENY)
+        return;
+
+    // Lock system wide lock.
+
+    helpers::LockFileGuard lfguard;
+    if (useLockFile && lockFile.get ())
+    {
+        try
+        {
+            lfguard.attach_and_lock (*lockFile);
+        }
+        catch (STD_NAMESPACE runtime_error const &)
+        {
             return;
         }
+    }
 
-        if(!isAsSevereAsThreshold(event.getLogLevel())) {
-            return;
-        }
+    // Finally append given event.
 
-        if(checkFilter(filter.get(), event) == DENY) {
-            return;
-        }
-
-        append(event);
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    append(event);
 }
 
 
+tstring &
+Appender::formatEvent (const spi::InternalLoggingEvent& event) const
+{
+    internal::appender_sratch_pad & appender_sp = internal::get_appender_sp ();
+    detail::clear_tostringstream (appender_sp.oss);
+    layout->formatAndAppend(appender_sp.oss, event);
+    //appender_sp.oss.str().swap (appender_sp.str);
+    appender_sp.str.assign(appender_sp.oss.str().c_str(), appender_sp.oss.str().length());
+    return appender_sp.str;
+}
 
-tstring
+
+log4cplus::tstring
 Appender::getName()
 {
     return name;
@@ -218,9 +305,9 @@ Appender::getName()
 
 
 void
-Appender::setName(const tstring& name_)
+Appender::setName(const log4cplus::tstring& n)
 {
-    this->name = name_;
+    this->name = n;
 }
 
 
@@ -235,15 +322,18 @@ Appender::getErrorHandler()
 void
 Appender::setErrorHandler(OFauto_ptr<ErrorHandler> eh)
 {
-    if(eh.get() == NULL) {
+    if (! eh.get())
+    {
         // We do not throw exception here since the cause is probably a
         // bad config file.
-        getLogLog().warn(DCMTK_LOG4CPLUS_TEXT("You have tried to set a null error-handler."));
+        helpers::getLogLog().warn(
+            DCMTK_LOG4CPLUS_TEXT("You have tried to set a null error-handler."));
         return;
     }
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
-        this->errorHandler = eh;
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+
+    thread::MutexGuard guard (access_mutex);
+
+    this->errorHandler = eh;
 }
 
 
@@ -251,9 +341,9 @@ Appender::setErrorHandler(OFauto_ptr<ErrorHandler> eh)
 void
 Appender::setLayout(OFauto_ptr<Layout> lo)
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
-        this->layout = lo;
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    thread::MutexGuard guard (access_mutex);
+
+    this->layout = lo;
 }
 
 
@@ -265,3 +355,5 @@ Appender::getLayout()
 }
 
 
+} // namespace log4cplus
+} // end namespace dcmtk

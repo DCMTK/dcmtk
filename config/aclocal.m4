@@ -1818,3 +1818,19 @@ AC_DEFUN([AC_CHECK_SYNC_FN],
         AC_MSG_RESULT([no])
     fi
 ])
+
+
+dnl
+dnl This macro checks if a given preprocessor symbol exists and is a string
+dnl
+dnl AC_MY_SYMBOL_EXISTS(SYMBOL)
+AC_DEFUN([AC_MY_SYMBOL_EXISTS],
+[
+    AH_TEMPLATE([HAVE_$1_MACRO], [Define if the compiler supports $1.])dnl
+    AC_CACHE_CHECK([for $1 macro], [ac_cv_have_$1_macro], [dnl
+        AC_TRY_COMPILE([], [const char * func = $1;], [ac_cv_have_$1_macro=yes], [ac_cv_have_$1_macro=no])dnl
+    ])
+    if test "x$ac_cv_have_$1_macro" = "xyes"; then
+        AC_DEFINE([HAVE_$1_MACRO])
+    fi
+])

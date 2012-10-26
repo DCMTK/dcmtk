@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    objectregistry.h
 // Created: 3/2003
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,13 +25,16 @@
 #define DCMTK_LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/threads.h"
-#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/oflog/thread/syncprim.h"
 #include "dcmtk/ofstd/ofmap.h"
-//#include <map>
-//#include <memory>
-//#include <vector>
+#include <memory>
+#include "dcmtk/ofstd/ofvector.h"
 
 
 namespace dcmtk {
@@ -48,12 +52,12 @@ namespace log4cplus {
              * Tests to see whether or not an object is bound in the
              * registry as <code>name</code>.
              */
-            bool exists(const tstring& name) const;
+            bool exists(const log4cplus::tstring& name) const;
 
             /**
              * Returns the names of all registered objects.
              */
-            OFList<tstring> getAllNames() const;
+            OFVector<log4cplus::tstring> getAllNames() const;
 
         protected:
           // Ctor and Dtor
@@ -65,13 +69,13 @@ namespace log4cplus {
              * Used to enter an object into the registry.  (The registry now
              * owns <code>object</code>.)
              */
-            bool putVal(const tstring& name, void* object);
+            bool putVal(const log4cplus::tstring& name, void* object);
 
             /**
              * Used to retrieve an object from the registry.  (The registry
              * owns the returned pointer.)
              */
-            void* getVal(const tstring& name) const;
+            void* getVal(const log4cplus::tstring& name) const;
 
             /**
              * Deletes <code>object</code>.
@@ -84,11 +88,15 @@ namespace log4cplus {
             virtual void clear();
 
           // Types
-            typedef OFMap<tstring, void*> ObjectMap;
+            typedef OFMap<log4cplus::tstring, void*> ObjectMap;
 
           // Data
-            DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE mutex;
+            thread::Mutex mutex;
             ObjectMap data;
+
+        private:
+            ObjectRegistryBase (ObjectRegistryBase const &);
+            ObjectRegistryBase & operator = (ObjectRegistryBase const &);
         };
 
     }

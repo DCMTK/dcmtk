@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,19 +21,20 @@
 #include "dcmtk/oflog/spi/filter.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/helpers/property.h"
+#include "dcmtk/oflog/spi/logevent.h"
+#include "dcmtk/oflog/thread/syncpub.h"
 
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::spi;
-using namespace dcmtk::log4cplus::helpers;
 
+namespace dcmtk {
+namespace log4cplus { namespace spi {
 
 ///////////////////////////////////////////////////////////////////////////////
 // global methods
 ///////////////////////////////////////////////////////////////////////////////
 
 FilterResult
-spi::checkFilter(const Filter* filter,
-                            const InternalLoggingEvent& event)
+checkFilter(const Filter* filter, const InternalLoggingEvent& event)
 {
     const Filter* currentFilter = filter;
     while(currentFilter) {
@@ -54,7 +55,7 @@ spi::checkFilter(const Filter* filter,
 // Filter implementation
 ///////////////////////////////////////////////////////////////////////////////
 
-Filter::Filter()
+Filter::Filter() : next()
 {
 }
 
@@ -67,12 +68,10 @@ Filter::~Filter()
 void
 Filter::appendFilter(FilterPtr filter)
 {
-    if(next.get() == 0) {
+    if (! next)
         next = filter;
-    }
-    else {
+    else
         next->appendFilter(filter);
-    }
 }
 
 
@@ -85,7 +84,7 @@ DenyAllFilter::DenyAllFilter ()
 { }
 
 
-DenyAllFilter::DenyAllFilter (const Properties&, tstring&)
+DenyAllFilter::DenyAllFilter (const helpers::Properties&)
 { }
 
 
@@ -102,21 +101,24 @@ DenyAllFilter::decide(const InternalLoggingEvent&) const
 ///////////////////////////////////////////////////////////////////////////////
 
 LogLevelMatchFilter::LogLevelMatchFilter()
+    : acceptOnMatch(), logLevelToMatch()
 {
     init();
 }
 
 
 
-LogLevelMatchFilter::LogLevelMatchFilter(const Properties& properties, tstring&)
+LogLevelMatchFilter::LogLevelMatchFilter(const helpers::Properties& properties)
+    : acceptOnMatch(), logLevelToMatch()
 {
     init();
 
-    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch") );
-    acceptOnMatch = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
+    properties.getBool (acceptOnMatch = false,
+        DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch"));
 
-    tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelToMatch") );
-    logLevelToMatch = getLogLevelManager().fromString(tmp);
+    tstring const & log_level_to_match
+        = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelToMatch") );
+    logLevelToMatch = getLogLevelManager().fromString(log_level_to_match);
 }
 
 
@@ -136,7 +138,7 @@ LogLevelMatchFilter::decide(const InternalLoggingEvent& event) const
     }
 
     bool matchOccured = (logLevelToMatch == event.getLogLevel());
-
+       
     if(matchOccured) {
         return (acceptOnMatch ? ACCEPT : DENY);
     }
@@ -152,24 +154,28 @@ LogLevelMatchFilter::decide(const InternalLoggingEvent& event) const
 ///////////////////////////////////////////////////////////////////////////////
 
 LogLevelRangeFilter::LogLevelRangeFilter()
+    : acceptOnMatch(), logLevelMin(), logLevelMax()
 {
     init();
 }
 
 
 
-LogLevelRangeFilter::LogLevelRangeFilter(const Properties& properties, tstring&)
+LogLevelRangeFilter::LogLevelRangeFilter(const helpers::Properties& properties)
+    : acceptOnMatch(), logLevelMin(), logLevelMax()
 {
     init();
 
-    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch") );
-    acceptOnMatch = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
+    properties.getBool (acceptOnMatch = false,
+        DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch"));
 
-    tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelMin") );
-    logLevelMin = getLogLevelManager().fromString(tmp);
+    tstring const & log_level_min
+        = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelMin") );
+    logLevelMin = getLogLevelManager().fromString(log_level_min);
 
-    tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelMax") );
-    logLevelMax = getLogLevelManager().fromString(tmp);
+    tstring const & log_level_max
+        = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelMax") );
+    logLevelMax = getLogLevelManager().fromString(log_level_max);
 }
 
 
@@ -213,19 +219,20 @@ LogLevelRangeFilter::decide(const InternalLoggingEvent& event) const
 ///////////////////////////////////////////////////////////////////////////////
 
 StringMatchFilter::StringMatchFilter()
+    : acceptOnMatch(), stringToMatch()
 {
     init();
 }
 
 
 
-StringMatchFilter::StringMatchFilter(const Properties& properties, tstring&)
+StringMatchFilter::StringMatchFilter(const helpers::Properties& properties)
+    : acceptOnMatch(), stringToMatch()
 {
     init();
 
-    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch") );
-    acceptOnMatch = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
-
+    properties.getBool (acceptOnMatch = false,
+        DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch"));
     stringToMatch = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("StringToMatch") );
 }
 
@@ -242,7 +249,7 @@ StringMatchFilter::decide(const InternalLoggingEvent& event) const
 {
     const tstring& message = event.getMessage();
 
-    if(stringToMatch.length() == 0 || message.length() == 0) {
+    if(stringToMatch.empty () || message.empty ()) {
         return NEUTRAL;
     }
 
@@ -254,3 +261,6 @@ StringMatchFilter::decide(const InternalLoggingEvent& event) const
     }
 }
 
+
+} } // namespace log4cplus { namespace spi {
+} // end namespace dcmtk

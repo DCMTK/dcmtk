@@ -1,9 +1,10 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
-// File:    nteventlogappender.h
+// File:    ntelogap.h
 // Created: 4/2003
 // Author:  Michael CATANZARITI
 //
-// Copyright 2003-2009 Michael CATANZARITI
+// Copyright 2003-2010 Michael CATANZARITI
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,31 +20,34 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
-#define DCMTK__LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
+#define DCMTK_LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
-#include "dcmtk/oflog/appender.h"
 
-#if defined(_WIN32)
-#  if ! defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
-#    error "Your platform does not support NT event log."
-#  else
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
+
+#include "dcmtk/oflog/appender.h"
+#include "dcmtk/oflog/config/windowsh.h"
 
 
 namespace dcmtk {
 namespace log4cplus {
 
     /**
-     * Appends log events to NT EventLog.
+     * Appends log events to NT EventLog. 
      */
     class DCMTK_LOG4CPLUS_EXPORT NTEventLogAppender : public Appender {
     public:
       // ctors
-        NTEventLogAppender(const tstring& server,
-                           const tstring& log,
-                           const tstring& source);
-        NTEventLogAppender(const helpers::Properties properties, tstring& error);
+        NTEventLogAppender(const log4cplus::tstring& server, 
+                           const log4cplus::tstring& log, 
+                           const log4cplus::tstring& source);
+        NTEventLogAppender(const log4cplus::helpers::Properties & properties);
 
       // dtor
         virtual ~NTEventLogAppender();
@@ -63,9 +67,9 @@ namespace log4cplus {
         void addRegistryInfo();
 
       // Data
-        tstring server;
-        tstring log;
-        tstring source;
+        log4cplus::tstring server;
+        log4cplus::tstring log;
+        log4cplus::tstring source;
         HANDLE hEventLog;
         SID* pCurrentUserSID;
 
@@ -79,5 +83,4 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 #endif // DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG
-#endif // _WIN32
-#endif //DCMTK__LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
+#endif //DCMTK_LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_

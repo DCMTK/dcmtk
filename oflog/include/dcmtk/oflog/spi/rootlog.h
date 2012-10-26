@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    rootlogger.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,11 +21,15 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
-#define DCMTK__LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
+#define DCMTK_LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
 
 #include "dcmtk/oflog/config.h"
-#include "dcmtk/oflog/helpers/loglog.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/spi/logimpl.h"
 
 namespace dcmtk {
@@ -45,7 +50,7 @@ namespace log4cplus {
           // Ctors
             /**
              * The root logger names itself as "root". However, the root
-             * logger cannot be retrieved by name.
+             * logger cannot be retrieved by name.  
              */
             RootLogger(Hierarchy& h, LogLevel ll);
 
@@ -57,7 +62,7 @@ namespace log4cplus {
             virtual LogLevel getChainedLogLevel() const;
 
             /**
-             * Setting a NOT_SET_LOG_LEVEL value to the LogLevel of the root logger
+             * Setting a NOT_SET_LOG_LEVEL value to the LogLevel of the root logger 
              * may have catastrophic results. We prevent this here.
              */
             void setLogLevel(LogLevel ll);
@@ -68,5 +73,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // DCMTK__LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
+#endif // DCMTK_LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
 

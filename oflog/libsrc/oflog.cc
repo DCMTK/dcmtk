@@ -31,6 +31,7 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/internal/internal.h"
 
 OFauto_ptr<dcmtk::log4cplus::helpers::Properties> OFLog::configProperties_;
 

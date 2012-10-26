@@ -1,5 +1,6 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
-// File:    consoleappender.h
+// File:    consap.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
@@ -20,10 +21,15 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_CONSOLE_APPENDER_HEADER_
-#define DCMTK__LOG4CPLUS_CONSOLE_APPENDER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_CONSOLE_APPENDER_HEADER_
+#define DCMTK_LOG4CPLUS_CONSOLE_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/appender.h"
 
 namespace dcmtk {
@@ -42,20 +48,25 @@ namespace log4cplus {
      * <dt><tt>ImmediateFlush</tt></dt>
      * <dd>When it is set true, output stream will be flushed after
      * each appended event.</dd>
-     *
+     * 
      * </dl>
+     * \sa Appender
      */
     class DCMTK_LOG4CPLUS_EXPORT ConsoleAppender : public Appender {
     public:
       // Ctors
         ConsoleAppender(bool logToStdErr = false, bool immediateFlush = false);
-        ConsoleAppender(const helpers::Properties properties, tstring& error);
+        ConsoleAppender(const log4cplus::helpers::Properties & properties);
 
       // Dtor
         ~ConsoleAppender();
 
       // Methods
         virtual void close();
+
+        //! This mutex is used by ConsoleAppender and helpers::LogLog
+        //! classes to synchronize output to console.
+        static log4cplus::thread::Mutex const & getOutputMutex();
 
     protected:
         virtual void append(const spi::InternalLoggingEvent& event);
@@ -72,5 +83,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // DCMTK__LOG4CPLUS_CONSOLE_APPENDER_HEADER_
+#endif // DCMTK_LOG4CPLUS_CONSOLE_APPENDER_HEADER_
 

@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,12 +20,16 @@
 
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/oflog/thread/syncpub.h"
+#include "dcmtk/oflog/thread/threads.h"
+#include "dcmtk/oflog/internal/env.h"
+#include "dcmtk/oflog/consap.h"
+#include <ostream>
+#include <stdexcept>
 
-using namespace std;
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
 
+namespace dcmtk {
+namespace log4cplus { namespace helpers {
 
 namespace
 {
@@ -37,90 +41,150 @@ static tchar const ERR_PREFIX[] = DCMTK_LOG4CPLUS_TEXT("log4cplus:ERROR ");
 } // namespace
 
 
-
-///////////////////////////////////////////////////////////////////////////////
-// static methods
-///////////////////////////////////////////////////////////////////////////////
-
-SharedObjectPtr<LogLog>
+LogLog *
 LogLog::getLogLog()
 {
-    static SharedObjectPtr<LogLog> singleton(new LogLog());
-    return singleton;
+    return &helpers::getLogLog ();
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::helpers::LogLog ctor and dtor
-///////////////////////////////////////////////////////////////////////////////
 
 LogLog::LogLog()
- : mutex(DCMTK_LOG4CPLUS_MUTEX_CREATE),
-   debugEnabled(false),
-   quietMode(false)
-{
-}
+    : debugEnabled(TriUndef)
+    , quietMode(TriUndef)
+    , mutex()
+{ }
 
 
 LogLog::~LogLog()
-{
-    DCMTK_LOG4CPLUS_MUTEX_FREE( mutex );
-}
+{ }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::helpers::LogLog public methods
-///////////////////////////////////////////////////////////////////////////////
 
 void
 LogLog::setInternalDebugging(bool enabled)
 {
-    debugEnabled = enabled;
+    thread::MutexGuard guard (mutex);
+
+    debugEnabled = enabled ? TriTrue : TriFalse;
 }
 
 
 void
 LogLog::setQuietMode(bool quietModeVal)
 {
-    quietMode = quietModeVal;
+    thread::MutexGuard guard (mutex);
+
+    quietMode = quietModeVal ? TriTrue : TriFalse;
 }
 
 
 void
-LogLog::debug(const tstring& msg)
+LogLog::debug(const log4cplus::tstring& msg) const
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
-        if(debugEnabled && !quietMode) {
-             ofConsole.lockCout() << PREFIX << msg << endl;
-             ofConsole.unlockCout();
-        }
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    logging_worker (tcout, &LogLog::get_debug_mode, PREFIX, msg.c_str());
 }
 
 
 void
-LogLog::warn(const tstring& msg)
+LogLog::debug(tchar const * msg) const
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
-        if(quietMode) return;
-
-        ofConsole.lockCerr() << WARN_PREFIX << msg << endl;
-        ofConsole.unlockCerr();
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    logging_worker (tcout, &LogLog::get_debug_mode, PREFIX, msg);
 }
 
 
 void
-LogLog::error(const tstring& msg)
+LogLog::warn(const log4cplus::tstring& msg) const
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
-        if(quietMode) return;
-
-        ofConsole.lockCerr() << ERR_PREFIX << msg << endl;
-        ofConsole.unlockCerr();
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    logging_worker (tcerr, &LogLog::get_not_quiet_mode, WARN_PREFIX, msg.c_str());
 }
 
 
+void
+LogLog::warn(tchar const * msg) const
+{
+    logging_worker (tcerr, &LogLog::get_not_quiet_mode, WARN_PREFIX, msg);
+}
+
+
+void
+LogLog::error(const log4cplus::tstring& msg, bool throw_flag) const
+{
+    logging_worker (tcerr, &LogLog::get_not_quiet_mode, ERR_PREFIX, msg.c_str(),
+        throw_flag);
+}
+
+
+void
+LogLog::error(tchar const * msg, bool throw_flag) const
+{
+    logging_worker (tcerr, &LogLog::get_not_quiet_mode, ERR_PREFIX, msg,
+        throw_flag);
+}
+
+
+bool
+LogLog::get_quiet_mode () const
+{
+    if (quietMode == TriUndef)
+        set_tristate_from_env (&quietMode,
+            DCMTK_LOG4CPLUS_TEXT ("DCMTK_LOG4CPLUS_LOGLOG_QUIETMODE"));
+
+    return quietMode == TriTrue;
+}
+
+
+bool
+LogLog::get_not_quiet_mode () const
+{
+    return ! get_quiet_mode ();
+}
+
+
+bool
+LogLog::get_debug_mode () const
+{
+    if (debugEnabled == TriUndef)
+        set_tristate_from_env (&debugEnabled,
+            DCMTK_LOG4CPLUS_TEXT ("DCMTK_LOG4CPLUS_LOGLOG_DEBUGENABLED"));
+
+    return debugEnabled && ! get_quiet_mode ();
+}
+
+
+void
+LogLog::set_tristate_from_env (TriState * result, tchar const * envvar_name)
+{
+    tstring envvar_value;
+    bool exists = internal::get_env_var (envvar_value, envvar_name);
+    bool value = false;
+    if (exists && internal::parse_bool (value, envvar_value) && value)
+        *result = TriTrue;
+    else
+        *result = TriFalse;
+}
+
+
+void
+LogLog::logging_worker (tostream & os, bool (LogLog:: * cond) () const,
+    tchar const * prefix, tchar const * msg, bool throw_flag) const
+{
+    bool output;
+    {
+        thread::MutexGuard guard (mutex);
+        output = (this->*cond) ();
+    }
+
+    if (DCMTK_LOG4CPLUS_UNLIKELY (output))
+    {
+        // XXX This is potential recursive lock of
+        // ConsoleAppender::outputMutex.
+        thread::MutexGuard outputGuard (ConsoleAppender::getOutputMutex ());
+        os << prefix << msg << OFendl;
+    }
+
+    if (DCMTK_LOG4CPLUS_UNLIKELY (throw_flag))
+        throw STD_NAMESPACE runtime_error (DCMTK_LOG4CPLUS_TSTRING_TO_STRING (msg));
+}
+
+
+} } // namespace log4cplus { namespace helpers {
+} // end namespace dcmtk

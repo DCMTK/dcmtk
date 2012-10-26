@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2002-2009 Tad E. Smith
+// Copyright 2002-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,28 +20,19 @@
 
 #include "dcmtk/oflog/spi/factory.h"
 #include "dcmtk/oflog/spi/logfact.h"
+#include "dcmtk/oflog/helpers/loglog.h"
+#include "dcmtk/oflog/helpers/threadcf.h"
+#include "dcmtk/oflog/helpers/property.h"
+#include "dcmtk/oflog/asyncap.h"
 #include "dcmtk/oflog/consap.h"
 #include "dcmtk/oflog/fileap.h"
+#include "dcmtk/oflog/ntelogap.h"
 #include "dcmtk/oflog/nullap.h"
 #include "dcmtk/oflog/socketap.h"
 #include "dcmtk/oflog/syslogap.h"
-#include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/threads.h"
-
-#if defined (_WIN32)
-#  if defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
-#    include "dcmtk/oflog/ntelogap.h"
-#  endif
-#  if defined (DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
-#    include "dcmtk/oflog/winconap.h"
-#  endif
-#  include "dcmtk/oflog/windebap.h"
-#endif
-
-
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-using namespace dcmtk::log4cplus::spi;
+#include "dcmtk/oflog/windebap.h"
+#include "dcmtk/oflog/winconap.h"
+#include "dcmtk/oflog/log4judp.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,84 +40,96 @@ using namespace dcmtk::log4cplus::spi;
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace dcmtk {
-
 namespace log4cplus {
-
+    
 namespace spi {
 
-    BaseFactory::~BaseFactory()
-    { }
+BaseFactory::~BaseFactory()
+{ }
 
 
-    AppenderFactory::AppenderFactory()
-    { }
+AppenderFactory::AppenderFactory()
+{ }
 
-    AppenderFactory::~AppenderFactory()
-    { }
-
-
-    LayoutFactory::LayoutFactory()
-    { }
-
-    LayoutFactory::~LayoutFactory()
-    { }
+AppenderFactory::~AppenderFactory()
+{ }
 
 
-    FilterFactory::FilterFactory()
-    { }
+LayoutFactory::LayoutFactory()
+{ }
 
-    FilterFactory::~FilterFactory()
-    { }
-
-
-    LoggerFactory::~LoggerFactory()
-    { }
+LayoutFactory::~LayoutFactory()
+{ }
 
 
-} // namespace spi
+FilterFactory::FilterFactory()
+{ }
+
+FilterFactory::~FilterFactory()
+{ }
+
+
+LocaleFactory::LocaleFactory()
+{ }
+
+LocaleFactory::~LocaleFactory()
+{ }
+
+
+LoggerFactory::~LoggerFactory()
+{ }
 
 
 namespace
 {
 
-
-template <typename ProductFactoryBase>
-class LocalFactoryBase
-    : public ProductFactoryBase
+class GlobalLocale
+    : public LocalFactoryBase<LocaleFactory>
 {
 public:
-    LocalFactoryBase (tchar const * n)
-        : name (n)
+    GlobalLocale (tchar const * n)
+        : LocalFactoryBase<LocaleFactory> (n)
     { }
 
-    virtual tstring getTypeName()
+    virtual
+    ProductPtr
+    createObject (const log4cplus::helpers::Properties &)
     {
-        return name;
+        return STD_NAMESPACE locale ();
     }
-
-private:
-    tstring name;
 };
 
 
-template <typename LocalProduct, typename ProductFactoryBase>
-class FactoryTempl
-    : public LocalFactoryBase<ProductFactoryBase>
+class UserLocale
+    : public LocalFactoryBase<LocaleFactory>
 {
 public:
-    typedef typename ProductFactoryBase::ProductPtr ProductPtr;
-
-    FactoryTempl (tchar const * n)
-        : LocalFactoryBase<ProductFactoryBase> (n)
+    UserLocale (tchar const * n)
+        : LocalFactoryBase<LocaleFactory> (n)
     { }
 
-    virtual ProductPtr createObject (Properties const & props, tstring& error)
+    virtual
+    ProductPtr
+    createObject (const log4cplus::helpers::Properties &)
     {
-        error.clear();
-        ProductPtr ptr (new LocalProduct (props, error));
-        if (!error.empty())
-            return ProductPtr (0);
-        return ptr;
+        return STD_NAMESPACE locale ("");
+    }
+};
+
+
+class ClassicLocale
+    : public LocalFactoryBase<LocaleFactory>
+{
+public:
+    ClassicLocale (tchar const * n)
+        : LocalFactoryBase<LocaleFactory> (n)
+    { }
+
+    virtual
+    ProductPtr
+    createObject (const log4cplus::helpers::Properties &)
+    {
+        return STD_NAMESPACE locale::classic ();
     }
 };
 
@@ -134,97 +137,54 @@ public:
 } // namespace
 
 
-#define REG_PRODUCT(reg, productprefix, productname, productns, productfact) \
-reg.put (                                                               \
-    OFauto_ptr<productfact> (                                        \
-        new FactoryTempl<productns productname, productfact> (          \
-            DCMTK_LOG4CPLUS_TEXT(productprefix)                               \
-            DCMTK_LOG4CPLUS_TEXT(#productname))))
-
-
-#define REG_APPENDER(reg, appendername)                             \
-REG_PRODUCT (reg, "log4cplus::", appendername, dcmtk::log4cplus::, AppenderFactory)
-
-#define REG_LAYOUT(reg, layoutname)                                 \
-REG_PRODUCT (reg, "log4cplus::", layoutname, dcmtk::log4cplus::, LayoutFactory)
-
-#define REG_FILTER(reg, filtername)                                 \
-REG_PRODUCT (reg, "log4cplus::spi::", filtername, spi::, FilterFactory)
-
-
-void initializeFactoryRegistry();
-void initializeFactoryRegistry()
-{
-    AppenderFactoryRegistry& reg = getAppenderFactoryRegistry();
-    REG_APPENDER (reg, ConsoleAppender);
-    REG_APPENDER (reg, NullAppender);
-    REG_APPENDER (reg, FileAppender);
-    REG_APPENDER (reg, RollingFileAppender);
-    REG_APPENDER (reg, DailyRollingFileAppender);
-    REG_APPENDER (reg, SocketAppender);
-#if defined(_WIN32) && !defined(__MINGW32__)
-#if defined(DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
-    REG_APPENDER (reg, NTEventLogAppender);
-#  endif
-#  if defined(DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
-    REG_APPENDER (reg, Win32ConsoleAppender);
-#  endif
-    REG_APPENDER (reg, Win32DebugAppender);
-#elif defined(DCMTK_LOG4CPLUS_HAVE_SYSLOG_H)
-    REG_APPENDER (reg, SysLogAppender);
-#endif // defined(_WIN32) && !defined(__MINGW32__)
-
-    LayoutFactoryRegistry& reg2 = getLayoutFactoryRegistry();
-    REG_LAYOUT (reg2, SimpleLayout);
-    REG_LAYOUT (reg2, TTCCLayout);
-    REG_LAYOUT (reg2, PatternLayout);
-
-    FilterFactoryRegistry& reg3 = getFilterFactoryRegistry();
-    REG_FILTER (reg3, DenyAllFilter);
-    REG_FILTER (reg3, LogLevelMatchFilter);
-    REG_FILTER (reg3, LogLevelRangeFilter);
-    REG_FILTER (reg3, StringMatchFilter);
-}
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-// public methods
-///////////////////////////////////////////////////////////////////////////////
-
-namespace spi
-{
-
-
-AppenderFactoryRegistry&
-getAppenderFactoryRegistry()
-{
-    static AppenderFactoryRegistry singleton;
-    return singleton;
-}
-
-
-LayoutFactoryRegistry&
-getLayoutFactoryRegistry()
-{
-    static LayoutFactoryRegistry singleton;
-    return singleton;
-}
-
-
-FilterFactoryRegistry&
-getFilterFactoryRegistry()
-{
-    static FilterFactoryRegistry singleton;
-    return singleton;
-}
 
 
 } // namespace spi
 
 
+void initializeFactoryRegistry();
+void initializeFactoryRegistry()
+{
+    spi::AppenderFactoryRegistry& reg = spi::getAppenderFactoryRegistry();
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, ConsoleAppender);
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, NullAppender);
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, FileAppender);
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, RollingFileAppender);
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, DailyRollingFileAppender);
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, SocketAppender);
+#if defined(_WIN32)
+#  if defined(DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, NTEventLogAppender);
+#  endif
+#  if defined(DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, Win32ConsoleAppender);
+#  endif
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, Win32DebugAppender);
+#endif
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, SysLogAppender);
+#ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, AsyncAppender);
+#endif
+    DCMTK_LOG4CPLUS_REG_APPENDER (reg, Log4jUdpAppender);
+
+    spi::LayoutFactoryRegistry& reg2 = spi::getLayoutFactoryRegistry();
+    DCMTK_LOG4CPLUS_REG_LAYOUT (reg2, SimpleLayout);
+    DCMTK_LOG4CPLUS_REG_LAYOUT (reg2, TTCCLayout);
+    DCMTK_LOG4CPLUS_REG_LAYOUT (reg2, PatternLayout);
+
+    spi::FilterFactoryRegistry& reg3 = spi::getFilterFactoryRegistry();
+    DCMTK_LOG4CPLUS_REG_FILTER (reg3, DenyAllFilter);
+    DCMTK_LOG4CPLUS_REG_FILTER (reg3, LogLevelMatchFilter);
+    DCMTK_LOG4CPLUS_REG_FILTER (reg3, LogLevelRangeFilter);
+    DCMTK_LOG4CPLUS_REG_FILTER (reg3, StringMatchFilter);
+
+    spi::LocaleFactoryRegistry& reg4 = spi::getLocaleFactoryRegistry();
+    DCMTK_LOG4CPLUS_REG_LOCALE (reg4, DCMTK_LOG4CPLUS_TEXT("GLOBAL"), spi::GlobalLocale);
+    DCMTK_LOG4CPLUS_REG_LOCALE (reg4, DCMTK_LOG4CPLUS_TEXT("DEFAULT"), spi::GlobalLocale);
+    DCMTK_LOG4CPLUS_REG_LOCALE (reg4, DCMTK_LOG4CPLUS_TEXT("USER"), spi::UserLocale);
+    DCMTK_LOG4CPLUS_REG_LOCALE (reg4, DCMTK_LOG4CPLUS_TEXT("CLASSIC"), spi::ClassicLocale);
+}
+
+
 } // namespace log4cplus
-
-
-} // namespace dcmtk
+} // end namespace dcmtk

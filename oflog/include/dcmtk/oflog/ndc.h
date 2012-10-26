@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    ndc.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,38 +19,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** @file
+/** @file 
  * This header defined the NDC class.
  */
 
-#ifndef DCMTK__LO4CPLUS_NDC_HEADER_
-#define DCMTK__LO4CPLUS_NDC_HEADER_
+#ifndef _LO4CPLUS_NDC_HEADER_
+#define _LO4CPLUS_NDC_HEADER_
 
 #include "dcmtk/oflog/config.h"
-#include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/lloguser.h"
-#include "dcmtk/oflog/helpers/threads.h"
 
-//#include <map>
-//#include <stack>
-#include "dcmtk/ofstd/ofstack.h"
-
-#if (defined(__MWERKS__) && defined(__MACOS__))
-using STD_NAMESPACE size_t;
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
 #endif
+
+#include "dcmtk/oflog/tstring.h"
+#include "dcmtk/ofstd/ofvector.h"
 
 
 namespace dcmtk {
 namespace log4cplus {
     // Forward declarations
-    class NDC;
     struct DiagnosticContext;
-    typedef OFStack<DiagnosticContext> DiagnosticContextStack;
-
-#if defined (_MSC_VER)
-    DCMTK_LOG4CPLUS_EXPORT NDC& getNDC();
-#endif
-
+    typedef OFVector<DiagnosticContext> DiagnosticContextStack;
 
     /**
      * The NDC class implements <i>nested diagnostic contexts</i> as
@@ -88,22 +79,23 @@ namespace log4cplus {
      *   <li>When leaving a context, call <code>getNDC().pop()</code>.
      *
      *   <li><b>When exiting a thread make sure to call {@link #remove
-     *   NDC.remove()}</b>.
+     *   NDC.remove()}</b>.  
      * </ul>
-     *
+     *                                          
      * There is no penalty for forgetting to match each
      * <code>push</code> operation with a corresponding <code>pop</code>,
      * except the obvious mismatch between the real application context
      * and the context set in the NDC.  Use of the {@link NDCContextCreator}
      * class can automate this process and make your code exception-safe.
      *
-     * If configured to do so, {@link dcmtk::log4cplus::PatternLayout} and {@link
-     * dcmtk::log4cplus::TTCCLayout} instances automatically retrieve the nested diagnostic
-     * context for the current thread without any user intervention.
-     * Hence, even if a server is serving multiple clients
-     * simultaneously, the logs emanating from the same code (belonging to
-     * the same logger) can still be distinguished because each client
-     * request will have a different NDC tag.
+     * If configured to do so, {@link log4cplus::PatternLayout} and
+     * {@link log4cplus::TTCCLayout} instances automatically retrieve
+     * the nested diagnostic context for the current thread without
+     * any user intervention.  Hence, even if a server is serving
+     * multiple clients simultaneously, the logs emanating from the
+     * same code (belonging to the same logger) can still be
+     * distinguished because each client request will have a different
+     * NDC tag.
      *
      * Heavy duty systems should call the {@link #remove} method when
      * leaving the run method of a thread. This ensures that the memory
@@ -115,7 +107,8 @@ namespace log4cplus {
      * #cloneStack cloneStack} method and pass the reference to any other
      * thread, in particular to a child.
      */
-    class DCMTK_LOG4CPLUS_EXPORT NDC : protected helpers::LogLogUser {
+    class DCMTK_LOG4CPLUS_EXPORT NDC
+    {
     public:
         /**
          * Clear any nested diagnostic information if any. This method is
@@ -137,10 +130,10 @@ namespace log4cplus {
          *
          * The child thread uses the {@link #inherit inherit} method to
          * inherit the parent's diagnostic context.
-         *
+         *                                        
          * @return Stack A clone of the current thread's  diagnostic context.
          */
-        DiagnosticContextStack cloneStack();
+        DiagnosticContextStack cloneStack() const;
 
         /**
          * Inherit the diagnostic context of another thread.
@@ -161,27 +154,37 @@ namespace log4cplus {
         /**
          * Used when printing the diagnostic context.
          */
-        tstring get();
+        log4cplus::tstring const & get() const;
 
         /**
          * Get the current nesting depth of this diagnostic context.
          *
          * @see #setMaxDepth
          */
-        size_t getDepth();
+        size_t getDepth() const;
 
         /**
          * Clients should call this method before leaving a diagnostic
          * context.
          *
          * The returned value is the value that was pushed last. If no
-         * context is available, then the empty string "" is returned.
+         * context is available, then the empty string "" is
+         * returned. If each call to push() is paired with a call to
+         * pop() (even in presence of thrown exceptions), the last
+         * pop() call frees the memory used by NDC for this
+         * thread. Otherwise, remove() must be called at the end of
+         * the thread to free the memory used by NDC for the thread.
          *
          * @return String The innermost diagnostic context.
          *
-         * @see NDCContextCreator
+         * @see NDCContextCreator, remove(), push()
          */
-        tstring pop();
+        log4cplus::tstring pop();
+
+        /**
+         * Same as pop() but without the return value.
+         */
+        void pop_void ();
 
         /**
          * Looks at the last diagnostic context at the top of this NDC
@@ -189,35 +192,36 @@ namespace log4cplus {
          *
          * The returned value is the value that was pushed last. If no
          * context is available, then the empty string "" is returned.
-         *
+         *                          
          * @return String The innermost diagnostic context.
          */
-        tstring peek();
+        log4cplus::tstring const & peek() const;
 
         /**
          * Push new diagnostic context information for the current thread.
          *
          * The contents of the <code>message</code> parameter is
-         * determined solely by the client.
-         *
-         * Please note that the calling thread should either call {@link #pop}
-         * once for each call to this method or call {@link #remove} before
-         * exiting. Otherwise, a small amount of memory will be leaked.
+         * determined solely by the client. Each call to push() should
+         * be paired with a call to pop().
          *
          * @param message The new diagnostic context information.
          *
-         * @see NDCContextCreator
+         * @see NDCContextCreator, pop(), remove()
          */
-        void push(const tstring& message);
+        void push(const log4cplus::tstring& message);
+        void push(tchar const * message);
 
         /**
          * Remove the diagnostic context for this thread.
          *
          * Each thread that created a diagnostic context by calling
-         * {@link #push} should call this method before exiting. Otherwise,
-         * the memory used by the thread cannot be reclaimed. However, this is
-         * only necessary if not all calls to {@link #push} are balanced with a
-         * call to {@link #pop}.
+         * push() should call this method before exiting. Otherwise,
+         * the memory used by the thread cannot be reclaimed. It is
+         * possible to omit this call if and only if each push() call
+         * is always paired with a pop() call (even in presence of
+         * thrown exceptions). Then the memory used by NDC will be
+         * returned by the last pop() call and a call to remove() will
+         * be no-op.
          */
         void remove();
 
@@ -245,7 +249,7 @@ namespace log4cplus {
          *
          * ensures that between the entry and exit of foo the depth of the
          * diagnostic stack is conserved.
-         *
+         * 
          * <b>Note:</b>  Use of the {@link NDCContextCreator} class will solve
          * this particular problem.
          *
@@ -253,27 +257,19 @@ namespace log4cplus {
          */
         void setMaxDepth(size_t maxDepth);
 
+        // Public ctor but only to be used by internal::DefaultContext.
+        NDC();
+
       // Dtor
-        ~NDC();
+        virtual ~NDC();
 
     private:
       // Methods
-        DiagnosticContextStack* getPtr();
-
-      // Data
-        DCMTK_LOG4CPLUS_THREAD_LOCAL_TYPE threadLocal;
+        DCMTK_LOG4CPLUS_PRIVATE static DiagnosticContextStack* getPtr();
 
       // Disallow construction (and copying) except by getNDC()
-        NDC();
         NDC(const NDC&);
         NDC& operator=(const NDC&);
-
-      // Friends
-#if defined (_MSC_VER)
-        friend DCMTK_LOG4CPLUS_EXPORT NDC& getNDC();
-#else
-        friend NDC& getNDC();
-#endif
     };
 
 
@@ -286,14 +282,29 @@ namespace log4cplus {
     /**
      * This is the internal object that is stored on the NDC stack.
      */
-    struct DCMTK_LOG4CPLUS_EXPORT DiagnosticContext {
+    struct DCMTK_LOG4CPLUS_EXPORT DiagnosticContext
+    {
       // Ctors
-        DiagnosticContext(const tstring& message, DiagnosticContext *parent);
-        DiagnosticContext(const tstring& message);
+        DiagnosticContext();
+        DiagnosticContext(const log4cplus::tstring& message,
+            DiagnosticContext const * parent);
+        DiagnosticContext(tchar const * message,
+            DiagnosticContext const * parent);
+        DiagnosticContext(const log4cplus::tstring& message);
+        DiagnosticContext(tchar const * message);
+        DiagnosticContext(DiagnosticContext const &);
+        DiagnosticContext & operator = (DiagnosticContext const &);
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_RVALUE_REFS)
+        DiagnosticContext(DiagnosticContext &&);
+        DiagnosticContext & operator = (DiagnosticContext &&);
+#endif
+
+        void swap (DiagnosticContext &);
 
       // Data
-        tstring message; /*!< The message at this context level. */
-        tstring fullMessage; /*!< The entire message stack. */
+        log4cplus::tstring message; /*!< The message at this context level. */
+        log4cplus::tstring fullMessage; /*!< The entire message stack. */
     };
 
 
@@ -304,7 +315,8 @@ namespace log4cplus {
     class DCMTK_LOG4CPLUS_EXPORT NDCContextCreator {
     public:
         /** Pushes <code>msg</code> onto the NDC stack. */
-        NDCContextCreator(const tstring& msg);
+        NDCContextCreator(const log4cplus::tstring& msg);
+        NDCContextCreator(tchar const * msg);
 
         /** Pops the NDC stack. */
         ~NDCContextCreator();
@@ -314,4 +326,4 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 
-#endif // DCMTK__LO4CPLUS_NDC_HEADER_
+#endif // _LO4CPLUS_NDC_HEADER_

@@ -252,6 +252,13 @@ OFString::assign (const char* s)
 }
 
 OFString&
+OFString::assign (const char* s, const char *e)
+{
+    OFString str(s, e - s);
+    return this->assign(str);
+}
+
+OFString&
 OFString::assign (size_t rep, char c)
 {
     OFString str(rep, c);

@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,24 +19,30 @@
 // limitations under the License.
 
 #include "dcmtk/oflog/helpers/timehelp.h"
+#include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/internal/internal.h"
 
-//#include <vector>
-//#include <iomanip>
-#include "dcmtk/ofstd/ofstream.h"
-//#include <cassert>
-#define INCLUDE_CASSERT
-#define INCLUDE_CTIME
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
-
-#if defined(DCMTK_LOG4CPLUS_HAVE_FTIME)
-#include <sys/timeb.h>
+#include <algorithm>
+#include "dcmtk/ofstd/ofvector.h"
+#include <iomanip>
+#include <cassert>
+#include <cerrno>
+#if defined (UNICODE)
+#include <cwchar>
 #endif
 
-#if defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
+#if defined (DCMTK_LOG4CPLUS_HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+
+#if defined(DCMTK_LOG4CPLUS_HAVE_SYS_TIME_H)
 #include <sys/time.h>
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_SYS_TIMEB_H)
+#include <sys/timeb.h>
 #endif
 
 #if defined(DCMTK_LOG4CPLUS_HAVE_GMTIME_R) && !defined(DCMTK_LOG4CPLUS_SINGLE_THREADED)
@@ -47,10 +53,24 @@
 #define DCMTK_LOG4CPLUS_NEED_LOCALTIME_R
 #endif
 
+#define MAX(a, b) ((a) < (b) ? (b) : (a))
 
-namespace dcmtk { namespace log4cplus { namespace helpers {
+
+namespace dcmtk {
+namespace log4cplus { namespace helpers {
 
 const int ONE_SEC_IN_USEC = 1000000;
+
+#if 0
+using STD_NAMESPACE mktime;
+using STD_NAMESPACE gmtime;
+using STD_NAMESPACE localtime;
+#if defined (UNICODE)
+using STD_NAMESPACE wcsftime;
+#else
+using STD_NAMESPACE strftime;
+#endif
+#endif
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -58,23 +78,23 @@ const int ONE_SEC_IN_USEC = 1000000;
 //////////////////////////////////////////////////////////////////////////////
 
 Time::Time()
-: tv_sec(0),
-  tv_usec(0)
+    : tv_sec(0)
+    , tv_usec(0)
 {
 }
 
 
 Time::Time(time_t tv_sec_, long tv_usec_)
-: tv_sec(tv_sec_),
-  tv_usec(tv_usec_)
+    : tv_sec(tv_sec_)
+    , tv_usec(tv_usec_)
 {
     assert (tv_usec < ONE_SEC_IN_USEC);
 }
 
 
 Time::Time(time_t time)
-: tv_sec(time),
-  tv_usec(0)
+    : tv_sec(time)
+    , tv_usec(0)
 {
 }
 
@@ -82,16 +102,45 @@ Time::Time(time_t time)
 Time
 Time::gettimeofday()
 {
-#if defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
-    timeval tp;
+#if defined (DCMTK_LOG4CPLUS_HAVE_CLOCK_GETTIME)
+    struct timespec ts;
+    int res = clock_gettime (CLOCK_REALTIME, &ts);
+    assert (res == 0);
+    if (res != 0)
+        LogLog::getLogLog ()->error (
+            DCMTK_LOG4CPLUS_TEXT("clock_gettime() has failed"), true);
+
+    return Time (ts.tv_sec, ts.tv_nsec / 1000);
+
+#elif defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
+    struct timeval tp;
     ::gettimeofday(&tp, 0);
 
     return Time(tp.tv_sec, tp.tv_usec);
+
+#elif defined (_WIN32)
+    FILETIME ft;
+    GetSystemTimeAsFileTime (&ft);
+
+    typedef unsigned __int64 uint64_type;
+    uint64_type st100ns
+        = uint64_type (ft.dwHighDateTime) << 32
+        | ft.dwLowDateTime;
+
+    // Number of 100-ns intervals between UNIX epoch and Windows system time
+    // is 116444736000000000.
+    uint64_type const offset = uint64_type (116444736) * 1000 * 1000 * 1000;
+    uint64_type fixed_time = st100ns - offset;
+
+    return Time (fixed_time / (10 * 1000 * 1000),
+        fixed_time % (10 * 1000 * 1000) / 10);
+
 #elif defined(DCMTK_LOG4CPLUS_HAVE_FTIME)
     struct timeb tp;
-    ::ftime(&tp);
+    ftime(&tp);
 
     return Time(tp.time, tp.millitm * 1000);
+
 #else
 #warning "Time::gettimeofday()- low resolution timer: gettimeofday and ftime unavailable"
     return Time(::time(0), 0);
@@ -104,12 +153,11 @@ Time::gettimeofday()
 //////////////////////////////////////////////////////////////////////////////
 
 time_t
-Time::setTime(struct tm* t)
+Time::setTime(tm* t)
 {
-    time_t time = ::mktime(t);
-    if(time != -1) {
+    time_t time = mktime(t);
+    if (time != -1)
         tv_sec = time;
-    }
 
     return time;
 }
@@ -123,115 +171,116 @@ Time::getTime() const
 
 
 void
-Time::gmtime(struct tm* t) const
+Time::gmtime(tm* t) const
 {
     time_t clock = tv_sec;
-#ifdef DCMTK_LOG4CPLUS_NEED_GMTIME_R
-    ::gmtime_r(&clock, t);
+#if defined (DCMTK_LOG4CPLUS_HAVE_GMTIME_S) && defined (_MSC_VER) && _MSC_VER > 1200
+    gmtime_s (t, &clock);
+#elif defined (DCMTK_LOG4CPLUS_HAVE_GMTIME_S) && defined (__BORLANDC__)
+    gmtime_s (&clock, t);
+#elif defined (DCMTK_LOG4CPLUS_NEED_GMTIME_R)
+    gmtime_r (&clock, t);
 #else
-    struct tm* tmp = ::gmtime(&clock);
+    tm* tmp = ::gmtime(&clock);
     *t = *tmp;
 #endif
 }
 
 
 void
-Time::localtime(struct tm* t) const
+Time::localtime(tm* t) const
 {
     time_t clock = tv_sec;
 #ifdef DCMTK_LOG4CPLUS_NEED_LOCALTIME_R
     ::localtime_r(&clock, t);
 #else
-    struct tm* tmp = ::localtime(&clock);
+    tm* tmp = ::localtime(&clock);
     *t = *tmp;
 #endif
 }
 
 
-namespace
+namespace 
 {
 
-static tstring const padding_zeros[4] =
+
+static log4cplus::tstring const padding_zeros[4] =
 {
-    tstring (DCMTK_LOG4CPLUS_TEXT("000")),
-    tstring (DCMTK_LOG4CPLUS_TEXT("00")),
-    tstring (DCMTK_LOG4CPLUS_TEXT("0")),
-    tstring (DCMTK_LOG4CPLUS_TEXT(""))
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT("000")),
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT("00")),
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT("0")),
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT(""))
 };
 
-static tstring const uc_q_padding_zeros[4] =
+
+static log4cplus::tstring const uc_q_padding_zeros[4] =
 {
-    tstring (DCMTK_LOG4CPLUS_TEXT(".000")),
-    tstring (DCMTK_LOG4CPLUS_TEXT(".00")),
-    tstring (DCMTK_LOG4CPLUS_TEXT(".0")),
-    tstring (DCMTK_LOG4CPLUS_TEXT("."))
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT(".000")),
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT(".00")),
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT(".0")),
+    log4cplus::tstring (DCMTK_LOG4CPLUS_TEXT("."))
 };
 
-}
 
-
+static
 void
-Time::build_q_value (tstring & q_str) const
+build_q_value (log4cplus::tstring & q_str, long tv_usec)
 {
-    q_str = convertIntegerToString(tv_usec / 1000);
+    convertIntegerToString(q_str, tv_usec / 1000);
     size_t const len = q_str.length();
     if (len <= 2)
         q_str.insert (0, padding_zeros[q_str.length()]);
 }
 
 
-void
-Time::build_uc_q_value (tstring & uc_q_str) const
+static
+void 
+build_uc_q_value (log4cplus::tstring & uc_q_str, long tv_usec,
+    log4cplus::tstring & tmp)
 {
-    build_q_value (uc_q_str);
+    build_q_value (uc_q_str, tv_usec);
 
-#if defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
-    tstring usecs (convertIntegerToString(tv_usec % 1000));
-    size_t usecs_len = usecs.length();
-    usecs.insert (0, usecs_len <= 3
-                  ? uc_q_padding_zeros[usecs_len] : uc_q_padding_zeros[3]);
-    uc_q_str.append (usecs);
-#else
-    uc_q_str.append (uc_q_padding_zeros[0]);
-#endif
-
+    convertIntegerToString(tmp, tv_usec % 1000);
+    size_t const usecs_len = tmp.length();
+    tmp.insert (0, usecs_len <= 3
+        ? uc_q_padding_zeros[usecs_len] : uc_q_padding_zeros[3]);
+    uc_q_str.append (tmp);
 }
 
 
-tstring
-Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
+} // namespace
+
+
+log4cplus::tstring
+Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) const
 {
     if (fmt_orig.empty () || fmt_orig[0] == 0)
-        return tstring ();
+        return log4cplus::tstring ();
 
-    struct tm time;
-
-    if(use_gmtime)
+    tm time;
+    
+    if (use_gmtime)
         gmtime(&time);
-    else
+    else 
         localtime(&time);
-
+    
     enum State
     {
         TEXT,
         PERCENT_SIGN
     };
+    
+    internal::gft_scratch_pad & gft_sp = internal::get_gft_scratch_pad ();
+    gft_sp.reset ();
 
-    tstring fmt (fmt_orig);
-    tstring ret;
-    ret.reserve (OFstatic_cast(size_t, fmt.size () * 1.35));
+    gft_sp.fmt.assign (fmt_orig);
+    gft_sp.ret.reserve (OFstatic_cast(size_t, gft_sp.fmt.size () * 1.35));
     State state = TEXT;
 
-    tstring q_str;
-    bool q_str_valid = false;
-
-    tstring uc_q_str;
-    bool uc_q_str_valid = false;
-
     // Walk the format string and process all occurences of %q and %Q.
-
-    for (tstring::const_iterator fmt_it = fmt.begin ();
-         fmt_it != fmt.end (); ++fmt_it)
+    
+    for (log4cplus::tstring::const_iterator fmt_it = gft_sp.fmt.begin ();
+         fmt_it != gft_sp.fmt.end (); ++fmt_it)
     {
         switch (state)
         {
@@ -240,42 +289,56 @@ Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
             if (*fmt_it == DCMTK_LOG4CPLUS_TEXT ('%'))
                 state = PERCENT_SIGN;
             else
-                ret.append (1, *fmt_it);
+                gft_sp.ret.append(1, *fmt_it);
         }
         break;
-
+            
         case PERCENT_SIGN:
         {
             switch (*fmt_it)
             {
             case DCMTK_LOG4CPLUS_TEXT ('q'):
             {
-                if (! q_str_valid)
+                if (! gft_sp.q_str_valid)
                 {
-                    build_q_value (q_str);
-                    q_str_valid = true;
+                    build_q_value (gft_sp.q_str, tv_usec);
+                    gft_sp.q_str_valid = true;
                 }
-                ret.append (q_str);
+                gft_sp.ret.append (gft_sp.q_str);
+                state = TEXT;
+            }
+            break;
+            
+            case DCMTK_LOG4CPLUS_TEXT ('Q'):
+            {
+                if (! gft_sp.uc_q_str_valid)
+                {
+                    build_uc_q_value (gft_sp.uc_q_str, tv_usec, gft_sp.tmp);
+                    gft_sp.uc_q_str_valid = true;
+                }
+                gft_sp.ret.append (gft_sp.uc_q_str);
                 state = TEXT;
             }
             break;
 
-            case DCMTK_LOG4CPLUS_TEXT ('Q'):
+            // Windows do not support %s format specifier
+            // (seconds since epoch).
+            case DCMTK_LOG4CPLUS_TEXT ('s'):
             {
-                if (! uc_q_str_valid)
+                if (! gft_sp.s_str_valid)
                 {
-                    build_uc_q_value (uc_q_str);
-                    uc_q_str_valid = true;
+                    convertIntegerToString (gft_sp.s_str, tv_sec);
+                    gft_sp.s_str_valid = true;
                 }
-                ret.append (uc_q_str);
+                gft_sp.ret.append (gft_sp.s_str);
                 state = TEXT;
             }
             break;
 
             default:
             {
-                ret.append (1, DCMTK_LOG4CPLUS_TEXT ('%'));
-                ret.append (1, *fmt_it);
+                gft_sp.ret.append (1, DCMTK_LOG4CPLUS_TEXT ('%'));
+                gft_sp.ret.append (1, *fmt_it);
                 state = TEXT;
             }
             }
@@ -286,24 +349,43 @@ Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
 
     // Finally call strftime/wcsftime to format the rest of the string.
 
-    ret.swap (fmt);
-    size_t buffer_size = fmt.size () + 1;
-    char *buffer = OFstatic_cast(char *, malloc(buffer_size));
+    gft_sp.ret.swap (gft_sp.fmt);
+    size_t buffer_size = gft_sp.fmt.size () + 1;
     size_t len;
+
+    // Limit how far can the buffer grow. This is necessary so that we
+    // catch bad format string. Some implementations of strftime() signal
+    // both too small buffer and invalid format string by returning 0
+    // without changing errno. 
+    size_t const buffer_size_max
+        = MAX(OFstatic_cast(size_t, 1024), buffer_size * 16);
+
     do
     {
-        len = ::strftime(buffer, buffer_size, fmt.c_str(), &time);
+        gft_sp.buffer.resize (buffer_size);
+        errno = 0;
+#ifdef UNICODE
+        len = wcsftime(&gft_sp.buffer[0], buffer_size,
+            gft_sp.fmt.c_str(), &time);
+#else
+        len = strftime(&gft_sp.buffer[0], buffer_size,
+            gft_sp.fmt.c_str(), &time);
+#endif
         if (len == 0)
         {
+            int const eno = errno;
             buffer_size *= 2;
-            buffer = OFstatic_cast(char *, realloc(buffer, buffer_size));
+            if (buffer_size > buffer_size_max)
+            {
+                LogLog::getLogLog ()->error (
+                    DCMTK_LOG4CPLUS_TEXT("Error in strftime(): ")
+                    + convertIntegerToString (eno), true);
+            }
         }
-    }
+    } 
     while (len == 0);
-    ret.assign (&buffer[0], len);
-    free(buffer);
 
-    return ret;
+    return tstring (&*gft_sp.buffer.begin (), len);
 }
 
 
@@ -342,7 +424,7 @@ Time::operator/=(long rhs)
 {
     long rem_secs = OFstatic_cast(long, tv_sec % rhs);
     tv_sec /= rhs;
-
+    
     tv_usec /= rhs;
     tv_usec += OFstatic_cast(long, (rem_secs * ONE_SEC_IN_USEC) / rhs);
 
@@ -401,7 +483,7 @@ bool
 operator<(const Time& lhs, const Time& rhs)
 {
     return (   (lhs.sec() < rhs.sec())
-            || (   (lhs.sec() == rhs.sec())
+            || (   (lhs.sec() == rhs.sec()) 
                 && (lhs.usec() < rhs.usec())) );
 }
 
@@ -417,7 +499,7 @@ bool
 operator>(const Time& lhs, const Time& rhs)
 {
     return (   (lhs.sec() > rhs.sec())
-            || (   (lhs.sec() == rhs.sec())
+            || (   (lhs.sec() == rhs.sec()) 
                 && (lhs.usec() > rhs.usec())) );
 }
 
@@ -444,4 +526,5 @@ operator!=(const Time& lhs, const Time& rhs)
 }
 
 
-} } } // namespace dcmtk { namespace log4cplus { namespace helpers {
+} } // namespace log4cplus { namespace helpers {
+} // end namespace dcmtk

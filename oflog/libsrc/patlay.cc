@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,255 +19,291 @@
 // limitations under the License.
 
 #include "dcmtk/oflog/layout.h"
+#include "dcmtk/oflog/logmacro.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/timehelp.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/helpers/socket.h"
+#include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/spi/logevent.h"
+#include "dcmtk/oflog/internal/internal.h"
+#include "dcmtk/oflog/internal/env.h"
+#include <cstdlib>
 
-//#include <stdlib.h>
-//#include <exception>
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_UNISTD              /* needed for declaration of getpid() */
-#include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef DCMTK_LOG4CPLUS_HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef DCMTK_LOG4CPLUS_HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef _WIN32
-#include <process.h>                /* needed for declaration of getpid() */
-#endif
 
 namespace
 {
 
+
 static
-#if defined (_WIN32)
-DWORD
-get_process_id ()
+dcmtk::log4cplus::tstring
+get_basename (const dcmtk::log4cplus::tstring& filename)
 {
-    return GetCurrentProcessId ();
-}
-
-#elif defined (DCMTK_LOG4CPLUS_HAVE_GETPID)
-pid_t
-get_process_id ()
-{
-    return getpid ();
-}
-
+#if defined(_WIN32)
+    dcmtk::log4cplus::tchar const dir_sep(DCMTK_LOG4CPLUS_TEXT('\\'));
 #else
-int
-get_process_id ()
-{
-    return 0;
+    dcmtk::log4cplus::tchar const dir_sep(DCMTK_LOG4CPLUS_TEXT('/'));
+#endif
+
+    dcmtk::log4cplus::tstring::size_type pos = filename.rfind(dir_sep);
+    if (pos != OFString_npos)
+        return filename.substr(pos+1);
+    else
+        return filename;
 }
 
-#endif
 
 } // namespace
 
 
-using namespace std;
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-using namespace dcmtk::log4cplus::spi;
+namespace dcmtk
+{
+namespace log4cplus
+{
+
+static tchar const ESCAPE_CHAR = DCMTK_LOG4CPLUS_TEXT('%');
+
+extern void formatRelativeTimestamp (log4cplus::tostream & output,
+    log4cplus::spi::InternalLoggingEvent const & event);
 
 
-#define ESCAPE_CHAR DCMTK_LOG4CPLUS_TEXT('%')
+namespace pattern
+{
 
 
-namespace dcmtk {
-namespace log4cplus {
-    namespace pattern {
+/**
+ * This is used by PatternConverter class to inform them how to format
+ * their output.
+ */
+struct FormattingInfo {
+    int minLen;
+    size_t maxLen;
+    bool leftAlign;
+    FormattingInfo()
+        : minLen(), maxLen(), leftAlign()
+    { reset(); }
 
-        /**
-         * This is used by PatternConverter class to inform them how to format
-         * their output.
-         */
-        struct FormattingInfo {
-            int minLen;
-            size_t maxLen;
-            bool leftAlign;
-            FormattingInfo() { reset(); }
-
-            void reset();
-            void dump(LogLog&);
-        };
-
-
-
-        /**
-         * This is the base class of all "Converter" classes that format a
-         * field of InternalLoggingEvent objects.  In fact, the PatternLayout
-         * class simply uses an array of PatternConverter objects to format
-         * and append a logging event.
-         */
-        class PatternConverter : protected LogLogUser {
-        public:
-            PatternConverter(const FormattingInfo& info);
-            virtual ~PatternConverter() {}
-            void formatAndAppend(tostream& output,
-                                 const InternalLoggingEvent& event);
-
-        protected:
-            virtual tstring convert(const InternalLoggingEvent& event) = 0;
-
-        private:
-            int minLen;
-            size_t maxLen;
-            bool leftAlign;
-        };
+    void reset();
+    void dump(helpers::LogLog&);
+};
 
 
 
-        /**
-         * This PatternConverter returns a constant string.
-         */
-        class LiteralPatternConverter : public PatternConverter {
-        public:
-            LiteralPatternConverter(const tstring& str);
-            virtual tstring convert(const InternalLoggingEvent&) {
-                return str;
-            }
+/**
+ * This is the base class of all "Converter" classes that format a
+ * field of InternalLoggingEvent objects.  In fact, the PatternLayout
+ * class simply uses an array of PatternConverter objects to format
+ * and append a logging event.
+ */
+class PatternConverter
+{
+public:
+    explicit PatternConverter(const FormattingInfo& info);
+    virtual ~PatternConverter() {}
+    void formatAndAppend(tostream& output, 
+        const spi::InternalLoggingEvent& event);
 
-        private:
-            tstring str;
-        };
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event) = 0;
 
-
-
-        /**
-         * This PatternConverter is used to format most of the "simple" fields
-         * found in the InternalLoggingEvent object.
-         */
-        class BasicPatternConverter : public PatternConverter {
-        public:
-            enum Type { THREAD_CONVERTER,
-                        PROCESS_CONVERTER,
-                        LOGLEVEL_CONVERTER,
-                        LOGLEVEL_PREFIX_CONVERTER,
-                        NDC_CONVERTER,
-                        MESSAGE_CONVERTER,
-                        NEWLINE_CONVERTER,
-                        FILE_CONVERTER,
-                        LINE_CONVERTER,
-                        FULL_LOCATION_CONVERTER,
-                        FUNCTION_CONVERTER };
-            BasicPatternConverter(const FormattingInfo& info, Type type);
-            virtual tstring convert(const InternalLoggingEvent& event);
-
-        private:
-          // Disable copy
-            BasicPatternConverter(const BasicPatternConverter&);
-            BasicPatternConverter& operator=(BasicPatternConverter&);
-
-            LogLevelManager& llmCache;
-            Type type;
-        };
+private:
+    int minLen;
+    size_t maxLen;
+    bool leftAlign;
+};
 
 
-
-        /**
-         * This PatternConverter is used to format the Logger field found in
-         * the InternalLoggingEvent object.
-         */
-        class LoggerPatternConverter : public PatternConverter {
-        public:
-            LoggerPatternConverter(const FormattingInfo& info, int precision);
-            virtual tstring convert(const InternalLoggingEvent& event);
-
-        private:
-            int precision;
-        };
+typedef OFVector<pattern::PatternConverter*> PatternConverterList;
 
 
-
-        /**
-         * This PatternConverter is used to format the timestamp field found in
-         * the InternalLoggingEvent object.  It will be formatted according to
-         * the specified "pattern".
-         */
-        class DatePatternConverter : public PatternConverter {
-        public:
-            DatePatternConverter(const FormattingInfo& info,
-                                 const tstring& pattern,
-                                 bool use_gmtime);
-            virtual tstring convert(const InternalLoggingEvent& event);
-
-        private:
-            bool use_gmtime;
-            tstring format;
-        };
-
-
-
-        /**
-         * This PatternConverter is used to format the hostname field.
-         */
-        class HostnamePatternConverter : public PatternConverter {
-        public:
-            HostnamePatternConverter(const FormattingInfo& info, bool fqdn);
-            virtual tstring convert(const InternalLoggingEvent& event);
-
-        private:
-            tstring hostname_;
-        };
-
-
-
-        /**
-         * This class parses a "pattern" string into an array of
-         * PatternConverter objects.
-         * <p>
-         * @see PatternLayout for the formatting of the "pattern" string.
-         */
-        class PatternParser : protected LogLogUser {
-        public:
-            PatternParser(const tstring& pattern);
-            OFauto_ptr<OFList<PatternConverter*> > parse();
-
-        private:
-          // Types
-            enum ParserState { LITERAL_STATE,
-                               CONVERTER_STATE,
-                               DOT_STATE,
-                               MIN_STATE,
-                               MAX_STATE };
-
-          // Methods
-            tstring extractOption();
-            int extractPrecisionOption();
-            void finalizeConverter(tchar c);
-
-          // Data
-            tstring pattern;
-            FormattingInfo formattingInfo;
-            OFauto_ptr<OFList<PatternConverter*> > list;
-            ParserState state;
-            tstring::size_type pos;
-            tstring currentLiteral;
-        };
+/**
+ * This PatternConverter returns a constant string.
+ */
+class LiteralPatternConverter : public PatternConverter
+{
+public:
+    LiteralPatternConverter(const tstring& str);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent&)
+    {
+        result = str;
     }
-}
 
-} // namespace dcmtk
+private:
+    tstring str;
+};
 
-using namespace dcmtk::log4cplus::pattern;
-typedef OFList<PatternConverter*> PatternConverterList;
-typedef OFListIterator(PatternConverter*) PatternConverterListIterator;
 
+/**
+ * This PatternConverter is used to format most of the "simple" fields
+ * found in the InternalLoggingEvent object.
+ */
+class BasicPatternConverter
+    : public PatternConverter
+{
+public:
+    enum Type { THREAD_CONVERTER,
+                THREAD2_CONVERTER,
+                PROCESS_CONVERTER,
+                LOGLEVEL_CONVERTER,
+                LOGLEVEL_PREFIX_CONVERTER,
+                NDC_CONVERTER,
+                MESSAGE_CONVERTER,
+                NEWLINE_CONVERTER,
+                BASENAME_CONVERTER,
+                FILE_CONVERTER,
+                LINE_CONVERTER,
+                FULL_LOCATION_CONVERTER,
+                FUNCTION_CONVERTER };
+    BasicPatternConverter(const FormattingInfo& info, Type type);
+    virtual void convert(tstring & result, 
+        const spi::InternalLoggingEvent& event);
+
+private:
+  // Disable copy
+    BasicPatternConverter(const BasicPatternConverter&);
+    BasicPatternConverter& operator=(BasicPatternConverter&);
+    
+    LogLevelManager& llmCache;
+    Type type;
+};
+
+
+
+/**
+ * This PatternConverter is used to format the Logger field found in
+ * the InternalLoggingEvent object.
+ */
+class LoggerPatternConverter : public PatternConverter {
+public:
+    LoggerPatternConverter(const FormattingInfo& info, int precision);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event);
+
+private:
+    int precision;
+};
+
+
+
+/**
+ * This PatternConverter is used to format the timestamp field found in
+ * the InternalLoggingEvent object.  It will be formatted according to
+ * the specified "pattern".
+ */
+class DatePatternConverter : public PatternConverter {
+public:
+    DatePatternConverter(const FormattingInfo& info, 
+                         const tstring& pattern, 
+                         bool use_gmtime);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event);
+
+private:
+    bool use_gmtime;
+    tstring format;
+};
+
+
+//! This pattern is used to format miliseconds since process start.
+class RelativeTimestampConverter: public PatternConverter {
+public:
+    RelativeTimestampConverter(const FormattingInfo& info);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event);
+};
+
+
+/**
+ * This PatternConverter is used to format the hostname field.
+ */
+class HostnamePatternConverter : public PatternConverter {
+public:
+    HostnamePatternConverter(const FormattingInfo& info, bool fqdn);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event);
+
+private:
+    tstring hostname_;
+};
+
+
+/**
+ * This PatternConverter is used to format the MDC field found in
+ * the InternalLoggingEvent object, optionally limited to
+ * \c k Mapped diagnostic context key.
+ */
+class MDCPatternConverter
+    : public PatternConverter
+{
+public:
+    MDCPatternConverter(const FormattingInfo& info, tstring const & k);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event);
+
+private:
+    tstring key;
+};
+
+
+/**
+ * This PatternConverter is used to format the NDC field found in
+ * the InternalLoggingEvent object, optionally limited to
+ * \c precision levels (using space to separate levels).
+ */
+class NDCPatternConverter : public PatternConverter {
+public:
+    NDCPatternConverter(const FormattingInfo& info, int precision);
+    virtual void convert(tstring & result,
+        const spi::InternalLoggingEvent& event);
+
+private:
+    int precision;
+};
+
+
+
+/**
+ * This class parses a "pattern" string into an array of
+ * PatternConverter objects.
+ * <p>
+ * @see PatternLayout for the formatting of the "pattern" string.
+ */
+class PatternParser
+{
+public:
+    PatternParser(const tstring& pattern, unsigned ndcMaxDepth);
+    OFVector<PatternConverter*> parse();
+
+private:
+  // Types
+    enum ParserState { LITERAL_STATE, 
+                       CONVERTER_STATE,
+                       DOT_STATE,
+                       MIN_STATE,
+                       MAX_STATE };
+
+  // Methods
+    tstring extractOption();
+    int extractPrecisionOption();
+    void finalizeConverter(tchar c);
+
+  // Data
+    tstring pattern;
+    FormattingInfo formattingInfo;
+    OFVector<PatternConverter*> list;
+    ParserState state;
+    tstring::size_type pos;
+    tstring currentLiteral;
+    unsigned ndcMaxDepth;
+};
 
 
 ////////////////////////////////////////////////
-// PatternConverter methods:
+// FormattingInfo methods:
 ////////////////////////////////////////////////
 
-void
+void 
 FormattingInfo::reset() {
     minLen = -1;
     maxLen = 0x7FFFFFFF;
@@ -275,15 +311,13 @@ FormattingInfo::reset() {
 }
 
 
-void
-FormattingInfo::dump(LogLog& loglog) {
+void 
+FormattingInfo::dump(helpers::LogLog& loglog) {
     tostringstream buf;
     buf << DCMTK_LOG4CPLUS_TEXT("min=") << minLen
         << DCMTK_LOG4CPLUS_TEXT(", max=") << maxLen
-        << DCMTK_LOG4CPLUS_TEXT(", leftAlign=")
-        << (leftAlign ? DCMTK_LOG4CPLUS_TEXT("true") : DCMTK_LOG4CPLUS_TEXT("false"));
-    OFSTRINGSTREAM_GETOFSTRING(buf, str)
-    loglog.debug(str);
+        << DCMTK_LOG4CPLUS_TEXT(", leftAlign=") << STD_NAMESPACE boolalpha << leftAlign;
+    loglog.debug(OFString(buf.str().c_str(), buf.str().length()));
 }
 
 
@@ -294,37 +328,37 @@ FormattingInfo::dump(LogLog& loglog) {
 ////////////////////////////////////////////////
 
 PatternConverter::PatternConverter(const FormattingInfo& i)
+    : minLen(i.minLen)
+    , maxLen(i.maxLen)
+    , leftAlign(i.leftAlign)
 {
-    minLen = i.minLen;
-    maxLen = i.maxLen;
-    leftAlign = i.leftAlign;
 }
 
 
 
 void
-PatternConverter::formatAndAppend
-                     (tostream& output, const InternalLoggingEvent& event)
+PatternConverter::formatAndAppend(
+    tostream& output, const spi::InternalLoggingEvent& event)
 {
-    tstring s = convert(event);
+    tstring & s = internal::get_ptd ()->faa_str;
+    convert (s, event);
     size_t len = s.length();
 
-    if(len > maxLen) {
+    if (len > maxLen)
         output << s.substr(len - maxLen);
-    }
-    else if(OFstatic_cast(int, len) < minLen) {
-        if(leftAlign) {
-            output << s;
-            output << tstring(minLen - len, DCMTK_LOG4CPLUS_TEXT(' '));
-        }
-        else {
-            output << tstring(minLen - len, DCMTK_LOG4CPLUS_TEXT(' '));
-            output << s;
-        }
-    }
-    else {
+    else if (OFstatic_cast(int, len) < minLen)
+    {
+        STD_NAMESPACE ios_base::fmtflags const original_flags = output.flags ();
+        tchar const fill = output.fill (DCMTK_LOG4CPLUS_TEXT(' '));
+        output.setf (leftAlign ? STD_NAMESPACE ios_base::left : STD_NAMESPACE ios_base::right,
+            STD_NAMESPACE ios_base::adjustfield);
+        output.width (minLen);
         output << s;
+        output.fill (fill);
+        output.flags (original_flags);
     }
+    else
+        output << s;
 }
 
 
@@ -333,10 +367,10 @@ PatternConverter::formatAndAppend
 // LiteralPatternConverter methods:
 ////////////////////////////////////////////////
 
-LiteralPatternConverter::LiteralPatternConverter
-                                                      (const tstring& str_)
-: PatternConverter(FormattingInfo()),
-  str(str_)
+LiteralPatternConverter::LiteralPatternConverter(
+    const tstring& str_)
+    : PatternConverter(FormattingInfo())
+    , str(str_)
 {
 }
 
@@ -346,57 +380,91 @@ LiteralPatternConverter::LiteralPatternConverter
 // BasicPatternConverter methods:
 ////////////////////////////////////////////////
 
-BasicPatternConverter::BasicPatternConverter
-                                        (const FormattingInfo& info, Type type_)
-: PatternConverter(info),
-  llmCache(getLogLevelManager()),
-  type(type_)
+BasicPatternConverter::BasicPatternConverter(
+    const FormattingInfo& info, Type type_)
+    : PatternConverter(info)
+    , llmCache(getLogLevelManager())
+    , type(type_)
 {
 }
 
 
 
-tstring
-BasicPatternConverter::convert
-                                            (const InternalLoggingEvent& event)
+void
+BasicPatternConverter::convert(tstring & result,
+    const spi::InternalLoggingEvent& event)
 {
-    switch(type) {
-    case LOGLEVEL_CONVERTER:        return llmCache.toString(event.getLogLevel());
-    case LOGLEVEL_PREFIX_CONVERTER: return llmCache.toString(event.getLogLevel()).substr(0, 1);
-    case NDC_CONVERTER:             return event.getNDC();
-    case MESSAGE_CONVERTER:         return event.getMessage();
-    case NEWLINE_CONVERTER:         return DCMTK_LOG4CPLUS_TEXT("\n");
-    case FILE_CONVERTER:            return event.getFile();
-    case THREAD_CONVERTER:          return event.getThread();
-    case PROCESS_CONVERTER:         return convertIntegerToString(get_process_id ());
-    case FUNCTION_CONVERTER:        return event.getFunction ();
+    switch(type)
+    {
+    case LOGLEVEL_CONVERTER:
+        result = llmCache.toString(event.getLogLevel());
+        return;
+
+    case LOGLEVEL_PREFIX_CONVERTER:
+        result = llmCache.toString(event.getLogLevel()).substr(0, 1);
+        return;
+
+    case BASENAME_CONVERTER:
+        result = get_basename(event.getFile());
+        return;
+
+    case PROCESS_CONVERTER:
+        helpers::convertIntegerToString(result, internal::get_process_id ()); 
+        return;
+
+    case NDC_CONVERTER:
+        result = event.getNDC();
+        return;
+
+    case MESSAGE_CONVERTER:
+        result = event.getMessage();
+        return;
+
+    case NEWLINE_CONVERTER:
+        result = DCMTK_LOG4CPLUS_TEXT("\n");
+        return; 
+
+    case FILE_CONVERTER:
+        result = event.getFile();
+        return;
+
+    case THREAD_CONVERTER:
+        result = event.getThread();
+        return;
+
+    case THREAD2_CONVERTER:
+        result = event.getThread2();
+        return;
 
     case LINE_CONVERTER:
         {
-            int line = event.getLine();
-            if(line != -1) {
-                return convertIntegerToString(line);
-            }
-            else {
-                return tstring();
-            }
+            if(event.getLine() != -1)
+                helpers::convertIntegerToString(result, event.getLine());
+            else
+                result.clear ();
+            return;
         }
 
     case FULL_LOCATION_CONVERTER:
         {
-            tstring const & filename = event.getFile();
-            if(! filename.empty ()) {
-                return   filename
-                       + DCMTK_LOG4CPLUS_TEXT(":")
-                       + convertIntegerToString(event.getLine());
+            tstring const & file = event.getFile();
+            if (! file.empty ())
+            {
+                result = file;
+                result += DCMTK_LOG4CPLUS_TEXT(":");
+                result += helpers::convertIntegerToString(event.getLine());
             }
-            else {
-                return DCMTK_LOG4CPLUS_TEXT(":");
-            }
+            else
+                result = DCMTK_LOG4CPLUS_TEXT(":");
+            return;
         }
+        
+    case FUNCTION_CONVERTER:
+        result = event.getFunction ();
+        return;
     }
 
-    return DCMTK_LOG4CPLUS_TEXT("INTERNAL DCMTK_LOG4CPLUS ERROR");
+    result = DCMTK_LOG4CPLUS_TEXT("INTERNAL LOG4CPLUS ERROR");
 }
 
 
@@ -405,37 +473,39 @@ BasicPatternConverter::convert
 // LoggerPatternConverter methods:
 ////////////////////////////////////////////////
 
-LoggerPatternConverter::LoggerPatternConverter
-                                    (const FormattingInfo& info, int precision_)
-: PatternConverter(info),
-  precision(precision_)
+LoggerPatternConverter::LoggerPatternConverter(
+    const FormattingInfo& info, int prec)
+    : PatternConverter(info)
+    , precision(prec)
 {
 }
 
 
 
-tstring
-LoggerPatternConverter::convert
-                                            (const InternalLoggingEvent& event)
+void
+LoggerPatternConverter::convert(tstring & result,
+    const spi::InternalLoggingEvent& event)
 {
     const tstring& name = event.getLoggerName();
     if (precision <= 0) {
-        return name;
+        result = name;
     }
     else {
         size_t len = name.length();
 
         // We substract 1 from 'len' when assigning to 'end' to avoid out of
         // bounds exception in return r.substring(end+1, len). This can happen
-        // if precision is 1 and the logger name ends with a dot.
+        // if precision is 1 and the logger name ends with a dot. 
         tstring::size_type end = len - 1;
-        for(int i=precision; i>0; --i) {
+        for (int i = precision; i > 0; --i)
+        {
             end = name.rfind(DCMTK_LOG4CPLUS_TEXT('.'), end - 1);
             if(end == OFString_npos) {
-                return name;
+                result = name;
+                return;
             }
         }
-        return name.substr(end + 1);
+        result = name.substr(end + 1);
     }
 }
 
@@ -446,26 +516,44 @@ LoggerPatternConverter::convert
 ////////////////////////////////////////////////
 
 
-DatePatternConverter::DatePatternConverter
-                                               (const FormattingInfo& info,
-                                                const tstring& pattern,
-                                                bool use_gmtime_)
-: PatternConverter(info),
-  use_gmtime(use_gmtime_),
-  format(pattern)
+DatePatternConverter::DatePatternConverter(
+    const FormattingInfo& info, const tstring& pattern,
+    bool use_gmtime_)
+    : PatternConverter(info)
+    , use_gmtime(use_gmtime_)
+    , format(pattern)
 {
 }
 
 
 
-tstring
-DatePatternConverter::convert
-                                            (const InternalLoggingEvent& event)
+void
+DatePatternConverter::convert(tstring & result,
+    const spi::InternalLoggingEvent& event)
 {
-    return event.getTimestamp().getFormattedTime(format, use_gmtime);
+    result = event.getTimestamp().getFormattedTime(format, use_gmtime);
 }
 
 
+//
+//
+//
+
+RelativeTimestampConverter::RelativeTimestampConverter (FormattingInfo const & info)
+    : PatternConverter (info)
+{ }
+
+
+void
+RelativeTimestampConverter::convert (tstring & result,
+    spi::InternalLoggingEvent const & event)
+{
+    tostringstream & oss = internal::get_ptd ()->layout_oss;
+    detail::clear_tostringstream (oss);
+    formatRelativeTimestamp (oss, event);
+    // oss.str ().swap (result);
+    result = OFString(oss.str().c_str(), oss.str().length());
+}
 
 
 ////////////////////////////////////////////////
@@ -475,15 +563,64 @@ DatePatternConverter::convert
 HostnamePatternConverter::HostnamePatternConverter (
     const FormattingInfo& info, bool fqdn)
     : PatternConverter(info)
-    , hostname_ (getHostname (fqdn))
+    , hostname_ (helpers::getHostname (fqdn))
 { }
 
 
-tstring
+void
 HostnamePatternConverter::convert (
-    const InternalLoggingEvent &)
+    tstring & result, const spi::InternalLoggingEvent&)
 {
-    return hostname_;
+    result = hostname_;
+}
+
+
+
+////////////////////////////////////////////////
+// MDCPatternConverter methods:
+////////////////////////////////////////////////
+
+log4cplus::pattern::MDCPatternConverter::MDCPatternConverter (
+    const FormattingInfo& info, tstring const & k)
+    : PatternConverter(info)
+    , key (k)
+{ }
+
+
+void
+log4cplus::pattern::MDCPatternConverter::convert (tstring & result,
+    const spi::InternalLoggingEvent& event)
+{
+    result = event.getMDC (key);
+}
+
+
+////////////////////////////////////////////////
+// NDCPatternConverter methods:
+////////////////////////////////////////////////
+
+log4cplus::pattern::NDCPatternConverter::NDCPatternConverter (
+    const FormattingInfo& info, int precision_)
+    : PatternConverter(info)
+    , precision(precision_)
+{ }
+
+
+void
+log4cplus::pattern::NDCPatternConverter::convert (tstring & result,
+    const spi::InternalLoggingEvent& event)
+{
+    const log4cplus::tstring& text = event.getNDC();
+    if (precision <= 0)
+        result = text;
+    else
+    {
+        tstring::size_type p = text.find(DCMTK_LOG4CPLUS_TEXT(' '));
+        for (int i = 1; i < precision && p != OFString_npos; ++i)
+            p = text.find(DCMTK_LOG4CPLUS_TEXT(' '), p + 1);
+
+        result = text.substr(0, p);
+    }
 }
 
 
@@ -492,21 +629,25 @@ HostnamePatternConverter::convert (
 // PatternParser methods:
 ////////////////////////////////////////////////
 
-PatternParser::PatternParser(const tstring& pattern_)
-: pattern(pattern_),
-  list(new OFList<PatternConverter*>),
-  state(LITERAL_STATE),
-  pos(0)
+PatternParser::PatternParser(
+    const tstring& pattern_, unsigned ndcMaxDepth_)
+    : pattern(pattern_)
+    , formattingInfo()
+    , list()
+    , state(LITERAL_STATE)
+    , pos(0)
+    , currentLiteral()
+    , ndcMaxDepth (ndcMaxDepth_)
 {
 }
 
 
 
-tstring
-PatternParser::extractOption()
+tstring 
+PatternParser::extractOption() 
 {
-    if (   (pos < pattern.length())
-        && (pattern[pos] == DCMTK_LOG4CPLUS_TEXT('{')))
+    if (   (pos < pattern.length()) 
+        && (pattern[pos] == DCMTK_LOG4CPLUS_TEXT('{'))) 
     {
         tstring::size_type end = pattern.find_first_of(DCMTK_LOG4CPLUS_TEXT('}'), pos);
         if (end != OFString_npos) {
@@ -515,8 +656,11 @@ PatternParser::extractOption()
             return r;
         }
         else {
-            getLogLog().error(DCMTK_LOG4CPLUS_TEXT("No matching '}' found in conversion pattern string \"")
-                    + pattern + DCMTK_LOG4CPLUS_TEXT("\""));
+            log4cplus::tostringstream buf;
+            buf << DCMTK_LOG4CPLUS_TEXT("No matching '}' found in conversion pattern string \"")
+                << pattern
+                << DCMTK_LOG4CPLUS_TEXT("\"");
+            helpers::getLogLog().error(OFString(buf.str().c_str(), buf.str().length()));
             pos = pattern.length();
         }
     }
@@ -525,21 +669,21 @@ PatternParser::extractOption()
 }
 
 
-int
-PatternParser::extractPrecisionOption()
+int 
+PatternParser::extractPrecisionOption() 
 {
     tstring opt = extractOption();
     int r = 0;
-    if(opt.length() > 0) {
+    if (! opt.empty ())
         r = atoi(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(opt).c_str());
-    }
+
     return r;
 }
 
 
 
-OFauto_ptr<PatternConverterList>
-PatternParser::parse()
+PatternConverterList
+PatternParser::parse() 
 {
     tchar c;
     pos = 0;
@@ -553,17 +697,17 @@ PatternParser::parse()
                 continue;
             }
             if(c == ESCAPE_CHAR) {
-                // peek at the next char.
+                // peek at the next char. 
                 switch (pattern[pos]) {
                 case ESCAPE_CHAR:
                     currentLiteral += c;
                     pos++; // move pointer
                     break;
                 default:
-                    if(currentLiteral.length() != 0) {
-                        list->push_back
+                    if(! currentLiteral.empty ()) {
+                        list.push_back
                              (new LiteralPatternConverter(currentLiteral));
-                        //getLogLog().debug("Parsed LITERAL converter: \""
+                        //getLogLog().debug("Parsed LITERAL converter: \"" 
                         //                  +currentLiteral+"\".");
                     }
                     currentLiteral.resize(0);
@@ -623,8 +767,7 @@ PatternParser::parse()
                     << DCMTK_LOG4CPLUS_TEXT(".\n Was expecting digit, instead got char \"")
                     << c
                     << DCMTK_LOG4CPLUS_TEXT("\".");
-                OFSTRINGSTREAM_GETOFSTRING(buf, str)
-                getLogLog().error(str);
+                helpers::getLogLog().error(OFString(buf.str().c_str(), buf.str().length()));
                 state = LITERAL_STATE;
             }
             break;
@@ -641,8 +784,8 @@ PatternParser::parse()
         } // end switch
     } // end while
 
-    if(currentLiteral.length() != 0) {
-        list->push_back(new LiteralPatternConverter(currentLiteral));
+    if(! currentLiteral.empty ()) {
+        list.push_back(new LiteralPatternConverter(currentLiteral));
       //getLogLog().debug("Parsed LITERAL converter: \""+currentLiteral+"\".");
     }
 
@@ -652,22 +795,30 @@ PatternParser::parse()
 
 
 void
-PatternParser::finalizeConverter(tchar c)
+PatternParser::finalizeConverter(tchar c) 
 {
     PatternConverter* pc = 0;
     switch (c) {
+        case DCMTK_LOG4CPLUS_TEXT('b'):
+            pc = new BasicPatternConverter
+                          (formattingInfo, 
+                           BasicPatternConverter::BASENAME_CONVERTER);
+            //getLogLog().debug("BASENAME converter.");
+            //formattingInfo.dump(getLogLog());      
+            break;
+            
         case DCMTK_LOG4CPLUS_TEXT('c'):
-            pc = new LoggerPatternConverter(formattingInfo,
+            pc = new LoggerPatternConverter(formattingInfo, 
                                             extractPrecisionOption());
-            getLogLog().debug( DCMTK_LOG4CPLUS_TEXT("LOGGER converter.") );
-            formattingInfo.dump(getLogLog());
+            //getLogLog().debug( DCMTK_LOG4CPLUS_TEXT("LOGGER converter.") );
+            //formattingInfo.dump(getLogLog());      
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('d'):
         case DCMTK_LOG4CPLUS_TEXT('D'):
             {
                 tstring dOpt = extractOption();
-                if(dOpt.length() == 0) {
+                if(dOpt.empty ()) {
                     dOpt = DCMTK_LOG4CPLUS_TEXT("%Y-%m-%d %H:%M:%S");
                 }
                 bool use_gmtime = c == DCMTK_LOG4CPLUS_TEXT('d');
@@ -678,24 +829,16 @@ PatternParser::finalizeConverter(tchar c)
                 //else {
                 //    getLogLog().debug("LOCAL DATE converter.");
                 //}
-                //formattingInfo.dump(getLogLog());
+                //formattingInfo.dump(getLogLog());      
             }
-            break;
-
-        case DCMTK_LOG4CPLUS_TEXT('f'):
-            pc = new BasicPatternConverter
-                          (formattingInfo,
-                           BasicPatternConverter::FUNCTION_CONVERTER);
-            //getLogLog().debug("FUNCTION NAME converter.");
-            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('F'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::FILE_CONVERTER);
             //getLogLog().debug("FILE NAME converter.");
-            //formattingInfo.dump(getLogLog());
+            //formattingInfo.dump(getLogLog());      
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('h'):
@@ -708,41 +851,56 @@ PatternParser::finalizeConverter(tchar c)
             }
             break;
 
+        case DCMTK_LOG4CPLUS_TEXT('i'):
+            pc = new BasicPatternConverter
+                          (formattingInfo, 
+                           BasicPatternConverter::PROCESS_CONVERTER);
+            //getLogLog().debug("PROCESS_CONVERTER converter.");
+            //formattingInfo.dump(getLogLog());      
+            break;
+
         case DCMTK_LOG4CPLUS_TEXT('l'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::FULL_LOCATION_CONVERTER);
             //getLogLog().debug("FULL LOCATION converter.");
-            //formattingInfo.dump(getLogLog());
+            //formattingInfo.dump(getLogLog());      
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('L'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::LINE_CONVERTER);
             //getLogLog().debug("LINE NUMBER converter.");
-            //formattingInfo.dump(getLogLog());
+            //formattingInfo.dump(getLogLog());      
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('m'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::MESSAGE_CONVERTER);
             //getLogLog().debug("MESSAGE converter.");
-            //formattingInfo.dump(getLogLog());
+            //formattingInfo.dump(getLogLog());      
+            break;
+
+        case DCMTK_LOG4CPLUS_TEXT('M'):
+            pc = new BasicPatternConverter (
+                formattingInfo, BasicPatternConverter::FUNCTION_CONVERTER);
+            //getLogLog().debug("METHOD (function name) converter.");
+            //formattingInfo.dump(getLogLog());   
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('n'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::NEWLINE_CONVERTER);
-            //getLogLog().debug("NEWLINE converter.");
-            //formattingInfo.dump(getLogLog());
+            //getLogLog().debug("MESSAGE converter.");
+            //formattingInfo.dump(getLogLog());      
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('p'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::LOGLEVEL_CONVERTER);
             //getLogLog().debug("LOGLEVEL converter.");
             //formattingInfo.dump(getLogLog());
@@ -750,33 +908,42 @@ PatternParser::finalizeConverter(tchar c)
 
         case DCMTK_LOG4CPLUS_TEXT('P'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::LOGLEVEL_PREFIX_CONVERTER);
-            //getLogLog().debug("LOGLEVEL PREFIX converter.");
+            //getLogLog().debug("LOGLEVEL converter.");
+            //formattingInfo.dump(getLogLog());
+            break;
+
+        case DCMTK_LOG4CPLUS_TEXT('r'):
+            pc = new RelativeTimestampConverter (formattingInfo);
+            //getLogLog().debug("RELATIVE converter.");
             //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('t'):
             pc = new BasicPatternConverter
-                          (formattingInfo,
+                          (formattingInfo, 
                            BasicPatternConverter::THREAD_CONVERTER);
             //getLogLog().debug("THREAD converter.");
-            //formattingInfo.dump(getLogLog());
+            //formattingInfo.dump(getLogLog());      
             break;
 
-        case DCMTK_LOG4CPLUS_TEXT('i'):
+        case DCMTK_LOG4CPLUS_TEXT('T'):
             pc = new BasicPatternConverter
                           (formattingInfo,
-                           BasicPatternConverter::PROCESS_CONVERTER);
-            //getLogLog().debug("PROCESS_CONVERTER converter.");
+                           BasicPatternConverter::THREAD2_CONVERTER);
+            //getLogLog().debug("THREAD2 converter.");
             //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('x'):
-            pc = new BasicPatternConverter
-                          (formattingInfo,
-                           BasicPatternConverter::NDC_CONVERTER);
-            //getLogLog().debug("NDC converter.");
+            pc = new NDCPatternConverter (formattingInfo, ndcMaxDepth);
+            //getLogLog().debug("NDC converter.");      
+            break;
+
+        case DCMTK_LOG4CPLUS_TEXT('X'):
+            pc = new MDCPatternConverter (formattingInfo, extractOption ());
+            //getLogLog().debug("MDC converter.");
             break;
 
         default:
@@ -785,20 +952,22 @@ PatternParser::finalizeConverter(tchar c)
                 << c
                 << DCMTK_LOG4CPLUS_TEXT("] at position ")
                 << pos
-                << DCMTK_LOG4CPLUS_TEXT(" in conversion pattern.");
-            OFSTRINGSTREAM_GETOFSTRING(buf, str)
-            getLogLog().error(str);
+                << DCMTK_LOG4CPLUS_TEXT(" in conversion patterrn.");
+            helpers::getLogLog().error(OFString(buf.str().c_str(), buf.str().length()));
             pc = new LiteralPatternConverter(currentLiteral);
     }
 
+    list.push_back(pc);
     currentLiteral.resize(0);
-    list->push_back(pc);
     state = LITERAL_STATE;
     formattingInfo.reset();
 }
 
 
+} // namespace pattern
 
+
+typedef pattern::PatternConverterList PatternConverterList;
 
 
 ////////////////////////////////////////////////
@@ -806,68 +975,75 @@ PatternParser::finalizeConverter(tchar c)
 ////////////////////////////////////////////////
 
 PatternLayout::PatternLayout(const tstring& pattern_, bool formatEachLine_)
+    : pattern()
+    , formatEachLine()
+    , parsedPattern()
 {
-    init(pattern_, formatEachLine_);
+    init(pattern_, formatEachLine_, 0);
 }
 
 
-PatternLayout::PatternLayout(const Properties& properties, tstring& error)
+PatternLayout::PatternLayout(const helpers::Properties& properties)
+    : pattern()
+    , formatEachLine()
+    , parsedPattern()
 {
+    unsigned ndcMaxDepth = 0;
+    bool formatEachLine_ = true;
+    properties.getUInt (ndcMaxDepth, DCMTK_LOG4CPLUS_TEXT ("NDCMaxDepth"));
+    properties.getBool(formatEachLine_, DCMTK_LOG4CPLUS_TEXT("FormatEachLine"));
+
     bool hasPattern = properties.exists( DCMTK_LOG4CPLUS_TEXT("Pattern") );
     bool hasConversionPattern = properties.exists( DCMTK_LOG4CPLUS_TEXT("ConversionPattern") );
-    tstring eachLine = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("FormatEachLine"), "yes");
-    bool formatEachLine_ = true;
-
-    if (eachLine == DCMTK_LOG4CPLUS_TEXT("yes"))
-        formatEachLine_ = true;
-    else if (eachLine == DCMTK_LOG4CPLUS_TEXT("no"))
-        formatEachLine_ = false;
-    else
-        getLogLog().warn( DCMTK_LOG4CPLUS_TEXT("PatternLayout- the \"FormatEachLine\" property has an invalid value, assuming \"yes\""));
 
     if(hasPattern) {
-        getLogLog().warn( DCMTK_LOG4CPLUS_TEXT("PatternLayout- the \"Pattern\" property has been deprecated.  Use \"ConversionPattern\" instead."));
+        helpers::getLogLog().warn(
+            DCMTK_LOG4CPLUS_TEXT("PatternLayout- the \"Pattern\" property has been")
+            DCMTK_LOG4CPLUS_TEXT(" deprecated.  Use \"ConversionPattern\" instead."));
     }
-
+    
     if(hasConversionPattern) {
-        init(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ConversionPattern") ), formatEachLine_);
+        init(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ConversionPattern") ), formatEachLine_,
+            ndcMaxDepth);
     }
     else if(hasPattern) {
-        init(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("Pattern") ), formatEachLine_);
+        init(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("Pattern") ), formatEachLine_, ndcMaxDepth);
     }
     else {
-        error = DCMTK_LOG4CPLUS_TEXT("ConversionPattern not specified in properties");
-        //throw STD_NAMESPACE runtime_error("ConversionPattern not specified in properties");
-        return;
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT ("ConversionPattern not specified in properties"),
+            true);
     }
-    error.clear();
+
 }
 
 
 void
-PatternLayout::init(const tstring& pattern_, bool formatEachLine_)
+PatternLayout::init(const tstring& pattern_, bool formatEachLine_, unsigned ndcMaxDepth)
 {
-    this->pattern = pattern_;
-    this->formatEachLine = formatEachLine_;
-    this->parsedPattern = PatternParser(pattern).parse();
+    pattern = pattern_;
+    formatEachLine = formatEachLine_;
+    parsedPattern = pattern::PatternParser(pattern, ndcMaxDepth).parse();
 
     // Let's validate that our parser didn't give us any NULLs.  If it did,
     // we will convert them to a valid PatternConverter that does nothing so
     // at least we don't core.
-    for(PatternConverterListIterator it=parsedPattern->begin();
-        it!=parsedPattern->end();
+    for(PatternConverterList::iterator it=parsedPattern.begin(); 
+        it!=parsedPattern.end(); 
         ++it)
     {
         if( (*it) == 0 ) {
-            getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Parsed Pattern created a NULL PatternConverter"));
-            (*it) = new LiteralPatternConverter( DCMTK_LOG4CPLUS_TEXT("") );
+            helpers::getLogLog().error(
+                DCMTK_LOG4CPLUS_TEXT("Parsed Pattern created a NULL PatternConverter"));
+            (*it) = new pattern::LiteralPatternConverter( DCMTK_LOG4CPLUS_TEXT("") );
         }
     }
-    if(parsedPattern->size() == 0) {
-        getLogLog().warn(DCMTK_LOG4CPLUS_TEXT("PatternLayout pattern is empty.  Using default..."));
-        parsedPattern->push_back
-           (new BasicPatternConverter(FormattingInfo(),
-                                      BasicPatternConverter::MESSAGE_CONVERTER));
+    if(parsedPattern.empty ()) {
+        helpers::getLogLog().warn(
+            DCMTK_LOG4CPLUS_TEXT("PatternLayout pattern is empty.  Using default..."));
+        parsedPattern.push_back (
+            new pattern::BasicPatternConverter(pattern::FormattingInfo(), 
+            pattern::BasicPatternConverter::MESSAGE_CONVERTER));
     }
 }
 
@@ -875,10 +1051,8 @@ PatternLayout::init(const tstring& pattern_, bool formatEachLine_)
 
 PatternLayout::~PatternLayout()
 {
-    if (parsedPattern.get() == NULL)
-        return;
-    for(PatternConverterListIterator it=parsedPattern->begin();
-        it!=parsedPattern->end();
+    for(PatternConverterList::iterator it=parsedPattern.begin(); 
+        it!=parsedPattern.end(); 
         ++it)
     {
         delete (*it);
@@ -888,8 +1062,8 @@ PatternLayout::~PatternLayout()
 
 
 void
-PatternLayout::formatAndAppend(tostream& output,
-                               const InternalLoggingEvent& event)
+PatternLayout::formatAndAppend(tostream& output, 
+                               const spi::InternalLoggingEvent& event)
 {
     if (formatEachLine && event.getMessage().find('\n') != OFString_npos)
     {
@@ -904,9 +1078,11 @@ PatternLayout::formatAndAppend(tostream& output,
             tstring tmp_message(event.getMessage().substr(last_pos, (pos == OFString_npos) ? pos : pos - last_pos));
 
             // Then create a temporary InternalLoggingEvent for this one line
-            InternalLoggingEvent tmp_event(event.getLoggerName(), event.getLogLevel(),
-                event.getNDC(), tmp_message, event.getThread(), event.getTimestamp(),
-                event.getFile(), event.getLine(), event.getFunction());
+            spi::InternalLoggingEvent tmp_event(event.getLoggerName(), event.getLogLevel(),
+                event.getNDC(), event.getMDCCopy(), tmp_message, event.getThread(),
+                event.getTimestamp(), event.getFile(), event.getLine());
+            tmp_event.setFunction(event.getFunction());
+
             // And finally, log this single line
             formatAndAppend(output, tmp_event);
 
@@ -916,8 +1092,8 @@ PatternLayout::formatAndAppend(tostream& output,
     }
     else
     {
-        for(PatternConverterListIterator it=parsedPattern->begin();
-            it!=parsedPattern->end();
+        for(PatternConverterList::iterator it=parsedPattern.begin();
+            it!=parsedPattern.end();
             ++it)
         {
             (*it)->formatAndAppend(output, event);
@@ -926,3 +1102,5 @@ PatternLayout::formatAndAppend(tostream& output,
 }
 
 
+} // namespace log4cplus
+} // end namespace dcmtk

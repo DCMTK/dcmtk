@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,21 +19,22 @@
 // limitations under the License.
 
 #include "dcmtk/oflog/spi/rootlog.h"
+#include "dcmtk/oflog/helpers/loglog.h"
+#include "dcmtk/oflog/thread/syncpub.h"
 
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-using namespace dcmtk::log4cplus::spi;
 
+namespace dcmtk {
+namespace log4cplus { namespace spi {
 
 
 //////////////////////////////////////////////////////////////////////////////
 // RootLogger Constructor
 //////////////////////////////////////////////////////////////////////////////
 
-RootLogger::RootLogger(Hierarchy& h, LogLevel ll_)
+RootLogger::RootLogger(Hierarchy& h, LogLevel loglevel)
 : LoggerImpl(DCMTK_LOG4CPLUS_TEXT("root"), h)
 {
-    setLogLevel(ll_);
+    setLogLevel(loglevel);
 }
 
 
@@ -42,21 +43,25 @@ RootLogger::RootLogger(Hierarchy& h, LogLevel ll_)
 // Logger Methods
 //////////////////////////////////////////////////////////////////////////////
 
-LogLevel
+LogLevel 
 RootLogger::getChainedLogLevel() const
 {
     return ll;
 }
 
 
-void
-RootLogger::setLogLevel(LogLevel ll_)
+void 
+RootLogger::setLogLevel(LogLevel loglevel)
 {
-    if(ll_ == NOT_SET_LOG_LEVEL) {
-        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("You have tried to set NOT_SET_LOG_LEVEL to root."));
+    if(loglevel == NOT_SET_LOG_LEVEL) {
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT("You have tried to set NOT_SET_LOG_LEVEL to root."));
     }
     else {
-        LoggerImpl::setLogLevel(ll_);
+        LoggerImpl::setLogLevel(loglevel);
     }
 }
 
+
+} } // namespace log4cplus { namespace spi {
+} // end namespace dcmtk

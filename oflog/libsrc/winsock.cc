@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,17 +18,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//#include <cassert>
-//#include <vector>
-#include "dcmtk/oflog/helpers/socket.h"
-#include "dcmtk/oflog/helpers/loglog.h"
-// stdexcept header not included by default on mingw (needed for std::runtime_error)
-#ifdef __MINGW32__
-#include <stdexcept>
-#endif
+#include "dcmtk/oflog/config.h"
+#if defined (DCMTK_LOG4CPLUS_USE_WINSOCK)
 
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
+#include <cassert>
+#include <cerrno>
+#include "dcmtk/ofstd/ofvector.h"
+#include <cstring>
+#include "dcmtk/oflog/internal/socket.h"
+#include "dcmtk/oflog/helpers/loglog.h"
+#include "dcmtk/oflog/thread/threads.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,6 +48,7 @@ enum WSInitStates
 static WSADATA wsa;
 static LONG volatile winsock_state = WS_UNINITIALIZED;
 
+
 static LONG DoInterlockedCompareExchange(LPLONG p, LONG comp, LONG set)
 {
     LONG ret;
@@ -62,14 +62,13 @@ static LONG DoInterlockedCompareExchange(LPLONG p, LONG comp, LONG set)
     return ret;
 }
 
+
 static
 void
-init_winsock ()
+init_winsock_worker ()
 {
-    // Quick check first to avoid the expensive interlocked compare
-    // and exchange.
-    if (winsock_state == WS_INITIALIZED)
-        return;
+    dcmtk::log4cplus::helpers::LogLog * loglog
+        = dcmtk::log4cplus::helpers::LogLog::getLogLog ();
 
     // Try to change the state to WS_INITIALIZING.
     LONG val = DoInterlockedCompareExchange (
@@ -87,7 +86,8 @@ init_winsock ()
                 OFconst_cast(LPLONG, &winsock_state), WS_UNINITIALIZED,
                 WS_INITIALIZING);
             assert (val == WS_INITIALIZING);
-            throw STD_NAMESPACE runtime_error ("Could not initialize WinSock.");
+            loglog->error (DCMTK_LOG4CPLUS_TEXT ("Could not initialize WinSock."),
+                true);
         }
 
         // WinSock is initialized, change the state to WS_INITIALIZED.
@@ -108,12 +108,12 @@ init_winsock ()
                 return;
 
             case WS_INITIALIZING:
-                ::Sleep (0);
+                dcmtk::log4cplus::thread::yield ();
                 continue;
-
+        
             default:
                 assert (0);
-                throw STD_NAMESPACE runtime_error ("Unknown WinSock state.");
+                loglog->error (DCMTK_LOG4CPLUS_TEXT ("Unknown WinSock state."), true);
             }
         }
 
@@ -123,8 +123,21 @@ init_winsock ()
 
     default:
         assert (0);
-        throw STD_NAMESPACE runtime_error ("Unknown WinSock state.");
+        loglog->error (DCMTK_LOG4CPLUS_TEXT ("Unknown WinSock state."), true);
     }
+}
+
+
+static
+void
+init_winsock ()
+{
+    // Quick check first to avoid the expensive interlocked compare
+    // and exchange.
+    if (winsock_state == WS_INITIALIZED)
+        return;
+    else
+        init_winsock_worker ();
 }
 
 
@@ -146,173 +159,238 @@ WinSockInitializer WinSockInitializer::winSockInitializer;
 } // namespace
 
 
+namespace dcmtk {
+namespace log4cplus { namespace helpers {
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Global Methods
 /////////////////////////////////////////////////////////////////////////////
 
 SOCKET_TYPE
-helpers::openSocket(unsigned short port, SocketState& state)
+openSocket(unsigned short port, SocketState& state)
 {
+    struct sockaddr_in server;
+
     init_winsock ();
 
-    SOCKET sock = ::socket(AF_INET, SOCK_STREAM, 0);
-    if(sock == INVALID_SOCKET) {
-        return sock;
-    }
+    SOCKET sock = WSASocket (AF_INET, SOCK_STREAM, AF_UNSPEC, 0, 0
+#if defined (WSA_FLAG_NO_HANDLE_INHERIT)
+        , WSA_FLAG_NO_HANDLE_INHERIT
+#else
+        , 0
+#endif
+        );
 
-    struct sockaddr_in server;
+    if (sock == INVALID_OS_SOCKET_VALUE)
+        goto error;
+
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_port = htons(port);
 
-    if(bind(sock, (struct sockaddr*)&server, sizeof(server)) != 0) {
-        return INVALID_SOCKET;
-    }
+    if (bind(sock, OFreinterpret_cast(struct sockaddr*, &server), sizeof(server))
+        != 0)
+        goto error;
 
-    if(::listen(sock, 10) != 0) {
-        return INVALID_SOCKET;
-    }
+    if (::listen(sock, 10) != 0)
+        goto error;
 
     state = ok;
-    return sock;
+    return to_log4cplus_socket (sock);
+
+error:
+    int eno = WSAGetLastError ();
+
+    if (sock != INVALID_OS_SOCKET_VALUE)
+        ::closesocket (sock);
+
+    set_last_socket_error (eno);
+    return INVALID_SOCKET_VALUE;
 }
 
 
 SOCKET_TYPE
-helpers::connectSocket(const tstring& hostn,
-                                  unsigned short port, SocketState& state)
+connectSocket(const tstring& hostn, unsigned short port, bool udp, SocketState& state)
 {
+    struct hostent * hp;
+    struct sockaddr_in insock;
+    int retval;
+
     init_winsock ();
 
-    SOCKET sock = ::socket(AF_INET, SOCK_STREAM, 0);
-    if(sock == INVALID_SOCKET) {
-        return INVALID_SOCKET;
-    }
+    SOCKET sock = WSASocket (AF_INET, (udp ? SOCK_DGRAM : SOCK_STREAM),
+        AF_UNSPEC, 0, 0
+#if defined (WSA_FLAG_NO_HANDLE_INHERIT)
+        , WSA_FLAG_NO_HANDLE_INHERIT
+#else
+        , 0
+#endif
+        );
+    if (sock == INVALID_OS_SOCKET_VALUE)
+        goto error;
 
-    unsigned long ip = INADDR_NONE;
-    struct hostent *hp = ::gethostbyname( DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
-    if(hp == 0 || hp->h_addrtype != AF_INET) {
-        ip = inet_addr( DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
-        if(ip == INADDR_NONE) {
+    hp = ::gethostbyname( DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
+    if (hp == 0 || hp->h_addrtype != AF_INET)
+    {
+        insock.sin_family = AF_INET;
+        INT insock_size = sizeof (insock);
+        INT ret = WSAStringToAddress (OFconst_cast(LPTSTR, hostn.c_str ()),
+            AF_INET, 0, OFreinterpret_cast(struct sockaddr *, &insock),
+            &insock_size);
+        if (ret == SOCKET_ERROR || insock_size != sizeof (insock)) 
+        {
             state = bad_address;
-            return INVALID_SOCKET;
+            goto error;
         }
     }
+    else
+        memcpy (&insock.sin_addr, hp->h_addr_list[0],
+            sizeof (insock.sin_addr));
 
-    struct sockaddr_in insock;
     insock.sin_port = htons(port);
     insock.sin_family = AF_INET;
-    if(hp != 0) {
-        memcpy(&insock.sin_addr, hp->h_addr, sizeof insock.sin_addr);
-    }
-    else {
-        insock.sin_addr.S_un.S_addr = ip;
-    }
 
-    int retval;
     while(   (retval = ::connect(sock, (struct sockaddr*)&insock, sizeof(insock))) == -1
           && (WSAGetLastError() == WSAEINTR))
         ;
-    if(retval == SOCKET_ERROR) {
-        ::closesocket(sock);
-        return INVALID_SOCKET;
-    }
-
-    int enabled = 1;
-    if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&enabled, sizeof(enabled)) != 0) {
-        ::closesocket(sock);
-        return INVALID_SOCKET;
-    }
+    if (retval == SOCKET_ERROR)
+        goto error;
 
     state = ok;
-    return sock;
+    return to_log4cplus_socket (sock);
+
+error:
+    int eno = WSAGetLastError ();
+
+    if (sock != INVALID_OS_SOCKET_VALUE)
+        ::closesocket (sock);
+
+    set_last_socket_error (eno);
+    return INVALID_SOCKET_VALUE;
 }
 
 
 SOCKET_TYPE
-helpers::acceptSocket(SOCKET_TYPE sock, SocketState& /*state*/)
+acceptSocket(SOCKET_TYPE sock, SocketState & state)
 {
     init_winsock ();
 
-    return ::accept(sock, NULL, NULL);
+    SOCKET connected_socket = ::accept (to_os_socket (sock), NULL, NULL);
+
+    if (connected_socket != INVALID_OS_SOCKET_VALUE)
+        state = ok;
+
+    return to_log4cplus_socket (connected_socket);
 }
 
 
 
 int
-helpers::closeSocket(SOCKET_TYPE sock)
+closeSocket(SOCKET_TYPE sock)
 {
-    return ::closesocket(sock);
+    return ::closesocket (to_os_socket (sock));
 }
 
 
 
 long
-helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
+read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
-    long read = 0;
-
+    long res, read = 0;
+ 
     do
-    {
-        long res = ::recv(sock, buffer.getBuffer() + read,
-            OFstatic_cast(int, buffer.getMaxSize() - read), 0);
-        if( res <= 0 ) {
+    { 
+        res = ::recv(to_os_socket (sock), 
+                     buffer.getBuffer() + read, 
+                     OFstatic_cast(int, buffer.getMaxSize() - read),
+                     0);
+        if (res == SOCKET_ERROR)
+        {
+            set_last_socket_error (WSAGetLastError ());
             return res;
         }
         read += res;
-    } while( read < OFstatic_cast(long, buffer.getMaxSize()) );
-
+    }
+    while (read < OFstatic_cast(long, buffer.getMaxSize()));
+ 
     return read;
 }
 
 
 
 long
-helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
+write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 {
-    return ::send(sock, buffer.getBuffer(), OFstatic_cast(int, buffer.getSize()), 0);
+    long ret = ::send (to_os_socket (sock), buffer.getBuffer(),
+        OFstatic_cast(int, buffer.getSize()), 0);
+    if (ret == SOCKET_ERROR)
+        set_last_socket_error (WSAGetLastError ());
+    return ret;
+}
+
+
+long
+write(SOCKET_TYPE sock, const STD_NAMESPACE string & buffer)
+{
+    long ret = ::send (to_os_socket (sock), buffer.c_str (),
+        OFstatic_cast(int, buffer.size ()), 0);
+    if (ret == SOCKET_ERROR)
+        set_last_socket_error (WSAGetLastError ());
+    return ret;
 }
 
 
 tstring
-helpers::getHostname (bool fqdn)
+getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
     int ret;
-    size_t hn_size = 1024;
-    char *hn = OFstatic_cast(char *, malloc(hn_size));
+    OFVector<char> hn (1024, 0);
 
     while (true)
     {
-        ret = ::gethostname (&hn[0], OFstatic_cast(int, hn_size) - 1);
+        ret = ::gethostname (&hn[0], OFstatic_cast(int, hn.size ()) - 1);
         if (ret == 0)
         {
             hostname = &hn[0];
             break;
         }
         else if (ret != 0 && WSAGetLastError () == WSAEFAULT)
-        {
-            // Our buffer was too short. Retry with buffer twice the size.
-            hn_size *= 2;
-            hn = OFstatic_cast(char *, realloc(hn, hn_size));
-        }
+            // Out buffer was too short. Retry with buffer twice the size.
+            hn.resize (hn.size () * 2, 0);
         else
             break;
     }
 
     if (ret != 0 || (ret == 0 && ! fqdn))
-    {
-        tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
-        free(hn);
-        return res;
-    }
+        return DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
 
     struct ::hostent * hp = ::gethostbyname (hostname);
     if (hp)
         hostname = hp->h_name;
 
-    tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
-    free(hn);
-    return res;
+    return DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
 }
+
+
+int
+setTCPNoDelay (SOCKET_TYPE sock, bool val)
+{
+    int result;
+    int enabled = OFstatic_cast(int, val);
+    if ((result = setsockopt(sock, IPPROTO_TCP, TCP_NODELAY,
+            OFreinterpret_cast(char*, &enabled),sizeof(enabled))) != 0)
+    {
+        int eno = WSAGetLastError ();
+        set_last_socket_error (eno);
+    }
+
+    return result;
+}
+
+
+} } // namespace log4cplus { namespace helpers {
+} // end namespace dcmtk
+
+#endif // DCMTK_LOG4CPLUS_USE_WINSOCK

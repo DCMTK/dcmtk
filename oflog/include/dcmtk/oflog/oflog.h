@@ -26,7 +26,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/oflog/logger.h"
+#include "dcmtk/oflog/logmacro.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofaptr.h"
 #include "dcmtk/ofstd/ofconapp.h"
 
 #define OFLOG_TRACE(logger, msg) DCMTK_LOG4CPLUS_TRACE(logger, msg)
@@ -39,7 +41,7 @@
 /** simple wrapper around the "low-level" Logger object to make it easier to
  *  switch to a different system
  */
-class DCMTK_LOG4CPLUS_EXPORT OFLogger : private dcmtk::log4cplus::Logger
+class DCMTK_LOG4CPLUS_EXPORT OFLogger : public dcmtk::log4cplus::Logger
 {
 public:
     /** copy constructor
@@ -65,25 +67,6 @@ public:
         OFF_LOG_LEVEL = dcmtk::log4cplus::OFF_LOG_LEVEL
     };
 
-    /** check if the given log level was activated.
-     *  This can be used to check if a given log level is activated before
-     *  spending cpu time on generating a log message. The OFLOG_* macros use
-     *  this automatically, so you should never do something like:
-     *     if (myLogger.isEnabledFor(INFO_LOG_LEVEL))
-     *         OFLOG_INFO("Doing it like this is pointless);
-     *  @param ll the log level to check for
-     *  @return true if messages on this level won't be discarded
-     */
-    bool isEnabledFor(dcmtk::log4cplus::LogLevel ll) const {
-        return Logger::isEnabledFor(ll);
-    }
-
-    /// this function is only used internally by OFLOG_FATAL and friends
-    void forcedLog(dcmtk::log4cplus::LogLevel ll, const dcmtk::log4cplus::tstring& message,
-                   const char* file=NULL, int line=-1, const char* function=NULL) const {
-        Logger::forcedLog(ll, message, file, line, function);
-    }
-
     /** Get the logger's log level.
      *  One of the checks that isEnabledFor() does looks like this:
      *    if (getChainedLogLevel() < level)
@@ -92,13 +75,6 @@ public:
      */
     LogLevel getChainedLogLevel() const {
         return OFstatic_cast(LogLevel, Logger::getChainedLogLevel());
-    }
-
-    /** Set the logger's log level.
-     *  @param ll log level to which this logger is set.
-     */
-    void setLogLevel(dcmtk::log4cplus::LogLevel ll) {
-        Logger::setLogLevel(ll);
     }
 };
 

@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,201 +21,191 @@
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
-//#include <algorithm>
-
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
-
-#define _ALL_STRING DCMTK_LOG4CPLUS_TEXT("ALL")
-#define _TRACE_STRING DCMTK_LOG4CPLUS_TEXT("TRACE")
-#define _DEBUG_STRING DCMTK_LOG4CPLUS_TEXT("DEBUG")
-#define _INFO_STRING DCMTK_LOG4CPLUS_TEXT("INFO")
-#define _WARN_STRING DCMTK_LOG4CPLUS_TEXT("WARN")
-#define _ERROR_STRING DCMTK_LOG4CPLUS_TEXT("ERROR")
-#define _FATAL_STRING DCMTK_LOG4CPLUS_TEXT("FATAL")
-#define _OFF_STRING DCMTK_LOG4CPLUS_TEXT("OFF")
-#define _NOTSET_STRING DCMTK_LOG4CPLUS_TEXT("NOTSET")
-#define _UNKNOWN_STRING DCMTK_LOG4CPLUS_TEXT("UNKNOWN")
-
-#define GET_TO_STRING_NODE OFstatic_cast(ToStringNode*, this->toStringMethods)
-#define GET_FROM_STRING_NODE OFstatic_cast(FromStringNode*, this->fromStringMethods)
+#include "dcmtk/oflog/internal/internal.h"
+#include <algorithm>
 
 
+namespace dcmtk
+{
+namespace log4cplus
+{
 
-//////////////////////////////////////////////////////////////////////////////
-// file LOCAL definitions
-//////////////////////////////////////////////////////////////////////////////
 
-namespace {
-    class ToStringNode {
-    public:
-        ToStringNode(LogLevelToStringMethod m) : method(m), next(0) {}
+namespace
+{
 
-        LogLevelToStringMethod method;
-        ToStringNode* next;
+static tstring const ALL_STRING (DCMTK_LOG4CPLUS_TEXT("ALL"));
+static tstring const TRACE_STRING (DCMTK_LOG4CPLUS_TEXT("TRACE"));
+static tstring const DEBUG_STRING (DCMTK_LOG4CPLUS_TEXT("DEBUG"));
+static tstring const INFO_STRING (DCMTK_LOG4CPLUS_TEXT("INFO"));
+static tstring const WARN_STRING (DCMTK_LOG4CPLUS_TEXT("WARN"));
+static tstring const ERROR_STRING (DCMTK_LOG4CPLUS_TEXT("ERROR"));
+static tstring const FATAL_STRING (DCMTK_LOG4CPLUS_TEXT("FATAL"));
+static tstring const OFF_STRING (DCMTK_LOG4CPLUS_TEXT("OFF"));
+static tstring const NOTSET_STRING (DCMTK_LOG4CPLUS_TEXT("NOTSET"));
+static tstring const UNKNOWN_STRING (DCMTK_LOG4CPLUS_TEXT("UNKNOWN"));
+
+
+struct log_levels_table_rec
+{
+    LogLevel ll;
+    tstring const * str;
+};
+
+
+#define DEF_LLTAB_REC(x) { x ## _LOG_LEVEL, &(x ## _STRING) }
+
+static log_levels_table_rec const log_levels_table[8] = {
+    DEF_LLTAB_REC (OFF),
+    DEF_LLTAB_REC (FATAL),
+    DEF_LLTAB_REC (ERROR),
+    DEF_LLTAB_REC (WARN),
+    DEF_LLTAB_REC (INFO),
+    DEF_LLTAB_REC (DEBUG),
+    DEF_LLTAB_REC (TRACE),
+    DEF_LLTAB_REC (ALL),
+};
+
+#undef DEF_LLTAB_REC
+
+
+static
+tstring const &
+defaultLogLevelToStringMethod(LogLevel ll)
+{
+    switch(ll) {
+        case OFF_LOG_LEVEL:     return OFF_STRING;
+        case FATAL_LOG_LEVEL:   return FATAL_STRING;
+        case ERROR_LOG_LEVEL:   return ERROR_STRING;
+        case WARN_LOG_LEVEL:    return WARN_STRING;
+        case INFO_LOG_LEVEL:    return INFO_STRING;
+        case DEBUG_LOG_LEVEL:   return DEBUG_STRING;
+        case TRACE_LOG_LEVEL:   return TRACE_STRING;
+        //case ALL_LOG_LEVEL:     return ALL_STRING;
+        case NOT_SET_LOG_LEVEL: return NOTSET_STRING;
     };
-
-
-    class FromStringNode {
-    public:
-        FromStringNode(StringToLogLevelMethod m) : method(m), next(0) {}
-
-        StringToLogLevelMethod method;
-        FromStringNode* next;
-    };
-
-
-    static
-    tstring
-    defaultLogLevelToStringMethod(LogLevel ll) {
-        switch(ll) {
-            case OFF_LOG_LEVEL:     return _OFF_STRING;
-            case FATAL_LOG_LEVEL:   return _FATAL_STRING;
-            case ERROR_LOG_LEVEL:   return _ERROR_STRING;
-            case WARN_LOG_LEVEL:    return _WARN_STRING;
-            case INFO_LOG_LEVEL:    return _INFO_STRING;
-            case DEBUG_LOG_LEVEL:   return _DEBUG_STRING;
-            case TRACE_LOG_LEVEL:   return _TRACE_STRING;
-            //case ALL_LOG_LEVEL:     return _ALL_STRING;
-            case NOT_SET_LOG_LEVEL: return _NOTSET_STRING;
-        };
-
-        return tstring();
-    }
-
-
-    static
-    LogLevel
-    defaultStringToLogLevelMethod(const tstring& arg) {
-        tstring s = toUpper(arg);
-
-        if(s == _ALL_STRING)   return ALL_LOG_LEVEL;
-        if(s == _TRACE_STRING) return TRACE_LOG_LEVEL;
-        if(s == _DEBUG_STRING) return DEBUG_LOG_LEVEL;
-        if(s == _INFO_STRING)  return INFO_LOG_LEVEL;
-        if(s == _WARN_STRING)  return WARN_LOG_LEVEL;
-        if(s == _ERROR_STRING) return ERROR_LOG_LEVEL;
-        if(s == _FATAL_STRING) return FATAL_LOG_LEVEL;
-        if(s == _OFF_STRING)   return OFF_LOG_LEVEL;
-
-        return NOT_SET_LOG_LEVEL;
-    }
-
+    
+    return internal::empty_str;
 }
 
 
-
-//////////////////////////////////////////////////////////////////////////////
-// public static methods
-//////////////////////////////////////////////////////////////////////////////
-
-LogLevelManager&
-dcmtk::log4cplus::getLogLevelManager()
+static
+LogLevel
+defaultStringToLogLevelMethod(const tstring& s)
 {
-    static LogLevelManager singleton;
-    return singleton;
-}
+    size_t const tbl_size
+        = sizeof (log_levels_table) / sizeof (log_levels_table[0]);
 
-
-
-//////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::LogLevelManager ctors and dtor
-//////////////////////////////////////////////////////////////////////////////
-
-LogLevelManager::LogLevelManager()
-: toStringMethods(new ToStringNode(defaultLogLevelToStringMethod)),
-  fromStringMethods(new FromStringNode(defaultStringToLogLevelMethod))
-{
-}
-
-
-
-LogLevelManager::~LogLevelManager()
-{
-    ToStringNode* toStringTmp = GET_TO_STRING_NODE;
-    while(toStringTmp) {
-        ToStringNode* tmp = toStringTmp;
-        toStringTmp = toStringTmp->next;
-        delete tmp;
+    for (log_levels_table_rec const * it = log_levels_table;
+        it != log_levels_table + tbl_size; ++it)
+    {
+        if (*it->str == s)
+            return it->ll;
     }
+    
+    return NOT_SET_LOG_LEVEL;
+}
 
-    FromStringNode* fromStringTmp = GET_FROM_STRING_NODE;
-    while(fromStringTmp) {
-        FromStringNode* tmp = fromStringTmp;
-        fromStringTmp = fromStringTmp->next;
-        delete tmp;
-    }
+} // namespace
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// LogLevelManager ctors and dtor
+//////////////////////////////////////////////////////////////////////////////
+
+LogLevelManager::LogLevelManager() 
+    : toStringMethods(),
+      fromStringMethods()
+{
+    LogLevelToStringMethodRec rec;
+    rec.func = defaultLogLevelToStringMethod;
+    rec.use_1_0 = false;
+    toStringMethods.push_back (rec);
+
+    fromStringMethods.push_back (&defaultStringToLogLevelMethod);
 }
 
 
+LogLevelManager::~LogLevelManager() 
+{ }
+
+
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::LogLevelManager public methods
+// LogLevelManager public methods
 //////////////////////////////////////////////////////////////////////////////
 
-tstring
+tstring const &
 LogLevelManager::toString(LogLevel ll) const
 {
-    ToStringNode* toStringTmp = GET_TO_STRING_NODE;
-    while(toStringTmp) {
-        tstring ret = toStringTmp->method(ll);
-        if(ret.length() > 0) {
-            return ret;
+    tstring const * ret;
+    for (LogLevelToStringMethodList::const_iterator it
+        = toStringMethods.begin (); it != toStringMethods.end (); ++it)
+    {
+        LogLevelToStringMethodRec const & rec = *it;
+        if (rec.use_1_0)
+        {
+            // Use TLS to store the result to allow us to return
+            // a reference.
+            tstring & ll_str = internal::get_ptd ()->ll_str;
+            rec.func_1_0 (ll).swap (ll_str);
+            ret = &ll_str;
         }
-        toStringTmp = toStringTmp->next;
+        else
+            ret = &rec.func (ll);
+
+        if (! ret->empty ())
+            return *ret;
     }
 
-    return _UNKNOWN_STRING;
+    return UNKNOWN_STRING;
 }
 
 
-
-LogLevel
-LogLevelManager::fromString(const tstring& s) const
+LogLevel 
+LogLevelManager::fromString(const tstring& arg) const
 {
-    FromStringNode* fromStringTmp = GET_FROM_STRING_NODE;
-    while(fromStringTmp) {
-        LogLevel ret = fromStringTmp->method(s);
-        if(ret != NOT_SET_LOG_LEVEL) {
-            return ret;
-        }
-        fromStringTmp = fromStringTmp->next;
-    }
+    tstring s = helpers::toUpper(arg);
 
+    for (StringToLogLevelMethodList::const_iterator it
+        = fromStringMethods.begin (); it != fromStringMethods.end (); ++it)
+    {
+        LogLevel ret = (*it) (s);
+        if (ret != NOT_SET_LOG_LEVEL)
+            return ret;
+    }
+    
     return NOT_SET_LOG_LEVEL;
 }
 
 
-
-void
+void 
 LogLevelManager::pushToStringMethod(LogLevelToStringMethod newToString)
 {
-    ToStringNode* toStringTmp = GET_TO_STRING_NODE;
-    while(1) {
-        if(toStringTmp->next) {
-            toStringTmp = toStringTmp->next;
-        }
-        else {
-            toStringTmp->next = new ToStringNode(newToString);
-            break;
-        }
-    }
+    LogLevelToStringMethodRec rec;
+    rec.func = newToString;
+    rec.use_1_0 = false;
+    toStringMethods.push_back (rec);
 }
 
 
+void 
+LogLevelManager::pushToStringMethod(LogLevelToStringMethod_1_0 newToString)
+{
+    LogLevelToStringMethodRec rec;
+    rec.func_1_0 = newToString;
+    rec.use_1_0 = true;
+    toStringMethods.push_back (rec);
+}
 
-void
+
+void 
 LogLevelManager::pushFromStringMethod(StringToLogLevelMethod newFromString)
 {
-    FromStringNode* fromStringTmp = GET_FROM_STRING_NODE;
-    while(1) {
-        if(fromStringTmp->next) {
-            fromStringTmp = fromStringTmp->next;
-        }
-        else {
-            fromStringTmp->next = new FromStringNode(newFromString);
-            break;
-        }
-    }
+    fromStringMethods.push_back (newFromString);
 }
 
+        
+} // namespace log4cplus
+} // end namespace dcmtk

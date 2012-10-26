@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,19 +23,39 @@
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/spi/logevent.h"
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/oflog/thread/syncpub.h"
+#include <ostream>
 
-using namespace std;
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
+
+namespace dcmtk
+{
+namespace log4cplus
+{
+
+
+namespace helpers
+{
+
+extern log4cplus::thread::Mutex const & getConsoleOutputMutex ();
+
+} // namespace helpers
+
+
+log4cplus::thread::Mutex const &
+ConsoleAppender::getOutputMutex ()
+{
+    return helpers::getConsoleOutputMutex ();
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::ConsoleAppender ctors and dtor
+// ConsoleAppender ctors and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-ConsoleAppender::ConsoleAppender(bool logToStdErr_, bool immediateFlush_)
+ConsoleAppender::ConsoleAppender(bool logToStdErr_,
+    bool immediateFlush_)
 : logToStdErr(logToStdErr_),
   immediateFlush(immediateFlush_)
 {
@@ -43,19 +63,13 @@ ConsoleAppender::ConsoleAppender(bool logToStdErr_, bool immediateFlush_)
 
 
 
-ConsoleAppender::ConsoleAppender(const helpers::Properties properties, tstring&)
+ConsoleAppender::ConsoleAppender(const helpers::Properties & properties)
 : Appender(properties),
   logToStdErr(false),
   immediateFlush(false)
 {
-    tstring val = toLower(properties.getProperty(DCMTK_LOG4CPLUS_TEXT("logToStdErr")));
-    if(val == DCMTK_LOG4CPLUS_TEXT("true")) {
-        logToStdErr = true;
-    }
-    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("ImmediateFlush") )) {
-        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ImmediateFlush") );
-        immediateFlush = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
-    }
+    properties.getBool (logToStdErr, DCMTK_LOG4CPLUS_TEXT("logToStdErr"));
+    properties.getBool (immediateFlush, DCMTK_LOG4CPLUS_TEXT("ImmediateFlush"));
 }
 
 
@@ -68,13 +82,14 @@ ConsoleAppender::~ConsoleAppender()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::ConsoleAppender public methods
+// ConsoleAppender public methods
 //////////////////////////////////////////////////////////////////////////////
 
-void
+void 
 ConsoleAppender::close()
 {
-    getLogLog().debug(DCMTK_LOG4CPLUS_TEXT("Entering ConsoleAppender::close().."));
+    helpers::getLogLog().debug(
+        DCMTK_LOG4CPLUS_TEXT("Entering ConsoleAppender::close().."));
     closed = true;
 }
 
@@ -84,25 +99,18 @@ ConsoleAppender::close()
 // ConsoleAppender protected methods
 //////////////////////////////////////////////////////////////////////////////
 
-// Normally, append() methods do not need to be locked since they are
-// called by doAppend() which performs the locking.  However, this locks
-// on the LogLog instance, so we don't have multiple threads writing to
-// tcout and tcerr
 void
 ConsoleAppender::append(const spi::InternalLoggingEvent& event)
 {
-    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( getLogLog().mutex )
-        tostream& output = (logToStdErr ? ofConsole.lockCerr() : ofConsole.lockCout());
-        layout->formatAndAppend(output, event);
-        if(immediateFlush) {
-            output.flush();
-        }
-        if (logToStdErr) {
-            ofConsole.unlockCerr();
-        } else {
-            ofConsole.unlockCout();
-        }
-    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    thread::MutexGuard guard (getOutputMutex ());
+
+    tostream& output = (logToStdErr ? tcerr : tcout);
+    layout->formatAndAppend(output, event);
+    if(immediateFlush) {
+        output.flush();
+    }
 }
 
 
+} // namespace log4cplus
+} // end namespace dcmtk

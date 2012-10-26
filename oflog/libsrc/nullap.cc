@@ -4,7 +4,7 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2003-2009 Tad E. Smith
+// Copyright 2003-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,15 +19,17 @@
 // limitations under the License.
 
 #include "dcmtk/oflog/nullap.h"
+#include "dcmtk/oflog/thread/syncpub.h"
 
-using namespace std;
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::helpers;
 
+namespace dcmtk
+{
+namespace log4cplus
+{
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::NullAppender ctors and dtor
+// NullAppender ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 NullAppender::NullAppender()
@@ -35,7 +37,7 @@ NullAppender::NullAppender()
 }
 
 
-NullAppender::NullAppender(const helpers::Properties& properties, tstring&)
+NullAppender::NullAppender(const helpers::Properties& properties)
 : Appender(properties)
 {
 }
@@ -50,7 +52,7 @@ NullAppender::~NullAppender()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::NullAppender public methods
+// NullAppender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
@@ -61,7 +63,7 @@ NullAppender::close()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::NullAppender protected methods
+// NullAppender protected methods
 ///////////////////////////////////////////////////////////////////////////////
 
 // This method does not need to be locked since it is called by
@@ -72,3 +74,5 @@ NullAppender::append(const spi::InternalLoggingEvent&)
 }
 
 
+} // namespace log4cplus
+} // end namespace dcmtk

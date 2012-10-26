@@ -15,14 +15,17 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 
 LOCALINCLUDES = -I$(ofstddir)/include
-LOCALDEFS =
+LOCALDEFS = -Doflog_EXPORTS
 
 objs = oflog.o apndimpl.o appender.o config.o consap.o \
 	factory.o fileap.o filter.o globinit.o hierarchy.o hierlock.o \
 	layout.o logger.o logimpl.o logevent.o loglevel.o loglog.o lloguser.o \
 	ndc.o nullap.o objreg.o patlay.o pointer.o property.o \
 	rootlog.o sleep.o socketap.o sockbuff.o socket.o strhelp.o \
-	syncprims.o syslogap.o threads.o timehelp.o unixsock.o
+	syncprims.o syslogap.o threads.o timehelp.o unixsock.o clogger.o \
+	env.o fileinfo.o lockfile.o mdc.o queue.o snprintf.o tls.o version.o \
+	log4judp.o logmacro.o asyncap.o cygwin32.o striconv.o \
+	strcloc.o strccloc.o
 
 library = liboflog.$(LIBEXT)
 

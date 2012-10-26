@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    appenderattachableimpl.h
 // Created: 6/2001
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,35 +21,37 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
-#define DCMTK__LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
+#ifndef DCMTK_LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
+#define DCMTK_LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
 
 #include "dcmtk/oflog/config.h"
-#include "dcmtk/oflog/layout.h"
-#include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/lloguser.h"
-#include "dcmtk/oflog/helpers/pointer.h"
-#include "dcmtk/oflog/helpers/threads.h"
-#include "dcmtk/oflog/spi/apndatch.h"
 
-//#include <memory>
-//#include <vector>
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
+#include "dcmtk/oflog/tstring.h"
+#include "dcmtk/oflog/helpers/pointer.h"
+#include "dcmtk/oflog/spi/apndatch.h"
+#include "dcmtk/oflog/thread/syncprim.h"
+
+#include <memory>
+#include "dcmtk/ofstd/ofvector.h"
 
 
 namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
-
+ 
         /**
          * This Interface is for attaching Appenders to objects.
          */
-        class DCMTK_LOG4CPLUS_EXPORT AppenderAttachableImpl
-                                   : public spi::AppenderAttachable,
-                                     protected helpers::LogLogUser
+        class DCMTK_LOG4CPLUS_EXPORT AppenderAttachableImpl 
+            : public log4cplus::spi::AppenderAttachable
         {
         public:
           // Data
-            DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE appender_list_mutex;
+            thread::Mutex appender_list_mutex;
 
           // Ctors
             AppenderAttachableImpl();
@@ -72,9 +75,9 @@ namespace log4cplus {
              * Look for an attached appender named as <code>name</code>.
              *
              * Return the appender with that name if in the list. Return null
-             * otherwise.
+             * otherwise.  
              */
-            virtual SharedAppenderPtr getAppender(const tstring& name);
+            virtual SharedAppenderPtr getAppender(const log4cplus::tstring& name);
 
             /**
              * Remove all previously added appenders.
@@ -88,29 +91,31 @@ namespace log4cplus {
 
             /**
              * Remove the appender with the name passed as parameter from the
-             * list of appenders.
+             * list of appenders.  
              */
-            virtual void removeAppender(const tstring& name);
+            virtual void removeAppender(const log4cplus::tstring& name);
 
             /**
-             * Call the <code>doAppend</code> method on all attached appenders.
+             * Call the <code>doAppend</code> method on all attached appenders.  
              */
             int appendLoopOnAppenders(const spi::InternalLoggingEvent& event) const;
 
         protected:
           // Types
-            typedef OFList<SharedAppenderPtr> ListType;
-            typedef OFListIterator(SharedAppenderPtr) ListIteratorType;
-            typedef OFListConstIterator(SharedAppenderPtr) ListConstIteratorType;
+            typedef OFVector<SharedAppenderPtr> ListType;
 
           // Data
             /** Array of appenders. */
             ListType appenderList;
+
+        private:
+            AppenderAttachableImpl(AppenderAttachableImpl const &);
+            AppenderAttachableImpl & operator = (AppenderAttachableImpl const &);
         };  // end class AppenderAttachableImpl
 
     } // end namespace helpers
 } // end namespace log4cplus
-} // namespace dcmtk
+} // end namespace dcmtk
 
-#endif // DCMTK__LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
+#endif // DCMTK_LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
 

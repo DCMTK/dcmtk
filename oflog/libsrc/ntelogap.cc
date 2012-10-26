@@ -1,9 +1,9 @@
-// Module:  DCMTK_LOG4CPLUS
+// Module:  LOG4CPLUS
 // File:    nteventlogappender.cxx
 // Created: 4/2003
 // Author:  Michael CATANZARITI
 //
-// Copyright 2003-2009 Michael CATANZARITI
+// Copyright 2003-2010 Michael CATANZARITI
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,18 +17,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "dcmtk/oflog/config.h"
+#if defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
+
 #include "dcmtk/oflog/ntelogap.h"
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
+#include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/spi/logevent.h"
+#include "dcmtk/oflog/internal/internal.h"
+#include "dcmtk/oflog/thread/syncpub.h"
+#include <sstream>
+#include <cstdlib>
 
 
-#if defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
-
-using namespace dcmtk::log4cplus;
-using namespace dcmtk::log4cplus::spi;
-using namespace dcmtk::log4cplus::helpers;
+namespace dcmtk
+{
+namespace log4cplus
+{
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -37,102 +44,103 @@ using namespace dcmtk::log4cplus::helpers;
 
 namespace {
 
+    static
     bool
-    FreeSid(SID* pSid)
+    copySID(SID** ppDstSid, SID* pSrcSid) 
     {
-        return ::HeapFree(GetProcessHeap(), 0, (LPVOID)pSid) != 0;
-    }
-
-
-    bool
-    CopySid(SID** ppDstSid, SID* pSrcSid)
-    {
-        bool bSuccess = false;
-
         DWORD dwLength = ::GetLengthSid(pSrcSid);
-        *ppDstSid = (SID *) ::HeapAlloc(GetProcessHeap(),
-        HEAP_ZERO_MEMORY, dwLength);
 
-        if(::CopySid(dwLength, *ppDstSid, pSrcSid)) {
-            bSuccess = true;
-        }
-        else {
-            FreeSid(*ppDstSid);
-        }
+        SID * pDstSid = (SID *) calloc (1, dwLength);
+        if (! pDstSid)
+            return false;
 
-        return bSuccess;
+        if (CopySid(dwLength, pDstSid, pSrcSid))
+        {
+            *ppDstSid = pDstSid;
+            return true;
+        }
+        else
+        {
+            free (pDstSid);
+            return false;
+        }
     }
 
 
-
-    bool
-    GetCurrentUserSID(SID** ppSid)
+    static
+    bool 
+    GetCurrentUserSID(SID** ppSid) 
     {
         bool bSuccess = false;
-
-        // Pseudohandle so don't need to close it
+        TOKEN_USER * ptu = 0;
+        DWORD tusize = 0;
         HANDLE hProcess = ::GetCurrentProcess();
-        HANDLE hToken = NULL;
-        if(::OpenProcessToken(hProcess, TOKEN_QUERY, &hToken)) {
-            // Get the required size
-            DWORD tusize = 0;
-            GetTokenInformation(hToken, TokenUser, NULL, 0, &tusize);
-            TOKEN_USER* ptu = (TOKEN_USER*)new BYTE[tusize];
+        HANDLE hToken = 0;
 
-            if(GetTokenInformation(hToken, TokenUser, (LPVOID)ptu, tusize, &tusize)) {
-                bSuccess = CopySid(ppSid, (SID *)ptu->User.Sid);
-            }
+        if (! ::OpenProcessToken(hProcess, TOKEN_QUERY, &hToken))
+            goto finish;
 
-            CloseHandle(hToken);
-            delete [] ptu;
-        }
+        // Get the required size
+        if (! GetTokenInformation(hToken, TokenUser, NULL, 0, &tusize))
+            goto finish;
+
+        ptu = (TOKEN_USER*) calloc (1, tusize);
+        if (! ptu)
+            goto finish;
+
+        if (GetTokenInformation(hToken, TokenUser, (LPVOID)ptu, tusize, &tusize))
+            bSuccess = copySID (ppSid, (SID *)ptu->User.Sid);
+
+    finish:;
+        if (hToken)
+            CloseHandle (hToken);
+
+        free (ptu);
 
         return bSuccess;
     }
 
 
-
-
-
-    HKEY
+    static
+    HKEY 
     regGetKey(const tstring& subkey, DWORD* disposition)
     {
         HKEY hkey = 0;
-        RegCreateKeyEx(HKEY_LOCAL_MACHINE,
-                       subkey.c_str(),
-                       0,
-                       NULL,
-                       REG_OPTION_NON_VOLATILE,
-                       KEY_SET_VALUE,
-                       NULL,
-                       &hkey,
+        RegCreateKeyEx(HKEY_LOCAL_MACHINE, 
+                       subkey.c_str(), 
+                       0, 
+                       NULL, 
+                       REG_OPTION_NON_VOLATILE, 
+                       KEY_SET_VALUE, 
+                       NULL, 
+                       &hkey, 
                        disposition);
         return hkey;
     }
 
 
-
-    void
+    static
+    void 
     regSetString(HKEY hkey, const tstring& name, const tstring& value)
     {
-        RegSetValueEx(hkey,
-                      name.c_str(),
-                      0,
-                      REG_SZ,
-                      (LPBYTE)value.c_str(),
+        RegSetValueEx(hkey, 
+                      name.c_str(), 
+                      0, 
+                      REG_SZ, 
+                      OFreinterpret_cast(BYTE const *, value.c_str()),
                       OFstatic_cast(DWORD, value.length() * sizeof(tchar)));
     }
 
 
-
-    void
+    static
+    void 
     regSetDword(HKEY hkey, const tstring& name, DWORD value)
     {
-        RegSetValueEx(hkey,
-                      name.c_str(),
-                      0,
-                      REG_DWORD,
-                      (LPBYTE)&value,
+        RegSetValueEx(hkey, 
+                      name.c_str(), 
+                      0, 
+                      REG_DWORD, 
+                      OFreinterpret_cast(LPBYTE, &value),
                       sizeof(DWORD));
     }
 
@@ -141,16 +149,16 @@ namespace {
 
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::NTEventLogAppender ctor and dtor
+// NTEventLogAppender ctor and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-NTEventLogAppender::NTEventLogAppender(const tstring& server,
-                                       const tstring& log,
+NTEventLogAppender::NTEventLogAppender(const tstring& server, 
+                                       const tstring& log, 
                                        const tstring& source)
-: server(server),
-  log(log),
-  source(source),
-  hEventLog(NULL),
+: server(server), 
+  log(log), 
+  source(source), 
+  hEventLog(NULL), 
   pCurrentUserSID(NULL)
 {
     init();
@@ -158,9 +166,9 @@ NTEventLogAppender::NTEventLogAppender(const tstring& server,
 
 
 
-NTEventLogAppender::NTEventLogAppender(const Properties properties, tstring& error)
+NTEventLogAppender::NTEventLogAppender(const helpers::Properties & properties)
 : Appender(properties),
-  hEventLog(NULL),
+  hEventLog(NULL), 
   pCurrentUserSID(NULL)
 {
     server = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("server") );
@@ -172,17 +180,18 @@ NTEventLogAppender::NTEventLogAppender(const Properties properties, tstring& err
 
 
 
-void
+void 
 NTEventLogAppender::init()
 {
     if(source.empty()) {
-        getLogLog().warn(  DCMTK_LOG4CPLUS_TEXT("Source option not set for appender [")
-                         + name
-                         + DCMTK_LOG4CPLUS_TEXT("]."));
+        helpers::getLogLog().warn(
+            DCMTK_LOG4CPLUS_TEXT("Source option not set for appender [")
+            + name 
+            + DCMTK_LOG4CPLUS_TEXT("]."));
         return;
     }
 
-    if(log.length() == 0) {
+    if(log.empty ()) {
         log = DCMTK_LOG4CPLUS_TEXT("Application");
     }
 
@@ -194,7 +203,8 @@ NTEventLogAppender::init()
     hEventLog = ::RegisterEventSource(server.empty () ? 0 : server.c_str(),
         source.c_str());
     if (! hEventLog || hEventLog == HANDLE(ERROR_INVALID_HANDLE))
-        getLogLog().warn (DCMTK_LOG4CPLUS_TEXT("Event source registration failed."));
+        helpers::getLogLog().warn (
+            DCMTK_LOG4CPLUS_TEXT("Event source registration failed."));
 }
 
 
@@ -204,7 +214,7 @@ NTEventLogAppender::~NTEventLogAppender()
     destructorImpl();
 
     if(pCurrentUserSID != NULL) {
-        FreeSid(pCurrentUserSID);
+        free (pCurrentUserSID);
         pCurrentUserSID = NULL;
     }
 }
@@ -212,10 +222,10 @@ NTEventLogAppender::~NTEventLogAppender()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::NTEventLogAppender public methods
+// NTEventLogAppender public methods
 //////////////////////////////////////////////////////////////////////////////
 
-void
+void 
 NTEventLogAppender::close()
 {
     if(hEventLog != NULL) {
@@ -228,24 +238,26 @@ NTEventLogAppender::close()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// dcmtk::log4cplus::NTEventLogAppender protected methods
+// NTEventLogAppender protected methods
 //////////////////////////////////////////////////////////////////////////////
 
-void
-NTEventLogAppender::append(const InternalLoggingEvent& event)
+void 
+NTEventLogAppender::append(const spi::InternalLoggingEvent& event)
 {
-    BOOL bSuccess;
-
     if(hEventLog == NULL) {
-        getLogLog().warn(DCMTK_LOG4CPLUS_TEXT("NT EventLog not opened."));
+        helpers::getLogLog().warn(DCMTK_LOG4CPLUS_TEXT("NT EventLog not opened."));
         return;
     }
 
-    tostringstream buf;
-    layout->formatAndAppend(buf, event);
-    OFSTRINGSTREAM_GETSTR(buf, s);
+    tstring & str = formatEvent (event);
 
-    bSuccess = ::ReportEvent(hEventLog,
+    // From MSDN documentation for ReportEvent():
+    // Each string is limited to 31,839 characters.
+    if (str.size () > 31839)
+        str.resize (31839);
+
+    const tchar * s = str.c_str ();
+    BOOL bSuccess = ::ReportEvent(hEventLog,
                                   getEventType(event),
                                   getEventCategory(event),
                                   0x1000,
@@ -255,97 +267,86 @@ NTEventLogAppender::append(const InternalLoggingEvent& event)
                                   &s,
                                   NULL);
 
-    OFSTRINGSTREAM_FREESTR(s);
-
     if(!bSuccess) {
-        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Cannot report event in NT EventLog."));
+        helpers::getLogLog().error(
+            DCMTK_LOG4CPLUS_TEXT("Cannot report event in NT EventLog."));
     }
 }
 
 
 
 
-WORD
-NTEventLogAppender::getEventType(const InternalLoggingEvent& event)
+WORD 
+NTEventLogAppender::getEventType(const spi::InternalLoggingEvent& event)
 {
     WORD ret_val;
+    LogLevel const ll = event.getLogLevel();
 
-    switch ((int)event.getLogLevel())
-    {
-    case FATAL_LOG_LEVEL:
-    case ERROR_LOG_LEVEL:
+    if (ll >= ERROR_LOG_LEVEL) // or FATAL_LOG_LEVEL
         ret_val = EVENTLOG_ERROR_TYPE;
-        break;
-    case WARN_LOG_LEVEL:
+    else if (ll >= WARN_LOG_LEVEL)
         ret_val = EVENTLOG_WARNING_TYPE;
-        break;
-    case INFO_LOG_LEVEL:
-    case DEBUG_LOG_LEVEL:
-    default:
+    else // INFO_LOG_LEVEL or DEBUG_LOG_LEVEL or TRACE_LOG_LEVEL
         ret_val = EVENTLOG_INFORMATION_TYPE;
-        break;
-    }
 
     return ret_val;
 }
 
 
 
-WORD
-NTEventLogAppender::getEventCategory(const InternalLoggingEvent& event)
+WORD 
+NTEventLogAppender::getEventCategory(const spi::InternalLoggingEvent& event)
 {
     WORD ret_val;
+    LogLevel const ll = event.getLogLevel();
 
-    switch (event.getLogLevel())
-    {
-    case FATAL_LOG_LEVEL:
+    if (ll >= FATAL_LOG_LEVEL)
         ret_val = 1;
-        break;
-    case ERROR_LOG_LEVEL:
+    else if (ll >= ERROR_LOG_LEVEL)
         ret_val = 2;
-        break;
-    case WARN_LOG_LEVEL:
+    else if (ll >= WARN_LOG_LEVEL)
         ret_val = 3;
-        break;
-    case INFO_LOG_LEVEL:
+    else if (ll >= INFO_LOG_LEVEL)
         ret_val = 4;
-        break;
-    case DEBUG_LOG_LEVEL:
-    default:
+    else if (ll >= DEBUG_LOG_LEVEL)
         ret_val = 5;
-        break;
-    }
+    else // TRACE_LOG_LEVEL
+        ret_val = 6;
 
     return ret_val;
 }
 
 
 // Add this source with appropriate configuration keys to the registry.
-void
+void 
 NTEventLogAppender::addRegistryInfo()
 {
     DWORD disposition;
     HKEY hkey = 0;
     tstring subkey =   DCMTK_LOG4CPLUS_TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
-                     + log
-                     + DCMTK_LOG4CPLUS_TEXT("\\")
+                     + log 
+                     + DCMTK_LOG4CPLUS_TEXT("\\") 
                      + source;
-
+    
     hkey = regGetKey(subkey, &disposition);
     if(disposition == REG_CREATED_NEW_KEY) {
-        regSetString(hkey,
-                     DCMTK_LOG4CPLUS_TEXT("EventMessageFile"),
+        regSetString(hkey, 
+                     DCMTK_LOG4CPLUS_TEXT("EventMessageFile"), 
                      DCMTK_LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
-        regSetString(hkey,
-                     DCMTK_LOG4CPLUS_TEXT("CategoryMessageFile"),
+        regSetString(hkey, 
+                     DCMTK_LOG4CPLUS_TEXT("CategoryMessageFile"), 
                      DCMTK_LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
         regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("TypesSupported"), (DWORD)7);
         regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("CategoryCount"), (DWORD)5);
     }
-
+    
     RegCloseKey(hkey);
     return;
 }
 
 
-#endif
+} // namespace log4cplus
+} // end namespace dcmtk
+
+
+#endif // DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG

@@ -1,3 +1,4 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
 // File:    threads.h
 // Created: 6/2001
@@ -20,51 +21,37 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_THREADS_HEADER_
-#define DCMTK__LOG4CPLUS_THREADS_HEADER_
+#ifndef DCMTK_LOG4CPLUS_THREADS_HEADER_
+#define DCMTK_LOG4CPLUS_THREADS_HEADER_
 
 #include "dcmtk/oflog/config.h"
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 
 
-namespace dcmtk { namespace log4cplus { namespace thread {
+namespace dcmtk {
+namespace log4cplus { namespace thread {
 
-/**
- * This is used to lock a mutex.  The dtor unlocks the mutex.
- */
-class Guard
-{
-public:
-    /** "locks" <code>mutex</code>. */
-    Guard(DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE mutex)
-        : _mutex (mutex)
-    {
-        DCMTK_LOG4CPLUS_MUTEX_LOCK( _mutex );
-    }
 
-    /** "unlocks" <code>mutex</code>. */
-    ~Guard()
-    {
-        DCMTK_LOG4CPLUS_MUTEX_UNLOCK( _mutex );
-    }
-
-private:
-    DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE _mutex;
-
-    // disable copy
-    Guard(const Guard&);
-    Guard& operator=(const Guard&);
-};
+DCMTK_LOG4CPLUS_EXPORT log4cplus::tstring const & getCurrentThreadName();
+DCMTK_LOG4CPLUS_EXPORT log4cplus::tstring const & getCurrentThreadName2();
+DCMTK_LOG4CPLUS_EXPORT void yield();
+DCMTK_LOG4CPLUS_EXPORT void blockAllSignals();
 
 
 #ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
 
-DCMTK_LOG4CPLUS_EXPORT void blockAllSignals();
-DCMTK_LOG4CPLUS_EXPORT tstring getCurrentThreadName();
-
-
-struct ThreadStart;
+class ThreadImplBase
+    : public virtual log4cplus::helpers::SharedObject
+{
+protected:
+    virtual ~ThreadImplBase ();
+};
 
 
 /**
@@ -74,35 +61,21 @@ struct ThreadStart;
  * class with basic functionality.
  */
 class DCMTK_LOG4CPLUS_EXPORT AbstractThread
-    : public virtual dcmtk::log4cplus::helpers::SharedObject
+    : public virtual log4cplus::helpers::SharedObject
 {
 public:
     AbstractThread();
-    bool isRunning() const { return running; }
-    DCMTK_LOG4CPLUS_THREAD_KEY_TYPE getThreadId() const;
-    DCMTK_LOG4CPLUS_THREAD_HANDLE_TYPE getThreadHandle () const;
+    bool isRunning() const;
     virtual void start();
     void join () const;
+    virtual void run() = 0;
 
 protected:
     // Force objects to be constructed on the heap
     virtual ~AbstractThread();
-    virtual void run() = 0;
 
 private:
-    bool running;
-
-    // Friends.
-    friend struct ThreadStart;
-
-#  ifdef DCMTK_LOG4CPLUS_USE_PTHREADS
-    pthread_t handle;
-
-#  elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-    HANDLE handle;
-    unsigned thread_id;
-
-#  endif
+    helpers::SharedObjectPtr<ThreadImplBase> thread;
 
     // Disallow copying of instances of this class.
     AbstractThread(const AbstractThread&);
@@ -115,8 +88,9 @@ typedef helpers::SharedObjectPtr<AbstractThread> AbstractThreadPtr;
 #endif // DCMTK_LOG4CPLUS_SINGLE_THREADED
 
 
-} } } // namespace dcmtk { namespace log4cplus { namespace thread {
+} } // namespace log4cplus { namespace thread {
+} // end namespace dcmtk
 
 
-#endif // DCMTK__LOG4CPLUS_THREADS_HEADER_
+#endif // DCMTK_LOG4CPLUS_THREADS_HEADER_
 

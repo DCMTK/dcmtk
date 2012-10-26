@@ -18,142 +18,187 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//#include <cassert>
-#define INCLUDE_CASSERT
-//#include <exception>
-//#include <stdexcept>
-//#include <errno.h>
-#define INCLUDE_CERRNO
-#define INCLUDE_CSTDLIB
-
-#include "dcmtk/ofstd/ofstdinc.h"
-
 #include "dcmtk/oflog/config.h"
+
+#include <exception>
+#include <ostream>
+#include <cerrno>
+
+#ifdef DCMTK_LOG4CPLUS_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#ifdef DCMTK_LOG4CPLUS_HAVE_SYS_SYSCALL_H
+#include <sys/syscall.h>
+#endif
+
+#ifdef DCMTK_LOG4CPLUS_HAVE_ERRNO_H
+#include <errno.h>
+#endif
+
+#ifdef DCMTK_LOG4CPLUS_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
+#  include <pthread.h>
+#  include <sched.h>
+#  include <signal.h>
+#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
+#  include <process.h> 
+#endif
+#include "dcmtk/oflog/config/windowsh.h"
+#include "dcmtk/oflog/thread/syncpub.h"
+#include "dcmtk/oflog/tstring.h"
+#include "dcmtk/oflog/internal/cygwin32.h"
+#include "dcmtk/oflog/streams.h"
 
 #ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
 
-#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-#  include <sched.h>
-#  include <signal.h>
-#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS) && ! defined (_WIN32_WCE)
-#  include <process.h>
-#endif
-
-#include "dcmtk/oflog/helpers/threads.h"
-#include "dcmtk/oflog/streams.h"
+#include "dcmtk/oflog/thread/threads.h"
+#include "dcmtk/oflog/thread/impl/thredimp.h"
+#include "dcmtk/oflog/thread/impl/tls.h"
 #include "dcmtk/oflog/ndc.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/helpers/timehelp.h"
-#include "dcmtk/oflog/helpers/syncprims.h"
+#include "dcmtk/oflog/internal/internal.h"
+
+#endif // DCMTK_LOG4CPLUS_SINGLE_THREADED
 
 
-namespace dcmtk { namespace log4cplus { namespace thread {
+namespace dcmtk {
+namespace log4cplus { namespace thread {
 
-
-struct ThreadStart
-{
-#  ifdef DCMTK_LOG4CPLUS_USE_PTHREADS
-static void* threadStartFuncWorker(void *);
-#  elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-static unsigned threadStartFuncWorker(void *);
-#  endif
-};
-
-
-} } } // namespace dcmtk { namespace log4cplus { namespace thread {
-
-
-namespace
-{
-
-#  ifdef DCMTK_LOG4CPLUS_USE_PTHREADS
-extern "C" void * threadStartFunc(void * param)
-#  elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-static unsigned WINAPI threadStartFunc(void * param)
-#  endif
-{
-    return dcmtk::log4cplus::thread::ThreadStart::threadStartFuncWorker (param);
-}
-
-} // namespace
-
-
-namespace dcmtk { namespace log4cplus { namespace thread {
-
-
-///////////////////////////////////////////////////////////////////////////////
-// public methods
-///////////////////////////////////////////////////////////////////////////////
-
-DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE
-createNewMutex()
-{
-#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-    ::pthread_mutex_t* m = new ::pthread_mutex_t;
-    ::pthread_mutex_init(m, NULL);
-#elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-    ::CRITICAL_SECTION* m = new ::CRITICAL_SECTION;
-    ::InitializeCriticalSection(m);
-#endif
-    return m;
-}
-
-
-void
-deleteMutex(DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE m)
-{
-#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-    ::pthread_mutex_destroy(m);
-#elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-    ::DeleteCriticalSection(m);
-#endif
-    delete m;
-}
-
-
-
-#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-pthread_key_t*
-createPthreadKey(void (*cleanupfunc)(void *))
-{
-    ::pthread_key_t* key = new ::pthread_key_t;
-    ::pthread_key_create(key, cleanupfunc);
-    return key;
-}
-#endif
-
-
-#ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
+DCMTK_LOG4CPLUS_EXPORT
 void
 blockAllSignals()
 {
 #if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
     // Block all signals.
-    ::sigset_t signal_set;
-#if defined (_DARWIN_C_SOURCE) || defined (__OpenBSD__)
+    sigset_t signal_set;
     sigfillset (&signal_set);
-#else
-    ::sigfillset (&signal_set);
-#endif // _DARWIN_C_SOURCE || __OpenBSD__
-    ::pthread_sigmask (SIG_BLOCK, &signal_set, 0);
+    pthread_sigmask (SIG_BLOCK, &signal_set, 0);
+#endif    
+}
+
+
+DCMTK_LOG4CPLUS_EXPORT
+void
+yield()
+{
+#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
+    sched_yield();
+#elif defined(_WIN32)
+#if !defined(_MSC_VER) || _MSC_VER > 1200 /* MSC 6 doesn't know this */
+    if (! SwitchToThread ())
+#endif
+        Sleep (0);
 #endif
 }
-#endif // DCMTK_LOG4CPLUS_SINGLE_THREADED
 
 
-tstring
+DCMTK_LOG4CPLUS_EXPORT
+log4cplus::tstring const &
 getCurrentThreadName()
 {
-    tostringstream tmp;
-    tmp << DCMTK_LOG4CPLUS_GET_CURRENT_THREAD;
-    OFSTRINGSTREAM_GETOFSTRING(tmp, str)
-    return str;
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+    log4cplus::tstring & name = log4cplus::internal::get_thread_name_str ();
+    if (name.empty ())
+    {
+        log4cplus::tostringstream tmp;
+        tmp << impl::getCurrentThreadId ();
+        // tmp.str ().swap (name);
+        name = OFString(tmp.str().c_str(), tmp.str().length());
+    }
+#else
+    static log4cplus::tstring const name (DCMTK_LOG4CPLUS_TEXT ("single"));
+#endif
+
+    return name;
 }
+
+
+namespace
+{
+
+
+static
+bool
+get_current_thread_name_alt (log4cplus::tostream * s)
+{
+    log4cplus::tostream & os = *s;
+
+#if defined (DCMTK_LOG4CPLUS_USE_PTHREADS) && defined (__linux__) \
+    && defined (DCMTK_LOG4CPLUS_HAVE_GETTID)
+    pid_t tid = syscall (SYS_gettid);
+    os << tid;
+
+#elif defined (__CYGWIN__)
+    unsigned long tid = cygwin::get_current_win32_thread_id ();
+    os << tid;
+    
+#else
+    os << getCurrentThreadName ();
+
+#endif
+
+    return true;
+}
+
+
+} // namespace
+
+
+DCMTK_LOG4CPLUS_EXPORT
+log4cplus::tstring const &
+getCurrentThreadName2()
+{
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+    log4cplus::tstring & name = log4cplus::internal::get_thread_name2_str ();
+    if (name.empty ())
+    {
+        log4cplus::tostringstream tmp;
+        get_current_thread_name_alt (&tmp);
+        name = OFString(tmp.str().c_str(), tmp.str().length());
+    }
+
+#else
+    static log4cplus::tstring const name (getCurrentThreadName ());
+
+#endif
+
+    return name;
+}
+
+
+} } // namespace log4cplus { namespace thread {
+} // end namespace dcmtk
+
+
+#ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
+
+namespace
+{
+
+#  ifdef DCMTK_LOG4CPLUS_USE_PTHREADS
+extern "C" void* threadStartFunc(void * param)
+#  elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
+static unsigned WINAPI threadStartFunc(void * param)
+#  endif
+{
+    return dcmtk::log4cplus::thread::impl::ThreadStart::threadStartFuncWorker (param);
+}
+
+} // namespace
+
+
+namespace dcmtk {
+namespace log4cplus { namespace thread { namespace impl {
 
 
 #if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-void*
+void* 
 ThreadStart::threadStartFuncWorker(void * arg)
 #elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
 unsigned
@@ -161,111 +206,115 @@ ThreadStart::threadStartFuncWorker(void * arg)
 #endif
 {
     blockAllSignals ();
-    helpers::SharedObjectPtr<helpers::LogLog> loglog
-        = helpers::LogLog::getLogLog();
+    helpers::LogLog * loglog = helpers::LogLog::getLogLog();
     if (! arg)
         loglog->error(DCMTK_LOG4CPLUS_TEXT("threadStartFunc()- arg is NULL"));
     else
     {
-        AbstractThread * ptr = OFstatic_cast(AbstractThread*, arg);
-        AbstractThreadPtr thread(ptr);
+        Thread * ptr = OFstatic_cast(Thread *, arg);
+        ThreadPtr thread(ptr);
 
-        // Decrease reference count increased by AbstractThread::start().
+        // Decrease reference count increased by Thread::start().
         ptr->removeReference ();
 
         try
         {
             thread->run();
         }
+        catch(STD_NAMESPACE exception const & e)
+        {
+            tstring err = DCMTK_LOG4CPLUS_TEXT("threadStartFunc()- run() terminated with an exception: ");
+            err += DCMTK_LOG4CPLUS_C_STR_TO_TSTRING(e.what());
+            loglog->warn(err);
+        }
         catch(...)
         {
             loglog->warn(DCMTK_LOG4CPLUS_TEXT("threadStartFunc()- run() terminated with an exception."));
         }
-        thread->running = false;
-        getNDC().remove();
+
+        thread::MutexGuard guard (thread->access_mutex);
+        thread->flags &= ~Thread::fRUNNING;
     }
+
+    threadCleanup ();
 
     return 0;
 }
 
 
-
-///////////////////////////////////////////////////////////////////////////////
-// AbstractThread ctor and dtor
-///////////////////////////////////////////////////////////////////////////////
-
-AbstractThread::AbstractThread()
-    : running(false)
+Thread::Thread()
+    : flags (0)
 #if defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     , handle (INVALID_HANDLE_VALUE)
+    , thread_id (0)
+#else
+    , handle ()
 #endif
 {
 }
 
 
-
-AbstractThread::~AbstractThread()
+Thread::~Thread()
 {
-#if defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
+#if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
+    if ((flags & fJOINED) == 0)
+        pthread_detach (handle);
+
+#elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     if (handle != INVALID_HANDLE_VALUE)
         ::CloseHandle (handle);
+
 #endif
 }
 
 
-
-///////////////////////////////////////////////////////////////////////////////
-// AbstractThread public methods
-///////////////////////////////////////////////////////////////////////////////
-
 void
-AbstractThread::start()
+Thread::start()
 {
-    running = true;
+    flags |= fRUNNING;
 
     // Increase reference count here. It will be lowered by the running
     // thread itself.
     addReference ();
 
 #if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-    if (::pthread_create(&handle, NULL, threadStartFunc, this) )
+    if (pthread_create(&handle, NULL, threadStartFunc, this) )
     {
         removeReference ();
-        helpers::SharedObjectPtr<helpers::LogLog> loglog
-            = helpers::LogLog::getLogLog();
-        loglog->error( DCMTK_LOG4CPLUS_TEXT("Thread creation was not successful") );
-        //throw STD_NAMESPACE runtime_error("Thread creation was not successful");
-        abort();
+        flags &= ~fRUNNING;
+        log4cplus::helpers::LogLog::getLogLog ()->error (
+            DCMTK_LOG4CPLUS_TEXT ("Thread creation was not successful"), true);
     }
 #elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-    if (handle != INVALID_HANDLE_VALUE)
-    {
-        ::CloseHandle (handle);
-        handle = INVALID_HANDLE_VALUE;
-    }
-    HANDLE h;
-#if defined (_WIN32_WCE)
-    h = ::CreateThread  (0, 0, threadStartFunc, this, 0, &thread_id);
-#else
+    HANDLE h = handle;
+    handle = INVALID_HANDLE_VALUE;
+    if (h != INVALID_HANDLE_VALUE)
+        ::CloseHandle (h);
+
     h = OFreinterpret_cast(HANDLE,
         ::_beginthreadex (0, 0, threadStartFunc, this, 0, &thread_id));
-#endif
+    handle = h;
     if (! h)
     {
         removeReference ();
-        helpers::SharedObjectPtr<helpers::LogLog> loglog
-            = helpers::LogLog::getLogLog();
-        loglog->error( DCMTK_LOG4CPLUS_TEXT("Thread creation was not successful") );
-        //throw STD_NAMESPACE runtime_error("Thread creation was not successful");
-        abort();
+        flags &= ~fRUNNING;
+        log4cplus::helpers::LogLog::getLogLog ()->error (
+            DCMTK_LOG4CPLUS_TEXT ("Thread creation was not successful"), true);
     }
-    handle = h;
 #endif
 }
 
 
-DCMTK_LOG4CPLUS_THREAD_KEY_TYPE
-AbstractThread::getThreadId () const
+bool
+Thread::isRunning() const
+{
+    thread::MutexGuard guard (access_mutex);
+    return (flags & fRUNNING) != 0;
+}
+
+
+os_id_type
+Thread::getThreadId () const
 {
 #if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
     return handle;
@@ -275,24 +324,119 @@ AbstractThread::getThreadId () const
 }
 
 
-DCMTK_LOG4CPLUS_THREAD_HANDLE_TYPE
-AbstractThread::getThreadHandle () const
+os_handle_type
+Thread::getThreadHandle () const
 {
     return handle;
 }
 
 
 void
-AbstractThread::join () const
+Thread::join ()
 {
 #if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-    ::pthread_join (handle, 0);
+    pthread_join (handle, 0);
 #elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     ::WaitForSingleObject (handle, INFINITE);
 #endif
+    flags |= fJOINED;
 }
 
 
-} } } // namespace dcmtk { namespace log4cplus { namespace thread {
+} // namespace impl {
+
+
+//
+//
+//
+
+ThreadImplBase::~ThreadImplBase ()
+{ }
+
+
+//
+//
+//
+
+
+namespace
+{
+
+
+class ThreadImpl
+    : public impl::Thread
+{
+public:
+    ThreadImpl ()
+        : abs_thread (0)
+    { }
+
+    virtual ~ThreadImpl ()
+    { }
+
+    virtual
+    void
+    run ()
+    {
+        abs_thread->run ();
+    }
+
+    void
+    set_abs_thread (AbstractThread * at)
+    {
+        abs_thread = at;
+    }
+
+protected:
+    AbstractThread * abs_thread;
+
+private:
+    ThreadImpl(const ThreadImpl&);
+    ThreadImpl& operator=(const ThreadImpl&);
+};
+
+
+} // namespace
+
+
+//
+//
+//
+
+AbstractThread::AbstractThread ()
+    : thread (new ThreadImpl)
+{
+    OFstatic_cast(ThreadImpl *, thread.get ())->set_abs_thread (this);
+}
+
+
+bool
+AbstractThread::isRunning() const
+{
+    return OFstatic_cast(ThreadImpl *, thread.get ())->isRunning ();
+}
+
+
+void
+AbstractThread::start()
+{
+    OFstatic_cast(ThreadImpl *, thread.get ())->start ();
+}
+
+
+void
+AbstractThread::join () const
+{
+    OFstatic_cast(ThreadImpl *, thread.get ())->join ();
+}
+
+
+AbstractThread::~AbstractThread()
+{ }
+
+
+} } // namespace log4cplus { namespace thread { 
+} // end namespace dcmtk
+
 
 #endif // DCMTK_LOG4CPLUS_SINGLE_THREADED

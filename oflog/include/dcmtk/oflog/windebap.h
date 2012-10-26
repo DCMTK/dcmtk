@@ -1,10 +1,11 @@
+// -*- C++ -*-
 // Module:  Log4CPLUS
-// File:    win32debugappender.h
+// File:    windebap.h
 // Created: 12/2003
 // Author:  Eduardo Francos, Odalio SARL
 //
 //
-// Copyright 2003-2009 Odalio SARL
+// Copyright 2003-2010 Odalio SARL
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,21 +21,25 @@
 
 /** @file */
 
-#ifndef DCMTK__LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
-#define DCMTK__LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
+#define DCMTK_LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
-#if defined(_WIN32)
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_PRAGMA_ONCE)
+#pragma once
+#endif
+
+#if defined (DCMTK_LOG4CPLUS_HAVE_OUTPUTDEBUGSTRING) 
 
 #include "dcmtk/oflog/appender.h"
-#include "dcmtk/oflog/helpers/property.h"
 
 
 namespace dcmtk {
 namespace log4cplus {
 
     /**
-     * Prints log events using OutputDebugString().
+     * Prints log events using OutputDebugString(). 
      */
     class DCMTK_LOG4CPLUS_EXPORT Win32DebugAppender
         : public Appender
@@ -42,7 +47,7 @@ namespace log4cplus {
     public:
       // Ctors
         Win32DebugAppender();
-        Win32DebugAppender(const helpers::Properties& properties, tstring& error);
+        Win32DebugAppender(const log4cplus::helpers::Properties& properties);
 
       // Dtor
         virtual ~Win32DebugAppender();
@@ -51,7 +56,7 @@ namespace log4cplus {
         virtual void close();
 
     protected:
-        virtual void append(const spi::InternalLoggingEvent& event);
+        virtual void append(const log4cplus::spi::InternalLoggingEvent& event);
 
     private:
       // Disallow copying of instances of this class
@@ -62,6 +67,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _WIN32
-#endif // DCMTK__LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
-
+#endif // DCMTK_LOG4CPLUS_HAVE_OUTPUTDEBUGSTRING
+#endif // DCMTK_LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_

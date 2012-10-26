@@ -1,6 +1,115 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.15 (schlachter)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/tests/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           oflog/libsrc/Makefile.dep
+
+- Update oflog to log4cplus 1.1.0
+  Added:   oflog/include/dcmtk/oflog/asyncap.h
+           oflog/include/dcmtk/oflog/clfsap.h
+           oflog/include/dcmtk/oflog/clogger.h
+           oflog/include/dcmtk/oflog/config/macosx.h
+           oflog/include/dcmtk/oflog/config/windowsh.h
+           oflog/include/dcmtk/oflog/helpers/fileinfo.h
+           oflog/include/dcmtk/oflog/helpers/lockfile.h
+           oflog/include/dcmtk/oflog/helpers/queue.h
+           oflog/include/dcmtk/oflog/helpers/snprintf.h
+           oflog/include/dcmtk/oflog/internal/cygwin32.h
+           oflog/include/dcmtk/oflog/internal/env.h
+           oflog/include/dcmtk/oflog/internal/internal.h
+           oflog/include/dcmtk/oflog/internal/socket.h
+           oflog/include/dcmtk/oflog/log4judp.h
+           oflog/include/dcmtk/oflog/mdc.h
+           oflog/include/dcmtk/oflog/tchar.h
+           oflog/include/dcmtk/oflog/thread/impl/syncimpl.h
+           oflog/include/dcmtk/oflog/thread/impl/syncpmsm.h
+           oflog/include/dcmtk/oflog/thread/impl/syncpthr.h
+           oflog/include/dcmtk/oflog/thread/impl/syncwin.h
+           oflog/include/dcmtk/oflog/thread/impl/thredimp.h
+           oflog/include/dcmtk/oflog/thread/impl/tls.h
+           oflog/include/dcmtk/oflog/thread/syncprim.h
+           oflog/include/dcmtk/oflog/thread/syncpub.h
+           oflog/include/dcmtk/oflog/thread/threads.h
+           oflog/include/dcmtk/oflog/tracelog.h
+           oflog/include/dcmtk/oflog/version.h
+           oflog/libsrc/asyncap.cc
+           oflog/libsrc/clfsap.cc
+           oflog/libsrc/clogger.cc
+           oflog/libsrc/cygwin32.cc
+           oflog/libsrc/env.cc
+           oflog/libsrc/fileinfo.cc
+           oflog/libsrc/lloguser.cc
+           oflog/libsrc/lockfile.cc
+           oflog/libsrc/log4judp.cc
+           oflog/libsrc/logmacro.cc
+           oflog/libsrc/mdc.cc
+           oflog/libsrc/queue.cc
+           oflog/libsrc/snprintf.cc
+           oflog/libsrc/strccloc.cc
+           oflog/libsrc/strcloc.cc
+           oflog/libsrc/striconv.cc
+           oflog/libsrc/tls.cc
+           oflog/libsrc/version.cc
+  Removed: oflog/include/dcmtk/oflog/config/CMakeLists.txt
+           oflog/include/dcmtk/oflog/helpers/CMakeLists.txt
+           oflog/include/dcmtk/oflog/helpers/syncppth.h
+           oflog/include/dcmtk/oflog/helpers/syncprims.h
+           oflog/include/dcmtk/oflog/helpers/threads.h
+           oflog/include/dcmtk/oflog/spi/CMakeLists.txt
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmnet/Makefile.in
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           oflog/include/dcmtk/oflog/*
+           oflog/libsrc/CMakeLists.txt
+           oflog/libsrc/Makefile.in
+           oflog/libsrc/*.cc
+           ofstd/include/dcmtk/ofstd/ofmap.h
+           ofstd/include/dcmtk/ofstd/ofstring.h
+           ofstd/include/dcmtk/ofstd/ofvector.h
+           ofstd/libsrc/ofstring.cc
+
 **** Changes from 2013.01.11 (onken)
 
 - Make sure osconfig.h is included before WITH_THREADS is evaluated.
