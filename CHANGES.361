@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.26 (schlachter)
+
+- Improved error message for missing configure scripts.
+  Affects: configure
+
 **** Changes from 2012.10.25 (riesmeier)
 
 - Replaced general CMake variable "CMAKE_CURRENT_BINARY_DIR" by the more

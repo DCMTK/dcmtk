@@ -27,6 +27,10 @@ elif test "x--version" = "x$*"; then
 else
 	for module in $modules ; do
 		echo "Running configure for module $module."
+		if test ! -x "$module/configure" ; then
+			echo "Module $module does not contain a configure script!" >&2
+			exit 1
+		fi
 		(cd $module && ./configure $* ) || exit 1
 	done
 fi
