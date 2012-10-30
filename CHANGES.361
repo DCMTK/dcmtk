@@ -7,6 +7,9 @@ Changes between releases are documented here.
   projects (DCMTK_SHARED_LIBRARIES and DCMTK_SINGLE_SHARED_LIBRARY).
   Affects: CMake/DCMTKConfig.cmake.in
 
+- Explicitly set DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS to OFF on Unix systems.
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2012.10.26 (schlachter)
 
 - Improved error message for missing configure scripts.
