@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.30 (riesmeier)
+
+- Added further options to DCMTK's CMake configuration file for external
+  projects (DCMTK_SHARED_LIBRARIES and DCMTK_SINGLE_SHARED_LIBRARY).
+  Affects: CMake/DCMTKConfig.cmake.in
+
 **** Changes from 2012.10.26 (schlachter)
 
 - Improved error message for missing configure scripts.
