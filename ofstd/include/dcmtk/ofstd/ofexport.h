@@ -30,7 +30,7 @@
 /* Defines needed for building DLLs on windows */
 #define DCMTK_DECL_EXPORT __declspec(dllexport)
 /* Only use dllimport when DCMTK gets linked into multiple shared libraries. */
-#ifndef DCMTK_STATIC_FOR_SHARED
+#if !defined(DCMTK_STATIC_FOR_SHARED) || !defined(INSIDE_DCMTK)
 #define DCMTK_DECL_IMPORT __declspec(dllimport)
 #endif
 #elif defined(HAVE_HIDDEN_VISIBILITY)

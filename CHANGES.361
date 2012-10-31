@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.10.31 (schlachter)
+
+- Fix building with DCMTK_SINGLE_SHARED_LIBRARY.
+  Affects: CMake/dcmtkMacros.cmake
+           CMake/dcmtkPrepare.cmake
+           ofstd/include/dcmtk/ofstd/ofexport.h
+
 **** Changes from 2012.10.30 (riesmeier)
 
 - Added further options to DCMTK's CMake configuration file for external

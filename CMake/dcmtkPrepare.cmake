@@ -112,6 +112,9 @@ ENDIF(COMMAND CMAKE_POLICY)
 # make OFString(NULL) safe by default
 ADD_DEFINITIONS("-DUSE_NULL_SAFE_OFSTRING")
 
+# tell the DCMTK that we are building the DCMTK
+ADD_DEFINITIONS("-DINSIDE_DCMTK")
+
 # build output files in these directories
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -178,6 +181,11 @@ IF(BUILD_SHARED_LIBS)
     # Make CMake build object libraries. They are just a list of object files
     # which aren't linked together yet.
     SET(DCMTK_LIBRARY_TYPE OBJECT)
+    # Static and shared libraries can have dependencies in CMake. Object
+    # libraries cannot. Since CMake saves dependencies in its cache, we have to
+    # make sure that it doesn't get confused when a "normal" library turns into
+    # an object library. Do this via a suffix.
+    SET(DCMTK_LIBRARY_SUFFIX _obj)
     # This uses object libraries which are new in CMake 2.8.8
     CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
   ENDIF(BUILD_SINGLE_SHARED_LIBRARY)
