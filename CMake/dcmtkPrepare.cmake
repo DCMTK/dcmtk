@@ -113,7 +113,7 @@ ENDIF(COMMAND CMAKE_POLICY)
 ADD_DEFINITIONS("-DUSE_NULL_SAFE_OFSTRING")
 
 # tell the DCMTK that we are building the DCMTK
-ADD_DEFINITIONS("-DINSIDE_DCMTK")
+ADD_DEFINITIONS("-DDCMTK_BUILD_IN_PROGRESS")
 
 # build output files in these directories
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -177,7 +177,7 @@ IF(BUILD_SHARED_LIBS)
     # against the library.
     SET(BUILD_APPS OFF CACHE BOOL "" FORCE)
     # We are building static code that can be used in a shared lib
-    SET(DCMTK_STATIC_FOR_SHARED ON)
+    SET(DCMTK_BUILD_SINGLE_SHARED_LIBRARY ON)
     # Make CMake build object libraries. They are just a list of object files
     # which aren't linked together yet.
     SET(DCMTK_LIBRARY_TYPE OBJECT)

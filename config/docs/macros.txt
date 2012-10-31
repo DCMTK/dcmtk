@@ -35,6 +35,17 @@ DCMTK_BUILD_DATE
     the given date is used instead of the official DCMTK release data.  This
     allows for example to specify the date of a current development snapshot.
 
+DCMTK_BUILD_IN_PROGRESS
+  Affected: all modules
+  Type of modification: Toolkit customization
+  Explanation: When building DLLs, exported symbols must be marked differently
+    if the DLL itself is built or when the DLL shall be used.  This macro is
+    defined when the DCMTK gets built and should not be defined when user code
+    that just uses the DCMTK is built.  Based on this, the correct annotation
+    gets selected and is used in the code.  There should be no valid reasons to
+    define this macro yourself since this is done automatically by the build
+    system.
+
 DCMTK_GUI
   Affected: all modules
   Type of modification: Activates experimental or rarely used feature

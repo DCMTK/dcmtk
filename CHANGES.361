@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.10.31 (schlachter)
 
+- Fix some inconsistent macro names and improve the documentation.
+  Affects: CMake/dcmtkPrepare.cmake
+           CMake/osconfig.h.in
+           config/Makefile.def.in
+           config/docs/macros.txt
+           ofstd/include/dcmtk/ofstd/ofexport.h
+
 - Fix building with DCMTK_SINGLE_SHARED_LIBRARY.
   Affects: CMake/dcmtkMacros.cmake
            CMake/dcmtkPrepare.cmake
