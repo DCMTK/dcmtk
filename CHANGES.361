@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.01 (riesmeier)
+
+- Fixed memory leak in createWindowsDIB() for 8-bit grayscale images.
+  Thanks to Hans Kluijtmans <hans.kluijtmans@topcon.eu> for the report.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
 **** Changes from 2012.10.31 (schlachter)
 
 - Fix some inconsistent macro names and improve the documentation.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1704,7 +1704,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
                     }
                 } else {                                    // data already aligned and correctly oriented
                     data = OutputData->getDataPtr();
-                    OutputData = NULL;                      // remove reference to internal memory
+                    OutputData->removeDataReference();      // remove reference to internal memory
                     bytes = count;
                 }
             }
