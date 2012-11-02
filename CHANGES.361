@@ -9,6 +9,10 @@ Changes between releases are documented here.
   Thanks to Takeo Satomi <takeo.satomi@gmail.com> for the original report.
   Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
 
+- Made more clear what getOutputData() and other output methods return in case
+  of monochrome and color images, i.e. enhanced the existing API documentation.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
 **** Changes from 2012.11.01 (riesmeier)
 
 - Fixed memory leak in createWindowsDIB() for 8-bit grayscale images.

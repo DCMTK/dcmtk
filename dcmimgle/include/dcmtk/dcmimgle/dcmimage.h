@@ -376,8 +376,9 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
-     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).  The rendered pixel data is alway unsigned.
+     *  Supported output color models: Monochrome 2 for monochrome images and RGB
+     *  (or YCbCr_Full if flag CIF_KeepYCbCrColorModel is set) for color images.
+     *  The rendered pixel data is always unsigned.
      *
      ** @param  bits    number of bits per sample used to render the pixel data
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
@@ -401,8 +402,9 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
     /** render pixel data and output to given memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
-     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).  The rendered pixel data is alway unsigned.
+     *  Supported output color models: Monochrome 2 for monochrome images and RGB
+     *  (or YCbCr_Full if flag CIF_KeepYCbCrColorModel is set) for color images.
+     *  The rendered pixel data is always unsigned.
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
@@ -429,8 +431,9 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
     /** render pixel data and return pointer to given plane (internal memory buffer).
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
-     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).  The rendered pixel data is alway unsigned.
+     *  Supported output color models: Monochrome 2 for monochrome images and RGB
+     *  (or YCbCr_Full if flag CIF_KeepYCbCrColorModel is set) for color images.
+     *  The rendered pixel data is always unsigned.
      *
      ** @param  plane  number of plane to be rendered
      *
@@ -1615,8 +1618,8 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *    - Pixel Representation, Pixel Data
      *  Updates the following DICOM attributes (if present in the original image dataset):
      *    - Pixel Spacing and/or Pixel Aspect Ratio
-     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).
+     *  Supported output color models: Monochrome 2 for monochrome images and RGB
+     *  (or YCbCr_Full if flag CIF_KeepYCbCrColorModel is set) for color images.
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  bits     number of bits per sample (image depth, 1..MAX_BITS)
@@ -1650,8 +1653,8 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *    - Pixel Representation, Pixel Data
      *  Updates the following DICOM attributes (if present in the original image dataset):
      *    - Pixel Spacing and/or Pixel Aspect Ratio
-     *  Supported output color models: Monochrome 1/2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).
+     *  Supported output color models: Monochrome 1 or 2 for monochrome images and RGB
+     *  (or YCbCr_Full if flag CIF_KeepYCbCrColorModel is set) for color images.
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  mode     0 = determine value of BitsStored from 'used' pixel values,
