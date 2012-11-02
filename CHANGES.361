@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.02 (riesmeier)
 
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 - Fixed bug in image scaling algorithm reducePixel().
   Comparing two double values for equality is usually a bad idea. Better check
   whether the difference falls below a certain threshold (e.g. 0.00001).

@@ -1,7 +1,7 @@
-.TH "dcmsign" 1 "Fri Aug 31 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmsign \- Sign and Verify DICOM Files 
+dcmsign \- Sign and Verify DICOM Files
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -18,13 +18,13 @@ Five digital signature operations are supported:
 .PP
 .PD 0
 .IP "\(bu" 2
-verification of all signatures in the DICOM file 
+verification of all signatures in the DICOM file
 .IP "\(bu" 2
-creation of a new digital signature located in the main dataset, 
+creation of a new digital signature located in the main dataset,
 .IP "\(bu" 2
-creation of a new digital signature in an item of a sequence embedded within the dataset, 
+creation of a new digital signature in an item of a sequence embedded within the dataset,
 .IP "\(bu" 2
-removal of a single digital signature from the DICOM file, and 
+removal of a single digital signature from the DICOM file, and
 .IP "\(bu" 2
 removal of all digital signatures from the DICOM file\&.
 .PP
@@ -287,4 +287,4 @@ The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2000-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

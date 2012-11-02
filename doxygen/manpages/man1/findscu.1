@@ -1,7 +1,7 @@
-.TH "findscu" 1 "Fri Aug 31 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-findscu \- DICOM query (C-FIND) SCU 
+findscu \- DICOM query (C-FIND) SCU
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -285,7 +285,7 @@ findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
 .fi
 .PP
 .PP
-This call queries a worklist server at host caesar for any planned procedures for CT modalities by specifing tag (0040,0100) 'Scheduled Procedure Step
+This call queries a worklist server at host caesar for any planned procedures for CT modalities by specifying tag (0040,0100) 'Scheduled Procedure Step
 Sequence' and an attribute 'Modality' in the first item of this sequence with value 'CT'\&. Details on this path notation can be found in the documentation of \fBdcmodify\fP\&.
 .PP
 If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options\&. If multiple query files are provided, \fBfindscu\fP will send multiple C-FIND requests to the SCP\&.
@@ -343,4 +343,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1994-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

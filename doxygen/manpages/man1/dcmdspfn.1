@@ -1,7 +1,7 @@
-.TH "dcmdspfn" 1 "Fri Aug 31 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdspfn" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmdspfn \- Export standard display curves to a text file 
+dcmdspfn \- Export standard display curves to a text file
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -117,7 +117,7 @@ dcmfile-in  DICOM input filename to be dumped
 .PP
 The output file describing the CC, GSDF or CIELAB and PSC for an 8 bit display system (monitor, camera, printer or scanner) is a simple text file\&. Lines starting with a '#' are treated as comments and, therefore, skipped as well as blank lines\&. An input file can for instance be created by the command line tool \fBdconvlum\fP\&.
 .PP
-The ambient light value possibly defined in the characteristics file is also used for the calculation\&. In this case the value is part of the file comment header as well as the number of DDL (device driving level) values, the absolute luminance range (measured in candela per square meter) and the range of the JND index (just noticable difference) in case of GSDF\&. Alternatively, the ambient light value can be specified as a command line option\&. When setting the two luminance values instead of reading a monitor characteristic file as input the luminance range is linearly divided by the number of DDLs\&.
+The ambient light value possibly defined in the characteristics file is also used for the calculation\&. In this case the value is part of the file comment header as well as the number of DDL (device driving level) values, the absolute luminance range (measured in candela per square meter) and the range of the JND index (just noticeable difference) in case of GSDF\&. Alternatively, the ambient light value can be specified as a command line option\&. When setting the two luminance values instead of reading a monitor characteristic file as input the luminance range is linearly divided by the number of DDLs\&.
 .PP
 For printers and scanners the illumination can be specified in addition to the reflected ambient light (both in the characteristics file and on the command line)\&. The header of the output file includes the minimum and maximum Optical Density (OD) instead of the luminance range\&. Please note that the OD values in the input file have to be ordered in descending order (in contrast to the luminance values used for monitors and cameras)\&. The DDL value 0 always means black (darkest value) and the maximum DDL value means white (brightest value, clear film)\&.
 .PP
@@ -136,11 +136,11 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "FILES"
 .PP
-\fI<datadir>/camera\&.lut\fP - sample characteristics file of a camera 
+\fI<datadir>/camera\&.lut\fP - sample characteristics file of a camera
 .br
-\fI<datadir>/monitor\&.lut\fP - sample characteristics file of a monitor 
+\fI<datadir>/monitor\&.lut\fP - sample characteristics file of a monitor
 .br
-\fI<datadir>/printer\&.lut\fP - sample characteristics file of a printer 
+\fI<datadir>/printer\&.lut\fP - sample characteristics file of a printer
 .br
 \fI<datadir>/scanner\&.lut\fP - sample characteristics file of a scanner
 .SH "SEE ALSO"
@@ -148,4 +148,4 @@ In addition, one or more command files can be specified using an '@' sign as a p
 \fBdconvlum\fP(1), \fBdcod2lum\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1999-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,7 +1,7 @@
-.TH "dcmqrscp" 1 "Fri Aug 31 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmqrscp \- DICOM image archive (central test node) 
+dcmqrscp \- DICOM image archive (central test node)
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -110,7 +110,7 @@ association negotiation:
 
   # This option causes dcmqrscp to refuse storage presentations
   # contexts for AE Titles if another association has already
-  # sucessfully negotiated storage presentation contexts for the
+  # successfully negotiated storage presentation contexts for the
   # AE Title.  This option should only be needed for debugging
   # since the dcmqrscp database back-end sequentialises access via
   # file-locking.
@@ -882,9 +882,9 @@ The \fBdcmqrscp\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information 
+\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information
 .br
-\fI<docdir>/dcmqrset\&.txt\fP - setup information 
+\fI<docdir>/dcmqrset\&.txt\fP - setup information
 .br
 \fI<etcdir>/dcmqrscp\&.cfg\fP - example configuration file
 .SH "SEE ALSO"
@@ -892,4 +892,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1993-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
