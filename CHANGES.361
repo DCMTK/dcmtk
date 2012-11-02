@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.02 (riesmeier)
+
+- Fixed bug in image scaling algorithm reducePixel().
+  Comparing two double values for equality is usually a bad idea. Better check
+  whether the difference falls below a certain threshold (e.g. 0.00001).
+  Thanks to Takeo Satomi <takeo.satomi@gmail.com> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
 **** Changes from 2012.11.01 (riesmeier)
 
 - Fixed memory leak in createWindowsDIB() for 8-bit grayscale images.

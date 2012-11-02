@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -827,8 +827,13 @@ class DiScaleTemplate
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
                     byi = OFstatic_cast(int, by);
                     eyi = OFstatic_cast(int, ey);
-                    if (OFstatic_cast(double, eyi) == ey)
+                    if (ey - OFstatic_cast(double, eyi) < 0.00001)      // check whether difference falls below a threshold
+                    {
+#ifdef DEBUG                                                            // this output is only useful for debugging purposes
+                        DCMIMGLE_TRACE("  decreasing value of 'eyi' by 1: " << eyi << " -> " << (eyi - 1));
+#endif
                         --eyi;
+                    }
                     b_factor = 1 + OFstatic_cast(double, byi) - by;
                     t_factor = ey - OFstatic_cast(double, eyi);
                     for (x = 0; x < this->Dest_X; ++x)
@@ -838,8 +843,13 @@ class DiScaleTemplate
                         ex = x_factor * (OFstatic_cast(double, x) + 1.0);
                         bxi = OFstatic_cast(int, bx);
                         exi = OFstatic_cast(int, ex);
-                        if (OFstatic_cast(double, exi) == ex)
+                        if (ex - OFstatic_cast(double, exi) < 0.00001)  // check whether difference falls below a threshold
+                        {
+#ifdef DEBUG                                                            // this output is only useful for debugging purposes
+                            DCMIMGLE_TRACE("  decreasing value of 'exi' by 1: " << exi << " -> " << (exi - 1));
+#endif
                             --exi;
+                        }
                         l_factor = 1 + OFstatic_cast(double, bxi) - bx;
                         r_factor = ex - OFstatic_cast(double, exi);
                         offset = OFstatic_cast(unsigned long, byi) * OFstatic_cast(unsigned long, Columns);
