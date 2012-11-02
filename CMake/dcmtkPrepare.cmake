@@ -9,9 +9,9 @@ SET(DCMTK_CONFIGURATION_DONE true)
 
 # Minimum CMake version required
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.9)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.9 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.9)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.10)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.10 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.10)
 
 # Basic version information
 # (Starting with version 3.5.5, an odd number at the last position indicates

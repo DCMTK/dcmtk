@@ -13,6 +13,9 @@ Changes between releases are documented here.
   of monochrome and color images, i.e. enhanced the existing API documentation.
   Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
 
+- Updated information on latest CMake version that has been tested to "2.8.10".
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2012.11.01 (riesmeier)
 
 - Fixed memory leak in createWindowsDIB() for 8-bit grayscale images.
