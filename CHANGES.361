@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.05 (schlachter)
+
+- Don't delete needed directories during "make clean" with CMake.
+  Affects: doxygen/CMakeLists.txt
+
 **** Changes from 2012.11.02 (riesmeier)
 
 - Updated man pages for new development snapshot.

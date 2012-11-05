@@ -37,9 +37,14 @@ IF(DCMTK_WITH_DOXYGEN)
     INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/manpages/ DESTINATION ${DCMTK_INSTALL_MANDIR} COMPONENT man PATTERN "CVS" EXCLUDE)
   ENDIF(NOT WIN32)
 
+  # the files inside of manpages/ and htmldocs/ should be removed by "make
+  # clean".  However, the directories itself must NOT be removed or else CMake
+  # will complain about the INSTALL() calls for them.  For this reason, the
+  # following does not work:
+  #
   # cleanup created files on "make clean" - directories are not removed with CMake 2.4 :-/
-  SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages)
-  SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")
+  #SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages)
+  #SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")
 
   # the created files "htmldocs.tmp" and "manpages.tmp" should be removed with "make distclean",
   # which will (hopefully) be introduced in a future version, because they are only created during
