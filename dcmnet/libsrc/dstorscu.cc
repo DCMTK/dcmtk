@@ -45,7 +45,7 @@ static const OFString &dicomToHostFilename(const OFString &dicomFilename,
     hostFilename.reserve(length);
     for (size_t i = 0; i < length; i++)
     {
-        const char c = dicomFilename.at(i);
+        const unsigned char c = dicomFilename.at(i);
         // the PATH_SEPARATOR depends on the operating system
         if (c == '\\')
             hostFilename += PATH_SEPARATOR;

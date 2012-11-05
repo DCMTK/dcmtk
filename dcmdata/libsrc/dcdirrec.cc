@@ -600,7 +600,7 @@ static void hostToDicomFilename(char *fname)
     */
     int len = strlen(fname);
     int k = 0;
-    char c = '\0';
+    unsigned char c = '\0';
     for (int i = 0; i < len; i++)
     {
         c = OFstatic_cast(unsigned char, fname[i]);

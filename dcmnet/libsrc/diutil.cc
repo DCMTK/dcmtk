@@ -136,7 +136,7 @@ DU_stripLeadingSpaces(char *s)
     if (s == NULL) return;
     n = strlen(s);
     if (n == 0) return;
-    if (!isspace(s[0])) return; /* no leading space */
+    if (!isspace(TO_UCHAR(s[0]))) return; /* no leading space */
 
     /* first non-space */
     for (i=0; i<n && isspace(TO_UCHAR(s[i])); i++)

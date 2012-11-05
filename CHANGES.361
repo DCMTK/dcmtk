@@ -8,6 +8,12 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.05 (schlachter)
 
+- Fixed some places where isalpha() & Co are called with char argument.
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dstorscu.cc
+
 - Don't delete needed directories during "make clean" with CMake.
   Affects: doxygen/CMakeLists.txt
 
