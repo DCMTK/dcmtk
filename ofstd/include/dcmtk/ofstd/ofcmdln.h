@@ -257,7 +257,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *  @param  shortOpt    short option name
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
-     *  @param  optDescr    description of command line option (use '\n' for line break)
+     *  @param  optDescr    description of command line option (use '\\n' for line break)
      *  @param  flags       optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
@@ -274,7 +274,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *
      ** @param  longOpt   long option name
      *  @param  shortOpt  short option name
-     *  @param  optDescr  description of command line option (use '\n' for line break)
+     *  @param  optDescr  description of command line option (use '\\n' for line break)
      *  @param  flags     optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
@@ -290,7 +290,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      ** @param  longOpt     long option name
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
-     *  @param  optDescr    description of command line option (use '\n' for line break)
+     *  @param  optDescr    description of command line option (use '\\n' for line break)
      *  @param  flags       optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
@@ -305,7 +305,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *  (without short name and additional values)
      *
      ** @param  longOpt   long option name
-     *  @param  optDescr  description of command line option (use '\n' for line break)
+     *  @param  optDescr  description of command line option (use '\\n' for line break)
      *  @param  flags     optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
@@ -340,7 +340,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *  (full version)
      *
      ** @param  param  parameter name
-     *  @param  descr  parameter description (use '\n' for line break)
+     *  @param  descr  parameter description (use '\\n' for line break)
      *  @param  mode   parameter's cardinality (see above)
      *
      ** @return OFTrue if successful, OFFalse otherwise

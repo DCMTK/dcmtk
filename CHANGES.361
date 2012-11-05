@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.05 (riesmeier)
+
+- Added extra '\' to all occurrences of '\n' needed within Doxygen comments.
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+
 **** Changes from 2012.11.05 (schlachter)
 
 - Don't delete needed directories during "make clean" with CMake.
