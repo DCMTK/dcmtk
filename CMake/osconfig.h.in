@@ -789,6 +789,9 @@
 /* Define if we are compiling with libiconv support. */
 #cmakedefine WITH_LIBICONV
 
+/* Define if the second argument to iconv() is const */
+#cmakedefine LIBICONV_SECOND_ARGUMENT_CONST @LIBICONV_SECOND_ARGUMENT_CONST@
+
 /* Define if we are compiling with libpng support */
 #cmakedefine WITH_LIBPNG
 

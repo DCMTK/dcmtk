@@ -253,3 +253,15 @@ IF(DCMTK_WITH_DOXYGEN)
     SET(DCMTK_WITH_DOXYGEN OFF CACHE BOOL "" FORCE)
   ENDIF(NOT DOXYGEN_EXECUTABLE)
 ENDIF(DCMTK_WITH_DOXYGEN)
+
+IF(DCMTK_WITH_ICONV)
+  INCLUDE(CheckCXXSourceCompiles)
+  CHECK_CXX_SOURCE_COMPILES("
+  #include <iconv.h>
+  int main() {
+    iconv_t cd = 0;
+    const char *in = 0;
+    iconv(cd, &in, 0, 0, 0);
+    return 0;
+  }" LIBICONV_SECOND_ARGUMENT_CONST)
+ENDIF(DCMTK_WITH_ICONV)

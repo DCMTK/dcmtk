@@ -217,7 +217,7 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
         // if the input string is empty or NULL, we are done
         if (status.good() && (fromString != NULL) && (fromLength > 0))
         {
-#if defined(_WIN32) && !defined(__MINGW32__)
+#if LIBICONV_SECOND_ARGUMENT_CONST
             const char *inputPos = fromString;
 #else
             char *inputPos = OFconst_cast(char *, fromString);

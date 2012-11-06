@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.06 (schlachter)
 
+- Automatically detect if the second argument to iconv() is const.
+  Affects: CMake/3rdparty.cmake
+           CMake/osconfig.h.in
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           ofstd/libsrc/ofchrenc.cc
+
 - Correctly detect the processor type on 64 bit windows.
   Affects: CMake/GenerateDCMTKConfigure.cmake
 

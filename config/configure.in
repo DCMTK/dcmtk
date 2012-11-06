@@ -1187,6 +1187,15 @@ AS_HELP_STRING([--without-libiconv], [don't include libiconv support])],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
+AC_MSG_CHECKING(whether the second argument to iconv() is const)
+SAVELIBS="$LIBS"
+LIBS="$LIBS $ICONVLIBS"
+AC_TRY_COMPILE([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); const char *in = 0; iconv(cd, &in, NULL, NULL, NULL); iconv_close(cd);],
+  [ AC_MSG_RESULT(yes)
+    AC_DEFINE(LIBICONV_SECOND_ARGUMENT_CONST, , [Define if the second argument to iconv() is const.]) ],
+  [AC_MSG_RESULT(no)])
+LIBS="$SAVELIBS"
+
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------

@@ -14031,6 +14031,34 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the second argument to iconv() is const" >&5
+$as_echo_n "checking whether the second argument to iconv() is const... " >&6; }
+SAVELIBS="$LIBS"
+LIBS="$LIBS $ICONVLIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <iconv.h>
+int
+main ()
+{
+iconv_t cd = iconv_open("", ""); const char *in = 0; iconv(cd, &in, NULL, NULL, NULL); iconv_close(cd);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define LIBICONV_SECOND_ARGUMENT_CONST /**/" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+LIBS="$SAVELIBS"
+
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
 

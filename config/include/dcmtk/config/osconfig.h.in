@@ -812,6 +812,9 @@ typedef unsigned short ushort;
 /* Define if <math.h> fails if included extern "C" */
 #undef INCLUDE_MATH_H_AS_CXX
 
+/* Define if the second argument to iconv() is const. */
+#undef LIBICONV_SECOND_ARGUMENT_CONST
+
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
