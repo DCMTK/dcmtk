@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.06 (schlachter)
+
+- Correctly detect the processor type on 64 bit windows.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2012.11.05 (riesmeier)
 
 - Added extra '\' to all occurrences of '\n' needed within Doxygen comments.
