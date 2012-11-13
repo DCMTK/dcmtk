@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.13 (schlachter)
 
+- Regenerate the VR scanner with a newer flex version.
+  Affects: dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+
 - Ported the generated source commands from Makefile to CMake.
   Affects: dcmdata/libsrc/CMakeLists.txt
 
