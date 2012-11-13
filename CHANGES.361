@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.13 (schlachter)
 
+- Ported the generated source commands from Makefile to CMake.
+  Affects: dcmdata/libsrc/CMakeLists.txt
+
 - Added an output file option to internal tools.
   Affects: dcmdata/libsrc/Makefile.in
            dcmdata/libsrc/mkdeftag.cc
