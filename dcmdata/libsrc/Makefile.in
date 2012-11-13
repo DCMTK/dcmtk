@@ -82,12 +82,12 @@ mkvrscan:
 # Generate a new include file of defined tags
 
 gendeftag: mkdeftag $(dicomdic) $(privatedic)
-	`pwd`/mkdeftag $(dicomdic) $(privatedic) > $(top_srcdir)/include/dcmtk/dcmdata/dcdeftag.h
+	`pwd`/mkdeftag -o $(top_srcdir)/include/dcmtk/dcmdata/dcdeftag.h $(dicomdic) $(privatedic)
 
 # Generate a file which can be used as a builtin dictionary
 
 dcdictzz.cc: mkdictbi $(dicomdic) $(privatedic)
-	`pwd`/mkdictbi $(dicomdic) $(privatedic) > dcdictzz.cc
+	`pwd`/mkdictbi -o dcdictzz.cc $(dicomdic) $(privatedic)
 
 # Generate a builtin data dictionary from $(dicomdic) and $(privatedic)
 

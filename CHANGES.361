@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.13 (schlachter)
 
+- Added an output file option to internal tools.
+  Affects: dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+
 - Added checks for large file support to CMake.
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/osconfig.h.in

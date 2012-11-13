@@ -191,6 +191,7 @@ int
 main(int argc, char* argv[])
 {
     char* progname;
+    const char* filename = NULL;
     FILE* fout = NULL;
     DcmDictEntry* e = NULL;
 
@@ -214,12 +215,27 @@ main(int argc, char* argv[])
     globalDataDict.clear();
 
     progname = argv[0];
+
+    if (argc >= 3 && 0 == strcmp(argv[1], "-o")) {
+        filename = argv[2];
+        argv += 2;
+        argc -= 2;
+    }
+
     int i;
     for (i=1; i<argc; i++) {
         globalDataDict.loadDictionary(argv[i]);
     }
 
-    fout = stdout;
+    if (filename) {
+        fout = fopen(filename, "w");
+        if (!fout) {
+            fprintf(stderr, "Failed to open file \"%s\", giving up\n", filename);
+            return -1;
+        }
+    } else {
+        fout = stdout;
+    }
 
     OFString dateString;
     OFDateTime::getCurrentDateTime().getISOFormattedDateTime(dateString);
