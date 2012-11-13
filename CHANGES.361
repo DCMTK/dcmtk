@@ -3,6 +3,27 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.13 (schlachter)
 
+- Remove unneeded library information from the build system.
+  Affects: dcmdata/apps/CMakeLists.txt
+           dcmdata/tests/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpls/apps/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/tests/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           dcmrt/apps/CMakeLists.txt
+           dcmrt/tests/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/wwwapps/CMakeLists.txt
+           ofstd/tests/CMakeLists.txt
+
 - Remove the test runner on "make clean".
   Affects: dcmnet/tests/Makefile.in
 

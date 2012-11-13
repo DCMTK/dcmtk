@@ -1,6 +1,3 @@
-# declare directories containing used libraries
-LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${dcmdata_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${ZLIB_LIBDIR} ${LIBICONV_LIBDIR})
-
 # declare executables
 DCMTK_ADD_EXECUTABLE(dcmnet_tests tests tdump)
 
