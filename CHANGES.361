@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.13 (schlachter)
+
+- Use absolute paths to libraries on windows.
+  Thanks to Richard Flay <richardf@acres.com.au> for the patch.
+  Affects: CMake/3rdparty.cmake
+
 **** Changes from 2012.11.06 (schlachter)
 
 - Automatically detect if the second argument to iconv() is const.
