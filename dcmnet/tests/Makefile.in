@@ -24,6 +24,7 @@ LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
 	$(ICONVLIBS)
 
 objs = tests.o tdump.o
+progs = tests
 
 
 all: tests

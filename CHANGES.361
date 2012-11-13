@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.13 (schlachter)
 
+- Remove the test runner on "make clean".
+  Affects: dcmnet/tests/Makefile.in
+
 - Fix detecting of iconv() arguments when LIBICONV_DIR is set.
   Thanks to Richard Flay <richardf@acres.com.au> for the patch.
   Affects: CMake/3rdparty.cmake
