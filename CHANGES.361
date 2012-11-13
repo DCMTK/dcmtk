@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.13 (schlachter)
 
+- Added checks for large file support to CMake.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 - Remove unneeded library information from the build system.
   Affects: dcmdata/apps/CMakeLists.txt
            dcmdata/tests/CMakeLists.txt

@@ -756,6 +756,17 @@
 /* Define if signal handlers need ellipse (...) parameters */
 /* #undef SIGNAL_HANDLER_WITH_ELLIPSE */
 
+/* Define to enable LFS64 (explicit large file support) if available*/
+#cmakedefine _LARGEFILE64_SOURCE @_LARGEFILE64_SOURCE@
+
+/* Explicitly request large file support, assuming it exists if fseeko() exists */
+#ifdef HAVE_FSEEKO
+  #define _LARGEFILE_SOURCE 1
+#endif
+#if defined(_LARGEFILE_SOURCE) && !defined(_FILE_OFFSET_BITS)
+  #define _FILE_OFFSET_BITS 64
+#endif
+
 /* The size of a `char', as computed by sizeof. */
 #cmakedefine SIZEOF_CHAR @SIZEOF_CHAR@
 

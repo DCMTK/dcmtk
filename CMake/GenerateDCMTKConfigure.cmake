@@ -565,6 +565,19 @@ int main()
   return 0;
 }")
 
+# Check for explicit large file support
+DCMTK_TRY_COMPILE(_LARGEFILE64_SOURCE "explicit large file support is available"
+    "#define _LARGEFILE64_SOURCE
+#include <stdio.h>
+
+using namespace std;
+
+int main()
+{
+  FILE *f = fopen64(\"name\", \"r\");
+  return 0;
+}")
+
 IF(WIN32)
   # If someone can tell me how to convince TRY_COMPILE to link against winsock,
   # we could use tests for these. Until then, here is what would be the result:
