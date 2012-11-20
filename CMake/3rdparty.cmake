@@ -217,11 +217,19 @@ ELSE(WIN32)
     ENDIF(NOT ZLIB_LIBS)
   ENDIF(DCMTK_WITH_ZLIB)
 
-  # Find libsndfile (TODO)
+  # Find libsndfile
   IF(DCMTK_WITH_SNDFILE)
-    MESSAGE(STATUS "Warning: SNDFILE support will be disabled because libsndfile was not found.")
-#    SET(DCMTK_WITH_SNDFILE OFF CACHE BOOL "" FORCE)
-    SET(WITH_SNDFILE "")
+    FIND_PACKAGE(Sndfile)
+    INCLUDE_DIRECTORIES(${SNDFILE_INCLUDE_DIRS})
+    SET(SNDFILE_LIBS ${SNDFILE_LIBRARIES})
+    IF(NOT SNDFILE_LIBS)
+      MESSAGE(STATUS "Warning: SNDFILE support will be disabled because libsndfile was not found.")
+      SET(WITH_SNDFILE "")
+      SET(DCMTK_WITH_SNDFILE OFF CACHE BOOL "" FORCE)
+    ELSE(NOT SNDFILE_LIBS)
+      MESSAGE(STATUS "Info: DCMTK SNDFILE support will be enabled")
+      SET(WITH_SNDFILE 1)
+    ENDIF(NOT SNDFILE_LIBS)
   ENDIF(DCMTK_WITH_SNDFILE)
 
   # Find libiconv

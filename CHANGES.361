@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.20 (schlachter)
 
+- Added support for detecting libsndfile on non-Windows platforms.
+  Added:   CMake/FindSndfile.cmake
+  Affects: CMake/3rdparty.cmake
+
 - Let "make clean" remove doxygen output again.
   Affects: doxygen/CMakeLists.txt
 
