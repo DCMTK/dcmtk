@@ -822,7 +822,7 @@
 #cmakedefine WITH_SNDFILE
 
 /* Define if we are compiling with libwrap (TCP wrapper) support */
-/* #undef WITH_TCPWRAPPER */
+#cmakedefine WITH_TCPWRAPPER
 
 /* Define if we are compiling with zlib support */
 #cmakedefine WITH_ZLIB

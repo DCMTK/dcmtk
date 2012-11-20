@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.20 (schlachter)
 
+- Added support for detecting libwrap.
+  Added:   CMake/FindWrap.cmake
+  Affects: CMake/3rdparty.cmake
+           CMake/dcmtkPrepare.cmake
+           CMake/osconfig.h.in
+           dcmnet/libsrc/CMakeLists.txt
+
 - Added support for detecting libsndfile on non-Windows platforms.
   Added:   CMake/FindSndfile.cmake
   Affects: CMake/3rdparty.cmake
