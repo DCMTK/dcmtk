@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.20 (schlachter)
+
+- Let "make clean" remove doxygen output again.
+  Affects: doxygen/CMakeLists.txt
+
 **** Changes from 2012.11.13 (schlachter)
 
 - Regenerate the VR scanner with a newer flex version.

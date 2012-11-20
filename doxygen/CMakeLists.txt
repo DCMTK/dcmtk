@@ -25,10 +25,10 @@ IF(DCMTK_WITH_DOXYGEN)
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/manpages.cfg ${CMAKE_CURRENT_BINARY_DIR}/manpages.tmp ESCAPE_QUOTES @ONLY)
   ENDIF(NOT WIN32)
 
-  # create new directories
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/htmldocs)
+  # Make sure these directories exist when we try to install them
+  INSTALL(CODE "FILE(MAKE_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/htmldocs\")" COMPONENT html)
   IF(NOT WIN32)
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/manpages)
+    INSTALL(CODE "FILE(MAKE_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/manpages\")" COMPONENT man)
   ENDIF(NOT WIN32)
 
   # install html docs and manpages
@@ -37,14 +37,9 @@ IF(DCMTK_WITH_DOXYGEN)
     INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/manpages/ DESTINATION ${DCMTK_INSTALL_MANDIR} COMPONENT man PATTERN "CVS" EXCLUDE)
   ENDIF(NOT WIN32)
 
-  # the files inside of manpages/ and htmldocs/ should be removed by "make
-  # clean".  However, the directories itself must NOT be removed or else CMake
-  # will complain about the INSTALL() calls for them.  For this reason, the
-  # following does not work:
-  #
-  # cleanup created files on "make clean" - directories are not removed with CMake 2.4 :-/
-  #SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages)
-  #SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")
+  # the files in manpages/ and htmldocs/ should be removed by "make clean".
+  SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages)
+  SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")
 
   # the created files "htmldocs.tmp" and "manpages.tmp" should be removed with "make distclean",
   # which will (hopefully) be introduced in a future version, because they are only created during
