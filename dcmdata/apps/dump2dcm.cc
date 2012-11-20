@@ -43,10 +43,10 @@
  *           separated by '\' character.  Alternatively, OB or OW values can
  *           be read from a separate file by writing the filename prefixed
  *           by a '=' character (e.g. '=largepix.dat').  The contents of the
- *           file will be read as is.  OW data is expected to be little endian
- *           ordered and will be swapped if necessary.  No checks will be made
- *           to ensure that the amount of data is reasonable in terms of other
- *           attributes such as Rows or Columns.
+ *           file will be read as is.  By default, OW data is expected to be
+ *           little endian ordered and will be swapped if necessary.  No
+ *           checks will be made to ensure that the amount of data is
+ *           reasonable in terms of other attributes such as Rows or Columns.
  *           In case of compressed pixel data, the line should start with
  *           '(7fe0,0010) OB (PixelSequence' in order to distinguish from
  *           uncompressed pixel data.
@@ -122,6 +122,9 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 const unsigned int DCM_DumpMaxLineSize = 4096;
 
+// Global variables
+
+static E_ByteOrder opt_fileContentsByteOrdering = EBO_LittleEndian;
 
 // Field definition separators
 
@@ -482,7 +485,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         else if (evr == EVR_OW)
         {
             /* swap 16 bit OW data (if necessary) */
-            swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
+            swapIfNecessary(gLocalByteOrder, opt_fileContentsByteOrdering, buf, buflen, sizeof(Uint16));
         }
     }
     else if (ec == EC_MemoryExhausted)
@@ -820,6 +823,9 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("input file format:");
         cmd.addOption("--read-meta-info",      "+f",     "read meta information if present (default)");
         cmd.addOption("--ignore-meta-info",    "-f",     "ignore file meta information");
+      cmd.addSubGroup("file contents byte ordering:");
+        cmd.addOption("--read-file-little",    "+rl",    "read OW data with little endian (default)");
+        cmd.addOption("--read-file-big",       "+rb",    "read OW data from file with big endian");
       cmd.addSubGroup("other input options:");
         cmd.addOption("--line",                "+l",  1, "[m]ax-length: integer",
                                                          "maximum line length m (default: 4096)");
@@ -914,6 +920,11 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-meta-info")) opt_metaInfo = OFTrue;
       if (cmd.findOption("--ignore-meta-info")) opt_metaInfo = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-file-little")) opt_fileContentsByteOrdering = EBO_LittleEndian;
+      if (cmd.findOption("--read-file-big")) opt_fileContentsByteOrdering = EBO_BigEndian;
       cmd.endOptionBlock();
 
       if (cmd.findOption("--line"))

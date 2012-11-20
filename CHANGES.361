@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.20 (riesmeier)
+
+- Added new option that allows for reading OW data from file with big endian
+  byte ordering. Might also be used for generating (incorrect) test images.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.man
+
 **** Changes from 2012.11.20 (schlachter)
 
 - Added support for detecting libwrap.

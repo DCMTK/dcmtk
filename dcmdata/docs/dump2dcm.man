@@ -67,6 +67,14 @@ input file format:
   -f   --ignore-meta-info
          ignore file meta information
 
+file contents byte ordering:
+
+  +rl  --read-file-little
+         read OW data with little endian (default)
+
+  +rb  --read-file-big
+         read OW data from file with big endian
+
 other input options:
 
   +l   --line  [m]ax-length: integer
@@ -200,11 +208,11 @@ Value: There are several rules for writing values:
           values separated by '\\' character.  Alternatively, OB or OW
           values can be read from a separate file by writing the
           filename prefixed by a '=' character (e.g. '=largepix.dat').
-          The contents of the file will be read as is.  OW data is
-          expected to be little endian ordered and will be swapped if
-          necessary.  No checks will be made to ensure that the amount
-          of data is reasonable in terms of other attributes such as
-          Rows or Columns.
+          The contents of the file will be read as is.  By default, OW
+          data is expected to be little endian ordered and will be
+          swapped if necessary.  No checks will be made to ensure that
+          the amount of data is reasonable in terms of other attributes
+          such as Rows or Columns.
           In case of compressed pixel data, the line should start with
           '(7fe0,0010) OB (PixelSequence' in order to distinguish from
           uncompressed pixel data.
@@ -304,6 +312,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
