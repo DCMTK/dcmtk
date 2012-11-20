@@ -13,6 +13,9 @@ IF(DCMTK_WITH_DOXYGEN)
                             COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/manpages/man1/*.man.1
                             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/patchman.sh)
       ADD_DEPENDENCIES(DOXYGEN man)
+      ADD_CUSTOM_TARGET(man2text COMMAND ${CMAKE_COMMAND} -E make_directory man2text
+                                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/man2text.sh)
+      ADD_DEPENDENCIES(man2text man)
     ENDIF(NOT WIN32)
   ENDIF(DOXYGEN_EXECUTABLE)
 
@@ -38,7 +41,7 @@ IF(DCMTK_WITH_DOXYGEN)
   ENDIF(NOT WIN32)
 
   # the files in manpages/ and htmldocs/ should be removed by "make clean".
-  SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages)
+  SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages ${CMAKE_CURRENT_BINARY_DIR}/man2text)
   SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")
 
   # the created files "htmldocs.tmp" and "manpages.tmp" should be removed with "make distclean",

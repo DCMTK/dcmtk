@@ -10,6 +10,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.20 (schlachter)
 
+- Ported the "man2text" target to CMake.
+  Added:   doxygen/man2text.sh
+  Affects: doxygen/CMakeLists.txt
+           doxygen/Makefile.in
+
 - Added support for detecting libwrap.
   Added:   CMake/FindWrap.cmake
   Affects: CMake/3rdparty.cmake

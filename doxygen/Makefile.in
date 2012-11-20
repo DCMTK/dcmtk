@@ -29,10 +29,7 @@ man:
 
 text:
 	$(configdir)/mkinstalldirs man2text
-	cd manpages/man1/ ;\
-	for file in *.1 ; do \
-		man -l $$file | col -bxp > ../../man2text/`echo $$file | sed 's/\(.*\.\)1/\1txt/'` ;\
-	done
+	./man2text.sh
 
 
 install: install-man install-html
