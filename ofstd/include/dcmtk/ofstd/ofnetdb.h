@@ -32,6 +32,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
