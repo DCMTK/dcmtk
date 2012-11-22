@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-11 12:49:59
+**   Date: 2012-11-22 09:22:42
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-09-11 12:49:59"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-11-22 09:22:42"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3615
+** Number of entries: 3618
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -108,6 +108,7 @@
 #define DCM_InstanceCreationDate                 DcmTagKey(0x0008, 0x0012)
 #define DCM_InstanceCreationTime                 DcmTagKey(0x0008, 0x0013)
 #define DCM_InstanceCreatorUID                   DcmTagKey(0x0008, 0x0014)
+#define DCM_InstanceCoercionDateTime             DcmTagKey(0x0008, 0x0015)
 #define DCM_SOPClassUID                          DcmTagKey(0x0008, 0x0016)
 #define DCM_SOPInstanceUID                       DcmTagKey(0x0008, 0x0018)
 #define DCM_RelatedGeneralSOPClassUID            DcmTagKey(0x0008, 0x001a)
@@ -2401,6 +2402,8 @@
 #define DCM_FacetSequence                        DcmTagKey(0x0066, 0x0034)
 #define DCM_SurfaceProcessingAlgorithmIdentificationSequence DcmTagKey(0x0066, 0x0035)
 #define DCM_AlgorithmName                        DcmTagKey(0x0066, 0x0036)
+#define DCM_RecommendedPointRadius               DcmTagKey(0x0066, 0x0037)
+#define DCM_RecommendedLineThickness             DcmTagKey(0x0066, 0x0038)
 #define DCM_ImplantSize                          DcmTagKey(0x0068, 0x6210)
 #define DCM_ImplantTemplateVersion               DcmTagKey(0x0068, 0x6221)
 #define DCM_ReplacedImplantTemplateSequence      DcmTagKey(0x0068, 0x6222)

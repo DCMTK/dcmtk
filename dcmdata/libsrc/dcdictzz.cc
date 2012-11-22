@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-09-11 12:49:59
+**   Date: 2012-11-22 09:22:47
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-09-11 12:49:59";
+const char* dcmBuiltinDictBuildDate = "2012-11-22 09:22:47";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -407,6 +407,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x0014, 0x0008, 0x0014,
       EVR_UI, "InstanceCreatorUID", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0015, 0x0008, 0x0015,
+      EVR_DT, "InstanceCoercionDateTime", 1, 1, "CP_1216",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0016, 0x0008, 0x0016,
@@ -19917,6 +19921,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0066, 0x0036, 0x0066, 0x0036,
       EVR_LO, "AlgorithmName", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0037, 0x0066, 0x0037,
+      EVR_FL, "RecommendedPointRadius", 1, 1, "CP_1200",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0038, 0x0066, 0x0038,
+      EVR_FL, "RecommendedLineThickness", 1, 1, "CP_1200",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0068, 0x6210, 0x0068, 0x6210,

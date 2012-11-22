@@ -24,7 +24,7 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 152.
-# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1204.
+# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3295,7 +3295,7 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1204
+# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
@@ -3317,8 +3317,13 @@
 #
 (300A,00EF)	SH	CompensatorTrayID	1	CP_1188
 #
+(0066,0037)	FL	RecommendedPointRadius	1	CP_1200
+(0066,0038)	FL	RecommendedLineThickness	1	CP_1200
+#
 (300A,021B)	SH	SourceModel	1	CP_1204
 (300A,021C)	LO	SourceDescription	1	CP_1204
+#
+(0008,0015)	DT	InstanceCoercionDateTime	1	CP_1216
 #
 #---------------------------------------------------------------------------
 #

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.22 (riesmeier)
+
+- Added support for CP-1200 and CP-1216 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2012.11.21 (schlamelcher)
 
 - Added #define WIN32_LEAN_AND_MEAN to some files to speedup compilation.
@@ -35,7 +42,6 @@ Changes between releases are documented here.
 
 - Let "make clean" remove doxygen output again.
   Affects: doxygen/CMakeLists.txt
->>>>>>> 92463c93815eb005fdfde6782ef6b9573d376cef
 
 **** Changes from 2012.11.13 (schlachter)
 
