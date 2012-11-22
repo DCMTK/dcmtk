@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -195,6 +195,8 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
         DestinationEncoding = "UTF-8";
     else if (DestinationCharacterSet == "GB18030")      // Chinese (multi-byte)
         DestinationEncoding = "GB18030";
+    else if (DestinationCharacterSet == "GBK")          // Chinese (multi-byte, subset of GB18030)
+        DestinationEncoding = "GBK";
     else {
         DestinationEncoding.clear();
         // create an appropriate error code
@@ -246,6 +248,8 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
         fromEncoding = "UTF-8";
     else if (SourceCharacterSet == "GB18030")       // Chinese (multi-byte)
         fromEncoding = "GB18030";
+    else if (SourceCharacterSet == "GBK")           // Chinese (multi-byte, subset of GB18030)
+        fromEncoding = "GBK";
     else {
         // create an appropriate error code
         OFOStringStream stream;
@@ -360,6 +364,11 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         {
             encodingName = "EUC-KR";                    // - is this mapping really correct?
             notFirstValue = OFTrue;                     //   "ISO-IR-149" does not work with the sample from DICOM PS 3.5
+        }
+        else if (definedTerm == "ISO 2022 IR 58")       // Simplified Chinese (multi-byte)
+        {
+            encodingName = "GB2312";                    // - should work, but not tested yet!
+            notFirstValue = OFTrue;
         }
         else {
             // create an appropriate error code
@@ -555,15 +564,17 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
                                 key = "ISO 2022 IR 159";
                         }
                     }
-                    else if ((c1 == 0x24) && (c2 == 0x29)) // Korean (multi-byte)
+                    else if ((c1 == 0x24) && (c2 == 0x29)) // might be Korean or Chinese
                     {
                         escLength = 3;
                         // do we still have another character in the string?
                         if (pos + escLength < fromLength)
                         {
                             c3 = *currentChar++;
-                            if (c3 == 0x43)
+                            if (c3 == 0x43)                // Korean (multi-byte)
                                 key = "ISO 2022 IR 149";
+                            else if (c3 == 0x41)           // Simplified Chinese (multi-byte)
+                                key = "ISO 2022 IR 58";
                         }
                     }
                     // check whether a valid escape sequence has been found

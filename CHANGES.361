@@ -3,7 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.22 (riesmeier)
 
-- Added support for for final text version of Supplement 158 (Retirement of
+- Added support for CP-1234 (Chinese character sets GBK and GB2312).
+  Affects: dcmdata/libsrc/dcspchrs.cc
+
+- Added support for the final text version of Supplement 158 (Retirement of
   General Purpose Worklist and Procedure Step) to the data dictionary and
   list of UIDs, i.e. added the prefix "RETIRED_" to some names.
   Affects: dcmdata/data/dicom.dic
