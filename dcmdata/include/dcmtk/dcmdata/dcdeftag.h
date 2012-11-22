@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-11-22 09:22:42
+**   Date: 2012-11-22 09:54:59
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-11-22 09:22:42"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2012-11-22 09:54:59"
 
 
 /*
@@ -1931,32 +1931,32 @@
 #define DCM_FillerOrderNumberImagingServiceRequest DcmTagKey(0x0040, 0x2017)
 #define DCM_ImagingServiceRequestComments        DcmTagKey(0x0040, 0x2400)
 #define DCM_ConfidentialityConstraintOnPatientDataDescription DcmTagKey(0x0040, 0x3001)
-#define DCM_GeneralPurposeScheduledProcedureStepStatus DcmTagKey(0x0040, 0x4001)
-#define DCM_GeneralPurposePerformedProcedureStepStatus DcmTagKey(0x0040, 0x4002)
-#define DCM_GeneralPurposeScheduledProcedureStepPriority DcmTagKey(0x0040, 0x4003)
-#define DCM_ScheduledProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4004)
+#define DCM_RETIRED_GeneralPurposeScheduledProcedureStepStatus DcmTagKey(0x0040, 0x4001)
+#define DCM_RETIRED_GeneralPurposePerformedProcedureStepStatus DcmTagKey(0x0040, 0x4002)
+#define DCM_RETIRED_GeneralPurposeScheduledProcedureStepPriority DcmTagKey(0x0040, 0x4003)
+#define DCM_RETIRED_ScheduledProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4004)
 #define DCM_ScheduledProcedureStepStartDateTime  DcmTagKey(0x0040, 0x4005)
-#define DCM_MultipleCopiesFlag                   DcmTagKey(0x0040, 0x4006)
+#define DCM_RETIRED_MultipleCopiesFlag           DcmTagKey(0x0040, 0x4006)
 #define DCM_PerformedProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4007)
 #define DCM_HumanPerformerCodeSequence           DcmTagKey(0x0040, 0x4009)
 #define DCM_ScheduledProcedureStepModificationDateTime DcmTagKey(0x0040, 0x4010)
 #define DCM_ExpectedCompletionDateTime           DcmTagKey(0x0040, 0x4011)
-#define DCM_ResultingGeneralPurposePerformedProcedureStepsSequence DcmTagKey(0x0040, 0x4015)
-#define DCM_ReferencedGeneralPurposeScheduledProcedureStepSequence DcmTagKey(0x0040, 0x4016)
+#define DCM_RETIRED_ResultingGeneralPurposePerformedProcedureStepsSequence DcmTagKey(0x0040, 0x4015)
+#define DCM_RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence DcmTagKey(0x0040, 0x4016)
 #define DCM_ScheduledWorkitemCodeSequence        DcmTagKey(0x0040, 0x4018)
 #define DCM_PerformedWorkitemCodeSequence        DcmTagKey(0x0040, 0x4019)
 #define DCM_InputAvailabilityFlag                DcmTagKey(0x0040, 0x4020)
 #define DCM_InputInformationSequence             DcmTagKey(0x0040, 0x4021)
-#define DCM_RelevantInformationSequence          DcmTagKey(0x0040, 0x4022)
-#define DCM_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID DcmTagKey(0x0040, 0x4023)
+#define DCM_RETIRED_RelevantInformationSequence  DcmTagKey(0x0040, 0x4022)
+#define DCM_RETIRED_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID DcmTagKey(0x0040, 0x4023)
 #define DCM_ScheduledStationNameCodeSequence     DcmTagKey(0x0040, 0x4025)
 #define DCM_ScheduledStationClassCodeSequence    DcmTagKey(0x0040, 0x4026)
 #define DCM_ScheduledStationGeographicLocationCodeSequence DcmTagKey(0x0040, 0x4027)
 #define DCM_PerformedStationNameCodeSequence     DcmTagKey(0x0040, 0x4028)
 #define DCM_PerformedStationClassCodeSequence    DcmTagKey(0x0040, 0x4029)
 #define DCM_PerformedStationGeographicLocationCodeSequence DcmTagKey(0x0040, 0x4030)
-#define DCM_RequestedSubsequentWorkitemCodeSequence DcmTagKey(0x0040, 0x4031)
-#define DCM_NonDICOMOutputCodeSequence           DcmTagKey(0x0040, 0x4032)
+#define DCM_RETIRED_RequestedSubsequentWorkitemCodeSequence DcmTagKey(0x0040, 0x4031)
+#define DCM_RETIRED_NonDICOMOutputCodeSequence   DcmTagKey(0x0040, 0x4032)
 #define DCM_OutputInformationSequence            DcmTagKey(0x0040, 0x4033)
 #define DCM_ScheduledHumanPerformersSequence     DcmTagKey(0x0040, 0x4034)
 #define DCM_ActualHumanPerformersSequence        DcmTagKey(0x0040, 0x4035)

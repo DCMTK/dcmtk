@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152.
+# - Supplement 152, 158.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -3292,6 +3292,22 @@
 (0022,1468)	FL	RegisteredBottomRightHandCorner	2	Supplement_152
 (0022,1470)	SQ	OphthalmicThicknessMapQualityRatingSequence	1	Supplement_152
 (0022,1472)	SQ	RelevantOPTAttributesSequence	1	Supplement_152
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 158 (Retirement of General Purpose Worklist and Procedure Step)
+#
+(0040,4001)	CS	RETIRED_GeneralPurposeScheduledProcedureStepStatus	1	Supplement_158/retired
+(0040,4002)	CS	RETIRED_GeneralPurposePerformedProcedureStepStatus	1	Supplement_158/retired
+(0040,4003)	CS	RETIRED_GeneralPurposeScheduledProcedureStepPriority	1	Supplement_158/retired
+(0040,4004)	SQ	RETIRED_ScheduledProcessingApplicationsCodeSequence	1	Supplement_158/retired
+(0040,4006)	CS	RETIRED_MultipleCopiesFlag	1	Supplement_158/retired
+(0040,4015)	SQ	RETIRED_ResultingGeneralPurposePerformedProcedureStepsSequence	1	Supplement_158/retired
+(0040,4016)	SQ	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence	1	Supplement_158/retired
+(0040,4022)	SQ	RETIRED_RelevantInformationSequence	1	Supplement_158/retired
+(0040,4023)	UI	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID	1	Supplement_158/retired
+(0040,4031)	SQ	RETIRED_RequestedSubsequentWorkitemCodeSequence	1	Supplement_158/retired
+(0040,4032)	SQ	RETIRED_NonDICOMOutputCodeSequence	1	Supplement_158/retired
 #
 #---------------------------------------------------------------------------
 #

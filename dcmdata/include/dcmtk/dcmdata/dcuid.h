@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2012, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -495,12 +495,12 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 
 // Worklist
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
-#define UID_FINDGeneralPurposeWorklistInformationModel             "1.2.840.10008.5.1.4.32.1"
 
 // General Purpose Worklist
-#define UID_GeneralPurposeScheduledProcedureStepSOPClass           "1.2.840.10008.5.1.4.32.2"
-#define UID_GeneralPurposePerformedProcedureStepSOPClass           "1.2.840.10008.5.1.4.32.3"
-#define UID_GeneralPurposeWorklistManagementMetaSOPClass           "1.2.840.10008.5.1.4.32"
+#define UID_RETIRED_FINDGeneralPurposeWorklistInformationModel     "1.2.840.10008.5.1.4.32.1"
+#define UID_RETIRED_GeneralPurposeScheduledProcedureStepSOPClass   "1.2.840.10008.5.1.4.32.2"
+#define UID_RETIRED_GeneralPurposePerformedProcedureStepSOPClass   "1.2.840.10008.5.1.4.32.3"
+#define UID_RETIRED_GeneralPurposeWorklistManagementMetaSOPClass   "1.2.840.10008.5.1.4.32"
 
 // MPPS
 #define UID_ModalityPerformedProcedureStepSOPClass                 "1.2.840.10008.3.1.2.3.3"

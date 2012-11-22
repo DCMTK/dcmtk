@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2012-11-22 09:22:47
+**   Date: 2012-11-22 09:55:03
 **   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-11-22 09:22:47";
+const char* dcmBuiltinDictBuildDate = "2012-11-22 09:55:03";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -17008,19 +17008,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4001, 0x0040, 0x4001,
-      EVR_CS, "GeneralPurposeScheduledProcedureStepStatus", 1, 1, "DICOM_2011",
+      EVR_CS, "RETIRED_GeneralPurposeScheduledProcedureStepStatus", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4002, 0x0040, 0x4002,
-      EVR_CS, "GeneralPurposePerformedProcedureStepStatus", 1, 1, "DICOM_2011",
+      EVR_CS, "RETIRED_GeneralPurposePerformedProcedureStepStatus", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4003, 0x0040, 0x4003,
-      EVR_CS, "GeneralPurposeScheduledProcedureStepPriority", 1, 1, "DICOM_2011",
+      EVR_CS, "RETIRED_GeneralPurposeScheduledProcedureStepPriority", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4004, 0x0040, 0x4004,
-      EVR_SQ, "ScheduledProcessingApplicationsCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_ScheduledProcessingApplicationsCodeSequence", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4005, 0x0040, 0x4005,
@@ -17028,7 +17028,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4006, 0x0040, 0x4006,
-      EVR_CS, "MultipleCopiesFlag", 1, 1, "DICOM_2011",
+      EVR_CS, "RETIRED_MultipleCopiesFlag", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4007, 0x0040, 0x4007,
@@ -17048,11 +17048,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4015, 0x0040, 0x4015,
-      EVR_SQ, "ResultingGeneralPurposePerformedProcedureStepsSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_ResultingGeneralPurposePerformedProcedureStepsSequence", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4016, 0x0040, 0x4016,
-      EVR_SQ, "ReferencedGeneralPurposeScheduledProcedureStepSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4018, 0x0040, 0x4018,
@@ -17072,11 +17072,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4022, 0x0040, 0x4022,
-      EVR_SQ, "RelevantInformationSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_RelevantInformationSequence", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4023, 0x0040, 0x4023,
-      EVR_UI, "ReferencedGeneralPurposeScheduledProcedureStepTransactionUID", 1, 1, "DICOM_2011",
+      EVR_UI, "RETIRED_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4025, 0x0040, 0x4025,
@@ -17104,11 +17104,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4031, 0x0040, 0x4031,
-      EVR_SQ, "RequestedSubsequentWorkitemCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_RequestedSubsequentWorkitemCodeSequence", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4032, 0x0040, 0x4032,
-      EVR_SQ, "NonDICOMOutputCodeSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_NonDICOMOutputCodeSequence", 1, 1, "Supplement_158/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4033, 0x0040, 0x4033,

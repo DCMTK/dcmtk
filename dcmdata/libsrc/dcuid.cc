@@ -276,13 +276,13 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel, "RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
 
     // Worklist
-    { UID_FINDGeneralPurposeWorklistInformationModel,          "FINDGeneralPurposeWorklistInformationModel" },
     { UID_FINDModalityWorklistInformationModel,                "FINDModalityWorklistInformationModel" },
 
     // General Purpose Worklist
-    { UID_GeneralPurposePerformedProcedureStepSOPClass,        "GeneralPurposePerformedProcedureStepSOPClass" },
-    { UID_GeneralPurposeScheduledProcedureStepSOPClass,        "GeneralPurposeScheduledProcedureStepSOPClass" },
-    { UID_GeneralPurposeWorklistManagementMetaSOPClass,        "GeneralPurposeWorklistManagementMetaSOPClass" },
+    { UID_RETIRED_FINDGeneralPurposeWorklistInformationModel,   "RETIRED_FINDGeneralPurposeWorklistInformationModel" },
+    { UID_RETIRED_GeneralPurposePerformedProcedureStepSOPClass, "RETIRED_GeneralPurposePerformedProcedureStepSOPClass" },
+    { UID_RETIRED_GeneralPurposeScheduledProcedureStepSOPClass, "RETIRED_GeneralPurposeScheduledProcedureStepSOPClass" },
+    { UID_RETIRED_GeneralPurposeWorklistManagementMetaSOPClass, "RETIRED_GeneralPurposeWorklistManagementMetaSOPClass" },
 
     // MPPS
     { UID_ModalityPerformedProcedureStepNotificationSOPClass,  "ModalityPerformedProcedureStepNotificationSOPClass" },
