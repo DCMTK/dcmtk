@@ -6,6 +6,11 @@ Changes between releases are documented here.
 - Added support for CP-1234 (Chinese character sets GBK and GB2312).
   Affects: dcmdata/libsrc/dcspchrs.cc
 
+- Added note to the documentation of the class DcmSpecificCharacterSet that
+  only a single value is allowed for the destination character set (i.e. no
+  code extensions).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+
 - Added support for the final text version of Supplement 158 (Retirement of
   General Purpose Worklist and Procedure Step) to the data dictionary and
   list of UIDs, i.e. added the prefix "RETIRED_" to some names.

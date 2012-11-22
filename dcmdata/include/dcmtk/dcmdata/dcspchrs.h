@@ -37,6 +37,9 @@ class DcmItem;
 /** A class for managing and converting between different DICOM character sets.
  *  The conversion relies on the OFCharacterEncoding class, which again relies
  *  on the libiconv toolkit (if available).
+ *  @note Please note that a current limitation is that only a single value is
+ *    allowed for the destination character set (i.e. no code extensions).  Of
+ *    course, for the source character set, also multiple values are supported.
  */
 class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 {
