@@ -1196,6 +1196,9 @@ AC_TRY_COMPILE([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); const cha
   [AC_MSG_RESULT(no)])
 LIBS="$SAVELIBS"
 
+AC_CHECK_SYNC_FN([__sync_add_and_fetch],[HAVE_SYNC_ADD_AND_FETCH])
+AC_CHECK_SYNC_FN([__sync_sub_and_fetch],[HAVE_SYNC_SUB_AND_FETCH])
+
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------

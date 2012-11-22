@@ -66,4 +66,5 @@ OFTEST_REGISTER(ofstd_markup_5);
 OFTEST_REGISTER(ofstd_testPaths);
 OFTEST_REGISTER(ofstd_thread);
 OFTEST_REGISTER(ofstd_xmlParser);
+OFTEST_REGISTER(ofstd_memory);
 OFTEST_MAIN("ofstd")

@@ -1797,3 +1797,24 @@ AS_HELP_STRING([LONGOPTION=DIR], [location of LIBNAME includes and libraries]),
   m4_popdef([LONGOPTION])dnl
   m4_popdef([LIBNAME])dnl
 ])
+
+AC_DEFUN([AC_CHECK_SYNC_FN],
+[
+    AC_MSG_CHECKING([for $1])
+    AC_LINK_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            int main(){return $1((int *)0, 0);}
+        ])
+    ],
+    [dcmtk_have_sync_fn=[yes]],
+    [dcmtk_have_sync_fn=[no]]
+    )
+    if test "$dcmtk_have_sync_fn" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($2,[1],[Define if $1 is available])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])

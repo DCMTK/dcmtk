@@ -698,6 +698,12 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <synch.h> header file. */
 #undef HAVE_SYNCH_H
 
+/* Define if __sync_add_and_fetch is available */
+#undef HAVE_SYNC_ADD_AND_FETCH
+
+/* Define if __sync_sub_and_fetch is available */
+#undef HAVE_SYNC_SUB_AND_FETCH
+
 /* Define to 1 if you have the `sysinfo' function. */
 #undef HAVE_SYSINFO
 

@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.22 (schlamelcher)
+
+- Introduced OFshared_ptr implementing a subset of c++11's std::shared_ptr.
+  Added:   ofstd/include/dcmtk/ofstd/ofmem.h
+           ofstd/tests/tmem.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.in
+           ofstd/tests/tests.cc
+
 **** Changes from 2012.11.22 (riesmeier)
 
 - Added support for CP-1234 (Chinese character sets GBK and GB2312).
