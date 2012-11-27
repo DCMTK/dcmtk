@@ -1,6 +1,6 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 #ifndef CHARLS_PROCESSLINE
 #define CHARLS_PROCESSLINE
 
@@ -28,7 +28,7 @@ class PostProcesSingleComponent : public ProcessLine
 {
 public:
 	PostProcesSingleComponent(void* pbyteOutput, const JlsParameters& info, int bytesPerPixel) :
-		_pbyteOutput((BYTE*)pbyteOutput),
+		_pbyteOutput((BYTE*)pbyteOutput), 
 		_bytesPerPixel(bytesPerPixel),
 		_bytesPerLine(info.bytesperline)
 	{
@@ -43,7 +43,7 @@ public:
 	void NewLineDecoded(const void* pSrc, int pixelCount, int /*byteStride*/)
 	{
 		OFBitmanipTemplate<BYTE>::copyMem((BYTE*) pSrc, _pbyteOutput, pixelCount * _bytesPerPixel);
-		_pbyteOutput += _bytesPerLine;
+		_pbyteOutput += _bytesPerLine;		
 	}
 
 private:
@@ -53,7 +53,7 @@ private:
 };
 
 
-template<class TRANSFORM, class SAMPLE>
+template<class TRANSFORM, class SAMPLE> 
 void TransformLineToQuad(const SAMPLE* ptypeInput, LONG pixelStrideIn, Quad<SAMPLE>* pbyteBuffer, LONG pixelStride, TRANSFORM& transform)
 {
 	int cpixel = MIN(pixelStride, pixelStrideIn);
@@ -62,13 +62,13 @@ void TransformLineToQuad(const SAMPLE* ptypeInput, LONG pixelStrideIn, Quad<SAMP
 	for (int x = 0; x < cpixel; ++x)
 	{
 		Quad<SAMPLE> pixel(transform(ptypeInput[x], ptypeInput[x + pixelStrideIn], ptypeInput[x + 2*pixelStrideIn]),ptypeInput[x + 3*pixelStrideIn]) ;
-
+		
 		ptypeBuffer[x] = pixel;
 	}
 }
 
 
-template<class TRANSFORM, class SAMPLE>
+template<class TRANSFORM, class SAMPLE> 
 void TransformQuadToLine(const Quad<SAMPLE>* pbyteInput, LONG pixelStrideIn, SAMPLE* ptypeBuffer, LONG pixelStride, TRANSFORM& transform)
 {
 	int cpixel = MIN(pixelStride, pixelStrideIn);
@@ -87,7 +87,7 @@ void TransformQuadToLine(const Quad<SAMPLE>* pbyteInput, LONG pixelStrideIn, SAM
 }
 
 
-template<class SAMPLE>
+template<class SAMPLE> 
 void TransformRgbToBgr(SAMPLE* pDest, int samplesPerPixel, int pixelCount)
 {
 	for (int i = 0; i < pixelCount; ++i)
@@ -100,9 +100,9 @@ void TransformRgbToBgr(SAMPLE* pDest, int samplesPerPixel, int pixelCount)
 }
 
 
-template<class TRANSFORM, class SAMPLE>
-void TransformLine(Triplet<SAMPLE>* pDest, const Triplet<SAMPLE>* pSrc, int pixelCount, TRANSFORM& transform)
-{
+template<class TRANSFORM, class SAMPLE> 
+void TransformLine(Triplet<SAMPLE>* pDest, const Triplet<SAMPLE>* pSrc, int pixelCount, TRANSFORM& transform) 
+{	
 	for (int i = 0; i < pixelCount; ++i)
 	{
 		pDest[i] = transform(pSrc[i].v1, pSrc[i].v2, pSrc[i].v3);
@@ -110,7 +110,7 @@ void TransformLine(Triplet<SAMPLE>* pDest, const Triplet<SAMPLE>* pSrc, int pixe
 }
 
 
-template<class TRANSFORM, class SAMPLE>
+template<class TRANSFORM, class SAMPLE> 
 void TransformLineToTriplet(const SAMPLE* ptypeInput, LONG pixelStrideIn, Triplet<SAMPLE>* pbyteBuffer, LONG pixelStride, TRANSFORM& transform)
 {
 	int cpixel = MIN(pixelStride, pixelStrideIn);
@@ -123,7 +123,7 @@ void TransformLineToTriplet(const SAMPLE* ptypeInput, LONG pixelStrideIn, Triple
 }
 
 
-template<class TRANSFORM, class SAMPLE>
+template<class TRANSFORM, class SAMPLE> 
 void TransformTripletToLine(const Triplet<SAMPLE>* pbyteInput, LONG pixelStrideIn, SAMPLE* ptypeBuffer, LONG pixelStride, TRANSFORM& transform)
 {
 	int cpixel = MIN(pixelStride, pixelStrideIn);
@@ -141,7 +141,7 @@ void TransformTripletToLine(const Triplet<SAMPLE>* pbyteInput, LONG pixelStrideI
 }
 
 
-template<class TRANSFORM>
+template<class TRANSFORM> 
 class ProcessTransformed : public ProcessLine
 {
 	typedef typename TRANSFORM::SAMPLE SAMPLE;
@@ -164,7 +164,7 @@ public:
 		SAMPLE* pLine = (SAMPLE*)_pbyteOutput;
 		if (_info.outputBgr)
 		{
-			pLine = &_templine[0];
+			pLine = &_templine[0]; 
 			memcpy(pLine, _pbyteOutput, sizeof(Triplet<SAMPLE>)*pixelCount);
 			TransformRgbToBgr(pLine, _info.components, pixelCount);
 		}
@@ -191,7 +191,7 @@ public:
 	void NewLineDecoded(const void* pSrc, int pixelCount, int byteStride)
 	{
 		if (_info.components == 3)
-		{
+		{	
 			if (_info.ilv == ILV_SAMPLE)
 			{
 				TransformLine((Triplet<SAMPLE>*)_pbyteOutput, (const Triplet<SAMPLE>*)pSrc, pixelCount, _inverseTransform);
@@ -210,15 +210,15 @@ public:
 		{
 			TransformRgbToBgr(_pbyteOutput, _info.components, pixelCount);
 		}
-		_pbyteOutput += _info.bytesperline;
+		_pbyteOutput += _info.bytesperline;		
 	}
 
 
 private:
 	BYTE* _pbyteOutput;
-	const JlsParameters& _info;
+	const JlsParameters& _info;	
 	OFVector<SAMPLE> _templine;
-	TRANSFORM _transform;
+	TRANSFORM _transform;	
 	typename TRANSFORM::INVERSE _inverseTransform;
 };
 

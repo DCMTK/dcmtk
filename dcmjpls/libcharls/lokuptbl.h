@@ -1,12 +1,12 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 
 
 #ifndef CHARLS_LOOKUPTABLE
 #define CHARLS_LOOKUPTABLE
 
-// Tables for fast decoding of short Golomb Codes.
+// Tables for fast decoding of short Golomb Codes. 
 
 struct Code
 {
@@ -20,9 +20,9 @@ struct Code
 	{
 	}
 
-	LONG GetValue() const
+	LONG GetValue() const 
 		{ return _value; }
-	LONG GetLength() const
+	LONG GetLength() const 
 		{ return _length; }
 
 	LONG _value;
@@ -37,13 +37,13 @@ public:
 
 	enum { cbit = 8 } ;
 
-	CTable()
+	CTable() 
 	{
 		::memset(rgtype, 0, sizeof(rgtype));
 	}
 
 	void AddEntry(BYTE bvalue, Code c);
-
+	
 	inlinehint const Code& Get(LONG value)
 		{ return rgtype[value]; }
 private:
@@ -58,11 +58,11 @@ void CTable::AddEntry(BYTE bvalue, Code c)
 {
 	LONG length = c.GetLength();
 	ASSERT(length <= cbit);
-
+	
 	for (LONG i = 0; i < LONG(1) << (cbit - length); ++i)
 	{
 		ASSERT(rgtype[(bvalue << (cbit - length)) + i].GetLength() == 0);
-		rgtype[(bvalue << (cbit - length)) + i] = c;
+		rgtype[(bvalue << (cbit - length)) + i] = c;					
 	}
 }
 

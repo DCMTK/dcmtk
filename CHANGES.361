@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.11.27 (schlachter)
 
+- Update CharLS to version 1.0.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libcharls/*.h
+           dcmjpls/libcharls/*.cc
+
 - Added defines for new CMake checks to osconfig.h.in
   Affects: CMake/osconfig.h.in
 

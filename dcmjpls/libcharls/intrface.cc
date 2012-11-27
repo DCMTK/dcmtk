@@ -1,6 +1,6 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 
 
 #include "config.h"
@@ -53,7 +53,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedL
 			info.bytesperline *= info.components;
 		}
 	}
-
+	
 	JLS_ERROR parameterError = CheckInput(compressedData, compressedLength, uncompressedData, uncompressedLength, &info);
 
 	if (parameterError != OK)
@@ -64,9 +64,9 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedL
 
 	Size size = Size(info.width, info.height);
 	JLSOutputStream stream;
-
+	
 	stream.Init(size, info.bitspersample, info.components);
-
+	
 	if (info.colorTransform != 0)
 	{
 		stream.AddColorTransform(info.colorTransform);
@@ -81,15 +81,15 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedL
 			stream.AddScan(compareData, &info);
 		}
 	}
-	else
+	else 
 	{
 		stream.AddScan(uncompressedData, &info);
 	}
 
-
+	
 	stream.Write((BYTE*)compressedData, compressedLength);
-
-	*pcbyteWritten = stream.GetBytesWritten();
+	
+	*pcbyteWritten = stream.GetBytesWritten();	
 	return OK;
 }
 
@@ -99,7 +99,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsDecode(void* uncompressedData, size_t uncompres
 
 	if(info != NULL)
 	{
-		reader.SetInfo(info);
+	 	reader.SetInfo(info);
 	}
 
 	try
@@ -120,7 +120,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsDecodeRect(void* uncompressedData, size_t uncom
 
 	if(info != NULL)
 	{
-		reader.SetInfo(info);
+	 	reader.SetInfo(info);
 	}
 
 	reader.SetRect(roi);
@@ -149,11 +149,11 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* uncompressedData, size
 
 	if (error != OK)
 		return error;
-
+	
 	Size size = Size(info.width, info.height);
-
+	
 	JLSOutputStream stream;
-
+	
 	stream.Init(size, info.bitspersample, info.components);
 
 	if (info.ilv == ILV_NONE)
@@ -165,30 +165,30 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* uncompressedData, size
 			stream.AddScan(compareData, &info);
 		}
 	}
-	else
+	else 
 	{
 		stream.AddScan(uncompressedData, &info);
 	}
 
 	OFVector<BYTE> rgbyteCompressed(compressedLength + 16);
-
+	
 	memcpy(&rgbyteCompressed[0], compressedData, compressedLength);
-
+	
 	stream.EnableCompare(true);
 	stream.Write(&rgbyteCompressed[0], compressedLength);
-
+	
 	return OK;
 }
 
-
+ 
 CHARLS_IMEXPORT(JLS_ERROR) JpegLsReadHeader(const void* compressedData, size_t compressedLength, JlsParameters* pparams)
 {
 	try
 	{
 		JLSInputStream reader((BYTE*)compressedData, compressedLength);
-		reader.ReadHeader();
+		reader.ReadHeader();	
 		JlsParameters info = reader.GetMetadata();
-		*pparams = info;
+		*pparams = info;	
 		return OK;
 	}
 	catch (JlsException& e)

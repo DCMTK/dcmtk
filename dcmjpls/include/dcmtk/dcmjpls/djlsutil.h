@@ -28,7 +28,7 @@
 #include "dcmtk/dcmjpls/dldefine.h"
 
 
-#define DCMJPLS_CHARLS_VERSION_STRING "CharLS, Revision 55020 (modified)"
+#define DCMJPLS_CHARLS_VERSION_STRING "CharLS, Version 1.0 (modified)"
 
 
 // global definitions for logging mechanism provided by the oflog module

@@ -1,6 +1,6 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 #ifndef CHARLS_STREAMS
 #define CHARLS_STREAMS
 
@@ -10,7 +10,7 @@
 
 
 
-// This file defines JPEG-LS streams: The header and the actual pixel data. Header markers have fixed length, the pixeldata not.
+// This file defines JPEG-LS streams: The header and the actual pixel data. Header markers have fixed length, the pixeldata not. 
 
 
 
@@ -19,7 +19,7 @@ class JpegSegment;
 enum JPEGLS_ColorXForm
 {
 	// default (RGB)
-	COLORXFORM_NONE = 0,
+	COLORXFORM_NONE = 0,	
 
 	// Color transforms as defined by HP
 	COLORXFORM_HP1,
@@ -30,7 +30,7 @@ enum JPEGLS_ColorXForm
 	COLORXFORM_RGB_AS_YUV_LOSSY,
 	COLORXFORM_MATRIX
 };
-
+	
 //
 // JLSOutputStream: minimal implementation to write JPEG header streams
 //
@@ -54,18 +54,18 @@ public:
 		{ return _cbyteLength - _cbyteOffset; }
 
 	size_t Write(BYTE* pdata, size_t cbyteLength);
-
-	void EnableCompare(bool bCompare)
+	
+	void EnableCompare(bool bCompare) 
 	{ _bCompare = bCompare; }
 private:
 	BYTE* GetPos() const
 		{ return _pdata + _cbyteOffset; }
 
 	void WriteByte(BYTE val)
-	{
+	{ 
 		ASSERT(!_bCompare || _pdata[_cbyteOffset] == val);
-
-		_pdata[_cbyteOffset++] = val;
+		
+		_pdata[_cbyteOffset++] = val; 
 	}
 
 	void WriteBytes(const OFVector<BYTE>& rgbyte)
@@ -73,7 +73,7 @@ private:
 		for (size_t i = 0; i < rgbyte.size(); ++i)
 		{
 			WriteByte(rgbyte[i]);
-		}
+		}		
 	}
 
 	void WriteWord(USHORT val)
@@ -97,41 +97,26 @@ private:
 };
 
 
-
-struct Presets : public JlsCustomParameters
-{
-public:
-	Presets()
-	{
-		MAXVAL = 0;
-		T1 = 0;
-		T2 = 0;
-		T3 = 0;
-		RESET = 0;
-	}
-};
-
-
 //
 // JLSInputStream: minimal implementation to read JPEG header streams
 //
 class JLSInputStream
 {
 public:
-	JLSInputStream(const BYTE* pdata, LONG cbyteLength);
+	JLSInputStream(const BYTE* pdata, size_t cbyteLength);
 
 	size_t GetBytesRead()
 		{ return _cbyteOffset; }
 
 	const JlsParameters& GetMetadata() const
-		{ return _info; }
+		{ return _info; } 
 
 	const JlsCustomParameters& GetCustomPreset() const
-	{ return _info.custom; }
+	{ return _info.custom; } 
 
-	void Read(void* pvoid, LONG cbyteAvailable);
+	void Read(void* pvoid, size_t cbyteAvailable);
 	void ReadHeader();
-
+	
 	void EnableCompare(bool bCompare)
 		{ _bCompare = bCompare;	}
 
@@ -140,8 +125,8 @@ public:
 	void SetRect(JlsRect rect) { _rect = rect; }
 
 private:
-	void ReadPixels(void* pvoid, LONG cbyteAvailable);
-	void ReadScan(void*);
+	void ReadPixels(void* pvoid, size_t cbyteAvailable);
+	void ReadScan(void*);	
 	void ReadStartOfScan();
 	void ReadPresetParameters();
 	void ReadComment();
@@ -155,7 +140,7 @@ private:
 	// Color Transform Application Markers & Code Stream (HP extension)
 	void ReadColorSpace();
 	void ReadColorXForm();
-
+	
 private:
 	const BYTE* _pdata;
 	size_t _cbyteOffset;

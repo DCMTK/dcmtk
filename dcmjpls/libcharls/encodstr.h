@@ -1,6 +1,6 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 
 #ifndef CHARLS_ENCODERSTRATEGY
 #define CHARLS_ENCODERSTRATEGY
@@ -23,16 +23,16 @@ public:
 		 bitpos(0),
 		 _isFFWritten(false),
 		 _bytesWritten(0)
-
+		
 	{
 	}
 
-	virtual ~EncoderStrategy()
+	virtual ~EncoderStrategy() 
 	{
 	}
 
 	LONG PeekByte();
-
+	
 	void OnLineBegin(LONG cpixel, void* ptypeBuffer, LONG pixelStride)
 	{
 		_processLine->NewLineRequested(ptypeBuffer, cpixel, pixelStride);
@@ -41,7 +41,7 @@ public:
 	void OnLineEnd(LONG /*cpixel*/, void* /*ptypeBuffer*/, LONG /*pixelStride*/) { }
 
     virtual void SetPresets(const JlsCustomParameters& presets) = 0;
-
+		
 	virtual size_t EncodeScan(const void* pvoid, void* pvoidOut, size_t byteCount, void* pvoidCompare) = 0;
 
 protected:
@@ -51,12 +51,12 @@ protected:
 		bitpos = 32;
 		valcurrent = 0;
 		_position = compressedBytes;
-		_compressedLength = byteCount;
+   		_compressedLength = byteCount;
 	}
 
 
 	void AppendToBitStream(LONG value, LONG length)
-	{
+	{	
 		ASSERT(length < 32 && length >= 0);
 
 		ASSERT((_qdecoder.get() == NULL) || (length == 0 && value == 0) ||( _qdecoder->ReadLongValue(length) == value));
@@ -78,7 +78,7 @@ protected:
 		valcurrent |= value >> -bitpos;
 
 		Flush();
-
+	        
 		ASSERT(bitpos >= 0);
 		if (bitpos < 32)
 			valcurrent |= value << bitpos;
@@ -93,7 +93,7 @@ protected:
 			AppendToBitStream(0, (bitpos - 1) % 8);
 		else
 			AppendToBitStream(0, bitpos % 8);
-
+		
 		Flush();
 		ASSERT(bitpos == 0x20);
 	}
@@ -109,39 +109,39 @@ protected:
 			{
 				// insert highmost bit
 				*_position = BYTE(valcurrent >> 25);
-				valcurrent = valcurrent << 7;
-				bitpos += 7;
+				valcurrent = valcurrent << 7;			
+				bitpos += 7;	
 				_isFFWritten = false;
 			}
 			else
 			{
 				*_position = BYTE(valcurrent >> 24);
-				valcurrent = valcurrent << 8;
-				bitpos += 8;
-				_isFFWritten = *_position == 0xFF;
+				valcurrent = valcurrent << 8;			
+				bitpos += 8;			
+				_isFFWritten = *_position == 0xFF;			
 			}
-
+			
 			_position++;
 			_compressedLength--;
 			_bytesWritten++;
 
 		}
-
+		
 	}
 
-	size_t GetLength()
-	{
-		return _bytesWritten - (bitpos -32)/8;
+	size_t GetLength() 
+	{ 
+		return _bytesWritten - (bitpos -32)/8; 
 	}
 
 
 	inlinehint void AppendOnesToBitStream(LONG length)
 	{
-		AppendToBitStream((1 << length) - 1, length);
+		AppendToBitStream((1 << length) - 1, length);	
 	}
 
 
-	OFauto_ptr<DecoderStrategy> _qdecoder;
+	OFauto_ptr<DecoderStrategy> _qdecoder; 
 
 protected:
 	JlsParameters _info;
@@ -151,7 +151,7 @@ private:
 	unsigned int valcurrent;
 	LONG bitpos;
 	size_t _compressedLength;
-
+	
 	// encoding
 	BYTE* _position;
 	bool _isFFWritten;

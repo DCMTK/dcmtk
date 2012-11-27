@@ -1,6 +1,6 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 
 
 #ifndef CHARLS_DEFAULTTRAITS
@@ -11,15 +11,15 @@
 // This traits class is used to initialize a coder/decoder.
 // The coder/decoder also delegates some functions to the traits class.
 // This is to allow the traits class to replace the default implementation here with optimized specific implementations.
-// This is done for lossless coding/decoding: see losslesstraits.h
+// This is done for lossless coding/decoding: see losslesstraits.h 
 
 template <class sample, class pixel>
-struct DefaultTraitsT
+struct DefaultTraitsT 
 {
 public:
 	typedef sample SAMPLE;
 	typedef pixel PIXEL;
-
+	
 	LONG MAXVAL;
 	LONG RANGE;
 	LONG NEAR;
@@ -44,22 +44,22 @@ public:
 		NEAR   = jls_near;
 		MAXVAL = max;
 		RANGE  = (MAXVAL + 2 * NEAR )/(2 * NEAR + 1) + 1;
-		bpp = log_2(max);
+		bpp = log_2(max);	
 		LIMIT = 2 * (bpp + MAX(8,bpp));
 		qbpp = log_2(RANGE);
 		RESET = BASIC_RESET;
 	}
 
-
+	
 	inlinehint LONG ComputeErrVal(LONG e) const
 	{
 		LONG q = Quantize(e);
 		return ModRange(q);
 	}
-
+	
 	inlinehint SAMPLE ComputeReconstructedSample(LONG Px, LONG ErrVal)
 	{
-		return FixReconstructedValue(Px + DeQuantize(ErrVal));
+		return FixReconstructedValue(Px + DeQuantize(ErrVal)); 
 	}
 
 	inlinehint bool IsNear(LONG lhs, LONG rhs) const
@@ -67,17 +67,17 @@ public:
 
 	bool IsNear(Triplet<SAMPLE> lhs, Triplet<SAMPLE> rhs) const
 	{
-		return ABS(lhs.v1-rhs.v1) <=NEAR &&
-			ABS(lhs.v2-rhs.v2) <=NEAR &&
-			ABS(lhs.v3-rhs.v3) <=NEAR;
+		return ABS(lhs.v1-rhs.v1) <=NEAR && 
+			ABS(lhs.v2-rhs.v2) <=NEAR && 
+			ABS(lhs.v3-rhs.v3) <=NEAR; 
 	}
 
 	inlinehint LONG CorrectPrediction(LONG Pxc) const
 	{
 		if ((Pxc & MAXVAL) == Pxc)
 			return Pxc;
-
-		return (~(Pxc >> (LONG_BITCOUNT-1))) & MAXVAL;
+		
+		return (~(Pxc >> (LONG_BITCOUNT-1))) & MAXVAL;		
 	}
 
 	inlinehint LONG ModRange(LONG Errval) const
@@ -101,7 +101,7 @@ private:
 		if (Errval > 0)
 			return  (Errval + NEAR) / (2 * NEAR + 1);
 		else
-			return - (NEAR - Errval) / (2 * NEAR + 1);
+			return - (NEAR - Errval) / (2 * NEAR + 1);		
 	}
 
 
@@ -111,13 +111,13 @@ private:
 	}
 
 	inlinehint SAMPLE FixReconstructedValue(LONG val) const
-	{
+	{ 
 		if (val < -NEAR)
 			val = val + RANGE*(2*NEAR+1);
 		else if (val > MAXVAL + NEAR)
 			val = val - RANGE*(2*NEAR+1);
 
-		return SAMPLE(CorrectPrediction(val));
+		return SAMPLE(CorrectPrediction(val)); 
 	}
 
 };

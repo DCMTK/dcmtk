@@ -1,6 +1,6 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 
 
 #ifndef CHARLS_CONTEXTRUNMODE
@@ -9,11 +9,11 @@
 // Implements statistical modelling for the run mode context.
 // Computes model dependent parameters like the golomb code lengths
 
-struct CContextRunMode
+struct CContextRunMode 
 {
 	CContextRunMode(LONG a, LONG nRItype, LONG nReset) :
 		A(a),
-		N(1),
+		N(1),	
 		Nn(0),
 		_nRItype(nRItype),
 		_nReset((BYTE)nReset)
@@ -35,23 +35,23 @@ struct CContextRunMode
 		LONG Ntest	= N;
 		LONG TEMP	= A + (N >> 1) * _nRItype;
 		LONG k = 0;
-		for(; Ntest < TEMP; k++)
-		{
+		for(; Ntest < TEMP; k++) 
+		{ 
 			Ntest <<= 1;
-			ASSERT(k <= 32);
+			ASSERT(k <= 32); 
 		};
 		return k;
 	}
 
 
 	void UpdateVariables(LONG Errval, LONG EMErrval)
-	{
+	{		
 		if (Errval < 0)
 		{
 			Nn = Nn + 1;
 		}
 		A = A + ((EMErrval + 1 - _nRItype) >> 1);
-		if (N == _nReset)
+		if (N == _nReset) 
 		{
 			A = A >> 1;
 			N = N >> 1;
@@ -72,7 +72,7 @@ struct CContextRunMode
 			return -errvalabs;
 		}
 
-		ASSERT(map == ComputeMap(errvalabs, k));
+		ASSERT(map == ComputeMap(errvalabs, k));	
 		return errvalabs;
 	}
 
@@ -83,7 +83,7 @@ struct CContextRunMode
 			return 1;
 
 		else if ((Errval < 0) && (2 * Nn >= N))
-			return 1;
+			return 1;		 
 
 		else if ((Errval < 0) && (k != 0))
 			return 1;

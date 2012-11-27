@@ -1,36 +1,34 @@
-//
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
-//
+// 
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
+// 
 
 #include "config.h"
 #include "util.h"
 #include "streams.h"
 #include "header.h"
-
+               
 #include "decodstr.h"
 #include "encodstr.h"
 #include "context.h"
 #include "ctxtrmod.h"
 #include "lokuptbl.h"
 
+
 signed char* JlsContext::_tableC = CreateTableC();
 
-// As defined in the JPEG-LS standard
+// As defined in the JPEG-LS standard 
 
-// used to determine how large runs should be encoded at a time.
+// used to determine how large runs should be encoded at a time. 
 const int J[32]			= {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-// Default bin sizes for JPEG-LS statistical modeling. Can be overridden at compression time, however this is rarely done.
-const int BASIC_T1		= 3;
-const int BASIC_T2		= 7;
-const int BASIC_T3		= 21;
+
 
 #include "lltraits.h"
 #include "deftrait.h"
 
 #include "scan.h"
 
-signed char QuantizeGratientOrg(const Presets& preset, LONG NEAR, LONG Di)
+signed char QuantizeGratientOrg(const JlsCustomParameters& preset, LONG NEAR, LONG Di)
 {
 	if (Di <= -preset.T3) return  -4;
 	if (Di <= -preset.T2) return  -3;
@@ -40,7 +38,7 @@ signed char QuantizeGratientOrg(const Presets& preset, LONG NEAR, LONG Di)
 	if (Di < preset.T1)   return   1;
 	if (Di < preset.T2)   return   2;
 	if (Di < preset.T3)   return   3;
-
+	
 	return  4;
 }
 
@@ -48,11 +46,11 @@ signed char QuantizeGratientOrg(const Presets& preset, LONG NEAR, LONG Di)
 
 OFVector<signed char> CreateQLutLossless(LONG cbit)
 {
-	Presets preset = ComputeDefault((1 << cbit) - 1, 0);
+	JlsCustomParameters preset = ComputeDefault((1 << cbit) - 1, 0);
 	LONG range = preset.MAXVAL + 1;
 
 	OFVector<signed char> lut(range * 2);
-
+	
 	for (LONG diff = -range; diff < range; diff++)
 	{
 		lut[range + diff] = QuantizeGratientOrg(preset, 0,diff);
@@ -65,13 +63,13 @@ OFVector<signed char> CreateQLutLossless(LONG cbit)
 
 
 // Lookup table: decode symbols that are smaller or equal to 8 bit (16 tables for each value of k)
-CTable decodingTables[16] = { InitTable(0), InitTable(1), InitTable(2), InitTable(3),
-							 InitTable(4), InitTable(5), InitTable(6), InitTable(7),
-							 InitTable(8), InitTable(9), InitTable(10), InitTable(11),
+CTable decodingTables[16] = { InitTable(0), InitTable(1), InitTable(2), InitTable(3), 
+							 InitTable(4), InitTable(5), InitTable(6), InitTable(7), 
+							 InitTable(8), InitTable(9), InitTable(10), InitTable(11), 
 							 InitTable(12), InitTable(13), InitTable(14),InitTable(15) };
 
 
-// Lookup tables: sample differences to bin indexes.
+// Lookup tables: sample differences to bin indexes. 
 OFVector<signed char> rgquant8Ll = CreateQLutLossless(8);
 OFVector<signed char> rgquant10Ll = CreateQLutLossless(10);
 OFVector<signed char> rgquant12Ll = CreateQLutLossless(12);
@@ -86,10 +84,10 @@ OFauto_ptr<STRATEGY> JlsCodecFactory<STRATEGY>::GetCodec(const JlsParameters& in
 	STRATEGY* pstrategy = NULL;
 	if (presets.RESET != 0 && presets.RESET != BASIC_RESET)
 	{
-		DefaultTraitsT<BYTE,BYTE> traits((1 << info.bitspersample) - 1, info.allowedlossyerror);
+		DefaultTraitsT<BYTE,BYTE> traits((1 << info.bitspersample) - 1, info.allowedlossyerror); 
 		traits.MAXVAL = presets.MAXVAL;
 		traits.RESET = presets.RESET;
-		pstrategy = new JlsCodec<DefaultTraitsT<BYTE, BYTE>, STRATEGY>(traits, info);
+		pstrategy = new JlsCodec<DefaultTraitsT<BYTE, BYTE>, STRATEGY>(traits, info); 
 	}
 	else
 	{
@@ -114,7 +112,7 @@ STRATEGY* CreateCodec(const TRAITS& t, const STRATEGY*,const JlsParameters& info
 
 template<class STRATEGY>
 STRATEGY* JlsCodecFactory<STRATEGY>::GetCodecImpl(const JlsParameters& info)
-{
+{	
 	STRATEGY* s = 0;
 
 	if (info.ilv == ILV_SAMPLE && info.components != 3)
@@ -124,7 +122,7 @@ STRATEGY* JlsCodecFactory<STRATEGY>::GetCodecImpl(const JlsParameters& info)
 
 	// optimized lossless versions common formats
 	if (info.allowedlossyerror == 0)
-	{
+	{		
 		if (info.ilv == ILV_SAMPLE)
 		{
 			if (info.bitspersample == 8)
@@ -134,7 +132,7 @@ STRATEGY* JlsCodecFactory<STRATEGY>::GetCodecImpl(const JlsParameters& info)
 		{
 			switch (info.bitspersample)
 			{
-				case  8: return CreateCodec(LosslessTraitsT<BYTE,    8>(), s, info);
+				case  8: return CreateCodec(LosslessTraitsT<BYTE,    8>(), s, info); 
 				case 12: return CreateCodec(LosslessTraitsT<USHORT, 12>(), s, info);
 				case 16: return CreateCodec(LosslessTraitsT<USHORT, 16>(), s, info);
 			}
@@ -148,16 +146,16 @@ STRATEGY* JlsCodecFactory<STRATEGY>::GetCodecImpl(const JlsParameters& info)
 	if (info.bitspersample <= 8)
 	{
 		if (info.ilv == ILV_SAMPLE)
-			return CreateCodec(DefaultTraitsT<BYTE,Triplet<BYTE> >(maxval, info.allowedlossyerror), s, info);
-
-		return CreateCodec(DefaultTraitsT<BYTE, BYTE>((1 << info.bitspersample) - 1, info.allowedlossyerror), s, info);
+			return CreateCodec(DefaultTraitsT<BYTE,Triplet<BYTE> >(maxval, info.allowedlossyerror), s, info); 	
+		
+		return CreateCodec(DefaultTraitsT<BYTE, BYTE>((1 << info.bitspersample) - 1, info.allowedlossyerror), s, info); 	
 	}
 	else if (info.bitspersample <= 16)
 	{
 		if (info.ilv == ILV_SAMPLE)
-			return CreateCodec(DefaultTraitsT<USHORT,Triplet<USHORT> >(maxval, info.allowedlossyerror), s, info);
+			return CreateCodec(DefaultTraitsT<USHORT,Triplet<USHORT> >(maxval, info.allowedlossyerror), s, info); 	
 
-		return CreateCodec(DefaultTraitsT<USHORT, USHORT>(maxval, info.allowedlossyerror), s, info);
+		return CreateCodec(DefaultTraitsT<USHORT, USHORT>(maxval, info.allowedlossyerror), s, info); 	
 	}
 	return NULL;
 }
