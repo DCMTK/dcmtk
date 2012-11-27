@@ -615,6 +615,18 @@
 /* Define to 1 if you have the <synch.h> header file. */
 #cmakedefine HAVE_SYNCH_H @HAVE_SYNCH_H@
 
+/* Define if __sync_add_and_fetch is available */
+#cmakedefine HAVE_SYNC_ADD_AND_FETCH @HAVE_SYNC_ADD_AND_FETCH@
+
+/* Define if __sync_sub_and_fetch is available */
+#cmakedefine HAVE_SYNC_SUB_AND_FETCH @HAVE_SYNC_SUB_AND_FETCH@
+
+/* Define if InterlockedIncrement is available */
+#cmakedefine HAVE_INTERLOCKED_INCREMENT @HAVE_INTERLOCKED_INCREMENT@
+
+/* Define if InterlockedDecrement is available */
+#cmakedefine HAVE_INTERLOCKED_DECREMENT @HAVE_INTERLOCKED_DECREMENT@
+
 /* Define to 1 if you have the `sysinfo' function. */
 #cmakedefine HAVE_SYSINFO @HAVE_SYSINFO@
 

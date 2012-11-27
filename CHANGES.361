@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.11.27 (schlachter)
+
+- Added defines for new CMake checks to osconfig.h.in
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2012.11.22 (schlamelcher)
 
 - Introduced OFshared_ptr implementing a subset of c++11's std::shared_ptr.
