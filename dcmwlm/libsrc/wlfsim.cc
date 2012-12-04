@@ -1389,14 +1389,14 @@ OFBool WlmFileSystemInteractionManager::DateTimeRangeMatch( const char *datasetD
     }
 
     // free memory
-    delete ddv;
-    delete dtv;
-    delete sdv;
-    delete stv;
-    if( sdvv1 != NULL ) delete sdvv1;
-    if( sdvv2 != NULL ) delete sdvv2;
-    if( stvv1 != NULL ) delete stvv1;
-    if( stvv2 != NULL ) delete stvv2;
+    delete[] ddv;
+    delete[] dtv;
+    delete[] sdv;
+    delete[] stv;
+    if( sdvv1 != NULL ) delete[] sdvv1;
+    if( sdvv2 != NULL ) delete[] sdvv2;
+    if( stvv1 != NULL ) delete[] stvv1;
+    if( stvv2 != NULL ) delete[] stvv2;
 
     // return result
     return( isMatch );
@@ -1473,10 +1473,10 @@ OFBool WlmFileSystemInteractionManager::DateRangeMatch( const char *datasetDateV
     }
 
     // free memory
-    delete ddv;
-    delete sdv;
-    if( sdvv1 != NULL ) delete sdvv1;
-    if( sdvv2 != NULL ) delete sdvv2;
+    delete[] ddv;
+    delete[] sdv;
+    if( sdvv1 != NULL ) delete[] sdvv1;
+    if( sdvv2 != NULL ) delete[] sdvv2;
 
     // return result
     return( isMatch );
@@ -1552,10 +1552,10 @@ OFBool WlmFileSystemInteractionManager::TimeRangeMatch( const char *datasetTimeV
     }
 
     // free memory
-    delete dtv;
-    delete stv;
-    if( stvv1 != NULL ) delete stvv1;
-    if( stvv2 != NULL ) delete stvv2;
+    delete[] dtv;
+    delete[] stv;
+    if( stvv1 != NULL ) delete[] stvv1;
+    if( stvv2 != NULL ) delete[] stvv2;
 
     // return result
     return( isMatch );
@@ -1644,8 +1644,8 @@ OFBool WlmFileSystemInteractionManager::DateTimeSingleValueMatch( const char *da
         }
 
         // free memory
-        delete ddv;
-        delete sdv;
+        delete[] ddv;
+        delete[] sdv;
       }
     }
 
@@ -1696,8 +1696,8 @@ OFBool WlmFileSystemInteractionManager::DateTimeSingleValueMatch( const char *da
         }
 
         // free memory
-        delete dtv;
-        delete stv;
+        delete[] dtv;
+        delete[] stv;
       }
     }
 
@@ -1764,8 +1764,8 @@ OFBool WlmFileSystemInteractionManager::DateSingleValueMatch( const char *datase
       }
 
       // free memory
-      delete ddv;
-      delete sdv;
+      delete[] ddv;
+      delete[] sdv;
 
       // return result
       return( isMatch );
@@ -1834,8 +1834,8 @@ OFBool WlmFileSystemInteractionManager::TimeSingleValueMatch( const char *datase
       }
 
       // free memory
-      delete dtv;
-      delete stv;
+      delete[] dtv;
+      delete[] stv;
 
       // return result
       return( isMatch );
@@ -1879,8 +1879,8 @@ OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueMatch( const cha
     matchFound = OFFalse;
 
   // free memory
-  delete dv;
-  delete sv;
+  delete[] dv;
+  delete[] sv;
 
   // return result
   return( matchFound );
@@ -1942,8 +1942,8 @@ OFBool WlmFileSystemInteractionManager::WildcardMatch( const char *datasetValue,
   }
 
   // free memory
-  delete dvanchor;
-  delete svanchor;
+  delete[] dvanchor;
+  delete[] svanchor;
 
   // return result
   return( ok );

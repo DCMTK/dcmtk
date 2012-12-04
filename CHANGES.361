@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2012.12.04 (schlachter)
 
+- Use delete[] instead of delete where necessary.
+  Thanks to forum user "yueran" for the report.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
 - Fixed various memory leaks. Thanks to forum user "yueran" for the report.
   Affects: dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
            dcmwlm/libsrc/wlfsim.cc
