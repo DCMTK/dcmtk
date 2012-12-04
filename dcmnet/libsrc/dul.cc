@@ -106,25 +106,16 @@ BEGIN_EXTERN_C
 #endif
 #ifdef WITH_TCPWRAPPER
 #include <tcpd.h>               /* for hosts_ctl */
-#include <syslog.h>
+
+BEGIN_EXTERN_C
+int dcmtk_hosts_access(struct request_info *req);
+END_EXTERN_C
 #endif
 #ifdef HAVE_SIGNAL_H
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
 #endif
 END_EXTERN_C
-
-#ifdef WITH_TCPWRAPPER
-/* libwrap expects that two global flags, deny_severity and allow_severity,
- * are defined and initialized by user code. If these flags are already present
- * somewhere else, compile DCMTK with TCPWRAPPER_SEVERITY_EXTERN defined
- * to avoid linker errors due to duplicate symbols.
- */
-#ifndef TCPWRAPPER_SEVERITY_EXTERN
-int deny_severity = LOG_WARNING;
-int allow_severity = LOG_INFO;
-#endif
-#endif
 
 BEGIN_EXTERN_C
 /* declare extern "C" typedef for signal handler function pointer */
@@ -1919,7 +1910,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         request_set(&request, RQ_USER, STRING_UNKNOWN, 0);
         request_set(&request, RQ_DAEMON, daemon, 0);
 
-        if (! hosts_access(&request))
+        if (! dcmtk_hosts_access(&request))
         {
 #ifdef HAVE_WINSOCK_H
           (void) shutdown(sock,  1 /* SD_SEND */);

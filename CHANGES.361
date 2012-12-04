@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2012.12.04 (schlachter)
 
+- Added C wrapper for hosts_access() to work around ancient libwrap.
+  Thanks to forum user "chaircrusher" for the report.
+  Added:   dcmnet/libsrc/dwrap.c
+  Affects: dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/dul.cc
+
 - Use delete[] instead of delete where necessary.
   Thanks to forum user "yueran" for the report.
   Affects: dcmwlm/libsrc/wlfsim.cc
