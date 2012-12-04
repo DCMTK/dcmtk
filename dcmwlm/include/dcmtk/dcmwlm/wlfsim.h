@@ -328,6 +328,25 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 
       /** This function returns OFTrue if the dataset's and the search mask's values
        *  match while performing a case sensitive single value match; otherwise OFFalse
+       *  will be returned. If the dataset's value is NULL, only a "*" matches.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; may be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool CaseSensitiveSingleValueOrWildcardMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values
+       *  match while performing a case sensitive single value match; otherwise OFFalse
+       *  will be returned. If the dataset's value is NULL, only a "*" matches.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; may be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the
+       *         search mask; trailing spaces are ignored; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool CaseSensitiveSingleValueOrWildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values
+       *  match while performing a case sensitive single value match; otherwise OFFalse
        *  will be returned.
        *  @param datasetValue    Value for the corresponding attribute in the dataset; never NULL.
        *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
@@ -342,6 +361,15 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  @return OFTrue if the values match, OFFalse otherwise.
        */
     OFBool WildcardMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values
+       *  match while performing a wildcard match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; may be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the
+       *         search mask; trailing spaces are ignored; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool WildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue );
 
       /** This function is called, if the search pattern contains a star symbol. It determines
        *  if dv (the dataset's value) still matches sv (the search mask's value). This function

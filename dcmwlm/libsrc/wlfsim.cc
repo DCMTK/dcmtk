@@ -945,14 +945,11 @@ void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDa
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::ScheduledStationAETitlesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute scheduled station AE title match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
+OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueOrWildcardMatch( const char *datasetValue, const char *searchMaskValue )
+// Date         : December 04, 2012
+// Author       : Uli Schlachter
+// Task         : Make this file shorter
+// Docs         : Can be found in wilfsim.h
 {
   // if there is a value in the dataset, perform case sensitive single value matching
   if( datasetValue != NULL )
@@ -966,6 +963,91 @@ OFBool WlmFileSystemInteractionManager::ScheduledStationAETitlesMatch( const cha
     else
       return( OFFalse );
   }
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueOrWildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue )
+// Date         : December 04, 2012
+// Author       : Uli Schlachter
+// Task         : Make this file shorter
+// Docs         : Can be found in wilfsim.h
+{
+  // copy search mask value
+  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
+  strcpy( sv, searchMaskValue );
+
+  // strip trailing spaces
+  DU_stripTrailingSpaces( sv );
+
+  // if we are dealing with universal matching, there is always a match
+  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
+  {
+    delete[] sv;
+    return( OFTrue );
+  }
+  else
+  {
+    delete[] sv;
+    // if we are not dealing with universal matching...
+    // ...and the dataset value is not existent, there is no match
+    if( datasetValue == NULL )
+    {
+      return( OFFalse );
+    }
+    // ...and the dataset value is existent, we have to perform case sensitive single value matching or wildcard matching
+    OFBool result = CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) || WildcardMatch( datasetValue, searchMaskValue );
+    return result;
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmFileSystemInteractionManager::WildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue )
+// Date         : December 04, 2012
+// Author       : Uli Schlachter
+// Task         : Make this file shorter
+// Docs         : Can be found in wilfsim.h
+{
+  // copy search mask value
+  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
+  strcpy( sv, searchMaskValue );
+
+  // strip trailing spaces
+  DU_stripTrailingSpaces( sv );
+
+  // if we are dealing with universal matching, there is always a match
+  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
+  {
+    delete[] sv;
+    return( OFTrue );
+  }
+  else
+  {
+    delete[] sv;
+    // if we are not dealing with universal matching...
+    // ...and the dataset value is not existent, there is no match
+    if( datasetValue == NULL )
+      return( OFFalse );
+    // ...and the dataset value is existent, we want to perform wildcard matching
+    else
+      return( WildcardMatch( datasetValue, searchMaskValue ) );
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmFileSystemInteractionManager::ScheduledStationAETitlesMatch( const char *datasetValue, const char *searchMaskValue )
+// Date         : July 12, 2002
+// Author       : Thomas Wilkens
+// Task         : This function returns OFTrue if the dataset's and the search mask's values in
+//                attribute scheduled station AE title match; otherwise OFFalse will be returned.
+// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
+//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
+// Return Value : OFTrue if the values match, OFFalse otherwise.
+{
+  return CaseSensitiveSingleValueOrWildcardMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1047,18 +1129,7 @@ OFBool WlmFileSystemInteractionManager::ModalitiesMatch( const char *datasetValu
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // if there is a value in the dataset, perform case sensitive single value matching
-  if( datasetValue != NULL )
-    return( CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) );
-  else
-  {
-    // if datasetValue is not existent, the search mask's value has to be empty to have
-    // a match (universal matching); in all other cases, we do not have a match
-    if( strcmp( searchMaskValue, "" ) == 0 )
-      return( OFTrue );
-    else
-      return( OFFalse );
-  }
+  return CaseSensitiveSingleValueOrWildcardMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1072,28 +1143,7 @@ OFBool WlmFileSystemInteractionManager::ScheduledPerformingPhysicianNamesMatch( 
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we have to perform case sensitive single value matching or wildcard matching
-    else if( CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) || WildcardMatch( datasetValue, searchMaskValue ) )
-      return( OFTrue );
-    else
-      return( OFFalse );
-  }
+  return CaseSensitiveSingleValueOrWildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1107,28 +1157,7 @@ OFBool WlmFileSystemInteractionManager::PatientsNamesMatch( const char *datasetV
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we have to perform case sensitive single value matching or wildcard matching
-    else if( CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) || WildcardMatch( datasetValue, searchMaskValue ) )
-      return( OFTrue );
-    else
-      return( OFFalse );
-  }
+  return CaseSensitiveSingleValueOrWildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1142,18 +1171,7 @@ OFBool WlmFileSystemInteractionManager::PatientsIDsMatch( const char *datasetVal
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // if there is a value in the dataset, perform case sensitive single value matching
-  if( datasetValue != NULL )
-    return( CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) );
-  else
-  {
-    // if datasetValue is not existent, the search mask's value has to be empty to have
-    // a match (universal matching); in all other cases, we do not have a match
-    if( strcmp( searchMaskValue, "" ) == 0 )
-      return( OFTrue );
-    else
-      return( OFFalse );
-  }
+  return CaseSensitiveSingleValueOrWildcardMatch( datasetValue, searchMaskValue);
 }
 
 // ----------------------------------------------------------------------------
@@ -1167,26 +1185,7 @@ OFBool WlmFileSystemInteractionManager::AccessionNumbersMatch( const char *datas
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1200,26 +1199,7 @@ OFBool WlmFileSystemInteractionManager::RequestedProcedureIdsMatch( const char *
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1233,26 +1213,7 @@ OFBool WlmFileSystemInteractionManager::ReferringPhysicianNamesMatch( const char
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1266,26 +1227,7 @@ OFBool WlmFileSystemInteractionManager::PatientsSexesMatch( const char *datasetV
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1299,26 +1241,7 @@ OFBool WlmFileSystemInteractionManager::RequestingPhysiciansMatch( const char *d
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1332,26 +1255,7 @@ OFBool WlmFileSystemInteractionManager::AdmissionIdsMatch( const char *datasetVa
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1365,26 +1269,7 @@ OFBool WlmFileSystemInteractionManager::RequestedProcedurePrioritiesMatch( const
 //                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
 // Return Value : OFTrue if the values match, OFFalse otherwise.
 {
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
 }
 
 // ----------------------------------------------------------------------------

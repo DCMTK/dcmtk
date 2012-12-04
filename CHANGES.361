@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.12.04 (schlachter)
+
+- Fixed various memory leaks. Thanks to forum user "yueran" for the report.
+  Affects: dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2012.11.27 (schlachter)
 
 - Update CharLS to version 1.0.
