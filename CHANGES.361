@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.12.05 (riesmeier)
+
+- Added hint that option --use-xml-namespace is required in order to validate
+  the XML output of dsr2xml against the given XML Schema.
+  Affects: dcmsr/docs/dsr2xml.man
+           dcmsr/docs/xml2dsr.man
+
 **** Changes from 2012.12.04 (schlachter)
 
 - Added C wrapper for hosts_access() to work around ancient libwrap.

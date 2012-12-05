@@ -226,7 +226,8 @@ available.
 \subsection limitations Limitations
 
 The XML Schema <em>dsr2xml.xsd</em> does not support all variations of the
-\b dsr2xml output format.  However, the default output format should work.
+\b dsr2xml output format.  However, the default output format (plus option
+\e --use-xml-namespace) should work.
 
 Different versions of libxml seem to have different limits for the maximum
 length of an XML element value.  Therefore, it should be avoided to use very
