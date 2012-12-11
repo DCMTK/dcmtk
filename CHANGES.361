@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2012.12.11 (schlachter)
 
+- Clear some member variables in destructors.
+  Thanks to forum user "chaircrusher" for the report.
+  Affects: ofstd/libsrc/oflist.cc
+           ofstd/libsrc/ofthread.cc
+
 - Added an OFGlobal for using a different length field size when the VR in an
   dataset with explicit VR does not match the expected VR from the data
   dictionary and both VRs have different sizes of their length field.

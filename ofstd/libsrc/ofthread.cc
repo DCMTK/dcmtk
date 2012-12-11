@@ -307,6 +307,7 @@ OFThreadSpecificData::~OFThreadSpecificData()
   delete OFthread_cast(thread_key_t *, theKey);
 #else
 #endif
+  theKey = NULL;
 }
 
 OFBool OFThreadSpecificData::initialized() const
@@ -450,6 +451,7 @@ OFSemaphore::~OFSemaphore()
   delete OFthread_cast(sema_t *, theSemaphore);
 #else
 #endif
+  theSemaphore = NULL;
 }
 
 OFBool OFSemaphore::initialized() const
@@ -589,6 +591,7 @@ OFMutex::~OFMutex()
   delete OFthread_cast(mutex_t *, theMutex);
 #else
 #endif
+  theMutex = NULL;
 }
 
 
@@ -741,6 +744,7 @@ OFReadWriteLock::~OFReadWriteLock()
   delete OFthread_cast(rwlock_t *, theLock);
 #else
 #endif
+  theLock = NULL;
 }
 
 OFBool OFReadWriteLock::initialized() const
