@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.12.11 (schlachter)
+
+- Fixed compilation when libwrap support is disabled.
+  Thanks to forum user "chaircrusher" for the report.
+  Affects: dcmnet/libsrc/dwrap.c
+
 **** Changes from 2012.12.05 (riesmeier)
 
 - Added hint that option --use-xml-namespace is required in order to validate

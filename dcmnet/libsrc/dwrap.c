@@ -22,9 +22,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef WITH_TCPWRAPPER
+
 #include <tcpd.h>               /* for hosts_ctl */
 #include <syslog.h>
-#endif
 
 /* libwrap expects that two global flags, deny_severity and allow_severity,
  * are defined and initialized by user code. If these flags are already present
@@ -36,7 +36,6 @@ int deny_severity = LOG_WARNING;
 int allow_severity = LOG_INFO;
 #endif
 
-#ifdef WITH_TCPWRAPPER
 int dcmtk_hosts_access(struct request_info *req);
 
 /* Some versions of libwrap omit the full prototype from tcpd.h.
@@ -51,4 +50,9 @@ int dcmtk_hosts_access(struct request_info *req)
 {
     return hosts_access(req);
 }
+
+#else /* WITH_TCPWRAPPER */
+
+int dwrap_cc_dummy_to_keep_linker_from_moaning = 0;
+
 #endif
