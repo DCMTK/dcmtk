@@ -963,8 +963,12 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             newTag.setVR(vr);
         }
 
-        /* determine VR read from dataset, because this VR specifies the number of bytes for the length-field */
-        newEVR = vr.getEVR();
+        if (!dcmPreferLengthFieldSizeFromDataDictionary.get() || newEVR == EVR_UNKNOWN || newEVR == EVR_UNKNOWN2B) {
+            /* determine VR read from dataset, because this VR specifies the number of bytes for the length-field */
+            newEVR = vr.getEVR();
+        } else {
+            /* use the VR from the dictionary for deciding the length of the length field */
+        }
 
         /* increase counter by 2 */
         bytesRead += 2;

@@ -48,6 +48,7 @@ OFGlobal<OFBool>    dcmEnableOldSignatureFormat(OFFalse);
 OFGlobal<OFBool>    dcmAutoDetectDatasetXfer(OFFalse);
 OFGlobal<OFBool>    dcmAcceptUnexpectedImplicitEncoding(OFFalse);
 OFGlobal<OFBool>    dcmPreferVRFromDataDictionary(OFFalse);
+OFGlobal<OFBool>    dcmPreferLengthFieldSizeFromDataDictionary(OFFalse);
 OFGlobal<OFBool>    dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
 OFGlobal<OFBool>    dcmIgnoreParsingErrors(OFFalse);
 OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)

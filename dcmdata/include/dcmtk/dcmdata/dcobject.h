@@ -122,6 +122,16 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmPreferVRFromDataDictionary; /* default OFFalse */
 
+/** This flag defines how the element's length field is interpreted when reading
+ *  from a dataset with explicit VR encoding and the data dictionary doesn't
+ *  agree with the VR from the dataset. By default, the length field is assumed
+ *  to match the size of the VR in the dataset. If this flag is enabled and the
+ *  tag is defined in the data dictionary, the parser will use the size for the
+ *  VR from the data dictionary (and ignore the one from the dataset). This flag
+ *  is, therefore, useful for reading incorrectly encoded DICOM datasets.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmPreferLengthFieldSizeFromDataDictionary; /* default OFFalse */
+
 /** This flag indicates, whether private attributes with implicit transfer
  *  syntax having a maximum length should be handled as sequences (ignoring
  *  any dictionary entries for that tag). This can happen, if for example

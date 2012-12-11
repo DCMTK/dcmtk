@@ -300,22 +300,43 @@ OFTEST(dcmdata_parser_oddLengthPartialValue_notLastItem)
     testOddLengthPartialValue(data, sizeof(data));
 }
 
-static const DcmTagKey wrongExplicitVRinDataset_unknownTag(0x0006, 0x0006);
+static const DcmTagKey wrongExplicitVRinDataset_unknownTag1(0x0006, 0x0006);
+static const DcmTagKey wrongExplicitVRinDataset_unknownTag2(0x0006, 0x0008);
 
-static const Uint8 wrongExplicitVRinDataset_testData[] = {
-    /* This non-standard tag cannot be corrected (not in data dictionary) */
-    TAG_AND_LENGTH_SHORT(wrongExplicitVRinDataset_unknownTag, 'P', 'N', 4),
-    'A', 'B', 'C', 'D',
-    /* This standard tag has a wrong VR ("ST" instead of "PN") */
-    TAG_AND_LENGTH_SHORT(DCM_PatientName, 'S', 'T', 4),
-    'A', 'B', 'C', 'D',
-    /* This standard tag has a wrong VR ("UN") and uses a 4-byte length field */
-    TAG_AND_LENGTH(DCM_PatientID, 'U', 'N', 4),
-    '0', '8', '1', '5',
-    /* This standard tag has a correct VR, no modification required */
-    TAG_AND_LENGTH_SHORT(DCM_PatientSex, 'C', 'S', 2),
+#define WRONG_EXPLICIT_VR_COMMON \
+    /* This non-standard tag cannot be corrected (not in data dictionary, short length field) */ \
+    TAG_AND_LENGTH_SHORT(wrongExplicitVRinDataset_unknownTag1, 'P', 'N', 4), \
+    'A', 'B', 'C', 'D', \
+    /* This non-standard tag cannot be corrected (not in data dictionary, long length field) */ \
+    TAG_AND_LENGTH(wrongExplicitVRinDataset_unknownTag2, 'U', 'T', 4), \
+    'E', 'F', 'G', 'H', \
+    /* This standard tag has a wrong VR ("ST" instead of "PN") */ \
+    TAG_AND_LENGTH_SHORT(DCM_PatientName, 'S', 'T', 4), \
+    'I', 'J', 'K', 'L', \
+    /* This standard tag has a correct VR, no modification required */ \
+    TAG_AND_LENGTH_SHORT(DCM_PatientSex, 'C', 'S', 2), \
     'O', ' '
+
+static const Uint8 wrongExplicitVRinDataset_default_testData[] = {
+    WRONG_EXPLICIT_VR_COMMON,
+    /* This standard tag has a wrong VR ("UN") and does not use the "PN" length field size */
+    TAG_AND_LENGTH(DCM_PatientBirthName, 'U', 'N', 4),
+    '0', '8', '1', '5',
+    /* This standard tag has a wrong VR ("LO") and does not use the "UT" length field size */
+    TAG_AND_LENGTH_SHORT(DCM_PixelDataProviderURL, 'L', 'O', 4),
+    '4', '2', '4', '2',
 };
+
+static const Uint8 wrongExplicitVRinDataset_dictLen_testData[] = {
+    WRONG_EXPLICIT_VR_COMMON,
+    /* This standard tag has a wrong VR ("UN") and uses the "PN" length field size */
+    TAG_AND_LENGTH_SHORT(DCM_PatientBirthName, 'U', 'N', 4),
+    '0', '8', '1', '5',
+    /* This standard tag has a wrong VR ("LO") and uses the "UT" length field size */
+    TAG_AND_LENGTH(DCM_PixelDataProviderURL, 'L', 'O', 4),
+    '4', '2', '4', '2',
+};
+#undef WRONG_EXPLICIT_VR_COMMON
 
 static void testForExpectedVR(DcmDataset &dset, const DcmTagKey &tag, const DcmEVR vr)
 {
@@ -330,46 +351,83 @@ static void testForExpectedVR(DcmDataset &dset, const DcmTagKey &tag, const DcmE
     }
 }
 
-OFTEST(dcmdata_parser_wrongExplicitVRinDataset_default)
+static void expectReadError(const OFConditionConst& expected, const Uint8* buffer, size_t length, E_TransferSyntax ts)
+{
+    DcmDataset dset;
+    OFCondition cond = readDataset(dset, buffer, length, TRANSFER_SYNTAX);
+    if (cond != expected)
+    {
+        OFCHECK_FAIL("Dataset should fail with " << OFCondition(expected).text()
+                << ", but got: " << cond.text());
+        if (cond.good())
+            OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+    }
+}
+
+static void testExplicitVRinDataset(OFBool useDictionaryVR, OFBool useDictionaryVRLen)
 {
     DcmDataset dset;
     OFCondition cond;
+    const OFConditionConst *expectedError;
+    const Uint8 *broken, *working;
+    size_t brokenLength, workingLength;
 
-    // This should use the VR from the dataset (default)
-    dcmPreferVRFromDataDictionary.set(OFFalse);
-    cond = readDataset(dset, wrongExplicitVRinDataset_testData, sizeof(wrongExplicitVRinDataset_testData), TRANSFER_SYNTAX);
-    if (cond.good())
-    {
-        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
-        testForExpectedVR(dset, wrongExplicitVRinDataset_unknownTag, EVR_PN);
-        testForExpectedVR(dset, DCM_PatientName, EVR_ST);
-        testForExpectedVR(dset, DCM_PatientID, EVR_UN);
-        testForExpectedVR(dset, DCM_PatientSex, EVR_CS);
+    if (useDictionaryVRLen) {
+        broken = wrongExplicitVRinDataset_default_testData;
+        brokenLength = sizeof(wrongExplicitVRinDataset_default_testData);
+        working = wrongExplicitVRinDataset_dictLen_testData;
+        workingLength = sizeof(wrongExplicitVRinDataset_dictLen_testData);
+        // This gets the length field wrong and interprets an element's value as
+        // the beginning of the following element; then complains about the length
+        expectedError = &EC_InvalidStream;
     } else {
-        OFCHECK_FAIL(cond.text());
+        working = wrongExplicitVRinDataset_default_testData;
+        workingLength = sizeof(wrongExplicitVRinDataset_default_testData);
+        broken = wrongExplicitVRinDataset_dictLen_testData;
+        brokenLength = sizeof(wrongExplicitVRinDataset_dictLen_testData);
+        // This gets the length field wrong and tries to allocate a huge element
+        expectedError = &EC_MemoryExhausted;
     }
+
+    dcmPreferLengthFieldSizeFromDataDictionary.set(useDictionaryVRLen);
+    dcmPreferVRFromDataDictionary.set(useDictionaryVR);
+
+    expectReadError(*expectedError, broken, brokenLength, TRANSFER_SYNTAX);
+    cond = readDataset(dset, working, workingLength, TRANSFER_SYNTAX);
+
+    // Reset to the default values
+    dcmPreferLengthFieldSizeFromDataDictionary.set(OFFalse);
+    dcmPreferVRFromDataDictionary.set(OFFalse);
+    if (cond.bad()) {
+        OFCHECK_FAIL(cond.text());
+        return;
+    }
+    OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+    testForExpectedVR(dset, wrongExplicitVRinDataset_unknownTag1, EVR_PN);
+    testForExpectedVR(dset, wrongExplicitVRinDataset_unknownTag2, EVR_UT);
+    testForExpectedVR(dset, DCM_PatientName, useDictionaryVR ? EVR_PN : EVR_ST);
+    testForExpectedVR(dset, DCM_PatientBirthName, useDictionaryVR ? EVR_PN : EVR_UN);
+    testForExpectedVR(dset, DCM_PixelDataProviderURL, useDictionaryVR ? EVR_UT : EVR_LO);
+}
+
+OFTEST(dcmdata_parser_wrongExplicitVRinDataset_default)
+{
+    testExplicitVRinDataset(OFFalse, OFFalse);
+}
+
+OFTEST(dcmdata_parser_wrongExplicitVRinDataset_defaultVR_dictLen)
+{
+    testExplicitVRinDataset(OFFalse, OFTrue);
+}
+
+OFTEST(dcmdata_parser_wrongExplicitVRinDataset_dictVR_defaultLen)
+{
+    testExplicitVRinDataset(OFTrue, OFFalse);
 }
 
 OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
 {
-    DcmDataset dset;
-    OFCondition cond;
-
-    // This should use the VR from the data dictionary
-    dcmPreferVRFromDataDictionary.set(OFTrue);
-    cond = readDataset(dset, wrongExplicitVRinDataset_testData, sizeof(wrongExplicitVRinDataset_testData), TRANSFER_SYNTAX);
-    if (cond.good())
-    {
-        OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
-        testForExpectedVR(dset, wrongExplicitVRinDataset_unknownTag, EVR_PN);
-        testForExpectedVR(dset, DCM_PatientName, EVR_PN);
-        testForExpectedVR(dset, DCM_PatientID, EVR_LO);
-        testForExpectedVR(dset, DCM_PatientSex, EVR_CS);
-    } else {
-        OFCHECK_FAIL(cond.text());
-    }
-    // Reset to the default value
-    dcmPreferVRFromDataDictionary.set(OFFalse);
+    testExplicitVRinDataset(OFTrue, OFTrue);
 }
 
 OFTEST(dcmdata_parser_undefinedLengthUNSequence)
