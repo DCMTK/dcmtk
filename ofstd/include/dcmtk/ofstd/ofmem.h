@@ -33,8 +33,12 @@ using OFshared_ptr = std::shared_ptr<ARGS...>;
 
 #else //fallback implementations
 
-#if (!defined HAVE_SYNC_ADD_AND_FETCH || !defined HAVE_SYNC_SUB_AND_FETCH) &&\
-    (!defined HAVE_INTERLOCKED_INCREMENT || !defined HAVE_INTERLOCKED_DECREMENT)
+#if defined HAVE_SYNC_ADD_AND_FETCH && defined HAVE_SYNC_SUB_AND_FETCH
+#define OF_SHARED_PTR_COUNTER_TYPE size_t
+#elif defined HAVE_INTERLOCKED_INCREMENT && defined HAVE_INTERLOCKED_DECREMENT
+#define OF_SHARED_PTR_COUNTER_TYPE volatile LONG
+#else
+#define OF_SHARED_PTR_COUNTER_TYPE size_t
 #define OF_SHARED_PTR_NEED_MUTEX 1
 #include "dcmtk/ofstd/ofthread.h"
 #endif
@@ -226,7 +230,7 @@ private:
 
     private:
         /// The counter.
-        size_t m_Count;
+        OF_SHARED_PTR_COUNTER_TYPE m_Count;
         /// The pointer to the managed object.
         T* const m_pT;
 #ifdef OF_SHARED_PTR_NEED_MUTEX
