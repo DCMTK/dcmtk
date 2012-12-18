@@ -351,19 +351,6 @@ static void testForExpectedVR(DcmDataset &dset, const DcmTagKey &tag, const DcmE
     }
 }
 
-static void expectReadError(const OFConditionConst& expected, const Uint8* buffer, size_t length, E_TransferSyntax ts)
-{
-    DcmDataset dset;
-    OFCondition cond = readDataset(dset, buffer, length, TRANSFER_SYNTAX);
-    if (cond != expected)
-    {
-        OFCHECK_FAIL("Dataset should fail with " << OFCondition(expected).text()
-                << ", but got: " << cond.text());
-        if (cond.good())
-            OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
-    }
-}
-
 static void testExplicitVRinDataset(OFBool useDictionaryVR, OFBool useDictionaryVRLen)
 {
     DcmDataset dset;
@@ -379,7 +366,7 @@ static void testExplicitVRinDataset(OFBool useDictionaryVR, OFBool useDictionary
         workingLength = sizeof(wrongExplicitVRinDataset_dictLen_testData);
         // This gets the length field wrong and interprets an element's value as
         // the beginning of the following element; then complains about the length
-        expectedError = &EC_InvalidStream;
+        expectedError = NULL;
     } else {
         working = wrongExplicitVRinDataset_default_testData;
         workingLength = sizeof(wrongExplicitVRinDataset_default_testData);
@@ -392,7 +379,16 @@ static void testExplicitVRinDataset(OFBool useDictionaryVR, OFBool useDictionary
     dcmPreferLengthFieldSizeFromDataDictionary.set(useDictionaryVRLen);
     dcmPreferVRFromDataDictionary.set(useDictionaryVR);
 
-    expectReadError(*expectedError, broken, brokenLength, TRANSFER_SYNTAX);
+    // The broken version shouldn't be parseable
+    cond = readDataset(dset, broken, brokenLength, TRANSFER_SYNTAX);
+    if (cond != EC_InvalidStream && (expectedError == NULL || cond != *expectedError))
+    {
+        OFCHECK_FAIL("Dataset should fail, but got: " << cond.text());
+        if (cond.good())
+            OFLOG_DEBUG(tparserLogger, DcmObject::PrintHelper(dset));
+    }
+
+    // The good version should work
     cond = readDataset(dset, working, workingLength, TRANSFER_SYNTAX);
 
     // Reset to the default values

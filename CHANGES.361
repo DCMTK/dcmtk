@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.12.11 (schlachter)
+
+- Fixed test failure on 64 bit systems.
+  Affects: dcmdata/tests/tparser.cc
+
 **** Changes from 2012.12.12 (schlamelcher)
 
 - Fixed error in OFshared_ptr when using Visual Studio 2008.
