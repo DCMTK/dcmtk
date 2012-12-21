@@ -166,7 +166,7 @@ const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
 
 /* Some MacOS X versions define isinf() and isnan() in <math.h> but not in <cmath> */
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__APPLE__) && defined(__MACH__) && !defined (__INTEL_COMPILER)
 #undef HAVE_PROTOTYPE_ISINF
 #undef HAVE_PROTOTYPE_ISNAN
 #endif

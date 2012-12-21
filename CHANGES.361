@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2012.12.21 (onken)
+
+- Fixed intel compiler issue on Mac OS X. Thanks to Hans
+  Johnson <hans-johnson@uiowa.edu) for the hint and proposed patch.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2012.12.11 (schlachter)
 
 - Fixed test failure on 64 bit systems.
