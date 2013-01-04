@@ -36,7 +36,11 @@ using OFshared_ptr = std::shared_ptr<ARGS...>;
 #if defined HAVE_SYNC_ADD_AND_FETCH && defined HAVE_SYNC_SUB_AND_FETCH
 #define OF_SHARED_PTR_COUNTER_TYPE size_t
 #elif defined HAVE_INTERLOCKED_INCREMENT && defined HAVE_INTERLOCKED_DECREMENT
+#if _MSC_VER <= 1200
+#define OF_SHARED_PTR_COUNTER_TYPE LONG
+#else
 #define OF_SHARED_PTR_COUNTER_TYPE volatile LONG
+#endif
 #else
 #define OF_SHARED_PTR_COUNTER_TYPE size_t
 #define OF_SHARED_PTR_NEED_MUTEX 1

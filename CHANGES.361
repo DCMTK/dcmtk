@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.04 (schlamelcher)
+
+- Fixed OFshared_ptr for VC6.
+  Affects: ofstd/include/dcmtk/ofstd/ofmem.h
+
 **** Changes from 2012.12.21 (onken)
 
 - Fixed intel compiler issue on Mac OS X. Thanks to Hans
