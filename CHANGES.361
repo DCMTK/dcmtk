@@ -25,6 +25,10 @@ Changes between releases are documented here.
 - Added dependencies for latest tmem test.
   Affects: ofstd/tests/Makefile.dep
 
+- Added possibility to stop storage SCU after sending the current file.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
 **** Changes from 2013.01.04 (schlamelcher)
 
 - Fixed OFshared_ptr for VC6.

@@ -510,6 +510,15 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      */
     virtual void notifySOPInstanceSent(const TransferEntry &transferEntry);
 
+    /** This method is called each time after a SOP instance is sent to a peer. If the
+     *  function returns OFTrue, the SCU will stop sending, and behaves like it has already
+     *  sent the last instance to the SCP. This function always returns OFFalse in the
+     *  default implementation but may be overwritten by derived SCU classes.
+     *  This could for example make sense, if one is transferring SOP instances due to a
+     *  C-MOVE request, which is externally cancelled by a C-CANCEL message.
+     *  @return  OFTrue if sending should stop after current dataset, OFFalse otherwise.
+     */
+    virtual OFBool shouldStopAfterCurrentSOPInstance();
 
   private:
 

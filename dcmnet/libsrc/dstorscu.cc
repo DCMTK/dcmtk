@@ -45,7 +45,7 @@ static const OFString &dicomToHostFilename(const OFString &dicomFilename,
     hostFilename.reserve(length);
     for (size_t i = 0; i < length; i++)
     {
-        const unsigned char c = dicomFilename.at(i);
+        const char c = dicomFilename.at(i);
         // the PATH_SEPARATOR depends on the operating system
         if (c == '\\')
             hostFilename += PATH_SEPARATOR;
@@ -891,6 +891,12 @@ OFCondition DcmStorageSCU::sendSOPInstances()
 void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry &transferEntry)
 {
     // do nothing in the default implementation
+}
+
+OFBool DcmStorageSCU::shouldStopAfterCurrentSOPInstance()
+{
+  // should always continue in default implementation
+  return OFFalse;
 }
 
 
