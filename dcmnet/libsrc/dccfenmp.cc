@@ -58,6 +58,8 @@ DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(const DcmExtendedNegotiat
 DcmExtendedNegotiationItem::~DcmExtendedNegotiationItem()
 {
   delete[] raw_;
+  raw_ = NULL;
+  length_ = 0;
 }
 
 DcmExtendedNegotiationItem& DcmExtendedNegotiationItem::operator=(const DcmExtendedNegotiationItem& arg)
@@ -92,14 +94,50 @@ DcmExtendedNegotiationMap::DcmExtendedNegotiationMap()
 {
 }
 
-DcmExtendedNegotiationMap::~DcmExtendedNegotiationMap()
+DcmExtendedNegotiationMap::DcmExtendedNegotiationMap(const DcmExtendedNegotiationMap& arg)
 {
-  OFListIterator(DcmKeyValuePair<DcmExtendedNegotiationList *> *) first = map_.begin();
-  OFListIterator(DcmKeyValuePair<DcmExtendedNegotiationList *> *) last = map_.end();
+  /* Copy all map entries */
+  OFMap<OFString, DcmExtendedNegotiationList *>::iterator first = arg.map_.begin();
+  OFMap<OFString, DcmExtendedNegotiationList *>::iterator last = arg.map_.end();
   while (first != last)
   {
-    delete (*first)->value();
+    DcmExtendedNegotiationList* copy = new DcmExtendedNegotiationList( *(*first).second );
+    map_.insert( OFPair<const OFString, DcmExtendedNegotiationList*>( (*first).first, copy ) );
     ++first;
+  }
+}
+
+DcmExtendedNegotiationMap& DcmExtendedNegotiationMap::operator=(const DcmExtendedNegotiationMap& arg)
+{
+  if (this != &arg)
+  {
+    this->clear();
+    /* Clear old and copy all map entries */
+    OFMap<OFString, DcmExtendedNegotiationList *>::iterator first = arg.map_.begin();
+    OFMap<OFString, DcmExtendedNegotiationList *>::iterator last = arg.map_.end();
+    while (first != last)
+    {
+      DcmExtendedNegotiationList* copy = new DcmExtendedNegotiationList( *(*first).second );
+      map_.insert( OFPair<const OFString, DcmExtendedNegotiationList*>( (*first).first, copy ) );
+      ++first;
+    }
+  }
+  return *this;
+}
+
+
+DcmExtendedNegotiationMap::~DcmExtendedNegotiationMap()
+{
+  clear();
+}
+
+void DcmExtendedNegotiationMap::clear()
+{
+  while (map_.size () != 0)
+  {
+    OFMap<OFString, DcmExtendedNegotiationList *>::iterator first = map_.begin();
+    delete (*first).second;
+    map_.erase(first);
   }
 }
 
@@ -121,15 +159,18 @@ OFCondition DcmExtendedNegotiationMap::add(
   }
 
   OFString skey(key);
-  DcmExtendedNegotiationList * const *value = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(skey));
-  if (value == NULL)
+  OFMap<OFString, DcmExtendedNegotiationList*>::iterator it = map_.find(skey);
+
+  DcmExtendedNegotiationList * const *value = NULL;
+  if (it == map_.end())
   {
     DcmExtendedNegotiationList *newentry = new DcmExtendedNegotiationList();
-    map_.add(skey, OFstatic_cast(DcmExtendedNegotiationList *, newentry));
+    map_.insert(OFPair<OFString, DcmExtendedNegotiationList*>(skey, newentry));
     value = &newentry;
   }
   else
   {
+    value = & ((*it).second);
     // check if abstract syntax is already in list
     OFListIterator(DcmExtendedNegotiationItem) first = (*value)->begin();
     OFListIterator(DcmExtendedNegotiationItem) last = (*value)->end();
@@ -154,7 +195,7 @@ OFCondition DcmExtendedNegotiationMap::add(
 OFBool DcmExtendedNegotiationMap::isKnownKey(const char *key) const
 {
   if (!key) return OFFalse;
-  if (map_.lookup(OFString(key))) return OFTrue;
+  if (map_.find(OFString(key)) != map_.end()) return OFTrue;
   return OFFalse;
 }
 
@@ -165,8 +206,11 @@ OFCondition DcmExtendedNegotiationMap::checkConsistency(
 {
   if ((!key)||(!pckey)) return EC_IllegalCall;
 
-  DcmExtendedNegotiationList * const *entry = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(OFString(key)));
-  if (!entry)
+  // DcmExtendedNegotiationList * const *entry = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(OFString(key)));
+  DcmExtendedNegotiationList * const *entry = NULL;
+  OFMap<OFString, DcmExtendedNegotiationList*>::iterator it = map_.find(OFString(key));
+
+  if (it == map_.end())
   {
     // error: key undefined
     OFString s("extended negotiation key undefined: ");
@@ -178,6 +222,16 @@ OFCondition DcmExtendedNegotiationMap::checkConsistency(
   {
     // error: key undefined
     OFString s("presentation context key undefined: ");
+    s += pckey;
+    return makeOFCondition(OFM_dcmnet, 1040, OF_error, s.c_str());
+  }
+
+  // continue with entry found
+  entry = &(*it).second;
+  if (entry == NULL)
+  {
+    // error: key undefined
+    OFString s("presentation context NULL entry for key: ");
     s += pckey;
     return makeOFCondition(OFM_dcmnet, 1040, OF_error, s.c_str());
   }
@@ -208,8 +262,9 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
   const DcmExtendedNegotiationList *result = NULL;
   if (key)
   {
-    DcmExtendedNegotiationList * const *value = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(OFString(key)));
-    if (value) result = *value;
+    OFMap<OFString, DcmExtendedNegotiationList*>::iterator it = map_.find(OFString(key));
+    if (it != map_.end())
+      result = (*it).second;
   }
   return result;
 }

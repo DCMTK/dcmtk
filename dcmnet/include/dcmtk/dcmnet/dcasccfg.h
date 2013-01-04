@@ -44,6 +44,15 @@ public:
   /// destructor
   ~DcmAssociationConfiguration();
 
+  /// Copy constructor, performs deep copy
+  DcmAssociationConfiguration(const DcmAssociationConfiguration& arg);
+
+  /// Copy assignment operator, performs deep copy
+  DcmAssociationConfiguration& operator=(const DcmAssociationConfiguration& arg);
+
+  /// Reset configuration.
+  void clear();
+
   /** this method prepares a T_ASC_Parameters structure according to the settings
    *  of a profile maintained by this object. It is used by an association initiator.
    *  @param symbolic profile name, must not be NULL
@@ -155,11 +164,6 @@ public:
   OFBool isValidSCPProfile(const char *key) const;
 
 private:
-  /// private undefined copy constructor
-  DcmAssociationConfiguration(const DcmAssociationConfiguration& arg);
-
-  /// private undefined copy assignment operator
-  DcmAssociationConfiguration& operator=(const DcmAssociationConfiguration& arg);
 
   /// map of transfer syntax lists
   DcmTransferSyntaxMap xferSyntaxes_;

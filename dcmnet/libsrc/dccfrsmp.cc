@@ -58,15 +58,50 @@ DcmRoleSelectionMap::DcmRoleSelectionMap()
 {
 }
 
+void DcmRoleSelectionMap::clear()
+{
+  while (map_.size () != 0)
+  {
+    OFMap<OFString, DcmRoleSelectionList *>::iterator first = map_.begin();
+    delete (*first).second;
+    map_.erase(first);
+  }
+}
+
 DcmRoleSelectionMap::~DcmRoleSelectionMap()
 {
-  OFListIterator(DcmKeyValuePair<DcmRoleSelectionList *> *) first = map_.begin();
-  OFListIterator(DcmKeyValuePair<DcmRoleSelectionList *> *) last = map_.end();
+  clear();
+}
+
+/// Copy constructor, creates deep copy
+DcmRoleSelectionMap::DcmRoleSelectionMap(const DcmRoleSelectionMap& arg)
+{
+  /* Copy all map entries */
+  OFMap<OFString, DcmRoleSelectionList *>::iterator first = arg.map_.begin();
+  OFMap<OFString, DcmRoleSelectionList *>::iterator last = arg.map_.end();
   while (first != last)
   {
-    delete (*first)->value();
+    DcmRoleSelectionList* copy = new DcmRoleSelectionList( *(*first).second );
+    map_.insert(OFPair<const OFString, DcmRoleSelectionList*>( (*first).first, copy ) );
     ++first;
   }
+}
+
+/// Copy assignment operator, creates deep copy
+DcmRoleSelectionMap& DcmRoleSelectionMap::operator=(const DcmRoleSelectionMap& arg)
+{
+  if (this != &arg)
+  {
+    OFMap<OFString, DcmRoleSelectionList *>::iterator first = arg.map_.begin();
+    OFMap<OFString, DcmRoleSelectionList *>::iterator last = arg.map_.end();
+    while (first != last)
+    {
+      DcmRoleSelectionList* copy = new DcmRoleSelectionList( *(*first).second );
+      map_.insert( OFPair<const OFString, DcmRoleSelectionList*>( (*first).first, copy ) );
+      ++first;
+    }
+  }
+  return *this;
 }
 
 OFCondition DcmRoleSelectionMap::add(
@@ -85,16 +120,19 @@ OFCondition DcmRoleSelectionMap::add(
     return makeOFCondition(OFM_dcmnet, 1026, OF_error, s.c_str());
   }
 
+  DcmRoleSelectionList * const *value = NULL;
   OFString skey(key);
-  DcmRoleSelectionList * const *value = OFconst_cast(DcmRoleSelectionList * const *, map_.lookup(skey));
-  if (value == NULL)
+  OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(skey);
+
+  if (it == map_.end())
   {
     DcmRoleSelectionList *newentry = new DcmRoleSelectionList();
-    map_.add(skey, OFstatic_cast(DcmRoleSelectionList *, newentry));
+    map_.insert(OFPair<OFString, DcmRoleSelectionList*>(skey, newentry));
     value = &newentry;
   }
   else
   {
+    value = & ((*it).second);
     // check if abstract syntax is already in list
     OFListIterator(DcmRoleSelectionItem) first = (*value)->begin();
     OFListIterator(DcmRoleSelectionItem) last = (*value)->end();
@@ -119,7 +157,7 @@ OFCondition DcmRoleSelectionMap::add(
 OFBool DcmRoleSelectionMap::isKnownKey(const char *key) const
 {
   if (!key) return OFFalse;
-  if (map_.lookup(OFString(key))) return OFTrue;
+  if (map_.find(OFString(key)) != map_.end()) return OFTrue;
   return OFFalse;
 }
 
@@ -130,8 +168,9 @@ OFCondition DcmRoleSelectionMap::checkConsistency(
 {
   if ((!key)||(!pckey)) return EC_IllegalCall;
 
-  DcmRoleSelectionList * const *entry = OFconst_cast(DcmRoleSelectionList * const *, map_.lookup(OFString(key)));
-  if (!entry)
+  DcmRoleSelectionList * const *entry = NULL;
+  OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(OFString(key));
+  if (it == map_.end())
   {
     // error: key undefined
     OFString s("role selection key undefined: ");
@@ -143,6 +182,16 @@ OFCondition DcmRoleSelectionMap::checkConsistency(
   {
     // error: key undefined
     OFString s("presentation context key undefined: ");
+    s += pckey;
+    return makeOFCondition(OFM_dcmnet, 1037, OF_error, s.c_str());
+  }
+
+  // continue with existing entry
+  entry = & ((*it).second);
+  if (entry == NULL)
+  {
+    // error: key undefined
+    OFString s("presentation context NULL entry for key: ");
     s += pckey;
     return makeOFCondition(OFM_dcmnet, 1037, OF_error, s.c_str());
   }
@@ -173,8 +222,9 @@ const DcmRoleSelectionList *DcmRoleSelectionMap::getRoleSelectionList(const char
   const DcmRoleSelectionList *result = NULL;
   if (key)
   {
-    DcmRoleSelectionList * const *value = OFconst_cast(DcmRoleSelectionList * const *, map_.lookup(OFString(key)));
-    if (value) result = *value;
+    OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(OFString(key));
+    if (it != map_.end())
+      result = (*it).second;
   }
   return result;
 }

@@ -43,6 +43,17 @@ DcmProfileEntry::DcmProfileEntry(const DcmProfileEntry& arg)
 {
 }
 
+DcmProfileEntry& DcmProfileEntry::operator=(const DcmProfileEntry& arg)
+{
+  if (this != &arg)
+  {
+    presentationContextGroup_ = arg.presentationContextGroup_;
+    roleSelectionGroup_ = arg.roleSelectionGroup_;
+    extendedNegotiationGroup_ = arg.extendedNegotiationGroup_;
+  }
+  return *this;
+}
+
 DcmProfileEntry::~DcmProfileEntry()
 {
 }
@@ -71,12 +82,47 @@ DcmProfileMap::DcmProfileMap()
 
 DcmProfileMap::~DcmProfileMap()
 {
-  OFListIterator(DcmKeyValuePair<DcmProfileEntry *> *) first = map_.begin();
-  OFListIterator(DcmKeyValuePair<DcmProfileEntry *> *) last = map_.end();
+  clear();
+}
+
+DcmProfileMap::DcmProfileMap(const DcmProfileMap& arg)
+{
+  /* Copy all map entries */
+  OFMap<OFString, DcmProfileEntry *>::iterator first = arg.map_.begin();
+  OFMap<OFString, DcmProfileEntry *>::iterator last = arg.map_.end();
   while (first != last)
   {
-    delete (*first)->value();
+    DcmProfileEntry* copy = new DcmProfileEntry( *(*first).second );
+    map_.insert( OFPair<const OFString, DcmProfileEntry*>( (*first).first, copy ) );
     ++first;
+  }
+}
+
+DcmProfileMap& DcmProfileMap::operator=(const DcmProfileMap& arg)
+{
+  if (this != &arg)
+  {
+     /* Clear old and copy all map entries */
+    this->clear();
+    OFMap<OFString, DcmProfileEntry *>::iterator first = arg.map_.begin();
+    OFMap<OFString, DcmProfileEntry *>::iterator last = arg.map_.end();
+    while (first != last)
+    {
+      DcmProfileEntry* copy = new DcmProfileEntry( *(*first).second );
+      map_.insert( OFPair<const OFString, DcmProfileEntry*>( (*first).first, copy ) ); // TODO: Does that work?
+      ++first;
+    }
+  }
+  return *this;
+}
+
+void DcmProfileMap::clear()
+{
+  while (map_.size () != 0)
+  {
+    OFMap<OFString, DcmProfileEntry *>::iterator first = map_.begin();
+    delete (*first).second;
+    map_.erase(first);
   }
 }
 
@@ -95,11 +141,13 @@ OFCondition DcmProfileMap::add(
   if (extendedNegotiationKey) extnegKey = extendedNegotiationKey;
 
   OFString skey(key);
-  DcmProfileEntry * const *value = OFconst_cast(DcmProfileEntry * const *, map_.lookup(skey));
-  if (value == NULL)
+  DcmProfileEntry * const *value = NULL;
+  OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(skey);
+
+  if (it == map_.end())
   {
     DcmProfileEntry *newentry = new DcmProfileEntry(presKey, roleKey, extnegKey);
-    map_.add(skey, OFstatic_cast(DcmProfileEntry *, newentry));
+    map_.insert(OFPair<OFString, DcmProfileEntry*>(skey, newentry));
   }
   else
   {
@@ -115,7 +163,7 @@ OFCondition DcmProfileMap::add(
 OFBool DcmProfileMap::isKnownKey(const char *key) const
 {
   if (!key) return OFFalse;
-  if (map_.lookup(OFString(key))) return OFTrue;
+  if (map_.find(OFString(key)) != map_.end()) return OFTrue;
   return OFFalse;
 }
 
@@ -124,11 +172,9 @@ const char *DcmProfileMap::getPresentationContextKey(const char *key) const
 {
   if (key)
   {
-    DcmProfileEntry * const *entry = OFconst_cast(DcmProfileEntry * const *, map_.lookup(OFString(key)));
-    if (entry)
-    {
-      return (*entry)->getPresentationContextKey();
-    }
+    OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
+    if (it != map_.end())
+      return (*it).second->getPresentationContextKey();
   }
   return NULL;
 }
@@ -138,10 +184,12 @@ const char *DcmProfileMap::getRoleSelectionKey(const char *key) const
 {
   if (key)
   {
-    DcmProfileEntry * const *entry = OFconst_cast(DcmProfileEntry * const *, map_.lookup(OFString(key)));
-    if (entry)
+    const DcmProfileEntry *result = NULL;
+    OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
+    if (it != map_.end())
     {
-      return (*entry)->getRoleSelectionKey();
+      if ( (*it).second != NULL)
+        return (*it).second->getRoleSelectionKey();
     }
   }
   return NULL;
@@ -152,10 +200,12 @@ const char *DcmProfileMap::getExtendedNegotiationKey(const char *key) const
 {
   if (key)
   {
-    DcmProfileEntry * const *entry = OFconst_cast(DcmProfileEntry * const *, map_.lookup(OFString(key)));
-    if (entry)
+    const DcmProfileEntry *result = NULL;
+    OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
+    if (it != map_.end())
     {
-      return (*entry)->getExtendedNegotiationKey();
+      if ( (*it).second != NULL)
+        return (*it).second->getExtendedNegotiationKey();
     }
   }
   return NULL;

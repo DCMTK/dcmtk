@@ -25,9 +25,9 @@
 #define DCCFENMP_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oflist.h"   /* for class OFList<> */
-#include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
-#include "dcmtk/dcmnet/dcmsmap.h"  /* for class DcmSimpleMap<> */
+#include "dcmtk/ofstd/oflist.h"    /* for class OFList<> */
+#include "dcmtk/ofstd/ofcond.h"    /* for class OFCondition */
+#include "dcmtk/ofstd/ofmap.h"     /* for class OFMap */
 #include "dcmtk/dcmnet/dccfuidh.h" /* for class DcmUIDHandler */
 
 class DcmPresentationContextMap;
@@ -135,6 +135,16 @@ public:
   /// destructor
   ~DcmExtendedNegotiationMap();
 
+  /// Copy constructor, performs deep copy
+  DcmExtendedNegotiationMap(const DcmExtendedNegotiationMap& arg);
+
+  /// Copy assignment operator, performs deep copy
+  DcmExtendedNegotiationMap& operator=(const DcmExtendedNegotiationMap& arg);
+
+  /** Resets DcmExtendedNegotiationMap and frees any allocated memory
+   */
+  void clear();
+
   /** add new entry to list within map.
    *  If key is new, new list is created. Otherwise value
    *  is appended to existing list.
@@ -176,14 +186,9 @@ public:
   const DcmExtendedNegotiationList *getExtendedNegotiationList(const char *key) const;
 
 private:
-  /// private undefined copy constructor
-  DcmExtendedNegotiationMap(const DcmExtendedNegotiationMap& arg);
-
-  /// private undefined copy assignment operator
-  DcmExtendedNegotiationMap& operator=(const DcmExtendedNegotiationMap& arg);
 
   /// map of extended negotiation lists
-  DcmSimpleMap<DcmExtendedNegotiationList *> map_;
+  OFMap<OFString, DcmExtendedNegotiationList *> map_;
 
 };
 

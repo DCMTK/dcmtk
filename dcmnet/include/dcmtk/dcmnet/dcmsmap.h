@@ -60,6 +60,14 @@ public:
   {
   }
 
+  /** return key of key-value pair
+   *  @return key as const reference
+   */
+  const OFString& key() const
+  {
+    return key_;
+  }
+
   /** return value of key-value pair
    *  @return value as const reference
    */

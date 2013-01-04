@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmTransferSyntaxMap
  *
  */
@@ -31,13 +31,50 @@ DcmTransferSyntaxMap::DcmTransferSyntaxMap()
 
 DcmTransferSyntaxMap::~DcmTransferSyntaxMap()
 {
-  OFListIterator(DcmKeyValuePair<DcmTransferSyntaxList *> *) first = map_.begin();
-  OFListIterator(DcmKeyValuePair<DcmTransferSyntaxList *> *) last = map_.end();
+  clear();
+}
+
+
+DcmTransferSyntaxMap::DcmTransferSyntaxMap(const DcmTransferSyntaxMap& arg)
+{
+  /* Copy all map entries */
+  OFMap<OFString, DcmTransferSyntaxList *>::iterator first = arg.map_.begin();
+  OFMap<OFString, DcmTransferSyntaxList *>::iterator last = arg.map_.end();
   while (first != last)
   {
-    delete (*first)->value();
+    DcmTransferSyntaxList* copy = new DcmTransferSyntaxList( *(*first).second );
+    map_.insert( OFPair<const OFString, DcmTransferSyntaxList*>( (*first).first, copy ) );
     ++first;
-  }  
+  }
+}
+
+
+DcmTransferSyntaxMap& DcmTransferSyntaxMap::operator=(const DcmTransferSyntaxMap& arg)
+{
+  if (this != &arg)
+  {
+    /* Clear old entries and copy all map entries */
+    this->clear();
+    OFMap<OFString, DcmTransferSyntaxList *>::iterator first = arg.map_.begin();
+    OFMap<OFString, DcmTransferSyntaxList *>::iterator last = arg.map_.end();
+    while (first != last)
+    {
+      DcmTransferSyntaxList* copy = new DcmTransferSyntaxList( *(*first).second );
+      map_.insert(OFPair<const OFString, DcmTransferSyntaxList*>( (*first).first, copy ) );
+      ++first;
+    }
+  }
+  return *this;
+}
+
+void DcmTransferSyntaxMap::clear()
+{
+  while (map_.size () != 0)
+  {
+    OFMap<OFString, DcmTransferSyntaxList *>::iterator first = map_.begin();
+    delete (*first).second;
+    map_.erase(first);
+  }
 }
 
 OFCondition DcmTransferSyntaxMap::add(
@@ -55,24 +92,28 @@ OFCondition DcmTransferSyntaxMap::add(
     return makeOFCondition(OFM_dcmnet, 1024, OF_error, s.c_str());
   }
 
+  DcmTransferSyntaxList * const *value = NULL;
   OFString skey(key);
-  DcmTransferSyntaxList * const *value = OFconst_cast(DcmTransferSyntaxList * const *, map_.lookup(skey));
-  if (value == NULL)
+  OFMap<OFString, DcmTransferSyntaxList*>::iterator it = map_.find(skey);
+
+  if (it == map_.end())
   {
     DcmTransferSyntaxList *newentry = new DcmTransferSyntaxList();
-    map_.add(skey, OFstatic_cast(DcmTransferSyntaxList *, newentry));
+    map_.insert(OFPair<OFString, DcmTransferSyntaxList*>(skey, newentry));
     value = &newentry;
   }
+  else
+    value = & ((*it).second);
 
   // insert UID into list.
   (*value)->push_back(uid);
-  return EC_Normal;  
+  return EC_Normal;
 }
 
 OFBool DcmTransferSyntaxMap::isKnownKey(const char *key) const
 {
   if (!key) return OFFalse;
-  if (map_.lookup(OFString(key))) return OFTrue;
+  if (map_.find(OFString(key)) != map_.end()) return OFTrue;
   return OFFalse;
 }
 
@@ -81,8 +122,9 @@ const DcmTransferSyntaxList *DcmTransferSyntaxMap::getTransferSyntaxList(const c
   const DcmTransferSyntaxList *result = NULL;
   if (key)
   {
-    DcmTransferSyntaxList * const *value = OFconst_cast(DcmTransferSyntaxList * const *, map_.lookup(OFString(key)));
-    if (value) result = *value;
+    OFMap<OFString, DcmTransferSyntaxList*>::iterator it = map_.find(OFString(key));
+    if (it != map_.end())
+      result = (*it).second;
   }
   return result;
 }

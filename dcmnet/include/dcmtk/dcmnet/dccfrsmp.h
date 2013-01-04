@@ -27,7 +27,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oflist.h"   /* for class OFList<> */
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
-#include "dcmtk/dcmnet/dcmsmap.h"  /* for class DcmSimpleMap<> */
+#include "dcmtk/ofstd/ofmap.h"    /* for class OFMap */
 #include "dcmtk/dcmnet/dccfuidh.h" /* for class DcmUIDHandler */
 #include "dcmtk/dcmnet/assoc.h"    /* for T_ASC_SC_ROLE */
 
@@ -118,6 +118,16 @@ public:
   /// destructor
   ~DcmRoleSelectionMap();
 
+  /// Copy constructor, creates deep copy
+  DcmRoleSelectionMap(const DcmRoleSelectionMap& arg);
+
+  /// Copy assignment operator, creates deep copy
+  DcmRoleSelectionMap& operator=(const DcmRoleSelectionMap& arg);
+
+  /** Resets DcmRoleSelectionMap and frees any allocated memory
+   */
+  void clear();
+
   /** add new entry to list within map.
    *  If key is new, new list is created. Otherwise value
    *  is appended to existing list.
@@ -157,14 +167,9 @@ public:
   const DcmRoleSelectionList *getRoleSelectionList(const char *key) const;
 
 private:
-  /// private undefined copy constructor
-  DcmRoleSelectionMap(const DcmRoleSelectionMap& arg);
-
-  /// private undefined copy assignment operator
-  DcmRoleSelectionMap& operator=(const DcmRoleSelectionMap& arg);
 
   /// map of role selection lists
-  DcmSimpleMap<DcmRoleSelectionList *> map_;
+  OFMap<OFString, DcmRoleSelectionList *> map_;
 
 };
 

@@ -173,7 +173,6 @@ tlsscu.o: tlsscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcasccff.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcasccfg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccftsmp.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcmsmap.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfuidh.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfpcmp.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfrsmp.h \

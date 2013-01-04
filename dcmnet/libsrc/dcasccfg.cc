@@ -36,6 +36,41 @@ DcmAssociationConfiguration::~DcmAssociationConfiguration()
 {
 }
 
+// Copy constructor, performs deep copy
+DcmAssociationConfiguration::DcmAssociationConfiguration(const DcmAssociationConfiguration& arg) :
+  xferSyntaxes_(arg.xferSyntaxes_),
+  contexts_(arg.contexts_),
+  roleselection_(arg.roleselection_),
+  extneg_(arg.extneg_),
+  profiles_(arg.profiles_)
+{
+}
+
+/// Copy assignment operator, performs deep copy
+DcmAssociationConfiguration& DcmAssociationConfiguration::operator=(const DcmAssociationConfiguration& arg)
+{
+  /* No self assignment */
+  if (this != &arg)
+  {
+    this->clear();
+    xferSyntaxes_ = arg.xferSyntaxes_;
+    contexts_ = arg.contexts_;
+    roleselection_ = arg.roleselection_;
+    extneg_ = arg.extneg_;
+    profiles_ = arg.profiles_;
+  }
+  return *this;
+}
+
+void DcmAssociationConfiguration::clear()
+{
+  xferSyntaxes_.clear();
+  contexts_.clear();
+  roleselection_.clear();
+  extneg_.clear();
+  profiles_.clear();
+}
+
 OFCondition DcmAssociationConfiguration::addTransferSyntax(
   const char *key,
   const char *transferSyntaxUID)

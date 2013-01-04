@@ -26,7 +26,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oflist.h"   /* for class OFList<> */
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
-#include "dcmtk/dcmnet/dcmsmap.h"  /* for class DcmSimpleMap<> */
+#include "dcmtk/ofstd/ofmap.h"    /* for class OFMap */
 #include "dcmtk/dcmnet/dccfuidh.h" /* for class DcmUIDHandler */
 
 
@@ -46,6 +46,16 @@ public:
 
   /// destructor
   ~DcmTransferSyntaxMap();
+
+  /// Copy constructor, performs deep copy
+  DcmTransferSyntaxMap(const DcmTransferSyntaxMap& arg);
+
+  /// Copy assignment operator, performs deep copy
+  DcmTransferSyntaxMap& operator=(const DcmTransferSyntaxMap& arg);
+
+  /** Resets DcmTransferSyntaxMap and frees any allocated memory
+   */
+  void clear();
 
   /** add new entry to list within map.
    *  If key is new, new list is created. Otherwise transfer syntax
@@ -71,14 +81,9 @@ public:
   const DcmTransferSyntaxList *getTransferSyntaxList(const char *key) const;
 
 private:
-  /// private undefined copy constructor
-  DcmTransferSyntaxMap(const DcmTransferSyntaxMap& arg);
-
-  /// private undefined copy assignment operator
-  DcmTransferSyntaxMap& operator=(const DcmTransferSyntaxMap& arg);
 
   /// map of transfer syntax lists
-  DcmSimpleMap<DcmTransferSyntaxList *> map_;
+  OFMap<OFString, DcmTransferSyntaxList *> map_;
 
 };
 

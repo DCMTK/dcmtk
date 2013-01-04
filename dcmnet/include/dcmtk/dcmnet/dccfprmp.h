@@ -27,7 +27,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstring.h" /* for class OFString */
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
-#include "dcmtk/dcmnet/dcmsmap.h"  /* for class DcmSimpleMap<> */
+#include "dcmtk/ofstd/ofmap.h"    /* for class OFMap */
 #include "dcmtk/dcmnet/dndefine.h"
 
 
@@ -49,6 +49,9 @@ public:
 
   /// copy constructor
   DcmProfileEntry(const DcmProfileEntry& arg);
+
+  /// copy assignment operator
+  DcmProfileEntry& operator=(const DcmProfileEntry& arg);
  
   /// destructor
   ~DcmProfileEntry();
@@ -81,9 +84,6 @@ public:
 
 private:
 
-  /// private undefined copy assignment operator
-  DcmProfileEntry& operator=(const DcmProfileEntry& arg);
-
   /// symbolic identifier of the presentation context list
   OFString presentationContextGroup_;
 
@@ -106,6 +106,16 @@ public:
 
   /// destructor
   ~DcmProfileMap();
+
+  /// Copy constructor, creates deep copy
+  DcmProfileMap(const DcmProfileMap& arg);
+
+  /// Copy constructor, creates deep copy
+  DcmProfileMap& operator=(const DcmProfileMap& arg);
+
+  /** Resets DcmProfileMap and frees any allocated memory
+   */
+  void clear();
 
   /** add new entry to list within map.
    *  @param key map key, must not exist in map
@@ -145,14 +155,9 @@ public:
   const char *getExtendedNegotiationKey(const char *key) const;
 
 private:
-  /// private undefined copy constructor
-  DcmProfileMap(const DcmProfileMap& arg);
-
-  /// private undefined copy assignment operator
-  DcmProfileMap& operator=(const DcmProfileMap& arg);
 
   /// map of profiles
-  DcmSimpleMap<DcmProfileEntry *> map_;
+  OFMap<OFString, DcmProfileEntry *> map_;
 
 };
 

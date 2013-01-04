@@ -1,6 +1,27 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.04 (onken)
+
+- Made DcmAssociationConfiguration and underlying classes copy-constructable.
+  Replaced all occurences of DcmSimpleMap with OFMap.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/include/dcmtk/dcmnet/dcasccfg.h
+           dcmnet/include/dcmtk/dcmnet/dccfenmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfpcmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfprmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfrsmp.h
+           dcmnet/include/dcmtk/dcmnet/dccftsmp.h
+           dcmnet/include/dcmtk/dcmnet/dcmsmap.h
+           dcmnet/libsrc/dcasccfg.cc
+           dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+           dcmnet/libsrc/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+
 **** Changes from 2013.01.04 (schlamelcher)
 
 - Fixed OFshared_ptr for VC6.

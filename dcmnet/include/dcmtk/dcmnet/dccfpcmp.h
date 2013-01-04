@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/oflist.h"   /* for class OFList<> */
 #include "dcmtk/ofstd/ofstring.h" /* for class OFString */
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
-#include "dcmtk/dcmnet/dcmsmap.h"  /* for class DcmSimpleMap<> */
+#include "dcmtk/ofstd/ofmap.h"    /* for class OFMap */
 #include "dcmtk/dcmnet/dccfuidh.h" /* for class DcmUIDHandler */
 
 
@@ -119,6 +119,16 @@ public:
   /// destructor
   ~DcmPresentationContextMap();
 
+  /** Resets DcmPresentationContextMap and frees any allocated memory.
+   */
+  void clear();
+
+  /// Copy constructor, creates deep copy
+  DcmPresentationContextMap(const DcmPresentationContextMap& arg);
+
+  /// Copy assignment operator, creates deep copy
+  DcmPresentationContextMap& operator=(const DcmPresentationContextMap& arg);
+
   /** add new entry to list within map.
    *  If key is new, new list is created. Otherwise value
    *  is appended to existing list.
@@ -153,14 +163,9 @@ public:
   const DcmPresentationContextList *getPresentationContextList(const char *key) const;
 
 private:
-  /// private undefined copy constructor
-  DcmPresentationContextMap(const DcmPresentationContextMap& arg);
-
-  /// private undefined copy assignment operator
-  DcmPresentationContextMap& operator=(const DcmPresentationContextMap& arg);
 
   /// map of presentation context lists
-  DcmSimpleMap<DcmPresentationContextList *> map_;
+  OFMap<OFString, DcmPresentationContextList *> map_;
 
 };
 
