@@ -22,6 +22,9 @@ Changes between releases are documented here.
            dcmnet/libsrc/Makefile.dep
            dcmtls/libsrc/Makefile.dep
 
+- Added dependencies for latest tmem test.
+  Affects: ofstd/tests/Makefile.dep
+
 **** Changes from 2013.01.04 (schlamelcher)
 
 - Fixed OFshared_ptr for VC6.
