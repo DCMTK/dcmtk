@@ -2069,7 +2069,7 @@ OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
     unsigned size = 32;
     char* tmp = new char[size];
     hostent* res = NULL;
-    hostent buf = {NULL};
+    hostent buf;
     int err = 0;
     while( gethostbyaddr_r( addr, len, type, &buf, tmp, size, &res, &err ) == ERANGE )
     {
@@ -2093,7 +2093,7 @@ OFStandard::OFGroup OFStandard::getGrNam( const char* name )
     unsigned size = 32;
     char* tmp = new char[size];
     group* res = NULL;
-    group buf = {NULL};
+    group buf;
     while( getgrnam_r( name, &buf, tmp, size, &res ) == ERANGE )
     {
         delete[] tmp;
@@ -2119,7 +2119,7 @@ OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
     unsigned size = 32;
     char* tmp = new char[size];
     passwd* res = NULL;
-    passwd buf = {NULL};
+    passwd buf;
     while( getpwnam_r( name, &buf, tmp, size, &res ) == ERANGE )
     {
         delete[] tmp;

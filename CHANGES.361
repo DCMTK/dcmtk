@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.08 (schlachter)
+
+- Removed unnecessary incomplete initialisation.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2013.01.04 (onken)
 
 - Made DcmAssociationConfiguration and underlying classes copy-constructable.
