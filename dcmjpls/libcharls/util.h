@@ -6,6 +6,8 @@
 #ifndef CHARLS_UTIL
 #define CHARLS_UTIL
 
+#define INCLUDE_CSTDDEF
+#include "dcmtk/ofstd/ofstdinc.h"
 #include "pubtypes.h"
 
 #ifndef MAX

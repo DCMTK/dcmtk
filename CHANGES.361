@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.08 (schlachter)
 
+- Added missing include for size_t.
+  Affects: dcmjpls/libcharls/util.h
+
 - Removed use of long long.
   Affects: dcmjpls/libcharls/config.h
            dcmjpls/libcharls/header.cc
