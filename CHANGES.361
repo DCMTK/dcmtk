@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.08 (schlachter)
 
+- Only call tolower() with unsigned char argument.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
 - Removed unnecessary incomplete initialisation.
   Affects: ofstd/libsrc/ofstd.cc
 
