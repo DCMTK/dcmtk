@@ -108,7 +108,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 }
 
 
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
+#ifdef DCMTK_USE_WCHAR_T
 
 OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
                                               int argCount,
@@ -122,7 +122,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
     return checkParseStatus(cmd.parseLine(argCount, argValue, flags, startPos));
 }
 
-#endif  // HAVE_WINDOWS_H ...
+#endif // DCMTK_USE_WCHAR_T
 
 
 void OFConsoleApplication::printHeader(const OFBool hostInfo,

@@ -39,7 +39,7 @@
 
 #define COMMAND_FILE_PREFIX '@'
 
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
+#ifdef DCMTK_USE_WCHAR_T
 #define WIDE_COMMAND_FILE_PREFIX L'@'
 #endif
 
@@ -1155,7 +1155,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
 }
 
 
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
+#ifdef DCMTK_USE_WCHAR_T
 
 // Windows-specific version with wide character strings (UTF-16)
 OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argValue,
@@ -1250,7 +1250,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
     return result;
 }
 
-#endif  // HAVE_WINDOWS_H ...
+#endif  // DCMTK_USE_WCHAR_T
 
 
 OFCommandLine::E_ParseStatus OFCommandLine::parseArgumentList(OFList<OFString> &argList,
@@ -1339,7 +1339,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
 }
 
 
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
+#ifdef DCMTK_USE_WCHAR_T
 
 // Windows-specific version with wide character strings (UTF-16)
 OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
@@ -1383,7 +1383,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
     return parseArgumentList(argList, flags);
 }
 
-#endif  // HAVE_WINDOWS_H ...
+#endif  // DCMTK_USE_WCHAR_T
 
 
 void OFCommandLine::getSyntaxString(OFString &syntaxStr) const

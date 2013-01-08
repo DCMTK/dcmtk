@@ -78,7 +78,7 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
                             const int flags = 0,
                             const int startPos = 1);
 
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
+#ifdef DCMTK_USE_WCHAR_T
 
     /** parse command line.
      *  This is a Windows-specific version supporting the wide character encoding (UTF-16).
