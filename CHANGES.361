@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.08 (schlachter)
 
+- Don't redefine _LARGEFILE_SOURCE if it is already defined. Thanks to Hans
+  Johnson <hans-johnson@uiowa.edu> for the hint and proposed patch.
+
 - Only call tolower() with unsigned char argument.
   Affects: dcmnet/libsrc/dstorscu.cc
 
@@ -45,7 +48,7 @@ Changes between releases are documented here.
 **** Changes from 2012.12.21 (onken)
 
 - Fixed intel compiler issue on Mac OS X. Thanks to Hans
-  Johnson <hans-johnson@uiowa.edu) for the hint and proposed patch.
+  Johnson <hans-johnson@uiowa.edu> for the hint and proposed patch.
   Affects: ofstd/libsrc/ofstd.cc
 
 **** Changes from 2012.12.11 (schlachter)

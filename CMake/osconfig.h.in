@@ -772,7 +772,7 @@
 #cmakedefine _LARGEFILE64_SOURCE @_LARGEFILE64_SOURCE@
 
 /* Explicitly request large file support, assuming it exists if fseeko() exists */
-#ifdef HAVE_FSEEKO
+#if defined(HAVE_FSEEKO) && !defined(_LARGEFILE_SOURCE)
   #define _LARGEFILE_SOURCE 1
 #endif
 #if defined(_LARGEFILE_SOURCE) && !defined(_FILE_OFFSET_BITS)
