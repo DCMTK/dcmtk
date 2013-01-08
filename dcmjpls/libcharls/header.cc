@@ -258,9 +258,9 @@ void JLSInputStream::ReadPixels(void* pvoid, size_t cbyteAvailable)
 		_rect.Height = _info.height;
 	}
 
-	int64_t cbytePlane = (int64_t)(_rect.Width) * _rect.Height * ((_info.bitspersample + 7)/8);
+	size_t cbytePlane = (size_t)(_rect.Width) * _rect.Height * ((_info.bitspersample + 7)/8);
 
-	if (int64_t(cbyteAvailable) < cbytePlane * _info.components)
+	if (cbyteAvailable < cbytePlane * _info.components)
 		throw JlsException(UncompressedBufferTooSmall);
  	
 	int scancount = _info.ilv == ILV_NONE ? _info.components : 1;

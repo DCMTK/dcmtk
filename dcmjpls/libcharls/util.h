@@ -128,10 +128,10 @@ struct FromBigEndian<4>
 template <>
 struct FromBigEndian<8>
 {
-	inlinehint static uint64_t Read(BYTE* pbyte)
+	inlinehint static size_t Read(BYTE* pbyte)
 	{
-		return  (uint64_t(pbyte[0]) << 56) + (uint64_t(pbyte[1]) << 48) + (uint64_t(pbyte[2]) << 40) + (uint64_t(pbyte[3]) << 32) + 
-		  		(uint64_t(pbyte[4]) << 24) + (uint64_t(pbyte[5]) << 16) + (uint64_t(pbyte[6]) <<  8) + (uint64_t(pbyte[7]) << 0);
+		return  (size_t(pbyte[0]) << 56) + (size_t(pbyte[1]) << 48) + (size_t(pbyte[2]) << 40) + (size_t(pbyte[3]) << 32) +
+				(size_t(pbyte[4]) << 24) + (size_t(pbyte[5]) << 16) + (size_t(pbyte[6]) <<  8) + (size_t(pbyte[7]) << 0);
 	}
 };
 
