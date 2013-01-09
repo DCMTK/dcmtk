@@ -189,7 +189,8 @@ extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_InvalidDatasetPointer; 
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_AlreadyConnected;                 /* Already connected */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_InsufficientPortPrivileges;       /* Insufficient Port Privileges */
 // codes 1024 to 1073 are used for the association negotiation profile classes
-
+extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_SCPBusy;                          /* SCP is busy */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_CannotStartSCPThread;             /* Cannot start SCP thread */
 
 // This macro creates a condition with given code, severity and text.
 // Making this a macro instead of a function saves the creation of a temporary.

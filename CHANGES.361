@@ -1,6 +1,37 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.09 (onken)
+
+- Initial checkin of SCP pool, threaded SCP and related test.
+  Added DcmSCP functionality to respond to C-FIND, C-MOVE and C-STORE.
+  Added DcmSCP function to disable host lookup.
+  Refactored DcmSCP configuration to reside in extra class.
+  DcmSCP now permits checking of calling and called AE title in derviced classes.
+  Derived DcmSCP classes can now check whether connecting host is granted access.
+  Added:   dcmnet/docs/cptscp.dox
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/include/dcmtk/dcmnet/scppool.h
+           dcmnet/include/dcmtk/dcmnet/scpthrd.h
+           dcmnet/libsrc/scpcfg.cc
+           dcmnet/libsrc/scppool.cc
+           dcmnet/libsrc/scpthrd.cc
+           dcmnet/tests/tpool.cc
+
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/scp.cc
+           dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/tests.cc
+           ofstd/tests/tests.cc
+
 **** Changes from 2013.01.08 (schlachter)
 
 - Added missing include for size_t.

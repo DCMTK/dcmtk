@@ -25,7 +25,7 @@ objs = assoc.o cond.o dcompat.o dimcancl.o dimcmd.o dimdump.o dimecho.o \
 	dulfsm.o dulparse.o dulpres.o dul.o lst.o extneg.o dimget.o dcmlayer.o \
 	dcmtrans.o dcasccfg.o dcasccff.o dccfuidh.o dccftsmp.o dccfpcmp.o \
 	dccfrsmp.o dccfenmp.o dccfprmp.o dfindscu.o dstorscu.o dcuserid.o \
-	scu.o scp.o dwrap.o
+	scu.o scp.o scpcfg.o scpthrd.o scppool.o dwrap.o
 
 library = libdcmnet.$(LIBEXT)
 

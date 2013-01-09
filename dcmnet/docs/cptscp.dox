@@ -1,0 +1,32 @@
+/** @defgroup SCPThread_Concept SCP Concept
+ *  A SCP object should follow this concept to be used in DcmSCPPool. The
+ *  easiest and recommended way to follow this concept is to derieve your
+ *  class from DcmThreadSCP.
+ *  @ingroup Concepts
+ *  @{
+ */
+
+/** The SCP must be default constructable.
+ */
+DefaultConstructor();
+
+/** The SCP must be configurable by setting it's configuration with
+ *  this method.
+ *  @param config the configuration to be used by the SCP.
+ *  @return EC_Normal if configuration is accepted, error otherwise.
+ */
+OFCondition setConfig(const DcmSCPConfig& config);
+
+/** Returns OFTrue if SCP currently runs an association.
+ *  @return OFTrue if currently connected, OFFalse otherwise.
+ */
+OFBool isConnected();
+
+/** Take over incoming association that is in the state that the underlying
+ *  TCP/IP connection is already accepted, while the ACSE negotiation
+ *  is not already done but must be implemented by this method.
+ *  @param assoc The association to run.
+ */
+OFCondition run( T_ASC_Association* assoc );
+
+/// @}

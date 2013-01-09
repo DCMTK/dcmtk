@@ -141,7 +141,6 @@ OFCondition DcmProfileMap::add(
   if (extendedNegotiationKey) extnegKey = extendedNegotiationKey;
 
   OFString skey(key);
-  DcmProfileEntry * const *value = NULL;
   OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(skey);
 
   if (it == map_.end())
@@ -184,7 +183,6 @@ const char *DcmProfileMap::getRoleSelectionKey(const char *key) const
 {
   if (key)
   {
-    const DcmProfileEntry *result = NULL;
     OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
     if (it != map_.end())
     {
@@ -200,7 +198,6 @@ const char *DcmProfileMap::getExtendedNegotiationKey(const char *key) const
 {
   if (key)
   {
-    const DcmProfileEntry *result = NULL;
     OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
     if (it != map_.end())
     {

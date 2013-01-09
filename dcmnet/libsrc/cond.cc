@@ -83,6 +83,9 @@ makeOFConditionConst(NET_EC_NoSuchSOPInstance,               OFM_dcmnet, 1008, O
 makeOFConditionConst(NET_EC_InvalidDatasetPointer,           OFM_dcmnet, 1009, OF_error, "Invalid dataset pointer");
 makeOFConditionConst(NET_EC_AlreadyConnected,                OFM_dcmnet, 1010, OF_error, "Already connected");
 makeOFConditionConst(NET_EC_InsufficientPortPrivileges,      OFM_dcmnet, 1023, OF_error, "Insufficient port privileges");
+// codes 1024 to 1073 are used for the association negotiation profile classes
+makeOFConditionConst(NET_EC_SCPBusy,                         OFM_dcmnet, 1074, OF_error, "SCP is busy");
+makeOFConditionConst(NET_EC_CannotStartSCPThread,            OFM_dcmnet, 1075, OF_error, "Cannot start SCP Thread");
 
 
 OFString& DimseCondition::dump(OFString& str, OFCondition cond)
