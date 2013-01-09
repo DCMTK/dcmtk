@@ -1,7 +1,7 @@
-header.o: header.cc config.h util.h pubtypes.h header.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
- ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h streams.h \
+header.o: header.cc config.h util.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../config/include/dcmtk/config/osconfig.h pubtypes.h header.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h streams.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
@@ -9,25 +9,25 @@ header.o: header.cc config.h util.h pubtypes.h header.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h decodstr.h procline.h \
  clrtrans.h encodstr.h
-intrface.o: intrface.cc config.h util.h pubtypes.h intrface.h \
+intrface.o: intrface.cc config.h util.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../config/include/dcmtk/config/osconfig.h pubtypes.h intrface.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h header.h \
  ../../ofstd/include/dcmtk/ofstd/ofaptr.h streams.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h
-jpegls.o: jpegls.cc config.h util.h pubtypes.h streams.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../config/include/dcmtk/config/osconfig.h \
+jpegls.o: jpegls.cc config.h util.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../config/include/dcmtk/config/osconfig.h pubtypes.h streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \

@@ -17,7 +17,6 @@ Changes between releases are documented here.
            dcmnet/libsrc/scppool.cc
            dcmnet/libsrc/scpthrd.cc
            dcmnet/tests/tpool.cc
-
   Affects: dcmnet/apps/CMakeLists.txt
            dcmnet/include/dcmtk/dcmnet/cond.h
            dcmnet/include/dcmtk/dcmnet/scp.h
@@ -31,6 +30,10 @@ Changes between releases are documented here.
            dcmnet/tests/Makefile.in
            dcmnet/tests/tests.cc
            ofstd/tests/tests.cc
+
+- Updated Makefile.dep files, triggered by latest changes in libcharls.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           ofstd/libsrc/Makefile.dep
 
 **** Changes from 2013.01.08 (schlachter)
 
