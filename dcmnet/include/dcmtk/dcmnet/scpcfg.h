@@ -53,7 +53,7 @@ public:
   DcmSCPConfig(const DcmSCPConfig &old);
 
   /** assignment operator, performs deep copy.
-   *  @param the item to be copied
+   *  @param obj the config to copy from
    */
   DcmSCPConfig &operator=(const DcmSCPConfig &obj);
 

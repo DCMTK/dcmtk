@@ -438,8 +438,8 @@ protected:
    *  In case of OFFalse, the SCP will refuse the incoming association with
    *  error "Called Application Entitity Title Not Recognized".
    *  The standard handler always returns OFTrue.
-   *  @param calledAE The association parameters that were received.
-   *  @param OFTrue, if AE title is accepted, OFFalse otherwise
+   *  @param calledAE The called AE title the SCU used that should be checked
+   *  @return OFTrue, if AE title is accepted, OFFalse otherwise
    */
   virtual OFBool checkCalledAETitleAccepted(const OFString& calledAE);
 
@@ -448,8 +448,8 @@ protected:
    *  In case of OFFalse, the SCP will refuse the incoming association with
    *  error "Calling Application Entitity Title Not Recognized".
    *  The standard handler always returns OFTrue.
-   *  @param calledAE The association parameters that were received.
-   *  @param OFTrue, if AE title is accepted, OFFalse otherwise
+   *  @param callingAE The calling AE title the SCU used that should be checked
+   *  @return OFTrue, if AE title is accepted, OFFalse otherwise
    */
   virtual OFBool checkCallingAETitleAccepted(const OFString& callingAE);
 
@@ -459,7 +459,7 @@ protected:
    *  In case of OFFalse, the SCP will refuse the incoming association with
    *  an error. The standard handler always returns OFTrue.
    *  @param hostOrIP The IP of the client to check.
-   *  @param OFTrue, if IP/host is accepted, OFFalse otherwise
+   *  @return OFTrue, if IP/host is accepted, OFFalse otherwise
    */
   virtual OFBool checkCallingHostAccepted(const OFString& hostOrIP);
 
@@ -703,7 +703,7 @@ protected:
    *  presentation context ID.
    *  @param assoc The association to search
    *  @param presID The presentation context ID
-   *  @param The result presentation context information, if found
+   *  @param info The result presentation context information, if found
    *  @return OFTrue if presentation context with ID could be found, OFFalse
    *          otherwise
    */
