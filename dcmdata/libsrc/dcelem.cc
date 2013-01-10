@@ -1015,7 +1015,29 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
         errorFlag = inStream.status();
         /* if we encountered the end of the stream, set the error flag correspondingly */
         if (errorFlag.good() && inStream.eos())
-            errorFlag = EC_EndOfStream;
+        {
+            errorFlag = EC_EndOfStream; // not handled as parsing error by caller
+            /* Network can never report EOS at this point, so we are in a file */
+            /* and no bytes are left for reading. This is only valid if */
+            /* the announced length of the current value is 0 and we are in the
+            /* last element of the dataset (e.g. Pixel Data) otherwise it must be an error */
+            if (getLengthField() > 0)
+            {
+                /* Return error code if we are are not ignoring parsing errors */
+                if (!dcmIgnoreParsingErrors.get())
+                    errorFlag = EC_StreamNotifyClient;
+                /* In any case, make sure that calling the load value routine on this */
+                /* element will fail later. For that, create the stream factory that */
+                /* the load routine will use. Otherwise it would not realize */
+                /* that there is a problem */
+                delete fLoadValue;
+                fLoadValue = inStream.newFactory();
+                /* Print an error message when too few bytes are available in the file in order to
+                 * distinguish this problem from any other generic "InvalidStream" problem. */
+                DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                    << " larger (" << getLengthField() << ") than remaining bytes in file");
+            }
+        }
         /* if we did not encounter the end of the stream and no error occured so far, go ahead */
         else if (errorFlag.good())
         {
