@@ -2041,7 +2041,7 @@ int OFStandard::rand_r(unsigned int &seed)
 OFStandard::OFHostent OFStandard::getHostByName( const char* name )
 {
 #ifdef HAVE_GETHOSTBYNAME_R
-    unsigned size = 32;
+    unsigned int size = 128;
     char* tmp = new char[size];
     hostent* res = NULL;
     hostent buf;

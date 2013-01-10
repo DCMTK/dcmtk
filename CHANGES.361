@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.10 (onken)
+
+- Resized buffer for hostname lookup due to possible bug
+  in glibc on Linux systems. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2013.01.09 (onken)
 
 - Initial checkin of SCP pool, threaded SCP and related test.
