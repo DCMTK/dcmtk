@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.11 (onken)
+
+- Make sure osconfig.h is included before WITH_THREADS is evaluated.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
 **** Changes from 2013.01.10 (onken)
 
 - Resized buffer for hostname lookup due to possible bug

@@ -25,9 +25,9 @@
 #ifndef SCPPOOL_H
 #define SCPPOOL_H
 
+#include "dcmtk/config/osconfig.h"
 #ifdef WITH_THREADS // Without threads this does not make sense...
 
-#include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/dcmnet/scpthrd.h"
 #include "dcmtk/dcmnet/scpcfg.h"
