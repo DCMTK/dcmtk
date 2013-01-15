@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.15 (schlachter)
 
+- Some cleanup and MSC6-related fixes for dcmnet.
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/tpool.cc
+
 - Added private undefined functions to class DcmThreadSCP.
   Affects: dcmnet/include/dcmtk/dcmnet/scpthrd.h
 

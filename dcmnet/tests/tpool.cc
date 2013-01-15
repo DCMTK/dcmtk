@@ -83,27 +83,27 @@ OFTEST(dcmnet_scp_pool)
     config.addPresentationContext(UID_VerificationSOPClass,xfers);
 
     OFVector<TestSCU*> scus( 20 );
-    for( OFVector<TestSCU*>::iterator it = scus.begin(); it != scus.end(); ++it )
+    for( OFVector<TestSCU*>::iterator it1 = scus.begin(); it1 != scus.end(); ++it1 )
     {
-        *it = new TestSCU;
-        (*it)->setAETitle( "PoolTestSCU" );
-        (*it)->setPeerAETitle( "PoolTestSCP" );
-        (*it)->setPeerHostName( "localhost" );
-        (*it)->setPeerPort( 11112 );
-        (*it)->addPresentationContext(UID_VerificationSOPClass,xfers);
-        (*it)->initNetwork();
+        *it1 = new TestSCU;
+        (*it1)->setAETitle( "PoolTestSCU" );
+        (*it1)->setPeerAETitle( "PoolTestSCP" );
+        (*it1)->setPeerHostName( "localhost" );
+        (*it1)->setPeerPort( 11112 );
+        (*it1)->addPresentationContext(UID_VerificationSOPClass,xfers);
+        (*it1)->initNetwork();
     }
 
     pool.start();
 
-    for( OFVector<TestSCU*>::const_iterator it = scus.begin(); it != scus.end(); ++it )
-        (*it)->start();
+    for( OFVector<TestSCU*>::const_iterator it2 = scus.begin(); it2 != scus.end(); ++it2 )
+        (*it2)->start();
 
-    for( OFVector<TestSCU*>::iterator it = scus.begin(); it != scus.end(); ++it )
+    for( OFVector<TestSCU*>::iterator it3 = scus.begin(); it3 != scus.end(); ++it3 )
     {
-        (*it)->join();
-        OFCHECK( (*it)->result.good() );
-        delete *it;
+        (*it3)->join();
+        OFCHECK( (*it3)->result.good() );
+        delete *it3;
     }
 
     // enable as soon as available (currently being tested)
