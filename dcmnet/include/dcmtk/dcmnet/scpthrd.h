@@ -70,6 +70,19 @@ public:
    */
   virtual OFCondition setSharedConfig(const DcmSharedSCPConfig& config);
 
+private:
+
+  /** Private undefined copy constructor. Shall never be called.
+   *  @param src Source object
+   */
+  DcmThreadSCP(const DcmThreadSCP &src);
+
+  /** Private undefined assignment operator. Shall never be called.
+   *  @param src Source object
+   *  @return Reference to this
+   */
+  DcmThreadSCP &operator=(const DcmThreadSCP &src);
+
 };
 
 #endif // SCPTHRD_H

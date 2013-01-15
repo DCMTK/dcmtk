@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.15 (schlachter)
 
+- Added private undefined functions to class DcmThreadSCP.
+  Affects: dcmnet/include/dcmtk/dcmnet/scpthrd.h
+
 - Rebuilt Makefile dependencies.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/libi2d/Makefile.dep
