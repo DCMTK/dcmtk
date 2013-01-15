@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.15 (schlachter)
 
+- Documented new features in log4cplus 1.1.0.
+  Affects: CHANGES.361
+           oflog/etc/logger.cfg
+
 - Some cleanup and MSC6-related fixes for dcmnet.
   Affects: dcmnet/apps/CMakeLists.txt
            dcmnet/libsrc/CMakeLists.txt
@@ -50,7 +54,9 @@ Changes between releases are documented here.
            ofstd/libsrc/Makefile.dep
            oflog/libsrc/Makefile.dep
 
-- Update oflog to log4cplus 1.1.0
+- Update oflog to log4cplus 1.1.0. New features include an asynchronous
+  appender, log4j- and syslog-compatible UDP appenders, a C interface and lock
+  files to synchronize between two processes writing to the same log file.
   Added:   oflog/include/dcmtk/oflog/asyncap.h
            oflog/include/dcmtk/oflog/clfsap.h
            oflog/include/dcmtk/oflog/clogger.h
