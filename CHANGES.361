@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.15 (schlachter)
 
+- Removed comment begin from within comment.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Documented new features in log4cplus 1.1.0.
   Affects: CHANGES.361
            oflog/etc/logger.cfg
