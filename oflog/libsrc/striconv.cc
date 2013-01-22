@@ -30,6 +30,7 @@
 #include <iconv.h>
 #endif
 
+#include "dcmtk/ofstd/ofstream.h"
 #include <stdexcept>
 #include <iostream>
 #include <sstream>

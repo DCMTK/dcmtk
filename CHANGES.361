@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.01.22 (schlachter)
 
+- Added missing include for OFendl. Thanks to Markus Mertens
+  <Markus.Mertens@evkb.de> for the report.
+  Affects: oflog/libsrc/striconv.cc
+
 - Fixed compilation when HAVE_STL is defined and std::map is used.
   Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the report.
   Affects: dcmnet/libsrc/dccfenmp.cc
