@@ -97,8 +97,8 @@ DcmExtendedNegotiationMap::DcmExtendedNegotiationMap()
 DcmExtendedNegotiationMap::DcmExtendedNegotiationMap(const DcmExtendedNegotiationMap& arg)
 {
   /* Copy all map entries */
-  OFMap<OFString, DcmExtendedNegotiationList *>::iterator first = arg.map_.begin();
-  OFMap<OFString, DcmExtendedNegotiationList *>::iterator last = arg.map_.end();
+  OFMap<OFString, DcmExtendedNegotiationList *>::const_iterator first = arg.map_.begin();
+  OFMap<OFString, DcmExtendedNegotiationList *>::const_iterator last = arg.map_.end();
   while (first != last)
   {
     DcmExtendedNegotiationList* copy = new DcmExtendedNegotiationList( *(*first).second );
@@ -113,8 +113,8 @@ DcmExtendedNegotiationMap& DcmExtendedNegotiationMap::operator=(const DcmExtende
   {
     this->clear();
     /* Clear old and copy all map entries */
-    OFMap<OFString, DcmExtendedNegotiationList *>::iterator first = arg.map_.begin();
-    OFMap<OFString, DcmExtendedNegotiationList *>::iterator last = arg.map_.end();
+    OFMap<OFString, DcmExtendedNegotiationList *>::const_iterator first = arg.map_.begin();
+    OFMap<OFString, DcmExtendedNegotiationList *>::const_iterator last = arg.map_.end();
     while (first != last)
     {
       DcmExtendedNegotiationList* copy = new DcmExtendedNegotiationList( *(*first).second );
@@ -208,7 +208,7 @@ OFCondition DcmExtendedNegotiationMap::checkConsistency(
 
   // DcmExtendedNegotiationList * const *entry = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(OFString(key)));
   DcmExtendedNegotiationList * const *entry = NULL;
-  OFMap<OFString, DcmExtendedNegotiationList*>::iterator it = map_.find(OFString(key));
+  OFMap<OFString, DcmExtendedNegotiationList*>::const_iterator it = map_.find(OFString(key));
 
   if (it == map_.end())
   {
@@ -262,7 +262,7 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
   const DcmExtendedNegotiationList *result = NULL;
   if (key)
   {
-    OFMap<OFString, DcmExtendedNegotiationList*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmExtendedNegotiationList*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
       result = (*it).second;
   }

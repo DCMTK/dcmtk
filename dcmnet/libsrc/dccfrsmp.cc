@@ -77,8 +77,8 @@ DcmRoleSelectionMap::~DcmRoleSelectionMap()
 DcmRoleSelectionMap::DcmRoleSelectionMap(const DcmRoleSelectionMap& arg)
 {
   /* Copy all map entries */
-  OFMap<OFString, DcmRoleSelectionList *>::iterator first = arg.map_.begin();
-  OFMap<OFString, DcmRoleSelectionList *>::iterator last = arg.map_.end();
+  OFMap<OFString, DcmRoleSelectionList *>::const_iterator first = arg.map_.begin();
+  OFMap<OFString, DcmRoleSelectionList *>::const_iterator last = arg.map_.end();
   while (first != last)
   {
     DcmRoleSelectionList* copy = new DcmRoleSelectionList( *(*first).second );
@@ -92,8 +92,8 @@ DcmRoleSelectionMap& DcmRoleSelectionMap::operator=(const DcmRoleSelectionMap& a
 {
   if (this != &arg)
   {
-    OFMap<OFString, DcmRoleSelectionList *>::iterator first = arg.map_.begin();
-    OFMap<OFString, DcmRoleSelectionList *>::iterator last = arg.map_.end();
+    OFMap<OFString, DcmRoleSelectionList *>::const_iterator first = arg.map_.begin();
+    OFMap<OFString, DcmRoleSelectionList *>::const_iterator last = arg.map_.end();
     while (first != last)
     {
       DcmRoleSelectionList* copy = new DcmRoleSelectionList( *(*first).second );
@@ -169,7 +169,7 @@ OFCondition DcmRoleSelectionMap::checkConsistency(
   if ((!key)||(!pckey)) return EC_IllegalCall;
 
   DcmRoleSelectionList * const *entry = NULL;
-  OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(OFString(key));
+  OFMap<OFString, DcmRoleSelectionList*>::const_iterator it = map_.find(OFString(key));
   if (it == map_.end())
   {
     // error: key undefined
@@ -222,7 +222,7 @@ const DcmRoleSelectionList *DcmRoleSelectionMap::getRoleSelectionList(const char
   const DcmRoleSelectionList *result = NULL;
   if (key)
   {
-    OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmRoleSelectionList*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
       result = (*it).second;
   }

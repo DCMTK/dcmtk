@@ -38,8 +38,8 @@ DcmTransferSyntaxMap::~DcmTransferSyntaxMap()
 DcmTransferSyntaxMap::DcmTransferSyntaxMap(const DcmTransferSyntaxMap& arg)
 {
   /* Copy all map entries */
-  OFMap<OFString, DcmTransferSyntaxList *>::iterator first = arg.map_.begin();
-  OFMap<OFString, DcmTransferSyntaxList *>::iterator last = arg.map_.end();
+  OFMap<OFString, DcmTransferSyntaxList *>::const_iterator first = arg.map_.begin();
+  OFMap<OFString, DcmTransferSyntaxList *>::const_iterator last = arg.map_.end();
   while (first != last)
   {
     DcmTransferSyntaxList* copy = new DcmTransferSyntaxList( *(*first).second );
@@ -55,8 +55,8 @@ DcmTransferSyntaxMap& DcmTransferSyntaxMap::operator=(const DcmTransferSyntaxMap
   {
     /* Clear old entries and copy all map entries */
     this->clear();
-    OFMap<OFString, DcmTransferSyntaxList *>::iterator first = arg.map_.begin();
-    OFMap<OFString, DcmTransferSyntaxList *>::iterator last = arg.map_.end();
+    OFMap<OFString, DcmTransferSyntaxList *>::const_iterator first = arg.map_.begin();
+    OFMap<OFString, DcmTransferSyntaxList *>::const_iterator last = arg.map_.end();
     while (first != last)
     {
       DcmTransferSyntaxList* copy = new DcmTransferSyntaxList( *(*first).second );
@@ -122,7 +122,7 @@ const DcmTransferSyntaxList *DcmTransferSyntaxMap::getTransferSyntaxList(const c
   const DcmTransferSyntaxList *result = NULL;
   if (key)
   {
-    OFMap<OFString, DcmTransferSyntaxList*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmTransferSyntaxList*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
       result = (*it).second;
   }

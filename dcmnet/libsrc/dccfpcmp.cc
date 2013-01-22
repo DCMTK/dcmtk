@@ -66,8 +66,8 @@ DcmPresentationContextMap::~DcmPresentationContextMap()
 DcmPresentationContextMap::DcmPresentationContextMap(const DcmPresentationContextMap& arg)
 {
   /* Copy all map entries */
-  OFMap<OFString, DcmPresentationContextList *>::iterator first = arg.map_.begin();
-  OFMap<OFString, DcmPresentationContextList *>::iterator last = arg.map_.end();
+  OFMap<OFString, DcmPresentationContextList *>::const_iterator first = arg.map_.begin();
+  OFMap<OFString, DcmPresentationContextList *>::const_iterator last = arg.map_.end();
   while (first != last)
   {
     DcmPresentationContextList* copy = new DcmPresentationContextList( *(*first).second );
@@ -82,8 +82,8 @@ DcmPresentationContextMap& DcmPresentationContextMap::operator=(const DcmPresent
   {
     /* Clear and copy all map entries */
     this->clear();
-    OFMap<OFString, DcmPresentationContextList *>::iterator first = arg.map_.begin();
-    OFMap<OFString, DcmPresentationContextList *>::iterator last = arg.map_.end();
+    OFMap<OFString, DcmPresentationContextList *>::const_iterator first = arg.map_.begin();
+    OFMap<OFString, DcmPresentationContextList *>::const_iterator last = arg.map_.end();
     while (first != last)
     {
       DcmPresentationContextList* copy = new DcmPresentationContextList( *(*first).second );
@@ -164,7 +164,7 @@ OFBool DcmPresentationContextMap::isKnownAbstractSyntax(
 
   OFString skey(key);
   DcmPresentationContextList * const *value = NULL;
-  OFMap<OFString, DcmPresentationContextList*>::iterator it = map_.find(OFString(skey));
+  OFMap<OFString, DcmPresentationContextList*>::const_iterator it = map_.find(OFString(skey));
   if ( it != map_.end() )
     value = & ((*it).second);
 
@@ -188,7 +188,7 @@ const DcmPresentationContextList *DcmPresentationContextMap::getPresentationCont
   const DcmPresentationContextList *result = NULL;
   if (key)
   {
-    OFMap<OFString, DcmPresentationContextList*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmPresentationContextList*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
       result = (*it).second;
   }

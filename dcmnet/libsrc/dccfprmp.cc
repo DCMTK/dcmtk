@@ -88,8 +88,8 @@ DcmProfileMap::~DcmProfileMap()
 DcmProfileMap::DcmProfileMap(const DcmProfileMap& arg)
 {
   /* Copy all map entries */
-  OFMap<OFString, DcmProfileEntry *>::iterator first = arg.map_.begin();
-  OFMap<OFString, DcmProfileEntry *>::iterator last = arg.map_.end();
+  OFMap<OFString, DcmProfileEntry *>::const_iterator first = arg.map_.begin();
+  OFMap<OFString, DcmProfileEntry *>::const_iterator last = arg.map_.end();
   while (first != last)
   {
     DcmProfileEntry* copy = new DcmProfileEntry( *(*first).second );
@@ -104,8 +104,8 @@ DcmProfileMap& DcmProfileMap::operator=(const DcmProfileMap& arg)
   {
      /* Clear old and copy all map entries */
     this->clear();
-    OFMap<OFString, DcmProfileEntry *>::iterator first = arg.map_.begin();
-    OFMap<OFString, DcmProfileEntry *>::iterator last = arg.map_.end();
+    OFMap<OFString, DcmProfileEntry *>::const_iterator first = arg.map_.begin();
+    OFMap<OFString, DcmProfileEntry *>::const_iterator last = arg.map_.end();
     while (first != last)
     {
       DcmProfileEntry* copy = new DcmProfileEntry( *(*first).second );
@@ -171,7 +171,7 @@ const char *DcmProfileMap::getPresentationContextKey(const char *key) const
 {
   if (key)
   {
-    OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmProfileEntry*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
       return (*it).second->getPresentationContextKey();
   }
@@ -183,7 +183,7 @@ const char *DcmProfileMap::getRoleSelectionKey(const char *key) const
 {
   if (key)
   {
-    OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmProfileEntry*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
     {
       if ( (*it).second != NULL)
@@ -198,7 +198,7 @@ const char *DcmProfileMap::getExtendedNegotiationKey(const char *key) const
 {
   if (key)
   {
-    OFMap<OFString, DcmProfileEntry*>::iterator it = map_.find(OFString(key));
+    OFMap<OFString, DcmProfileEntry*>::const_iterator it = map_.find(OFString(key));
     if (it != map_.end())
     {
       if ( (*it).second != NULL)

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.22 (schlachter)
+
+- Fixed compilation when HAVE_STL is defined and std::map is used.
+  Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the report.
+  Affects: dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+
 **** Changes from 2013.01.15 (schlachter)
 
 - Removed comment begin from within comment.
