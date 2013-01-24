@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1810,12 +1810,12 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
                 register unsigned long i;
                 for (i = count; i != 0; --i)
                 {
-                    value = *(p++);                 // store gray value
+                    value = *(p++);                     // store gray value
                     *(q++) = (value << 24) |
                              (value << 16) |
-                             (value << 8);          // copy to the three RGB-planes
+                             (value << 8);              // copy to the three RGB-planes
                 }
-                bytes = count;
+                bytes = count * 4;
             }
         }
         deleteOutputData();                             // output data is no longer needed

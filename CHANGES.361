@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.24 (riesmeier)
+
+- Fixed wrong calculation of returned number of bytes in createAWTBitmap().
+  Thanks to Fu Peng <fupeng@gmail.com> for the report and suggested fix.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
 **** Changes from 2013.01.22 (schlachter)
 
 - Added missing include for OFendl. Thanks to Markus Mertens
