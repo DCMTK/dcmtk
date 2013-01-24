@@ -532,6 +532,28 @@ protected:
                                        const Uint16 rspStatusCode,
                                        DcmDataset* statusDetail = NULL);
 
+  /** Check for C-CANCEL. This is needed for example for a Query/Retrieve
+   *  server that is in the middle of returning C-FIND responses to a
+   *  client and has to perform a regular check whether the client sent a
+   *  C-CANCEL in order to stop receiving C-FIND responses.
+   *  @param presID     [in] The presentation context ID where C-CANCEL
+   *                         is expected.
+   *  @param messageID  [in] The "message ID responded to" that the client
+   *                         is expected to use (usually this is the message
+   *                         ID used in the original FIND/GET/MOVE request).
+   *  @return EC_Normal, if C-CANCEL was received. DIMSE_NODATAAVAILABLE if no
+   *          DIMSE message (or anything) was received from the client.
+   *          DIMSEC_UNEXPECTEDREQUEST if command is received but it is not
+   *          a C-CANCEL message, or the message ID used by client is wrong
+   *          (message ID must be the one from the original FIND/MOVE/GET
+   *          request).
+   *          DIMSEC_INVALIDPRESENTATIONCONTEXTID if the wrong presentation
+   *          context (ID) was used for sending. Other low level errors
+   *          (e.g. DIMSEC_UNEXPECTEDPDVTYPE) could be returned, too.
+   */
+  virtual OFCondition checkForCANCEL(T_ASC_PresentationContextID presId,
+                                     const Uint16 messageID);
+
   /** Respond to storage request
    *  @param presID       [in] The presentation context ID to respond to
    *  @param reqMessage   [in] The C-STORE request that is responded to

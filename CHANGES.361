@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.01.24 (onken)
+
+- Added checking for incoming C-CANCEL message to DcmSCP. Cleaned up formatting.
+  Affects:  dcmnet/include/dcmtk/dcmnet/scp.h
+            dcmnet/libsrc/dimcancl.cc
+            dcmnet/libsrc/scp.cc
+
 **** Changes from 2013.01.24 (riesmeier)
 
 - Fixed wrong calculation of returned number of bytes in createAWTBitmap().

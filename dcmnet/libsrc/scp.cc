@@ -485,7 +485,7 @@ void DcmSCP::handleAssociation()
   while( cond.good() )
   {
     // receive a DIMSE command over the network
-    cond = DIMSE_receiveCommand( m_assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL );
+    cond = DIMSE_receiveCommand( m_assoc, m_cfg->getDIMSEBlockingMode(), 0, &presID, &msg, NULL );
 
     // check if peer did release or abort, or if we have a valid message
     if( cond.good() )
@@ -613,6 +613,14 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
     return cond;
   }
   return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition DcmSCP::checkForCANCEL(T_ASC_PresentationContextID presId,
+                                   const Uint16 messageID)
+{
+  return DIMSE_checkForCancelRQ(m_assoc, presId, messageID);
 }
 
 // ----------------------------------------------------------------------------
