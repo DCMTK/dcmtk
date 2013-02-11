@@ -3,9 +3,9 @@
 ** It was generated automatically by:
 **
 **   User: joergr
-**   Host: caesar
-**   Date: 2012-11-22 09:54:59
-**   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdeftag
+**   Host: thinkpad
+**   Date: 2013-02-11 17:12:55
+**   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
 **         ../data/private.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2012-11-22 09:54:59"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-02-11 17:12:55"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3618
+** Number of entries: 3619
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1168,6 +1168,7 @@
 #define DCM_TransducerGeometryCodeSequence       DcmTagKey(0x0018, 0x980d)
 #define DCM_TransducerBeamSteeringCodeSequence   DcmTagKey(0x0018, 0x980e)
 #define DCM_TransducerApplicationCodeSequence    DcmTagKey(0x0018, 0x980f)
+#define DCM_ZeroVelocityPixelValue               DcmTagKey(0x0018, 0x9810)
 #define DCM_ContributingEquipmentSequence        DcmTagKey(0x0018, 0xa001)
 #define DCM_ContributionDateTime                 DcmTagKey(0x0018, 0xa002)
 #define DCM_ContributionDescription              DcmTagKey(0x0018, 0xa003)

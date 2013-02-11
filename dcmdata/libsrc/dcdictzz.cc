@@ -3,9 +3,9 @@
 ** It was generated automatically by:
 **
 **   User: joergr
-**   Host: caesar
-**   Date: 2012-11-22 09:55:03
-**   Prog: /home/joergr/source/dcmtk/public/dcmdata/libsrc/mkdictbi
+**   Host: thinkpad
+**   Date: 2013-02-11 17:13:03
+**   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
 **         ../data/private.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2012-11-22 09:55:03";
+const char* dcmBuiltinDictBuildDate = "2013-02-11 17:13:03";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -6023,6 +6023,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x980f, 0x0018, 0x980f,
       EVR_SQ, "TransducerApplicationCodeSequence", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9810, 0x0018, 0x9810,
+      EVR_xs, "ZeroVelocityPixelValue", 1, 1, "CP_1236",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0xa001, 0x0018, 0xa001,
