@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -326,9 +326,10 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
         }
     }
     else if (((tag == DCM_PixelPaddingValue) || (tag == DCM_PixelPaddingRangeLimit) ||
-        (tag == DCM_HistogramFirstBinValue) || (tag == DCM_HistogramLastBinValue)) && (tag.getEVR() == EVR_xs))
+        (tag == DCM_HistogramFirstBinValue) || (tag == DCM_HistogramLastBinValue) ||
+        (tag == DCM_ZeroVelocityPixelValue)) && (tag.getEVR() == EVR_xs))
     {
-        /* case 2 (PixelPaddingValue and others): see section C.7.5.1 and C.11.5 in PS 3.3 */
+        /* case 2 (PixelPaddingValue and others): see section C.7.5.1, C.7.6.16.x and C.11.5 in PS 3.3 */
         Uint16 pixelRep;
         if (item.findAndGetUint16(DCM_PixelRepresentation, pixelRep).good())
         {
