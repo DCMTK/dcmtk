@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152, 158.
+# - Supplement 152, 154, 158.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -3292,6 +3292,24 @@
 (0022,1468)	FL	RegisteredBottomRightHandCorner	2	Supplement_152
 (0022,1470)	SQ	OphthalmicThicknessMapQualityRatingSequence	1	Supplement_152
 (0022,1472)	SQ	RelevantOPTAttributesSequence	1	Supplement_152
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 154 (Optical Surface Scanner Storage SOP Class)
+#
+(0080,0001)	SQ	SurfaceScanAcquisitionTypeCodeSequence	1	Supplement_154
+(0080,0002)	SQ	SurfaceScanModeCodeSequence	1	Supplement_154
+(0080,0003)	SQ	RegistrationMethodCodeSequence	1	Supplement_154
+(0080,0004)	FD	ShotDurationTime	1	Supplement_154
+(0080,0005)	FD	ShotOffsetTime	1	Supplement_154
+(0080,0006)	US	SurfacePointPresentationValueData	1-n	Supplement_154
+(0080,0007)	US	SurfacePointColorCIELabValueData	3-3n	Supplement_154
+(0080,0008)	SQ	UVMappingSequence	1	Supplement_154
+(0080,0009)	SH	TextureLabel	1	Supplement_154
+(0080,0010)	OF	UValueData	1-n	Supplement_154
+(0080,0011)	OF	VValueData	1-n	Supplement_154
+(0080,0012)	SQ	ReferencedTextureSequence	1	Supplement_154
+(0080,0013)	SQ	ReferencedSurfaceDataSequence	1	Supplement_154
 #
 #---------------------------------------------------------------------------
 #

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-02-11 17:12:55
+**   Date: 2013-02-11 18:18:45
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-02-11 17:12:55"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-02-11 18:18:45"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3619
+** Number of entries: 3632
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2787,6 +2787,19 @@
 #define DCM_ImplantTemplateGroupVariationDimensionRankSequence DcmTagKey(0x0078, 0x00b4)
 #define DCM_ReferencedImplantTemplateGroupMemberID DcmTagKey(0x0078, 0x00b6)
 #define DCM_ImplantTemplateGroupVariationDimensionRank DcmTagKey(0x0078, 0x00b8)
+#define DCM_SurfaceScanAcquisitionTypeCodeSequence DcmTagKey(0x0080, 0x0001)
+#define DCM_SurfaceScanModeCodeSequence          DcmTagKey(0x0080, 0x0002)
+#define DCM_RegistrationMethodCodeSequence       DcmTagKey(0x0080, 0x0003)
+#define DCM_ShotDurationTime                     DcmTagKey(0x0080, 0x0004)
+#define DCM_ShotOffsetTime                       DcmTagKey(0x0080, 0x0005)
+#define DCM_SurfacePointPresentationValueData    DcmTagKey(0x0080, 0x0006)
+#define DCM_SurfacePointColorCIELabValueData     DcmTagKey(0x0080, 0x0007)
+#define DCM_UVMappingSequence                    DcmTagKey(0x0080, 0x0008)
+#define DCM_TextureLabel                         DcmTagKey(0x0080, 0x0009)
+#define DCM_UValueData                           DcmTagKey(0x0080, 0x0010)
+#define DCM_VValueData                           DcmTagKey(0x0080, 0x0011)
+#define DCM_ReferencedTextureSequence            DcmTagKey(0x0080, 0x0012)
+#define DCM_ReferencedSurfaceDataSequence        DcmTagKey(0x0080, 0x0013)
 #define DCM_StorageMediaFileSetID                DcmTagKey(0x0088, 0x0130)
 #define DCM_StorageMediaFileSetUID               DcmTagKey(0x0088, 0x0140)
 #define DCM_IconImageSequence                    DcmTagKey(0x0088, 0x0200)

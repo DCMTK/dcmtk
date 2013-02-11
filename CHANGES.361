@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.02.11 (riesmeier)
 
+- Added support for final text version of Supplement 154 (Optical Surface
+  Scanner Storage SOP Class) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for new attribute Zero Velocity Pixel Value (0018,9810)
   introduced with CP-1236 to checkAndUpdateVR() method.
   Affects: dcmdata/libsrc/dcitem.cc

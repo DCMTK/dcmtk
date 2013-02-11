@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-02-11 17:13:03
+**   Date: 2013-02-11 18:18:50
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-02-11 17:13:03";
+const char* dcmBuiltinDictBuildDate = "2013-02-11 18:18:50";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -21461,6 +21461,58 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0078, 0x00b8, 0x0078, 0x00b8,
       EVR_US, "ImplantTemplateGroupVariationDimensionRank", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0001, 0x0080, 0x0001,
+      EVR_SQ, "SurfaceScanAcquisitionTypeCodeSequence", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0002, 0x0080, 0x0002,
+      EVR_SQ, "SurfaceScanModeCodeSequence", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0003, 0x0080, 0x0003,
+      EVR_SQ, "RegistrationMethodCodeSequence", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0004, 0x0080, 0x0004,
+      EVR_FD, "ShotDurationTime", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0005, 0x0080, 0x0005,
+      EVR_FD, "ShotOffsetTime", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0006, 0x0080, 0x0006,
+      EVR_US, "SurfacePointPresentationValueData", 1, -1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0007, 0x0080, 0x0007,
+      EVR_US, "SurfacePointColorCIELabValueData", 3, -1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0008, 0x0080, 0x0008,
+      EVR_SQ, "UVMappingSequence", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0009, 0x0080, 0x0009,
+      EVR_SH, "TextureLabel", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0010, 0x0080, 0x0010,
+      EVR_OF, "UValueData", 1, -1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0011, 0x0080, 0x0011,
+      EVR_OF, "VValueData", 1, -1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0012, 0x0080, 0x0012,
+      EVR_SQ, "ReferencedTextureSequence", 1, 1, "Supplement_154",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0080, 0x0013, 0x0080, 0x0013,
+      EVR_SQ, "ReferencedSurfaceDataSequence", 1, 1, "Supplement_154",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
