@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -218,6 +218,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SpectaclePrescriptionReportStorage,                  "SpectaclePrescriptionReportStorage" },
     { UID_StereometricRelationshipStorage,                     "StereometricRelationshipStorage" },
     { UID_SubjectiveRefractionMeasurementsStorage,             "SubjectiveRefractionMeasurementsStorage" },
+    { UID_SurfaceScanMeshStorage,                              "SurfaceScanMeshStorage" },
+    { UID_SurfaceScanPointCloudStorage,                        "SurfaceScanPointCloudStorage" },
     { UID_SurfaceSegmentationStorage,                          "SurfaceSegmentationStorage" },
     { UID_TwelveLeadECGWaveformStorage,                        "TwelveLeadECGWaveformStorage" },
     { UID_UltrasoundImageStorage,                              "UltrasoundImageStorage" },
@@ -590,6 +592,8 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_SpectaclePrescriptionReportStorage,
     UID_StereometricRelationshipStorage,
     UID_SubjectiveRefractionMeasurementsStorage,
+    UID_SurfaceScanMeshStorage,
+    UID_SurfaceScanPointCloudStorage,
     UID_SurfaceSegmentationStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
@@ -738,6 +742,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_SpectaclePrescriptionReportStorage,
     UID_StereometricRelationshipStorage,
     UID_SubjectiveRefractionMeasurementsStorage,
+    UID_SurfaceScanMeshStorage,
+    UID_SurfaceScanPointCloudStorage,
     UID_SurfaceSegmentationStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
@@ -775,9 +781,9 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     // draft
     UID_DRAFT_RTBeamsDeliveryInstructionStorage,
 //  UID_DRAFT_SRAudioStorage,
-    UID_DRAFT_SRComprehensiveStorage,
+//  UID_DRAFT_SRComprehensiveStorage,
 //  UID_DRAFT_SRDetailStorage,
-    UID_DRAFT_SRTextStorage,
+//  UID_DRAFT_SRTextStorage,
 //  UID_DRAFT_WaveformStorage,
     // DICOS
 //  UID_DICOS_CTImageStorage,
@@ -1060,6 +1066,8 @@ static const DcmModalityTable modalities[] = {
     { UID_SpectaclePrescriptionReportStorage,                      "SRs", 4096 },
     { UID_StereometricRelationshipStorage,                         "OPr", 4096 },
     { UID_SubjectiveRefractionMeasurementsStorage,                 "OPs", 4096 },
+    { UID_SurfaceScanMeshStorage,                                  "SSm", 4096 },
+    { UID_SurfaceScanPointCloudStorage,                            "SSp", 4096 },
     { UID_SurfaceSegmentationStorage,                              "SGs", 4096 },
     { UID_TwelveLeadECGWaveformStorage,                            "TLE", 4096 },
     { UID_UltrasoundImageStorage,                                  "US",  512 * 512 },

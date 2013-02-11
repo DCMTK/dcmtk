@@ -474,6 +474,8 @@ DeformableSpatialRegistrationStorage                 1.2.840.10008.5.1.4.1.1.66.
 SegmentationStorage                                  1.2.840.10008.5.1.4.1.1.66.4
 SurfaceSegmentationStorage                           1.2.840.10008.5.1.4.1.1.66.5
 RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+SurfaceScanMeshStorage                               1.2.840.10008.5.1.4.1.1.68.1
+SurfaceScanPointCloudStorage                         1.2.840.10008.5.1.4.1.1.68.2
 RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
 VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
 VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
@@ -673,6 +675,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
