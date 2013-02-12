@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1027,6 +1027,18 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                         DcmFileFormat *fileformat,
                                         const OFString &referencedFileID,
                                         const OFString &sourceFilename);
+
+    /** create or update surface scan record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param fileformat DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildSurfaceScanRecord(DcmDirectoryRecord *record,
+                                               DcmFileFormat *fileformat,
+                                               const OFString &referencedFileID,
+                                               const OFString &sourceFilename);
 
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one

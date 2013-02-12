@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -120,7 +120,9 @@ typedef enum {
     /// implant assembly
     ERT_ImplantAssy = 43,
     /// plan
-    ERT_Plan = 44
+    ERT_Plan = 44,
+    /// surface scan
+    ERT_SurfaceScan = 45
 } E_DirRecType;
 
 

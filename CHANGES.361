@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.02.12 (riesmeier)
+
+- Added support for new directory record type "SURFACE SCAN" from Supplement
+  154 (Optical Surface Scanner Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2013.02.11 (riesmeier)
 
 - Added support for new SOP Class UIDs from Supplement 154 (Optical Surface

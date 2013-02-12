@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -100,7 +100,8 @@ static const char *DRTypeNames[] =
     "IMPLANT",
     "IMPLANT GROUP",
     "IMPLANT ASSY",
-    "PLAN"
+    "PLAN",
+    "SURFACE SCAN"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -429,6 +430,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Surface:
                 case ERT_Measurement:
                 case ERT_Plan:
+                case ERT_SurfaceScan:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -522,6 +524,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_ImplantGroup:
         case ERT_ImplantAssy:
         case ERT_Plan:
+        case ERT_SurfaceScan:
         case ERT_Private:
             switch (lowerRecord)
             {

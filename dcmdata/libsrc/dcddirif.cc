@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -619,6 +619,9 @@ OFString DicomDirInterface::recordTypeToName(const E_DirRecType recordType)
         case ERT_Plan:
             recordName = "Plan";
             break;
+        case ERT_SurfaceScan:
+            recordName = "SurfaceScan";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -744,6 +747,11 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_ImplantAssy;
     else if (compare(sopClass, UID_RTBeamsDeliveryInstructionStorage))
         result = ERT_Plan;
+    else if (compare(sopClass, UID_SurfaceScanMeshStorage) ||
+             compare(sopClass, UID_SurfaceScanPointCloudStorage))
+    {
+        result = ERT_SurfaceScan;
+    }
     return result;
 }
 
@@ -929,6 +937,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_ValueMap:
             case ERT_Surface:
             case ERT_Measurement:
+            case ERT_SurfaceScan:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1572,6 +1581,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         found = compare(mediaSOPClassUID, UID_GenericImplantTemplateStorage) ||
                                 compare(mediaSOPClassUID, UID_ImplantAssemblyTemplateStorage) ||
                                 compare(mediaSOPClassUID, UID_ImplantTemplateGroupStorage);
+                    }
+                    /* is it one of the surface scan SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_SurfaceScanMeshStorage) ||
+                                compare(mediaSOPClassUID, UID_SurfaceScanPointCloudStorage);
                     }
                     /* is it any other SOP class? */
                     if (!found)
@@ -2567,6 +2582,12 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
                         result = EC_InvalidTag;
                     break;
+                case ERT_SurfaceScan:
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    break;
                 case ERT_Image:
                 default:
                     {
@@ -2790,6 +2811,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_ImplantGroup:
             case ERT_ImplantAssy:
             case ERT_Plan:
+            case ERT_SurfaceScan:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -3890,6 +3912,36 @@ DcmDirectoryRecord *DicomDirInterface::buildPlanRecord(DcmDirectoryRecord *recor
 }
 
 
+// create or update surface scan record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildSurfaceScanRecord(DcmDirectoryRecord *record,
+                                                              DcmFileFormat *fileformat,
+                                                              const OFString &referencedFileID,
+                                                              const OFString &sourceFilename)
+{
+    /* create new surface scan record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_SurfaceScan, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            /* copy attribute values from dataset to surface scan record */
+            copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_SurfaceScan, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_SurfaceScan, "create");
+    return record;
+}
+
+
 // create or update image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
                                                         DcmFileFormat *fileformat,
@@ -4310,6 +4362,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Plan:
                     record = buildPlanRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
+                case ERT_SurfaceScan:
+                    record = buildSurfaceScanRecord(record, fileformat, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(record, fileformat, referencedFileID, sourceFilename);
@@ -4490,6 +4545,7 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_Stereometric:
                 case ERT_Measurement:
                 case ERT_Plan:
+                case ERT_SurfaceScan:
                     /* nothing to do */
                     break;
                 default:
