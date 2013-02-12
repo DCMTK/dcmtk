@@ -650,6 +650,7 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_BasicTextSRStorage) ||
              compare(sopClass, UID_EnhancedSRStorage) ||
              compare(sopClass, UID_ComprehensiveSRStorage) ||
+             compare(sopClass, UID_Comprehensive3DSRStorage) ||
              compare(sopClass, UID_ProcedureLogStorage) ||
              compare(sopClass, UID_MammographyCADSRStorage) ||
              compare(sopClass, UID_ChestCADSRStorage) ||
@@ -1512,6 +1513,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         found = compare(mediaSOPClassUID, UID_BasicTextSRStorage) ||
                                 compare(mediaSOPClassUID, UID_EnhancedSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ComprehensiveSRStorage) ||
+                                compare(mediaSOPClassUID, UID_Comprehensive3DSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
                                 compare(mediaSOPClassUID, UID_MammographyCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||
