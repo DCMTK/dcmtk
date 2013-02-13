@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.02.13 (riesmeier)
+
+- Added missing assignment of member variable in setValue() method.
+  Thanks to forum user "vlad" for the report and fix.
+  Affects: dcmsr/libsrc/dsrsc3vl.cc
+
 **** Changes from 2013.02.12 (riesmeier)
 
 - Added new SOP Class UID from Supplement 162 (Comprehensive 3D SR Storage SOP
