@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2013.02.13 (riesmeier)
 
+- Added full support for the new Comprehensive 3D SR IOD introduced with
+  Supplement 162.
+  Thanks to forum user "vlad" for the original patch.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrc3dcc.h
+           dcmsr/libsrc/dsrc3dcc.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrtypes.cc
+
 - Added missing assignment of member variable in setValue() method.
   Thanks to forum user "vlad" for the report and fix.
   Affects: dcmsr/libsrc/dsrsc3vl.cc

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -411,8 +411,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_MacularGridThicknessAndVolumeReport,
         /// DICOM IOD: Implantation Plan SR Document
         DT_ImplantationPlanSRDocument,
+        /// DICOM IOD: Comprehensive 3D SR
+        DT_Comprehensive3DSR,
         /// internal type used to mark the last entry
-        DT_last = DT_ImplantationPlanSRDocument
+        DT_last = DT_Comprehensive3DSR
     };
 
     /** SR relationship types

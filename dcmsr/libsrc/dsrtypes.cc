@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,7 @@
 #include "dcmtk/dcmsr/dsrspecc.h"
 #include "dcmtk/dcmsr/dsrmaccc.h"
 #include "dcmtk/dcmsr/dsrimpcc.h"
+#include "dcmtk/dcmsr/dsrc3dcc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -278,7 +279,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_XRayRadiationDoseSR,                 UID_XRayRadiationDoseSRStorage,                 OFTrue,  "SR", "X-Ray Radiation Dose SR"},
     {DSRTypes::DT_SpectaclePrescriptionReport,         UID_SpectaclePrescriptionReportStorage,         OFTrue,  "SR", "Spectacle Prescription Report"},
     {DSRTypes::DT_MacularGridThicknessAndVolumeReport, UID_MacularGridThicknessAndVolumeReportStorage, OFTrue,  "SR", "Macular Grid Thickness and Volume Report"},
-    {DSRTypes::DT_ImplantationPlanSRDocument,          UID_ImplantationPlanSRDocumentStorage,          OFTrue,  "SR", "Implantation Plan SR Document"}
+    {DSRTypes::DT_ImplantationPlanSRDocument,          UID_ImplantationPlanSRDocumentStorage,          OFTrue,  "SR", "Implantation Plan SR Document"},
+    {DSRTypes::DT_Comprehensive3DSR,                   UID_Comprehensive3DSRStorage,                   OFFalse, "SR", "Comprehensive 3D SR"},
 };
 
 
@@ -1361,6 +1363,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             break;
         case DT_ImplantationPlanSRDocument:
             checker = new DSRImplantationPlanSRDocumentConstraintChecker();
+            break;
+        case DT_Comprehensive3DSR:
+            checker = new DSRComprehensive3DSRConstraintChecker();
             break;
         default:
             break;
