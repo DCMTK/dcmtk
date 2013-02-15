@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.02.15 (onken)
+
+- Added optional status detail when sending C-MOVE response.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Make DcmStorageSCU make use of new MoveOriginator feature.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
+- Added (optional) originating C-MOVE AE title and message ID to
+  C-STORE message.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dstorscu.cc
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2013.02.13 (riesmeier)
 
 - Added full support for the new Comprehensive 3D SR IOD introduced with

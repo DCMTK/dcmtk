@@ -617,10 +617,10 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::checkForCANCEL(T_ASC_PresentationContextID presId,
+OFCondition DcmSCP::checkForCANCEL(T_ASC_PresentationContextID presID,
                                    const Uint16 messageID)
 {
-  return DIMSE_checkForCancelRQ(m_assoc, presId, messageID);
+  return DIMSE_checkForCancelRQ(m_assoc, presID, messageID);
 }
 
 // ----------------------------------------------------------------------------
@@ -630,6 +630,7 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
                                      const OFString &sopClassUID,
                                      DcmDataset *rspDataset,
                                      const Uint16 rspStatusCode,
+                                     DcmDataset *statusDetail,
                                      Uint16 numRemain,
                                      Uint16 numComplete,
                                      Uint16 numFail,
@@ -676,7 +677,7 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
     DCMNET_INFO("Sending C-MOVE Response (" << DU_cmoveStatusString(rspStatusCode) << ")");
   }
 
-  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */, statusDetail);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-MOVE response: " << DimseCondition::dump(tempStr, cond));

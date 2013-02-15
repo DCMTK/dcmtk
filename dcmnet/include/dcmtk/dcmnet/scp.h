@@ -551,7 +551,7 @@ protected:
    *          context (ID) was used for sending. Other low level errors
    *          (e.g. DIMSEC_UNEXPECTEDPDVTYPE) could be returned, too.
    */
-  virtual OFCondition checkForCANCEL(T_ASC_PresentationContextID presId,
+  virtual OFCondition checkForCANCEL(T_ASC_PresentationContextID presID,
                                      const Uint16 messageID);
 
   /** Respond to storage request
@@ -573,6 +573,7 @@ protected:
    *  @param rspDataset     [in] The response dataset
    *  @param rspStatusCode  [in] The status of the response code. 0 means success,
    *                             others can found in the DICOM standard.
+   *  @param statusDetail   [in]  The status detail of the response (if desired).
    *  @param numRemain      [in] Number of remaining sub-operations.
    *                             Required for Pending status codes, often optional otherwise.
    *                             Sent if one of the num parameters is not 0.
@@ -585,6 +586,8 @@ protected:
    *  @param numWarn        [in] Number of warning sub-operations
    *                             Required for Pending status codes, often optional otherwise.
    *                             Sent if one of the num parameters is not 0.
+   *                             Required for Pending status codes, often optional otherwise.
+   *                             Sent if one of the num parameters is not 0.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendMOVEResponse(const T_ASC_PresentationContextID presID,
@@ -592,6 +595,7 @@ protected:
                                        const OFString &sopClassUID,
                                        DcmDataset *rspDataset,
                                        const Uint16 rspStatusCode,
+                                       DcmDataset *statusDetail = NULL,
                                        Uint16 numRemain = 0,
                                        Uint16 numComplete = 0,
                                        Uint16 numFail = 0,
