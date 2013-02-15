@@ -854,7 +854,8 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     }
                     // call the inherited method from the base class doing the real work
                     status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
-                        dataset, (*CurrentTransferEntry)->ResponseStatusCode);
+                        dataset, (*CurrentTransferEntry)->ResponseStatusCode,
+                        MoveOriginatorAETitle, MoveOriginatorMsgID);
                     // store some further information (even in case of error)
                     (*CurrentTransferEntry)->AssociationNumber = AssociationCounter;
                     (*CurrentTransferEntry)->NetworkTransferSyntax = dataset->getCurrentXfer();
