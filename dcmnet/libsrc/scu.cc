@@ -652,7 +652,9 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      const OFString &dicomFile,
                                      DcmDataset *dataset,
-                                     Uint16 &rspStatusCode)
+                                     Uint16 &rspStatusCode,
+                                     const OFString& moveOriginatorAETitle,
+                                     const unsigned short& moveOriginatorMsgID)
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -711,6 +713,20 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   OFStandard::strlcpy(req->AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(req->AffectedSOPInstanceUID));
   req->DataSetType = DIMSE_DATASET_PRESENT;
   req->Priority = DIMSE_PRIORITY_LOW;
+
+  /* If desired (optional), insert MOVE originator information if this C-STORE
+     was initiated through a C-MOVE request.
+   */
+  if (!moveOriginatorAETitle.empty())
+  {
+    OFStandard::strlcpy(req->MoveOriginatorApplicationEntityTitle, moveOriginatorAETitle.c_str(), sizeof(req->MoveOriginatorApplicationEntityTitle));
+    req->opts |= O_STORE_MOVEORIGINATORAETITLE;
+  }
+  if (moveOriginatorMsgID != 0)
+  {
+    req->MoveOriginatorID = moveOriginatorMsgID;
+    req->opts |= O_STORE_MOVEORIGINATORID;
+  }
 
   /* If no presentation context is specified by the caller ... */
   if (pcid == 0)

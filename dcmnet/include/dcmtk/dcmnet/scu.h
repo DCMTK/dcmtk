@@ -271,6 +271,12 @@ public:
    *                             dataset from the filename is used.
    *  @param rspStatusCode [out] The response status code received. 0 means success, others
    *                             can be found in the DICOM standard.
+   *  @param moveOriginatorAETitle [in] If this C-STORE is started due to a C-MOVE request,
+   *                               this parameter informs the C-STORE SCP about the C-MOVE
+   *                               client's AE title.
+   *  @param moveOriginatorMsgID   [in] If this C-STORE is started due to a C-MOVE request,
+   *                               this parameter informs the C-STORE SCP about the C-MOVE
+   *                               message's message ID.
    *  @return EC_Normal if request could be issued and response was received successfully,
    *          error code otherwise. That means that if the receiver sends a response denoting
    *          failure of the storage request, EC_Normal will be returned.
@@ -278,7 +284,9 @@ public:
   virtual OFCondition sendSTORERequest(const T_ASC_PresentationContextID presID,
                                        const OFString &dicomFile,
                                        DcmDataset *dataset,
-                                       Uint16 &rspStatusCode);
+                                       Uint16 &rspStatusCode,
+                                       const OFString& moveOriginatorAETitle ="",
+                                       const unsigned short& moveOriginatorMsgID = 0);
 
   /** Sends a C-MOVE Request on given presentation context and receives list of responses.
    *  The function receives the first response and then calls the function handleMOVEResponse()

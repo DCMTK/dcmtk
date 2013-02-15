@@ -140,6 +140,8 @@ DcmStorageSCU::DcmStorageSCU()
     HaltOnUnsuccessfulStoreMode(OFTrue),
     AllowIllegalProposalMode(OFTrue),
     ReadFromDICOMDIRMode(OFFalse),
+    MoveOriginatorAETitle(""),
+    MoveOriginatorMsgID(0),
     TransferList(),
     CurrentTransferEntry()
 {
@@ -226,6 +228,14 @@ OFBool DcmStorageSCU::getReadFromDICOMDIRMode() const
     return ReadFromDICOMDIRMode;
 }
 
+OFBool DcmStorageSCU::getMOVEOriginatorInfo(OFString& aeTitle,
+                                            Uint16& messageID) const
+{
+    aeTitle = MoveOriginatorAETitle;
+    messageID = MoveOriginatorMsgID;
+    return ( !aeTitle.empty() || (messageID !=0) );
+}
+
 
 void DcmStorageSCU::setDecompressionMode(const E_DecompressionMode decompressionMode)
 {
@@ -254,6 +264,14 @@ void DcmStorageSCU::setAllowIllegalProposalMode(const OFBool allowMode)
 void DcmStorageSCU::setReadFromDICOMDIRMode(const OFBool readMode)
 {
     ReadFromDICOMDIRMode = readMode;
+}
+
+
+void DcmStorageSCU::setMOVEOriginatorInfo(const OFString& AETitle,
+                                          const unsigned short& msgID)
+{
+  MoveOriginatorAETitle = AETitle;
+  MoveOriginatorMsgID   = msgID;
 }
 
 
@@ -1296,3 +1314,4 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
     }
     return status;
 }
+
