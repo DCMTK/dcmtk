@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.08 (riesmeier)
+
+- Fixed various issues in syntax usage output (e.g. inconsistent program name).
+  Affects: dcmwlm/wwwapps/writwlst.cc
+
 **** Changes from 2013.02.15 (onken)
 
 - Added optional status detail when sending C-MOVE response.

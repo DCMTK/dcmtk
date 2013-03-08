@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,12 +42,12 @@ static void
 usage()
 {
     CERR << rcsid << "\n\n"
-        "writlst: write a worklist file from a hex coded string\n"
-        "usage: wlistgen [options] hexstring-file-in dcmfile-out\n"
-        "arguments:\n"
+        "writwlst: write a worklist file from a hex coded string\n"
+        "usage: writwlst [options] hexstring-file-in dcmfile-out\n\n"
+        "parameters:\n"
         "  hexstring-file-in   a filename of - reads from stdin\n"
-        "  dcmfile-out         the dicom file to create\n"
-        "options are:\n"
+        "  dcmfile-out         the dicom file to create\n\n"
+        "options:\n"
         "  create options:\n"
         "    +f    write fileformat (default)\n"
         "    -f    write dataset\n"
