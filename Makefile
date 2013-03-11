@@ -7,6 +7,8 @@ configdir = config
 
 include $(configdir)/Makefile.def
 
+.NOTPARALLEL:
+
 all:  config-all ofstd-all oflog-all dcmdata-all dcmimgle-all dcmimage-all dcmjpeg-all dcmjpls-all dcmtls-all dcmnet-all dcmsr-all dcmsign-all dcmwlm-all dcmqrdb-all dcmpstat-all dcmrt-all
 
 libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmimgle-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmwlm-libsrc-all dcmqrdb-libsrc-all dcmpstat-libsrc-all dcmrt-libsrc-all

@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.11 (schlachter)
 
+- Use ".NOTPARALLEL:" to make parallel builds (e.g. -j4) possible.
+  Thanks to Tilman Vogel <tilman@circlecvi.com> for the patch.
+  Affects: Makefile
+
 - Removed unused local variable which shadowed a variable with the same name.
   Affects: dcmnet/libsrc/scp.cc
 
