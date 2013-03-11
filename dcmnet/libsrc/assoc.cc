@@ -668,7 +668,11 @@ ASC_addPresentationContext(
     pc = (DUL_PRESENTATIONCONTEXT *) calloc(1, sizeof(DUL_PRESENTATIONCONTEXT));
     if (pc == NULL) return EC_MemoryExhausted;
     lst = LST_Create();
-    if (lst == NULL) return EC_MemoryExhausted;
+    if (lst == NULL)
+    {
+        free(pc);
+        return EC_MemoryExhausted;
+    }
     pc->presentationContextID = presentationContextID;
     strcpy(pc->abstractSyntax, abstractSyntax);
     pc->result = ASC_P_NOTYETNEGOTIATED;

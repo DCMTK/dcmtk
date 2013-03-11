@@ -1670,7 +1670,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             /** If element is the Query Level, store it in handle
              */
 
-            if (elem. XTag == DCM_QueryRetrieveLevel) {
+            if (elem.XTag == DCM_QueryRetrieveLevel && elem.PValueField) {
                 char *pc ;
                 char level [50] ;
 
@@ -2268,7 +2268,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             /** If element is the Query Level, store it in handle
              */
 
-            if (elem. XTag == DCM_QueryRetrieveLevel) {
+            if (elem. XTag == DCM_QueryRetrieveLevel && elem.PValueField) {
                 char *pc ;
                 char level [50] ;
 

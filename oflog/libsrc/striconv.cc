@@ -76,13 +76,6 @@ struct iconv_handle
     iconv_handle (char const * to, char const * from)
         : handle (iconv_open (to, from))
     {
-        if (handle == iconv_error_handle)
-        {
-            STD_NAMESPACE ostringstream oss;
-            oss << "iconv_open failed: " << errno;
-            STD_NAMESPACE cerr << oss.str () << OFendl;
-            throw STD_NAMESPACE runtime_error (oss.str ().c_str ());
-        }
     }
 
     ~iconv_handle ()
@@ -95,7 +88,6 @@ struct iconv_handle
                 STD_NAMESPACE ostringstream oss;
                 oss << "iconv_close failed: " << errno;
                 STD_NAMESPACE cerr << oss.str () << OFendl;
-                throw STD_NAMESPACE runtime_error (oss.str ().c_str ());
             }
         }
     }

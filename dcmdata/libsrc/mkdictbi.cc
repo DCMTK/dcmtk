@@ -357,5 +357,9 @@ main(int argc, char* argv[])
     fprintf(fout, "\n");
 
     dcmDataDict.unlock();
+    if (filename)
+    {
+        fclose(fout);
+    }
     return 0;
 }

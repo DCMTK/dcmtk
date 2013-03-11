@@ -216,6 +216,7 @@ int main(int argc, char *argv[])
        ||(!curveDescription)||(!axisUnits)||(!curveLabel))
     {
       OFLOG_FATAL(dcmmkcrvLogger, "out of memory");
+      delete [] array;
       return 1;
     }
 
@@ -270,7 +271,7 @@ int main(int argc, char *argv[])
       case 0: // US
         OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=US, points=" << idx/2);
         rawData = new Uint16[idx];
-        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); delete [] array; return 1; }
         byteLength = sizeof(Uint16)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Uint16 *,rawData)[i] = OFstatic_cast(Uint16,array[i]);
         align = sizeof(Uint16);
@@ -278,7 +279,7 @@ int main(int argc, char *argv[])
       case 1: // SS
         OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=SS, points=" << idx/2);
         rawData = new Sint16[idx];
-        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); delete [] array; return 1; }
         byteLength = sizeof(Sint16)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Sint16 *,rawData)[i] = OFstatic_cast(Sint16,array[i]);
         align = sizeof(Sint16);
@@ -286,7 +287,7 @@ int main(int argc, char *argv[])
       case 2: // FL
         OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=FL, points=" << idx/2);
         rawData = new Float32[idx];
-        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); delete [] array; return 1; }
         byteLength = sizeof(Float32)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Float32 *,rawData)[i] = OFstatic_cast(Float32,array[i]);
         align = sizeof(Float32);
@@ -294,7 +295,7 @@ int main(int argc, char *argv[])
       case 3: // FD
         OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=FD, points=" << idx/2);
         rawData = new Float64[idx];
-        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); delete [] array; return 1; }
         byteLength = sizeof(Float64)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Float64 *,rawData)[i] = OFstatic_cast(Float64,array[i]);
         align = sizeof(Float64);
@@ -302,15 +303,17 @@ int main(int argc, char *argv[])
       case 4: // SL
         OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=SL, points=" << idx/2);
         rawData = new Sint32[idx];
-        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); delete [] array; return 1; }
         byteLength = sizeof(Sint32)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Sint32 *,rawData)[i] = OFstatic_cast(Sint32,array[i]);
         align = sizeof(Sint32);
         break;
       default:
         OFLOG_FATAL(dcmmkcrvLogger, "unknown data VR, bailing out");
+        delete [] array;
         return 1;
     }
+    delete [] array;
 
     DcmElement *element = NULL;
     switch (opt_curve_vr)

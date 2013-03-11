@@ -195,7 +195,7 @@ OFCondition DcmSignature::removeSignature(unsigned long i)
     signatureSq = NULL;
   }
 
-  if (macParametersSq->card() == 0) 
+  if (macParametersSq && macParametersSq->card() == 0)
   {
     delete currentItem->remove(macParametersSq);
     macParametersSq = NULL;

@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.11 (schlachter)
 
+- Fixed various issues found via cppcheck. Thanks to Per Inge
+  Mathisen <per.mathisen@gmail.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/mkdictbi.cc
+           dcmnet/libsrc/assoc.cc
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmsign/libsrc/dcsignat.cc
+           oflog/libsrc/striconv.cc
+
 - Update rootconf for changes which were done directly to generated files.
   Affects: config/rootconf
 
