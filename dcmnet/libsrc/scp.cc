@@ -1321,7 +1321,6 @@ OFBool DcmSCP::addStatusDetail(DcmDataset **statusDetail,
       (*statusDetail)->insert( lo, OFTrue /*replaceOld*/ );
       // Print debug information
       {
-        OFString strtemp;
         OFOStringStream oss;
         lo->print(oss);
         OFSTRINGSTREAM_GETSTR(oss, strtemp);
@@ -1338,7 +1337,6 @@ OFBool DcmSCP::addStatusDetail(DcmDataset **statusDetail,
       (*statusDetail)->insert( at, OFTrue /*replaceOld*/ );
       // Print debug information
       {
-        OFString strtemp;
         OFOStringStream oss;
         at->print(oss);
         OFSTRINGSTREAM_GETSTR(oss, strtemp);

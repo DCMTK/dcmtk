@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.11 (schlachter)
 
+- Removed unused local variable which shadowed a variable with the same name.
+  Affects: dcmnet/libsrc/scp.cc
+
 - Fixed wrong definition of Value Representation Person Name (PN): Allow empty
   component groups while still not allowing completely empty PN elements.
   Thanks to forum user "Hua Cong Danh" for the report.
