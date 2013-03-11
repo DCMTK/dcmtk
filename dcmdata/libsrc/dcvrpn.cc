@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,13 +77,13 @@ DcmEVR DcmPersonName::ident() const
 
 
 OFCondition DcmPersonName::checkValue(const OFString &vm,
-                                      const OFBool oldFormat)
+                                      const OFBool /*oldFormat*/)
 {
     OFString strVal;
     /* get "raw value" without any modifications (if possible) */
     OFCondition l_error = getStringValue(strVal);
     if (l_error.good())
-        l_error = DcmPersonName::checkStringValue(strVal, vm, oldFormat);
+        l_error = DcmPersonName::checkStringValue(strVal, vm);
     return l_error;
 }
 
@@ -428,8 +428,7 @@ OFCondition DcmPersonName::putNameComponents(const OFString &lastName,
 
 
 OFCondition DcmPersonName::checkStringValue(const OFString &value,
-                                            const OFString &vm,
-                                            const OFBool oldFormat)
+                                            const OFString &vm)
 {
     /* currently not checked: maximum length per component group (64 characters) */
     OFCondition result = EC_Normal;
@@ -447,7 +446,7 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
             const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
             /* check value representation */
             const int vrID = DcmElement::scanValue(value, "pn", posStart, length);
-            if ((vrID != 11) && (!oldFormat || (vrID != 15)))
+            if (vrID != 11)
             {
               result = EC_ValueRepresentationViolated;
               break;

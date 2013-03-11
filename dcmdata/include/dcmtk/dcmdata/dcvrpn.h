@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,7 +89,7 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     /** check whether stored value conforms to the VR and to the specified VM
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
-     *  @param oldFormat support old ACR/NEMA format if OFTrue (no '^' separator)
+     *  @param oldFormat parameter not used for this VR (only for DA, TM)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     virtual OFCondition checkValue(const OFString &vm = "1-n",
@@ -281,12 +281,10 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
-     *  @param oldFormat support old ACR/NEMA name format if OFTrue (i.e. without "^" delimiters)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkStringValue(const OFString &value,
-                                        const OFString &vm = "1-n",
-                                        const OFBool oldFormat = OFTrue);
+                                        const OFString &vm = "1-n");
 };
 
 

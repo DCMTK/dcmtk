@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,7 +54,11 @@ tm_second                             [0-5][0-9]
 is_positive                           \+?0*(([0-9]{1,9})|(1[0-9]{9})|(20[0-9]{8})|(21[0-3][0-9]{7})|(214[0-6][0-9]{6})|(2147[0-3][0-9]{5})|(21474[0-7][0-9]{4})|(214748[0-2][0-9]{3})|(2147483[0-5][0-9]{2})|(21474836[0-3][0-9])|(214748364[0-7]))
 is_negative                           \-0*(([0-9]{1,9})|(1[0-9]{9})|(20[0-9]{8})|(21[0-3][0-9]{7})|(214[0-6][0-9]{6})|(2147[0-3][0-9]{5})|(21474[0-7][0-9]{4})|(214748[0-2][0-9]{3})|(2147483[0-5][0-9]{2})|(21474836[0-3][0-9])|(214748364[0-8]))
 pn_chars                              {spaces}[\041-\074\076-\133\135\137-\176\240-\377\033][\040-\074\076-\133\135\137-\176\240-\377\033]*
-pn_component_group                    {pn_chars}?\^{pn_chars}?(\^{pn_chars}?(\^{pn_chars}?(\^{pn_chars}?)?)?)?
+/* One of the components must not be empty */
+pn_component_group1                   {pn_chars}(\^)?|{pn_chars}?\^{pn_chars}
+pn_component_group2                   {pn_chars}(\^(\^)?)?|{pn_chars}?\^{pn_component_group1}?
+pn_component_group3                   {pn_chars}(\^(\^(\^)?)?)?|{pn_chars}?\^{pn_component_group2}?
+pn_component_group                    {pn_chars}(\^(\^(\^(\^)?)?)?)?|{pn_chars}?\^{pn_component_group3}?
 
 normalized-as       [0-9]{3}[DWMY]
 normalized-da       {da_year}{da_month}{da_day}
@@ -68,7 +72,8 @@ normalized-dt-dub   {da_year_dub}({da_month}({da_day}({normalized-tm}{dt_offset}
 normalized-is       {is_positive}|{is_negative}
 normalized-ui       (([0-9]\.)|([1-9][0-9]+\.))*(([0-9])|([1-9][0-9]+))
 normalized-cs       [0-9A-Z _]+
-normalized-pn       ({pn_component_group}(\={pn_component_group}?(\={pn_component_group}?)?)?)|(\={pn_component_group}?(\={pn_component_group}?)?)
+/* One of the component groups must not be empty */
+normalized-pn       {pn_component_group}(\={pn_component_group}?(\={pn_component_group}?)?)?|{pn_component_group}?\={pn_component_group}(\={pn_component_group}?)?|{pn_component_group}?\={pn_component_group}?\={pn_component_group}
 normalized-pn-old   {pn_chars}
 normalized-lo-sh    {charset_without_control_chars}
 normalized-ae       {default_charset_without_control_chars}
@@ -107,7 +112,7 @@ is{is}?(\\{is}?)*          {return 8;  /* IS */}
 ui{ui}?(\\{ui}?)*          {return 9;  /* UI */}
 cs{cs}?(\\{cs}?)*          {return 10; /* CS */}
 pn{pn}?(\\{pn}?)*          {return 11; /* PN */}
-pn{pn-old}?(\\{pn-old}?)*  {return 15; /* OLD_PN */}
+oldpn{pn-old}?(\\{pn-old}?)* {return 15; /* OLD_PN */}
 lo{lo-sh}?(\\{lo-sh}?)*    {return 12; /* LO | SH */}
 ae{ae}?(\\{ae}?)*          {return 13; /* AE */}
 lt{lt-st-ut}               {return 14; /* LT | ST | UT */}

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -122,7 +122,7 @@ public:
      *  @param card cardinality (number of items) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
      *     Parameter used to specify the value multiplicity for non-sequence attributes.
-     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @param oldFormat parameter not used for this VR (only for DA, TM)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     virtual OFCondition checkValue(const OFString &card = "1-n",

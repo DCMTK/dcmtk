@@ -73,6 +73,7 @@ tchval.o: tchval.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/vrscan.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h
 tdict.o: tdict.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \

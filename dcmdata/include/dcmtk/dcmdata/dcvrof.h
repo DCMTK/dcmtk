@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -88,7 +88,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherFloat
 
     /** check whether stored value conforms to the VR and to the specified VM
      *  @param vm parameter not used for this VR
-     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @param oldFormat parameter not used for this VR (only for DA, TM)
      *  @return always returns EC_Normal, i.e. currently no checks are performed
      */
     virtual OFCondition checkValue(const OFString &vm = "",

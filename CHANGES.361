@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.11 (schlachter)
+
+- Fixed wrong definition of Value Representation Person Name (PN): Allow empty
+  component groups while still not allowing completely empty PN elements.
+  Thanks to forum user "Hua Cong Danh" for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvr*.h
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/tchval.cc
+
 **** Changes from 2013.03.08 (riesmeier)
 
 - Fixed various issues in syntax usage output (e.g. inconsistent program name).
