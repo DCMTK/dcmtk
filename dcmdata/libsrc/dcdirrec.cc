@@ -580,11 +580,8 @@ E_DirRecType DcmDirectoryRecord::lookForRecordType()
                 recType->getString(recName);
                 localType = recordNameToType(recName);
 
-                DCMDATA_TRACE("DcmDirectoryRecord::lookForRecordType() RecordType Element ("
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << recType->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << recType->getETag()
-                    << ") Type = " << DRTypeNames[DirRecordType]);
+                DCMDATA_TRACE("DcmDirectoryRecord::lookForRecordType() RecordType Element "
+                    << recType->getTag() << " Type = " << DRTypeNames[DirRecordType]);
             }
         }
     }
@@ -686,10 +683,9 @@ DcmDirectoryRecord *DcmDirectoryRecord::lookForReferencedMRDR()
 #ifdef DEBUG
                 Uint32 l_uint = 0;
                 offElem->getUint32(l_uint);
-                DCMDATA_TRACE("DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset Element ("
+                DCMDATA_TRACE("DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset Element "
+                    << offElem->getTag() << " offs=0x"
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << offElem->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << offElem->getETag() << ") offs=0x"
                     << STD_NAMESPACE setw(8) << l_uint
                     << " p=" << OFstatic_cast(void *, offElem)
                     << " n=" << OFstatic_cast(void *, localMRDR));

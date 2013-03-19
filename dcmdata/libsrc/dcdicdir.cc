@@ -273,10 +273,9 @@ DcmUnsignedLongOffset* DcmDicomDir::lookForOffsetElem( DcmObject *obj,
 #ifdef DEBUG
                 Uint32 l_uint = 0;
                 offElem->getUint32(l_uint);
-                DCMDATA_TRACE("DcmDicomDir::lookForOffsetElem() Offset Element ("
+                DCMDATA_TRACE("DcmDicomDir::lookForOffsetElem() Offset Element "
+                    << offElem->getTag() << " offs=0x"
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << offElem->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << offElem->getETag() << ") offs=0x"
                     << STD_NAMESPACE setw(8) << l_uint
                     << " p=" << OFstatic_cast(void *, offElem)
                     << " l=" << offElem->getNextRecord());
@@ -414,11 +413,9 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
             if ( offElem != NULL )
                 nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
 
-            DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record ("
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                << STD_NAMESPACE setw(4) << startRec->getGTag() << ","
-                << STD_NAMESPACE setw(4) << startRec->getETag()
-                << ") p=" << OFstatic_cast(void *, startRec)
+            DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record "
+                << startRec->getTag()
+                << " p=" << OFstatic_cast(void *, startRec)
                 << " has lower=" << OFstatic_cast(void *, lowerRec)
                 << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
 
@@ -670,11 +667,9 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
 #ifdef DEBUG
                 Uint32 l_uint = 0;
                 uloP->getUint32(l_uint);
-                DCMDATA_TRACE("DcmDicomDir::copyRecordPtrToSQ() Next Offset Element ("
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << uloP->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << uloP->getETag() << ") offs=0x"
-                    << STD_NAMESPACE setw(8) << l_uint
+                DCMDATA_TRACE("DcmDicomDir::copyRecordPtrToSQ() Next Offset Element "
+                    << uloP->getTag() << " offs=0x" << STD_NAMESPACE hex
+                    << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << l_uint
                     << " p=" << OFstatic_cast(void *, uloP)
                     << " next=" << OFstatic_cast(void *, nextRec));
 #endif
@@ -688,11 +683,9 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
                 subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
                 uloP->getUint32(l_uint);
-                DCMDATA_TRACE("DcmDicomDir::copyRecordPtrToSQ() Lower Offset Element ("
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << uloP->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << uloP->getETag() << ") offs=0x"
-                    << STD_NAMESPACE setw(8) << l_uint
+                DCMDATA_TRACE("DcmDicomDir::copyRecordPtrToSQ() Lower Offset Element "
+                    << uloP->getTag() << " offs=0x" << STD_NAMESPACE hex
+                    << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << l_uint
                     << " p=" << OFstatic_cast(void *, uloP)
                     << " lower=" << OFstatic_cast(void *, *firstRec));
 #endif

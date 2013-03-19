@@ -304,9 +304,7 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
         if (flags & DCMTypes::PF_useANSIEscapeCodes)
             out << DCMDATA_ANSI_ESCAPE_CODE_TAG;
         /* print line start: tag */
-        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "("
-            << STD_NAMESPACE setw(4) << tag->getGTag() << ","
-            << STD_NAMESPACE setw(4) << tag->getETag() << ") ";
+        out << *tag << " ";
         if (flags & DCMTypes::PF_useANSIEscapeCodes)
             out << DCMDATA_ANSI_ESCAPE_CODE_VR;
         /* print line start: VR */

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.19 (schlachter)
+
+- Use DcmTagKey's output operator where possible.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcobject.cc
+
 **** Changes from 2013.03.11 (schlachter)
 
 - Fixed various issues found via cppcheck. Thanks to Per Inge
