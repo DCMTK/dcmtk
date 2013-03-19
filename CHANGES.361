@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.19 (schlachter)
 
+- Don't include intrin.h on Visual Studio 2005 because of build errors.
+  Affects: oflog/include/dcmtk/oflog/config/win32.h
+
 - Use DcmTagKey's output operator where possible.
   Affects: dcmdata/libsrc/dcdicdir.cc
            dcmdata/libsrc/dcdirrec.cc
