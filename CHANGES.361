@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.21 (riesmeier)
+
+- Minor fixes in comments, e.g. typos.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 **** Changes from 2013.03.19 (schlachter)
 
 - Don't include intrin.h on Visual Studio 2005 because of build errors.

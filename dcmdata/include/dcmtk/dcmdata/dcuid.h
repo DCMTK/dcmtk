@@ -96,7 +96,7 @@ DCMTK_DCMDATA_EXPORT OFBool dcmIsaStorageSOPClassUID(const char* uid);
  *  string pointers containing the UIDs of all known Image SOP
  *  Classes.  The global variable numberOfDcmImageSOPClassUIDs
  *  defines the size of the array.
- *  NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
+ *  NOTE: this list represents a subset of the dcmStorageSOPClassUIDs list
  */
 extern DCMTK_DCMDATA_EXPORT const char* dcmImageSOPClassUIDs[];
 
@@ -111,10 +111,10 @@ extern DCMTK_DCMDATA_EXPORT const int numberOfDcmImageSOPClassUIDs;
  *  Otherwise the supplied prefix string will appear at the beginning
  *  of uid.
  *  The UID is created by appending to the prefix the following:
- *       the host id (if obtainable, zero otherwise),
- *       the process id (if obtainable, zero otherwise),
- *       the system calendar time, and
- *       an accumulating counter for tis process.
+ *  - the host ID (if obtainable, zero otherwise),
+ *  - the process ID (if obtainable, zero otherwise),
+ *  - the system calendar time, and
+ *  - an accumulating counter for this process.
  *  @param uid pointer to buffer of 65 or more characters in which the UID is returned
  *  @param prefix prefix for UID creation
  *  @return pointer to UID, identical to uid parameter
@@ -135,7 +135,7 @@ DCMTK_DCMDATA_EXPORT const char *dcmSOPClassUIDToModality(const char *sopClassUI
  *  file size for the given SOP class.
  *  Average sizes are defined for all storage SOP classes, but may be very far off.
  *  @param sopClassUID UID string
- *  @return estimated everage size for objects of this SOP class
+ *  @return estimated average size for objects of this SOP class
  */
 DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
@@ -238,8 +238,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 /// UID root for SOP instance UIDs
 #define SITE_INSTANCE_UID_ROOT                  SITE_UID_ROOT ".1.4"
 
-/** A private SOP Class UID which is used in a file meta-header when
- *  no real SOP Class is stored in the file. -- NON-STANDARD
+/** A private SOP Class UID which is used in a file meta-header when no
+ *  instance of a Storage SOP Class is stored in the file. -- NON-STANDARD
  */
 #define UID_PrivateGenericFileSOPClass          SITE_UID_ROOT ".1.0.1"
 
@@ -555,7 +555,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_MOVEImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.3"
 #define UID_GETImplantTemplateGroupInformationModel                "1.2.840.10008.5.1.4.45.4"
 
-// Print
+// Print Management
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
 #define UID_BasicFilmBoxSOPClass                                   "1.2.840.10008.5.1.1.2"
 #define UID_BasicGrayscaleImageBoxSOPClass                         "1.2.840.10008.5.1.1.4"
