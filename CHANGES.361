@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.22 (riesmeier)
+
+- Minor fixes in comments. Also made some input parameters "const".
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 **** Changes from 2013.03.21 (riesmeier)
 
 - Minor fixes in comments, e.g. typos.

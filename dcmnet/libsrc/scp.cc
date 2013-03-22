@@ -31,7 +31,6 @@ DcmSCP::DcmSCP() :
   m_assoc(NULL),
   m_cfg()
 {
-
 #ifdef HAVE_GUSI_H
   // needed for Macintosh.
   GUSISetup( GUSIwithSIOUXSockets );
@@ -74,7 +73,7 @@ OFCondition DcmSCP::setConfig(const DcmSCPConfig& config)
 {
   if (isConnected())
   {
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   }
   m_cfg = DcmSharedSCPConfig( config );
   return EC_Normal;
@@ -631,10 +630,10 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
                                      DcmDataset *rspDataset,
                                      const Uint16 rspStatusCode,
                                      DcmDataset *statusDetail,
-                                     Uint16 numRemain,
-                                     Uint16 numComplete,
-                                     Uint16 numFail,
-                                     Uint16 numWarn)
+                                     const Uint16 numRemain,
+                                     const Uint16 numComplete,
+                                     const Uint16 numFail,
+                                     const Uint16 numWarn)
 {
   OFCondition cond;
   OFString tempStr;

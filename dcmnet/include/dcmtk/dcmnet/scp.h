@@ -503,7 +503,7 @@ protected:
    *  @param sopInstanceUID [in] The affected SOP instance UID
    *  @param actionTypeID   [in] The type of action performed
    *  @param rspDataset     [in] The response dataset
-   *  @param rspStatusCode  [in] The status of the response code. 0 means success,
+   *  @param rspStatusCode  [in] The response status code. 0 means success,
    *                             others can found in the DICOM standard.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
@@ -520,7 +520,7 @@ protected:
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
    *  @param rspDataset     [in] The response dataset
-   *  @param rspStatusCode  [in] The status of the response code. 0 means success,
+   *  @param rspStatusCode  [in] The response status code. 0 means success,
    *                             others can found in the DICOM standard.
    *  @param statusDetail   [in] Any status (must fit response code), if desired
    *  @return EC_Normal, if responding was successful, an error code otherwise
@@ -571,21 +571,19 @@ protected:
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
    *  @param rspDataset     [in] The response dataset
-   *  @param rspStatusCode  [in] The status of the response code. 0 means success,
+   *  @param rspStatusCode  [in] The status code of the response. 0 means success,
    *                             others can found in the DICOM standard.
-   *  @param statusDetail   [in]  The status detail of the response (if desired).
+   *  @param statusDetail   [in] The status detail of the response (if desired).
    *  @param numRemain      [in] Number of remaining sub-operations.
    *                             Required for Pending status codes, often optional otherwise.
    *                             Sent if one of the num parameters is not 0.
-   *  @param numComplete    [in] Number of completed sub-operations
+   *  @param numComplete    [in] Number of completed sub-operations.
    *                             Required for Pending status codes, often optional otherwise.
    *                             Sent if one of the num parameters is not 0.
-   *  @param numFail        [in] Number of failed sub-operations
+   *  @param numFail        [in] Number of failed sub-operations.
    *                             Required for Pending status codes, often optional otherwise.
    *                             Sent if one of the num parameters is not 0.
-   *  @param numWarn        [in] Number of warning sub-operations
-   *                             Required for Pending status codes, often optional otherwise.
-   *                             Sent if one of the num parameters is not 0.
+   *  @param numWarn        [in] Number of warning sub-operations.
    *                             Required for Pending status codes, often optional otherwise.
    *                             Sent if one of the num parameters is not 0.
    *  @return EC_Normal, if responding was successful, an error code otherwise
@@ -596,10 +594,10 @@ protected:
                                        DcmDataset *rspDataset,
                                        const Uint16 rspStatusCode,
                                        DcmDataset *statusDetail = NULL,
-                                       Uint16 numRemain = 0,
-                                       Uint16 numComplete = 0,
-                                       Uint16 numFail = 0,
-                                       Uint16 numWarn= 0);
+                                       const Uint16 numRemain = 0,
+                                       const Uint16 numComplete = 0,
+                                       const Uint16 numFail = 0,
+                                       const Uint16 numWarn = 0);
 
   /** Standard handler for Verification Service Class (DICOM Echo). Returns echo response
    *  (i.e. whether C-ECHO could be responded to with status success).
