@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.25 (schlachter)
 
+- Worked around compiler warnings on 32bit systems for too large shifts.
+  Affects: dcmjpls/libcharls/util.h
+
 - Fixed compiler warnings in ConvertIntegerToString with unsigned integers.
   Affects: oflog/include/dcmtk/oflog/helpers/strhelp.h
 

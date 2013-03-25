@@ -132,8 +132,9 @@ struct FromBigEndian<8>
 {
 	inlinehint static size_t Read(BYTE* pbyte)
 	{
-		return  (size_t(pbyte[0]) << 56) + (size_t(pbyte[1]) << 48) + (size_t(pbyte[2]) << 40) + (size_t(pbyte[3]) << 32) +
-				(size_t(pbyte[4]) << 24) + (size_t(pbyte[5]) << 16) + (size_t(pbyte[6]) <<  8) + (size_t(pbyte[7]) << 0);
+		size_t a = FromBigEndian<4>::Read(&pbyte[0]);
+		size_t b = FromBigEndian<4>::Read(&pbyte[4]);
+		return ((a << 16) << 16) + b;
 	}
 };
 
