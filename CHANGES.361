@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.25 (schlachter)
 
+- Fixed crash if less than four transfer syntaxes are enabled.
+  This fixes debian bug #703716.
+  Affects: dcmqrdb/libsrc/dcmqrsrv.cc
+
 - Worked around compiler warnings on 32bit systems for too large shifts.
   Affects: dcmjpls/libcharls/util.h
 
