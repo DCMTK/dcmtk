@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.03.25 (schlachter)
 
+- Fixed compiler warnings in ConvertIntegerToString with unsigned integers.
+  Affects: oflog/include/dcmtk/oflog/helpers/strhelp.h
+
 - Fixed bug in OFString::copy() and improved unit tests.
   Thanks to forum user "oxymoron" for the report.
   Affects: ofstd/libsrc/ofstring.cc

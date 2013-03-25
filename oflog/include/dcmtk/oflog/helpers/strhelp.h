@@ -122,15 +122,15 @@ namespace log4cplus {
                 if (value == minVal)
                 {
                     intType const r = value / 10;
-                    intType const a = (-r) * 10;
-                    intType const mod = -(a + value);
-                    value = -r;
+                    intType const a = (0-r) * 10;
+                    intType const mod = 0-(a + value);
+                    value = 0-r;
 
                     *(it - 1) = DCMTK_LOG4CPLUS_TEXT('0') + OFstatic_cast(tchar, mod);
                     --it;
                 }
                 else
-                    value = -value;
+                    value = 0-value;
             }
 
             static inline
