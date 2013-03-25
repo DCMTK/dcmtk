@@ -427,11 +427,10 @@ size_t
 OFString::copy (char* s, size_t n, size_t pos) const
 {
     OFString sub(this->substr(pos, n));
-    // String length *including* the trailing EOS
-    const size_t result = sub.size() + 1;
+    const size_t result = sub.size();
 
     // The string could have NULL bytes so no strncpy()
-    OFBitmanipTemplate<char>::copyMem(this->theCString, s, result);
+    OFBitmanipTemplate<char>::copyMem(sub.theCString, s, result);
     return result;
 }
 

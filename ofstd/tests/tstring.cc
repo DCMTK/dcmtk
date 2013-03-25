@@ -53,13 +53,20 @@ OFTEST(ofstd_OFString_constructor)
   OFString x;
   OFCHECK_EQUAL(x, "");
 
-  OFString y = "Hello";
+  OFString y("Hell\0", 5);
+  OFCHECK_EQUAL(y.length(), 5);
+  OFCHECK_EQUAL(y[4], '\0');
+  OFCHECK_EQUAL(y, OFString("Hell\0", 5));
+
+  y = "Hello";
   OFCHECK_EQUAL(y, "Hello");
 
   if (y[y.length()-1] == 'o')
     y = y + '\n';
   OFCHECK_EQUAL(y, "Hello\n");
+
   y = "Hello";
+  OFCHECK_EQUAL(y, "Hello");
 
   OFString a = y;
   OFCHECK_EQUAL(a, "Hello");
@@ -69,8 +76,8 @@ OFTEST(ofstd_OFString_constructor)
   OFCHECK_EQUAL(b, "el");
 
   char ch = '@';
-  OFString z (1, ch);
-  OFCHECK_EQUAL (z, "@");
+  OFString z (2, ch);
+  OFCHECK_EQUAL (z, "@@");
 
   OFString n ("20");
   OFCHECK_EQUAL(n, "20");
@@ -100,8 +107,16 @@ OFTEST(ofstd_OFString_concatenate)
 
   y = Y;
   x = X;
+  y.insert (5, x);
+  CHECK_EQ(y, "worldHello\0How are you?");
+
+  y = Y;
+  x = X;
   x = x + y + x;
   CHECK_EQ(x, "Helloworld\0How are you?Hello");
+
+  x.erase(5, 17);
+  CHECK_EQ(x, "Hello?Hello");
 
   y = Y;
   x = X;
@@ -131,6 +146,57 @@ OFTEST(ofstd_OFString_compare)
   OFCHECK_EQUAL(x.find ("lo"), 3);
   OFCHECK_EQUAL(x.find ("l", 2), 2);
   OFCHECK_EQUAL(x.rfind ("l"), 3);
+
+  x = "Moin";
+  y = "Moin!";
+  n = "Moin!";
+  z = "Zahl";
+
+  OFCHECK(x.compare(x) == 0);
+  OFCHECK(x.compare(y) < 0);
+  OFCHECK(x.compare(n) < 0);
+  OFCHECK(x.compare(z) < 0);
+
+  OFCHECK(y.compare(x) > 0);
+  OFCHECK(y.compare(y) == 0);
+  OFCHECK(y.compare(n) == 0);
+  OFCHECK(y.compare(z) < 0);
+
+  OFCHECK(z.compare(x) > 0);
+  OFCHECK(z.compare(y) > 0);
+  OFCHECK(z.compare(n) > 0);
+  OFCHECK(z.compare(z) == 0);
+}
+
+OFTEST(ofstd_OFString_copy)
+{
+  OFString x = X;
+  size_t copied;
+  char buffer[256];
+
+#define CHECK_EQ(c_str, buffer, copied) \
+  OFCHECK_EQUAL(OFString(c_str, sizeof(c_str)/sizeof(char) - 1), OFString(buffer, copied))
+
+  copied = x.copy(&buffer[0], sizeof(buffer));
+  OFCHECK_EQUAL(copied, 5);
+  CHECK_EQ("Hello", buffer, copied);
+
+  copied = x.copy(&buffer[0], 4);
+  OFCHECK_EQUAL(copied, 4);
+  CHECK_EQ("Hell", buffer, copied);
+
+  copied = x.copy(&buffer[0], 4, 1);
+  OFCHECK_EQUAL(copied, 4);
+  CHECK_EQ("ello", buffer, copied);
+
+  copied = x.copy(&buffer[0], 4, 2);
+  OFCHECK_EQUAL(copied, 3);
+  CHECK_EQ("llo", buffer, copied);
+
+  copied = x.copy(&buffer[0], 0);
+  OFCHECK_EQUAL(copied, 0);
+
+#undef CHECK_EQ
 }
 
 OFTEST(ofstd_OFString_substr)
@@ -155,24 +221,42 @@ OFTEST(ofstd_OFString_reserve)
 {
   OFString z;
 
+  OFCHECK(z.empty());
+
   z.reserve(5);
   OFCHECK_EQUAL(z.length(), 0);
   OFCHECK(z.capacity() >= 5);
+  OFCHECK(z.empty());
 
   z.assign(20, 'z');
   OFCHECK_EQUAL(z, "zzzzzzzzzzzzzzzzzzzz");
   OFCHECK_EQUAL(z.length(), 20);
   OFCHECK(z.capacity() >= 20);
+  OFCHECK(!z.empty());
 
   z.reserve(5);
   OFCHECK_EQUAL(z, "zzzzzzzzzzzzzzzzzzzz");
   OFCHECK_EQUAL(z.length(), 20);
   OFCHECK(z.capacity() >= 20);
+  OFCHECK(!z.empty());
 
   z.resize(5);
   OFCHECK_EQUAL(z, "zzzzz");
   OFCHECK_EQUAL(z.length(), 5);
   OFCHECK(z.capacity() >= 5);
+  OFCHECK(!z.empty());
+
+  OFString xxx("xxx");
+  z.swap(xxx);
+  OFCHECK_EQUAL(z, "xxx");
+  OFCHECK_EQUAL(z.length(), 3);
+  OFCHECK(z.capacity() >= 3);
+  OFCHECK(!z.empty());
+
+  z.clear();
+  OFCHECK_EQUAL(z, "");
+  OFCHECK_EQUAL(z.length(), 0);
+  OFCHECK(z.empty());
 }
 
 static void identitytest(OFString a, OFString b)

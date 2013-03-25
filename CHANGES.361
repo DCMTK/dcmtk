@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.25 (schlachter)
+
+- Fixed bug in OFString::copy() and improved unit tests.
+  Thanks to forum user "oxymoron" for the report.
+  Affects: ofstd/libsrc/ofstring.cc
+           ofstd/tests/tests.cc
+           ofstd/tests/tstring.cc
+
 **** Changes from 2013.03.22 (riesmeier)
 
 - Minor fixes in comments. Also made some input parameters "const".

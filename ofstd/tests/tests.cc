@@ -44,6 +44,7 @@ OFTEST_REGISTER(ofstd_OFFile);
 OFTEST_REGISTER(ofstd_OFString_compare);
 OFTEST_REGISTER(ofstd_OFString_concatenate);
 OFTEST_REGISTER(ofstd_OFString_constructor);
+OFTEST_REGISTER(ofstd_OFString_copy);
 OFTEST_REGISTER(ofstd_OFString_identity_1);
 OFTEST_REGISTER(ofstd_OFString_identity_2);
 OFTEST_REGISTER(ofstd_OFString_identity_3);
