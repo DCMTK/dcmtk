@@ -133,7 +133,7 @@ Time::gettimeofday()
     uint64_type fixed_time = st100ns - offset;
 
     return Time (fixed_time / (10 * 1000 * 1000),
-        fixed_time % (10 * 1000 * 1000) / 10);
+        OFstatic_cast(long, fixed_time % (10 * 1000 * 1000) / 10));
 
 #elif defined(DCMTK_LOG4CPLUS_HAVE_FTIME)
     struct timeb tp;

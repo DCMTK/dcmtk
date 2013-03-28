@@ -118,7 +118,8 @@ static inline OFCondition readDatasetTwice(DcmDataset& dset, const Uint8* buffer
         return cond;
 
     // Now read the dataset again
-    return readDataset(dset, OFstatic_cast(const Uint8 *, outBuffer), outLength, ts2);
+    return readDataset(dset, OFstatic_cast(const Uint8 *, outBuffer),
+                    OFstatic_cast(size_t, outLength), ts2);
 }
 
 

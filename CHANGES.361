@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.03.28 (schlachter)
+
+- Silence some more compiler warnings about implicit casts.
+  Affects: dcmdata/tests/dctmacro.h
+           oflog/libsrc/timehelp.cc
+
 **** Changes from 2013.03.25 (schlachter)
 
 - Fixed crash if less than four transfer syntaxes are enabled.
