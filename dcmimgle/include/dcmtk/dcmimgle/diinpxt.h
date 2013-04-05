@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -165,7 +165,12 @@ class DiInputPixelTemplate
      */
     virtual ~DiInputPixelTemplate()
     {
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
+        /* use a non-throwing delete (if available) */
+        operator delete[] (Data, std::nothrow);
+#else
         delete[] Data;
+#endif
     }
 
     /** determine minimum and maximum pixel value
@@ -374,7 +379,12 @@ class DiInputPixelTemplate
 #endif
             /* allocate temporary buffer, even number of bytes required for getUncompressedFrame() */
             const Uint32 extraByte = ((sizeof(T1) == 1) && (count_T1 & 1)) ? 1 : 0;
+#ifdef HAVE_STD__NOTHROW
+            /* use a non-throwing new here (if available) because the allocated buffer can be huge */
+            pixel = new (std::nothrow) T1[count_T1 + extraByte];
+#else
             pixel = new T1[count_T1 + extraByte];
+#endif
             if (pixel != NULL)
             {
                 if (uncompressed)
@@ -436,7 +446,12 @@ class DiInputPixelTemplate
 //          # old code: Count = ((lengthBytes * 8) + bitsAllocated - 1) / bitsAllocated;
             Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
             register unsigned long i;
+#ifdef HAVE_STD__NOTHROW
+            /* use a non-throwing new here (if available) because the allocated buffer can be huge */
+            Data = new (std::nothrow) T2[Count];
+#else
             Data = new T2[Count];
+#endif
             if (Data != NULL)
             {
                 DCMIMGLE_TRACE("Input length: " << lengthBytes << " bytes, Pixel count: " << Count
@@ -601,13 +616,18 @@ class DiInputPixelTemplate
                 }
             }
         } else {
-            // in case of error, reset pixel count variable
+            /* in case of error, reset pixel count variable */
             Count = 0;
         }
         if (deletePixel)
         {
-            // delete temporary buffer
+            /* delete temporary buffer */
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
+            /* use a non-throwing delete (if available) */
+            operator delete[] (pixel, std::nothrow);
+#else
             delete[] pixel;
+#endif
         }
     }
 
