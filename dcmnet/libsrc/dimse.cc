@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -599,6 +599,7 @@ sendStraightFileData(
     OFCondition dulCond = EC_Normal;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
+    /* the following variable is currently unused, leave it for future use */
     unsigned long pdvCount = 0;
 
     buf = assoc->sendPDVBuffer;
@@ -683,6 +684,7 @@ sendDcmDataset(
     Uint32 bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
+    /* the following variable is currently unused, leave it for future use */
     unsigned long pdvCount = 0;
     DcmWriteCache wcache;
 

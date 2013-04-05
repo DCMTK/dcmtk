@@ -12,6 +12,11 @@ Changes between releases are documented here.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
   Affects: dcmnet/libsrc/assoc.cc
 
+- Added comment to a local variable that is currently unused (but might be used
+  in the future).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for pointing this out.
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2013.03.28 (schlachter)
 
 - Silence some more compiler warnings about implicit casts.
