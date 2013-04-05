@@ -8,6 +8,10 @@ Changes between releases are documented here.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original report.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
 
+- Fixed two possible memory leaks found by static code analysis (cppcheck).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: dcmnet/libsrc/assoc.cc
+
 **** Changes from 2013.03.28 (schlachter)
 
 - Silence some more compiler warnings about implicit casts.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1730,10 +1730,18 @@ ASC_receiveAssociation(T_ASC_Network * network,
     if (cond.bad()) return cond;
 
     cond = ASC_setTransportLayerType(params, useSecureLayer);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        ASC_destroyAssociationParameters(&params);
+        return cond;
+    }
 
     *assoc = (T_ASC_Association *) malloc(sizeof(**assoc));
-    if (*assoc == NULL) return EC_MemoryExhausted;
+    if (*assoc == NULL)
+    {
+        ASC_destroyAssociationParameters(&params);
+        return EC_MemoryExhausted;
+    }
     bzero((char*)*assoc, sizeof(**assoc));
 
     (*assoc)->params = params;
