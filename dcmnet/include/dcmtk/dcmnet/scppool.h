@@ -263,7 +263,7 @@ private:
  *    implementation of the SCP worker, e.g. for using processes instead of threads or sharing a single thread for
  *    multiple workers.
  */
-template<typename SCP = DcmThreadSCP, typename SCPPool = DcmBaseSCPPool, typename BaseSCPWorker = typename SCPPool::DcmBaseSCPWorker>
+template<typename SCP = DcmThreadSCP, typename SCPPool = DcmBaseSCPPool, typename BaseSCPWorker = OFTypename SCPPool::DcmBaseSCPWorker>
 class DcmSCPPool : public SCPPool
 {
 public:

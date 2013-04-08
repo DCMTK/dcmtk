@@ -41,6 +41,7 @@ OFTEST( dcmdata_attribute_filter )
     // test anonymous filter object
     OFCHECK( DcmAttributeFilter( DCM_SOPClassUID, UID_ComputedRadiographyImageStorage )( item ) );
 
+#if defined _MSC_VER && _MSC_VER > 1200 // iterator based filters not supported for VS <= 6.0.
     // test iterator (array) based range
     const char* filter_range[3] =
     {
@@ -71,5 +72,7 @@ OFTEST( dcmdata_attribute_filter )
     OFCHECK( ct_mr_filter( item ) );
     item.putAndInsertString( DCM_SOPClassUID, UID_EnhancedCTImageStorage );
     OFCHECK( !cr_ct_mr_filter( item ) );
+#endif
+
     OFCHECK( DcmAttributeFilter()( item ) ); // test default constructed (allow any) filter.
 }

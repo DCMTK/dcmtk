@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.04.08 (schlamelcher)
+
+- Some workarounds for VC6 compiler peculiarity.
+  Affects: dcmdata/tests/tfilter.cc
+           dcmnet/include/dcmtk/dcmnet/scppool.h
+
 **** Changes from 2013.04.05 (riesmeier)
 
 - Use non-throwing new and delete operator for large memory buffers (e.g. pixel
