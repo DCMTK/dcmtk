@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.04.08 (riesmeier)
+
+- Fixed issue with last pixel value being undefined in odd-length pixel data
+  (occurred in partial access mode with PixelData VR=OW and BitsAllocated=8).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 **** Changes from 2013.04.08 (schlamelcher)
 
 - Some workarounds for VC6 compiler peculiarity.

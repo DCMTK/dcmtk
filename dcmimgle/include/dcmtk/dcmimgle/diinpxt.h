@@ -509,6 +509,12 @@ class DiInputPixelTemplate
                                 *(q++) = OFstatic_cast(T2, *p & mask);
                                 *(q++) = OFstatic_cast(T2, *p >> bitsAllocated);
                             }
+                            /* check for additional input pixel (in case of odd length when using partial access) */
+                            if (length_T1 * 2 /* times */ < lengthBytes)
+                            {
+                                DCMIMGLE_TRACE("found trailing pixel at the end of odd-length input data ... copying value");
+                                *(q++) = OFstatic_cast(T2, *p & mask);
+                            }
                         }
                         else
                         {
