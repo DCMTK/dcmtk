@@ -31,6 +31,10 @@ install:
 	for file in dcmtk/oflog/spi/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/oflog/spi ;\
 	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/oflog/thread
+	for file in dcmtk/oflog/thread/*.h ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/oflog/thread ;\
+	done
 
 clean:
 	rm -f $(TRASH)

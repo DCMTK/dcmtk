@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.04.19 (riesmeier)
+
+- Added missing sub-directory "oflog/thread" to "make install" target.
+  Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the report.
+  Affects: oflog/include/Makefile.in
+
 **** Changes from 2013.04.08 (riesmeier)
 
 - Fixed issue with last pixel value being undefined in odd-length pixel data
