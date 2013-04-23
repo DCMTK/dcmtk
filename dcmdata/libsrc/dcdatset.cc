@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -356,6 +356,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
         {
             if (dcmAutoDetectDatasetXfer.get())
             {
+                DCMDATA_DEBUG("DcmDataset::read() automatic detection of transfer syntax is enabled");
                 /* To support incorrectly encoded datasets detect the transfer syntax from the stream.  */
                 /* This is possible for given unknown and plain big or little endian transfer syntaxes. */
                 switch (xfer)
@@ -365,11 +366,13 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                     case EXS_LittleEndianExplicit:
                     case EXS_BigEndianExplicit:
                     case EXS_BigEndianImplicit:
+                        DCMDATA_DEBUG("DcmDataset::read() trying to detect transfer syntax of uncompressed dataset");
                         OriginalXfer = checkTransferSyntax(inStream);
                         if ((xfer != EXS_Unknown) && (OriginalXfer != xfer))
                             DCMDATA_WARN("DcmDataset: Wrong transfer syntax specified, detecting from dataset");
                         break;
                     default:
+                        DCMDATA_DEBUG("DcmDataset::read() dataset seems to be compressed, so transfer syntax is not detected");
                         OriginalXfer = xfer;
                         break;
                 }
@@ -380,8 +383,10 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                 /* determine the transfer syntax from the information in the stream itself. */
                 /* If the transfer syntax is given, we want to use it. */
                 if (xfer == EXS_Unknown)
+                {
+                    DCMDATA_DEBUG("DcmDataset::read() trying to detect transfer syntax of dataset (because it is unknown)");
                     OriginalXfer = checkTransferSyntax(inStream);
-                else
+                } else
                     OriginalXfer = xfer;
             }
             /* dump information on debug level */
