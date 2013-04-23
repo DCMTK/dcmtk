@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -569,18 +569,28 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
 {
     E_TransferSyntax newxfer = EXS_Unknown;
     DcmStack stack;
-    if (metainfo && metainfo->search(DCM_TransferSyntaxUID, stack).good())
+    /* check whether meta header is present (and non-empty, i.e. contains elements) */
+    if (metainfo && !metainfo->isEmpty())
     {
-        DcmUniqueIdentifier *xferUI = OFstatic_cast(DcmUniqueIdentifier *, stack.top());
-        if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
+        if (metainfo->search(DCM_TransferSyntaxUID, stack).good())
         {
-            char * xferid = NULL;
-            xferUI->getString(xferid);
-            DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
-            newxfer = localXfer.getXfer();
-            DCMDATA_TRACE("DcmFileFormat::lookForXfer() TransferSyntax=\""
-                << localXfer.getXferName() << "\" in MetaInfo");
+            DcmUniqueIdentifier *xferUI = OFstatic_cast(DcmUniqueIdentifier *, stack.top());
+            if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
+            {
+                char *xferid = NULL;
+                xferUI->getString(xferid);
+                DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
+                newxfer = localXfer.getXfer();
+                DCMDATA_TRACE("DcmFileFormat::lookForXfer() TransferSyntax=\""
+                    << localXfer.getXferName() << "\" in MetaInfo");
+            }
+        } else {
+            /* there is no transfer syntax UID element in the meta header */
+            DCMDATA_DEBUG("DcmFileFormat::lookForXfer() no TransferSyntax in MetaInfo");
         }
+    } else {
+        /* no meta header present at all (or it is empty, i.e. contains no elements) */
+        DCMDATA_DEBUG("DcmFileFormat::lookForXfer() no MetaInfo found");
     }
     return newxfer;
 }
@@ -647,7 +657,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             }
             if (metaInfo && metaInfo->transferState() != ERW_ready)
             {
-                // Do read metaheader not in given transfer syntax (always Little Endian Explicit)
+                // do read meta header not in given transfer syntax (always Little Endian Explicit)
                 errorFlag = metaInfo->read(inStream, EXS_Unknown, glenc, maxReadLength);
             }
 

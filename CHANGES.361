@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.04.23 (riesmeier)
+
+- Added some debug output to lookForXfer() method, e.g. whether the meta-header
+  is present at all and whether it contains the TransferSyntaxUID element.
+  Affects: dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2013.04.19 (riesmeier)
 
 - Added missing sub-directory "oflog/thread" to "make install" target.
