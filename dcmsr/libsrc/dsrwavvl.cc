@@ -244,15 +244,15 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
     if (result.good())
     {
         /* check for all valid/known SOP classes (according to DICOM PS 3.6-2011) */
-        if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
-            (sopClassUID == UID_GeneralECGWaveformStorage) ||
-            (sopClassUID == UID_AmbulatoryECGWaveformStorage) ||
-            (sopClassUID == UID_HemodynamicWaveformStorage) ||
-            (sopClassUID == UID_CardiacElectrophysiologyWaveformStorage) ||
-            (sopClassUID == UID_BasicVoiceAudioWaveformStorage) ||
-            (sopClassUID == UID_GeneralAudioWaveformStorage) ||
-            (sopClassUID == UID_ArterialPulseWaveformStorage) ||
-            (sopClassUID == UID_RespiratoryWaveformStorage))
+        if ((sopClassUID != UID_TwelveLeadECGWaveformStorage) &&
+            (sopClassUID != UID_GeneralECGWaveformStorage) &&
+            (sopClassUID != UID_AmbulatoryECGWaveformStorage) &&
+            (sopClassUID != UID_HemodynamicWaveformStorage) &&
+            (sopClassUID != UID_CardiacElectrophysiologyWaveformStorage) &&
+            (sopClassUID != UID_BasicVoiceAudioWaveformStorage) &&
+            (sopClassUID != UID_GeneralAudioWaveformStorage) &&
+            (sopClassUID != UID_ArterialPulseWaveformStorage) &&
+            (sopClassUID != UID_RespiratoryWaveformStorage))
         {
             result = SR_EC_InvalidValue;
         }

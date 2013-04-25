@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.04.25 (riesmeier)
 
+- Fixed bug in checkSOPClassUID() that caused all currently defined Waveform
+  SOP classes to be rejected. This bug was introduced with commit a0fe345b.
+  Affects: dcmsr/libsrc/dsrwavvl.cc
+
 - Added command line options using the new print flags specifying how the SOP
   class of referenced DICOM objects is printed. Also did some restructuring.
   Thanks Mathieu Malaterre <malat@debian.org> for the suggestion.
