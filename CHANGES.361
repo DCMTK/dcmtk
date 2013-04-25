@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.04.25 (riesmeier)
+
+- Added new options for specifying how the SOP class of referenced DICOM
+  objects is printed (short name, long name or UID value).
+  Thanks Mathieu Malaterre <malat@debian.org> for the suggestion.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
 **** Changes from 2013.04.23 (riesmeier)
 
 - Added some debug output to read() method, e.g. whether the automatic transfer

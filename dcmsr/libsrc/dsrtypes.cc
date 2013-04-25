@@ -134,6 +134,9 @@ const size_t DSRTypes::PF_printConceptNameCodes          = 1 << 3;
 const size_t DSRTypes::PF_printNoDocumentHeader          = 1 << 4;
 const size_t DSRTypes::PF_printTemplateIdentification    = 1 << 5;
 const size_t DSRTypes::PF_useANSIEscapeCodes             = 1 << 6;
+const size_t DSRTypes::PF_printLongSOPClassName          = 1 << 7;
+const size_t DSRTypes::PF_printSOPClassUID               = 1 << 8;
+/* shortcuts */
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
 /* checkByReferenceRelationships modes */

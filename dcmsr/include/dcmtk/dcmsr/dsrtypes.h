@@ -356,6 +356,12 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// use ANSI escape codes for output
     static const size_t PF_useANSIEscapeCodes;
 
+    /// print long SOP class name of referenced objects (default: short name for images)
+    static const size_t PF_printLongSOPClassName;
+
+    /// print SOP class UID of referenced objects (instead of the name)
+    static const size_t PF_printSOPClassUID;
+
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
     //@}

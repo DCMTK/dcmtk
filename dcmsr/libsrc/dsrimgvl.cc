@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -134,21 +134,36 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream &stream,
                                           const size_t flags) const
 {
-    const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
-    stream << "(";
-    if (modality != NULL)
-        stream << modality << " image";
-    else
-        stream << "\"" << SOPClassUID << "\"";
-    stream << ",";
+    /* first, determine SOP class component */
+    OFString sopClassString = "\"" + SOPClassUID + "\"";
+    if (!(flags & DSRTypes::PF_printSOPClassUID))
+    {
+        if (flags & DSRTypes::PF_printLongSOPClassName)
+        {
+            /* look up name of known SOP classes */
+            const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
+            if (className != NULL)
+                sopClassString = className;
+        } else {
+            /* create short name for SOP class, e.g. "CT image" */
+            const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
+            if (modality != NULL)
+                sopClassString = OFString(modality) + " image";
+        }
+    }
+    /* and then, print it */
+    stream << "(" << sopClassString << ",";
+    /* print SOP instance component (if desired) */
     if (flags & DSRTypes::PF_printSOPInstanceUID)
         stream << "\"" << SOPInstanceUID << "\"";
+    /* print frame list (if present) */
     if (!FrameList.isEmpty())
     {
         stream << ",";
         FrameList.print(stream, flags);
     }
     stream << ")";
+    /* print information on presentation state (if present) */
     if (PresentationState.isValid())
     {
         const DSRTypes::E_PresentationStateType pstateType = DSRTypes::sopClassUIDToPresentationStateType(PresentationState.getSOPClassUID());
