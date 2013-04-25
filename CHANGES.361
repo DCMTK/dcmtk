@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.04.25 (riesmeier)
 
+- Added command line options using the new print flags specifying how the SOP
+  class of referenced DICOM objects is printed. Also did some restructuring.
+  Thanks Mathieu Malaterre <malat@debian.org> for the suggestion.
+  Affects: dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsrdump.man
+
 - Added new options for specifying how the SOP class of referenced DICOM
   objects is printed (short name, long name or UID value).
   Thanks Mathieu Malaterre <malat@debian.org> for the suggestion.

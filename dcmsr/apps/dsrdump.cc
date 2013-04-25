@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,7 +121,7 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
 }
 
 
-#define SHORTCOL 3
+#define SHORTCOL 4
 #define LONGCOL 22
 
 
@@ -142,50 +142,55 @@ int main(int argc, char *argv[])
     cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                   "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                       "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--help",                   "-h",   "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
       OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",            "+f",  "read file format or data set (default)");
-        cmd.addOption("--read-file-only",       "+fo", "read file format only");
-        cmd.addOption("--read-dataset",         "-f",  "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",   "read file format or data set (default)");
+        cmd.addOption("--read-file-only",       "+fo",  "read file format only");
+        cmd.addOption("--read-dataset",         "-f",   "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",       "-t=", "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",     "-td", "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",       "-t=",  "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",     "-td",  "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",     "-te",  "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb",  "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti",  "read with implicit VR little endian TS");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("additional information:");
-        cmd.addOption("--processing-details",   "-Ip", "show currently processed content item");
+        cmd.addOption("--processing-details",   "-Ip",  "show currently processed content item");
       cmd.addSubGroup("error handling:");
-        cmd.addOption("--unknown-relationship", "-Er", "accept unknown/missing relationship type");
-        cmd.addOption("--invalid-item-value",   "-Ev", "accept invalid content item value\n(e.g. violation of VR or VM definition)");
-        cmd.addOption("--ignore-constraints",   "-Ec", "ignore relationship content constraints");
-        cmd.addOption("--ignore-item-errors",   "-Ee", "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
-        cmd.addOption("--skip-invalid-items",   "-Ei", "skip invalid content items (incl. sub-tree)");
+        cmd.addOption("--unknown-relationship", "-Er",  "accept unknown/missing relationship type");
+        cmd.addOption("--invalid-item-value",   "-Ev",  "accept invalid content item value\n(e.g. violation of VR or VM definition)");
+        cmd.addOption("--ignore-constraints",   "-Ec",  "ignore relationship content constraints");
+        cmd.addOption("--ignore-item-errors",   "-Ee",  "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
+        cmd.addOption("--skip-invalid-items",   "-Ei",  "skip invalid content items (incl. sub-tree)");
 #ifdef WITH_LIBICONV
       cmd.addSubGroup("specific character set:");
-        cmd.addOption("--convert-to-utf8",      "+U8", "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+        cmd.addOption("--convert-to-utf8",      "+U8",  "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
 #endif
 
     cmd.addGroup("output options:");
-      cmd.addSubGroup("printing:");
-        cmd.addOption("--print-filename",       "+Pf", "print header with filename for each document");
-        cmd.addOption("--no-document-header",   "-Ph", "do not print general document information");
-        cmd.addOption("--number-nested-items",  "+Pn", "print position string in front of each line");
-        cmd.addOption("--indent-nested-items",  "-Pn", "indent nested items by spaces (default)");
-        cmd.addOption("--print-long-values",    "+Pl", "print long item values completely");
-        cmd.addOption("--shorten-long-values",  "-Pl", "print long item values shortened (default)");
-        cmd.addOption("--print-instance-uid",   "+Pu", "print SOP instance UID of referenced objects");
-        cmd.addOption("--print-all-codes",      "+Pc", "print all codes (incl. concept name codes)");
-        cmd.addOption("--print-template-id",    "+Pt", "print template identification information");
+      cmd.addSubGroup("general printing:");
+        cmd.addOption("--print-filename",       "+Pf",  "print header with filename for each document");
+        cmd.addOption("--no-document-header",   "-Ph",  "do not print general document information");
+        cmd.addOption("--number-nested-items",  "+Pn",  "print position string in front of each line");
+        cmd.addOption("--indent-nested-items",  "-Pn",  "indent nested items by spaces (default)");
+      cmd.addSubGroup("printing values:");
+        cmd.addOption("--print-long-values",    "+Pl",  "print long item values completely");
+        cmd.addOption("--shorten-long-values",  "-Pl",  "print long item values shortened (default)");
+        cmd.addOption("--print-instance-uid",   "+Pu",  "print SOP instance UID of referenced objects");
+        cmd.addOption("--print-sopclass-short", "-Ps",  "print short SOP class name of referenced\nimage objects, e.g. \"CT image\" (default)");
+        cmd.addOption("--print-sopclass-long",  "+Ps",  "print long SOP class name of ref. objects");
+        cmd.addOption("--print-sopclass-uid",   "+Psu", "print SOP class UID of referenced objects");
+        cmd.addOption("--print-all-codes",      "+Pc",  "print all codes (incl. concept name codes)");
+        cmd.addOption("--print-template-id",    "+Pt",  "print template identification information");
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
-        cmd.addOption("--print-color",          "+C",  "use ANSI escape codes for colored output");
-        cmd.addOption("--no-color",             "-C",  "do not use any ANSI escape codes (default)");
+      cmd.addSubGroup("color:");
+        cmd.addOption("--print-color",          "+C",   "use ANSI escape codes for colored output");
+        cmd.addOption("--no-color",             "-C",   "do not use any ANSI escape codes (default)");
 #endif
 
     /* evaluate command line */
@@ -288,6 +293,16 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--print-instance-uid"))
             opt_printFlags |= DSRTypes::PF_printSOPInstanceUID;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--print-sopclass-short"))
+            opt_printFlags = (opt_printFlags & ~(DSRTypes::PF_printLongSOPClassName | DSRTypes::PF_printSOPClassUID));
+        if (cmd.findOption("--print-sopclass-long"))
+            opt_printFlags = (opt_printFlags & ~DSRTypes::PF_printSOPClassUID) | DSRTypes::PF_printLongSOPClassName;
+        if (cmd.findOption("--print-sopclass-uid"))
+            opt_printFlags = (opt_printFlags & ~DSRTypes::PF_printLongSOPClassName) | DSRTypes::PF_printSOPClassUID;
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--print-all-codes"))
             opt_printFlags |= DSRTypes::PF_printAllCodes;
         if (cmd.findOption("--print-template-id"))
