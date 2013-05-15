@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.05.15 (riesmeier)
+
+- Made more clear that support for shared libraries is still not that mature.
+  Affects: INSTALL
+
 **** Changes from 2013.04.25 (riesmeier)
 
 - Fixed bug in checkSOPClassUID() that caused all currently defined Waveform

@@ -652,14 +652,14 @@ NOTE: This is not (yet) the recommended way since this mechanism is not as
       sparsely documented.  See the previous section on building the DCMTK with
       CMake on Windows platforms, but note that details may differ.
 
+
 CMake and shared libraries
 --------------------------
 
 The CMake build system allows building shared libraries instead of static
 libraries.  On Windows systems, these are dynamic link libraries (.dll).
 On Unix systems, these are shared objects (.so).  To enable this, set the
-"BUILD_SHARED_LIB" option to "ON".  Please note that this is currently not
-supported because it might conflict with the use of external libraries.
+"BUILD_SHARED_LIB" option to "ON".
 
 Additionally, it is possible to produce a single shared library for the whole
 toolkit.  This mode is controlled by the "BUILD_SINGLE_SHARED_LIBRARY" option.
@@ -668,6 +668,9 @@ If you don't want the whole toolkit in a single shared library, the
 available modules.  Please note that this option is marked as advanced and thus
 is hidden by default.  Also, when building a single shared library, applications
 and tests cannot be built.
+
+Please note that support for shared libraries is still pretty new in DCMTK and
+thus not that mature.
 
 
 HTML DOCUMENTATION AND MAN PAGES
@@ -738,4 +741,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2012-10-08 (Riesmeier)
+Last revised: 2013-05-15 (Riesmeier)
