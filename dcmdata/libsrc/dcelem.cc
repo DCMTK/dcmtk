@@ -106,7 +106,8 @@ DcmElement::DcmElement(const DcmElement &elem)
         if (pad && fValue)
             fValue[getLengthField()] = 0;
 
-        memcpy(fValue, elem.fValue, size_t(getLengthField() + pad));
+        if (fValue)
+            memcpy(fValue, elem.fValue, size_t(getLengthField() + pad));
     }
 
     if (elem.fLoadValue)
@@ -173,8 +174,8 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 
         if (pad && fValue)
             fValue[getLengthField()] = 0;
-
-        memcpy(fValue, obj.fValue, size_t(getLengthField()+pad));
+        if (fValue)
+            memcpy(fValue, obj.fValue, size_t(getLengthField()+pad));
     }
 
     if (obj.fLoadValue)

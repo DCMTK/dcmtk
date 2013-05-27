@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.05.27 (onken)
+
+- Make sure memcpy does not copy to NULL destination. Thanks to Francesco
+  Gigante <fgigante@imsitaly.com> for the report.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2013.05.15 (riesmeier)
 
 - Made more clear that support for shared libraries is still not that mature.
