@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-02-11 18:18:45
+**   Date: 2013-05-30 14:12:06
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-02-11 18:18:45"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-05-30 14:12:06"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3632
+** Number of entries: 3633
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2701,6 +2701,7 @@
 #define DCM_BeamTaskSequence                     DcmTagKey(0x0074, 0x1020)
 #define DCM_BeamTaskType                         DcmTagKey(0x0074, 0x1022)
 #define DCM_RETIRED_BeamOrderIndexTrial          DcmTagKey(0x0074, 0x1024)
+#define DCM_AutosequenceFlag                     DcmTagKey(0x0074, 0x1025)
 #define DCM_TableTopVerticalAdjustedPosition     DcmTagKey(0x0074, 0x1026)
 #define DCM_TableTopLongitudinalAdjustedPosition DcmTagKey(0x0074, 0x1027)
 #define DCM_TableTopLateralAdjustedPosition      DcmTagKey(0x0074, 0x1028)
@@ -3054,9 +3055,9 @@
 #define DCM_ROIElementalCompositionSequence      DcmTagKey(0x3006, 0x00b6)
 #define DCM_ROIElementalCompositionAtomicNumber  DcmTagKey(0x3006, 0x00b7)
 #define DCM_ROIElementalCompositionAtomicMassFraction DcmTagKey(0x3006, 0x00b8)
-#define DCM_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
-#define DCM_RelatedFrameOfReferenceUID           DcmTagKey(0x3006, 0x00c2)
-#define DCM_FrameOfReferenceTransformationType   DcmTagKey(0x3006, 0x00c4)
+#define DCM_RETIRED_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
+#define DCM_RETIRED_RelatedFrameOfReferenceUID   DcmTagKey(0x3006, 0x00c2)
+#define DCM_RETIRED_FrameOfReferenceTransformationType DcmTagKey(0x3006, 0x00c4)
 #define DCM_FrameOfReferenceTransformationMatrix DcmTagKey(0x3006, 0x00c6)
 #define DCM_FrameOfReferenceTransformationComment DcmTagKey(0x3006, 0x00c8)
 #define DCM_MeasuredDoseReferenceSequence        DcmTagKey(0x3008, 0x0010)

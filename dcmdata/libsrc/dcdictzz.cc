@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-02-11 18:18:50
+**   Date: 2013-05-30 14:12:02
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-02-11 18:18:50";
+const char* dcmBuiltinDictBuildDate = "2013-05-30 14:12:02";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -21119,6 +21119,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "RETIRED_BeamOrderIndexTrial", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0074, 0x1025, 0x0074, 0x1025,
+      EVR_CS, "AutosequenceFlag", 1, 1, "CP_1246",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0074, 0x1026, 0x0074, 0x1026,
       EVR_FD, "TableTopVerticalAdjustedPosition", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -23202,15 +23206,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x00c0, 0x3006, 0x00c0,
-      EVR_SQ, "FrameOfReferenceRelationshipSequence", 1, 1, "DICOM_2011",
+      EVR_SQ, "RETIRED_FrameOfReferenceRelationshipSequence", 1, 1, "CP_1249/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x00c2, 0x3006, 0x00c2,
-      EVR_UI, "RelatedFrameOfReferenceUID", 1, 1, "DICOM_2011",
+      EVR_UI, "RETIRED_RelatedFrameOfReferenceUID", 1, 1, "CP_1249/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x00c4, 0x3006, 0x00c4,
-      EVR_CS, "FrameOfReferenceTransformationType", 1, 1, "DICOM_2011",
+      EVR_CS, "RETIRED_FrameOfReferenceTransformationType", 1, 1, "CP_1249/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x00c6, 0x3006, 0x00c6,

@@ -24,7 +24,7 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 152, 154, 158.
-# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236.
+# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1249.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3329,7 +3329,7 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236
+# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1249
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
@@ -3360,6 +3360,12 @@
 (0008,0015)	DT	InstanceCoercionDateTime	1	CP_1216
 #
 (0018,9810)	xs	ZeroVelocityPixelValue	1	CP_1236
+#
+(0074,1025)	CS	AutosequenceFlag	1	CP_1246
+#
+(3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	CP_1249/retired
+(3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	CP_1249/retired
+(3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	CP_1249/retired
 #
 #---------------------------------------------------------------------------
 #
