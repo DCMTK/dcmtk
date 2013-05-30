@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.05.30 (riesmeier)
 
+- Fixed some tag key constants of recently retired attributes (CP-1249).
+  Affects: dcmrt/libsrc/drtforrs.cc
+
 - Added support for CP-1246 and CP-1249 to data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h

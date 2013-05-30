@@ -22,8 +22,8 @@ DRTFrameOfReferenceRelationshipSequence::Item::Item(const OFBool emptyDefaultIte
   : EmptyDefaultItem(emptyDefaultItem),
     FrameOfReferenceTransformationComment(DCM_FrameOfReferenceTransformationComment),
     FrameOfReferenceTransformationMatrix(DCM_FrameOfReferenceTransformationMatrix),
-    FrameOfReferenceTransformationType(DCM_FrameOfReferenceTransformationType),
-    RelatedFrameOfReferenceUID(DCM_RelatedFrameOfReferenceUID)
+    FrameOfReferenceTransformationType(DCM_RETIRED_FrameOfReferenceTransformationType),
+    RelatedFrameOfReferenceUID(DCM_RETIRED_RelatedFrameOfReferenceUID)
 {
 }
 
@@ -544,7 +544,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::read(DcmItem &dataset,
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_FrameOfReferenceRelationshipSequence, sequence);
+        result = dataset.findAndGetSequence(DCM_RETIRED_FrameOfReferenceRelationshipSequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -574,7 +574,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::read(DcmItem &dataset,
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_FrameOfReferenceRelationshipSequence);
+            DcmSequenceOfItems element(DCM_RETIRED_FrameOfReferenceRelationshipSequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -591,7 +591,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::write(DcmItem &dataset,
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_FrameOfReferenceRelationshipSequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_RETIRED_FrameOfReferenceRelationshipSequence);
         if (sequence != NULL)
         {
             result = EC_Normal;
