@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -464,7 +464,6 @@ size_t DSRDocumentTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
         if (startFromRoot)
             gotoRoot();
         DSRDocumentTreeNode *node = NULL;
-        clearNodeCursorStack();
         /* iterate over all nodes */
         do {
             node = OFstatic_cast(DSRDocumentTreeNode *, getNode());

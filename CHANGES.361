@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.05.31 (riesmeier)
+
+- Fixed issue with unnecessary call to clearNodeCursorStack(). This undesirable
+  stack cleanup prevented gotoNextNamedNode() from working correctly.
+  Thanks to forum user "Tim" for the original report demonstrating this issue.
+  Affects: dcmsr/libsrc/dsrdoctr.cc
+
 **** Changes from 2013.05.30 (riesmeier)
 
 - Fixed some tag key constants of recently retired attributes (CP-1249).
