@@ -166,11 +166,26 @@ OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream &stream,
     /* print information on presentation state (if present) */
     if (PresentationState.isValid())
     {
-        const DSRTypes::E_PresentationStateType pstateType = DSRTypes::sopClassUIDToPresentationStateType(PresentationState.getSOPClassUID());
-        if (pstateType != DSRTypes::PT_invalid)
-            stream << ",(" << DSRTypes::presentationStateTypeToShortName(pstateType) << ",";
-        else
-            stream << ",(" << PresentationState.getSOPClassUID() << ",";
+        /* first, determine SOP class component */
+        OFString pstateClassString = "\"" + PresentationState.getSOPClassUID() + "\"";
+        if (!(flags & DSRTypes::PF_printSOPClassUID))
+        {
+            if (flags & DSRTypes::PF_printLongSOPClassName)
+            {
+                /* look up name of known SOP classes */
+                const char *className = dcmFindNameOfUID(PresentationState.getSOPClassUID().c_str());
+                if (className != NULL)
+                    pstateClassString = className;
+            } else {
+                /* create short name for presentation state, e.g. "GSPS" */
+                const DSRTypes::E_PresentationStateType pstateType = DSRTypes::sopClassUIDToPresentationStateType(PresentationState.getSOPClassUID());
+                if (pstateType != DSRTypes::PT_invalid)
+                    pstateClassString = DSRTypes::presentationStateTypeToShortName(pstateType);
+            }
+        }
+        /* and, then print it */
+        stream << ",(" << pstateClassString << ",";
+        /* also print SOP instance component (if desired) */
         if (flags & DSRTypes::PF_printSOPInstanceUID)
             stream << "\"" << PresentationState.getSOPInstanceUID() << "\"";
         stream << ")";

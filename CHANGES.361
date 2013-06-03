@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.03 (riesmeier)
+
+- Added missing support for the new print options (short name, long name or UID
+  value) to the output of presentation state references of IMAGE content items.
+  Thanks Mathieu Malaterre <malat@debian.org> for the report on this issue.
+  Affects: dcmsr/libsrc/dsrimgvl.cc
+
 **** Changes from 2013.05.31 (riesmeier)
 
 - Fixed issue with unnecessary call to clearNodeCursorStack(). This undesirable
