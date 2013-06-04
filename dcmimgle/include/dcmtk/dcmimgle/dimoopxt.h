@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -623,6 +623,7 @@ class DiMonoOutputPixelTemplate
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
                 const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                DCMIMGLE_TRACE("intermediate pixel data - absmin: " << absmin << ", absmax: " << absmax);
                 register const T1 *p = pixel + start;
                 register T3 *q = Data;
                 register unsigned long i;

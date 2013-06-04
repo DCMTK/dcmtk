@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.04 (riesmeier)
+
+- Output absolute minimum and maximum value of intermediate pixel data to trace
+  logger in order to better understand the result (output data) when rendering
+  an image without VOI transformation.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
 **** Changes from 2013.06.03 (riesmeier)
 
 - Added missing support for the new print options (short name, long name or UID
