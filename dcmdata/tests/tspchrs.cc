@@ -181,6 +181,9 @@ OFTEST(dcmdata_specificCharacterSet_4)
         OFCHECK(converter.selectCharacterSet("ISO_IR 100", "", OFTrue /*transliterate*/).good());
         OFCHECK(converter.convertString("J\366rg", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\"org");
+        OFCHECK(converter.selectCharacterSet("ISO_IR 100", "", OFFalse /*transliterate*/, OFTrue /*discard illegal*/).good());
+        OFCHECK(converter.convertString("J\366rg", resultStr).good());
+        OFCHECK_EQUAL(resultStr, "Jrg"); // discard mode removes characters that cannot be "translated"
     } else {
         // in case there is no libiconv, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");

@@ -96,6 +96,13 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      */
     OFBool getTransliterationMode() const;
 
+    /** get mode specifying whether characters that cannot be represented in
+     *  the destination character encoding will be silently discarded
+     *  @return current value of the mode.  OFTrue means that the mode is
+     *    enabled, OFFalse means disabled.
+     */
+    OFBool getDiscardIllegalSequenceMode() const;
+
     /** select DICOM character sets for the input and output string, between
      *  which subsequent calls of convertString() convert.  The defined terms
      *  for a particular character set can be found in the DICOM standard, e.g.
@@ -105,27 +112,31 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  (separated by a backslash) code extension techniques are used and
      *  escape sequences may be encountered in the source string to switch
      *  between the specified character sets.
-     *  @param  fromCharset    name of the source character set(s) used for the
-     *                         input string as given in the DICOM attribute
-     *                         Specific Character Set (0008,0005).  Leading and
-     *                         trailing spaces are removed automatically (if
-     *                         present).
-     *  @param  toCharset      name of the destination character set used for
-     *                         the output string.  Only a single value is
-     *                         permitted (no code extensions).  Leading and
-     *                         trailing spaces are removed automatically (if
-     *                         present).  The default value is "ISO_IR 192"
-     *                         (Unicode in UTF-8).
-     *  @param  transliterate  mode specifying whether a character that cannot
-     *                         be represented in the destination character
-     *                         encoding is approximated through one or more
-     *                         characters that look similar to the original
-     *                         one.  By default, this mode is disabled.
+     *  @param  fromCharset     name of the source character set(s) used for the
+     *                          input string as given in the DICOM attribute
+     *                          Specific Character Set (0008,0005).  Leading and
+     *                          trailing spaces are removed automatically (if
+     *                          present).
+     *  @param  toCharset       name of the destination character set used for
+     *                          the output string.  Only a single value is
+     *                          permitted (no code extensions).  Leading and
+     *                          trailing spaces are removed automatically (if
+     *                          present).  The default value is "ISO_IR 192"
+     *                          (Unicode in UTF-8).
+     *  @param  transliterate   mode specifying whether a character that cannot
+     *                          be represented in the destination character
+     *                          encoding is approximated through one or more
+     *                          characters that look similar to the original
+     *                          one.  By default, this mode is disabled.
+     *  @param  discardIllegal  mode specifying whether characters that cannot
+     *                          be represented in the destination character
+     *                          encoding will be silently discarded.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition selectCharacterSet(const OFString &fromCharset,
                                    const OFString &toCharset = "ISO_IR 192",
-                                   const OFBool transliterate = OFFalse);
+                                   const OFBool transliterate = OFFalse,
+                                   const OFBool discardIllegal = OFFalse);
 
     /** select DICOM character sets for the input and output string, between
      *  which subsequent calls of convertString() convert.  The source
@@ -139,27 +150,31 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  code extension techniques are used and escape sequences may be
      *  encountered in the source string to switch between the specified
      *  character sets.
-     *  @param  dataset        DICOM dataset or item from which the source
-     *                         character set should be retrieved.  If the data
-     *                         element Specific Character Set (0008,0005) is
-     *                         empty or missing, the default character set
-     *                         (i.e. ASCII) is used.
-     *  @param  toCharset      name of the destination character set used for
-     *                         the output string.  Only a single value is
-     *                         permitted (no code extensions).  Leading and
-     *                         trailing spaces are removed automatically (if
-     *                         present).  The default value is "ISO_IR 192"
-     *                         (Unicode in UTF-8).
-     *  @param  transliterate  mode specifying whether a character that cannot
-     *                         be represented in the destination character
-     *                         encoding is approximated through one or more
-     *                         characters that look similar to the original
-     *                         one.  By default, this mode is disabled.
+     *  @param  dataset         DICOM dataset or item from which the source
+     *                          character set should be retrieved.  If the data
+     *                          element Specific Character Set (0008,0005) is
+     *                          empty or missing, the default character set
+     *                          (i.e. ASCII) is used.
+     *  @param  toCharset       name of the destination character set used for
+     *                          the output string.  Only a single value is
+     *                          permitted (no code extensions).  Leading and
+     *                          trailing spaces are removed automatically (if
+     *                          present).  The default value is "ISO_IR 192"
+     *                          (Unicode in UTF-8).
+     *  @param  transliterate   mode specifying whether a character that cannot
+     *                          be represented in the destination character
+     *                          encoding is approximated through one or more
+     *                          characters that look similar to the original
+     *                          one.  By default, this mode is disabled.
+     *  @param  discardIllegal  mode specifying whether characters that cannot
+     *                          be represented in the destination character
+     *                          encoding will be silently discarded.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition selectCharacterSet(DcmItem &dataset,
                                    const OFString &toCharset = "ISO_IR 192",
-                                   const OFBool transliterate = OFFalse);
+                                   const OFBool transliterate = OFFalse,
+                                   const OFBool discardIllegal = OFFalse);
 
     /** convert the given string from the selected source character set(s) to
      *  the selected destination character set.  That means selectCharacterSet()

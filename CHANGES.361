@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.04 (onken)
+
+- Added option to discard illegal characters when converting between
+  DICOM character sets.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/dcspchrs.cc
+           dcmdata/tests/tspchrs.cc
+
 **** Changes from 2013.06.04 (riesmeier)
 
 - Output absolute minimum and maximum value of intermediate pixel data to trace
