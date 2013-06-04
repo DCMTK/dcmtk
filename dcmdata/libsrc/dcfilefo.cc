@@ -999,15 +999,17 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 
 OFCondition DcmFileFormat::convertCharacterSet(const OFString &fromCharset,
                                                const OFString &toCharset,
-                                               const OFBool transliterate)
+                                               const OFBool transliterate,
+                                               const OFBool discardIllegal)
 {
     // convert the dataset associated with this object
-    return getDataset()->convertCharacterSet(fromCharset, toCharset, transliterate);
+    return getDataset()->convertCharacterSet(fromCharset, toCharset, transliterate, discardIllegal);
 }
 
 
 OFCondition DcmFileFormat::convertCharacterSet(const OFString &toCharset,
-                                               const OFBool transliterate)
+                                               const OFBool transliterate,
+                                               const OFBool discardIllegal)
 {
     OFString sopClass;
     OFBool ignoreCharset = OFFalse;
@@ -1021,7 +1023,7 @@ OFCondition DcmFileFormat::convertCharacterSet(const OFString &toCharset,
         ignoreCharset = OFTrue;
     }
     // usually, we check for Specific Character Set (0008,0005) element in the dataset
-    return getDataset()->convertCharacterSet(toCharset, transliterate, ignoreCharset);
+    return getDataset()->convertCharacterSet(toCharset, transliterate, ignoreCharset, discardIllegal);
 }
 
 

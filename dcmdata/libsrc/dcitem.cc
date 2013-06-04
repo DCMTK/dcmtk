@@ -4053,7 +4053,8 @@ void DcmItem::updateSpecificCharacterSet(OFCondition &status,
 OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
                                          const OFString &toCharset,
                                          const OFBool transliterate,
-                                         const OFBool updateCharset)
+                                         const OFBool updateCharset,
+                                         const OFBool discardIllegal)
 {
     OFCondition status = EC_Normal;
     // if the item is empty, there is nothing to do
@@ -4065,7 +4066,7 @@ OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
             << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
             << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
         // select source and destination character set
-        status = converter.selectCharacterSet(fromCharset, toCharset, transliterate);
+        status = converter.selectCharacterSet(fromCharset, toCharset, transliterate, discardIllegal);
         if (status.good())
         {
             // convert all affected element values in the item
@@ -4083,7 +4084,8 @@ OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
 
 OFCondition DcmItem::convertCharacterSet(const OFString &toCharset,
                                          const OFBool transliterate,
-                                         const OFBool ignoreCharset)
+                                         const OFBool ignoreCharset,
+                                         const OFBool discardIllegal)
 {
     OFString fromCharset;
     // check whether this item can contain the attribute SpecificCharacterSet (0008,0005)
@@ -4093,7 +4095,7 @@ OFCondition DcmItem::convertCharacterSet(const OFString &toCharset,
         findAndGetOFStringArray(DCM_SpecificCharacterSet, fromCharset, OFFalse /*searchIntoSub*/);
     }
     // do the real work, if Specific Character Set is missing or empty use the default (ASCII)
-    return convertCharacterSet(fromCharset, toCharset, transliterate, !ignoreCharset /*updateCharset*/);
+    return convertCharacterSet(fromCharset, toCharset, transliterate, !ignoreCharset /*updateCharset*/, discardIllegal);
 }
 
 

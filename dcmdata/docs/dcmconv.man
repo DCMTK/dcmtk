@@ -203,6 +203,10 @@ specific character set:
          try to approximate characters that cannot be
          represented through similar looking characters
 
+  -Cd  --discard-illegal
+         discard characters that cannot be represented
+         in destination character set
+
 other processing options:
 
   -ig  --no-invalid-groups

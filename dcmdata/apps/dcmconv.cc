@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBICONV
   const char *opt_convertToCharset = NULL;
   OFBool opt_transliterate = OFFalse;
+  OFBool opt_discardIllegal = OFFalse;
 #endif
   OFBool opt_noInvalidGroups = OFFalse;
 
@@ -183,6 +184,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--convert-to-charset",  "+C",  1, "[c]harset: string",
                                                        "convert affected element values to the character\nset specified by the DICOM defined term c");
       cmd.addOption("--transliterate",       "-Ct",    "try to approximate characters that cannot be\nrepresented through similar looking characters");
+      cmd.addOption("--discard-illegal",     "-Cd",    "discard characters that cannot be represented\nin destination character set");
 #endif
     cmd.addSubGroup("other processing options:");
       cmd.addOption("--no-invalid-groups",   "-ig",    "remove elements with invalid group number");
@@ -431,6 +433,11 @@ int main(int argc, char *argv[])
         app.checkDependence("--transliterate", "one of the --convert-to-xxx options", opt_convertToCharset != NULL);
         opt_transliterate = OFTrue;
       }
+      if (cmd.findOption("--discard-illegal"))
+      {
+        app.checkDependence("--discard-illegal", "one of the --convert-to-xxx options", opt_convertToCharset != NULL);
+        opt_discardIllegal = OFTrue;
+      }
 #endif
       if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
 
@@ -553,7 +560,7 @@ int main(int argc, char *argv[])
         OFLOG_INFO(dcmconvLogger, "converting all element values that are affected by "
             << "Specific Character Set (0008,0005) to '" << opt_convertToCharset << "'"
             << (toCharset.empty() ? " (ASCII)" : ""));
-        error = fileformat.convertCharacterSet(toCharset, opt_transliterate);
+        error = fileformat.convertCharacterSet(toCharset, opt_transliterate, opt_discardIllegal);
         if (error.bad())
         {
             OFLOG_FATAL(dcmconvLogger, error.text() << ": processing file: " << opt_ifname);

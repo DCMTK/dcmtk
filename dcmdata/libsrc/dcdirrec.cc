@@ -1118,19 +1118,21 @@ DcmEVR DcmDirectoryRecord::ident() const
 OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &fromCharset,
                                                     const OFString &toCharset,
                                                     const OFBool transliterate,
-                                                    const OFBool updateCharset)
+                                                    const OFBool updateCharset,
+                                                    const OFBool discardIllegal)
 {
     // call the method of the base class; this method is only needed to avoid a compiler warning
-    return DcmItem::convertCharacterSet(fromCharset, toCharset, transliterate, updateCharset);
+    return DcmItem::convertCharacterSet(fromCharset, toCharset, transliterate, updateCharset, discardIllegal);
 }
 
 
 OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &toCharset,
                                                     const OFBool transliterate,
-                                                    const OFBool ignoreCharset)
+                                                    const OFBool ignoreCharset,
+                                                    const OFBool discardIllegal)
 {
     // call the method of the base class; this method is only needed to avoid a compiler warning
-    return DcmItem::convertCharacterSet(toCharset, transliterate, ignoreCharset);
+    return DcmItem::convertCharacterSet(toCharset, transliterate, ignoreCharset, discardIllegal);
 }
 
 
@@ -1153,7 +1155,7 @@ OFCondition DcmDirectoryRecord::convertCharacterSet(DcmSpecificCharacterSet &con
             << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
             << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
         // select source and destination character set, use same transliteration mode
-        status = newConverter.selectCharacterSet(fromCharset, toCharset, converter.getTransliterationMode());
+        status = newConverter.selectCharacterSet(fromCharset, toCharset, converter.getTransliterationMode(), converter.getDiscardIllegalSequenceMode());
         if (status.good())
         {
             // convert all affected element values in the item with the new converter

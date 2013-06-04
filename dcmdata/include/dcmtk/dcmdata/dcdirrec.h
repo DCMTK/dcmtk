@@ -233,12 +233,15 @@ public:
      *    updated, i.e.\ the current value is either replaced or a new element is inserted
      *    or the existing element is deleted. If OFFalse the SpecificCharacterSet element
      *    remains unchanged.
+     *  @param discardIllegal mode specifying whether characters that cannot be represented
+     *    in the destination character encoding will be silently discarded
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &fromCharset,
                                             const OFString &toCharset,
                                             const OFBool transliterate = OFFalse,
-                                            const OFBool updateCharset = OFFalse);
+                                            const OFBool updateCharset = OFFalse,
+                                            const OFBool discardIllegal = OFFalse);
 
     /** convert all element values that are contained in this record and that are
      *  affected by SpecificCharacterSet to the given destination character set. If not
@@ -254,11 +257,14 @@ public:
      *    or more characters that look similar to the original one
      *  @param ignoreCharset if OFTrue, the value of SpecificCharacterSet is ignored.
      *    Also see checkForSpecificCharacterSet().
+     *  @param discardIllegal mode specifying whether characters that cannot be represented
+     *    in the destination character encoding will be silently discarded
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &toCharset,
                                             const OFBool transliterate = OFFalse,
-                                            const OFBool ignoreCharset = OFFalse);
+                                            const OFBool ignoreCharset = OFFalse,
+                                            const OFBool discardIllegal = OFFalse);
 
     /** convert all element values that are contained in this record and that are
      *  affected by SpecificCharacterSet from the currently selected source character
