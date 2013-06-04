@@ -21,6 +21,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.06.04 (riesmeier)
 
+- Fixed minor inconsistencies introduced with last commit (9fd4776).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/dcspchrs.cc
+           tests/tspchrs.cc
+
 - Output absolute minimum and maximum value of intermediate pixel data to trace
   logger in order to better understand the result (output data) when rendering
   an image without VOI transformation.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -181,7 +181,7 @@ OFTEST(dcmdata_specificCharacterSet_4)
         OFCHECK(converter.selectCharacterSet("ISO_IR 100", "", OFTrue /*transliterate*/).good());
         OFCHECK(converter.convertString("J\366rg", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\"org");
-        OFCHECK(converter.selectCharacterSet("ISO_IR 100", "", OFFalse /*transliterate*/, OFTrue /*discard illegal*/).good());
+        OFCHECK(converter.selectCharacterSet("ISO_IR 100", "", OFFalse /*transliterate*/, OFTrue /*discardIllegal*/).good());
         OFCHECK(converter.convertString("J\366rg", resultStr).good());
         OFCHECK_EQUAL(resultStr, "Jrg"); // discard mode removes characters that cannot be "translated"
     } else {

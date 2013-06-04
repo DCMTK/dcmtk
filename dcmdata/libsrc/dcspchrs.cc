@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,7 +126,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromChar
             // multiple character sets specified (code extensions used)
             status = selectCharacterSetWithCodeExtensions(sourceVM);
         }
-        // enabled or disable the transliteration mode
+        // enable or disable the transliteration mode
         if (status.good())
         {
             status = EncodingConverter.setTransliterationMode(transliterate);
@@ -142,16 +142,20 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromChar
                         << "i.e. the approximation of similar looking characters will not be used");
                 }
             }
+        }
+        // enable or disable the discard illegal sequence mode
+        if (status.good())
+        {
             status = EncodingConverter.setDiscardIllegalSequenceMode(discardIllegal);
             if (status.good())
             {
                 // output some useful debug information
                 if (discardIllegal)
                 {
-                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Enabled Discard Illegal Sequence mode, "
+                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Enabled 'discard illegal sequence' mode, "
                         << "i.e. non-representable characters will be discarded");
                 } else {
-                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Disabled Discard Illegal Sequence mode, "
+                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Disabled 'discard illegal sequence' mode, "
                         << "i.e. non-representable characters will not be discarded");
                 }
             }

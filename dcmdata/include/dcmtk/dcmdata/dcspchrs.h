@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -130,7 +130,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                          one.  By default, this mode is disabled.
      *  @param  discardIllegal  mode specifying whether characters that cannot
      *                          be represented in the destination character
-     *                          encoding will be silently discarded.
+     *                          encoding will be silently discarded.  By
+     *                          default, this mode is disabled.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition selectCharacterSet(const OFString &fromCharset,
@@ -168,7 +169,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                          one.  By default, this mode is disabled.
      *  @param  discardIllegal  mode specifying whether characters that cannot
      *                          be represented in the destination character
-     *                          encoding will be silently discarded.
+     *                          encoding will be silently discarded.  By
+     *                          default, this mode is disabled.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition selectCharacterSet(DcmItem &dataset,
