@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+*** Changes from 2013.06.10 (onken)
+
+- Make sure SCU and SCP request/response data structures are initially zeroed.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
+- Added missing CHANGES entry for last 2 commits.
+  Affects: CHANGES.361
+
+*** Changes from 2013.06.10 (schlamelcher)
+
+- Make use of unique pointer (free memory if C-MOVE/C-FIND is canceled).
+  Affects: dcmnet/libsrc/scu.cc
+
+- Introduced OFunique_ptr as a fallback if std::unique_ptr is not available.
+  Affects: ofstd/include/ofmem.h
+           ofstd/tests/tmem.cc
+
 **** Changes from 2013.06.04 (onken)
 
 - Add "Discard illegal character" support to dcmconv and classes like DcmItem.

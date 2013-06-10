@@ -585,6 +585,8 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
 
   // Send back response
   T_DIMSE_Message response;
+  // Make sure everyhting is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
   T_DIMSE_C_FindRSP &findRsp = response.msg.CFindRSP;
   response.CommandField = DIMSE_C_FIND_RSP;
   findRsp.MessageIDBeingRespondedTo = messageID;
@@ -640,6 +642,8 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
 
   // Send back response
   T_DIMSE_Message response;
+  // Make sure everyhting is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
   T_DIMSE_C_MoveRSP &moveRsp = response.msg.CMoveRSP;
   response.CommandField = DIMSE_C_MOVE_RSP;
   moveRsp.MessageIDBeingRespondedTo = messageID;
@@ -656,12 +660,9 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
                  | O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS | O_MOVE_NUMBEROFFAILEDSUBOPERATIONS
                  | O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
   }
-  else
-  {
-    // always sent (the optional) field Affected Sop Class UID
-    moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
-  }
 
+   // always sent (the optional) field Affected Sop Class UID
+   moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
 
   if (rspDataset)
     moveRsp.DataSetType = DIMSE_DATASET_PRESENT;
@@ -699,6 +700,8 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
 
   // Send back response
   T_DIMSE_Message response;
+  // Make sure everyhting is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
   T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
   response.CommandField = DIMSE_N_ACTION_RSP;
   actionRsp.MessageIDBeingRespondedTo = messageID;
@@ -803,6 +806,8 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
 
   // Send back response
   T_DIMSE_Message response;
+  // Make sure everyhting is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
   T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
   response.CommandField = DIMSE_N_EVENT_REPORT_RSP;
   eventReportRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
@@ -1101,6 +1106,8 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message request;
+  // Make sure everyhting is zeroed (especially options)
+  bzero((char*)&request, sizeof(request));
   T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
   DcmDataset *statusDetail = NULL;
 
