@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2012, OFFIS e.V.
+ *  Copyright (C) 2008-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
 #include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
+#include "dcmtk/ofstd/ofmem.h"      /* for OFunique_ptr */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                   /* for zlibVersion() */
@@ -918,7 +919,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     }
 
     // Prepare response package for response handler
-    RetrieveResponse *moveRSP = new RetrieveResponse();
+    OFunique_ptr<RetrieveResponse> moveRSP(new RetrieveResponse);
     moveRSP->m_affectedSOPClassUID = rsp.msg.CMoveRSP.AffectedSOPClassUID;
     moveRSP->m_messageIDRespondedTo = rsp.msg.CMoveRSP.MessageIDBeingRespondedTo;
     moveRSP->m_status = rsp.msg.CMoveRSP.DimseStatus;
@@ -946,27 +947,23 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
       {
         DCMNET_ERROR("Unable to receive C-MOVE dataset on presentation context "
           << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
-        delete moveRSP; // includes statusDetail
         break;
       }
       moveRSP->m_dataset = rspDataset;
     }
 
     // Handle C-MOVE response (has to handle all possible status flags)
-    cond = handleMOVEResponse(pcid, moveRSP, waitForNextResponse);
+    cond = handleMOVEResponse(pcid, moveRSP.get(), waitForNextResponse);
     if (cond.bad())
     {
       DCMNET_WARN("Unable to handle C-MOVE response correctly: " << cond.text() << " (ignored)");
-      delete moveRSP; // includes statusDetail
       // don't return here but trust the "waitForNextResponse" variable
     }
     // if response could be handled successfully, add it to response list
     else
     {
       if (responses != NULL) // only add if desired by caller
-        responses->push_back(moveRSP);
-      else
-        delete moveRSP; // includes statusDetail
+        responses->push_back(moveRSP.release());
     }
   }
   /* All responses received or break signal occured */
@@ -1126,7 +1123,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
         DCMNET_INFO("Received C-GET Response (" << DU_cgetStatusString(rsp.msg.CGetRSP.DimseStatus) << ")");
       }
       // Prepare response package for response handler
-      RetrieveResponse *getRSP = new RetrieveResponse();
+      OFunique_ptr<RetrieveResponse> getRSP(new RetrieveResponse());
       getRSP->m_affectedSOPClassUID = rsp.msg.CGetRSP.AffectedSOPClassUID;
       getRSP->m_messageIDRespondedTo = rsp.msg.CGetRSP.MessageIDBeingRespondedTo;
       getRSP->m_status = rsp.msg.CGetRSP.DimseStatus;
@@ -1140,19 +1137,16 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
         DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
         statusDetail = NULL; // forget reference to status detail, will be deleted with getRSP
       }
-      result = handleCGETResponse(pcid, getRSP, continueSession);
+      result = handleCGETResponse(pcid, getRSP.get(), continueSession);
       if (result.bad())
       {
         DCMNET_WARN("Unable to handle C-GET response correctly: " << result.text() << " (ignored)");
-        delete getRSP; // includes statusDetail
         // don't return here but trust the "continueSession" variable
       }
       // if response could be handled successfully, add it to response list
       else {
         if (responses != NULL) // only add if desired by caller
-          responses->push_back(getRSP);
-        else
-          delete getRSP; // includes statusDetail
+          responses->push_back(getRSP.release());
       }
     }
 
@@ -1559,7 +1553,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     }
 
     // Prepare response package for response handler
-    QRResponse *findRSP = new QRResponse();
+    OFunique_ptr<QRResponse> findRSP(new QRResponse);
     findRSP->m_affectedSOPClassUID = rsp.msg.CFindRSP.AffectedSOPClassUID;
     findRSP->m_messageIDRespondedTo = rsp.msg.CFindRSP.MessageIDBeingRespondedTo;
     findRSP->m_status = rsp.msg.CFindRSP.DimseStatus;
@@ -1573,35 +1567,28 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       if (rsp.msg.CFindRSP.DataSetType == DIMSE_DATASET_NULL)
       {
         DCMNET_ERROR("Received C-FIND response with PENDING status but no dataset announced, aborting");
-        delete findRSP; // includes statusDetail
         return DIMSE_BADMESSAGE;
       }
 
       // Receive dataset
       cond = receiveDIMSEDataset(&pcid, &rspDataset);
       if (cond.bad())
-      {
-        delete findRSP; // includes statusDetail
         return DIMSE_BADDATA;
-      }
       findRSP->m_dataset = rspDataset;
     }
 
     // Handle C-FIND response (has to handle all possible status flags)
-    cond = handleFINDResponse(pcid, findRSP, waitForNextResponse);
+    cond = handleFINDResponse(pcid, findRSP.get(), waitForNextResponse);
     if (cond.bad())
     {
       DCMNET_WARN("Unable to handle C-FIND response correctly: " << cond.text() << " (ignored)");
-      delete findRSP; // includes statusDetail and rspDataset
       // don't return here but trust the "waitForNextResponse" variable
     }
     // if response could be handled successfully, add it to response list
     else
     {
       if (responses != NULL) // only add if desired by caller
-        responses->push_back(findRSP);
-      else
-        delete findRSP; // includes statusDetail and rspDataset
+        responses->push_back(findRSP.release());
     }
   }
   /* All responses received or break signal occured */
