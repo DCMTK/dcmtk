@@ -30,6 +30,8 @@
 #include <memory>
 template<typename... ARGS>
 using OFshared_ptr = std::shared_ptr<ARGS...>;
+template<typename... ARGS>
+using OFunique_ptr = std::unique_ptr<ARGS...>;
 
 #else //fallback implementations
 
@@ -256,6 +258,93 @@ private:
      *  reference to the managed object and the reference counter.
      */
     Data* m_pData;
+};
+
+/** OFunique_ptr is a smart pointer that retains sole ownership of an object through a pointer and destroys that object when
+ *  the unique_ptr goes out of scope. No two unique_ptr instances can manage the same object.
+ *
+ *  The object is destroyed and its memory deallocated when either of the following happens:
+ *    unique_ptr managing the object is destroyed
+ *    unique_ptr managing the object is assigned another pointer via reset().
+ *
+ *  A unique_ptr may also own no objects, in which case it is called empty.
+ *
+ *  OFunique_ptr is NOT CopyConstructible or CopyAssignable.
+ *  @tparam T the type of the managed object, e.g. int for an OFunique_ptr behaving like an int*.
+ *  @note this implementation is meant to be a subset of the c++11's std::unique_ptr that lacks the
+ *    following features: swap support, custom deleters, move support, specialized handling of pointers to arrays
+ *                        and some functions like comparing OFunique_ptrs or creating a hash key.
+ *    see http://en.cppreference.com/w/cpp/memory/unique_ptr to compare OFunique_ptr against std::unique_ptr.
+ */
+template<typename T>
+class OFunique_ptr
+{
+public:
+    /** typedef of pointer type T* for template programmers.
+     */
+    typedef T* pointer;
+    /** T, the type of the object managed by this unique_ptr.
+     */
+    typedef T element_type;
+
+    /** Constructs an empty OFunique_ptr
+     */
+    OFunique_ptr() : m_pData( NULL ) {}
+
+    /** Constructs a OFunique_ptr which owns p.
+     *  @param p the pointer that's going to be owned by this unique_ptr.
+     */
+    explicit OFunique_ptr( pointer p ) : m_pData( p ) {}
+
+    /** If get() == NULL there are no effects -- otherwise, the owned object is destroyed.
+     */
+    ~OFunique_ptr() { delete m_pData; }
+
+    /** Replaces the managed object. The previously owned object is deleted if the unique_ptr
+     *  was not empty.
+     *  @param p the new pointer to be owned, defaults to NULL.
+     */
+    void reset( pointer p = NULL ) { delete m_pData; m_pData = p; }
+
+    /** Releases the ownership of the managed object if any.
+     *  Retrieves the owned object (if any) and lets the unique_ptr become empty.
+     *  @return same as get().
+     */
+    pointer release() { pointer const p = m_pData; m_pData = NULL; return p; }
+
+    /** Returns a pointer to the managed object or nullptr if no object is owned.
+     *  @return Pointer to the managed object or NULL if no object is owned.
+     */
+    pointer get() const { return m_pData; }
+
+    /** Checks whether *this owns an object, i.e. whether get() != NULL.
+     *  return get() != NULL.
+     */
+    operator bool() const { return m_pData != NULL; }
+
+    /** Checks whether *this does NOT own an object, i.e. whether get() == NULL.
+     *  return get() == NULL.
+     */
+    bool operator!() const { return m_pData == NULL; }
+
+    /** Access the object owned by *this.
+     *  @return the object owned by *this, i.e. *get().
+     */
+    T& operator*() const { return *m_pData; }
+
+    /** Access the object owned by *this.
+     *  @return same as get().
+     */
+    pointer operator->() const { return m_pData; }
+
+private:
+    /// Disable copy construction.
+    OFunique_ptr(const OFunique_ptr&);
+    /// Disable copy assignment.
+    OFunique_ptr& operator=(const OFunique_ptr&);
+
+    /// The underlying (raw) pointer.
+    pointer m_pData;
 };
 
 #endif //c++11
