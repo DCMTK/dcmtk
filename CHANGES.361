@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.11 (riesmeier)
+
+- Various fixes to comments. Also removed trailing white spaces.
+  Affects: ofstd/include/dcmtk/ofstd/ofmem.h
+           ofstd/tests/tmem.cc
+
 *** Changes from 2013.06.10 (onken)
 
 - Make sure SCU and SCP request/response data structures are initially zeroed.

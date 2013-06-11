@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,7 +17,7 @@
  *
  *  Purpose: test programm for functions and classes defined in
  *           ofmem.h (OFshared_ptr)
- *  
+ *
  */
 
 #include "dcmtk/config/osconfig.h"
@@ -53,7 +53,7 @@ OFTEST(ofstd_memory)
     // check the refered object is still valid.
     OFCHECK_EQUAL( *p1, 8 );
 
-    //create a unique_ptr.
+    // create a unique_ptr.
     OFunique_ptr<int> u0( new int );
     // check if operator bool works as expected.
     OFCHECK( u0 );
