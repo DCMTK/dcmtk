@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152, 154, 158.
+# - Supplement 152, 154, 157, 158.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
 #      1249, 1258, 1269.
 #
@@ -3311,6 +3311,15 @@
 (0080,0011)	OF	VValueData	1-n	Supplement_154
 (0080,0012)	SQ	ReferencedTextureSequence	1	Supplement_154
 (0080,0013)	SQ	ReferencedSurfaceDataSequence	1	Supplement_154
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 157 (Multi-Frame Converted Legacy Images)
+#
+(0008,0053)	CS	QueryRetrieveView	1	Supplement_157
+(0020,9170)	SQ	UnassignedSharedConvertedAttributesSequence	1	Supplement_157
+(0020,9171)	SQ	UnassignedPerFrameConvertedAttributesSequence	1	Supplement_157
+(0020,9172)	SQ	ConversionSourceAttributesSequence	1	Supplement_157
 #
 #---------------------------------------------------------------------------
 #

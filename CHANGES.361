@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.06.24 (riesmeier)
 
+- Added support for final text version of Supplement 157 (Multi-Frame Converted
+  Legacy Images) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Slightly enhanced documentation of completion flag methods (in accordance
   with the recently approved CP-1219).
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h

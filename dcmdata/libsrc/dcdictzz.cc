@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-06-24 11:06:00
+**   Date: 2013-06-24 11:44:24
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-06-24 11:06:00";
+const char* dcmBuiltinDictBuildDate = "2013-06-24 11:44:24";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -503,6 +503,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x0052, 0x0008, 0x0052,
       EVR_CS, "QueryRetrieveLevel", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0053, 0x0008, 0x0053,
+      EVR_CS, "QueryRetrieveView", 1, 1, "Supplement_157",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0054, 0x0008, 0x0054,
@@ -10625,6 +10629,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0020, 0x9167, 0x0020, 0x9167,
       EVR_AT, "FunctionalGroupPointer", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9170, 0x0020, 0x9170,
+      EVR_SQ, "UnassignedSharedConvertedAttributesSequence", 1, 1, "Supplement_157",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9171, 0x0020, 0x9171,
+      EVR_SQ, "UnassignedPerFrameConvertedAttributesSequence", 1, 1, "Supplement_157",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9172, 0x0020, 0x9172,
+      EVR_SQ, "ConversionSourceAttributesSequence", 1, 1, "Supplement_157",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x9213, 0x0020, 0x9213,

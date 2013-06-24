@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-06-24 11:05:54
+**   Date: 2013-06-24 11:44:20
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-06-24 11:05:54"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-06-24 11:44:20"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3641
+** Number of entries: 3645
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -132,6 +132,7 @@
 #define DCM_AccessionNumber                      DcmTagKey(0x0008, 0x0050)
 #define DCM_IssuerOfAccessionNumberSequence      DcmTagKey(0x0008, 0x0051)
 #define DCM_QueryRetrieveLevel                   DcmTagKey(0x0008, 0x0052)
+#define DCM_QueryRetrieveView                    DcmTagKey(0x0008, 0x0053)
 #define DCM_RetrieveAETitle                      DcmTagKey(0x0008, 0x0054)
 #define DCM_InstanceAvailability                 DcmTagKey(0x0008, 0x0056)
 #define DCM_FailedSOPInstanceUIDList             DcmTagKey(0x0008, 0x0058)
@@ -1255,6 +1256,9 @@
 #define DCM_DimensionOrganizationUID             DcmTagKey(0x0020, 0x9164)
 #define DCM_DimensionIndexPointer                DcmTagKey(0x0020, 0x9165)
 #define DCM_FunctionalGroupPointer               DcmTagKey(0x0020, 0x9167)
+#define DCM_UnassignedSharedConvertedAttributesSequence DcmTagKey(0x0020, 0x9170)
+#define DCM_UnassignedPerFrameConvertedAttributesSequence DcmTagKey(0x0020, 0x9171)
+#define DCM_ConversionSourceAttributesSequence   DcmTagKey(0x0020, 0x9172)
 #define DCM_DimensionIndexPrivateCreator         DcmTagKey(0x0020, 0x9213)
 #define DCM_DimensionOrganizationSequence        DcmTagKey(0x0020, 0x9221)
 #define DCM_DimensionIndexSequence               DcmTagKey(0x0020, 0x9222)
