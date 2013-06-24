@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.06.24 (riesmeier)
 
+- Minor fixes to comments on VOI-related methods.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
 - Added support for new SOP Class UIDs from Supplement 157 (Multi-Frame
   Converted Legacy Images).
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h

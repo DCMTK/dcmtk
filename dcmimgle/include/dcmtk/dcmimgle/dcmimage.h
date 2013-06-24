@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -640,7 +640,8 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
             Image->getMonoImagePtr()->setRoiWindow(left_pos, top_pos, width, height, frame) : 0;
     }
 
-    /** set specified window (given by index to window width/center sequence stored in image file).
+    /** set specified VOI window (given by index to window width/center sequence stored in image
+     *  file).
      *  possibly active VOI LUT is implicitly disabled.
      *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
@@ -654,11 +655,11 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
             Image->getMonoImagePtr()->setWindow(window) : 0;
     }
 
-    /** set specified window (given by window width and center).
+    /** set specified VOI window (given by window width and center).
      *  possibly active VOI LUT is implicitly disabled.
      *
      ** @param  center  center of specified window
-     *  @param  width   width of specified window (> 0.0)
+     *  @param  width   width of specified window (>= 1.0)
      *
      ** @return true if successful (1 = window has changed,
      *                              2 = new window is the same as previous one),
@@ -671,7 +672,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
             Image->getMonoImagePtr()->setWindow(center, width) : 0;
     }
 
-    /** get current window center and width values
+    /** get current VOI window as window center and width values
      *
      ** @param  center  return current window center value
      *  @param  width   return current window width value
