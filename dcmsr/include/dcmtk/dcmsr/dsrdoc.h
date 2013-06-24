@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -213,6 +213,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition setPreliminaryFlag(const E_PreliminaryFlag flag);
 
     /** get document completion flag.
+     *  According to the DICOM standard, this flag describes the estimated degree of completeness
+     *  of an SR Document.  See DICOM standard for details.
      *  Not applicable to Key Object Selection Documents.
      ** @return completion flag (might be CF_invalid if read from dataset)
      */
@@ -878,18 +880,20 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition createRevisedVersion(const OFBool clearList = OFTrue);
 
     /** complete the current document.
-     *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
-     *  The completion flag description is set to an empty string (i.e. absent in DICOM
-     *  dataset).
+     *  Sets the completion flag to COMPLETE if not already done (fails otherwise).  This flag
+     *  describes the estimated degree of completeness of an SR Document (see DICOM standard
+     *  for details).  The completion flag description is set to an empty string (i.e. absent
+     *  in DICOM dataset).
      *  Not applicable to Key Object Selection Documents.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition completeDocument();
 
     /** complete the current document and set a completion description.
-     *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
-     *  The completion flag description can be modified independently from the flag by means
-     *  of the method setCompletionFlagDescription() - see above.
+     *  Sets the completion flag to COMPLETE if not already done (fails otherwise).  This flag
+     *  describes the estimated degree of completeness of an SR Document (see DICOM standard
+     *  for details).  The completion flag description can be modified independently from the
+     *  flag by means of the method setCompletionFlagDescription() - see above.
      *  Not applicable to Key Object Selection Documents.
      ** @param  description  explanation of the value set for completion flag.
      *                       (optional, see previous method, VR=LO)
