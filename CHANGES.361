@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2013.06.24 (riesmeier)
 
+- Added support for new SOP Class UIDs from Supplement 157 (Multi-Frame
+  Converted Legacy Images).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 - Added support for final text version of Supplement 157 (Multi-Frame Converted
   Legacy Images) to the data dictionary.
   Affects: dcmdata/data/dicom.dic

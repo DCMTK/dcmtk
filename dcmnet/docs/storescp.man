@@ -546,12 +546,14 @@ DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+LegacyConvertedEnhancedCTImageStorage                1.2.840.10008.5.1.4.1.1.2.2
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
 EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
+LegacyConvertedEnhancedMRImageStorage                1.2.840.10008.5.1.4.1.1.4.4
 RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
@@ -643,6 +645,7 @@ ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
+LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
