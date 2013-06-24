@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-05-30 14:12:02
+**   Date: 2013-06-24 11:06:00
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-05-30 14:12:02";
+const char* dcmBuiltinDictBuildDate = "2013-06-24 11:06:00";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -4187,6 +4187,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x2030, 0x0018, 0x2030,
       EVR_DS, "RotationOfScannedFilm", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x2041, 0x0018, 0x2041,
+      EVR_SQ, "BiopsyTargetSequence", 1, 1, "CP_1269",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x2042, 0x0018, 0x2042,
+      EVR_UI, "TargetUID", 1, 1, "CP_1269",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x2043, 0x0018, 0x2043,
+      EVR_FL, "LocalizingCursorPosition", 2, 2, "CP_1269",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x2044, 0x0018, 0x2044,
+      EVR_FL, "CalculatedTargetPosition", 3, 3, "CP_1269",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x2045, 0x0018, 0x2045,
+      EVR_SH, "TargetLabel", 1, 1, "CP_1269",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x2046, 0x0018, 0x2046,
+      EVR_FL, "DisplayedZValue", 1, 1, "CP_1269",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x3100, 0x0018, 0x3100,
@@ -19715,6 +19739,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "SegmentationFractionalType", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0062, 0x0011, 0x0062, 0x0011,
+      EVR_SQ, "SegmentedPropertyTypeModifierCodeSequence", 1, 1, "CP_1258",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0064, 0x0002, 0x0064, 0x0002,
       EVR_SQ, "DeformableRegistrationSequence", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -22943,6 +22971,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3004, 0x0004, 0x3004, 0x0004,
       EVR_CS, "DoseType", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0005, 0x3004, 0x0005,
+      EVR_CS, "SpatialTransformOfDose", 1, 1, "CP_1248",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0006, 0x3004, 0x0006,

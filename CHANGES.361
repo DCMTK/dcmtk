@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.24 (riesmeier)
+
+- Added support for CP-1248, CP-1258 and CP-1269 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2013.06.11 (riesmeier)
 
 - Various fixes to comments. Also removed trailing white spaces.

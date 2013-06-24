@@ -24,7 +24,8 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 152, 154, 158.
-# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1249.
+# - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
+#      1249, 1258, 1269.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3329,7 +3330,8 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1249
+# Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216,
+#                  1236, 1246, 1248, 1249, 1258, 1269
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
@@ -3363,9 +3365,20 @@
 #
 (0074,1025)	CS	AutosequenceFlag	1	CP_1246
 #
+(3004,0005)	CS	SpatialTransformOfDose	1	CP_1248
+#
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	CP_1249/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	CP_1249/retired
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	CP_1249/retired
+#
+(0062,0011)	SQ	SegmentedPropertyTypeModifierCodeSequence	1	CP_1258
+#
+(0018,2041)	SQ	BiopsyTargetSequence	1	CP_1269
+(0018,2042)	UI	TargetUID	1	CP_1269
+(0018,2043)	FL	LocalizingCursorPosition	2	CP_1269
+(0018,2044)	FL	CalculatedTargetPosition	3	CP_1269
+(0018,2045)	SH	TargetLabel	1	CP_1269
+(0018,2046)	FL	DisplayedZValue	1	CP_1269
 #
 #---------------------------------------------------------------------------
 #

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-05-30 14:12:06
+**   Date: 2013-06-24 11:05:54
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-05-30 14:12:06"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-06-24 11:05:54"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3633
+** Number of entries: 3641
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -709,6 +709,12 @@
 #define DCM_NominalScannedPixelSpacing           DcmTagKey(0x0018, 0x2010)
 #define DCM_DigitizingDeviceTransportDirection   DcmTagKey(0x0018, 0x2020)
 #define DCM_RotationOfScannedFilm                DcmTagKey(0x0018, 0x2030)
+#define DCM_BiopsyTargetSequence                 DcmTagKey(0x0018, 0x2041)
+#define DCM_TargetUID                            DcmTagKey(0x0018, 0x2042)
+#define DCM_LocalizingCursorPosition             DcmTagKey(0x0018, 0x2043)
+#define DCM_CalculatedTargetPosition             DcmTagKey(0x0018, 0x2044)
+#define DCM_TargetLabel                          DcmTagKey(0x0018, 0x2045)
+#define DCM_DisplayedZValue                      DcmTagKey(0x0018, 0x2046)
 #define DCM_IVUSAcquisition                      DcmTagKey(0x0018, 0x3100)
 #define DCM_IVUSPullbackRate                     DcmTagKey(0x0018, 0x3101)
 #define DCM_IVUSGatedRate                        DcmTagKey(0x0018, 0x3102)
@@ -2350,6 +2356,7 @@
 #define DCM_MaximumFractionalValue               DcmTagKey(0x0062, 0x000e)
 #define DCM_SegmentedPropertyTypeCodeSequence    DcmTagKey(0x0062, 0x000f)
 #define DCM_SegmentationFractionalType           DcmTagKey(0x0062, 0x0010)
+#define DCM_SegmentedPropertyTypeModifierCodeSequence DcmTagKey(0x0062, 0x0011)
 #define DCM_DeformableRegistrationSequence       DcmTagKey(0x0064, 0x0002)
 #define DCM_SourceFrameOfReferenceUID            DcmTagKey(0x0064, 0x0003)
 #define DCM_DeformableRegistrationGridSequence   DcmTagKey(0x0064, 0x0005)
@@ -2990,6 +2997,7 @@
 #define DCM_DVHType                              DcmTagKey(0x3004, 0x0001)
 #define DCM_DoseUnits                            DcmTagKey(0x3004, 0x0002)
 #define DCM_DoseType                             DcmTagKey(0x3004, 0x0004)
+#define DCM_SpatialTransformOfDose               DcmTagKey(0x3004, 0x0005)
 #define DCM_DoseComment                          DcmTagKey(0x3004, 0x0006)
 #define DCM_NormalizationPoint                   DcmTagKey(0x3004, 0x0008)
 #define DCM_DoseSummationType                    DcmTagKey(0x3004, 0x000a)
