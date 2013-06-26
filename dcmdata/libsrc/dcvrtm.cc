@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -340,15 +340,29 @@ OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
     /* init return value */
     timeZone = 0;
     /* minimal check for valid format */
-    if ((dicomTimeZone.length() == 5) && ((dicomTimeZone[0] == '+') || (dicomTimeZone[0] == '-')))
+    if (dicomTimeZone.length() == 5)
     {
-        signed int hour;
+        unsigned int hour;
         unsigned int minute;
-        /* extract components from time zone string */
-        if (sscanf(dicomTimeZone.c_str(), "%03i%02u", &hour, &minute) == 2)
+        /* positive sign */
+        if (dicomTimeZone[0] == '+')
         {
-            timeZone = OFstatic_cast(double, hour) + OFstatic_cast(double, minute) / 60;
-            result = EC_Normal;
+            /* extract components from time zone string */
+            if (sscanf(dicomTimeZone.c_str() + 1, "%02u%02u", &hour, &minute) == 2)
+            {
+                timeZone = OFstatic_cast(double, hour) + OFstatic_cast(double, minute) / 60;
+                result = EC_Normal;
+            }
+        }
+        /* negative sign */
+        else if (dicomTimeZone[0] == '-')
+        {
+            /* extract components from time zone string */
+            if (sscanf(dicomTimeZone.c_str() + 1, "%02u%02u", &hour, &minute) == 2)
+            {
+                timeZone = -OFstatic_cast(double, hour) - OFstatic_cast(double, minute) / 60;
+                result = EC_Normal;
+            }
         }
     }
     return result;

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.26 (riesmeier)
+
+- Fixed bug in getTimeZoneFromString() method. Added new test for this case.
+  Thanks to Tamas Nemeth" <tnemeth@erad.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/dcvrtm.cc
+           dcmdata/tests/tvrdatim.cc
+
 **** Changes from 2013.06.24 (riesmeier)
 
 - Minor fixes to comments on VOI-related methods.

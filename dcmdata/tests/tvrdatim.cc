@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,10 +117,17 @@ OFTEST(dcmdata_dateTime)
     OFCHECK(dcmTime.getOFTime(timeVal).good());
     CHECK_STREAM_EQUAL(timeVal, "12:03:15");
 
+    OFCHECK(DcmTime::getTimeZoneFromString("+0030", timeZone).good());
+    OFCHECK_EQUAL(timeZone, 0.5);
     OFCHECK(DcmTime::getTimeZoneFromString("+1130", timeZone).good());
     OFCHECK_EQUAL(timeZone, 11.5);
     OFCHECK(DcmTime::getTimeZoneFromString("-0100", timeZone).good());
     OFCHECK_EQUAL(timeZone, -1);
+    OFCHECK(DcmTime::getTimeZoneFromString("-0530", timeZone).good());
+    OFCHECK_EQUAL(timeZone, -5.5);
+    OFCHECK(DcmTime::getTimeZoneFromString("01130", timeZone).bad());
+    OFCHECK(DcmTime::getTimeZoneFromString("+100", timeZone).bad());
+    OFCHECK(DcmTime::getTimeZoneFromString("UTC+1", timeZone).bad());
 
     dcmDateTime.putString("200204101203+0500");
     dcmDateTime.print(strstream);
