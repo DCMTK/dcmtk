@@ -302,8 +302,8 @@ DU_cstoreStatusString(Uint16 statusCode)
       case STATUS_Success:
           s = "Success";
           break;
-      case STATUS_STORE_Warning_CoersionOfDataElements:
-          s = "Warning: CoersionOfDataElements";
+      case STATUS_STORE_Warning_CoercionOfDataElements:
+          s = "Warning: CoercionOfDataElements";
           break;
       case STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass:
           s = "Warning: DataSetDoesNotMatchSOPClass";

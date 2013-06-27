@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.06.27 (onken)
+
+- Fixed typo (coersion -> coercion) in DIMSE status constant.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dstorscu.cc
+
 **** Changes from 2013.06.26 (riesmeier)
 
 - Fixed bug in getTimeZoneFromString() method. Added new test for this case.

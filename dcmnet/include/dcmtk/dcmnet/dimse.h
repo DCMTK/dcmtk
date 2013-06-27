@@ -133,7 +133,8 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 #define STATUS_STORE_Refused_SOPClassNotSupported       /* high byte */ 0xa800
 #define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900
 #define STATUS_STORE_Error_CannotUnderstand           /* high nibble */ 0xc000
-#define STATUS_STORE_Warning_CoersionOfDataElements                     0xb000
+#define STATUS_STORE_Warning_CoercionOfDataElements                     0xb000
+#define STATUS_STORE_Warning_CoersionOfDataElements                     0xb000 // WARNING: This constant will be removed from DCMTK in the future, instead use STATUS_STORE_Warning_CoercionOfDataElements
 #define STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass                0xb007
 #define STATUS_STORE_Warning_ElementsDiscarded                          0xb006
 

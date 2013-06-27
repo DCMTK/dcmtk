@@ -197,9 +197,9 @@ static void DIMSE_printCStoreStatusString(STD_NAMESPACE ostream& dumpStream, int
   {
     dumpStream << ": Error: Cannot understand";
   }
-  else if (status == STATUS_STORE_Warning_CoersionOfDataElements)
+  else if (status == STATUS_STORE_Warning_CoercionOfDataElements)
   {
-    dumpStream << ": Warning: Coersion of data elements";
+    dumpStream << ": Warning: Coercion of data elements";
   }
   else if (status == STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass)
   {

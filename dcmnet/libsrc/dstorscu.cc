@@ -969,7 +969,7 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
             {
                 ++numError;
             }
-            else if ((rspStatus == STATUS_STORE_Warning_CoersionOfDataElements) ||
+            else if ((rspStatus == STATUS_STORE_Warning_CoercionOfDataElements) ||
                      (rspStatus == STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass) ||
                      (rspStatus == STATUS_STORE_Warning_ElementsDiscarded) ||
                       DICOM_WARNING_STATUS(rspStatus) /* not really needed but ... */)
