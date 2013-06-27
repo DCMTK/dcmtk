@@ -3,7 +3,8 @@ Changes between releases are documented here.
 
 **** Changes from 2013.06.27 (onken)
 
-- Fixed typo (coersion -> coercion) in DIMSE status constant.
+- Fixed typo (coersion -> coercion) in DIMSE status constant. Thanks to
+  Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and suggested fix.
   Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
            dcmnet/libsrc/dimdump.cc
            dcmnet/libsrc/diutil.cc
