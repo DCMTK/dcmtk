@@ -237,7 +237,7 @@ struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 struct DCMTK_DCMQRDB_EXPORT StudyDescRecord
 {
     /// Study Instance UID of the study described by this record
-    char StudyInstanceUID [UI_MAX_LENGTH] ;
+    char StudyInstanceUID [UI_MAX_LENGTH+1] ;
 
     /// combined size (in bytes) of all images of this study in the database
     long StudySize ;

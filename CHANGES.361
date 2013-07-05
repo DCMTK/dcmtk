@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.07.05 (onken)
+
+- Fixed too small buffer for UID in Q/R server. Thanks to Mathieu
+  Malaterre <malat@debian.org> for the report and fix.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
+
 **** Changes from 2013.06.27 (onken)
 
 - Fixed typo (coersion -> coercion) in DIMSE status constant. Thanks to
