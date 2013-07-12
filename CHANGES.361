@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.07.12 (riesmeier)
+
+- Fixed issue with misplaced log output, which caused the use of an
+  uninitialized variable ("req").
+  Thanks to Mathieu Malaterre <malat@debian.org> for the valgrind report and
+  to Uli Schlachter <psychon@znc.in> for his expert opinion.
+  Affects: dcmnet/apps/movescu.cc
+
 **** Changes from 2013.07.05 (onken)
 
 - Fixed too small buffer for UID in Q/R server. Thanks to Mathieu
@@ -19,7 +27,7 @@ Changes between releases are documented here.
 **** Changes from 2013.06.26 (riesmeier)
 
 - Fixed bug in getTimeZoneFromString() method. Added new test for this case.
-  Thanks to Tamas Nemeth" <tnemeth@erad.com> for the report and suggested fix.
+  Thanks to Tamas Nemeth <tnemeth@erad.com> for the report and suggested fix.
   Affects: dcmdata/libsrc/dcvrtm.cc
            dcmdata/tests/tvrdatim.cc
 
@@ -110,7 +118,7 @@ Changes between releases are documented here.
 
 - Added missing support for the new print options (short name, long name or UID
   value) to the output of presentation state references of IMAGE content items.
-  Thanks Mathieu Malaterre <malat@debian.org> for the report on this issue.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the report on this issue.
   Affects: dcmsr/libsrc/dsrimgvl.cc
 
 **** Changes from 2013.05.31 (riesmeier)
@@ -149,13 +157,13 @@ Changes between releases are documented here.
 
 - Added command line options using the new print flags specifying how the SOP
   class of referenced DICOM objects is printed. Also did some restructuring.
-  Thanks Mathieu Malaterre <malat@debian.org> for the suggestion.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the suggestion.
   Affects: dcmsr/apps/dsrdump.cc
            dcmsr/docs/dsrdump.man
 
 - Added new options for specifying how the SOP class of referenced DICOM
   objects is printed (short name, long name or UID value).
-  Thanks Mathieu Malaterre <malat@debian.org> for the suggestion.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the suggestion.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
            dcmsr/libsrc/dsrcomvl.cc
            dcmsr/libsrc/dsrimgvl.cc
@@ -1387,14 +1395,14 @@ Changes between releases are documented here.
 - Fixed some minor inconsistencies between the data dictionary and part 6 of
   the DICOM standard. This mainly affects the spelling of the attribute names.
   Also added some tags that were missing because they are not used in part 3.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
            dcmnet/libsrc/dimcmd.cc
 
 - Fixed wrong attribute tags for Row/ColumnPositionInTotalImagePixelMatrix.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
@@ -1763,7 +1771,7 @@ Changes between releases are documented here.
 
 - Fixed wrong output format of pixel sequence elements for the DICOM Native
   Model (according to PS 3.19).
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/include/dcmtk/dcmdata/dcpixseq.h
            dcmdata/libsrc/dcpixseq.cc
 
@@ -1771,13 +1779,13 @@ Changes between releases are documented here.
 
 - Fixed wrong attribute name of BulkData element: According to the XML Schema
   in PS 3.19, the name for the UUID reference is "uuid" and not "UUID".
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcvrobow.cc
            dcmdata/libsrc/dcvrof.cc
 
 - Made sure that hexadecimal numbers of attribute tags are always printed in
   uppercase for the Native Model (as required by the XML Schema in PS 3.19).
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
 
 **** Changes from 2012.07.10 (riesmeier)
@@ -1927,7 +1935,7 @@ Changes between releases are documented here.
 **** Changes from 2012.07.03 (riesmeier)
 
 - Make sure that "??" is never used for an unknown VR in the XML output.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcsequen.cc
 
@@ -1992,7 +2000,7 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcfilefo.cc
 
 - Fixed wrong error message for conflict check of option --write-binary-data.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/apps/dcm2xml.cc
 
 **** Changes from 2012.06.29 (riesmeier)

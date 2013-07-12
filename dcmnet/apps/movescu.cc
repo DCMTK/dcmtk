@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1567,15 +1567,6 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-    {
-        OFLOG_INFO(movescuLogger, "Sending Move Request");
-        OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
-    } else {
-        OFLOG_INFO(movescuLogger, "Sending Move Request (MsgID " << msgId << ")");
-    }
-    OFLOG_INFO(movescuLogger, "Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
-
     callbackData.assoc = assoc;
     callbackData.presId = presId;
 
@@ -1590,6 +1581,15 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     } else {
         strcpy(req.MoveDestination, opt_moveDestination);
     }
+
+    if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        OFLOG_INFO(movescuLogger, "Sending Move Request");
+        OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+    } else {
+        OFLOG_INFO(movescuLogger, "Sending Move Request (MsgID " << msgId << ")");
+    }
+    OFLOG_INFO(movescuLogger, "Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
 
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
         moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout, net, subOpCallback,
