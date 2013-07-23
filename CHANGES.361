@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.07.23 (onken)
+
+- Fixed issues where JPEG marker map was not cleared if
+  more than one JPEG was converted using the same plugin
+  instance.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+
 **** Changes from 2013.07.12 (riesmeier)
 
 - Fixed issue with misplaced log output, which caused the use of an
