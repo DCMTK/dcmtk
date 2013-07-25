@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2012, OFFIS e.V.
+ *  Copyright (C) 2005-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,6 +18,7 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  */
+
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -292,12 +293,12 @@ static void createIdentifiers(
       }
     }
   }
-  if (studyUID.length() == 0)
+  if (studyUID.empty())
   {
     dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
     studyUID = buf;
   }
-  if (seriesUID.length() == 0)
+  if (seriesUID.empty())
   {
     dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
     seriesUID = buf;

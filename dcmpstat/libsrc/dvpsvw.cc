@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,6 +84,6 @@ OFCondition DVPSVOIWindow::read(size_t idx, DcmDecimalString &wcenter, DcmDecima
 
 const char *DVPSVOIWindow::getExplanation()
 {
-  if (windowCenterWidthExplanation.length() == 0) return NULL;
+  if (windowCenterWidthExplanation.empty()) return NULL;
   return windowCenterWidthExplanation.c_str();
 }

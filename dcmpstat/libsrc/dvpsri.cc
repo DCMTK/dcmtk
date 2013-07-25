@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,7 @@ OFCondition DVPSReferencedImage::write(DcmItem &dset)
 OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
 {
   OFBool result = OFTrue;
-  if (sopclassuid.length() == 0) referencedSOPClassUID.getOFString(sopclassuid, 0);
+  if (sopclassuid.empty()) referencedSOPClassUID.getOFString(sopclassuid, 0);
   else 
   {
     OFString currentUID;

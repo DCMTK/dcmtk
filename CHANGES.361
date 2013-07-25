@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.07.25 (riesmeier)
+
+- Replaced "OFString::length() == 0" by "OFString::empty()".
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2dbmps.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsvw.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2013.07.23 (onken)
 
 - Fixed issues where JPEG marker map was not cleared if

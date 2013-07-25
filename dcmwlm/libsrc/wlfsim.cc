@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,7 +104,7 @@ OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString
 // Return Value : Indicates if the connection could be established or not.
 {
   // check parameter
-  if( dfPathv.length() == 0 )
+  if( dfPathv.empty() )
   {
     DCMWLM_ERROR("Invalid parameters, cannot connect to worklist file system database");
     return( WLM_EC_CannotConnectToDataSource );

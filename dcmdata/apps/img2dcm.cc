@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2012, OFFIS e.V.
+ *  Copyright (C) 2007-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -201,7 +201,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   OFString pixDataFile, outputFile, tempStr;
   cmd.getParam(1, tempStr);
 
-  if (tempStr.length() == 0)
+  if (tempStr.empty())
   {
     OFLOG_ERROR(img2dcmLogger, "No image input filename specified");
     return EC_IllegalCall;
@@ -210,7 +210,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
     pixDataFile = tempStr;
 
   cmd.getParam(2, tempStr);
-  if (tempStr.length() == 0)
+  if (tempStr.empty())
   {
     OFLOG_ERROR(img2dcmLogger, "No DICOM output filename specified");
     return EC_IllegalCall;

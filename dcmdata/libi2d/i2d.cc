@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2011, OFFIS e.V.
+ *  Copyright (C) 2007-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -198,7 +198,7 @@ void Image2Dcm::cleanupTemplate(DcmDataset *targetDset)
 OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
 {
   DCMDATA_LIBI2D_DEBUG("Image2Dcm: Applying study and/or series information from file");
-  if ( (!m_readSeriesLevel && !m_readStudyLevel) || (m_studySeriesFile.length() == 0) )
+  if ( (!m_readSeriesLevel && !m_readStudyLevel) || m_studySeriesFile.empty() )
     return EC_IllegalCall;
   DcmFileFormat dcmff;
   OFString errMsg;
@@ -351,7 +351,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
   if (!m_readSeriesLevel)
   {
     cond = dset->findAndGetOFString(DCM_SeriesInstanceUID, value);
-    if (cond.bad() || (value.length() == 0))
+    if (cond.bad() || value.empty())
     {
       char newUID[100];
       dcmGenerateUniqueIdentifier(newUID, SITE_SERIES_UID_ROOT);
@@ -366,7 +366,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
   if (!m_readStudyLevel)
   {
     cond = dset->findAndGetOFString(DCM_StudyInstanceUID, value);
-    if (cond.bad() || (value.length() == 0))
+    if (cond.bad() || value.empty())
     {
       char newUID[100];
       dcmGenerateUniqueIdentifier(newUID, SITE_STUDY_UID_ROOT);
@@ -379,7 +379,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
 
   // Generate SOP Instance UID if not already present
   cond = dset->findAndGetOFString(DCM_SOPInstanceUID, value);
-  if (cond.bad() || (value.length() == 0))
+  if (cond.bad() || value.empty())
   {
     char newUID[100];
     dcmGenerateUniqueIdentifier(newUID, SITE_INSTANCE_UID_ROOT);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,10 +15,10 @@
  *
  *  Author:  Uli Schlachter
  *
- *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  */
+
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2dbmps.h"
@@ -46,7 +46,7 @@ OFCondition I2DBmpSource::openFile(const OFString &filename)
 {
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Opening BMP file: " << filename);
   OFCondition cond;
-  if (filename.length() == 0)
+  if (filename.empty())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "No BMP filename specified");
 
   // Try to open BMP file

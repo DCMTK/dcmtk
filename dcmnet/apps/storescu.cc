@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1373,13 +1373,13 @@ replaceSOPInstanceInformation(DcmDataset *dataset)
   static OFString patientID;
   static OFString patientName;
 
-  if (seriesInstanceUID.length() == 0) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, OFstatic_cast(int, seriesCounter));
-  if (seriesNumber.length() == 0) seriesNumber = intToString(OFstatic_cast(int, seriesCounter));
-  if (studyInstanceUID.length() == 0) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, OFstatic_cast(int, studyCounter));
-  if (studyID.length() == 0) studyID = studyIDPrefix + intToString(OFstatic_cast(int, secondsSince1970())) + intToString(OFstatic_cast(int, studyCounter));
-  if (accessionNumber.length() == 0) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
-  if (patientID.length() == 0) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
-  if (patientName.length() == 0) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
+  if (seriesInstanceUID.empty()) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, OFstatic_cast(int, seriesCounter));
+  if (seriesNumber.empty()) seriesNumber = intToString(OFstatic_cast(int, seriesCounter));
+  if (studyInstanceUID.empty()) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, OFstatic_cast(int, studyCounter));
+  if (studyID.empty()) studyID = studyIDPrefix + intToString(OFstatic_cast(int, secondsSince1970())) + intToString(OFstatic_cast(int, studyCounter));
+  if (accessionNumber.empty()) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
+  if (patientID.empty()) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
+  if (patientName.empty()) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
 
   if (imageCounter >= opt_inventSeriesCount) {
     imageCounter = 0;
