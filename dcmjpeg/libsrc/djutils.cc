@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2012, OFFIS e.V.
+ *  Copyright (C) 1997-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,7 +41,7 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
   if (item)
   {
     OFString photometric;
-    if ((item->findAndGetOFString(DCM_PhotometricInterpretation, photometric)).good() && (photometric.length() > 0))
+    if (item->findAndGetOFString(DCM_PhotometricInterpretation, photometric).good() && !photometric.empty())
     {
       const char *c = photometric.c_str(); // guaranteed to be zero-terminated
       char cp[17]; // legal CS cannot be larger than 16 characters plus 0 byte

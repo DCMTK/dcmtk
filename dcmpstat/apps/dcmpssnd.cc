@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2012, OFFIS e.V.
+ *  Copyright (C) 1999-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
           }
           return 1;
         } else {
-          if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+          if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
           tlsCiphersuites += currentOpenSSL;
         }
       }
@@ -653,7 +653,7 @@ int main(int argc, char *argv[])
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
-      if ((tlsPrivateKeyFile.length() > 0) && (tlsCertificateFile.length() > 0))
+      if (!tlsPrivateKeyFile.empty() && !tlsCertificateFile.empty())
       {
         if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
         {

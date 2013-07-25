@@ -258,7 +258,7 @@ DVInterface::~DVInterface()
       delete displayFunction[i];
     if (pHandle) releaseDatabase();
     // refresh database index file access time
-    if (databaseIndexFile.length() > 0)
+    if (!databaseIndexFile.empty())
         // cast to char* required for gcc 2.5.8 on NeXTSTEP
         utime(OFconst_cast(char *, databaseIndexFile.c_str()), NULL);
 }
@@ -1312,7 +1312,7 @@ OFBool DVInterface::newInstancesReceived()
     }
   }
 
-  if (databaseIndexFile.length() > 0)
+  if (!databaseIndexFile.empty())
   {
     struct stat stat_buf;
     if (0== stat(databaseIndexFile.c_str(), &stat_buf))
@@ -2202,7 +2202,7 @@ OFCondition DVInterface::sendIOD(const char * targetID,
   if ((targetID==NULL)||(studyUID==NULL)) return EC_IllegalCall;
   const char *sender_application = getSenderName();
   if (sender_application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
 
@@ -2262,7 +2262,7 @@ OFCondition DVInterface::startReceiver()
 {
   const char *receiver_application = getReceiverName();
   if (receiver_application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   OFCondition result = EC_Normal;
   DCMPSTAT_LOGFILE("Starting network receiver processes ...");
@@ -2320,7 +2320,7 @@ OFCondition DVInterface::terminateReceiver()
 {
   const char *receiver_application = getReceiverName();
   if (receiver_application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   OFCondition result = EC_Normal;
   DCMPSTAT_LOGFILE("Terminating network receiver processes ...");
@@ -2375,7 +2375,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
 {
   const char *server_application = getQueryRetrieveServerName();
   if (server_application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   OFString config_filename = getQueryRetrieveServerName();
   config_filename += ".cfg";
@@ -2455,7 +2455,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
 OFCondition DVInterface::terminateQueryRetrieveServer()
 {
   if (getQueryRetrieveServerName()==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
 #ifdef HAVE_GUSI_H
   GUSISetup(GUSIwithSIOUXSockets);
@@ -3393,7 +3393,7 @@ OFCondition DVInterface::startPrintSpooler()
 {
   const char *spooler_application = getSpoolerName();
   if (spooler_application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   const char *printer = NULL;
   unsigned long sleepingTime = getSpoolerSleep();
@@ -3493,7 +3493,7 @@ OFCondition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
 OFCondition DVInterface::terminatePrintSpooler()
 {
   if (getSpoolerName()==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
   OFString spoolFilename;
@@ -3533,7 +3533,7 @@ OFCondition DVInterface::startPrintServer()
 {
   const char *application = getPrintServerName();
   if (application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
   const char *printer = NULL;
   OFBool detailedLog = getDetailedLog();
@@ -3605,7 +3605,7 @@ OFCondition DVInterface::startPrintServer()
 OFCondition DVInterface::terminatePrintServer()
 {
   if (getPrintServerName()==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
+  if (configPath.empty()) return EC_IllegalCall;
 
 #ifdef HAVE_GUSI_H
   GUSISetup(GUSIwithSIOUXSockets);
@@ -3708,7 +3708,7 @@ OFCondition DVInterface::terminatePrintServer()
               getTargetCipherSuite(target, ui, currentSuite);
               if (NULL != (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
               {
-                if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+                if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
                 tlsCiphersuites += currentOpenSSL;
               }
             }
@@ -3819,7 +3819,7 @@ OFCondition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
 
 OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  if ((studyUID==NULL)||(seriesUID==NULL)||(instanceUID==NULL)||(configPath.length()==0)) return EC_IllegalCall;
+  if ((studyUID==NULL)||(seriesUID==NULL)||(instanceUID==NULL)||configPath.empty()) return EC_IllegalCall;
   OFString spoolFilename;
   OFString tempFilename;
   const char *prt = getCurrentPrinter();

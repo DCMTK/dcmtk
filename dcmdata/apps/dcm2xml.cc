@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -168,7 +168,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         /* write XML document header */
         out << "<?xml version=\"1.0\"";
         /* optional character set */
-        if (encString.length() > 0)
+        if (!encString.empty())
             out << " encoding=\"" << encString << "\"";
         out << "?>" << OFendl;
         /* add document type definition (DTD) */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1370,13 +1370,13 @@ OFCondition DJCodecEncoder::correctVOIWindows(
         tempWidth = currentWidth * voiFactor;
         // add this window to the attribute values that are later replacing old windows
         OFStandard::ftoa(buf, sizeof(buf), tempCenter, OFStandard::ftoa_uppercase, 0, 6);
-        if (newCenter.length() > 0) newCenter += "\\";
+        if (!newCenter.empty()) newCenter += "\\";
         newCenter += buf;
         OFStandard::ftoa(buf, sizeof(buf), tempWidth, OFStandard::ftoa_uppercase, 0, 6);
-        if (newWidth.length() > 0) newWidth += "\\";
+        if (!newWidth.empty()) newWidth += "\\";
         newWidth += buf;
 
-        if (newExplanation.length() > 0) newExplanation += "\\";
+        if (!newExplanation.empty()) newExplanation += "\\";
         if (explanation && ((explanation->getOFString(currentExplanation,i)).good()))
           newExplanation += currentExplanation;
           else
@@ -1398,7 +1398,7 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   delete dataset->remove(DCM_WindowCenterWidthExplanation);
 
   // and insert newly computed ones if necessary
-  if (newCenter.length() > 0)
+  if (!newCenter.empty())
   {
     if (result.good()) result = dataset->putAndInsertString(DCM_WindowCenter, newCenter.c_str());
     if (result.good()) result = dataset->putAndInsertString(DCM_WindowWidth, newWidth.c_str());

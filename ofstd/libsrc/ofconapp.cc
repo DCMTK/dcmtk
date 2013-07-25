@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2012, OFFIS e.V.
+ *  Copyright (C) 1999-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -189,10 +189,10 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
         cmd->getSyntaxString(str);
         output << str << OFendl;
         cmd->getParamString(str);
-        if (str.length() > 0)
+        if (!str.empty())
             output << OFendl << str;
         cmd->getOptionString(str);
-        if (str.length() > 0)
+        if (!str.empty())
             output << OFendl << str;
     }
     output << OFendl;
@@ -295,7 +295,7 @@ void OFConsoleApplication::checkValue(const OFCommandLine::E_ValueStatus status,
         OFString str;
         if (cmd != NULL)
             cmd->getStatusString(status, str);
-        if (str.length() > 0)
+        if (!str.empty())
             printError(str.c_str());
     }
 }
@@ -311,7 +311,7 @@ void OFConsoleApplication::checkParam(const OFCommandLine::E_ParamValueStatus st
         OFString str;
         if (cmd != NULL)
             cmd->getStatusString(status, str);
-        if (str.length() > 0)
+        if (!str.empty())
             printError(str.c_str());
     }
 }

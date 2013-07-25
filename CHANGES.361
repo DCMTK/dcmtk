@@ -3,6 +3,30 @@ Changes between releases are documented here.
 
 **** Changes from 2013.07.25 (riesmeier)
 
+- Replaced "OFString::length() > 0" by "!OFString::empty()".
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpeg/libsrc/djutils.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dccfuidh.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpscf.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+           ofstd/libsrc/ofconapp.cc
+
 - Replaced "OFString::length() != 0" by "!OFString::empty()".
   Affects: dcmdata/apps/mdfdsman.cc
            dcmdata/libi2d/i2d.cc

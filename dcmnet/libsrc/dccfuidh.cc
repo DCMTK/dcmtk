@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,7 @@ DcmUIDHandler::~DcmUIDHandler()
 
 void DcmUIDHandler::lookupSymbolicUID()
 {
-  if (uid_.length() > 0)
+  if (!uid_.empty())
   {
     const char *c = uid_.c_str();
     if ((*c < '0')||(*c > '9'))
@@ -114,7 +114,7 @@ void DcmUIDHandler::lookupSymbolicUID()
 
 OFBool DcmUIDHandler::isValidUID() const
 {
-  if (uid_.length() > 0)
+  if (!uid_.empty())
   {
     const char *c = uid_.c_str();
     do

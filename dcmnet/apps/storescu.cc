@@ -636,7 +636,7 @@ int main(int argc, char *argv[])
               OFLOG_ERROR(storescuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
             return 1;
           } else {
-            if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+            if (!opt_ciphersuites.empty()) opt_ciphersuites += ":";
             opt_ciphersuites += currentOpenSSL;
           }
         } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));

@@ -181,7 +181,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
         sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
-    if (valStr.length() > 0) {
+    if (!valStr.empty()) {
         if (elem->putString(valStr.c_str()).bad())
         {
             sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);

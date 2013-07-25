@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
           }
           return 1;
         } else {
-          if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+          if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
           tlsCiphersuites += currentOpenSSL;
         }
       }

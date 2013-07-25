@@ -268,7 +268,7 @@ static OFCondition splitTagPath(OFString &tag_path,
         // delete target tag from path (inclusive trailing '.')
         tag_path.erase(lpos,tag_path.length()-lpos);
         // if there's a tag path left, remove the '.', too
-        if ( (tag_path.length()>0) && (tag_path[tag_path.length()-1]=='.'))
+        if ( !tag_path.empty() && (tag_path[tag_path.length()-1]=='.'))
             tag_path.erase(tag_path.length()-1,1);
         // parse target_tag into DcmTagKey
         if (2 != sscanf(target_tag.c_str(),"(%x,%x)", &group, &elem))
@@ -531,7 +531,7 @@ OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
           return makeOFCondition(OFM_dcmdata,22,OF_error, "Cannot delete tags with group 0000 or 0002!");
 
       // if tag path still contains characters, user wants to modify item tag
-      if (tag_path.length() > 0)
+      if (!tag_path.empty())
       {
           OFString error;
           DcmItem *item=NULL;

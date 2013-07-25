@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,10 +51,10 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_BORDERDENSITY                "BORDERDENSITY"
 #define L0_CACERTIFICATEDIRECTORY       "CACERTIFICATEDIRECTORY"
 #define L0_CENTER                       "CENTER"
-#define L0_CERTIFICATE                  "CERTIFICATE"               
+#define L0_CERTIFICATE                  "CERTIFICATE"
 #define L0_CHARACTERISTICS              "CHARACTERISTICS"
 #define L0_CHECK                        "CHECK"
-#define L0_CIPHERSUITES                 "CIPHERSUITES"              
+#define L0_CIPHERSUITES                 "CIPHERSUITES"
 #define L0_CODE                         "CODE"
 #define L0_CORRECTUIDPADDING            "CORRECTUIDPADDING"
 #define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
@@ -94,15 +94,15 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_NAME                         "NAME"
 #define L0_OMITSOPCLASSUIDFROMCREATERESPONSE "OMITSOPCLASSUIDFROMCREATERESPONSE"
 #define L0_ORGANIZATION                 "ORGANIZATION"
-#define L0_PEERAUTHENTICATION           "PEERAUTHENTICATION"        
+#define L0_PEERAUTHENTICATION           "PEERAUTHENTICATION"
 #define L0_PORT                         "PORT"
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_PRESENTATIONLUTMATCHREQUIRED "PRESENTATIONLUTMATCHREQUIRED"
 #define L0_PRESENTATIONLUTPREFERSCPRENDERING "PRESENTATIONLUTPREFERSCPRENDERING"
 #define L0_PREVIEW                      "PREVIEWSIZE"
-#define L0_PRIVATEKEY                   "PRIVATEKEY"                
-#define L0_PRIVATEKEYPASSWORD           "PRIVATEKEYPASSWORD"        
-#define L0_RANDOMSEED                   "RANDOMSEED"                
+#define L0_PRIVATEKEY                   "PRIVATEKEY"
+#define L0_PRIVATEKEYPASSWORD           "PRIVATEKEYPASSWORD"
+#define L0_RANDOMSEED                   "RANDOMSEED"
 #define L0_RECEIVER                     "RECEIVER"
 #define L0_RESOLUTION                   "RESOLUTION"
 #define L0_RESOLUTIONID                 "RESOLUTIONID"
@@ -123,7 +123,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_TYPE                         "TYPE"
 #define L0_USEPEMFORMAT                 "USEPEMFORMAT"
 #define L0_USERKEYDIRECTORY             "USERKEYDIRECTORY"
-#define L0_USETLS                       "USETLS"                    
+#define L0_USETLS                       "USETLS"
 #define L0_WIDTH                        "WIDTH"
 #define L1_APPLICATION                  "APPLICATION"
 #define L1_DATABASE                     "DATABASE"
@@ -303,31 +303,31 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
            case DVPSE_storage:
              if (currentType==DVPSE_storage)
              {
-             	if (idx==0) found=OFTrue; else idx--;
+               if (idx==0) found=OFTrue; else idx--;
              }
              break;
            case DVPSE_receiver:
              if (currentType==DVPSE_receiver)
              {
-             	if (idx==0) found=OFTrue; else idx--;
+               if (idx==0) found=OFTrue; else idx--;
              }
              break;
            case DVPSE_printRemote:
              if (currentType==DVPSE_printRemote)
              {
-             	if (idx==0) found=OFTrue; else idx--;
+               if (idx==0) found=OFTrue; else idx--;
              }
              break;
            case DVPSE_printLocal:
              if (currentType==DVPSE_printLocal)
              {
-             	if (idx==0) found=OFTrue; else idx--;
+               if (idx==0) found=OFTrue; else idx--;
              }
              break;
            case DVPSE_printAny:
              if ((currentType==DVPSE_printRemote)||(currentType==DVPSE_printLocal))
              {
-             	if (idx==0) found=OFTrue; else idx--;
+               if (idx==0) found=OFTrue; else idx--;
              }
              break;
            case DVPSE_any:
@@ -648,14 +648,14 @@ double DVConfiguration::getMonitorPixelWidth()
     double rX=0.0, rY=0.0, sX=0.0, sY=0.0;
     OFString s(resolution);
     OFBool success = OFFalse;
-    
+
     rX = OFStandard::atof(s.c_str(), &success);
     if (success)
     {
       s.erase(0, s.find('\\')+1);
-      if (s.length() > 0)
+      if (!s.empty())
       {
-        rY = OFStandard::atof(s.c_str(), &success);      	
+        rY = OFStandard::atof(s.c_str(), &success);
       } else success = OFFalse;
     }
 
@@ -666,16 +666,16 @@ double DVConfiguration::getMonitorPixelWidth()
       if (success)
       {
         s.erase(0, s.find('\\')+1);
-        if (s.length() > 0)
+        if (!s.empty())
         {
-          sY = OFStandard::atof(s.c_str(), &success);      	
+          sY = OFStandard::atof(s.c_str(), &success);
         } else success = OFFalse;
       }
     }
 
     if (success && (rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
     {
-    	// everything OK, return pixel width
+      // everything OK, return pixel width
       return sX/rX;
     }
   }
@@ -692,14 +692,14 @@ double DVConfiguration::getMonitorPixelHeight()
     double rX=0.0, rY=0.0, sX=0.0, sY=0.0;
     OFString s(resolution);
     OFBool success = OFFalse;
-    
+
     rX = OFStandard::atof(s.c_str(), &success);
     if (success)
     {
       s.erase(0, s.find('\\')+1);
-      if (s.length() > 0)
+      if (!s.empty())
       {
-        rY = OFStandard::atof(s.c_str(), &success);      	
+        rY = OFStandard::atof(s.c_str(), &success);
       } else success = OFFalse;
     }
 
@@ -710,16 +710,16 @@ double DVConfiguration::getMonitorPixelHeight()
       if (success)
       {
         s.erase(0, s.find('\\')+1);
-        if (s.length() > 0)
+        if (!s.empty())
         {
-          sY = OFStandard::atof(s.c_str(), &success);      	
+          sY = OFStandard::atof(s.c_str(), &success);
         } else success = OFFalse;
       }
     }
 
     if (success && (rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
     {
-      	// everything OK, return pixel height
+        // everything OK, return pixel height
         return sY/rY;
     }
   }
@@ -912,8 +912,8 @@ Uint32 DVConfiguration::getNumberOfLUTs()
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-       	  result++;
-          pConfig->next_section(1);
+         result++;
+         pConfig->next_section(1);
        }
     }
   }
@@ -935,8 +935,8 @@ const char *DVConfiguration::getLUTID(Uint32 idx)
          if (idx==0) found=OFTrue;
          else
          {
-         	idx--;
-            pConfig->next_section(1);
+           idx--;
+           pConfig->next_section(1);
          }
        }
        if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
@@ -963,12 +963,12 @@ Uint32 DVConfiguration::getNumberOfReports()
     pConfig->set_section(2, L2_REPORT);
     if (pConfig->section_valid(2))
     {
-       pConfig->first_section(1);
-       while (pConfig->section_valid(1))
-       {
-       	  result++;
-          pConfig->next_section(1);
-       }
+      pConfig->first_section(1);
+      while (pConfig->section_valid(1))
+      {
+        result++;
+        pConfig->next_section(1);
+      }
     }
   }
   return result;
@@ -989,8 +989,8 @@ const char *DVConfiguration::getReportID(Uint32 idx)
          if (idx==0) found=OFTrue;
          else
          {
-         	idx--;
-            pConfig->next_section(1);
+           idx--;
+           pConfig->next_section(1);
          }
        }
        if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
@@ -1128,7 +1128,7 @@ Uint32 DVConfiguration::getNumberOfVOIPresets(const char *modality)
   Uint32 result = 0;
   if (modality && pConfig)
   {
-  	OFString aModality = modality;
+    OFString aModality = modality;
     const char *currentModality = NULL;
     pConfig->set_section(2, L2_VOI);
     if (pConfig->section_valid(2))
@@ -1136,7 +1136,7 @@ Uint32 DVConfiguration::getNumberOfVOIPresets(const char *modality)
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         currentModality = pConfig->get_entry(L0_MODALITY);
          if (currentModality && (aModality == currentModality)) result++;
          pConfig->next_section(1);
        }
@@ -1149,7 +1149,7 @@ const char *DVConfiguration::getVOIPresetDescription(const char *modality, Uint3
 {
   if (modality && pConfig)
   {
-  	OFString aModality = modality;
+    OFString aModality = modality;
     const char *currentModality = NULL;
     pConfig->set_section(2, L2_VOI);
     if (pConfig->section_valid(2))
@@ -1157,13 +1157,13 @@ const char *DVConfiguration::getVOIPresetDescription(const char *modality, Uint3
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         currentModality = pConfig->get_entry(L0_MODALITY);
          if (currentModality && (aModality == currentModality))
          {
            if (idx==0)
            {
-           	  // found entry
-           	  return pConfig->get_entry(L0_DESCRIPTION);
+             // found entry
+             return pConfig->get_entry(L0_DESCRIPTION);
            } else idx--;
          }
          pConfig->next_section(1);
@@ -1178,7 +1178,7 @@ double DVConfiguration::getVOIPresetWindowCenter(const char *modality, Uint32 id
   double result = 0.0;
   if (modality && pConfig)
   {
-  	OFString aModality = modality;
+    OFString aModality = modality;
     const char *currentModality = NULL;
     pConfig->set_section(2, L2_VOI);
     if (pConfig->section_valid(2))
@@ -1186,14 +1186,14 @@ double DVConfiguration::getVOIPresetWindowCenter(const char *modality, Uint32 id
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         currentModality = pConfig->get_entry(L0_MODALITY);
          if (currentModality && (aModality == currentModality))
          {
            if (idx==0)
            {
-           	  // found entry
-           	  const char *window = pConfig->get_entry(L0_CENTER);
-           	  if (window) return OFStandard::atof(window); else return 0.0;
+             // found entry
+             const char *window = pConfig->get_entry(L0_CENTER);
+             if (window) return OFStandard::atof(window); else return 0.0;
            } else idx--;
          }
          pConfig->next_section(1);
@@ -1208,7 +1208,7 @@ double DVConfiguration::getVOIPresetWindowWidth(const char *modality, Uint32 idx
   double result = 1.0;
   if (modality && pConfig)
   {
-  	OFString aModality = modality;
+    OFString aModality = modality;
     const char *currentModality = NULL;
     pConfig->set_section(2, L2_VOI);
     if (pConfig->section_valid(2))
@@ -1216,14 +1216,14 @@ double DVConfiguration::getVOIPresetWindowWidth(const char *modality, Uint32 idx
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         currentModality = pConfig->get_entry(L0_MODALITY);
          if (currentModality && (aModality == currentModality))
          {
            if (idx==0)
            {
-           	  // found entry
-           	  const char *window = pConfig->get_entry(L0_WIDTH);
-           	  if (window) return OFStandard::atof(window); else return 1.0;
+             // found entry
+             const char *window = pConfig->get_entry(L0_WIDTH);
+             if (window) return OFStandard::atof(window); else return 1.0;
            } else idx--;
          }
          pConfig->next_section(1);
@@ -1391,8 +1391,8 @@ Uint32 DVConfiguration::getNumberOfUsers()
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-       	  result++;
-          pConfig->next_section(1);
+         result++;
+         pConfig->next_section(1);
        }
     }
   }

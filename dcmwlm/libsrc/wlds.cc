@@ -1054,14 +1054,14 @@ OFString WlmDataSource::DeleteLeadingAndTrailingBlanks( const OFString& value )
   size_t pos = 0;
 
   // delete leading blanks
-  while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
+  while ( !returnValue.empty() && (returnValue[pos] == ' ') )
     pos++; // count blanks
   if (pos > 0)
     returnValue.erase(0, pos);
 
   // delete trailing blanks, start from end of string
   pos = returnValue.length() - 1;
-  while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
+  while ( !returnValue.empty() && (returnValue[pos] == ' ') )
     pos--;
   if (pos < returnValue.length() -1)
     returnValue.erase(pos);

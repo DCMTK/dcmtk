@@ -307,11 +307,11 @@ OFCondition DcmTime::getISOFormattedTimeFromString(const OFString &dicomTime,
             formattedTime = hourStr;
             formattedTime += ":";
             formattedTime += minStr;
-            if (seconds && (secStr.length() > 0))
+            if (seconds && !secStr.empty())
             {
                 formattedTime += ":";
                 formattedTime += secStr;
-                if (fraction && (fracStr.length() > 0))
+                if (fraction && !fracStr.empty())
                 {
                     formattedTime += ".";
                     formattedTime += fracStr;

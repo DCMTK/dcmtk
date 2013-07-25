@@ -149,7 +149,7 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 
   // Determine complete path to the files that make up the data source.
   OFString fullPath( dfPath );
-  if( fullPath.length() > 0 && fullPath[fullPath.length()-1] != PATH_SEPARATOR )
+  if( !fullPath.empty() && fullPath[fullPath.length()-1] != PATH_SEPARATOR )
     fullPath += PATH_SEPARATOR;
   fullPath += calledApplicationEntityTitle;
 
@@ -441,7 +441,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
   // determine complete path to data source files
   // (dfPath + PATH_SEPARATOR + calledApplicationEntityTitle)
   OFString path( dfPath );
-  if( path.length() > 0 && path[path.length()-1] != PATH_SEPARATOR )
+  if( !path.empty() && path[path.length()-1] != PATH_SEPARATOR )
     path += PATH_SEPARATOR;
   path += calledApplicationEntityTitle;
 

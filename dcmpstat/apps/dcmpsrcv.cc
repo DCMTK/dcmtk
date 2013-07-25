@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2012, OFFIS e.V.
+ *  Copyright (C) 1999-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -808,7 +808,7 @@ static void terminateAllReceivers(DVConfiguration& dvi)
           dvi.getTargetCipherSuite(recID, ui, currentSuite);
           if (NULL != (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
           {
-            if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+            if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
             tlsCiphersuites += currentOpenSSL;
           }
         }
@@ -1066,7 +1066,7 @@ int main(int argc, char *argv[])
           }
           return 1;
         } else {
-          if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+          if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
           tlsCiphersuites += currentOpenSSL;
         }
       }
