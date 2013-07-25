@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -306,7 +306,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
 {
   // if no file loaded: return an error
   if (dfile == NULL)
-      return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "No file loaded yet!");
 
   // find or create specified path
   DcmPathProcessor proc;
@@ -324,7 +324,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
   OFListIterator(DcmPath*) resultPath = resultPaths.begin();
   // verify that groups 0 (invalid) and 2 (meta header) were not used
   if ( (*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2) )
-      return makeOFCondition(OFM_dcmdata,22,OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
   // also - according to the standard -  groups 1,3,5,7,FF are illegal
   if ( (*resultPath)->containsGroup(1) || (*resultPath)->containsGroup(3) ||
        (*resultPath)->containsGroup(5) || (*resultPath)->containsGroup(7) ||
@@ -339,11 +339,11 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
   if (!obj->isLeaf())
   {
       // if user specified a value to be inserted into non-leaf element, return error
-      if (value.length() != 0)
-          return makeOFCondition(OFM_dcmdata,22,OF_error,"Cannot put value into non-leaf elements!");
+      if (!value.empty())
+          return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot put value into non-leaf elements!");
       // non-leaf elements (items/sequences) cannot just be modified
       if (only_modify)
-         return makeOFCondition(OFM_dcmdata,22,OF_error,"Cannot modify non-leaf elements!");
+         return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot modify non-leaf elements!");
       // we have inserted an item/sequence at the end -> job completed
       return EC_Normal;
   }

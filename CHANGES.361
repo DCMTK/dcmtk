@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.07.25 (riesmeier)
 
+- Replaced "OFString::length() != 0" by "!OFString::empty()".
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/libi2d/i2d.cc
+
 - Replaced "OFString::length() == 0" by "OFString::empty()".
   Affects: dcmdata/apps/img2dcm.cc
            dcmdata/apps/pdf2dcm.cc

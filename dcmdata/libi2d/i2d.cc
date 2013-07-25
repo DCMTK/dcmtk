@@ -56,7 +56,7 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   DCMDATA_LIBI2D_DEBUG("Image2Dcm: Starting conversion of file: " << inputPlug->getImageFile());
 
   // If specified, copy DICOM template file to export file
-  if (m_templateFile.length() != 0)
+  if (!m_templateFile.empty())
   {
     DcmFileFormat dcmff;
     cond = dcmff.loadFile(m_templateFile.c_str());
