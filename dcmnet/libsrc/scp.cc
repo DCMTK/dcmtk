@@ -499,7 +499,6 @@ void DcmSCP::handleAssociation()
   {
     notifyReleaseRequest();
     ASC_acknowledgeRelease(m_assoc);
-    ASC_dropSCPAssociation(m_assoc);
   }
   else if( cond == DUL_PEERABORTEDASSOCIATION )
   {
@@ -1602,7 +1601,7 @@ void DcmSCP::dropAndDestroyAssociation()
   if (m_assoc)
   {
     notifyAssociationTermination();
-    ASC_dropAssociation( m_assoc );
+    ASC_dropSCPAssociation( m_assoc );
     ASC_destroyAssociation( &m_assoc );
   }
 }

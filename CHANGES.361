@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.07.26 (onken)
+
+- Fixed possible doubled destruction of association.
+  Affects: dcmnet/libsrc/scp.cc
+
 **** Changes from 2013.07.25 (riesmeier)
 
 - Replaced "OFString::length() > 0" by "!OFString::empty()".
