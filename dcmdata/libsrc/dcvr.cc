@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,7 +56,6 @@ struct DcmVREntry {
 };
 
 
-
 static const DcmVREntry DcmVRDict[] = {
 
     { EVR_AE, "AE", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
@@ -72,6 +71,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_LO, "LO", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_LT, "LT", sizeof(char), DCMVR_PROP_ISASTRING, 0, 10240 },
     { EVR_OB, "OB", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OD, "OD", sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OF, "OF", sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OW, "OW", sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_PN, "PN", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },

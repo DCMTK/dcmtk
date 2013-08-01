@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,6 +85,9 @@ enum DcmEVR
 
     /// other byte
     EVR_OB,
+
+    /// other double
+    EVR_OD,
 
     /// other float
     EVR_OF,

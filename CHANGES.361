@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.01 (riesmeier)
+
+- Added support for new VR "Other Double String" (OD):
+  Added support for new value representation "Other Double String" (OD) that
+  has been introduced only recently with CP-1261 (Other Double 64 Bit Floating
+  Point Value Representation). Closes DCMTK feature #526.
+  Added:   dcmdata/include/dcmtk/dcmdata/dcvrod.h
+           dcmdata/libsrc/dcvrod.cc
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/tests/telemlen.cc
+           dcmdata/tests/tests.cc
+
 **** Changes from 2013.07.26 (onken)
 
 - Fixed possible doubled destruction of association.

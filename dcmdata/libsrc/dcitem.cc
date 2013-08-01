@@ -52,6 +52,7 @@
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrlt.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
+#include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
@@ -2221,8 +2222,11 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_OF :
             newElement = new DcmOtherFloat(tag, length);
             break;
+        case EVR_OD :
+            newElement = new DcmOtherDouble(tag, length);
+            break;
 
-        // sequences and items
+        // sequences and items:
         case EVR_SQ :
             newElement = new DcmSequenceOfItems(tag, length);
             break;
@@ -3227,15 +3231,18 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_LT:
             elem = new DcmLongText(tag);
             break;
-        case EVR_PN:
-            elem = new DcmPersonName(tag);
-            break;
         case EVR_OB:
         case EVR_OW:
             elem = new DcmOtherByteOtherWord(tag);
             break;
+        case EVR_OD:
+            elem = new DcmOtherDouble(tag);
+            break;
         case EVR_OF:
             elem = new DcmOtherFloat(tag);
+            break;
+        case EVR_PN:
+            elem = new DcmPersonName(tag);
             break;
         case EVR_SH:
             elem = new DcmShortString(tag);
@@ -3697,24 +3704,33 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
                                          const unsigned long pos,
                                          const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
-    if (tag.getEVR() == EVR_FD)
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmFloatingPointDouble(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putFloat64(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_FD:
+            elem = new DcmFloatingPointDouble(tag);
+            break;
+        case EVR_OD:
+            elem = new DcmOtherDouble(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putFloat64(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -3724,24 +3740,33 @@ OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag& tag,
                                               const unsigned long count,
                                               const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
-    if (tag.getEVR() == EVR_FD)
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmFloatingPointDouble(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putFloat64Array(value, count);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_FD:
+            elem = new DcmFloatingPointDouble(tag);
+            break;
+        case EVR_OD:
+            elem = new DcmOtherDouble(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putFloat64Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -3820,12 +3845,15 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_LT:
             elem = new DcmLongText(tag);
             break;
-        case EVR_OF:
-            elem = new DcmOtherFloat(tag);
-            break;
         case EVR_OB:
         case EVR_OW:
             elem = new DcmOtherByteOtherWord(tag);
+            break;
+        case EVR_OD:
+            elem = new DcmOtherDouble(tag);
+            break;
+        case EVR_OF:
+            elem = new DcmOtherFloat(tag);
             break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
