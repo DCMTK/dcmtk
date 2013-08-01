@@ -3,7 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.01 (riesmeier)
 
-- Added private tags for AGFA IMPACS 6.5.x Solution.
+- Fixed wrong VR for private AGFA IMPAX tag.
+  The VR given for "date_time_verified" (0031,xx01) in the "AGFA IMPAX 6.5.x
+  Solution" conformance statement is apparently wrong. It should be "UL"
+  instead of "CS" since it seems to specify a UNIX timestamp (32 bit).
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
+- Added private tags for AGFA IMPAX 6.5.x Solution.
   Added two private tag definitions from the "AGFA IMPAX 6.5.x Solution"
   conformance statement.
   Affects: dcmdata/data/private.dic

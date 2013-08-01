@@ -108,7 +108,7 @@
 (0009,"AGFA",15)	LO	Unknown	1	PrivateTag
 
 (0031,"AGFA PACS Archive Mirroring 1.0",00)	CS	StudyStatus	1	PrivateTag
-(0031,"AGFA PACS Archive Mirroring 1.0",01)	CS	DateTimeVerified	1	PrivateTag
+(0031,"AGFA PACS Archive Mirroring 1.0",01)	UL	DateTimeVerified	1	PrivateTag
 
 (0029,"CAMTRONICS IP",10)	LT	Unknown	1	PrivateTag
 (0029,"CAMTRONICS IP",20)	UN	Unknown	1	PrivateTag
