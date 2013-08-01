@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-06-24 11:44:24
+**   Date: 2013-08-01 17:00:25
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-06-24 11:44:24";
+const char* dcmBuiltinDictBuildDate = "2013-08-01 17:00:25";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -16054,6 +16054,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "OriginalMeasuringRawDataLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "OCULUS Optikgeraete GmbH" }
+  , { 0x0031, 0x0000, 0x0031, 0x0000,
+      EVR_CS, "StudyStatus", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "AGFA PACS Archive Mirroring 1.0" }
+  , { 0x0031, 0x0001, 0x0031, 0x0001,
+      EVR_CS, "DateTimeVerified", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "AGFA PACS Archive Mirroring 1.0" }
   , { 0x0031, 0x0010, 0x0031, 0x0010,
       EVR_LT, "RequestUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,

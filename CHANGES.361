@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.01 (riesmeier)
 
+- Added private tags for AGFA IMPACS 6.5.x Solution.
+  Added two private tag definitions from the "AGFA IMPAX 6.5.x Solution"
+  conformance statement.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for new VR "Other Double String" (OD):
   Added support for new value representation "Other Double String" (OD) that
   has been introduced only recently with CP-1261 (Other Double 64 Bit Floating

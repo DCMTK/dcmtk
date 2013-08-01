@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2011, OFFIS e.V.
+#  Copyright (C) 1994-2013, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -22,6 +22,7 @@
 #
 #  This dictionary contains the private tags defined in the following
 #  reference documents (in alphabetical order):
+#   - AGFA IMPAX 6.5.x Solution conformance statement
 #   - Circle Cardiovascular Imaging cmr42 3.0 conformance statement
 #   - David Clunie's dicom3tools package, 2002-04-20 snapshot
 #   - Fuji CR console, 3rd release
@@ -29,8 +30,8 @@
 #   - OCULUS Pentacam 1.17 conformance statement
 #   - Philips Digital Diagnost 1.3 conformance statement
 #   - Philips Integris H, catheterization laboratory, RIS-interface
-#   - Philips Intera Achieva Conformance Statement
-#   - Philips MR Achieva Conformance Statement
+#   - Philips Intera Achieva conformance statement
+#   - Philips MR Achieva conformance statement
 #   - Siemens Somatom syngo VA40B conformance statement
 #   - Siemens AXIOM Artis VB30 conformance statement
 #   - SonoWand Invite 2.1.1 conformance statement
@@ -105,6 +106,9 @@
 (0009,"AGFA",13)	LO	Unknown	1	PrivateTag
 (0009,"AGFA",14)	LO	Unknown	1	PrivateTag
 (0009,"AGFA",15)	LO	Unknown	1	PrivateTag
+
+(0031,"AGFA PACS Archive Mirroring 1.0",00)	CS	StudyStatus	1	PrivateTag
+(0031,"AGFA PACS Archive Mirroring 1.0",01)	CS	DateTimeVerified	1	PrivateTag
 
 (0029,"CAMTRONICS IP",10)	LT	Unknown	1	PrivateTag
 (0029,"CAMTRONICS IP",20)	UN	Unknown	1	PrivateTag
