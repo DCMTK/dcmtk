@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.05 (riesmeier)
 
+- Added comment on inappropriate use of EC_IllegalCall.
+  Affects: dcmnet/libsrc/scpthrd.cc
+
 - Updated version number of snapshot compilers:
   Updated the version number of the Linux and Windows compilers the DCMTK
   snapshot has been tested with.

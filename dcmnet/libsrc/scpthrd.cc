@@ -36,7 +36,7 @@ DcmThreadSCP::DcmThreadSCP()
 DcmThreadSCP::~DcmThreadSCP()
 {
   // Nothing to do
- }
+}
 
 // ----------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ OFCondition DcmThreadSCP::setSharedConfig(const DcmSharedSCPConfig& config)
 {
   if (isConnected())
   {
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   }
   m_cfg = config;
   return EC_Normal;
