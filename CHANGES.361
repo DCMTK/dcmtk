@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.05 (riesmeier)
 
+- Fixed various oddities and inconsistencies:
+  Fixed various oddities and inconsistencies regarding the C-MOVE originator
+  information, e.g. the get and set methods.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dstorscu.cc
+           dcmnet/libsrc/scu.cc
+
 - Added comment on inappropriate use of EC_IllegalCall.
   Affects: dcmnet/libsrc/scpthrd.cc
 

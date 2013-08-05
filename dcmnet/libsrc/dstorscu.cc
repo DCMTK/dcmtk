@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -228,12 +228,13 @@ OFBool DcmStorageSCU::getReadFromDICOMDIRMode() const
     return ReadFromDICOMDIRMode;
 }
 
-OFBool DcmStorageSCU::getMOVEOriginatorInfo(OFString& aeTitle,
-                                            Uint16& messageID) const
+
+OFBool DcmStorageSCU::getMOVEOriginatorInfo(OFString &aeTitle,
+                                            Uint16 &messageID) const
 {
     aeTitle = MoveOriginatorAETitle;
     messageID = MoveOriginatorMsgID;
-    return ( !aeTitle.empty() || (messageID !=0) );
+    return !aeTitle.empty() || (messageID != 0);
 }
 
 
@@ -267,11 +268,11 @@ void DcmStorageSCU::setReadFromDICOMDIRMode(const OFBool readMode)
 }
 
 
-void DcmStorageSCU::setMOVEOriginatorInfo(const OFString& AETitle,
-                                          const unsigned short& msgID)
+void DcmStorageSCU::setMOVEOriginatorInfo(const OFString &aeTitle,
+                                          const Uint16 messageID)
 {
-  MoveOriginatorAETitle = AETitle;
-  MoveOriginatorMsgID   = msgID;
+    MoveOriginatorAETitle = aeTitle;
+    MoveOriginatorMsgID = messageID;
 }
 
 

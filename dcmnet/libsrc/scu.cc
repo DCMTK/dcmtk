@@ -659,8 +659,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      const OFString &dicomFile,
                                      DcmDataset *dataset,
                                      Uint16 &rspStatusCode,
-                                     const OFString& moveOriginatorAETitle,
-                                     const unsigned short& moveOriginatorMsgID)
+                                     const OFString &moveOriginatorAETitle,
+                                     const Uint16 moveOriginatorMsgID)
 {
   // Do some basic validity checks
   if (!isConnected())

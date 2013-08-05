@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,14 +151,14 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      */
     OFBool getReadFromDICOMDIRMode() const;
 
-    /** Get C-MOVE originator information if set.
-     *  @param  aeTitle  The AE Title of the originating C-MOVE client. Empty if not set.
-     *  @param  messageID  The message ID used within the originating C-MOVE request.
-     *                     0 if not set.
-     *  @return OFTrue if either of both params is set
+    /** get C-MOVE originator information (if set)
+     *  @param  aeTitle    the AE title of the originating C-MOVE client.  Empty if not set.
+     *  @param  messageID  the message ID used within the originating C-MOVE request.  0 if
+     *                     not set.
+     *  @return OFTrue if either of both parameters is set
      */
-    OFBool getMOVEOriginatorInfo(OFString& aeTitle,
-                                 Uint16& messageID) const;
+    OFBool getMOVEOriginatorInfo(OFString &aeTitle,
+                                 Uint16 &messageID) const;
 
     /** set mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
@@ -200,15 +200,17 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      */
     void setReadFromDICOMDIRMode(const OFBool readMode);
 
-    /** If the C-STORE operation was initiated by a client's C-MOVE request, it is possible
-     *  to convey the original MOVE client's information (AE title and the message ID of
-     *  the corresponding C-MOVE message) as part of the C-STORE messages in order to
-     *  inform the C-STORE receiver (SCP) about the original sender.
-     *  @param  AETitle   The AE title of the sender. If empty, none is sent.
-     *  @param  msgID     Message ID of original C-MOVE request. If 0, none is sent.
+    /** set C-MOVE originator information.
+     *  If the C-STORE operation was initiated by a client's C-MOVE request, it is possible
+     *  to convey the C-MOVE originating information (AE title and the message ID of the
+     *  corresponding C-MOVE message) as part of the C-STORE messages in order to inform the
+     *  C-STORE receiver (Storage SCP) about the original sender (Move SCU).
+     *  @param  aeTitle    the AE title of the originating C-MOVE client. If empty, none is
+     *                     sent.
+     *  @param  messageID  message ID of the originating C-MOVE request.  If 0, none is sent.
      */
-    void setMOVEOriginatorInfo(const OFString& AETitle ="",
-                               const unsigned short& msgID = 0);
+    void setMOVEOriginatorInfo(const OFString &aeTitle = "",
+                               const Uint16 messageID = 0);
 
     /** reset the sent status for all SOP instances in the transfer list.  This alllows for
      *  sending the same SOP instances again - on the same or a different association.

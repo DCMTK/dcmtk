@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2012, OFFIS e.V.
+ *  Copyright (C) 2008-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -276,7 +276,7 @@ public:
    *                               client's AE title.
    *  @param moveOriginatorMsgID   [in] If this C-STORE is started due to a C-MOVE request,
    *                               this parameter informs the C-STORE SCP about the C-MOVE
-   *                               message's message ID.
+   *                               message ID.
    *  @return EC_Normal if request could be issued and response was received successfully,
    *          error code otherwise. That means that if the receiver sends a response denoting
    *          failure of the storage request, EC_Normal will be returned.
@@ -285,8 +285,8 @@ public:
                                        const OFString &dicomFile,
                                        DcmDataset *dataset,
                                        Uint16 &rspStatusCode,
-                                       const OFString& moveOriginatorAETitle ="",
-                                       const unsigned short& moveOriginatorMsgID = 0);
+                                       const OFString &moveOriginatorAETitle = "",
+                                       const Uint16 moveOriginatorMsgID = 0);
 
   /** Sends a C-MOVE Request on given presentation context and receives list of responses.
    *  The function receives the first response and then calls the function handleMOVEResponse()
