@@ -267,7 +267,7 @@ template<typename SCP = DcmThreadSCP, typename SCPPool = DcmBaseSCPPool, typenam
 class DcmSCPPool : public SCPPool
 {
 public:
-	  /** Default construct a DcmSCPPool object.
+    /** Default construct a DcmSCPPool object.
      */
     DcmSCPPool() : SCPPool()
     {
@@ -280,7 +280,7 @@ private:
     struct SCPWorker : public BaseSCPWorker
                      , private SCP
     {
-		/** Construct a SCPWorker for being used by the given DcmSCPPool.
+    /** Construct a SCPWorker for being used by the given DcmSCPPool.
      *  @param pool the DcmSCPPool object this Worker belongs to.
      */
     SCPWorker( DcmSCPPool& pool )
@@ -290,10 +290,10 @@ private:
 
     }
 
-		/** Set the shared configuration for this worker.
-		 *  @param config a DcmSharedSCPConfig object to be used by this worker.
+    /** Set the shared configuration for this worker.
+     *  @param config a DcmSharedSCPConfig object to be used by this worker.
      *  @return the result of the underlying SCP implemtation.
-		 */
+     */
     virtual OFCondition setSharedConfig(const DcmSharedSCPConfig& config)
     {
         return SCP::setSharedConfig(config);
@@ -320,7 +320,7 @@ private:
     }
     };
 
-	/** Create a worker to be used for handling a request.
+  /** Create a worker to be used for handling a request.
    *  @return a pointer to a newly created SCP worker.
    */
   virtual BaseSCPWorker* createSCPWorker()

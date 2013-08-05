@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.05 (riesmeier)
 
+- Replaced tabulator by space characters.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
 - Fixed various oddities and inconsistencies:
   Fixed various oddities and inconsistencies regarding the C-MOVE originator
   information, e.g. the get and set methods.
