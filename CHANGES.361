@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.05 (riesmeier)
+
+- Updated version number of snapshot compilers:
+  Updated the version number of the Linux and Windows compilers the DCMTK
+  snapshot has been tested with.
+  Affects: INSTALL
+
 **** Changes from 2013.08.01 (riesmeier)
 
 - Fixed wrong VR for private AGFA IMPAX tag.

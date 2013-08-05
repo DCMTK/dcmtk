@@ -9,10 +9,10 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
  development snapshot (version 3.6.1).  This will be done for the next release,
  which will probably be called version 3.6.2.
 
- The toolkit should compile on Linux systems with gcc 4.4.5 since this is our
+ The toolkit should compile on Linux systems with gcc 4.7.2 since this is our
  main development platform.  Also on Windows systems, it usually works with
- VisualStudio 2008.  However, there is no guarantee that the software also
- compiles on your system.
+ VisualStudio 2008 and 2010.  However, there is no guarantee that the software
+ also compiles on your system.
 -------------------------------------------------------------------------------
 
 
@@ -741,4 +741,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2013-05-15 (Riesmeier)
+Last revised: 2013-08-05 (Riesmeier)
