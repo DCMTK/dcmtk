@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.05 (riesmeier)
 
+- Fixed various oddities and inconsistencies:
+  Fixed various oddities and inconsistencies regarding the documentation style
+  (e.g. undocumented parameters) and the source code formatting.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
 - Replaced tabulator by space characters.
   Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
 
