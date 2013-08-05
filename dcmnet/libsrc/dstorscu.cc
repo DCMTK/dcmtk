@@ -899,6 +899,9 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                 notifySOPInstanceSent(**CurrentTransferEntry);
             }
             ++CurrentTransferEntry;
+            // check whether the sending process should be stopped
+            if (shouldStopAfterCurrentSOPInstance())
+                break;
         }
     } else {
         // report an error to the caller
@@ -913,10 +916,11 @@ void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry &transferEntry)
     // do nothing in the default implementation
 }
 
+
 OFBool DcmStorageSCU::shouldStopAfterCurrentSOPInstance()
 {
-  // should always continue in default implementation
-  return OFFalse;
+    // should always continue in the default implementation
+    return OFFalse;
 }
 
 
@@ -1316,4 +1320,3 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
     }
     return status;
 }
-

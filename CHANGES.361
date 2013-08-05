@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.05 (riesmeier)
 
+- Really call shouldStopAfterCurrentSOPInstance():
+  Although the method shouldStopAfterCurrentSOPInstance() has been introduced
+  with commit 65f2966, it was never called during sendSOPInstances(), so the
+  sending process could not be stopped (as described in the documentation).
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
 - Fixed various oddities and inconsistencies:
   Fixed various oddities and inconsistencies regarding the documentation style
   (e.g. undocumented parameters) and the source code formatting.

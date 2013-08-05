@@ -324,6 +324,9 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *  transfer is never stopped when the DIMSE status is different from 0x0000 (success).
      *  Each time a SOP instance from the transfer list has been processed, the virtual method
      *  notifySOPInstanceSent() is called, which can be overwritten by a derived class.
+     *  The sending process can be stopped by overwriting shouldStopAfterCurrentSOPInstance()
+     *  in a derived class.  The sending process can be continued with the next SOP instance
+     *  by calling sendSOPInstances() again.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition sendSOPInstances();
@@ -525,21 +528,21 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 
     /** This method is called each time a SOP instance is sent to a peer.  Since it is called
      *  after the SOP instance has been processed, the transfer entry passed to this method
-     *  contains current information, e.g. the DIMSE status of the C-STORE response.  This also
-     *  allows for counting the number of successful and failed transfers.
+     *  contains current information, e.g. the DIMSE status of the C-STORE response.  This
+     *  also allows for counting the number of successful and failed transfers.
      *  @param  transferEntry  reference to current transfer entry that has been processed
      */
     virtual void notifySOPInstanceSent(const TransferEntry &transferEntry);
 
-    /** This method is called each time after a SOP instance is sent to a peer. If the
-     *  function returns OFTrue, the SCU will stop sending, and behaves like it has already
-     *  sent the last instance to the SCP. This function always returns OFFalse in the
-     *  default implementation but may be overwritten by derived SCU classes.
-     *  This could for example make sense, if one is transferring SOP instances due to a
-     *  C-MOVE request, which is externally cancelled by a C-CANCEL message.
-     *  @return  OFTrue if sending should stop after current dataset, OFFalse otherwise.
+    /** This method is called each time after a SOP instance is sent to a peer.  If the
+     *  return value is OFTrue, the SCU will stop the sending process after the current SOP
+     *  instance.  This could for example make sense when transferring SOP instances due to
+     *  a C-MOVE request, which is externally cancelled by a C-CANCEL message.  The default
+     *  implementation always returns OFFalse.  A derived class may change this behavior.
+     *  @return OFTrue if sending should stop after current SOP instance, OFFalse otherwise.
      */
     virtual OFBool shouldStopAfterCurrentSOPInstance();
+
 
   private:
 
