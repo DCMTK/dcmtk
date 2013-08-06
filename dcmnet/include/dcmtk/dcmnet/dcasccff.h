@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,22 +15,22 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmAssociationConfigurationFile
- * 
+ *
  */
 
 #ifndef DCASCCFF_H
 #define DCASCCFF_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
+#include "dcmtk/ofstd/ofcond.h"    /* for class OFCondition */
 #include "dcmtk/dcmnet/dndefine.h"
 
 class DcmAssociationConfiguration;
 class OFConfigFile;
 
-/** helper class that encapsulated methods for filling 
+/** helper class that encapsulated methods for filling
  *  a DcmAssociationConfiguration object from a config file
  */
 class DCMTK_DCMNET_EXPORT DcmAssociationConfigurationFile

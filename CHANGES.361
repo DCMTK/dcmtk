@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.06 (riesmeier)
 
+- Removed trailing space characters:
+  Removed trailing space characters and fixed other minor issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/dcasccff.h
+           dcmnet/include/dcmtk/dcmnet/dcasccfg.h
+           dcmnet/libsrc/dcasccff.cc
+           dcmnet/libsrc/dcasccfg.cc
+
 - Fixed further documentation issues.
   Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,8 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
+ *    class DcmAssociationConfiguration
  *
  */
 
@@ -23,7 +24,7 @@
 #define DCASCCFG_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
+#include "dcmtk/ofstd/ofcond.h"    /* for class OFCondition */
 #include "dcmtk/dcmnet/assoc.h"    /* for T_ASC_Parameters */
 #include "dcmtk/dcmnet/dccftsmp.h" /* for class DcmTransferSyntaxMap */
 #include "dcmtk/dcmnet/dccfpcmp.h" /* for class DcmPresentationContextMap */
@@ -84,8 +85,8 @@ public:
     const char *key,
     const char *transferSyntaxUID);
 
-  /** adds the given abstract syntax UID and transfer syntax list key to 
-   *  the list of presentation contexts maintained under the given key. 
+  /** adds the given abstract syntax UID and transfer syntax list key to
+   *  the list of presentation contexts maintained under the given key.
    *  If key is not yet known, a new list is created under this key.
    *  One list of presentation contexts may not have more than 128 entries
    *  because of the limitations of the DICOM ACSE protocol.
@@ -100,22 +101,22 @@ public:
     const char *abstractSyntaxUID,
     const char *transferSyntaxKey);
 
-  /** adds the given abstract syntax UID and role to 
-   *  the list of SCP/SCU role selection items maintained under the given key. 
+  /** adds the given abstract syntax UID and role to
+   *  the list of SCP/SCU role selection items maintained under the given key.
    *  If key is not yet known, a new list is created under this key.
    *  One abstract syntax UID must not appear twice within one list.
    *  @param key role list key, must not be NULL
    *  @param abstractSyntaxUID abstract syntax UID in symbolic or numeric format
    *  @param role role enum
    *  @return EC_Normal if successful, an error code otherwise
-   */  
+   */
   OFCondition addRole(
     const char *key,
     const char *abstractSyntaxUID,
     T_ASC_SC_ROLE role);
 
-  /** adds the given abstract syntax UID and extended negotiation data to 
-   *  the list of extended negotiation items maintained under the given key. 
+  /** adds the given abstract syntax UID and extended negotiation data to
+   *  the list of extended negotiation items maintained under the given key.
    *  If key is not yet known, a new list is created under this key.
    *  One abstract syntax UID must not appear twice within one list.
    *  @param key role list key, must not be NULL
@@ -123,7 +124,7 @@ public:
    *  @param rawData pointer to raw data, must not be NULL
    *  @param length length of data block pointed to by data, in bytes
    *  @return EC_Normal if successful, an error code otherwise
-   */  
+   */
   OFCondition addExtendedNegotiation(
     const char *key,
     const char *abstractSyntaxUID,
@@ -142,7 +143,7 @@ public:
    *  @param roleSelectionKey role selection list key, may be NULL
    *  @param extendedNegotiationKey extended negotiation list key, may be NULL
    *  @return EC_Normal if successful, an error code otherwise
-   */  
+   */
   OFCondition addProfile(
     const char *key,
     const char *presentationContextKey,
