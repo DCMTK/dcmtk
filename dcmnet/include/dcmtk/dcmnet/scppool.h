@@ -50,7 +50,8 @@ public:
   {
     public:
 
-      /** Virtual Destructor */
+      /** Virtual Destructor
+       */
       virtual ~DcmBaseSCPWorker();
 
       /** Set the assocation that should be handled by the worker thread.
@@ -128,12 +129,12 @@ public:
    */
   virtual ~DcmBaseSCPPool();
 
-  /** Set the number of maximum permitted connections, i.e.\ threads.
-   *  @param maxWorkers [in] Number of threads permitted to exist within pool.
+  /** Set the number of maximum permitted connections, i.e.\ threads/workers.
+   *  @param maxWorkers Number of threads permitted to exist within pool.
    */
   virtual void setMaxThreads(const Uint16 maxWorkers);
 
-  /** Get number of maxmium permitted connections, i.e.\ threads.
+  /** Get number of maxmium permitted connections, i.e.\ threads/workers.
    *  @return Number of threads permitted to exist within pool.
    */
   virtual Uint16 getMaxThreads();
@@ -162,7 +163,7 @@ public:
    */
   virtual DcmSCPConfig& getConfig();
 
-  /** If enabled, the pool will return from listening for incoming requests
+  /* If enabled, the pool will return from listening for incoming requests
    *  as soon as the last worker is idle, i.e.\ no worker is handling a DICOM
    *  association any more.
    *  TODO: This functionality is not completely tested so far and thus
@@ -214,7 +215,7 @@ protected:
 
 private:
 
-  /// Current run mode of pool. Currently, only listen is implemented.
+  /// Current run mode of pool. Currently, only "listen" is implemented.
   enum runmode
   {
     /// Listen for new connections
@@ -234,14 +235,14 @@ private:
 
   /// SCP configuration to be used by pool and all workers
   DcmSCPConfig m_cfg;
-  /// Maximum number of workers that can exist at a time. Thus limits
-  /// the maximum number of connections for the pool since every
-  /// worker servers one connection at a time.
+  /// Maximum number of workers that can exist at a time. Thus limits the
+  /// maximum number of connections for the pool since every worker serves
+  /// one connection at a time.
   Uint16 m_maxWorkers;
 
   // Not implemented yet: Can be helpful if all workers are busy but incoming
-  // associations should then not be rejected immediately but only after a specific
-  // timeout
+  // associations should then not be rejected immediately but only after a
+  // specific timeout
   // Uint16 m_workersBusyTimeout;
 
   // Not implemented yet: list of associations that are waiting for a worker
@@ -253,8 +254,8 @@ private:
 
 /** Implementation of DICOM SCP server pool. The pool waits for incoming
  *  TCP/IP connection requestions, accepts them on TCP/IP level and hands the
- *  connection to a worker thread. The maximum number of worker threas, i.e.
- *  simultaonous connections, is configurable. The default is 5. At the moment,
+ *  connection to a worker thread. The maximum number of worker threads, i.e.
+ *  simultaneous connections, is configurable. The default is 5. At the moment,
  *  if no free worker slots are available, an incoming request is rejected with
  *  the error "local limit exceeded", i.e. those requests are not queued. This
  *  behaviour might change in the future.
@@ -272,6 +273,7 @@ template<typename SCP = DcmThreadSCP, typename SCPPool = DcmBaseSCPPool, typenam
 class DcmSCPPool : public SCPPool
 {
 public:
+
     /** Default construct a DcmSCPPool object.
      */
     DcmSCPPool() : SCPPool()
@@ -306,7 +308,7 @@ private:
 
         /** Determine if the Worker is currently handling any request.
          *  @return OFTrue if the underlying SCP implementation is currently
-         *          handling a request, OFFalse otherwhise.
+         *          handling a request, OFFalse otherwise.
          */
         virtual OFBool busy()
         {
@@ -314,7 +316,7 @@ private:
         }
 
         /** Perform SCP's duties on an already accepted (TCP/IP) connection.
-         *  @param The association to be run
+         *  @param assoc The association to be run
          *  @return Returns EC_Normal if negotation could take place and no
          *          serious network error has occured or the given association
          *          is invalid. Error code otherwise.

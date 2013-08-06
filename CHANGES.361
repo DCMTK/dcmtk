@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.06 (riesmeier)
+
+- Fixed further documentation issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
 **** Changes from 2013.08.05 (riesmeier)
 
 - Really call shouldStopAfterCurrentSOPInstance():
