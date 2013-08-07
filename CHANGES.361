@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.07 (riesmeier)
 
+- Enable WITH_THREADS for thread-related classes.
+  Affects: doxygen/htmldocs.cfg
+
 - Fixed various typos and other Doxygen issues.
   Affects: dcmnet/docs/cptscp.doxygen
            dcmnet/include/dcmtk/dcmnet/scppool.h
