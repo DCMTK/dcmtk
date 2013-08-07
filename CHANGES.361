@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.07 (riesmeier)
 
+- Added releaseAssociation() and abortAssociation():
+  Added two new methods releaseAssociation() and abortAssociation() that should
+  be used instead of closeAssociation(). The latter is now deprecated and will
+  probably be made "protected" in the future. Closes DCMTK feature #531.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dstorscu.cc
+           dcmnet/libsrc/scu.cc
+
 - Fixed various typos.
   Affects: dcmnet/libsrc/scp.cc
            dcmnet/libsrc/scppool.cc

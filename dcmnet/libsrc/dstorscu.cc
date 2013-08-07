@@ -924,19 +924,6 @@ OFBool DcmStorageSCU::shouldStopAfterCurrentSOPInstance()
 }
 
 
-OFCondition DcmStorageSCU::releaseAssociation()
-{
-    OFCondition status = DIMSE_ILLEGALASSOCIATION;
-    // check whether there is an active association
-    if (isConnected())
-    {
-        closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
-        status = EC_Normal;
-    }
-    return status;
-}
-
-
 void DcmStorageSCU::getStatusSummary(OFString &summary) const
 {
     OFOStringStream stream;

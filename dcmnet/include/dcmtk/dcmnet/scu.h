@@ -115,6 +115,7 @@ private:
 
   /** Private undefined assignment operator.
    *  @param other The find response that should be assigned from
+   *  @return Reference to this
    */
   QRResponse &operator=(const QRResponse &other);
 };
@@ -169,6 +170,7 @@ private:
 
   /** Private undefined assignment operator
    *  @param other Response that should be assigned from
+   *  @return Reference to this
    */
   RetrieveResponse &operator=(const RetrieveResponse &other);
 };
@@ -543,9 +545,25 @@ public:
                                                const int timeout = 0);
 
   /** Closes the association created by this SCU. Also resets the current association.
+   *  @deprecated The use of this method is deprecated. Please use releaseAssociation()
+   *    or abortAssociation() instead.
    *  @param closeType [in] Define whether to release or abort the association
    */
   virtual void closeAssociation(const DcmCloseAssociationType closeType);
+
+  /** Releases the current association by sending an A-RELEASE request to the SCP.
+   *  Please note that this release only applies to associations that have been
+   *  created by calling initNetwork() and negotiateAssociation().
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition releaseAssociation();
+
+  /** Aborts the current association by sending an A-ABORT request to the SCP.
+   *  Please note that this abort only applies to associations that have been
+   *  created by calling initNetwork() and negotiateAssociation().
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition abortAssociation();
 
   /* Set methods */
 

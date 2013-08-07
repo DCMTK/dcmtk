@@ -503,7 +503,7 @@ void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
 {
   if (!isConnected())
   {
-    DCMNET_WARN("Closing of association request but no association active (ignored)");
+    DCMNET_WARN("Closing of association requested but no association active (ignored)");
     return;
   }
 
@@ -550,6 +550,32 @@ void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
 
   // destroy and free memory of internal association and network structures
   freeNetwork();
+}
+
+
+OFCondition DcmSCU::releaseAssociation()
+{
+    OFCondition status = DIMSE_ILLEGALASSOCIATION;
+    // check whether there is an active association
+    if (isConnected())
+    {
+        closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
+        status = EC_Normal;
+    }
+    return status;
+}
+
+
+OFCondition DcmSCU::abortAssociation()
+{
+    OFCondition status = DIMSE_ILLEGALASSOCIATION;
+    // check whether there is an active association
+    if (isConnected())
+    {
+        closeAssociation(DCMSCU_ABORT_ASSOCIATION);
+        status = EC_Normal;
+    }
+    return status;
 }
 
 

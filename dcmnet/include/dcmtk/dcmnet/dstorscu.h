@@ -331,13 +331,6 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      */
     OFCondition sendSOPInstances();
 
-    /** release the current association by sending an A-RELEASE request to the SCP.  Please
-     *  note that this release only applies to associations that have been created by calling
-     *  DcmSCU::initNetwork() and DcmSCU::negotiateAssociation().
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition releaseAssociation();
-
     /** get some status information on the overall sending process.  This text can for example
      *  be output to the logger (on the level at the user's option).
      *  @param  summary  reference to a string in which the summary is stored
