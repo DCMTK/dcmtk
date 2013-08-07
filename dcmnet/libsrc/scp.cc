@@ -115,7 +115,7 @@ OFCondition DcmSCP::listen()
   // Return to normal uid so that we can't do too much damage in case
   // things go very wrong. Only works if the program is setuid root,
   // and run by another user. Running as root user may be
-  // potentially disasterous if this program screws up badly.
+  // potentially disastrous if this program screws up badly.
   setuid( getuid() );
 #endif
 
@@ -123,7 +123,7 @@ OFCondition DcmSCP::listen()
   // successfully. Now, we want to start handling all incoming requests. Since
   // this activity is supposed to represent a server process, we do not want to
   // terminate this activity (unless indicated by the stopAfterCurrentAssociation()
-  // method). Hence, create an inifinite while-loop.
+  // method). Hence, create an infinite while-loop.
   while( cond.good() && !stopAfterCurrentAssociation() )
   {
     // Wait for an association and handle the requests of
@@ -314,7 +314,7 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network *network)
   OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_cfg->getMaxReceivePDULength(), NULL, NULL, OFFalse,
                                              m_cfg->getConnectionBlockingMode(), OFstatic_cast(int, timeout) );
 
-  // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
+  // just return, if timeout occurred (DUL_NOASSOCIATIONREQUEST)
   if ( cond == DUL_NOASSOCIATIONREQUEST )
   {
     return EC_Normal;
@@ -334,7 +334,7 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network *network)
 OFCondition DcmSCP::processAssociationRQ()
 {
   DcmSCPActionType desiredAction = DCMSCP_ACTION_UNDEFINED;
-  if ( (m_assoc == NULL) ||  (m_assoc->params == NULL) )
+  if ( (m_assoc == NULL) || (m_assoc->params == NULL) )
     return ASC_NULLKEY;
 
   // call notifier function
@@ -396,8 +396,8 @@ OFCondition DcmSCP::processAssociationRQ()
 
   /* If we get to this point the association shall be negotiated.
      Thus, for every presentation context it is checked whether
-     it can be accepted. However, this is only a "dry" run, i.e. there
-     is not yet sent a response message to the SCU
+     it can be accepted. However, this is only a "dry" run, i.e.
+     there is not yet sent a response message to the SCU
    */
   cond = negotiateAssociation();
   if( cond.bad() )
@@ -584,7 +584,7 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
 
   // Send back response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
   T_DIMSE_C_FindRSP &findRsp = response.msg.CFindRSP;
   response.CommandField = DIMSE_C_FIND_RSP;
@@ -641,7 +641,7 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
 
   // Send back response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
   T_DIMSE_C_MoveRSP &moveRsp = response.msg.CMoveRSP;
   response.CommandField = DIMSE_C_MOVE_RSP;
@@ -699,7 +699,7 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
 
   // Send back response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
   T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
   response.CommandField = DIMSE_N_ACTION_RSP;
@@ -805,7 +805,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
 
   // Send back response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
   T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
   response.CommandField = DIMSE_N_EVENT_REPORT_RSP;
@@ -1105,7 +1105,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message request;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&request, sizeof(request));
   T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
   DcmDataset *statusDetail = NULL;

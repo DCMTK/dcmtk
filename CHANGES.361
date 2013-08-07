@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.07 (riesmeier)
+
+- Fixed various typos.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scppool.cc
+
 **** Changes from 2013.08.06 (riesmeier)
 
 - Removed trailing space characters:

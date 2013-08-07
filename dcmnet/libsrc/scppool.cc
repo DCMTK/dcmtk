@@ -18,7 +18,7 @@
  *  Purpose: Class listening for association requests and managing a pool of
  *  worker threads that each are waiting to take over a single incoming
  *  association. Thus, the pool can serve as many associations
- *  simultanously as the number of threads it is configured to create.
+ *  simultaneously as the number of threads it is configured to create.
  *
  */
 
@@ -95,10 +95,10 @@ OFCondition DcmBaseSCPPool::listen()
       }
     }
 
-    /* If error occured while receiving association, clean up */
+    /* If error occurred while receiving association, clean up */
     else
     {
-      /* Stop listening, if timeout occured, otherwise keep listening */
+      /* Stop listening, if timeout occurred, otherwise keep listening */
       if ( cond == DUL_NOASSOCIATIONREQUEST )
       {
         ASC_destroyAssociation( &assoc );
@@ -274,7 +274,7 @@ void DcmBaseSCPPool::notifyThreadExit(DcmBaseSCPPool::DcmBaseSCPWorker* thread,
 
 
 /* *********************************************************************** */
-/*                        DcmBaseSCPPool::BaseSCPWorker class                               */
+/*                        DcmBaseSCPPool::BaseSCPWorker class              */
 /* *********************************************************************** */
 
 DcmBaseSCPPool::DcmBaseSCPWorker::DcmBaseSCPWorker(DcmBaseSCPPool& pool)
