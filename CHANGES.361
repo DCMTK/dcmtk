@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.07 (riesmeier)
 
+- Fixed various typos and other Doxygen issues.
+  Affects: dcmnet/docs/cptscp.doxygen
+           dcmnet/include/dcmtk/dcmnet/scppool.h
+           dcmnet/libsrc/scppool.cc
+
 - Added releaseAssociation() and abortAssociation():
   Added two new methods releaseAssociation() and abortAssociation() that should
   be used instead of closeAssociation(). The latter is now deprecated and will

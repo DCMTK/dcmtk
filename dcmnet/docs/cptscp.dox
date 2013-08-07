@@ -1,12 +1,12 @@
-/** @defgroup SCPThread_Concept SCP Concept
+/** @defgroup SCPThread_Concept SCP Thread Concept
  *  A SCP object should follow this concept to be used in DcmSCPPool. The
- *  easiest and recommended way to follow this concept is to derieve your
+ *  easiest and recommended way to follow this concept is to derive your
  *  class from DcmThreadSCP.
  *  @ingroup Concepts
  *  @{
  */
 
-/** The SCP must be default constructable.
+/** The SCP must be default constructible.
  */
 DefaultConstructor();
 

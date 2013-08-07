@@ -18,7 +18,7 @@
  *  Purpose: Class listening for association requests and managing a pool of
  *           worker threads that each are waiting to take over a single incoming
  *           association. Thus, the pool can serve as many associations
- *           simultanously as the number of threads it is configured to create.
+ *           simultaneously as the number of threads it is configured to create.
  *
  */
 
@@ -54,7 +54,7 @@ public:
        */
       virtual ~DcmBaseSCPWorker();
 
-      /** Set the assocation that should be handled by the worker thread.
+      /** Set the association that should be handled by the worker thread.
        *  This must happen *before* actually calling run() (i.e. start()) on
        *  the worker.
        *  @param assoc The association that should be handled by the worker.
@@ -65,7 +65,7 @@ public:
       virtual OFCondition setAssociation(T_ASC_Association* assoc);
 
       /** Set SCP configuration that should be used by the worker in order
-       *  to handle incoming assiation requests (presentation contexts, etc.).
+       *  to handle incoming association requests (presentation contexts, etc.).
        *  @param config A DcmSharedSCPConfig object to be used by this worker.
        *  @return EC_Normal, if configuration is accepted, error code
        *          otherwise.
@@ -103,7 +103,7 @@ public:
        *  including accepting it, refusing it, handling incoming DIMSE
        *  messages, freeing memory of the T_ASC_Association struct,
        *  and the like.
-       *  @param assoc Pointer to the assocation that should be handled.
+       *  @param assoc Pointer to the association that should be handled.
        *         Must not be NULL.
        *  @return EC_Normal if association was handled properly (i.e.
        *          was handled, refused, ... Only in case of connection
@@ -134,7 +134,7 @@ public:
    */
   virtual void setMaxThreads(const Uint16 maxWorkers);
 
-  /** Get number of maxmium permitted connections, i.e.\ threads/workers.
+  /** Get number of maximum permitted connections, i.e.\ threads/workers.
    *  @return Number of threads permitted to exist within pool.
    */
   virtual Uint16 getMaxThreads();
@@ -167,13 +167,13 @@ public:
    *  as soon as the last worker is idle, i.e.\ no worker is handling a DICOM
    *  association any more.
    *  TODO: This functionality is not completely tested so far and thus
-   *  outcommented.
+   *  commented out.
    */
   // virtual void stopAfterCurrentAssociations();
 
 protected:
 
-  /** Constructor. Initializies internal member variables.
+  /** Constructor. Initializes internal member variables.
    */
   DcmBaseSCPPool();
 
@@ -215,14 +215,14 @@ protected:
 
 private:
 
-  /// Current run mode of pool. Currently, only "listen" is implemented.
+  /// Possible run modes of pool
   enum runmode
   {
     /// Listen for new connections
     LISTEN,
     /// Reserved for later use
     STOP,
-    /// Reserved for later use
+    /// Shutting down worker threads
     SHUTDOWN
   };
 
@@ -249,11 +249,12 @@ private:
   // becoming available
   // OFList<T_ASC_Association*> m_waiting;
 
+  /// Current run mode of pool
   runmode m_runMode;
 };
 
 /** Implementation of DICOM SCP server pool. The pool waits for incoming
- *  TCP/IP connection requestions, accepts them on TCP/IP level and hands the
+ *  TCP/IP connection requests, accepts them on TCP/IP level and hands the
  *  connection to a worker thread. The maximum number of worker threads, i.e.
  *  simultaneous connections, is configurable. The default is 5. At the moment,
  *  if no free worker slots are available, an incoming request is rejected with
@@ -262,7 +263,7 @@ private:
  *  @tparam SCP the service class provider to be instantiated for each request,
  *    should follow the @ref SCPThread_Concept.
  *  @tparam SCPPool the base SCP pool class to use. Use this parameter if you
- *    want to use a different implentation (probably derived from
+ *    want to use a different implementation (probably derived from
  *    DcmBaseSCPPool) as base class for implementing the SCP pool.
  *  @tparam BaseSCPWorker the base SCP worker class to use. Use this parameter
  *    if you want to use a different implementation of the SCP worker, e.g. for
@@ -283,7 +284,7 @@ public:
 private:
 
     /** Helper class to use any class as an SCPWorker as long as it is a model
-     *  of the @ref SCP_concept.
+     *  of the @ref SCPThread_Concept.
      */
     struct SCPWorker : public BaseSCPWorker
                      , private SCP
@@ -299,7 +300,7 @@ private:
 
         /** Set the shared configuration for this worker.
          *  @param config a DcmSharedSCPConfig object to be used by this worker.
-         *  @return the result of the underlying SCP implemtation.
+         *  @return the result of the underlying SCP implementation.
          */
         virtual OFCondition setSharedConfig(const DcmSharedSCPConfig& config)
         {
@@ -317,8 +318,8 @@ private:
 
         /** Perform SCP's duties on an already accepted (TCP/IP) connection.
          *  @param assoc The association to be run
-         *  @return Returns EC_Normal if negotation could take place and no
-         *          serious network error has occured or the given association
+         *  @return Returns EC_Normal if negotiation could take place and no
+         *          serious network error has occurred or the given association
          *          is invalid. Error code otherwise.
          */
         virtual OFCondition workerListen(T_ASC_Association* const assoc)

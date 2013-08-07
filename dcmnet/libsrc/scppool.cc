@@ -167,7 +167,8 @@ void DcmBaseSCPPool::setMaxThreads(const Uint16 maxWorkers)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,const DcmSharedSCPConfig& sharedConfig)
+OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,
+                                           const DcmSharedSCPConfig& sharedConfig)
 {
   /* Try to find idle worker thread */
   OFCondition result = EC_Normal;
@@ -228,7 +229,7 @@ OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,const DcmSha
 // ----------------------------------------------------------------------------
 
 void DcmBaseSCPPool::rejectAssociation(T_ASC_Association *assoc,
-                                   const T_ASC_RejectParametersReason& reason)
+                                       const T_ASC_RejectParametersReason& reason)
 {
   T_ASC_RejectParameters rej;
   rej.result = ASC_RESULT_REJECTEDTRANSIENT;
