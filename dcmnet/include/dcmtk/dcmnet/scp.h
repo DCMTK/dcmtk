@@ -154,7 +154,7 @@ public:
    *  @param xferSyntaxes   [in] List of transfer syntaxes (UIDs) that should be supported
    *                             for the given abstract syntax name
    *  @param role           [in] The role to be negotiated
-   *  @param profile        [in] The profile the abstract snytax should be added to. The
+   *  @param profile        [in] The profile the abstract syntax should be added to. The
    *                             default is to add it to the DcmSCP's internal standard
    *                             profile called "DEFAULT".
    *  @return EC_Normal if adding was successful, an error code otherwise
@@ -170,16 +170,16 @@ public:
    */
   void setPort(const Uint16 port);
 
-  /** Set AETitle of the server
-   *  @param aetitle [in] The AETitle of the server. By default, all SCU association requests
-   *                      calling another AETitle will be rejected. This behaviour can be
+  /** Set AE title of the server
+   *  @param aetitle [in] The AE title of the server. By default, all SCU association requests
+   *                      calling another AE title will be rejected. This behaviour can be
    *                      changed by using the setRespondWithCalledAETitle() method.
    */
   void setAETitle(const OFString &aetitle);
 
-  /** Set SCP to use the called AETitle from the SCU request for the response, i.e.\ the SCP
+  /** Set SCP to use the called AE title from the SCU request for the response, i.e.\ the SCP
    *  will always respond with setting it's own name to the one the SCU used for calling.
-   *  Overrides any AETitle eventually set with setAETitle().
+   *  Overrides any AE title eventually set with setAETitle().
    *  @param useCalled [in] If OFTrue, the SCP will use the called AE title from the request
    *                        for responding. DcmSCP's default is OFFalse.
    */
@@ -192,7 +192,7 @@ public:
    */
   virtual OFCondition loadAssociationCfgFile(const OFString &assocFile);
 
-  /** If an association profile should be selected, either by loading an associaton
+  /** If an association profile should be selected, either by loading an association
    *  configuration file or using the addAbstractSyntax() function, one of those can be
    *  selected and checked for validity using this method.
    *  @param profileName [in] The name of the association profile which must be configured
@@ -208,7 +208,7 @@ public:
    */
   void forceAssociationRefuse(const OFBool doRefuse);
 
-  /** Set maximum PDU size the SCP is able to receive. This size is sent in associaton
+  /** Set maximum PDU size the SCP is able to receive. This size is sent in association
    *  response message to SCU.
    *  @param maxRecPDU [in] The maximum PDU size to use in bytes
    */
@@ -275,14 +275,14 @@ public:
   Uint16 getPort() const;
 
   /** Returns SCP's own AE title. Only used if the SCP is not configured to respond with the
-   *  called AE Title the SCU uses for association negotiation, see setRespondWithCalledAETitle().
-   *  @return The configured AETitle
+   *  called AE title the SCU uses for association negotiation, see setRespondWithCalledAETitle().
+   *  @return The configured AE title
    */
   const OFString &getAETitle() const;
 
-  /** Returns whether SCP uses the called AE Title from SCU requests to respond to connection
-   *  requests instead of a configured AE Title
-   *  @return OFTrue, if the SCU's calling AE Title is utilized, OFFalse otherwise
+  /** Returns whether SCP uses the called AE title from SCU requests to respond to connection
+   *  requests instead of a configured AE title
+   *  @return OFTrue, if the SCU's calling AE title is utilized, OFFalse otherwise
    */
   OFBool getRespondWithCalledAETitle() const;
 
@@ -366,14 +366,14 @@ public:
    */
   Uint16 numAssociations() const;
 
-  /** Returns AE Title the SCU used as called AE Title in associaton request
-   *  @return AE Title the SCP was called with. Empty string if SCP is currently not
+  /** Returns AE title the SCU used as called AE title in association request
+   *  @return AE title the SCP was called with. Empty string if SCP is currently not
    *          connected.
    */
   OFString getCalledAETitle() const;
 
-  /** Returns AE Title (calling AE Title) the SCU used for association request
-   *  @return Calling AE Title of SCU. Empty string if SCP is currently not connected.
+  /** Returns AE title (calling AE title) the SCU used for association request
+   *  @return Calling AE title of SCU. Empty string if SCP is currently not connected.
    */
   OFString getPeerAETitle() const;
 
@@ -433,27 +433,27 @@ protected:
   virtual void notifyAssociationRequest(const T_ASC_Parameters &params,
                                         DcmSCPActionType &desiredAction);
 
-  /** Overwrite this function if called AE title should undergoe checking. If
+  /** Overwrite this function if called AE title should undergo checking. If
    *  OFTrue is returned, the AE title is accepted and processing is continued.
    *  In case of OFFalse, the SCP will refuse the incoming association with
-   *  error "Called Application Entitity Title Not Recognized".
+   *  error "Called Application Entity Title Not Recognized".
    *  The standard handler always returns OFTrue.
    *  @param calledAE The called AE title the SCU used that should be checked
    *  @return OFTrue, if AE title is accepted, OFFalse otherwise
    */
   virtual OFBool checkCalledAETitleAccepted(const OFString& calledAE);
 
-  /** Overwrite this function if calling AE title should undergoe checking. If
+  /** Overwrite this function if calling AE title should undergo checking. If
    *  OFTrue is returned, the AE title is accepted and processing is continued.
    *  In case of OFFalse, the SCP will refuse the incoming association with
-   *  error "Calling Application Entitity Title Not Recognized".
+   *  error "Calling Application Entity Title Not Recognized".
    *  The standard handler always returns OFTrue.
    *  @param callingAE The calling AE title the SCU used that should be checked
    *  @return OFTrue, if AE title is accepted, OFFalse otherwise
    */
   virtual OFBool checkCallingAETitleAccepted(const OFString& callingAE);
 
-  /** Overwrite this function if calling IP should undergoe checking. Note
+  /** Overwrite this function if calling IP should undergo checking. Note
    *  that this function may also return a hostname instead. If
    *  OFTrue is returned, the IP is accepted and processing is continued.
    *  In case of OFFalse, the SCP will refuse the incoming association with
@@ -485,7 +485,7 @@ protected:
 
   /** Overwrite this function to be notified when a DIMSE error occurs.
    *  The standard handler only outputs error information to the logger.
-   *  @param cond [in] The DIMSE error occured.
+   *  @param cond [in] The DIMSE error occurred.
    */
   virtual void notifyDIMSEError(const OFCondition &cond);
 
@@ -758,7 +758,7 @@ protected:
   */
   virtual OFCondition negotiateAssociation();
 
-  /** This function takes care of refusing an assocation request
+  /** This function takes care of refusing an association request
    *  @param reason [in] The reason why the association request will be refused and that
    *                     will be reported to the SCU.
    */

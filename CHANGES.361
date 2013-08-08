@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.08 (riesmeier)
 
+- Fixed various typos.
+  Affects:dcmnet/include/dcmtk/dcmnet/scp.h
+
 - Added new condition constants:
   Added two new conditions constants for general directory-related errors:
   EC_DirectoryDoesNotExist and EC_DirectoryNotWritable.
