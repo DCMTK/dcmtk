@@ -82,7 +82,7 @@ void DcmSCU::freeNetwork()
   {
     ASC_destroyAssociationParameters(&m_params);
     m_params = NULL;
-    // make sure destroyAssocation does not try to free params a second time
+    // make sure destroyAssociation does not try to free params a second time
     // (happens in case we have already have an association structure)
     if (m_assoc)
       m_assoc->params = NULL;
@@ -132,7 +132,7 @@ OFCondition DcmSCU::initNetwork()
     return cond;
   }
 
-  /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+  /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
   cond = ASC_createAssociationParameters(&m_params, m_maxReceivePDULength);
   if (cond.bad())
   {
@@ -245,7 +245,7 @@ OFCondition DcmSCU::initNetwork()
     // add the presentation context
     cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID),
       (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes,(*contIt).roleSelect);
-    // if adding was successfull, prepare presentation context ID for next addition
+    // if adding was successful, prepare presentation context ID for next addition
     delete[] transferSyntaxes;
     transferSyntaxes = NULL;
     if (cond.bad())
@@ -609,7 +609,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 
   /* Now, assemble DIMSE message */
   T_DIMSE_Message msg;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&msg, sizeof(msg));
   T_DIMSE_C_EchoRQ* req = &(msg.msg.CEchoRQ);
   // Set type of message
@@ -639,7 +639,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 
   /* Receive response */
   T_DIMSE_Message rsp;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&rsp, sizeof(rsp));
 
   DcmDataset* statusDetail = NULL;
@@ -697,7 +697,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   T_ASC_PresentationContextID pcid = presID;
   DcmDataset* statusDetail = NULL;
   T_DIMSE_Message msg;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&msg, sizeof(msg));
   T_DIMSE_C_StoreRQ* req = &(msg.msg.CStoreRQ);
 
@@ -824,7 +824,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 
   /* Receive response */
   T_DIMSE_Message rsp;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&rsp, sizeof(rsp));
   cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
   if (cond.bad())
@@ -1005,7 +1005,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
         responses->push_back(moveRSP.release());
     }
   }
-  /* All responses received or break signal occured */
+  /* All responses received or break signal occurred */
   return cond;
 }
 
@@ -1070,7 +1070,7 @@ OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID /* pre
 
 
 /* ************************************************************************* */
-/*               C-GET and acommpanying C-STORE functionality                */
+/*               C-GET and accompanying C-STORE functionality                */
 /* ************************************************************************* */
 
 // Sends a C-GET Request on given presentation context
@@ -1089,7 +1089,7 @@ OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message msg;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&msg, sizeof(msg));
   T_DIMSE_C_GetRQ* req = &(msg.msg.CGetRQ);
   // Set type of message
@@ -1138,11 +1138,11 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
   OFString tempStr;
 
   // As long we want to continue (usually, as long as we receive more objects,
-  // i.e. the final C-GET reponse has not arrived yet)
+  // i.e. the final C-GET response has not arrived yet)
   while (continueSession)
   {
     T_DIMSE_Message rsp;
-    // Make sure everyhting is zeroed (especially options)
+    // Make sure everything is zeroed (especially options)
     bzero((char*)&rsp, sizeof(rsp));
 
     DcmDataset *statusDetail = NULL;
@@ -1270,7 +1270,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
     delete statusDetail; // should be NULL if not existing or added to response list
     statusDetail = NULL;
   }
-  /* All responses received or break signal occured */
+  /* All responses received or break signal occurred */
 
   return result;
 
@@ -1306,11 +1306,11 @@ OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID /* pres
   switch (response->m_status) {
   case STATUS_GET_Refused_OutOfResourcesNumberOfMatches:
     continueCGETSession = OFFalse;
-    DCMNET_ERROR("Out of Resouces - Unable to calculate number of matches");
+    DCMNET_ERROR("Out of Resources - Unable to calculate number of matches");
     break;
   case STATUS_GET_Refused_OutOfResourcesSubOperations:
     continueCGETSession = OFFalse;
-    DCMNET_ERROR("Out of Resouces - Unable to perform sub-operations");
+    DCMNET_ERROR("Out of Resources - Unable to perform sub-operations");
     break;
   case STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass:
     continueCGETSession = OFFalse;
@@ -1434,19 +1434,19 @@ OFCondition DcmSCU::sendSTOREResponse(T_ASC_PresentationContextID presID,
 {
   // Send back response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
   T_DIMSE_C_StoreRSP &storeRsp = response.msg.CStoreRSP;
   response.CommandField = DIMSE_C_STORE_RSP;
   storeRsp.MessageIDBeingRespondedTo = request.MessageID;
   storeRsp.DimseStatus = status;
   storeRsp.DataSetType = DIMSE_DATASET_NULL;
-  storeRsp.opts = 0;
   /* Following information is optional and normally not sent by the underlying
    * dcmnet routines. However, maybe this could be changed later, so insert it.
    */
   OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, request.AffectedSOPClassUID, sizeof(storeRsp.AffectedSOPClassUID));
   OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, request.AffectedSOPInstanceUID, sizeof(storeRsp.AffectedSOPInstanceUID));
+  storeRsp.opts = O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID;
 
   OFString tempStr;
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -1532,7 +1532,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message msg;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&msg, sizeof(msg));
 
   DcmDataset* statusDetail = NULL;
@@ -1573,7 +1573,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   while (waitForNextResponse)
   {
     T_DIMSE_Message rsp;
-    // Make sure everyhting is zeroed (especially options)
+    // Make sure everything is zeroed (especially options)
     bzero((char*)&rsp, sizeof(rsp));
 
     statusDetail = NULL;
@@ -1643,7 +1643,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
         responses->push_back(findRSP.release());
     }
   }
-  /* All responses received or break signal occured */
+  /* All responses received or break signal occurred */
   return EC_Normal;
 }
 
@@ -1698,7 +1698,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message msg;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&msg, sizeof(msg));
   T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
   // Set type of message
@@ -1763,7 +1763,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message request;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&request, sizeof(request));
   T_DIMSE_N_ActionRQ &actionReq = request.msg.NActionRQ;
   DcmDataset *statusDetail = NULL;
@@ -1889,7 +1889,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message request;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&request, sizeof(request));
 
   T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
@@ -1930,7 +1930,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   }
   // Receive response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
 
   cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
@@ -2010,7 +2010,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   T_ASC_PresentationContextID presID;
   T_ASC_PresentationContextID presIDdset;
   T_DIMSE_Message request;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&request, sizeof(request));
   T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
   DcmDataset *dataset = NULL;
@@ -2091,7 +2091,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
 
   // Send back response
   T_DIMSE_Message response;
-  // Make sure everyhting is zeroed (especially options)
+  // Make sure everything is zeroed (especially options)
   bzero((char*)&response, sizeof(response));
 
   T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;

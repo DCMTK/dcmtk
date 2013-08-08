@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.08 (riesmeier)
 
+- Use optional fields in sendSTOREResponse():
+  Made sure that the optional fields "Affected SOP Class UID" and "Affected SOP
+  Instance UID" in sendSTOREResponse() are really used. Also fixed some typos.
+  Affects: dcmnet/libsrc/scu.cc
+
 - Fixed various typos.
   Affects:dcmnet/include/dcmtk/dcmnet/scp.h
 
