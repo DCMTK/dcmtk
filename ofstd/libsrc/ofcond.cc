@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2012, OFFIS e.V.
+ *  Copyright (C) 2001-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Marco Eichelberg
+ *  Author:  Marco Eichelberg, Joerg Riesmeier
  *
  *  Purpose: class OFCondition and helper classes
  *
@@ -25,14 +25,16 @@
 
 /* ---------- global condition constants ---------- */
 
-makeOFConditionConst(EC_Normal,                      0, 0, OF_ok,      "Normal");
-makeOFConditionConst(EC_IllegalParameter,            0, 1, OF_error,   "Illegal parameter");
-makeOFConditionConst(EC_MemoryExhausted,             0, 2, OF_failure, "Virtual Memory exhausted");
-makeOFConditionConst(EC_NoEncodingLibrary,           0, 3, OF_error,   "No character encoding library available");
-makeOFConditionConst(EC_NoEncodingSelected,          0, 4, OF_error,   "No character encoding selected");
+makeOFConditionConst(EC_Normal,                      0,  0, OF_ok,      "Normal");
+makeOFConditionConst(EC_IllegalParameter,            0,  1, OF_error,   "Illegal parameter");
+makeOFConditionConst(EC_MemoryExhausted,             0,  2, OF_failure, "Virtual Memory exhausted");
+makeOFConditionConst(EC_NoEncodingLibrary,           0,  3, OF_error,   "No character encoding library available");
+makeOFConditionConst(EC_NoEncodingSelected,          0,  4, OF_error,   "No character encoding selected");
 // codes 5..8 are used for dynamically created error messages (see below constants)
-makeOFConditionConst(EC_CouldNotCreateTemporaryFile, 0, 9, OF_error,   "Could not create temporary file");
-makeOFConditionConst(EC_InvalidFilename,             0, 10, OF_error,  "Invalid filename");
+makeOFConditionConst(EC_CouldNotCreateTemporaryFile, 0,  9, OF_error,   "Could not create temporary file");
+makeOFConditionConst(EC_InvalidFilename,             0, 10, OF_error,   "Invalid filename");
+makeOFConditionConst(EC_DirectoryDoesNotExist,       0, 11, OF_error,   "Directory does not exist");
+makeOFConditionConst(EC_DirectoryNotWritable,        0, 12, OF_error,   "Directory is not writable");
 
 
 // NOTE:

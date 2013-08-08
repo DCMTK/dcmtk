@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.08 (riesmeier)
+
+- Added new condition constants:
+  Added two new conditions constants for general directory-related errors:
+  EC_DirectoryDoesNotExist and EC_DirectoryNotWritable.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofcond.cc
+
 **** Changes from 2013.08.07 (riesmeier)
 
 - Enable WITH_THREADS for thread-related classes.
