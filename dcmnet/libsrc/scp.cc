@@ -660,8 +660,8 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
                  | O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
   }
 
-   // always sent (the optional) field Affected Sop Class UID
-   moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
+  // always sent (the optional) field "Affected SOP Class UID"
+  moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
 
   if (rspDataset)
     moveRsp.DataSetType = DIMSE_DATASET_PRESENT;
@@ -731,16 +731,56 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
   return cond;
 }
 
-
 // ----------------------------------------------------------------------------
 
-// Send response to former storage request
+OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
+                                      const T_DIMSE_C_StoreRQ &request,
+                                      const Uint16 rspStatusCode)
+{
+  // call the method doing the real work
+  return sendSTOREResponse(presID, request.MessageID, request.AffectedSOPClassUID, request.AffectedSOPInstanceUID,
+    rspStatusCode, NULL /* statusDetail */);
+}
+
+
 OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
-                                      T_DIMSE_C_StoreRQ &reqMessage,
-                                      T_DIMSE_C_StoreRSP &rspMessage,
+                                      const Uint16 messageID,
+                                      const OFString &sopClassUID,
+                                      const OFString &sopInstanceUID,
+                                      const Uint16 rspStatusCode,
                                       DcmDataset *statusDetail)
 {
-  return DIMSE_sendStoreResponse(m_assoc, presID, &reqMessage, &rspMessage, statusDetail);
+  OFCondition cond;
+  OFString tempStr;
+
+  // Send back response
+  T_DIMSE_Message response;
+  // Make sure everything is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
+  T_DIMSE_C_StoreRSP &storeRsp = response.msg.CStoreRSP;
+  response.CommandField = DIMSE_C_STORE_RSP;
+  storeRsp.MessageIDBeingRespondedTo = messageID;
+  storeRsp.DimseStatus = rspStatusCode;
+  OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(storeRsp.AffectedSOPClassUID));
+  OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(storeRsp.AffectedSOPInstanceUID));
+  // Always sent (the optional) fields "Affected SOP Class/Instance UID"
+  storeRsp.opts = O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID;
+  storeRsp.DataSetType = DIMSE_DATASET_NULL;
+
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending C-STORE Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  } else {
+    DCMNET_INFO("Sending C-STORE Response (" << DU_cstoreStatusString(rspStatusCode) << ")");
+  }
+
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-STORE response: " << DimseCondition::dump(tempStr, cond));
+  }
+  return cond;
 }
 
 // ----------------------------------------------------------------------------

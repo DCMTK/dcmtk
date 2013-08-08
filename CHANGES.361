@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.08 (riesmeier)
 
+- Reimplemented sendSTOREResponse() method:
+  Please note that the signature of sendSTOREResponse() changed with this
+  commit. There are now two variants of this method: one that is quite easy to
+  use and the other that allows for specifying more details.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.c
+
 - Use optional fields in sendSTOREResponse():
   Made sure that the optional fields "Affected SOP Class UID" and "Affected SOP
   Instance UID" in sendSTOREResponse() are really used. Also fixed some typos.

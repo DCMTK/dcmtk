@@ -393,10 +393,9 @@ public:
 
 protected:
 
-  /* ***********************************************************************
-   *  Functions particularly interesting for overwriting in derived classes
-   * ***********************************************************************
-   */
+  /* *********************************************************************** */
+  /*  Functions particularly interesting for overwriting in derived classes  */
+  /* *********************************************************************** */
 
   /** This call returns the presentation context belonging to the given
    *  presentation context ID.
@@ -554,17 +553,33 @@ protected:
   virtual OFCondition checkForCANCEL(T_ASC_PresentationContextID presID,
                                      const Uint16 messageID);
 
-  /** Respond to storage request
-   *  @param presID       [in] The presentation context ID to respond to
-   *  @param reqMessage   [in] The C-STORE request that is responded to
-   *  @param rspMessage   [in] The C-STORE response to be sent
-   *  @param statusDetail [in] The status detail to be sent
+  /** Respond to the C-Store request (with details from the request message)
+   *  @param presID         [in] The presentation context ID to respond to
+   *  @param request        [in] The C-STORE request that should be responded to
+   *  @param rspStatusCode  [in] The response status code. 0 means success,
+   *                             others can found in the DICOM standard.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
-                                        T_DIMSE_C_StoreRQ &reqMessage,
-                                        T_DIMSE_C_StoreRSP &rspMessage,
-                                        DcmDataset *statusDetail);
+                                        const T_DIMSE_C_StoreRQ &request,
+                                        const Uint16 rspStatusCode);
+
+  /** Respond to the C-Store request (with given details)
+   *  @param presID         [in] The presentation context ID to respond to
+   *  @param messageID      [in] The message ID being responded to
+   *  @param sopClassUID    [in] The affected SOP class UID
+   *  @param sopInstanceUID [in] The affected SOP instance UID
+   *  @param rspStatusCode  [in] The response status code. 0 means success,
+   *                             others can found in the DICOM standard.
+   *  @param statusDetail   [in] The status detail of the response (if desired).
+   *  @return EC_Normal, if responding was successful, an error code otherwise
+   */
+  virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
+                                        const Uint16 messageID,
+                                        const OFString &sopClassUID,
+                                        const OFString &sopInstanceUID,
+                                        const Uint16 rspStatusCode,
+                                        DcmDataset *statusDetail = NULL);
 
   /** Respond to the C-Move request
    *  @param presID         [in] The presentation context ID to respond to
@@ -709,10 +724,9 @@ protected:
   virtual Uint16 checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
                                          DcmDataset *reqDataset);
 
-  /* *********************************************************************
-   *  Further functions and member variables
-   * *********************************************************************
-   */
+  /* ********************************************************************* */
+  /*  Further functions and member variables                               */
+  /* ********************************************************************* */
 
   /** Helper function to return presentation context information by given
    *  presentation context ID.
