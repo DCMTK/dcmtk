@@ -3,7 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.09 (riesmeier)
 
-- Fixed issues with optional message fields.
+- Removed unused fields from sendACTIONResponse():
+  Removed optional "Action Type ID" and unused "Dataset" from N-ACTION Response.
+  Please note that this changes the signature of sendACTIONResponse().
+  Affects: dcmnet/libsrc/scp.cc
+
+- Fixed issues with optional message fields:
   Fixed issues with optional message fields "Affected SOP Class UID" and
   "Affected SOP Instance UID", which were not always enabled correctly.
   Affects: dcmnet/libsrc/scp.cc

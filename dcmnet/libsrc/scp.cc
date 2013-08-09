@@ -689,8 +689,6 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
                                        const Uint16 messageID,
                                        const OFString &sopClassUID,
                                        const OFString &sopInstanceUID,
-                                       const Uint16 actionTypeID,
-                                       DcmDataset *rspDataset,
                                        const Uint16 rspStatusCode)
 {
   OFCondition cond;
@@ -704,26 +702,22 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
   response.CommandField = DIMSE_N_ACTION_RSP;
   actionRsp.MessageIDBeingRespondedTo = messageID;
   actionRsp.DimseStatus = rspStatusCode;
-  actionRsp.ActionTypeID = actionTypeID;
+  actionRsp.DataSetType = DIMSE_DATASET_NULL;
   // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
   actionRsp.opts = O_NACTION_AFFECTEDSOPCLASSUID | O_NACTION_AFFECTEDSOPINSTANCEUID;
   OFStandard::strlcpy(actionRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(actionRsp.AffectedSOPClassUID));
   OFStandard::strlcpy(actionRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionRsp.AffectedSOPInstanceUID));
-
-  if (rspDataset)
-    actionRsp.DataSetType = DIMSE_DATASET_PRESENT;
-  else
-    actionRsp.DataSetType = DIMSE_DATASET_NULL;
+  // Do not send any other optional fields, e.g. "Action Type ID"
 
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {
     DCMNET_INFO("Sending N-ACTION Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
   } else {
     DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
   }
 
-  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
