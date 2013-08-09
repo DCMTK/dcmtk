@@ -94,7 +94,6 @@ DcmSCPConfig& DcmSCPConfig::operator=(const DcmSCPConfig &obj)
   return *this;
 }
 
-
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCPConfig::evaluateIncomingAssociation(T_ASC_Association &assoc) const
@@ -276,16 +275,19 @@ OFBool DcmSCPConfig::getHostLookupEnabled() const
 // Reads association configuration from config file
 OFCondition DcmSCPConfig::loadAssociationCfgFile(const OFString &assocFile)
 {
+  OFCondition result = EC_InvalidFilename;
   // delete any previous association configuration
   m_assocConfig.clear();
-
-  OFString profileName;
-  DCMNET_DEBUG("Loading SCP configuration file...");
-  OFCondition result = DcmAssociationConfigurationFile::initialize(m_assocConfig, assocFile.c_str());
-  if (result.bad())
+  if (!assocFile.empty())
   {
-    DCMNET_ERROR("DcmSCP: Unable to parse association configuration file " << assocFile << ": " << result.text());
-    m_assocConfig.clear();
+    OFString profileName;
+    DCMNET_DEBUG("Loading association configuration file: " << assocFile);
+    result = DcmAssociationConfigurationFile::initialize(m_assocConfig, assocFile.c_str());
+    if (result.bad())
+    {
+        DCMNET_ERROR("Unable to parse association configuration file: " << assocFile << ": " << result.text());
+        m_assocConfig.clear();
+    }
   }
   return result;
 }

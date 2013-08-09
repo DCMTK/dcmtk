@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.09 (riesmeier)
+
+- Modified log output in loadAssociationCfgFile():
+  Slightly modified the log output in loadAssociationCfgFile(), e.g. by showing
+  the name of the configuration file on the debug logger. Also check the input
+  filename for an empty string and return an error code in such a case.
+  Affects: dcmnet/libsrc/scpcfg.cc
+
 **** Changes from 2013.08.08 (riesmeier)
 
 - Reimplemented sendSTOREResponse() method:
