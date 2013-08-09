@@ -92,7 +92,7 @@ OFCondition DcmSCP::listen()
   OFCondition cond = EC_Normal;
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
-    DCMNET_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+    DCMNET_WARN("No data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
 #ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
@@ -590,8 +590,9 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
   response.CommandField = DIMSE_C_FIND_RSP;
   findRsp.MessageIDBeingRespondedTo = messageID;
   findRsp.DimseStatus = rspStatusCode;
+  // Always send (the optional) field "Affected SOP Class UID"
+  findRsp.opts = O_FIND_AFFECTEDSOPCLASSUID;
   OFStandard::strlcpy(findRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(findRsp.AffectedSOPClassUID));
-  findRsp.opts = 0;
 
   if (rspDataset)
     findRsp.DataSetType = DIMSE_DATASET_PRESENT;
@@ -647,21 +648,19 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
   response.CommandField = DIMSE_C_MOVE_RSP;
   moveRsp.MessageIDBeingRespondedTo = messageID;
   moveRsp.DimseStatus = rspStatusCode;
-  moveRsp.opts = 0;
+  // Always send the optional field "Affected SOP Class UID"
+  moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
   OFStandard::strlcpy(moveRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(moveRsp.AffectedSOPClassUID));
+  // Only send the other optional fields if needed
   if ( (numRemain != 0) || (numComplete != 0) || (numFail != 0) || (numWarn != 0) )
   {
     moveRsp.NumberOfRemainingSubOperations = numRemain;
     moveRsp.NumberOfCompletedSubOperations = numComplete;
     moveRsp.NumberOfFailedSubOperations = numFail;
     moveRsp.NumberOfWarningSubOperations = numWarn;
-    moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID | O_MOVE_NUMBEROFREMAININGSUBOPERATIONS
-                 | O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS | O_MOVE_NUMBEROFFAILEDSUBOPERATIONS
-                 | O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
+    moveRsp.opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS | O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
+                    O_MOVE_NUMBEROFFAILEDSUBOPERATIONS | O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
   }
-
-  // always sent (the optional) field "Affected SOP Class UID"
-  moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
 
   if (rspDataset)
     moveRsp.DataSetType = DIMSE_DATASET_PRESENT;
@@ -706,9 +705,10 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
   actionRsp.MessageIDBeingRespondedTo = messageID;
   actionRsp.DimseStatus = rspStatusCode;
   actionRsp.ActionTypeID = actionTypeID;
+  // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
+  actionRsp.opts = O_NACTION_AFFECTEDSOPCLASSUID | O_NACTION_AFFECTEDSOPINSTANCEUID;
   OFStandard::strlcpy(actionRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(actionRsp.AffectedSOPClassUID));
   OFStandard::strlcpy(actionRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionRsp.AffectedSOPInstanceUID));
-  actionRsp.opts = 0;
 
   if (rspDataset)
     actionRsp.DataSetType = DIMSE_DATASET_PRESENT;
@@ -761,11 +761,11 @@ OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
   response.CommandField = DIMSE_C_STORE_RSP;
   storeRsp.MessageIDBeingRespondedTo = messageID;
   storeRsp.DimseStatus = rspStatusCode;
+  storeRsp.DataSetType = DIMSE_DATASET_NULL;
+  // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
+  storeRsp.opts = O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID;
   OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(storeRsp.AffectedSOPClassUID));
   OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(storeRsp.AffectedSOPInstanceUID));
-  // Always sent (the optional) fields "Affected SOP Class/Instance UID"
-  storeRsp.opts = O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID;
-  storeRsp.DataSetType = DIMSE_DATASET_NULL;
 
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {
@@ -852,6 +852,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   eventReportRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
   eventReportRsp.DimseStatus = statusCode;
   eventReportRsp.DataSetType = DIMSE_DATASET_NULL;
+  // Do not send any optional fields
   eventReportRsp.opts = 0;
   eventReportRsp.AffectedSOPClassUID[0] = 0;
   eventReportRsp.AffectedSOPInstanceUID[0] = 0;
@@ -1063,6 +1064,9 @@ OFCondition DcmSCP::handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
   return cond;
 }
 
+// ----------------------------------------------------------------------------
+
+// Handle C-MOVE request
 OFCondition DcmSCP::handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
                                       const T_ASC_PresentationContextID presID,
                                       DcmDataset *&reqDataset,
@@ -1152,7 +1156,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
 
   request.CommandField = DIMSE_N_EVENT_REPORT_RQ;
 
-  // Generate a new message ID
+  // Generate a new message ID (?)
   eventReportReq.MessageID = messageID;
 
   eventReportReq.DataSetType = DIMSE_DATASET_PRESENT;
@@ -1731,7 +1735,6 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 {
   return OFFalse;
 }
-
 
 // ----------------------------------------------------------------------------
 
