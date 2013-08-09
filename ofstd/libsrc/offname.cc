@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 #define INCLUDE_CTIME
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
-                  
+
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>    /* for time_t */
@@ -41,14 +41,14 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 /* give up after this number of unsuccessful attempts to create a unique filename */
-#define MAX_TRY 1024  
+#define MAX_TRY 1024
 
 OFFilenameCreator::OFFilenameCreator()
 : creation_time(0)
 {
   creation_time = OFstatic_cast(unsigned long, time(NULL));
 }
-  
+
 OFFilenameCreator::OFFilenameCreator(const OFFilenameCreator& copy)
 : creation_time(copy.creation_time)
 {
@@ -76,7 +76,7 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
     // create filename
     filename.clear();
     if (dir)
-    { 
+    {
       filename = dir;
       filename += PATH_SEPARATOR;
     }
@@ -84,10 +84,10 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
     addLongToString(creation_time, filename);
     addLongToString(((OFStandard::rand_r(seed) << 16) | OFStandard::rand_r(seed)), filename);
     if (postfix) filename += postfix;
-    
+
     // check if filename exists
     stat_result = stat(filename.c_str(), &stat_buf);
-    if (stat_result == 0) 
+    if (stat_result == 0)
     {
       if (++tries == MAX_TRY)
       {
@@ -102,7 +102,7 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
   } while (!done);
   return result;
 }
-  
+
 
 void OFFilenameCreator::addLongToString(unsigned long l, OFString &s)
 {
@@ -115,8 +115,8 @@ void OFFilenameCreator::addLongToString(unsigned long l, OFString &s)
   {
     m = l & 0x0FL;
     l >>= 4;
-    if (m > 9) 
-        chr_array[idx--] = OFstatic_cast(char, 'a'+(m-10)); 
+    if (m > 9)
+        chr_array[idx--] = OFstatic_cast(char, 'a'+(m-10));
         else chr_array[idx--] = OFstatic_cast(char, '0'+m);
   }
   s += chr_array;

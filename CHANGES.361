@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.09 (riesmeier)
 
+- Removed trailing spaces.
+  Affects: ofstd/libsrc/offname.cc
+
 - Added progress notification to DcmSCP:
   Added support for progress notifications while sending and receiving DICOM
   datasets. This is the same approach as already implemented in DcmSCU.
