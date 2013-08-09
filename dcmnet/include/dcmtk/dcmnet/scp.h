@@ -500,8 +500,6 @@ protected:
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
    *  @param sopInstanceUID [in] The affected SOP instance UID
-   *  @param actionTypeID   [in] The type of action performed
-   *  @param rspDataset     [in] The response dataset
    *  @param rspStatusCode  [in] The response status code. 0 means success,
    *                             others can found in the DICOM standard.
    *  @return EC_Normal, if responding was successful, an error code otherwise
@@ -510,8 +508,6 @@ protected:
                                          const Uint16 messageID,
                                          const OFString &sopClassUID,
                                          const OFString &sopInstanceUID,
-                                         const Uint16 actionTypeID,
-                                         DcmDataset *rspDataset,
                                          const Uint16 rspStatusCode);
 
   /** Respond to the C-Find request
