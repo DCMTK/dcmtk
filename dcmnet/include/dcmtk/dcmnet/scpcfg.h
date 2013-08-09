@@ -186,6 +186,13 @@ public:
    */
   void setHostLookupEnabled(const OFBool mode);
 
+  /** Set the mode that specifies whether the progress of sending and receiving DIMSE messages
+   *  is notified by calling DcmSCP::notifySENDProgress() and DcmSCP::notifyRECEIVEProgress(),
+   *  respectively. The progress notification is enabled by default.
+   *  @param mode [in] Disable progress notification if OFFalse
+   */
+  void setProgressNotificationMode(const OFBool mode);
+
   /* Get methods for SCP settings */
 
   /** Returns TCP/IP port number SCP listens for new connection requests
@@ -253,6 +260,14 @@ public:
    */
   OFBool getHostLookupEnabled() const;
 
+  /** Returns the mode that specifies whether the progress of sending and receiving DIMSE
+   *  messages is notified by calling DcmSCP::notifySENDProgress() and
+   *  DcmSCP::notifyRECEIVEProgress(), respectively. The progress notification is enabled
+   *  by default.
+   *  @return The current progress notification mode, enabled if OFTrue
+   */
+  OFBool getProgressNotificationMode() const;
+
 protected:
 
   /// Association configuration. May be filled from association configuration file or by
@@ -316,6 +331,8 @@ protected:
   /// (default: OFTrue).
   OFBool m_respondWithCalledAETitle;
 
+  /// Progress notification mode (default: OFTrue)
+  OFBool m_progressNotificationMode;
 };
 
 /** Enables sharing configurations by multiple DcmSCPs.

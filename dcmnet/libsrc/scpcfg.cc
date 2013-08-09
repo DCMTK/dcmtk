@@ -39,7 +39,8 @@ DcmSCPConfig::DcmSCPConfig() :
   m_acseTimeout(30),
   m_verbosePCMode(OFFalse),
   m_connectionTimeout(1000),
-  m_respondWithCalledAETitle(OFTrue)
+  m_respondWithCalledAETitle(OFTrue),
+  m_progressNotificationMode(OFTrue)
 {
 }
 
@@ -65,7 +66,8 @@ DcmSCPConfig::DcmSCPConfig(const DcmSCPConfig &old) :
   m_acseTimeout(old.m_acseTimeout),
   m_verbosePCMode(old.m_verbosePCMode),
   m_connectionTimeout(old.m_connectionTimeout),
-  m_respondWithCalledAETitle(old.m_respondWithCalledAETitle)
+  m_respondWithCalledAETitle(old.m_respondWithCalledAETitle),
+  m_progressNotificationMode(old.m_progressNotificationMode)
 {
   // nothing more to do
 }
@@ -90,6 +92,7 @@ DcmSCPConfig& DcmSCPConfig::operator=(const DcmSCPConfig &obj)
     m_verbosePCMode = obj.m_verbosePCMode;
     m_connectionTimeout = obj.m_connectionTimeout;
     m_respondWithCalledAETitle = obj.m_respondWithCalledAETitle;
+    m_progressNotificationMode = obj.m_progressNotificationMode;
   }
   return *this;
 }
@@ -187,6 +190,13 @@ void DcmSCPConfig::setHostLookupEnabled(const OFBool mode)
 
 // ----------------------------------------------------------------------------
 
+void DcmSCPConfig::setProgressNotificationMode(const OFBool mode)
+{
+  m_progressNotificationMode = mode;
+}
+
+// ----------------------------------------------------------------------------
+
 /* Get methods for SCP settings and current association information */
 
 
@@ -265,9 +275,18 @@ OFBool DcmSCPConfig::getVerbosePCMode() const
   return m_verbosePCMode;
 }
 
+// ----------------------------------------------------------------------------
+
 OFBool DcmSCPConfig::getHostLookupEnabled() const
 {
   return dcmDisableGethostbyaddr.get();
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool DcmSCPConfig::getProgressNotificationMode() const
+{
+  return m_progressNotificationMode;
 }
 
 // ----------------------------------------------------------------------------
@@ -285,8 +304,8 @@ OFCondition DcmSCPConfig::loadAssociationCfgFile(const OFString &assocFile)
     result = DcmAssociationConfigurationFile::initialize(m_assocConfig, assocFile.c_str());
     if (result.bad())
     {
-        DCMNET_ERROR("Unable to parse association configuration file: " << assocFile << ": " << result.text());
-        m_assocConfig.clear();
+      DCMNET_ERROR("Unable to parse association configuration file: " << assocFile << ": " << result.text());
+      m_assocConfig.clear();
     }
   }
   return result;

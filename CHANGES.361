@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.09 (riesmeier)
 
+- Added progress notification to DcmSCP:
+  Added support for progress notifications while sending and receiving DICOM
+  datasets. This is the same approach as already implemented in DcmSCU.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scpcfg.cc
+
 - Removed unused fields from sendACTIONResponse():
   Removed optional "Action Type ID" and unused "Dataset" from N-ACTION Response.
   Please note that this changes the signature of sendACTIONResponse().

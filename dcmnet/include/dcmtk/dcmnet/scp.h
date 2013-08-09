@@ -267,6 +267,13 @@ public:
    */
   void setHostLookupEnabled(const OFBool mode);
 
+  /** Set the mode that specifies whether the progress of sending and receiving DIMSE messages
+   *  is notified by calling notifySENDProgress() andnotifyRECEIVEProgress(), respectively.
+   *  The progress notification is enabled by default.
+   *  @param mode [in] Disable progress notification if OFFalse
+   */
+  void setProgressNotificationMode(const OFBool mode);
+
   /* Get methods for SCP settings */
 
   /** Returns TCP/IP port number SCP listens for new connection requests
@@ -333,6 +340,13 @@ public:
    *  @return OFTrue, if hostname lookup is enabled, OFFalse otherwise
    */
   OFBool getHostLookupEnabled() const;
+
+  /** Returns the mode that specifies whether the progress of sending and receiving DIMSE
+   *  messages is notified by calling notifySENDProgress() and notifyRECEIVEProgress(),
+   *  respectively. The progress notification is enabled by default.
+   *  @return The current progress notification mode, enabled if OFTrue
+   */
+  OFBool getProgressNotificationMode() const;
 
   /** Get access to the configuration of the SCP. Note that the functionality
    *  on the configuration object is shadowed by other API functions of DcmSCP.
@@ -487,6 +501,24 @@ protected:
    *  @param cond [in] The DIMSE error occurred.
    */
   virtual void notifyDIMSEError(const OFCondition &cond);
+
+  /** This function is called while sending DIMSE messages, i.e.\ on each PDV of a dataset.
+   *  The default implementation just prints a TRACE message on the number of bytes sent so
+   *  far. By overwriting this method, the progress of the send process can be shown to the
+   *  user in a more appropriate way. The progress notification can also be disabled
+   *  completely by calling setProgressNotificationMode().
+   *  @param byteCount [in] Number of bytes sent so far
+   */
+  virtual void notifySENDProgress(const unsigned long byteCount);
+
+  /** This function is called while receiving DIMSE messages, i.e.\ on each PDV of a dataset.
+   *  The default implementation just prints a TRACE message on the number of bytes received
+   *  so far. By overwriting this method, the progress of the receive process can be shown to
+   *  the user in a more appropriate way. The progress notification can also be disabled
+   *  completely by calling setProgressNotificationMode().
+   *  @param byteCount [in] Number of bytes received so far
+   */
+  virtual void notifyRECEIVEProgress(const unsigned long byteCount);
 
   /** Overwrite this function to change the behavior of the listen() method. As long as no
    *  severe error occurs and this method returns OFFalse, the listen() method will wait
@@ -786,10 +818,6 @@ protected:
    *                               shall be sent
    *  @param dataObject      [in]  The instance data which shall be sent to the other DICOM
    *                               application; NULL, if there is none
-   *  @param callback        [in]  Pointer to a function which shall be called to indicate
-   *                               progress
-   *  @param callbackContext [in]  Pointer to data which shall be passed to the progress
-   *                               indicating function
    *  @param statusDetail    [in]  The status detail of the response (if desired).
    *  @param commandSet      [out] If this parameter is not NULL it will return a copy of the
    *                               DIMSE command which is sent to the other DICOM application
@@ -798,8 +826,6 @@ protected:
   OFCondition sendDIMSEMessage(const T_ASC_PresentationContextID presID,
                                T_DIMSE_Message *msg,
                                DcmDataset *dataObject,
-                               DIMSE_ProgressCallback callback,
-                               void *callbackContext,
                                DcmDataset *statusDetail = NULL,
                                DcmDataset **commandSet = NULL);
 
@@ -837,16 +863,10 @@ protected:
    *                               IDs, this function will return an error.
    *  @param dataObject      [out] Contains in the end the information which was received
    *                               over the network
-   *  @param callback        [in]  Pointer to a function which shall be called to indicate
-   *                               progress
-   *  @param callbackContext [in]  Pointer to data which shall be passed to the progress
-   *                               indicating function
    *  @return EC_Normal if dataset could be received successfully, an error code otherwise
    */
   OFCondition receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
-                                  DcmDataset **dataObject,
-                                  DIMSE_ProgressCallback callback,
-                                  void *callbackContext);
+                                  DcmDataset **dataObject);
 
   /** Add given element to existing status detail object or create new one.
    *  @param statusDetail  The status detail to add the element to. Status detail
@@ -861,6 +881,22 @@ protected:
    */
   static OFBool addStatusDetail(DcmDataset **statusDetail,
                                 const DcmElement *elem);
+
+  /* Callback functions (static) */
+
+  /** Callback function used for sending DIMSE messages.
+   *  @param callbackContext [in] The desired user callback data
+   *  @param byteCount       [in] Progress bytes count
+   */
+  static void callbackSENDProgress(void *callbackContext,
+                                   unsigned long byteCount);
+
+  /** Callback function used for receiving DIMSE messages.
+   *  @param callbackContext [in] The desired user callback data
+   *  @param byteCount       [in] Progress bytes count
+   */
+  static void callbackRECEIVEProgress(void *callbackContext,
+                                      unsigned long byteCount);
 
 private:
 

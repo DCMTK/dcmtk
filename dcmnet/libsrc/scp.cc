@@ -607,7 +607,7 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
     DCMNET_INFO("Sending C-FIND Response (" << DU_cfindStatusString(rspStatusCode) << ")");
   }
 
-  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */, statusDetail);
+  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, statusDetail);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-FIND response: " << DimseCondition::dump(tempStr, cond));
@@ -675,7 +675,7 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
     DCMNET_INFO("Sending C-MOVE Response (" << DU_cmoveStatusString(rspStatusCode) << ")");
   }
 
-  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */, statusDetail);
+  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, statusDetail);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-MOVE response: " << DimseCondition::dump(tempStr, cond));
@@ -717,7 +717,7 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
     DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
   }
 
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
@@ -769,7 +769,7 @@ OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
     DCMNET_INFO("Sending C-STORE Response (" << DU_cstoreStatusString(rspStatusCode) << ")");
   }
 
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, statusDetail);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-STORE response: " << DimseCondition::dump(tempStr, cond));
@@ -810,7 +810,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   }
 
   // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
@@ -858,7 +858,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   } else {
     DCMNET_INFO("Sending N-EVENT-REPORT Response (" << DU_neventReportStatusString(statusCode) << ")");
   }
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
@@ -905,7 +905,7 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
   }
 
   // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
@@ -967,7 +967,7 @@ OFCondition DcmSCP::handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
   }
 
   // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
@@ -1028,7 +1028,7 @@ OFCondition DcmSCP::handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
   }
 
   // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
@@ -1090,7 +1090,7 @@ OFCondition DcmSCP::handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
   }
 
   // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
@@ -1177,7 +1177,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   } else {
     DCMNET_INFO("Sending N-EVENT-REPORT Request (MsgID " << eventReportReq.MessageID << ")");
   }
-  cond = sendDIMSEMessage(pcid, &request, reqDataset, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(pcid, &request, reqDataset);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-EVENT-REPORT request: " << DimseCondition::dump(tempStr, cond));
@@ -1226,7 +1226,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     // this should never happen
     DcmDataset *tempDataset = NULL;
     T_ASC_PresentationContextID tempID;
-    cond = receiveDIMSEDataset(&tempID, &tempDataset, NULL /* callback */, NULL /* callbackContext */);
+    cond = receiveDIMSEDataset(&tempID, &tempDataset);
     if (cond.good())
     {
       DCMNET_WARN("Received unexpected dataset after N-EVENT-REPORT response, ignoring");
@@ -1258,14 +1258,30 @@ Uint16 DcmSCP::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ & /*reqMessage*/,
 }
 
 
-// ----------------------------------------------------------------------------
+/* ************************************************************************* */
+/*                         General message handling                          */
+/* ************************************************************************* */
+
+void DcmSCP::notifySENDProgress(const unsigned long byteCount)
+{
+  DCMNET_TRACE("Bytes sent: " << byteCount);
+}
+
+
+void DcmSCP::notifyRECEIVEProgress(const unsigned long byteCount)
+{
+  DCMNET_TRACE("Bytes received: " << byteCount);
+}
+
+
+/* ************************************************************************* */
+/*                            Various helpers                                */
+/* ************************************************************************* */
 
 // Sends a DIMSE command and possibly also instance data to the configured peer DICOM application
 OFCondition DcmSCP::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
                                      T_DIMSE_Message *msg,
                                      DcmDataset *dataObject,
-                                     DIMSE_ProgressCallback callback,
-                                     void *callbackContext,
                                      DcmDataset *statusDetail,
                                      DcmDataset **commandSet)
 {
@@ -1276,8 +1292,14 @@ OFCondition DcmSCP::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
 
   OFCondition cond;
   /* call the corresponding DIMSE function to sent the message */
-  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, statusDetail, dataObject,
-                                          callback, callbackContext, commandSet);
+  if (m_cfg->getProgressNotificationMode())
+  {
+    cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, statusDetail, dataObject,
+                                            callbackSENDProgress, this /*callbackData*/, commandSet);
+  } else {
+    cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, statusDetail, dataObject,
+                                            NULL /*callback*/, NULL /*callbackData*/, commandSet);
+  }
   return cond;
 }
 
@@ -1311,17 +1333,32 @@ OFCondition DcmSCP::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
 
 // Receives one dataset (of instance data) via network from another DICOM application
 OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
-                                        DcmDataset **dataObject,
-                                        DIMSE_ProgressCallback callback,
-                                        void *callbackContext)
+                                        DcmDataset **dataObject)
 {
   if (m_assoc == NULL)
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
   /* call the corresponding DIMSE function to receive the dataset */
-  cond = DIMSE_receiveDataSetInMemory(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(), presID,
-                                      dataObject, callback, callbackContext);
+  if (m_cfg->getProgressNotificationMode())
+  {
+    cond = DIMSE_receiveDataSetInMemory(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(),
+                                        presID, dataObject, callbackRECEIVEProgress, this /*callbackData*/);
+  } else {
+    cond = DIMSE_receiveDataSetInMemory(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(),
+                                        presID, dataObject, NULL /*callback*/, NULL /*callbackData*/);
+  }
+
+  if (cond.good())
+  {
+    DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, *presID));
+  }
+  else
+  {
+    OFString tempStr;
+    DCMNET_ERROR("Unable to receive dataset on presentation context "
+      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
+  }
   return cond;
 }
 
@@ -1505,6 +1542,13 @@ void DcmSCP::setHostLookupEnabled(const OFBool mode)
 
 // ----------------------------------------------------------------------------
 
+void DcmSCP::setProgressNotificationMode(const OFBool mode)
+{
+  m_cfg->setProgressNotificationMode(mode);
+}
+
+// ----------------------------------------------------------------------------
+
 /* Get methods for SCP settings and current association information */
 
 OFBool DcmSCP::getRefuseAssociation() const
@@ -1587,6 +1631,13 @@ OFBool DcmSCP::getVerbosePCMode() const
 OFBool DcmSCP::getHostLookupEnabled() const
 {
   return m_cfg->getHostLookupEnabled();
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool DcmSCP::getProgressNotificationMode() const
+{
+  return m_cfg->getProgressNotificationMode();
 }
 
 // ----------------------------------------------------------------------------
@@ -1730,9 +1781,31 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
   return OFFalse;
 }
 
-// ----------------------------------------------------------------------------
 
-// static helper
+/* ************************************************************************* */
+/*                            Callback functions                             */
+/* ************************************************************************* */
+
+void DcmSCP::callbackSENDProgress(void *callbackContext,
+                                  const unsigned long byteCount)
+{
+  if (callbackContext != NULL)
+    OFreinterpret_cast(DcmSCP *, callbackContext)->notifySENDProgress(byteCount);
+}
+
+
+void DcmSCP::callbackRECEIVEProgress(void *callbackContext,
+                                     const unsigned long byteCount)
+{
+  if (callbackContext != NULL)
+    OFreinterpret_cast(DcmSCP *, callbackContext)->notifyRECEIVEProgress(byteCount);
+}
+
+
+/* ************************************************************************* */
+/*                         Static helper functions                           */
+/* ************************************************************************* */
+
 OFBool DcmSCP::getPresentationContextInfo(const T_ASC_Association *assoc,
                                           const Uint8 presID,
                                           DcmPresentationContextInfo &info)
