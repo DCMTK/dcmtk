@@ -403,10 +403,10 @@ It is an error if no data dictionary can be loaded.
 
 \section see_also SEE ALSO
 
-<b>storescu</b>(1), <b>storescp</b>(1)
+<b>dcmrecv</b>(1), <b>storescu</b>(1), <b>storescp</b>(1)
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2011-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

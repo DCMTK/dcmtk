@@ -34,8 +34,9 @@ LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
 DCMTLSLIBS = -ldcmtls
 COMPR_LIBS = -ldcmjpls -lcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
 
-objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o getscu.o dcmsend.o
-progs = echoscu storescu storescp findscu movescu termscu getscu dcmsend
+objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o getscu.o dcmsend.o \
+	dcmrecv.o
+progs = echoscu storescu storescp findscu movescu termscu getscu dcmsend dcmrecv
 
 
 all: $(progs)
@@ -65,6 +66,9 @@ getscu: getscu.o
 
 dcmsend: dcmsend.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(COMPR_LIBS) $(LOCALLIBS) $(TIFFLIBS) $(PNGLIBS) $(MATHLIBS) $(LIBS)
+
+dcmrecv: dcmrecv.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)

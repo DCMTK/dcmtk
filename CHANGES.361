@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.12 (riesmeier)
 
+- Added new command line tool "dcmrecv":
+  This tool is a Simple Storage Service Class Provider, which is based on the
+  recently introduced network class DcmStorageSCP.
+  Added:   dcmnet/apps/dcmrecv.cc
+           dcmnet/docs/dcmrecv.man
+           doxygen/manpages/man1/dcmrecv.1
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.dep
+           dcmnet/apps/Makefile.in
+           dcmnet/docs/dcmnet.dox
+           dcmnet/docs/dcmsend.man
+
 - Added new class DcmStorageSCP:
   Added an easy-to-use interface class for a Storage Service Class Provider
   (SCP), which stores the received datasets as DICOM files.

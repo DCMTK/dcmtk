@@ -54,6 +54,7 @@ dcmjpeg/apps/dcmmkdir
 dcmjpls/apps/dcmcjpls
 dcmjpls/apps/dcmdjpls
 dcmjpls/apps/dcml2pnm
+dcmnet/apps/dcmrecv
 dcmnet/apps/dcmsend
 dcmnet/apps/echoscu
 dcmnet/apps/findscu
