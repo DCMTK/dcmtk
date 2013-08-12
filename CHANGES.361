@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.12 (riesmeier)
 
+- Added new class DcmStorageSCP:
+  Added an easy-to-use interface class for a Storage Service Class Provider
+  (SCP), which stores the received datasets as DICOM files.
+  Added:   dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+  Affects: dcmnet/docs/dcmnet.dox
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofcond.cc
+
 - Fixed some minor Doxygen issues.
   Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
 

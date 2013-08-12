@@ -114,11 +114,15 @@ extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_NoEncodingSelected;
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotCreateTemporaryFile;
 /// condition constant: error, invalid filename
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_InvalidFilename;
+/// condition constant: error, could not generate filename
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotGenerateFilename;
 
 /// condition constant: error, directory does not exist
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryDoesNotExist;
 /// condition constant: error, directory is not writable
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryNotWritable;
+/// condition constant: error, could not generate directory name
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotGenerateDirectoryName;
 
 /// status code constant: error, cannot open character encoding
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotOpenEncoding;

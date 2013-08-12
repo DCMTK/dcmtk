@@ -17,6 +17,7 @@ User and Provider:
 The following classes are derived from the above experimental classes and
 provide a particular DICOM Service:
 \li \b DcmStorageSCU
+\li \b DcmStorageSCP
 
 \section Tools
 
