@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -324,9 +324,21 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static size_t searchDirectoryRecursively(const OFString &directory,
                                              OFList<OFString> &fileList,
-                                             const OFString &pattern /*= ""*/,      // default parameter value not
-                                             const OFString &dirPrefix /*= ""*/,    // supported by Sun CC 2.0.1 :-/
+                                             const OFString &pattern = "",
+                                             const OFString &dirPrefix = "",
                                              const OFBool recurse = OFTrue);
+
+    /** create a directory (including sub-directories) if it does not yet exist.  In other
+     *  words, this function creates directories recursively, i.e. with all sub-components.
+     *  @warning This function has not yet been implemented for the Windows platform.
+     *  @param dirName name of the directory to be created
+     *  @param rootDir optional name of a root directory (prefix of 'dirName') that already
+     *    exists and that can, therefore, be skipped during the creation of sub-directories.
+     *  @return status, EC_Normal if successful (directory created or already exists), an
+     *    error code otherwise
+     */
+    static OFCondition createDirectory(const OFString &dirName,
+                                       const OFString &rootDir = "");
 
     /** delete given file from filesystem
      *  @param filename name of the file (including directory) to delete. This filename may

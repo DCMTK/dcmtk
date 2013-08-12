@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2012, OFFIS e.V.
+ *  Copyright (C) 2001-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -775,6 +775,71 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 #endif
     /* return number of added files */
     return fileList.size() - initialSize;
+}
+
+
+OFCondition OFStandard::createDirectory(const OFString &dirName,
+                                        const OFString &rootDir)
+{
+    OFCondition status = EC_Normal;
+    /* first, check whether the directory already exists */
+    if (!dirExists(dirName))
+    {
+        /* then, check whether the given prefix can be skipped */
+        size_t pos = 0;
+        size_t dirLength = dirName.length();
+        if ((dirLength > 1) && (dirName.at(dirLength - 1) == PATH_SEPARATOR))
+        {
+            /* ignore trailing path separator */
+            --dirLength;
+        }
+        size_t rootLength = rootDir.length();
+        if ((rootLength > 1) && (rootDir.at(rootLength - 1) == PATH_SEPARATOR))
+        {
+            /* ignore trailing path separator */
+            --rootLength;
+        }
+        /* check for "compatible" length */
+        if ((rootLength > 0) && (rootLength < dirLength))
+        {
+            /* check for common prefix */
+            if (dirName.compare(0, rootLength, rootDir) == 0)
+            {
+                /* check whether root directory really exists */
+                if (dirExists(rootDir.substr(0, rootLength)))
+                {
+                    /* start searching after the common prefix */
+                    pos = rootLength;
+                }
+            }
+        }
+#ifdef HAVE_WINDOWS_H
+        // TODO: implement this functionality also for the Windows platform
+        status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, "Cannot create directory: not yet implemented on this platform!");
+#else
+        /* and finally, iterate over all subsequent subdirectories */
+        do {
+            /* search for next path separator */
+            pos = dirName.find(PATH_SEPARATOR, pos + 1);
+            /* get name of current directory component */
+            const OFString subDir = dirName.substr(0, pos);
+            if (!dirExists(subDir))
+            {
+                /* and create the directory component (if not already existing) */
+                if (mkdir(subDir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+                {
+                    char errBuf[256];
+                    OFString message("Cannot create directory: ");
+                    message.append(strerror(errno, errBuf, sizeof(errBuf)));
+                    status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, message.c_str());
+                    /* exit the loop */
+                    break;
+                }
+            }
+        } while (pos < dirLength);
+    }
+#endif
+    return status;
 }
 
 

@@ -35,6 +35,7 @@ makeOFConditionConst(EC_CouldNotCreateTemporaryFile, 0,  9, OF_error,   "Could n
 makeOFConditionConst(EC_InvalidFilename,             0, 10, OF_error,   "Invalid filename");
 makeOFConditionConst(EC_DirectoryDoesNotExist,       0, 11, OF_error,   "Directory does not exist");
 makeOFConditionConst(EC_DirectoryNotWritable,        0, 12, OF_error,   "Directory is not writable");
+// codes 13 is for dynamically created error messages (see below constants)
 
 
 // NOTE:
@@ -45,3 +46,4 @@ const unsigned short EC_CODE_CannotOpenEncoding     = 5;
 const unsigned short EC_CODE_CannotCloseEncoding    = 6;
 const unsigned short EC_CODE_CannotConvertEncoding  = 7;
 const unsigned short EC_CODE_CannotControlConverter = 8;
+const unsigned short EC_CODE_CannotCreateDirectory  = 13;

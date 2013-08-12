@@ -129,6 +129,9 @@ extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotConvertEncoding;
 /// status code constant: error, cannot control character encoding converter
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
 
+/// status code constant: error, cannot create directory
+extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCreateDirectory;
+
 /** use this macro for creating static OFCondition instances. Instead of an
  *  OFCondition instance which needs a constructor, an instance of
  *  OFConditionConst is created. This avoids the problem of static initializers

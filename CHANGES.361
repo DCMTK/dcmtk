@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.12 (riesmeier)
+
+- Added global helper function createDirectory():
+  Added a global helper function to OFStandard that allows for creating file
+  directories in a portable way. This also includes the creation of arbitrary
+  sub-directories, i.e. this function works "recursively".
+  Please note that createDirectory() has not yet been implemented for the
+  Windows platform.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofcond.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2013.08.09 (riesmeier)
 
 - Removed trailing spaces.
