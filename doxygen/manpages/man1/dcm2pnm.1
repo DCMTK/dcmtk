@@ -1,4 +1,4 @@
-.TH "dcm2pnm" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pnm" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
@@ -6,7 +6,6 @@ dcm2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 .PP
 .PP
 .nf
-
 dcm2pnm [options] dcmfile-in [bitmap-out]
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcm2pnm\fP utility reads a DICOM image, converts the pixel data according
 .PP
 .PP
 .nf
-
 dcmfile-in  DICOM input filename to be converted
 
 bitmap-out  output filename to be written (default: stdout)
@@ -28,7 +26,6 @@ bitmap-out  output filename to be written (default: stdout)
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -58,7 +55,6 @@ bitmap-out  output filename to be written (default: stdout)
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -91,7 +87,6 @@ input transfer syntax:
 .SS "image processing options"
 .PP
 .nf
-
 frame selection:
 
   +F    --frame  [n]umber: integer
@@ -341,7 +336,6 @@ other transformations:
 .SS "output options"
 .PP
 .nf
-
 general:
 
   -im   --image-info
@@ -417,7 +411,6 @@ The \fI--write-png\fP option is only available when DCMTK has been configured an
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)

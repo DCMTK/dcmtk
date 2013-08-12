@@ -1,4 +1,4 @@
-.TH "dsr2xml" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2xml" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2xml \- Convert DICOM SR file and data set to XML
@@ -6,7 +6,6 @@ dsr2xml \- Convert DICOM SR file and data set to XML
 .PP
 .PP
 .nf
-
 dsr2xml [options] dsrfile-in [xmlfile-out]
 .fi
 .PP
@@ -19,7 +18,6 @@ If \fBdsr2xml\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-
 dsrfile-in   DICOM SR input filename to be converted
 
 xmlfile-out  XML output filename (default: stdout)
@@ -30,7 +28,6 @@ xmlfile-out  XML output filename (default: stdout)
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -60,7 +57,6 @@ xmlfile-out  XML output filename (default: stdout)
 .SS "processing options"
 .PP
 .nf
-
 specific character set:
 
   +Cr  --charset-require
@@ -86,7 +82,6 @@ specific character set:
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-file
@@ -119,7 +114,6 @@ input transfer syntax:
 .SS "output options"
 .PP
 .nf
-
 encoding:
 
   +Ea  --attr-all
@@ -171,7 +165,6 @@ The \fBdsr2xml\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-
 SpectaclePrescriptionReportStorage          1.2.840.10008.5.1.4.1.1.78.6
 MacularGridThicknessAndVolumeReportStorage  1.2.840.10008.5.1.4.1.1.79.1
 BasicTextSRStorage                          1.2.840.10008.5.1.4.1.1.88.11
@@ -193,7 +186,6 @@ The XML encoding is determined automatically from the DICOM attribute (0008,0005
 .PP
 .PP
 .nf
-
 ASCII         (ISO_IR 6)    =>  "UTF-8"
 UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
@@ -212,7 +204,7 @@ If this DICOM attribute is missing in the input file, although needed, option \f
 .PP
 Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity)\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&.
 .SS "Limitations"
-The XML Schema \fIdsr2xml\&.xsd\fP does not support all variations of the \fBdsr2xml\fP output format\&. However, the default output format should work\&.
+The XML Schema \fIdsr2xml\&.xsd\fP does not support all variations of the \fBdsr2xml\fP output format\&. However, the default output format (plus option \fI--use-xml-namespace\fP) should work\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.

@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.12 (riesmeier)
 
+- Updated man pages.
+  Affects: dcmdata/docs/dcmodify.man
+           doxygen/manpages/man1/*
+
 - Rebuilt Makefile dependencies.
   Affects: dcmnet/tests/Makefile.dep
 

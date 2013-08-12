@@ -1,4 +1,4 @@
-.TH "dcmsign" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
@@ -6,7 +6,6 @@ dcmsign \- Sign and Verify DICOM Files
 .PP
 .PP
 .nf
-
 dcmsign [options] dcmfile-in [dcmfile-out]
 .fi
 .PP
@@ -32,7 +31,6 @@ removal of all digital signatures from the DICOM file\&.
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be processed
 
 dcmfile-out  DICOM output filename
@@ -43,7 +41,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -73,7 +70,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -106,7 +102,6 @@ input transfer syntax:
 .SS "signature commands"
 .PP
 .nf
-
         --verify
           verify all signatures (default)
 
@@ -126,7 +121,6 @@ input transfer syntax:
 .SS "signature creation options (only with --sign or --sign-item):"
 .PP
 .nf
-
 private key password:
 
   +ps   --std-passwd
@@ -194,7 +188,6 @@ signature format:
 .SS "output options"
 .PP
 .nf
-
 output transfer syntax:
 
   +t=   --write-xfer-same
@@ -239,7 +232,6 @@ On the command line, attribute keys are specified as
 .PP
 .PP
 .nf
-
 --tag "gggg,eeee"  where gggg and eeee are the hexadecimal group
                    and element numbers
 --tag "Name"       where 'Name' is a symbolic attribute name from
@@ -253,7 +245,6 @@ The \fI--sign-item\fP operation requires a location string that describes in whi
 .PP
 .PP
 .nf
-
 SequenceName[index].SequenceName[index].SequenceName[index](...)
 .fi
 .PP
@@ -262,7 +253,6 @@ where SequenceName is either a symbolic attribute name from the data dictionary 
 .PP
 .PP
 .nf
-
 ReferencedSeriesSequence[0].ReferencedImageSequence[1]
 .fi
 .PP

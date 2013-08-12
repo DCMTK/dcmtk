@@ -1,4 +1,4 @@
-.TH "dsrdump" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsrdump" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsrdump \- Dump DICOM SR file and data set
@@ -6,7 +6,6 @@ dsrdump \- Dump DICOM SR file and data set
 .PP
 .PP
 .nf
-
 dsrdump [options] dsrfile-in...
 .fi
 .PP
@@ -19,7 +18,6 @@ If \fBdsrdump\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-
 dsrfile-in  DICOM SR input filename to be dumped
 .fi
 .PP
@@ -28,145 +26,155 @@ dsrfile-in  DICOM SR input filename to be dumped
 .SS "general options"
 .PP
 .nf
+  -h    --help
+          print this help text and exit
 
-  -h   --help
-         print this help text and exit
+        --version
+          print version information and exit
 
-       --version
-         print version information and exit
+        --arguments
+          print expanded command line arguments
 
-       --arguments
-         print expanded command line arguments
+  -q    --quiet
+          quiet mode, print no warnings and errors
 
-  -q   --quiet
-         quiet mode, print no warnings and errors
+  -v    --verbose
+          verbose mode, print processing details
 
-  -v   --verbose
-         verbose mode, print processing details
+  -d    --debug
+          debug mode, print debug information
 
-  -d   --debug
-         debug mode, print debug information
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
 
-  -ll  --log-level  [l]evel: string constant
-         (fatal, error, warn, info, debug, trace)
-         use level l for the logger
-
-  -lc  --log-config  [f]ilename: string
-         use config file f for the logger
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 .fi
 .PP
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
-  +f   --read-file
-         read file format or data set (default)
+  +f    --read-file
+          read file format or data set (default)
 
-  +fo  --read-file-only
-         read file format only
+  +fo   --read-file-only
+          read file format only
 
-  -f   --read-dataset
-         read data set without file meta information
+  -f    --read-dataset
+          read data set without file meta information
 
 input transfer syntax:
 
-  -t=  --read-xfer-auto
-         use TS recognition (default)
+  -t=   --read-xfer-auto
+          use TS recognition (default)
 
-  -td  --read-xfer-detect
-         ignore TS specified in the file meta header
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
-  -te  --read-xfer-little
-         read with explicit VR little endian TS
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
 
-  -tb  --read-xfer-big
-         read with explicit VR big endian TS
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
 
-  -ti  --read-xfer-implicit
-         read with implicit VR little endian TS
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
 .fi
 .PP
 .SS "processing options"
 .PP
 .nf
-
 additional information:
 
-  -Ip  --processing-details
-         show currently processed content item
+  -Ip   --processing-details
+          show currently processed content item
 
 error handling:
 
-  -Er  --unknown-relationship
-         accept unknown/missing relationship type
+  -Er   --unknown-relationship
+          accept unknown/missing relationship type
 
-  -Ev  --invalid-item-value
-         accept invalid content item value
-         (e.g. violation of VR or VM definition)
+  -Ev   --invalid-item-value
+          accept invalid content item value
+          (e.g. violation of VR or VM definition)
 
-  -Ec  --ignore-constraints
-         ignore relationship content constraints
+  -Ec   --ignore-constraints
+          ignore relationship content constraints
 
-  -Ee  --ignore-item-errors
-         do not abort on content item errors, just warn
-         (e.g. missing value type specific attributes)
+  -Ee   --ignore-item-errors
+          do not abort on content item errors, just warn
+          (e.g. missing value type specific attributes)
 
-  -Ei  --skip-invalid-items
-         skip invalid content items (incl. sub-tree)
+  -Ei   --skip-invalid-items
+          skip invalid content items (including sub-tree)
 
 specific character set:
 
-  +U8  --convert-to-utf8
-         convert all element values that are affected
-         by Specific Character Set (0008,0005) to UTF-8
+  +U8   --convert-to-utf8
+          convert all element values that are affected
+          by Specific Character Set (0008,0005) to UTF-8
 
-         # requires support from the libiconv toolkit
+          # requires support from the libiconv toolkit
 .fi
 .PP
 .SS "output options"
 .PP
 .nf
+general printing:
 
-printing:
+  +Pf   --print-filename
+          print header with filename for each document
 
-  +Pf  --print-filename
-         print header with filename for each document
+  -Ph   --no-document-header
+          do not print general document information
 
-  -Ph  --no-document-header
-         do not print general document information
+  +Pn   --number-nested-items
+          print position string in front of each line
 
-  +Pn  --number-nested-items
-         print position string in front of each line
+  -Pn   --indent-nested-items
+          indent nested items by spaces (default)
 
-  -Pn  --indent-nested-items
-         indent nested items by spaces (default)
+printing values:
 
-  +Pl  --print-long-values
-         print long item values completely
+  +Pl   --print-long-values
+          print long item values completely
 
-  -Pl  --shorten-long-values
-         print long item values shortened (default)
+  -Pl   --shorten-long-values
+          print long item values shortened (default)
 
-  +Pu  --print-instance-uid
-         print SOP instance UID of referenced objects
+  +Pu   --print-instance-uid
+          print SOP instance UID of referenced objects
 
-  +Pc  --print-all-codes
-         print all codes (incl. concept name codes)
+  -Ps   --print-sopclass-short
+          print short SOP class name of referenced image objects,
+          e.g. "CT image" (default)
 
-  +Pt  --print-template-id
-         print template identification information
+  +Ps   --print-sopclass-long
+          print long SOP class name of referenced objects
 
-  +C   --print-color
-         use ANSI escape codes for colored output
+  +Psu  --print-sopclass-uid
+          print SOP class UID of referenced objects
 
-         # not available on Windows systems
+  +Pc   --print-all-codes
+          print all codes (including concept name codes)
 
-  -C   --no-color
-         do not use any ANSI escape codes (default)
+  +Pt   --print-template-id
+          print template identification information
 
-         # not available on Windows systems
+color:
+
+  +C    --print-color
+          use ANSI escape codes for colored output
+
+          # not available on Windows systems
+
+  -C    --no-color
+          do not use any ANSI escape codes (default)
+
+          # not available on Windows systems
 .fi
 .PP
 .SH "NOTES"
@@ -176,7 +184,6 @@ The \fBdsrdump\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-
 SpectaclePrescriptionReportStorage          1.2.840.10008.5.1.4.1.1.78.6
 MacularGridThicknessAndVolumeReportStorage  1.2.840.10008.5.1.4.1.1.79.1
 BasicTextSRStorage                          1.2.840.10008.5.1.4.1.1.88.11
@@ -213,4 +220,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

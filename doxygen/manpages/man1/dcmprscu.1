@@ -1,4 +1,4 @@
-.TH "dcmprscu" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmprscu" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmprscu \- Print spooler for presentation state viewer
@@ -6,7 +6,6 @@ dcmprscu \- Print spooler for presentation state viewer
 .PP
 .PP
 .nf
-
 dcmprscu [options] [dcmfile-in...]
 .fi
 .PP
@@ -23,7 +22,6 @@ The \fBdcmprscu\fP utility can be run either in 'printer mode', in which case th
 .PP
 .PP
 .nf
-
 dcmfile-in  stored print file(s) to be spooled
 .fi
 .PP
@@ -32,7 +30,6 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -62,7 +59,6 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "print options"
 .PP
 .nf
-
        --noprint
          do not create print-out (no n-action-rq)
 
@@ -76,7 +72,6 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "mode options"
 .PP
 .nf
-
   +p   --print
          printer mode, print file(s) and terminate (default)
 
@@ -87,7 +82,6 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "processing options"
 .PP
 .nf
-
   -c   --config  [f]ilename: string
          process using settings from configuration file
 
@@ -101,7 +95,6 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "spooler options (only with --spool)"
 .PP
 .nf
-
        --sleep  [d]elay: integer (default: 1)
          sleep d seconds between spooler checks
 .fi
@@ -109,7 +102,6 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "basic film session options (not with --spool):"
 .PP
 .nf
-
        --copies  [v]alue: integer (1..100, default: 1)
          set number of copies to v
 

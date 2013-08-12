@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -6,7 +6,6 @@ dump2dcm \- Convert ASCII dump to DICOM file
 .PP
 .PP
 .nf
-
 dump2dcm [options] dumpfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdump2dcm\fP utility converts an ASCII dump file to a DICOM file\&. The du
 .PP
 .PP
 .nf
-
 dumpfile-in  dump input filename
 
 dcmfile-out  DICOM output filename
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-meta-info
@@ -66,6 +62,14 @@ input file format:
 
   -f   --ignore-meta-info
          ignore file meta information
+
+file contents byte ordering:
+
+  +rl  --read-file-little
+         read OW data with little endian (default)
+
+  +rb  --read-file-big
+         read OW data from file with big endian
 
 other input options:
 
@@ -76,7 +80,6 @@ other input options:
 .SS "processing options"
 .PP
 .nf
-
 unique identifiers:
 
   +Ug  --generate-new-uids
@@ -92,7 +95,6 @@ unique identifiers:
 .SS "output options"
 .PP
 .nf
-
 output file format:
 
   +F   --write-file
@@ -183,7 +185,6 @@ The individual parts of a line have the following syntax:
 .PP
 .PP
 .nf
-
 Tag:   (gggg,eeee)
        with gggg and eeee are 4 character hexadecimal values
        representing group and element tag.  Spaces and tabs can be
@@ -202,11 +203,11 @@ Value: There are several rules for writing values:
           values separated by '\\' character.  Alternatively, OB or OW
           values can be read from a separate file by writing the
           filename prefixed by a '=' character (e.g. '=largepix.dat').
-          The contents of the file will be read as is.  OW data is
-          expected to be little endian ordered and will be swapped if
-          necessary.  No checks will be made to ensure that the amount
-          of data is reasonable in terms of other attributes such as
-          Rows or Columns.
+          The contents of the file will be read as is.  By default, OW
+          data is expected to be little endian ordered and will be
+          swapped if necessary.  No checks will be made to ensure that
+          the amount of data is reasonable in terms of other attributes
+          such as Rows or Columns.
           In case of compressed pixel data, the line should start with
           '(7fe0,0010) OB (PixelSequence' in order to distinguish from
           uncompressed pixel data.
@@ -228,7 +229,6 @@ Value: There are several rules for writing values:
 .SS "Example"
 .PP
 .nf
-
  (0008,0020) DA [19921012]            #  8, 1 StudyDate
  (0008,0016) UI =MRImageStorage       # 26, 1 SOPClassUID
  (0002,0012) UI [1.2.276.0.7230010.100.1.1]
@@ -262,4 +262,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

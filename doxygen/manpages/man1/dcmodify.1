@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -6,7 +6,6 @@ dcmodify \- Modify DICOM files
 .PP
 .PP
 .nf
-
 dcmodify [options] dcmfile-in...
 .fi
 .PP
@@ -22,11 +21,9 @@ If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is se
 .PP
 .PP
 .nf
-
 {sequence[item-no].}*element
 .fi
 .PP
- \&.fi
 .PP
 where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag\&. 'item-no' describes the item number to be accessed (counting from zero)\&. 'element' defines the target tag to work on\&. A tag can either be specified directly as (0010,0010) or through the corresponding dictionary name 'PatientName'\&. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section)\&. For 'item-no', also a wildcard character '*' can be used selecting all items in surrounding sequence (see section WILDCARDS below)\&.
 .PP
@@ -37,7 +34,6 @@ Please note that there are some issues concerning the modification of private ta
 .PP
 .PP
 .nf
-
 dcmfile-in  DICOM input filename(s) to be modified
 .fi
 .PP
@@ -46,7 +42,6 @@ dcmfile-in  DICOM input filename(s) to be modified
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -76,7 +71,6 @@ dcmfile-in  DICOM input filename(s) to be modified
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -136,7 +130,6 @@ bitstream format of deflated input:
 .SS "processing options"
 .PP
 .nf
-
 backup input files:
 
         --backup
@@ -210,7 +203,6 @@ error handling:
 .SS "output options"
 .PP
 .nf
-
 output file format:
 
   +F    --write-file
@@ -315,7 +307,6 @@ The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of 
 .PP
 .PP
 .nf
-
 -i   --insert:
        dcmodify -i "(0010,0010)=A Name" file.dcm
        Inserts the PatientName tag into 'file.dcm' at 1st level.
@@ -419,9 +410,7 @@ The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of 
        dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
        This will modify the SOPInstanceUID to the given [UID],
        but -nmu avoids, that dcmodify adjusts the
-       MediaStorageSOPInstanceUID in the metaheader, too.
-
-.fi
+       MediaStorageSOPInstanceUID in the metaheader, too..fi
 .PP
 .SH "ERROR HANDLING"
 .PP

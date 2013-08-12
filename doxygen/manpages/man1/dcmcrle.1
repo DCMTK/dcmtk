@@ -1,4 +1,4 @@
-.TH "dcmcrle" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcrle" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcrle \- Encode DICOM file to RLE transfer syntax
@@ -6,7 +6,6 @@ dcmcrle \- Encode DICOM file to RLE transfer syntax
 .PP
 .PP
 .nf
-
 dcmcrle [options] dcmfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmcrle\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP), 
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-file
@@ -91,7 +87,6 @@ input transfer syntax:
 .SS "encapsulated pixel data encoding options"
 .PP
 .nf
-
 pixel data fragmentation:
 
   +ff  --fragment-per-frame
@@ -127,7 +122,6 @@ SOP Instance UID:
 .SS "output options"
 .PP
 .nf
-
 post-1993 value representations:
 
   +u   --enable-new-vr
@@ -174,7 +168,6 @@ data set trailing padding:
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
@@ -188,7 +181,6 @@ BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 .PP
 .PP
 .nf
-
 RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
 .fi
 .PP

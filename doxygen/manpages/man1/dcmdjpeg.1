@@ -1,4 +1,4 @@
-.TH "dcmdjpeg" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdjpeg" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdjpeg \- Decode JPEG-compressed DICOM file
@@ -6,7 +6,6 @@ dcmdjpeg \- Decode JPEG-compressed DICOM file
 .PP
 .PP
 .nf
-
 dcmdjpeg [options] dcmfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmdjpeg\fP utility reads a JPEG-compressed DICOM image (\fIdcmfile-in\fP
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -79,7 +75,6 @@ input file format:
 .SS "processing options"
 .PP
 .nf
-
 color space conversion:
 
   +cp   --conv-photometric
@@ -173,7 +168,6 @@ workaround options for incorrect JPEG encodings:
 .SS "output options"
 .PP
 .nf
-
 output file format:
 
   +F    --write-file
@@ -239,7 +233,6 @@ data set trailing padding (not with --write-dataset):
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
@@ -259,7 +252,6 @@ JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2

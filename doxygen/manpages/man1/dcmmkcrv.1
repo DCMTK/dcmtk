@@ -1,4 +1,4 @@
-.TH "dcmmkcrv" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkcrv" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkcrv \- Add 2D curve data to image
@@ -6,7 +6,6 @@ dcmmkcrv \- Add 2D curve data to image
 .PP
 .PP
 .nf
-
 dcmmkcrv [options] dcmfile-in curvedata-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmmkcrv\fP utility allows to create DICOM images containing curve data\&
 .PP
 .PP
 .nf
-
 dcmfile-in    DICOM input image file
 
 curvedata-in  curve data input file (text)
@@ -30,7 +28,6 @@ dcmfile-out   DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -60,7 +57,6 @@ dcmfile-out   DICOM output filename
 .SS "curve creation options"
 .PP
 .nf
-
 curve type:
 
   -r  --poly
@@ -102,7 +98,6 @@ The curve data file is expected to be a plain ASCII text file containing numbers
 .PP
 .PP
 .nf
-
  256.451947    1.000000
  477.689863  128.822080
  128.822080  477.689863

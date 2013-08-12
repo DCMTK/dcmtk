@@ -1,4 +1,4 @@
-.TH "storescu" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -6,7 +6,6 @@ storescu \- DICOM storage (C-STORE) SCU
 .PP
 .PP
 .nf
-
 storescu [options] peer port dcmfile-in...
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBstorescu\fP application implements a Service Class User (SCU) for the Sto
 .PP
 .PP
 .nf
-
 peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
@@ -30,7 +28,6 @@ dcmfile-in  DICOM file or directory to be transmitted
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -63,7 +60,6 @@ dcmfile-in  DICOM file or directory to be transmitted
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -95,7 +91,6 @@ input files:
 .SS "network options"
 .PP
 .nf
-
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -258,7 +253,6 @@ other network options:
 .SS "transport layer security (TLS) options"
 .PP
 .nf
-
 transport protocol stack:
 
   -tls  --disable-tls
@@ -337,7 +331,6 @@ The \fBstorescu\fP application supports the following Storage SOP Classes as an 
 .PP
 .PP
 .nf
-
 ComputedRadiographyImageStorage                      1.2.840.10008.5.1.4.1.1.1
 DigitalXRayImageStorageForPresentation               1.2.840.10008.5.1.4.1.1.1.1
 DigitalXRayImageStorageForProcessing                 1.2.840.10008.5.1.4.1.1.1.1.1
@@ -409,7 +402,6 @@ The default behaviour of \fBstorescu\fP is to propose two presentation contexts 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99

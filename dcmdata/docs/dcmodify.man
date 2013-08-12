@@ -42,9 +42,6 @@ sequences.  The (pseudo-formalized) syntax is
 \verbatim
 {sequence[item-no].}*element
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a
 tag.  'item-no' describes the item number to be accessed (counting from zero).
@@ -585,6 +582,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

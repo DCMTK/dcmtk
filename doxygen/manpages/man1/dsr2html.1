@@ -1,12 +1,11 @@
-.TH "dsr2html" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2html" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dsr2html \- Render DICOM SR file and data set to HTML/XHTML 
+dsr2html \- Render DICOM SR file and data set to HTML/XHTML
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-
 dsr2html [options] dsrfile-in [htmlfile-out]
 .fi
 .PP
@@ -19,7 +18,6 @@ If \fBdsr2html\fP reads a raw data set (DICOM data without a file format meta-he
 .PP
 .PP
 .nf
-
 dsrfile-in    DICOM SR input filename to be rendered
 
 htmlfile-out  HTML/XHTML output filename (default: stdout)
@@ -30,7 +28,6 @@ htmlfile-out  HTML/XHTML output filename (default: stdout)
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -60,7 +57,6 @@ htmlfile-out  HTML/XHTML output filename (default: stdout)
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-file
@@ -93,7 +89,6 @@ input transfer syntax:
 .SS "processing options"
 .PP
 .nf
-
 additional information:
 
   -Ip  --processing-details
@@ -144,7 +139,6 @@ specific character set:
 .SS "output options"
 .PP
 .nf
-
 HTML/XHTML compatibility:
 
   +H3  --html-3.2
@@ -226,7 +220,6 @@ The \fBdsr2html\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-
 SpectaclePrescriptionReportStorage          1.2.840.10008.5.1.4.1.1.78.6
 MacularGridThicknessAndVolumeReportStorage  1.2.840.10008.5.1.4.1.1.79.1
 BasicTextSRStorage                          1.2.840.10008.5.1.4.1.1.88.11
@@ -246,7 +239,6 @@ The HTML/XHTML encoding is determined automatically from the DICOM attribute (00
 .PP
 .PP
 .nf
-
 ASCII         (ISO_IR 6)    =>  (none)
 UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
@@ -289,4 +281,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2000-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

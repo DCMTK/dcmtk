@@ -1,4 +1,4 @@
-.TH "dcmcjpls" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpls" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
@@ -6,7 +6,6 @@ dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
 .PP
 .PP
 .nf
-
 dcmcjpls [options] dcmfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmcjpls\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP),
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-file
@@ -91,7 +87,6 @@ input transfer syntax:
 .SS "JPEG-LS encoding options"
 .PP
 .nf
-
 JPEG-LS process:
 
   +el  --encode-lossless
@@ -181,7 +176,6 @@ JPEG-LS interleave:
 .SS "encapsulated pixel data encoding options"
 .PP
 .nf
-
 encapsulated pixel data fragmentation:
 
   +ff  --fragment-per-frame
@@ -245,7 +239,6 @@ SOP Instance UID:
 .SS "output options"
 .PP
 .nf
-
 post-1993 value representations:
 
   +u   --enable-new-vr
@@ -297,7 +290,6 @@ The user is responsible for making sure that the compressed images he creates ar
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
@@ -311,7 +303,6 @@ BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 .PP
 .PP
 .nf
-
 JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
 JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
 .fi

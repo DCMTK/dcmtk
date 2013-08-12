@@ -1,4 +1,4 @@
-.TH "dcmsend" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsend" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsend \- Simple DICOM storage SCU (sender)
@@ -6,7 +6,6 @@ dcmsend \- Simple DICOM storage SCU (sender)
 .PP
 .PP
 .nf
-
 dcmsend [options] peer port dcmfile-in...
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmsend\fP application implements a Service Class User (SCU) for the Stor
 .PP
 .PP
 .nf
-
 peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
@@ -30,7 +28,6 @@ dcmfile-in  DICOM file or directory to be transmitted
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -66,7 +63,6 @@ dcmfile-in  DICOM file or directory to be transmitted
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -101,7 +97,6 @@ input files:
 .SS "processing options"
 .PP
 .nf
-
 transfer syntax conversion:
 
   -dn   --decompress-never
@@ -135,7 +130,6 @@ other processing options:
 .SS "network options"
 .PP
 .nf
-
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -174,7 +168,6 @@ other network options:
 .SS "output options"
 .PP
 .nf
-
 general:
 
   +crf  --create-report-file  [f]ilename: string
@@ -189,7 +182,6 @@ A typical use case of \fBdcmsend\fP is to send arbitrary SOP instances that are 
 .PP
 .PP
 .nf
-
 dcmsend --verbose <peer> <port> *.dcm
 .fi
 .PP
@@ -198,7 +190,6 @@ If the DICOM files are stored in a hierarchy of directories below the directory 
 .PP
 .PP
 .nf
-
 dcmsend -v <peer> <port> --scan-directories --recurse IMAGES
 .fi
 .PP
@@ -207,7 +198,6 @@ It is also possible to specify multiple directories and to combine the aforement
 .PP
 .PP
 .nf
-
 dcmsend -v +sd +r <peer> <port> IMAGES_1 IMAGES_2 test.img *.dcm
 .fi
 .PP
@@ -216,7 +206,6 @@ If the SOP instances are referenced from a DICOMDIR file, option \fI--read-from-
 .PP
 .PP
 .nf
-
 dcmsend -v <peer> <port> --read-from-dicomdir DICOMDIR
 .fi
 .PP
@@ -225,7 +214,6 @@ And again, all of the above approaches can be combined like this:
 .PP
 .PP
 .nf
-
 dcmsend -v +sd +r +rd <peer> <port> IMAGES_1 IMAGES_2 test.img DICOMDIR *.dcm
 .fi
 .PP
@@ -246,7 +234,6 @@ The \fBdcmsend\fP application also supports all Transfer Syntaxes that are defin
 .PP
 .PP
 .nf
-
 Transfer syntaxes supported natively:
 - Little Endian Implicit
 - Little Endian Explicit
@@ -288,7 +275,6 @@ The \fBdcmsend\fP utility uses the following exit codes when terminating\&. This
 .SS "general"
 .PP
 .nf
-
 EXITCODE_NO_ERROR                         0
 EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 .fi
@@ -296,7 +282,6 @@ EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 .SS "input file errors"
 .PP
 .nf
-
 EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
 EXITCODE_NO_INPUT_FILES                  21
 EXITCODE_INVALID_INPUT_FILE              22
@@ -306,7 +291,6 @@ EXITCODE_NO_VALID_INPUT_FILES            23
 .SS "output file errors"
 .PP
 .nf
-
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40 (*)
 EXITCODE_CANNOT_WRITE_REPORT_FILE        43
 .fi
@@ -314,7 +298,6 @@ EXITCODE_CANNOT_WRITE_REPORT_FILE        43
 .SS "network errors"
 .PP
 .nf
-
 EXITCODE_CANNOT_INITIALIZE_NETWORK       60
 EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION    61
 EXITCODE_CANNOT_SEND_REQUEST             62
@@ -330,7 +313,7 @@ The \fBdcmsend\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
-\fBstorescu\fP(1), \fBstorescp\fP(1)
+\fBdcmrecv\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

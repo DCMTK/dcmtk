@@ -1,4 +1,4 @@
-.TH "findscu" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -6,7 +6,6 @@ findscu \- DICOM query (C-FIND) SCU
 .PP
 .PP
 .nf
-
 findscu [options] peer port [dcmfile-in...]
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBfindscu\fP application implements an SCU for the Query/Retrieve Service C
 .PP
 .PP
 .nf
-
 peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
@@ -30,7 +28,6 @@ dcmfile-in  DICOM query file(s)
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -60,7 +57,6 @@ dcmfile-in  DICOM query file(s)
 .SS "network options"
 .PP
 .nf
-
 override matching keys:
 
   -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
@@ -149,7 +145,6 @@ other network options:
 .SS "transport layer security (TLS) options"
 .PP
 .nf
-
 transport protocol stack:
 
   -tls  --disable-tls
@@ -222,7 +217,6 @@ peer authentication:
 .SS "output options"
 .PP
 .nf
-
 general:
 
   -od   --output-directory  [d]irectory: string (default: ".")
@@ -246,7 +240,6 @@ Each file supplied on the command line will be sent to the SCP as part of a C-FI
 .PP
 .PP
 .nf
-
 # query patient names and IDs
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
 (0010,0010) PN []            # PatientName
@@ -258,7 +251,6 @@ Individual attributes of each file sent can be modified or supplemented using th
 .PP
 .PP
 .nf
-
 findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
@@ -271,7 +263,6 @@ Also \fI-k\fP accepts dictionary names instead of element tags for specifying DI
 .PP
 .PP
 .nf
-
 findscu -P -k PatientName="HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
@@ -280,7 +271,6 @@ It is also possible to specify sequences, items and nested attributes using the 
 .PP
 .PP
 .nf
-
 findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
 .fi
 .PP
@@ -296,7 +286,6 @@ The \fBfindscu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
-
 FINDPatientRootQueryRetrieveInformationModel       1.2.840.10008.5.1.4.1.2.1.1
 FINDStudyRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.2.1
 FINDPatientStudyOnlyQueryRetrieveInformationModel  1.2.840.10008.5.1.4.1.2.3.1
@@ -308,7 +297,6 @@ The \fBfindscu\fP application will propose presentation contexts for one of the 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax       1.2.840.10008.1.2.1.99 (*)

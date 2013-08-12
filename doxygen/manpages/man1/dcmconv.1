@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -6,7 +6,6 @@ dcmconv \- Convert DICOM file encoding
 .PP
 .PP
 .nf
-
 dcmconv [options] dcmfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmconv\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs an enc
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename to write to
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename to write to
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename to write to
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-file
@@ -184,7 +180,6 @@ bitstream format of deflated input:
 .SS "processing options"
 .PP
 .nf
-
 specific character set:
 
   # the following options require support from the libiconv toolkit
@@ -207,6 +202,10 @@ specific character set:
          try to approximate characters that cannot be
          represented through similar looking characters
 
+  -Cd  --discard-illegal
+         discard characters that cannot be represented
+         in destination character set
+
 other processing options:
 
   -ig  --no-invalid-groups
@@ -216,7 +215,6 @@ other processing options:
 .SS "output options"
 .PP
 .nf
-
 output file format:
 
   +F   --write-file

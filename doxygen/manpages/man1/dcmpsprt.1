@@ -1,4 +1,4 @@
-.TH "dcmpsprt" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmpsprt" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmpsprt \- Read DICOM images and presentation states and render print job
@@ -6,7 +6,6 @@ dcmpsprt \- Read DICOM images and presentation states and render print job
 .PP
 .PP
 .nf
-
 dcmpsprt [options] dcmfile-in...
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmpsprt\fP utility reads one or more DICOM images and presentation state
 .PP
 .PP
 .nf
-
 dcmfile-in  DICOM image file(s) to be printed
 .fi
 .PP
@@ -26,7 +24,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -56,7 +53,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "processing options"
 .PP
 .nf
-
   +p   --pstate  [p]state file: string
          render the following image with presentation state p
          (this option can be specified multiple times)
@@ -71,7 +67,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "spooling options"
 .PP
 .nf
-
   -s   --spool
          spool print job to DICOM printer
 
@@ -82,7 +77,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "film orientation options"
 .PP
 .nf
-
        --portrait
          set portrait orientation
 
@@ -96,7 +90,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "trim (border) options"
 .PP
 .nf
-
        --trim
          set trim on
 
@@ -110,7 +103,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "requested decimate/crop behaviour options"
 .PP
 .nf
-
        --request-decimate
          request decimate
 
@@ -127,7 +119,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "print presentation LUT options"
 .PP
 .nf
-
        --default-plut
          do not create presentation LUT (default)
 
@@ -151,7 +142,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "basic film session options (only with --spool)"
 .PP
 .nf
-
        --copies  [v]alue: integer (1..100, default: 1)
          set number of copies to v
 
@@ -174,7 +164,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "annotation options"
 .PP
 .nf
-
        --no-annotation
          do not create annotation (default)
 
@@ -203,7 +192,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "overlay options"
 .PP
 .nf
-
   +O   --overlay  [f]ilename: string, [x] [y]: integer
          load overlay data from PBM file f and display at position (x,y)
 
@@ -214,7 +202,6 @@ dcmfile-in  DICOM image file(s) to be printed
 .SS "other print options"
 .PP
 .nf
-
   -l   --layout  [c]olumns [r]ows: integer (default: 1 1)
          use 'STANDARD\c,r' image display format
 

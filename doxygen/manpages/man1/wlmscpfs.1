@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -6,7 +6,6 @@ wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
 .PP
 .PP
 .nf
-
 wlmscpfs [options] port
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBwlmscpfs\fP application implements a Service Class Provider (SCP) for the
 .PP
 .PP
 .nf
-
 port  tcp/ip port number to listen on
 .fi
 .PP
@@ -26,7 +24,6 @@ port  tcp/ip port number to listen on
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -56,7 +53,6 @@ port  tcp/ip port number to listen on
 .SS "multi-process options"
 .PP
 .nf
-
   -s    --single-process
           single process mode
 
@@ -67,7 +63,6 @@ port  tcp/ip port number to listen on
 .SS "input options"
 .PP
 .nf
-
 general:
 
   -dfp  --data-files-path  [p]ath: string (default: /home/www/wlist)
@@ -85,7 +80,6 @@ handling of worklist files:
 .SS "processing options"
 .PP
 .nf
-
 returned character set:
 
   -cs0  --return-no-char-set
@@ -107,7 +101,6 @@ other processing options:
 .SS "network options"
 .PP
 .nf
-
 preferred network transfer syntaxes:
 
   +x=   --prefer-uncompr
@@ -195,7 +188,6 @@ The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
 .PP
 .PP
 .nf
-
 VerificationSOPClass                  1.2.840.10008.1.1
 FINDModalityWorklistInformationModel  1.2.840.10008.5.1.4.31
 .fi
@@ -205,7 +197,6 @@ The \fBwlmscpfs\fP application will accept presentation contexts for all of the 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax    1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax    1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
@@ -218,7 +209,6 @@ If compiled with zlib support enabled (see \fI--version\fP output) and if option
 .PP
 .PP
 .nf
-
 DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99 (*)
 .fi
 .PP
@@ -229,7 +219,6 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
 .PP
 .PP
 .nf
-
 (0008,0050) AccessionNumber
 (0008,0090) ReferringPhysicianName
 (0010,0010) PatientName
@@ -253,7 +242,6 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 .PP
 .PP
 .nf
-
 (0008,0020) StudyDate
 (0008,0030) StudyTime
 (0008,0050) AccessionNumber

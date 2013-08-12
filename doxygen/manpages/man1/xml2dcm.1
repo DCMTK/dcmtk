@@ -1,4 +1,4 @@
-.TH "xml2dcm" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dcm" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 xml2dcm \- Convert XML document to DICOM file or data set
@@ -6,7 +6,6 @@ xml2dcm \- Convert XML document to DICOM file or data set
 .PP
 .PP
 .nf
-
 xml2dcm [options] xmlfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBxml2dcm\fP utility converts the contents of an XML (Extensible Markup Lan
 .PP
 .PP
 .nf
-
 xmlfile-in   XML input filename to be converted (stdin: "-")
 
 dcmfile-out  DICOM output filename
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h   --help
          print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f   --read-meta-info
@@ -71,7 +67,6 @@ input file format:
 .SS "processing options"
 .PP
 .nf
-
 validation:
 
   +Vd  --validate-document
@@ -95,7 +90,6 @@ unique identifiers:
 .SS "output options"
 .PP
 .nf
-
 output file format:
 
   +F   --write-file
@@ -175,7 +169,6 @@ The basic structure of the XML input expected looks like the following:
 .PP
 .PP
 .nf
-
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
 <file-format xmlns="http://dicom.offis.de/dcmtk">
@@ -221,7 +214,6 @@ The DICOM character encoding is determined automatically from the element with t
 .PP
 .PP
 .nf
-
 ASCII         (ISO_IR 6)    (UTF-8)
 UTF-8         "ISO_IR 192"  (UTF-8)
 ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
@@ -244,7 +236,6 @@ Binary data can be encoded either as a sequence of hex numbers separated by a ba
 .PP
 .PP
 .nf
-
 <element tag="7fe0,0010" vr="OW" ... binary="file">subdir/pixeldata.raw</element>
 .fi
 .PP

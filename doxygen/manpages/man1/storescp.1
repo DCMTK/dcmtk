@@ -1,4 +1,4 @@
-.TH "storescp" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -6,7 +6,6 @@ storescp \- DICOM storage (C-STORE) SCP
 .PP
 .PP
 .nf
-
 storescp [options] [port]
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBstorescp\fP application implements a Service Class Provider (SCP) for the
 .PP
 .PP
 .nf
-
 port  tcp/ip port number to listen on
       (this parameter is required unless the --inetd option is specified)
 .fi
@@ -27,7 +25,6 @@ port  tcp/ip port number to listen on
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -60,7 +57,6 @@ port  tcp/ip port number to listen on
 .SS "multi-process options"
 .PP
 .nf
-
         --single-process
           single process mode (default)
 
@@ -71,7 +67,6 @@ port  tcp/ip port number to listen on
 .SS "network options"
 .PP
 .nf
-
 association negotiation profile from configuration file:
 
   -xf   --config-file  [f]ilename [p]rofile: string
@@ -196,7 +191,6 @@ other network options:
 .SS "transport layer security (TLS) options"
 .PP
 .nf
-
 transport protocol stack:
 
   -tls  --disable-tls
@@ -266,7 +260,6 @@ peer authentication:
 .SS "output options"
 .PP
 .nf
-
 general:
 
   -od   --output-directory  [d]irectory: string (default: ".")
@@ -377,7 +370,6 @@ filename generation:
 .SS "event options"
 .PP
 .nf
-
   -xcr  --exec-on-reception  [c]ommand: string
           execute command c after having received and processed
           one C-STORE-RQ message
@@ -407,7 +399,6 @@ Option \fI--sort-conc-studies\fP enables a user to sort all received DICOM objec
 .PP
 .PP
 .nf
-
   [prefix]_[YYYYMMDD]_[HHMMSSPPP]
 .fi
 .PP
@@ -418,7 +409,6 @@ The other \fI--sort-xxx\fP options work in a similar manner, only the subdirecto
 .PP
 .PP
 .nf
-
   [prefix]_[StudyInstanceUID]
 .fi
 .PP
@@ -427,7 +417,6 @@ and for option \fI--sort-on-patientname\fP
 .PP
 .PP
 .nf
-
   [PatientName]_[YYYYMMDD]_[HHMMSSPPP]
 .fi
 .PP
@@ -438,7 +427,6 @@ Option \fI--timenames\fP creates filenames from timestamps corresponding to the 
 .PP
 .PP
 .nf
-
   [YYYYMMDDHHMMSSPPP]_[SERIALNO].[MD]
 .fi
 .PP
@@ -469,7 +457,6 @@ Option \fI--rename-on-eostudy\fP refers to the above mentioned \fI--sort-xxx\fP 
 .PP
 .PP
 .nf
-
   [prefix][consecutive numbering]
 .fi
 .PP
@@ -484,7 +471,6 @@ The \fBstorescp\fP application supports the following SOP Classes as an SCP:
 .PP
 .PP
 .nf
-
 VerificationSOPClass                                 1.2.840.10008.1.1
 
 RETIRED_StoredPrintStorage                           1.2.840.10008.5.1.1.27
@@ -499,12 +485,14 @@ DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+LegacyConvertedEnhancedCTImageStorage                1.2.840.10008.5.1.4.1.1.2.2
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
 EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
+LegacyConvertedEnhancedMRImageStorage                1.2.840.10008.5.1.4.1.1.4.4
 RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
@@ -551,6 +539,8 @@ DeformableSpatialRegistrationStorage                 1.2.840.10008.5.1.4.1.1.66.
 SegmentationStorage                                  1.2.840.10008.5.1.4.1.1.66.4
 SurfaceSegmentationStorage                           1.2.840.10008.5.1.4.1.1.66.5
 RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+SurfaceScanMeshStorage                               1.2.840.10008.5.1.4.1.1.68.1
+SurfaceScanPointCloudStorage                         1.2.840.10008.5.1.4.1.1.68.2
 RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
 VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
 VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
@@ -583,6 +573,7 @@ DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.
 BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
 ComprehensiveSRStorage                               1.2.840.10008.5.1.4.1.1.88.33
+Comprehensive3DSRStorage                             1.2.840.10008.5.1.4.1.1.88.34
 ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
@@ -593,6 +584,7 @@ ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
+LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
@@ -623,7 +615,6 @@ The \fBstorescp\fP application will accept presentation contexts for all of the 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
@@ -634,7 +625,6 @@ The default behaviour of the \fBstorescp\fP application is to prefer transfer sy
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
@@ -664,7 +654,6 @@ On Posix platforms, \fBstorescp\fP can be initiated through the inetd(8) super s
 .PP
 .PP
 .nf
-
 acr-nema stream tcp nowait root /usr/sbin/storescp -id +ac -od /tmp/storescp
 .fi
 .PP
@@ -702,4 +691,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBstorescu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "dcmcjpeg" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpeg" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
@@ -6,7 +6,6 @@ dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
 .PP
 .PP
 .nf
-
 dcmcjpeg [options] dcmfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBdcmcjpeg\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP),
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output filename
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output filename
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -106,7 +102,6 @@ compatibility (ignored by +tl):
 .SS "JPEG encoding options"
 .PP
 .nf
-
 JPEG process:
 
   +e1   --encode-lossless-sv1
@@ -327,7 +322,6 @@ non-standard YCbCr component subsampling (not with +tl):
 .SS "encapsulated pixel data encoding options"
 .PP
 .nf
-
 encapsulated pixel data fragmentation:
 
   +ff   --fragment-per-frame
@@ -492,7 +486,6 @@ SOP Instance UID:
 .SS "output options"
 .PP
 .nf
-
 post-1993 value representations:
 
   +u    --enable-new-vr
@@ -572,7 +565,6 @@ In order to be on the safe side, the Lossy Compression Flag is always set to '01
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
@@ -592,7 +584,6 @@ JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
 .PP
 .PP
 .nf
-
 JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
 JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
 JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53

@@ -1,4 +1,4 @@
-.TH "movescu" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 movescu \- DICOM retrieve (C-MOVE) SCU
@@ -6,7 +6,6 @@ movescu \- DICOM retrieve (C-MOVE) SCU
 .PP
 .PP
 .nf
-
 movescu [options] peer port [dcmfile-in...]
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBmovescu\fP application implements both an SCU for the Query/Retrieve Serv
 .PP
 .PP
 .nf
-
 peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
@@ -30,7 +28,6 @@ dcmfile-in  DICOM query file(s)
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -60,7 +57,6 @@ dcmfile-in  DICOM query file(s)
 .SS "network options"
 .PP
 .nf
-
 override matching keys:
 
   -k    --key  [k]ey: gggg,eeee="str" or dictionary name="str"
@@ -223,7 +219,6 @@ other network options:
 .SS "output options"
 .PP
 .nf
-
 general:
 
   -od   --output-directory  [d]irectory: string (default: ".")
@@ -313,7 +308,6 @@ Each file supplied on the command line will be sent to the SCP as part of a C-MO
 .PP
 .PP
 .nf
-
 # request all images for the patient with ID=PAT001
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
 (0010,0020) LO [PAT001]      # PatientID
@@ -324,7 +318,6 @@ Individual attributes of each file sent can be modified or supplemented using th
 .PP
 .PP
 .nf
-
 movescu -k 0010,0020=PAT002 caesar 5678 patqry.dcm
 .fi
 .PP
@@ -347,7 +340,6 @@ The \fBmovescu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
-
 MOVEPatientRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.1.2
 MOVEStudyRootQueryRetrieveInformationModel           1.2.840.10008.5.1.4.1.2.2.2
 MOVEPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.2
@@ -358,7 +350,6 @@ The \fBmovescu\fP application will propose presentation contexts for one of the 
 .PP
 .PP
 .nf
-
 FINDPatientRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.1.1
 FINDStudyRootQueryRetrieveInformationModel           1.2.840.10008.5.1.4.1.2.2.1
 FINDPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.1
@@ -369,7 +360,6 @@ For outgoing associations, the following transfer syntaxes are supported:
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
@@ -385,7 +375,6 @@ The \fBmovescu\fP application supports the following SOP Classes as an SCP:
 .PP
 .PP
 .nf
-
 VerificationSOPClass                                 1.2.840.10008.1.1
 
 RETIRED_StoredPrintStorage                           1.2.840.10008.5.1.1.27
@@ -452,6 +441,8 @@ DeformableSpatialRegistrationStorage                 1.2.840.10008.5.1.4.1.1.66.
 SegmentationStorage                                  1.2.840.10008.5.1.4.1.1.66.4
 SurfaceSegmentationStorage                           1.2.840.10008.5.1.4.1.1.66.5
 RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+SurfaceScanMeshStorage                               1.2.840.10008.5.1.4.1.1.68.1
+SurfaceScanPointCloudStorage                         1.2.840.10008.5.1.4.1.1.68.2
 RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
 VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
 VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
@@ -484,6 +475,7 @@ DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.
 BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
 ComprehensiveSRStorage                               1.2.840.10008.5.1.4.1.1.88.33
+Comprehensive3DSRStorage                             1.2.840.10008.5.1.4.1.1.88.34
 ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
@@ -524,7 +516,6 @@ The \fBmovescu\fP application will usually accept presentation contexts for all 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
@@ -535,7 +526,6 @@ When acting as an SCP, the \fBmovescu\fP application will prefer transfer syntax
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
@@ -564,7 +554,6 @@ When compiled on Unix platforms with TCP wrapper support, host-based access cont
 .PP
 .PP
 .nf
-
 movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
 .fi
 .PP
@@ -594,4 +583,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBfindscu\fP(1), \fBstorescp\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

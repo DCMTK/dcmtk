@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -6,7 +6,6 @@ img2dcm \- Convert standard image formats into DICOM format
 .PP
 .PP
 .nf
-
 img2dcm [options] imgfile-in dcmfile-out
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format 
 .PP
 .PP
 .nf
-
 imgfile-in   image file to be imported
 
 dcmfile-out  DICOM output file
@@ -28,7 +26,6 @@ dcmfile-out  DICOM output file
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -58,7 +55,6 @@ dcmfile-out  DICOM output file
 .SS "input options"
 .PP
 .nf
-
 general:
 
   -i    --input-format  [i]nput file format: string
@@ -94,7 +90,6 @@ JPEG format:
 .SS "processing options"
 .PP
 .nf
-
 attribute checking:
 
         --do-checks
@@ -136,7 +131,6 @@ other processing options:
 .SS "output options"
 .PP
 .nf
-
 target SOP class:
 
   -sc   --sec-capture
@@ -199,7 +193,6 @@ Using the \fI--dataset-from\fP option \fBimg2dcm\fP is forced to import attribut
 The \fI--study-from\fP and \fI--series-from\fP options (mutually exclusive) can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. The following attributes are taken over:
 .PP
 .nf
-
       Patient Level:
         Patient's Name
         Patient ID
@@ -219,7 +212,6 @@ The \fI--study-from\fP and \fI--series-from\fP options (mutually exclusive) can 
         Series Instance UID
         Series Number
         Manufacturer
-
 .fi
 .PP
 
@@ -238,7 +230,6 @@ New Study and Series Instance UIDs are generated \fBif necessary\fP after applyi
 For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defined templates which can be used for the \fI--dataset-from\fP option (see sample files \fISC\&.dump\fP and \fIVLP\&.dump\fP)\&. These templates should be filled with the desired values and then must be dumped (converted) to a DICOM file before actually being used with \fBimg2dcm\fP\&. Use \fBdump2dcm\fP to convert the dump to DICOM\&. Example:
 .PP
 .nf
-
   dump2dcm SC.dump SC.dcm
 
 .fi

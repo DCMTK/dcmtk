@@ -1,4 +1,4 @@
-.TH "dcm2xml" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2xml \- Convert DICOM file and data set to XML
@@ -6,7 +6,6 @@ dcm2xml \- Convert DICOM file and data set to XML
 .PP
 .PP
 .nf
-
 dcm2xml [options] dcmfile-in [xmlfile-out]
 .fi
 .PP
@@ -19,7 +18,6 @@ If \fBdcm2xml\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-
 dcmfile-in   DICOM input filename to be converted
 
 xmlfile-out  XML output filename (default: stdout)
@@ -30,7 +28,6 @@ xmlfile-out  XML output filename (default: stdout)
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -60,7 +57,6 @@ xmlfile-out  XML output filename (default: stdout)
 .SS "input options"
 .PP
 .nf
-
 input file format:
 
   +f    --read-file
@@ -104,7 +100,6 @@ long tag values:
 .SS "processing options"
 .PP
 .nf
-
 specific character set:
 
   +Cr   --charset-require
@@ -130,7 +125,6 @@ specific character set:
 .SS "output options"
 .PP
 .nf
-
 general XML format:
 
   -dtk  --dcmtk-format
@@ -179,7 +173,6 @@ The basic structure of the DCMTK-specific XML output created from a DICOM file l
 .PP
 .PP
 .nf
-
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
 <file-format xmlns="http://dicom.offis.de/dcmtk">
@@ -240,7 +233,6 @@ The XML encoding is determined automatically from the DICOM attribute (0008,0005
 .PP
 .PP
 .nf
-
 ASCII         (ISO_IR 6)    =>  "UTF-8"
 UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"

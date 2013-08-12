@@ -1,4 +1,4 @@
-.TH "echoscu" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 echoscu \- DICOM verification (C-ECHO) SCU
@@ -6,7 +6,6 @@ echoscu \- DICOM verification (C-ECHO) SCU
 .PP
 .PP
 .nf
-
 echoscu [options] peer port
 .fi
 .PP
@@ -17,7 +16,6 @@ The \fBechoscu\fP application implements a Service Class User (SCU) for the Veri
 .PP
 .PP
 .nf
-
 peer  hostname of DICOM peer
 
 port  tcp/ip port number of peer
@@ -28,7 +26,6 @@ port  tcp/ip port number of peer
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -58,7 +55,6 @@ port  tcp/ip port number of peer
 .SS "network options"
 .PP
 .nf
-
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -99,7 +95,6 @@ other network options:
 .SS "transport layer security (TLS) options"
 .PP
 .nf
-
 transport protocol stack:
 
   -tls  --disable-tls
@@ -175,7 +170,6 @@ The \fBechoscu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
-
 VerificationSOPClass                1.2.840.10008.1.1
 .fi
 .PP
@@ -184,7 +178,6 @@ Unless the \fI--propose-ts\fP option is used, the echoscu application will only 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
 .fi
 .PP

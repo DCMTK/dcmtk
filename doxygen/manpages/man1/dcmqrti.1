@@ -1,4 +1,4 @@
-.TH "dcmqrti" 1 "Fri Nov 2 2012" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrti" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrti \- The Terminal Initiator Telnet Client Program
@@ -6,7 +6,6 @@ dcmqrti \- The Terminal Initiator Telnet Client Program
 .PP
 .PP
 .nf
-
 dcmqrti [options] peer...
 .fi
 .PP
@@ -19,7 +18,6 @@ The \fBdcmqrti\fP program takes one main argument, the hostname or vendor symbol
 .PP
 .PP
 .nf
-
 peer  peer host name or symbolic name from cfg file
 .fi
 .PP
@@ -28,7 +26,6 @@ peer  peer host name or symbolic name from cfg file
 .SS "general options"
 .PP
 .nf
-
   -h    --help
           print this help text and exit
 
@@ -62,7 +59,6 @@ peer  peer host name or symbolic name from cfg file
 .SS "network options"
 .PP
 .nf
-
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
 
@@ -86,7 +82,6 @@ peer  peer host name or symbolic name from cfg file
 .SS "other options"
 .PP
 .nf
-
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
 
@@ -103,7 +98,6 @@ The 'help' command gives a summary of all available commands\&. Its output is sh
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
 Command Summary:
 help                list this summary
@@ -128,7 +122,6 @@ The 'title' command without an argument allows the user to list the known remote
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
 Peer AE Titles:
      Peer AE          HostName:PortNumber
@@ -148,7 +141,6 @@ The 'database' command without an argument allows the user to list the know loca
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
 Database Titles:
      Database
@@ -168,7 +160,6 @@ The 'study' command with no argument lists the studies in the current database\&
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
       Patient                        PatientID    StudyID
 *  0) JACKSON^ANDREW^^^              M4997106     20001
@@ -190,7 +181,6 @@ The 'series' command with no argument lists the series in the current study\&. A
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
       Series Modality SeriesInstanceUID
 *  0) 1      MR       1.2.840.113654.2.3.1993.201
@@ -213,7 +203,6 @@ The 'image' command with no argument lists the images in the current series\&. A
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
       Image ImageInstanceUID
 *  0) 1     1.2.840.113654.2.3.1993.9.123.6.2674
@@ -246,7 +235,6 @@ The 'send' command allows a complete study/series or individual image to be stor
 .PP
 .PP
 .nf
-
 The "send" command exists in three forms:
 
         send study [#]
@@ -260,7 +248,6 @@ The 'study' keyword means send all images in the current study\&. When invoked w
 When an image is stored, a message will be printed of the form:
 .PP
 .nf
-
 ------------------------------------------------------------
 New Association Started (swallow:2001,ACME1)
 [MsgID 1] Store,
@@ -282,7 +269,6 @@ When invoked without an argument, only one C-ECHO message is generated\&. When i
 .PP
 .PP
 .nf
-
 ------------------------------------------------------------
 New Association Started (localhost:2001,CMOVE)
 [MsgID 1] Echo, Complete [Status: Success]
@@ -299,7 +285,6 @@ The \fBdcmqrti\fP application will propose presentation contexts for all of the 
 .PP
 .PP
 .nf
-
 LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax  1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax     1.2.840.10008.1.2.2
