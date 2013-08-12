@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.12 (riesmeier)
 
+- Added comments to unused exit codes.
+  Affects: dcmnet/apps/dcmsend.cc
+
 - Added new command line tool "dcmrecv":
   This tool is a Simple Storage Service Class Provider, which is based on the
   recently introduced network class DcmStorageSCP.

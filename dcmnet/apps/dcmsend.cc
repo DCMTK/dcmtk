@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,7 +55,7 @@ static OFLogger dcmsendLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-/* default application titles */
+/* default application entity titles */
 #define APPLICATIONTITLE     "DCMSEND"
 #define PEERAPPLICATIONTITLE "ANY-SCP"
 
@@ -68,13 +68,13 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define EXITCODE_COMMANDLINE_SYNTAX_ERROR         1      // this code is the default for printError()
 
 // input file errors
-#define EXITCODE_CANNOT_READ_INPUT_FILE          20
+#define EXITCODE_CANNOT_READ_INPUT_FILE          20      // placeholder, currently not used
 #define EXITCODE_NO_INPUT_FILES                  21
 #define EXITCODE_INVALID_INPUT_FILE              22
 #define EXITCODE_NO_VALID_INPUT_FILES            23
 
 // output file errors
-#define EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+#define EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40      // placeholder, currently not used
 #define EXITCODE_CANNOT_WRITE_REPORT_FILE        43
 
 // network errors
