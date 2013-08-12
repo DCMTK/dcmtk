@@ -121,7 +121,8 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 
     /** get mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
-     *  @return decompression mode. See definition of E_DecompressionMode for possible values.
+     *  @return decompression mode. See definition of DcmStorageSCU::E_DecompressionMode for
+     *    possible values.
      */
     E_DecompressionMode getDecompressionMode() const;
 
@@ -162,8 +163,9 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 
     /** set mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
-     *  @param  decompressionMode  decompression mode. See definition of E_DecompressionMode
-     *                             for both possible values and the default value.
+     *  @param  decompressionMode  decompression mode. See definition of
+     *                             DcmStorageSCU::E_DecompressionMode for both possible values
+     *                             and the default value.
      */
     void setDecompressionMode(const E_DecompressionMode decompressionMode);
 
@@ -212,9 +214,9 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
     void setMOVEOriginatorInfo(const OFString &aeTitle = "",
                                const Uint16 messageID = 0);
 
-    /** reset the sent status for all SOP instances in the transfer list.  This alllows for
+    /** reset the sent status for all SOP instances in the transfer list.  This allows for
      *  sending the same SOP instances again - on the same or a different association.
-     *  @param  sameAssociation  flag indicating whether the same assocation will be used for
+     *  @param  sameAssociation  flag indicating whether the same association will be used for
      *                           the transfer as last time.  If a different association will
      *                           be used, also the presentation context IDs are set to 0
      *                           (undefined), which means that addPresentationContexts() has

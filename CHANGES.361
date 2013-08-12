@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.12 (riesmeier)
 
+- Fixed some minor Doxygen issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+
 - Added global helper function createDirectory():
   Added a global helper function to OFStandard that allows for creating file
   directories in a portable way. This also includes the creation of arbitrary
