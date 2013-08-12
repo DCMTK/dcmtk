@@ -138,12 +138,13 @@ END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* for GetFileAttributes() */
+#include <direct.h>      /* for _mkdir() */
 
-#ifndef R_OK /* windows defines access() but not the constants */
+#ifndef R_OK /* Windows defines access() but not the constants */
 #define W_OK 02 /* Write permission */
 #define R_OK 04 /* Read permission */
 #define F_OK 00 /* Existance only */
-#endif /* R_OK */
+#endif /* !R_OK */
 
 #endif /* HAVE_WINDOWS_H */
 
@@ -576,6 +577,7 @@ OFString &OFStandard::normalizeDirName(OFString &result,
 {
     result = dirName;
     /* remove trailing path separators (keep it if appearing at the beginning of the string) */
+    /* TODO: do we need to check for absolute path containing Windows drive name, e.g. "c:\"? */
     while ((result.length() > 1) && (result.at(result.length() - 1) == PATH_SEPARATOR))
         result.erase(result.length() - 1, 1);
     if (allowEmptyDirName)
@@ -601,7 +603,7 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
     // # or combinations of absolute paths in both 'dirName' and 'fileName'
 
     /* check whether 'fileName' contains absolute path */
-    /* (this check also covers UNC syntax, e. g. "\\server\...") */
+    /* (this check also covers UNC syntax, e.g. "\\server\...") */
     if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
     {
         result = fileName;
@@ -610,7 +612,7 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
 #ifdef HAVE_WINDOWS_H
     else if ((fileName.length() >= 3))
     {
-        /* check for absolute path containing windows drive name, e. g. "c:\..." */
+        /* check for absolute path containing Windows drive name, e.g. "c:\..." */
         char c = fileName.at(0);
         if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')))
         {
@@ -788,6 +790,8 @@ OFCondition OFStandard::createDirectory(const OFString &dirName,
         /* then, check whether the given prefix can be skipped */
         size_t pos = 0;
         size_t dirLength = dirName.length();
+        /* check for absolute path containing Windows drive name, e. g. "c:\",
+         * is not required since the root directory should always exist */
         if ((dirLength > 1) && (dirName.at(dirLength - 1) == PATH_SEPARATOR))
         {
             /* ignore trailing path separator */
@@ -813,10 +817,6 @@ OFCondition OFStandard::createDirectory(const OFString &dirName,
                 }
             }
         }
-#ifdef HAVE_WINDOWS_H
-        // TODO: implement this functionality also for the Windows platform
-        status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, "Cannot create directory: not yet implemented on this platform!");
-#else
         /* and finally, iterate over all subsequent subdirectories */
         do {
             /* search for next path separator */
@@ -826,7 +826,11 @@ OFCondition OFStandard::createDirectory(const OFString &dirName,
             if (!dirExists(subDir))
             {
                 /* and create the directory component (if not already existing) */
+#ifdef HAVE_WINDOWS_H
+                if (_mkdir(subDir.c_str()) == -1)
+#else
                 if (mkdir(subDir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
                 {
                     char errBuf[256];
                     OFString message("Cannot create directory: ");
@@ -838,7 +842,6 @@ OFCondition OFStandard::createDirectory(const OFString &dirName,
             }
         } while (pos < dirLength);
     }
-#endif
     return status;
 }
 

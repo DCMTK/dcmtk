@@ -330,7 +330,6 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** create a directory (including sub-directories) if it does not yet exist.  In other
      *  words, this function creates directories recursively, i.e. with all sub-components.
-     *  @warning This function has not yet been implemented for the Windows platform.
      *  @param dirName name of the directory to be created
      *  @param rootDir optional name of a root directory (prefix of 'dirName') that already
      *    exists and that can, therefore, be skipped during the creation of sub-directories.

@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.12 (riesmeier)
 
+- Function createDirectory() also works on Windows:
+  Implemented and tested the new function createDirectory() on Windows systems.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Updated man pages.
   Affects: dcmdata/docs/dcmodify.man
            doxygen/manpages/man1/*
