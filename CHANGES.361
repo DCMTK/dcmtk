@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.14 (riesmeier)
 
+- Deprecated closeAssociation() method:
+  Added comment that closeAssociation() is deprecated and will probably be made
+  "protected" in the future. Instead of that, the methods releaseAssociation()
+  and abortAssociation() from the base class DcmSCU should be used.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlsscu.h
+
 - Fixed various typos.
   Affects: dcmtls/libsrc/tlsscu.cc
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -70,6 +70,8 @@ public:
   virtual OFCondition negotiateAssociation();
 
   /** Closes the association of this SCU
+   *  @deprecated The use of this method is deprecated. Please use
+   *    DcmSCU::releaseAssociation() or DcmSCU::abortAssociation() instead.
    *  @param closeType [in] Define whether to release or abort the association
    */
   virtual void closeAssociation(const DcmCloseAssociationType closeType);
@@ -214,7 +216,7 @@ private:
   /// given.
   char* m_passwd;
 
-  /// String containing all ciphersuites being (additionally? TODO) configured
+  /// String containing all cipher suites being (additionally? TODO) configured
   OFString m_ciphersuites;
 
   /// TODO
@@ -227,7 +229,7 @@ private:
   /// only validated if present
   DcmCertificateVerification m_certVerification;
 
-  /// File containing Diffie Hellman parameters to be used
+  /// File containing Diffie-Hellman parameters to be used
   OFString m_dhparam;
 
 };
