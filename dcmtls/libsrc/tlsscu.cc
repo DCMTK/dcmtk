@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -110,10 +110,10 @@ OFCondition DcmTLSSCU::initNetwork()
    */
   if (m_doAuthenticate)
   {
-    // Set password. NULL password will ask user on commandline
+    // Set password. NULL password will ask user on command line
     if (m_passwd) m_tLayer->setPrivateKeyPasswd(m_passwd);
 
-    // Set file that contains the privatey key
+    // Set file that contains the private key
     if ( cond.good() && (TCS_ok != m_tLayer->setPrivateKeyFile(m_privateKeyFile.c_str(), m_privateKeyFileFormat)) )
     {
       DCMTLS_ERROR("Unable to create TLS transport layer for SCP: Unable to load private TLS key from file " << m_privateKeyFile);
@@ -140,7 +140,7 @@ OFCondition DcmTLSSCU::initNetwork()
     cond = EC_IllegalCall; // TODO: need to find better error code
   }
 
-  /* Initiliaze Diffie-Hellman parameters from file if given */
+  /* Initialize Diffie-Hellman parameters from file if given */
   if (!m_dhparam.empty() && cond.good())
   {
     if (!m_tLayer->setTempDHParameters(m_dhparam.c_str()))
@@ -151,7 +151,7 @@ OFCondition DcmTLSSCU::initNetwork()
   if (cond.good())
     m_tLayer->setCertificateVerification(m_certVerification);
 
-  /*  Now we are ready to initialize scu's network structures */
+  /*  Now we are ready to initialize SCU's network structures */
   if (cond.good())
     cond = DcmSCU::initNetwork();
 
@@ -162,7 +162,7 @@ OFCondition DcmTLSSCU::initNetwork()
   if (cond.good())
     cond = useSecureConnection(m_tLayer);
 
-  /* Finally, look whether everyhting was successful. If not,
+  /* Finally, look whether everything was successful. If not,
    * delete secure layer created above
    */
   if (cond.bad())

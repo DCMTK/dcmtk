@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.14 (riesmeier)
+
+- Fixed various typos.
+  Affects: dcmtls/libsrc/tlsscu.cc
+
 **** Changes from 2013.08.13 (riesmeier)
 
 - Updated CMake version:
@@ -107,7 +112,7 @@ Changes between releases are documented here.
   Affects: dcmnet/libsrc/scu.cc
 
 - Fixed various typos.
-  Affects:dcmnet/include/dcmtk/dcmnet/scp.h
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
 
 - Added new condition constants:
   Added two new conditions constants for general directory-related errors:
