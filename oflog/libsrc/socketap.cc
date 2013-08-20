@@ -134,9 +134,11 @@ SocketAppender::SocketAppender(const tstring& host_,
 : socket(),
   host(host_),
   port(port_),
-  serverName(serverName_),
-  connected(false),
+  serverName(serverName_)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+  ,connected(false),
   connector()
+#endif
 {
     openSocket();
     initConnector ();
@@ -149,9 +151,11 @@ SocketAppender::SocketAppender(const helpers::Properties & properties)
    socket(),
    host(),
    port(9998),
-   serverName(),
-   connected(false),
+   serverName()
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+   ,connected(false),
    connector()
+#endif
 {
     host = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("host") );
     properties.getUInt (port, DCMTK_LOG4CPLUS_TEXT("port"));
