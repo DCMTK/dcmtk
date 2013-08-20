@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152, 154, 157, 158.
+# - Supplement 152, 154, 157, 158, 163.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
 #      1249, 1258, 1269.
 #
@@ -3336,6 +3336,13 @@
 (0040,4023)	UI	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID	1	Supplement_158/retired
 (0040,4031)	SQ	RETIRED_RequestedSubsequentWorkitemCodeSequence	1	Supplement_158/retired
 (0040,4032)	SQ	RETIRED_NonDICOMOutputCodeSequence	1	Supplement_158/retired
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 163 (Store Over the Web by RESTful Services, STOW-RS)
+#
+(0008,1190)	UT	RetrieveURL	1	Supplement_163
+(0008,1196)	US	WarningReason	1	Supplement_163
 #
 #---------------------------------------------------------------------------
 #

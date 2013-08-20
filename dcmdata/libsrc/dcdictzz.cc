@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-08-01 17:42:39
+**   Date: 2013-08-20 14:55:39
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-08-01 17:42:39";
+const char* dcmBuiltinDictBuildDate = "2013-08-20 14:55:39";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -805,8 +805,16 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UI, "MultiFrameSourceSOPInstanceUID", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0008, 0x1190, 0x0008, 0x1190,
+      EVR_UT, "RetrieveURL", 1, 1, "Supplement_163",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0008, 0x1195, 0x0008, 0x1195,
       EVR_UI, "TransactionUID", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x1196, 0x0008, 0x1196,
+      EVR_US, "WarningReason", 1, 1, "Supplement_163",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1197, 0x0008, 0x1197,

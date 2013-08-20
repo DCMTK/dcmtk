@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-06-24 11:44:20
+**   Date: 2013-08-20 14:55:32
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-06-24 11:44:20"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-08-20 14:55:32"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3645
+** Number of entries: 3647
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -207,7 +207,9 @@
 #define DCM_TimeRange                            DcmTagKey(0x0008, 0x1163)
 #define DCM_FrameExtractionSequence              DcmTagKey(0x0008, 0x1164)
 #define DCM_MultiFrameSourceSOPInstanceUID       DcmTagKey(0x0008, 0x1167)
+#define DCM_RetrieveURL                          DcmTagKey(0x0008, 0x1190)
 #define DCM_TransactionUID                       DcmTagKey(0x0008, 0x1195)
+#define DCM_WarningReason                        DcmTagKey(0x0008, 0x1196)
 #define DCM_FailureReason                        DcmTagKey(0x0008, 0x1197)
 #define DCM_FailedSOPSequence                    DcmTagKey(0x0008, 0x1198)
 #define DCM_ReferencedSOPSequence                DcmTagKey(0x0008, 0x1199)
