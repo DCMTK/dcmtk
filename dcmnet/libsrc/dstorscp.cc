@@ -226,8 +226,8 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reque
             {
                 if (OFStandard::fileExists(filename))
                     DCMNET_WARN("file already exists, overwriting: " << filename);
-                // store the received dataset to file (with default settings)
-                status = dataset->saveFile(filename);
+                // store the received dataset to file (with default settings) - creates a temporary copy!
+                status = DcmFileFormat(dataset).saveFile(filename);
                 if (status.good())
                 {
                     // call the notification handler (default implementation outputs to the logger)
