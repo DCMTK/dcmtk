@@ -65,7 +65,7 @@ DcmSCU::DcmSCU() :
   WSAData winSockData;
   /* we need at least version 1.1 */
   WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData); // TODO: check with multiple SCU instances whether this is harmful
+  WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 }
 
@@ -108,7 +108,7 @@ DcmSCU::~DcmSCU()
   }
 
 #ifdef HAVE_WINSOCK_H
-  WSACleanup(); // TODO: check with multiple SCU instances whether this is harmful
+  WSACleanup();
 #endif
 }
 
@@ -1372,7 +1372,8 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   }
 
   OFString filename = createStorageFilename(incomingObject);
-  result = incomingObject->saveFile(filename.c_str());
+  DcmFileFormat dcmff(incomingObject);
+  result = dcmff.saveFile(filename.c_str());
   if (result.good())
   {
     E_TransferSyntax xferSyntax;
