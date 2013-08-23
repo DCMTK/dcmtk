@@ -8,6 +8,14 @@ Changes between releases are documented here.
   DICOM files. Previously only the DICOM dataset was written to file.
   Affects: dcmnet/libsrc/dstorscp.cc
 
+**** Changes from 2013.08.23 (onken)
+
+- Always write meta header when receiving files. Removed Winsock comment.
+  Affects: dcmnet/libsrc/scu.cc
+
+- Added missing CHANGES entry.
+  Affects: CHANGES.361
+
 **** Changes from 2013.08.20 (riesmeier)
 
 - Added support for Supplement 163 to data dictionary:
