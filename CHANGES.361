@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.26 (riesmeier)
 
+- Do not copy received dataset in memory:
+  Made sure that the DICOM dataset received via a C-STORE request is not copied
+  in memory (i.e. to a DcmFileFormat structure) in order to store it as a DICOM
+  file (i.e. with file meta information header).
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+
 - Fixed various inconsistencies in comments.
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
 

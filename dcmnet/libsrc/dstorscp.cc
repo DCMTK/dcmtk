@@ -173,20 +173,16 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
         else if (msg->CommandField == DIMSE_C_STORE_RQ)
         {
             // handle incoming C-STORE request
-            DcmDataset *reqDataset = NULL;
+            DcmFileFormat fileformat;
+            DcmDataset *reqDataset = fileformat.getDataset();
             T_DIMSE_C_StoreRQ &storeReq = msg->msg.CStoreRQ;
             status = DcmSCP::handleSTORERequest(storeReq, info.presentationContextID, reqDataset);
             if (status.good())
             {
                 // check and process C-STORE request
-                const Uint16 rspStatusCode = checkAndProcessSTORERequest(storeReq, reqDataset);
+                const Uint16 rspStatusCode = checkAndProcessSTORERequest(storeReq, fileformat);
                 // send C-STORE response (with status code)
                 status = sendSTOREResponse(info.presentationContextID, storeReq, rspStatusCode);
-                // the request dataset is no longer needed, so delete it
-                delete reqDataset;
-            } else {
-                // the request dataset has not been stored, so delete it
-                delete reqDataset;
             }
         } else {
             // unsupported command
@@ -205,11 +201,13 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
 
 
 Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &request,
-                                                  DcmDataset *dataset)
+                                                  DcmFileFormat &fileformat)
 {
     DCMNET_DEBUG("checking and processing C-STORE request");
     Uint16 statusCode = STATUS_STORE_Error_CannotUnderstand;
-    if (dataset != NULL)
+    DcmDataset *dataset = fileformat.getDataset();
+    // perform some basic checks on the request dataset
+    if ((dataset != NULL) && !dataset->isEmpty())
     {
         OFString filename;
         OFString directoryName;
@@ -226,8 +224,8 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reque
             {
                 if (OFStandard::fileExists(filename))
                     DCMNET_WARN("file already exists, overwriting: " << filename);
-                // store the received dataset to file (with default settings) - creates a temporary copy!
-                status = DcmFileFormat(dataset).saveFile(filename);
+                // store the received dataset to file (with default settings)
+                status = fileformat.saveFile(filename);
                 if (status.good())
                 {
                     // call the notification handler (default implementation outputs to the logger)

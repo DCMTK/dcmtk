@@ -42,7 +42,7 @@
  *    Presentation Contexts (i.e. combination of SOP Class and Transfer Syntaxes) to be
  *    supported by this Storage SCP.  If no association negotiation profile is loaded,
  *    the SCP will only support the Verification SOP Class (with Default Transfer Syntax,
- *    i.e. C-ECHO with Implicit VR Litte Endian), which is required for all DICOM
+ *    i.e. C-ECHO with Implicit VR Little Endian), which is required for all DICOM
  *    Service Class Providers.
  */
 class DCMTK_DCMNET_EXPORT DcmStorageSCP
@@ -195,11 +195,12 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
      *  passed successfully, the received dataset is stored as a DICOM file.
      *  @param  reqMessage  C-STORE request message data structure to be checked and
      *                      processed
-     *  @param  reqDataset  pointer to C-STORE request dataset to be checked and precessed
+     *  @param  fileformat  DICOM fileformat structure containing the C-STORE request
+     *                      dataset to be checked and processed
      *  @return DIMSE status code to be used for the C-STORE response
      */
     virtual Uint16 checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reqMessage,
-                                               DcmDataset *reqDataset);
+                                               DcmFileFormat &fileformat);
 
     /** notification handler that is called for each DICOM object that has been received
      *  with a C-STORE request and stored as a DICOM file
