@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.26 (riesmeier)
 
+- Removed class name from derived method calls:
+  Removed explicit class name when calling a derived method (as long as the
+  method name is unambiguous, i.e. the compiler does not complain).
+  Affects: dcmnet/libsrc/dstorscp.cc
+
 - Do not copy received dataset in memory:
   Made sure that the DICOM dataset received via a C-STORE request is not copied
   in memory (i.e. to a DcmFileFormat structure) in order to store it as a DICOM

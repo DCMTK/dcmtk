@@ -148,10 +148,10 @@ OFCondition DcmStorageSCP::loadAssociationConfiguration(const OFString &filename
                                                         const OFString &profile)
 {
     // first, try to load the configuration file
-    OFCondition status = DcmSCP::loadAssociationCfgFile(filename);
+    OFCondition status = loadAssociationCfgFile(filename);
     // and then, try to select the desired profile
     if (status.good())
-        status = DcmSCP::setAndCheckAssociationProfile(profile);
+        status = setAndCheckAssociationProfile(profile);
     return status;
 }
 
@@ -168,7 +168,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
         if (msg->CommandField == DIMSE_C_ECHO_RQ)
         {
             // handle incoming C-ECHO request
-            status = DcmSCP::handleECHORequest(msg->msg.CEchoRQ, info.presentationContextID);
+            status = handleECHORequest(msg->msg.CEchoRQ, info.presentationContextID);
         }
         else if (msg->CommandField == DIMSE_C_STORE_RQ)
         {
@@ -176,7 +176,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
             DcmFileFormat fileformat;
             DcmDataset *reqDataset = fileformat.getDataset();
             T_DIMSE_C_StoreRQ &storeReq = msg->msg.CStoreRQ;
-            status = DcmSCP::handleSTORERequest(storeReq, info.presentationContextID, reqDataset);
+            status = handleSTORERequest(storeReq, info.presentationContextID, reqDataset);
             if (status.good())
             {
                 // check and process C-STORE request
