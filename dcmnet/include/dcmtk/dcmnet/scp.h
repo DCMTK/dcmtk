@@ -527,7 +527,7 @@ protected:
    */
   virtual OFBool stopAfterCurrentAssociation();
 
-  /** Respond to the N-Action request
+  /** Respond to the N-ACTION request
    *  @param presID         [in] The presentation context ID to respond to
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
@@ -542,14 +542,14 @@ protected:
                                          const OFString &sopInstanceUID,
                                          const Uint16 rspStatusCode);
 
-  /** Respond to the C-Find request
-   *  @param presID         [in] The presentation context ID to respond to
-   *  @param messageID      [in] The message ID being responded to
-   *  @param sopClassUID    [in] The affected SOP class UID
-   *  @param rspDataset     [in] The response dataset
-   *  @param rspStatusCode  [in] The response status code. 0 means success,
-   *                             others can found in the DICOM standard.
-   *  @param statusDetail   [in] Any status (must fit response code), if desired
+  /** Respond to the C-FIND request
+   *  @param presID        [in] The presentation context ID to respond to
+   *  @param messageID     [in] The message ID being responded to
+   *  @param sopClassUID   [in] The affected SOP class UID
+   *  @param rspDataset    [in] The response dataset
+   *  @param rspStatusCode [in] The response status code. 0 means success,
+   *                            others can found in the DICOM standard.
+   *  @param statusDetail  [in] Any status (must fit response code), if desired
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendFINDResponse(const T_ASC_PresentationContextID presID,
@@ -563,11 +563,11 @@ protected:
    *  server that is in the middle of returning C-FIND responses to a
    *  client and has to perform a regular check whether the client sent a
    *  C-CANCEL in order to stop receiving C-FIND responses.
-   *  @param presID     [in] The presentation context ID where C-CANCEL
-   *                         is expected.
-   *  @param messageID  [in] The "message ID responded to" that the client
-   *                         is expected to use (usually this is the message
-   *                         ID used in the original FIND/GET/MOVE request).
+   *  @param presID    [in] The presentation context ID where C-CANCEL is
+   *                        expected.
+   *  @param messageID [in] The "message ID responded to" that the client
+   *                        is expected to use (usually this is the message
+   *                        ID used in the original FIND/GET/MOVE request).
    *  @return EC_Normal, if C-CANCEL was received. DIMSE_NODATAAVAILABLE if no
    *          DIMSE message (or anything) was received from the client.
    *          DIMSEC_UNEXPECTEDREQUEST if command is received but it is not
@@ -581,18 +581,18 @@ protected:
   virtual OFCondition checkForCANCEL(T_ASC_PresentationContextID presID,
                                      const Uint16 messageID);
 
-  /** Respond to the C-Store request (with details from the request message)
-   *  @param presID         [in] The presentation context ID to respond to
-   *  @param request        [in] The C-STORE request that should be responded to
-   *  @param rspStatusCode  [in] The response status code. 0 means success,
-   *                             others can found in the DICOM standard.
+  /** Respond to the C-STORE request (with details from the request message)
+   *  @param presID        [in] The presentation context ID to respond to
+   *  @param request       [in] The C-STORE request that should be responded to
+   *  @param rspStatusCode [in] The response status code. 0 means success,
+   *                            others can found in the DICOM standard.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
                                         const T_DIMSE_C_StoreRQ &request,
                                         const Uint16 rspStatusCode);
 
-  /** Respond to the C-Store request (with given details)
+  /** Respond to the C-STORE request (with given details)
    *  @param presID         [in] The presentation context ID to respond to
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
@@ -609,7 +609,7 @@ protected:
                                         const Uint16 rspStatusCode,
                                         DcmDataset *statusDetail = NULL);
 
-  /** Respond to the C-Move request
+  /** Respond to the C-MOVE request
    *  @param presID         [in] The presentation context ID to respond to
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
@@ -698,10 +698,10 @@ protected:
                                          DcmDataset *&reqDataset);
 
   /** Receives C-FIND request
-   *  @param reqMessage   [in]  The C-FIND request message that was received
-   *  @param presID       [in]  The presentation context to be used. By default, the
-   *                            presentation context of the request is used.
-   *  @param reqDataset   [out] Pointer to the dataset received
+   *  @param reqMessage [in]  The C-FIND request message that was received
+   *  @param presID     [in]  The presentation context to be used. By default, the
+   *                          presentation context of the request is used.
+   *  @param reqDataset [out] Pointer to the dataset received
    *  @return status, EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
@@ -709,11 +709,11 @@ protected:
                                         DcmDataset *&reqDataset);
 
   /** Receives C-MOVE request on the currently active association.
-   *  @param reqMessage   [in]  The C-MOVE request message that was received
-   *  @param presID       [in]  The presentation context to be used. By default, the
-   *                            presentation context of the request is used.
-   *  @param reqDataset   [out] Pointer to the dataset received
-   *  @param moveDest     [out] The move destination where to send the instances
+   *  @param reqMessage [in]  The C-MOVE request message that was received
+   *  @param presID     [in]  The presentation context to be used. By default, the
+   *                          presentation context of the request is used.
+   *  @param reqDataset [out] Pointer to the dataset received
+   *  @param moveDest   [out] The move destination where to send the instances
    *  @return status, EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
