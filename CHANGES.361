@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.26 (riesmeier)
 
+- Pass existing dataset to handleSTORERequest():
+  Enhanced handleSTORERequest() by allowing an existing dataset to be passed to
+  this method. This avoids copying a received dataset to a fileformat structure
+  in order to store the dataset as a DICOM file.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 - Fixed various typos in comments.
   Affects: dcmnet/apps/storescp.cc
 

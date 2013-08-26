@@ -940,8 +940,8 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
 
 // Handle C-STORE request
 OFCondition DcmSCP::handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
-                                        const T_ASC_PresentationContextID presID,
-                                        DcmDataset *&reqDataset)
+                                       const T_ASC_PresentationContextID presID,
+                                       DcmDataset *&reqDataset)
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
@@ -950,7 +950,8 @@ OFCondition DcmSCP::handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
   OFCondition cond;
   OFString tempStr;
   T_ASC_PresentationContextID presIDdset;
-  DcmDataset *dataset = NULL;
+  // Remember the passed dataset pointer
+  DcmDataset *dataset = reqDataset;
 
   // Dump debug information
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -986,17 +987,20 @@ OFCondition DcmSCP::handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
   {
     DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
       << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
-    delete dataset;
+    if (dataset != reqDataset)
+    {
+      // Free memory allocated by receiveDIMSEDataset()
+      delete dataset;
+    }
     return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
       "DIMSE: Presentation Contexts of Command and Data Set differ");
   }
 
-  // Set return values
+  // Set return value
   reqDataset = dataset;
 
   return cond;
 }
-
 // ----------------------------------------------------------------------------
 
 // Handle C-FIND request

@@ -685,10 +685,12 @@ protected:
    *  in memory. If very large objects are expected to be received, another handler
    *  should be implemented instead that streams the dataset directly to disc or the
    *  the like.
-   *  @param reqMessage  [in]  The C-STORE request message that was received
-   *  @param presID      [in]  The presentation context to be used. By default, the
-   *                           presentation context of the request is used.
-   *  @param reqDataset  [out] Pointer to the dataset received
+   *  @param reqMessage  [in]   The C-STORE request message that was received
+   *  @param presID      [in]   The presentation context to be used. By default, the
+   *                            presentation context of the request is used.
+   *  @param reqDataset [inout] Pointer to data structure where the received dataset
+   *                            should be stored. If NULL, a new dataset is created,
+   *                            which has to be deleted by the caller.
    *  @return status, EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
@@ -857,12 +859,14 @@ protected:
                                   const Uint32 timeout = 0);
 
   /** Receives one dataset (of instance data) via network from another DICOM application
-   *  @param presID          [out] Contains in the end the ID of the presentation context
-   *                               which was used in the PDVs that were received on the
-   *                               network. If the PDVs show different presentation context
-   *                               IDs, this function will return an error.
-   *  @param dataObject      [out] Contains in the end the information which was received
-   *                               over the network
+   *  @param presID     [out]   Contains in the end the ID of the presentation context
+   *                            which was used in the PDVs that were received on the
+   *                            network. If the PDVs show different presentation context
+   *                            IDs, this function will return an error.
+   *  @param dataObject [inout] Contains in the end the information that was received
+   *                            over the network. If this parameter points to NULL, a new
+   *                            dataset will be created by the underlying routines, which
+   *                            has to be deleted by the caller.
    *  @return EC_Normal if dataset could be received successfully, an error code otherwise
    */
   OFCondition receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
