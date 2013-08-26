@@ -1063,9 +1063,9 @@ int main(int argc, char *argv[])
 
 #ifdef HAVE_GETUID
   /* return to normal uid so that we can't do too much damage in case
-   * things go very wrong.   Only does someting if the program is setuid
+   * things go very wrong.   Only does something if the program is setuid
    * root, and run by another user.  Running as root user may be
-   * potentially disasterous if this program screws up badly.
+   * potentially disastrous if this program screws up badly.
    */
   setuid(getuid());
 #endif
@@ -1236,7 +1236,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     goto cleanup;
   }
 
-  // if some kind of error occured, take care of it
+  // if some kind of error occurred, take care of it
   if (cond.bad())
   {
     // check what kind of error occurred. If no association was
@@ -1251,7 +1251,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       // by the user through command line options passed to storescp.
       if( opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty() )
       {
-        // indicate that the end-of-study-event occured through a timeout event.
+        // indicate that the end-of-study-event occurred through a timeout event.
         // This knowledge will be necessary in function renameOnEndOFStudy().
         endOfStudyThroughTimeoutEvent = OFTrue;
 
@@ -1645,7 +1645,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   // store calling presentation address (i.e. remote hostname)
   callingPresentationAddress = OFSTRING_GUARD(assoc->params->DULparams.callingPresentationAddress);
 
-  /* now do the real work, i.e. receive DIMSE commmands over the network connection */
+  /* now do the real work, i.e. receive DIMSE commands over the network connection */
   /* which was established and handle these commands correspondingly. In case of */
   /* storescp only C-ECHO-RQ and C-STORE-RQ commands can be processed. */
   cond = processCommands(assoc);
@@ -1690,7 +1690,7 @@ cleanup:
 static OFCondition
 processCommands(T_ASC_Association * assoc)
     /*
-     * This function receives DIMSE commmands over the network connection
+     * This function receives DIMSE commands over the network connection
      * and handles these commands correspondingly. Note that in case of
      * storescp only C-ECHO-RQ and C-STORE-RQ commands can be processed.
      *
@@ -1724,7 +1724,7 @@ processCommands(T_ASC_Association * assoc)
       // by the user through command line options passed to storescp.
       if( opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty() )
       {
-        // indicate that the end-of-study-event occured through a timeout event.
+        // indicate that the end-of-study-event occurred through a timeout event.
         // This knowledge will be necessary in function renameOnEndOFStudy().
         endOfStudyThroughTimeoutEvent = OFTrue;
 
@@ -1890,7 +1890,7 @@ storeSCPCallback(
   }
 
   // dump some information if required (depending on the progress state)
-  // We can't use oflog for the pdu output, but we use a special logger for
+  // We can't use oflog for the PDU output, but we use a special logger for
   // generating this output. If it is set to level "INFO" we generate the
   // output, if it's set to "DEBUG" then we'll assume that there is debug output
   // generated for each PDU elsewhere.
@@ -2125,7 +2125,7 @@ static OFCondition storeSCP(
   T_DIMSE_Message *msg,
   T_ASC_PresentationContextID presID)
     /*
-     * This function processes a DIMSE C-STORE-RQ commmand that was
+     * This function processes a DIMSE C-STORE-RQ command that was
      * received over the network connection.
      *
      * Parameters:
@@ -2230,7 +2230,7 @@ static OFCondition storeSCP(
       << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
   }
 
-  // intialize some variables
+  // initialize some variables
   StoreCallbackData callbackData;
   callbackData.assoc = assoc;
   callbackData.imageFileName = imageFileName;
@@ -2261,7 +2261,7 @@ static OFCondition storeSCP(
       storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
   }
 
-  // if some error occured, dump corresponding information and remove the outfile if necessary
+  // if some error occurred, dump corresponding information and remove the outfile if necessary
   if (cond.bad())
   {
     OFString temp_str;
@@ -2305,7 +2305,7 @@ static OFCondition storeSCP(
 static void executeEndOfStudyEvents()
     /*
      * This function deals with the execution of end-of-study-events. In detail,
-     * events that need to take place are sepcified by the user through certain
+     * events that need to take place are specified by the user through certain
      * command line options. The options that define these end-of-study-events
      * are "--rename-on-eostudy" and "--exec-on-eostudy".
      *
@@ -2379,7 +2379,7 @@ static void renameOnEndOfStudy()
      * This function deals with renaming the last study's output files. In detail, these file's
      * current filenames will be changed to a filename that corresponds to the pattern [modality-
      * prefix][consecutive-numbering]. The current filenames of all files that belong to the study
-     * are captured in outputFileNameArray. The new filenames will be calculated whithin this
+     * are captured in outputFileNameArray. The new filenames will be calculated within this
      * function: The [modality-prefix] will be taken from the old filename,
      * [consecutive-numbering] is a consecutively numbered, 6 digit number which will be calculated
      * starting from 000001.
@@ -2724,7 +2724,7 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
 }
 
 
-/** accept all presenstation contexts for unknown SOP classes,
+/** accept all presentation contexts for unknown SOP classes,
  *  i.e. UIDs appearing in the list of abstract syntaxes
  *  where no corresponding name is defined in the UID dictionary.
  *  This method is passed a list of "preferred" transfer syntaxes.

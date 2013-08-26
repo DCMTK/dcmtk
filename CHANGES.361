@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.26 (riesmeier)
+
+- Fixed various typos in comments.
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2013.08.23 (riesmeier)
 
 - Added meta header to stored DICOM files:
