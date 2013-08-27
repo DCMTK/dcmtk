@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.27 (riesmeier)
 
+- Fixed wrong log message in handleMOVERequest().
+  Affects: dcmnet/libsrc/scp.cc
+
 - Removed "&" from constant integer parameters:
   Removed "&" specifier from constant integer parameters since passing such
   input values by-reference does not make any sense. Also fixed some layout

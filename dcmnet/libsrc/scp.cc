@@ -1081,9 +1081,9 @@ OFCondition DcmSCP::handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
 
   // Dump debug information
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-    DCMNET_INFO("Received C-FIND Request");
+    DCMNET_INFO("Received C-MOVE Request");
   else
-    DCMNET_INFO("Received C-FIND Request (MsgID " << reqMessage.MessageID << ")");
+    DCMNET_INFO("Received C-MOVE Request (MsgID " << reqMessage.MessageID << ")");
 
   // Check if dataset is announced correctly
   if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
