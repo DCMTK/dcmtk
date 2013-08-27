@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.27 (riesmeier)
 
+- Fixed various typos in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
 - Fixed wrong log message in handleMOVERequest().
   Affects: dcmnet/libsrc/scp.cc
 

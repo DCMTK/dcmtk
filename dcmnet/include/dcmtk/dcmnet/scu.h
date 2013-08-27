@@ -618,7 +618,7 @@ public:
                                     const OFString &profile);
 
   /** Set the directory that should be used by the standard C-GET handler to store objects
-   *  that come in with the corresponding C-STORE rqeuests
+   *  that come in with the corresponding C-STORE requests
    *  @param storeDir [in] The directory to store to. It is checked in handleSTORERequest()
    *                       whether the directory is writeable and readable. Per default, the
    *                       received objects are stored in the current working directory.
@@ -944,7 +944,7 @@ private:
    */
   DcmSCU &operator=(const DcmSCU &src);
 
-  /// Associaton of this SCU. This class only handles 1 association at a time.
+  /// Association of this SCU. This class only handles 1 association at a time.
   T_ASC_Association *m_assoc;
 
   /// The DICOM network the association is based on
