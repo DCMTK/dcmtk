@@ -527,20 +527,105 @@ protected:
    */
   virtual OFBool stopAfterCurrentAssociation();
 
-  /** Respond to the N-ACTION request
+  // -- C-ECHO --
+
+  /** Standard handler for Verification Service Class (DICOM Echo). Returns echo response
+   *  (i.e. whether C-ECHO could be responded to with status success).
+   *  @param reqMessage [in] The C-ECHO request message that was received
+   *  @param presID     [in] The presentation context to be used. By default, the
+   *                         presentation context of the request is used.
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
+                                        const T_ASC_PresentationContextID presID);
+
+  // --- C-STORE --
+
+  /** Receive C-STORE request on the currently opened association, store the
+   *  accompanying dataset in memory and send a corresponding response. Calls
+   *  checkSTORERequest() in order to determine the DIMSE status code to be used for
+   *  the C-STORE response.
+   *  @note This handler receives the dataset belonging the C-STORE request completely
+   *    in memory. If very large objects are expected to be received, another handler
+   *    should be implemented that streams the dataset directly to disc or the like.
+   *  @param reqMessage [in]    The C-STORE request message that was received
+   *  @param presID     [in]    The presentation context to be used. By default, the
+   *                            presentation context of the request is used.
+   *  @param reqDataset [inout] Pointer to data structure where the received dataset
+   *                            should be stored. If NULL, a new dataset is created,
+   *                            which has to be deleted by the caller.
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
+                                         const T_ASC_PresentationContextID presID,
+                                         DcmDataset *&reqDataset);
+
+  /** Receive C-STORE request (and store accompanying dataset in memory)
+   *  @param reqMessage [in]    The C-STORE request message that was received
+   *  @param presID     [in]    The presentation context to be used. By default, the
+   *                            presentation context of the request is used.
+   *  @param reqDataset [inout] Pointer to data structure where the received dataset
+   *                            should be stored. If NULL, a new dataset is created,
+   *                            which has to be deleted by the caller.
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
+                                          const T_ASC_PresentationContextID presID,
+                                          DcmDataset *&reqDataset);
+
+  /** Respond to the C-STORE request (with details from the request message)
+   *  @param presID        [in] The presentation context ID to respond to
+   *  @param request       [in] The C-STORE request that should be responded to
+   *  @param rspStatusCode [in] The response status code. 0 means success,
+   *                            others can found in the DICOM standard.
+   *  @return EC_Normal, if responding was successful, an error code otherwise
+   */
+  virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
+                                        const T_DIMSE_C_StoreRQ &request,
+                                        const Uint16 rspStatusCode);
+
+  /** Respond to the C-STORE request (with given details)
    *  @param presID         [in] The presentation context ID to respond to
    *  @param messageID      [in] The message ID being responded to
    *  @param sopClassUID    [in] The affected SOP class UID
    *  @param sopInstanceUID [in] The affected SOP instance UID
    *  @param rspStatusCode  [in] The response status code. 0 means success,
    *                             others can found in the DICOM standard.
+   *  @param statusDetail   [in] The status detail of the response (if desired).
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
-  virtual OFCondition sendACTIONResponse(const T_ASC_PresentationContextID presID,
-                                         const Uint16 messageID,
-                                         const OFString &sopClassUID,
-                                         const OFString &sopInstanceUID,
-                                         const Uint16 rspStatusCode);
+  virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
+                                        const Uint16 messageID,
+                                        const OFString &sopClassUID,
+                                        const OFString &sopInstanceUID,
+                                        const Uint16 rspStatusCode,
+                                        DcmDataset *statusDetail = NULL);
+
+  /** Check given C-STORE request and dataset for validity. This method is called by
+   *  handleSTORERequest() before sending the response in order to determine the DIMSE
+   *  status code to be used for the response message.
+   *  @param reqMessage [in] The C-STORE request message data structure
+   *  @param reqDataset [in] The C-STORE request dataset received. Might be NULL.
+   *  @return DIMSE status code to be used for the C-STORE response.
+   *          Always returns STATUS_Success (0). Derived classes should, therefore,
+   *          overwrite this method and return a more appropriate value based on the
+   *          result of the checks performed.
+   */
+  virtual Uint16 checkSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
+                                   DcmDataset *reqDataset);
+
+  // -- C-FIND --
+
+  /** Receive C-FIND request
+   *  @param reqMessage [in]  The C-FIND request message that was received
+   *  @param presID     [in]  The presentation context to be used. By default, the
+   *                          presentation context of the request is used.
+   *  @param reqDataset [out] Pointer to the dataset received
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
+                                        const T_ASC_PresentationContextID presID,
+                                        DcmDataset *&reqDataset);
 
   /** Respond to the C-FIND request
    *  @param presID        [in] The presentation context ID to respond to
@@ -581,54 +666,41 @@ protected:
   virtual OFCondition checkForCANCEL(T_ASC_PresentationContextID presID,
                                      const Uint16 messageID);
 
-  /** Respond to the C-STORE request (with details from the request message)
-   *  @param presID        [in] The presentation context ID to respond to
-   *  @param request       [in] The C-STORE request that should be responded to
-   *  @param rspStatusCode [in] The response status code. 0 means success,
-   *                            others can found in the DICOM standard.
-   *  @return EC_Normal, if responding was successful, an error code otherwise
-   */
-  virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
-                                        const T_DIMSE_C_StoreRQ &request,
-                                        const Uint16 rspStatusCode);
+  // --- C-MOVE --
 
-  /** Respond to the C-STORE request (with given details)
-   *  @param presID         [in] The presentation context ID to respond to
-   *  @param messageID      [in] The message ID being responded to
-   *  @param sopClassUID    [in] The affected SOP class UID
-   *  @param sopInstanceUID [in] The affected SOP instance UID
-   *  @param rspStatusCode  [in] The response status code. 0 means success,
-   *                             others can found in the DICOM standard.
-   *  @param statusDetail   [in] The status detail of the response (if desired).
-   *  @return EC_Normal, if responding was successful, an error code otherwise
+  /** Receive C-MOVE request on the currently active association.
+   *  @param reqMessage [in]  The C-MOVE request message that was received
+   *  @param presID     [in]  The presentation context to be used. By default, the
+   *                          presentation context of the request is used.
+   *  @param reqDataset [out] Pointer to the dataset received
+   *  @param moveDest   [out] The move destination where to send the instances
+   *  @return status, EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
-                                        const Uint16 messageID,
-                                        const OFString &sopClassUID,
-                                        const OFString &sopInstanceUID,
-                                        const Uint16 rspStatusCode,
-                                        DcmDataset *statusDetail = NULL);
+  virtual OFCondition handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
+                                        const T_ASC_PresentationContextID presID,
+                                        DcmDataset *&reqDataset,
+                                        OFString &moveDest);
 
   /** Respond to the C-MOVE request
-   *  @param presID         [in] The presentation context ID to respond to
-   *  @param messageID      [in] The message ID being responded to
-   *  @param sopClassUID    [in] The affected SOP class UID
-   *  @param rspDataset     [in] The response dataset
-   *  @param rspStatusCode  [in] The status code of the response. 0 means success,
-   *                             others can found in the DICOM standard.
-   *  @param statusDetail   [in] The status detail of the response (if desired).
-   *  @param numRemain      [in] Number of remaining sub-operations.
-   *                             Required for Pending status codes, often optional otherwise.
-   *                             Sent if one of the num parameters is not 0.
-   *  @param numComplete    [in] Number of completed sub-operations.
-   *                             Required for Pending status codes, often optional otherwise.
-   *                             Sent if one of the num parameters is not 0.
-   *  @param numFail        [in] Number of failed sub-operations.
-   *                             Required for Pending status codes, often optional otherwise.
-   *                             Sent if one of the num parameters is not 0.
-   *  @param numWarn        [in] Number of warning sub-operations.
-   *                             Required for Pending status codes, often optional otherwise.
-   *                             Sent if one of the num parameters is not 0.
+   *  @param presID        [in] The presentation context ID to respond to
+   *  @param messageID     [in] The message ID being responded to
+   *  @param sopClassUID   [in] The affected SOP class UID
+   *  @param rspDataset    [in] The response dataset
+   *  @param rspStatusCode [in] The status code of the response. 0 means success,
+   *                            others can found in the DICOM standard.
+   *  @param statusDetail  [in] The status detail of the response (if desired).
+   *  @param numRemain     [in] Number of remaining sub-operations.
+   *                            Required for Pending status codes, often optional otherwise.
+   *                            Sent if one of the num parameters is not 0.
+   *  @param numComplete   [in] Number of completed sub-operations.
+   *                            Required for Pending status codes, often optional otherwise.
+   *                            Sent if one of the num parameters is not 0.
+   *  @param numFail       [in] Number of failed sub-operations.
+   *                            Required for Pending status codes, often optional otherwise.
+   *                            Sent if one of the num parameters is not 0.
+   *  @param numWarn       [in] Number of warning sub-operations.
+   *                            Required for Pending status codes, often optional otherwise.
+   *                            Sent if one of the num parameters is not 0.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendMOVEResponse(const T_ASC_PresentationContextID presID,
@@ -642,17 +714,39 @@ protected:
                                        const Uint16 numFail = 0,
                                        const Uint16 numWarn = 0);
 
-  /** Standard handler for Verification Service Class (DICOM Echo). Returns echo response
-   *  (i.e. whether C-ECHO could be responded to with status success).
-   *  @param reqMessage [in] The C-ECHO request message that was received
-   *  @param presID     [in] The presentation context to be used. By default, the presentation
-   *                         context of the request is used.
-   *  @return OFCondition value denoting success or error
-   */
-  virtual OFCondition handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
-                                        const T_ASC_PresentationContextID presID);
+  // -- N-ACTION --
 
-  /** Receives N-EVENT-REPORT request on the currently opened association and sends a
+  /** Receive N-ACTION request on the currently opened association.
+   *  @param reqMessage   [in]  The N-ACTION request message that was received
+   *  @param presID       [in]  The presentation context to be used. By default, the
+   *                            presentation context of the request is used.
+   *  @param reqDataset   [out] Pointer to the dataset received
+   *  @param actionTypeID [out] Action Type ID from the command set received
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
+                                          const T_ASC_PresentationContextID presID,
+                                          DcmDataset *&reqDataset,
+                                          Uint16 &actionTypeID);
+
+  /** Respond to the N-ACTION request
+   *  @param presID         [in] The presentation context ID to respond to
+   *  @param messageID      [in] The message ID being responded to
+   *  @param sopClassUID    [in] The affected SOP class UID
+   *  @param sopInstanceUID [in] The affected SOP instance UID
+   *  @param rspStatusCode  [in] The response status code. 0 means success,
+   *                             others can found in the DICOM standard.
+   *  @return EC_Normal, if responding was successful, an error code otherwise
+   */
+  virtual OFCondition sendACTIONResponse(const T_ASC_PresentationContextID presID,
+                                         const Uint16 messageID,
+                                         const OFString &sopClassUID,
+                                         const OFString &sopInstanceUID,
+                                         const Uint16 rspStatusCode);
+
+  // -- N-EVENT-REPORT --
+
+  /** Receive N-EVENT-REPORT request on the currently opened association and send a
    *  corresponding response. Calls checkEVENTREPORTRequest() in order to determine the
    *  DIMSE status code to be used for the N-EVENT-REPORT response.
    *  @param reqMessage  [in]  The N-EVENT-REPORT request message that was received
@@ -667,62 +761,8 @@ protected:
                                                DcmDataset *&reqDataset,
                                                Uint16 &eventTypeID);
 
-  /** Receives N-ACTION request on the currently opened association.
-   *  @param reqMessage   [in]  The N-ACTION request message that was received
-   *  @param presID       [in]  The presentation context to be used. By default, the
-   *                            presentation context of the request is used.
-   *  @param reqDataset   [out] Pointer to the dataset received
-   *  @param actionTypeID [out] Action Type ID from the command set received
-   *  @return status, EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
-                                          const T_ASC_PresentationContextID presID,
-                                          DcmDataset *&reqDataset,
-                                          Uint16 &actionTypeID);
-
-  /** Receives C-STORE request on the currently opened association. Note that
-   *  this handler receives the dataset belonging the C-STORE request completely
-   *  in memory. If very large objects are expected to be received, another handler
-   *  should be implemented instead that streams the dataset directly to disc or the
-   *  the like.
-   *  @param reqMessage  [in]   The C-STORE request message that was received
-   *  @param presID      [in]   The presentation context to be used. By default, the
-   *                            presentation context of the request is used.
-   *  @param reqDataset [inout] Pointer to data structure where the received dataset
-   *                            should be stored. If NULL, a new dataset is created,
-   *                            which has to be deleted by the caller.
-   *  @return status, EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
-                                         const T_ASC_PresentationContextID presID,
-                                         DcmDataset *&reqDataset);
-
-  /** Receives C-FIND request
-   *  @param reqMessage [in]  The C-FIND request message that was received
-   *  @param presID     [in]  The presentation context to be used. By default, the
-   *                          presentation context of the request is used.
-   *  @param reqDataset [out] Pointer to the dataset received
-   *  @return status, EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
-                                        const T_ASC_PresentationContextID presID,
-                                        DcmDataset *&reqDataset);
-
-  /** Receives C-MOVE request on the currently active association.
-   *  @param reqMessage [in]  The C-MOVE request message that was received
-   *  @param presID     [in]  The presentation context to be used. By default, the
-   *                          presentation context of the request is used.
-   *  @param reqDataset [out] Pointer to the dataset received
-   *  @param moveDest   [out] The move destination where to send the instances
-   *  @return status, EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
-                                        const T_ASC_PresentationContextID presID,
-                                        DcmDataset *&reqDataset,
-                                        OFString &moveDest);
-
-  /** sends N-EVENT-REPORT request on the current association and receives a
-   *  corresponding response.
+  /** Send N-EVENT-REPORT request on the current association and receive a corresponding
+   *  response.
    *  @param presID         [in]  The ID of the presentation context to be used for sending
    *                              the request message. Should not be 0.
    *  @param sopInstanceUID [in]  The requested SOP Instance UID

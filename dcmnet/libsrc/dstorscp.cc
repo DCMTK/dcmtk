@@ -176,7 +176,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
             DcmFileFormat fileformat;
             DcmDataset *reqDataset = fileformat.getDataset();
             T_DIMSE_C_StoreRQ &storeReq = msg->msg.CStoreRQ;
-            status = handleSTORERequest(storeReq, info.presentationContextID, reqDataset);
+            status = receiveSTORERequest(storeReq, info.presentationContextID, reqDataset);
             if (status.good())
             {
                 // check and process C-STORE request

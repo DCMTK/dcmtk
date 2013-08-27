@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.27 (riesmeier)
 
+- Restructured implementation of handleSTORERequest():
+  Completely restructured the implementation of handleSTORERequest(), which now
+  consists of calling 3 separate methods successively: receiveSTORERequest(),
+  checkSTORERequest() and sendSTOREResponse(). This could be the prototype for
+  all other network messages currently supported by this class. Also regrouped
+  the various network message methods.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/dstorscp.cc
+           dcmnet/libsrc/scp.cc
+
 - Fixed various typos in comments.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 

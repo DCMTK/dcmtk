@@ -544,10 +544,14 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *msg,
 
 // ----------------------------------------------------------------------------
 
+// -- C-ECHO --
+
 OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
                                       const T_ASC_PresentationContextID presID)
 {
+  OFCondition cond;
   OFString tempStr;
+
   // Dump debug information
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {
@@ -559,389 +563,42 @@ OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
     DCMNET_INFO("Sending C-ECHO Response (" << DU_cechoStatusString(STATUS_Success) << ")");
   }
 
-  // Send an echo response
-  OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presID, &reqMessage, STATUS_Success, NULL );
+  // Send response message
+  cond = DIMSE_sendEchoResponse( m_assoc, presID, &reqMessage, STATUS_Success, NULL );
   if( cond.bad() )
     DCMNET_ERROR("Cannot send C-ECHO Response: " << DimseCondition::dump(tempStr, cond));
   else
     DCMNET_DEBUG("C-ECHO Response successfully sent");
 
-  // return result
   return cond;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
-                                     const Uint16 messageID,
-                                     const OFString &sopClassUID,
-                                     DcmDataset *rspDataset,
-                                     const Uint16 rspStatusCode,
-                                     DcmDataset* statusDetail)
-{
-  OFCondition cond;
-  OFString tempStr;
+// -- C-STORE --
 
-  // Send back response
-  T_DIMSE_Message response;
-  // Make sure everything is zeroed (especially options)
-  bzero((char*)&response, sizeof(response));
-  T_DIMSE_C_FindRSP &findRsp = response.msg.CFindRSP;
-  response.CommandField = DIMSE_C_FIND_RSP;
-  findRsp.MessageIDBeingRespondedTo = messageID;
-  findRsp.DimseStatus = rspStatusCode;
-  // Always send (the optional) field "Affected SOP Class UID"
-  findRsp.opts = O_FIND_AFFECTEDSOPCLASSUID;
-  OFStandard::strlcpy(findRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(findRsp.AffectedSOPClassUID));
-
-  if (rspDataset)
-    findRsp.DataSetType = DIMSE_DATASET_PRESENT;
-  else
-    findRsp.DataSetType = DIMSE_DATASET_NULL;
-
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DCMNET_INFO("Sending C-FIND Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
-  } else {
-    DCMNET_INFO("Sending C-FIND Response (" << DU_cfindStatusString(rspStatusCode) << ")");
-  }
-
-  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, statusDetail);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Failed sending C-FIND response: " << DimseCondition::dump(tempStr, cond));
-    return cond;
-  }
-  return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-OFCondition DcmSCP::checkForCANCEL(T_ASC_PresentationContextID presID,
-                                   const Uint16 messageID)
-{
-  return DIMSE_checkForCancelRQ(m_assoc, presID, messageID);
-}
-
-// ----------------------------------------------------------------------------
-
-OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
-                                     const Uint16 messageID,
-                                     const OFString &sopClassUID,
-                                     DcmDataset *rspDataset,
-                                     const Uint16 rspStatusCode,
-                                     DcmDataset *statusDetail,
-                                     const Uint16 numRemain,
-                                     const Uint16 numComplete,
-                                     const Uint16 numFail,
-                                     const Uint16 numWarn)
-{
-  OFCondition cond;
-  OFString tempStr;
-
-  // Send back response
-  T_DIMSE_Message response;
-  // Make sure everything is zeroed (especially options)
-  bzero((char*)&response, sizeof(response));
-  T_DIMSE_C_MoveRSP &moveRsp = response.msg.CMoveRSP;
-  response.CommandField = DIMSE_C_MOVE_RSP;
-  moveRsp.MessageIDBeingRespondedTo = messageID;
-  moveRsp.DimseStatus = rspStatusCode;
-  // Always send the optional field "Affected SOP Class UID"
-  moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
-  OFStandard::strlcpy(moveRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(moveRsp.AffectedSOPClassUID));
-  // Only send the other optional fields if needed
-  if ( (numRemain != 0) || (numComplete != 0) || (numFail != 0) || (numWarn != 0) )
-  {
-    moveRsp.NumberOfRemainingSubOperations = numRemain;
-    moveRsp.NumberOfCompletedSubOperations = numComplete;
-    moveRsp.NumberOfFailedSubOperations = numFail;
-    moveRsp.NumberOfWarningSubOperations = numWarn;
-    moveRsp.opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS | O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
-                    O_MOVE_NUMBEROFFAILEDSUBOPERATIONS | O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
-  }
-
-  if (rspDataset)
-    moveRsp.DataSetType = DIMSE_DATASET_PRESENT;
-  else
-    moveRsp.DataSetType = DIMSE_DATASET_NULL;
-
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DCMNET_INFO("Sending C-MOVE Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
-  } else {
-    DCMNET_INFO("Sending C-MOVE Response (" << DU_cmoveStatusString(rspStatusCode) << ")");
-  }
-
-  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, statusDetail);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Failed sending C-MOVE response: " << DimseCondition::dump(tempStr, cond));
-  }
-  return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
-                                       const Uint16 messageID,
-                                       const OFString &sopClassUID,
-                                       const OFString &sopInstanceUID,
-                                       const Uint16 rspStatusCode)
-{
-  OFCondition cond;
-  OFString tempStr;
-
-  // Send back response
-  T_DIMSE_Message response;
-  // Make sure everything is zeroed (especially options)
-  bzero((char*)&response, sizeof(response));
-  T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
-  response.CommandField = DIMSE_N_ACTION_RSP;
-  actionRsp.MessageIDBeingRespondedTo = messageID;
-  actionRsp.DimseStatus = rspStatusCode;
-  actionRsp.DataSetType = DIMSE_DATASET_NULL;
-  // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
-  actionRsp.opts = O_NACTION_AFFECTEDSOPCLASSUID | O_NACTION_AFFECTEDSOPINSTANCEUID;
-  OFStandard::strlcpy(actionRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(actionRsp.AffectedSOPClassUID));
-  OFStandard::strlcpy(actionRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionRsp.AffectedSOPInstanceUID));
-  // Do not send any other optional fields, e.g. "Action Type ID"
-
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DCMNET_INFO("Sending N-ACTION Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
-  } else {
-    DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
-  }
-
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
-  }
-  return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
-                                      const T_DIMSE_C_StoreRQ &request,
-                                      const Uint16 rspStatusCode)
-{
-  // call the method doing the real work
-  return sendSTOREResponse(presID, request.MessageID, request.AffectedSOPClassUID, request.AffectedSOPInstanceUID,
-    rspStatusCode, NULL /* statusDetail */);
-}
-
-
-OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
-                                      const Uint16 messageID,
-                                      const OFString &sopClassUID,
-                                      const OFString &sopInstanceUID,
-                                      const Uint16 rspStatusCode,
-                                      DcmDataset *statusDetail)
-{
-  OFCondition cond;
-  OFString tempStr;
-
-  // Send back response
-  T_DIMSE_Message response;
-  // Make sure everything is zeroed (especially options)
-  bzero((char*)&response, sizeof(response));
-  T_DIMSE_C_StoreRSP &storeRsp = response.msg.CStoreRSP;
-  response.CommandField = DIMSE_C_STORE_RSP;
-  storeRsp.MessageIDBeingRespondedTo = messageID;
-  storeRsp.DimseStatus = rspStatusCode;
-  storeRsp.DataSetType = DIMSE_DATASET_NULL;
-  // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
-  storeRsp.opts = O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID;
-  OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(storeRsp.AffectedSOPClassUID));
-  OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(storeRsp.AffectedSOPInstanceUID));
-
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DCMNET_INFO("Sending C-STORE Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
-  } else {
-    DCMNET_INFO("Sending C-STORE Response (" << DU_cstoreStatusString(rspStatusCode) << ")");
-  }
-
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, statusDetail);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Failed sending C-STORE response: " << DimseCondition::dump(tempStr, cond));
-  }
-  return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
-                                             const T_ASC_PresentationContextID presID,
-                                             DcmDataset *&reqDataset,
-                                             Uint16 &eventTypeID)
-{
-  // Do some basic validity checks
-  if (m_assoc == NULL)
-    return DIMSE_ILLEGALASSOCIATION;
-
-  OFCondition cond;
-  OFString tempStr;
-  T_ASC_PresentationContextID presIDdset;
-  DcmDataset *dataset = NULL;
-  // DcmDataset *statusDetail = NULL; // TODO: do we need this and if so, how do we get it?
-  Uint16 statusCode = 0;
-
-  // Dump debug information
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
-    DCMNET_INFO("Received N-EVENT-REPORT Request");
-  else
-    DCMNET_INFO("Received N-EVENT-REPORT Request (MsgID " << reqMessage.MessageID << ")");
-
-  // Check if dataset is announced correctly
-  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
-  {
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Received N-EVENT-REPORT request but no dataset announced, aborting");
-    return DIMSE_BADMESSAGE;
-  }
-
-  // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset);
-  if (cond.bad())
-  {
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << OFstatic_cast(unsigned int, presID));
-    return DIMSE_BADDATA;
-  }
-
-  // Output dataset only if trace level is enabled
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
-  else
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-
-  // Compare presentation context ID of command and data set
-  if (presIDdset != presID)
-  {
-    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
-      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
-    delete dataset;
-    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
-      "DIMSE: Presentation Contexts of Command and Data Set differ");
-  }
-
-  // Check the request dataset and return the DIMSE status code to be used
-  statusCode = checkEVENTREPORTRequest(reqMessage, dataset);
-
-  // Send back response
-  T_DIMSE_Message response;
-  // Make sure everything is zeroed (especially options)
-  bzero((char*)&response, sizeof(response));
-  T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
-  response.CommandField = DIMSE_N_EVENT_REPORT_RSP;
-  eventReportRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
-  eventReportRsp.DimseStatus = statusCode;
-  eventReportRsp.DataSetType = DIMSE_DATASET_NULL;
-  // Do not send any optional fields
-  eventReportRsp.opts = 0;
-  eventReportRsp.AffectedSOPClassUID[0] = 0;
-  eventReportRsp.AffectedSOPInstanceUID[0] = 0;
-
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DCMNET_INFO("Sending N-EVENT-REPORT Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
-  } else {
-    DCMNET_INFO("Sending N-EVENT-REPORT Response (" << DU_neventReportStatusString(statusCode) << ")");
-  }
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
-    delete dataset;
-    return cond;
-  }
-
-  // Set return values
-  reqDataset = dataset;
-  eventTypeID = reqMessage.EventTypeID;
-
-  return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-// Handle N-ACTION request
-OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
-                                        const T_ASC_PresentationContextID presID,
-                                        DcmDataset *&reqDataset,
-                                        Uint16 &actionTypeID)
-{
-  // Do some basic validity checks
-  if (m_assoc == NULL)
-    return DIMSE_ILLEGALASSOCIATION;
-
-  OFCondition cond;
-  OFString tempStr;
-  T_ASC_PresentationContextID presIDdset;
-  DcmDataset *dataset = NULL;
-
-  // Dump debug information
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-    DCMNET_INFO("Received N-ACTION Request");
-  else
-    DCMNET_INFO("Received N-ACTION Request (MsgID " << reqMessage.MessageID << ")");
-
-  // Check if dataset is announced correctly
-  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
-  {
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Received N-ACTION request but no dataset announced, aborting");
-    return DIMSE_BADMESSAGE;
-  }
-
-  // Receive dataset
-  cond = receiveDIMSEDataset(&presIDdset, &dataset);
-  if (cond.bad())
-  {
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Unable to receive N-ACTION dataset on presentation context " << OFstatic_cast(unsigned int, presID));
-    return DIMSE_BADDATA;
-  }
-
-  // Output request message only if trace level is enabled
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
-  else
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-
-  // Compare presentation context ID of command and data set
-  if (presIDdset != presID)
-  {
-    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
-      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
-    delete dataset;
-    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
-      "DIMSE: Presentation Contexts of Command and Data Set differ");
-  }
-
-  // Set return values
-  reqDataset = dataset;
-  actionTypeID = reqMessage.ActionTypeID;
-
-  return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-// Handle C-STORE request
 OFCondition DcmSCP::handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
                                        const T_ASC_PresentationContextID presID,
                                        DcmDataset *&reqDataset)
+{
+  // First, receive the C-STORE request
+  OFCondition cond = receiveSTORERequest(reqMessage, presID, reqDataset);
+
+  if (cond.good())
+  {
+    // Then, check the request message and dataset and return an DIMSE status code
+    const Uint16 rspStatusCode = checkSTORERequest(reqMessage, reqDataset);
+    // ... that is sent back with the C-STORE response message
+    cond = sendSTOREResponse(presID, reqMessage, rspStatusCode);
+  }
+
+  return cond;
+}
+
+
+OFCondition DcmSCP::receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
+                                        const T_ASC_PresentationContextID presID,
+                                        DcmDataset *&reqDataset)
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
@@ -1001,9 +658,72 @@ OFCondition DcmSCP::handleSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
 
   return cond;
 }
+
+
+OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
+                                      const T_DIMSE_C_StoreRQ &request,
+                                      const Uint16 rspStatusCode)
+{
+  // Call the method doing the real work
+  return sendSTOREResponse(presID, request.MessageID, request.AffectedSOPClassUID, request.AffectedSOPInstanceUID,
+    rspStatusCode, NULL /* statusDetail */);
+}
+
+
+OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
+                                      const Uint16 messageID,
+                                      const OFString &sopClassUID,
+                                      const OFString &sopInstanceUID,
+                                      const Uint16 rspStatusCode,
+                                      DcmDataset *statusDetail)
+{
+  OFCondition cond;
+  OFString tempStr;
+
+  // Send back response
+  T_DIMSE_Message response;
+  // Make sure everything is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
+  T_DIMSE_C_StoreRSP &storeRsp = response.msg.CStoreRSP;
+  response.CommandField = DIMSE_C_STORE_RSP;
+  storeRsp.MessageIDBeingRespondedTo = messageID;
+  storeRsp.DimseStatus = rspStatusCode;
+  storeRsp.DataSetType = DIMSE_DATASET_NULL;
+  // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
+  storeRsp.opts = O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID;
+  OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(storeRsp.AffectedSOPClassUID));
+  OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(storeRsp.AffectedSOPInstanceUID));
+
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending C-STORE Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  } else {
+    DCMNET_INFO("Sending C-STORE Response (" << DU_cstoreStatusString(rspStatusCode) << ")");
+  }
+
+  // Send response message
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, statusDetail);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-STORE response: " << DimseCondition::dump(tempStr, cond));
+  }
+
+  return cond;
+}
+
+
+Uint16 DcmSCP::checkSTORERequest(T_DIMSE_C_StoreRQ & /*reqMessage*/,
+                                 DcmDataset * /*reqDataset*/)
+{
+  // we default to success
+  return STATUS_Success;
+}
+
 // ----------------------------------------------------------------------------
 
-// Handle C-FIND request
+// -- C-FIND --
+
 OFCondition DcmSCP::handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
                                       const T_ASC_PresentationContextID presID,
                                       DcmDataset *&reqDataset)
@@ -1062,9 +782,63 @@ OFCondition DcmSCP::handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
   return cond;
 }
 
+
+OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
+                                     const Uint16 messageID,
+                                     const OFString &sopClassUID,
+                                     DcmDataset *rspDataset,
+                                     const Uint16 rspStatusCode,
+                                     DcmDataset* statusDetail)
+{
+  OFCondition cond;
+  OFString tempStr;
+
+  // Send back response
+  T_DIMSE_Message response;
+  // Make sure everything is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
+  T_DIMSE_C_FindRSP &findRsp = response.msg.CFindRSP;
+  response.CommandField = DIMSE_C_FIND_RSP;
+  findRsp.MessageIDBeingRespondedTo = messageID;
+  findRsp.DimseStatus = rspStatusCode;
+  // Always send (the optional) field "Affected SOP Class UID"
+  findRsp.opts = O_FIND_AFFECTEDSOPCLASSUID;
+  OFStandard::strlcpy(findRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(findRsp.AffectedSOPClassUID));
+
+  if (rspDataset)
+    findRsp.DataSetType = DIMSE_DATASET_PRESENT;
+  else
+    findRsp.DataSetType = DIMSE_DATASET_NULL;
+
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending C-FIND Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
+  } else {
+    DCMNET_INFO("Sending C-FIND Response (" << DU_cfindStatusString(rspStatusCode) << ")");
+  }
+
+  // Send response message with dataset
+  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, statusDetail);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-FIND response: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+  return cond;
+}
+
+
+OFCondition DcmSCP::checkForCANCEL(T_ASC_PresentationContextID presID,
+                                   const Uint16 messageID)
+{
+  return DIMSE_checkForCancelRQ(m_assoc, presID, messageID);
+}
+
 // ----------------------------------------------------------------------------
 
-// Handle C-MOVE request
+// -- C-MOVE --
+
 OFCondition DcmSCP::handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
                                       const T_ASC_PresentationContextID presID,
                                       DcmDataset *&reqDataset,
@@ -1126,9 +900,272 @@ OFCondition DcmSCP::handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
 }
 
 
+OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
+                                     const Uint16 messageID,
+                                     const OFString &sopClassUID,
+                                     DcmDataset *rspDataset,
+                                     const Uint16 rspStatusCode,
+                                     DcmDataset *statusDetail,
+                                     const Uint16 numRemain,
+                                     const Uint16 numComplete,
+                                     const Uint16 numFail,
+                                     const Uint16 numWarn)
+{
+  OFCondition cond;
+  OFString tempStr;
+
+  // Send back response
+  T_DIMSE_Message response;
+  // Make sure everything is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
+  T_DIMSE_C_MoveRSP &moveRsp = response.msg.CMoveRSP;
+  response.CommandField = DIMSE_C_MOVE_RSP;
+  moveRsp.MessageIDBeingRespondedTo = messageID;
+  moveRsp.DimseStatus = rspStatusCode;
+  // Always send the optional field "Affected SOP Class UID"
+  moveRsp.opts = O_MOVE_AFFECTEDSOPCLASSUID;
+  OFStandard::strlcpy(moveRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(moveRsp.AffectedSOPClassUID));
+  // Only send the other optional fields if needed
+  if ( (numRemain != 0) || (numComplete != 0) || (numFail != 0) || (numWarn != 0) )
+  {
+    moveRsp.NumberOfRemainingSubOperations = numRemain;
+    moveRsp.NumberOfCompletedSubOperations = numComplete;
+    moveRsp.NumberOfFailedSubOperations = numFail;
+    moveRsp.NumberOfWarningSubOperations = numWarn;
+    moveRsp.opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS | O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
+                    O_MOVE_NUMBEROFFAILEDSUBOPERATIONS | O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
+  }
+
+  if (rspDataset)
+    moveRsp.DataSetType = DIMSE_DATASET_PRESENT;
+  else
+    moveRsp.DataSetType = DIMSE_DATASET_NULL;
+
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending C-MOVE Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
+  } else {
+    DCMNET_INFO("Sending C-MOVE Response (" << DU_cmoveStatusString(rspStatusCode) << ")");
+  }
+
+  // Send response message with dataset
+  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, statusDetail);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-MOVE response: " << DimseCondition::dump(tempStr, cond));
+  }
+
+  return cond;
+}
+
 // ----------------------------------------------------------------------------
 
-// Sends N-EVENT-REPORT request on the current association and receives a response.
+// -- N-ACTION --
+
+OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
+                                        const T_ASC_PresentationContextID presID,
+                                        DcmDataset *&reqDataset,
+                                        Uint16 &actionTypeID)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID presIDdset;
+  DcmDataset *dataset = NULL;
+
+  // Dump debug information
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    DCMNET_INFO("Received N-ACTION Request");
+  else
+    DCMNET_INFO("Received N-ACTION Request (MsgID " << reqMessage.MessageID << ")");
+
+  // Check if dataset is announced correctly
+  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Received N-ACTION request but no dataset announced, aborting");
+    return DIMSE_BADMESSAGE;
+  }
+
+  // Receive dataset
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
+  if (cond.bad())
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Unable to receive N-ACTION dataset on presentation context " << OFstatic_cast(unsigned int, presID));
+    return DIMSE_BADDATA;
+  }
+
+  // Output request message only if trace level is enabled
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+  // Compare presentation context ID of command and data set
+  if (presIDdset != presID)
+  {
+    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+    delete dataset;
+    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
+      "DIMSE: Presentation Contexts of Command and Data Set differ");
+  }
+
+  // Set return values
+  reqDataset = dataset;
+  actionTypeID = reqMessage.ActionTypeID;
+
+  return cond;
+}
+
+
+OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
+                                       const Uint16 messageID,
+                                       const OFString &sopClassUID,
+                                       const OFString &sopInstanceUID,
+                                       const Uint16 rspStatusCode)
+{
+  OFCondition cond;
+  OFString tempStr;
+
+  // Send back response
+  T_DIMSE_Message response;
+  // Make sure everything is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
+  T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
+  response.CommandField = DIMSE_N_ACTION_RSP;
+  actionRsp.MessageIDBeingRespondedTo = messageID;
+  actionRsp.DimseStatus = rspStatusCode;
+  actionRsp.DataSetType = DIMSE_DATASET_NULL;
+  // Always send the optional fields "Affected SOP Class UID" and "Affected SOP Instance UID"
+  actionRsp.opts = O_NACTION_AFFECTEDSOPCLASSUID | O_NACTION_AFFECTEDSOPINSTANCEUID;
+  OFStandard::strlcpy(actionRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(actionRsp.AffectedSOPClassUID));
+  OFStandard::strlcpy(actionRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionRsp.AffectedSOPInstanceUID));
+  // Do not send any other optional fields, e.g. "Action Type ID"
+
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending N-ACTION Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  } else {
+    DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
+  }
+
+  // Send response message
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
+  }
+
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+// -- N-EVENT-REPORT --
+
+OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
+                                             const T_ASC_PresentationContextID presID,
+                                             DcmDataset *&reqDataset,
+                                             Uint16 &eventTypeID)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID presIDdset;
+  DcmDataset *dataset = NULL;
+  // DcmDataset *statusDetail = NULL; // TODO: do we need this and if so, how do we get it?
+  Uint16 rspStatusCode = 0;
+
+  // Dump debug information
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_INFO("Received N-EVENT-REPORT Request");
+  else
+    DCMNET_INFO("Received N-EVENT-REPORT Request (MsgID " << reqMessage.MessageID << ")");
+
+  // Check if dataset is announced correctly
+  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Received N-EVENT-REPORT request but no dataset announced, aborting");
+    return DIMSE_BADMESSAGE;
+  }
+
+  // Receive dataset
+  cond = receiveDIMSEDataset(&presIDdset, &dataset);
+  if (cond.bad())
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << OFstatic_cast(unsigned int, presID));
+    return DIMSE_BADDATA;
+  }
+
+  // Output dataset only if trace level is enabled
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+  // Compare presentation context ID of command and data set
+  if (presIDdset != presID)
+  {
+    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+    delete dataset;
+    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
+      "DIMSE: Presentation Contexts of Command and Data Set differ");
+  }
+
+  // Check the request message and dataset and return the DIMSE status code to be used
+  rspStatusCode = checkEVENTREPORTRequest(reqMessage, dataset);
+
+  // Send back response
+  T_DIMSE_Message response;
+  // Make sure everything is zeroed (especially options)
+  bzero((char*)&response, sizeof(response));
+  T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
+  response.CommandField = DIMSE_N_EVENT_REPORT_RSP;
+  eventReportRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
+  eventReportRsp.DimseStatus = rspStatusCode;
+  eventReportRsp.DataSetType = DIMSE_DATASET_NULL;
+  // Do not send any optional fields
+  eventReportRsp.opts = 0;
+  eventReportRsp.AffectedSOPClassUID[0] = 0;
+  eventReportRsp.AffectedSOPInstanceUID[0] = 0;
+
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending N-EVENT-REPORT Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  } else {
+    DCMNET_INFO("Sending N-EVENT-REPORT Response (" << DU_neventReportStatusString(rspStatusCode) << ")");
+  }
+  // Send response message
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
+    delete dataset;
+    return cond;
+  }
+
+  // Set return values
+  reqDataset = dataset;
+  eventTypeID = reqMessage.EventTypeID;
+
+  return cond;
+}
+
+
 OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
                                            const OFString &sopInstanceUID,
                                            const Uint16 messageID,
@@ -1230,6 +1267,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     // this should never happen
     DcmDataset *tempDataset = NULL;
     T_ASC_PresentationContextID tempID;
+    // Receive dataset
     cond = receiveDIMSEDataset(&tempID, &tempDataset);
     if (cond.good())
     {
@@ -1249,10 +1287,10 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
       << " instead of " << eventReportReq.MessageID << ")");
     return DIMSE_BADMESSAGE;
   }
+
   return cond;
 }
 
-// ----------------------------------------------------------------------------
 
 Uint16 DcmSCP::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ & /*reqMessage*/,
                                        DcmDataset * /*reqDataset*/)
