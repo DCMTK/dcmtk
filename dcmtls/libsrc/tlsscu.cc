@@ -54,7 +54,7 @@ DcmTLSSCU::DcmTLSSCU() :
 
 DcmTLSSCU::DcmTLSSCU(const OFString& peerHost,
                      const OFString& peerAETitle,
-                     const Uint16& portNum) :
+                     const Uint16 portNum) :
   m_tLayer(NULL),
   m_doAuthenticate(OFFalse),
   m_trustedCertDirs(),
@@ -180,7 +180,7 @@ OFCondition DcmTLSSCU::initNetwork()
 
 OFCondition DcmTLSSCU::negotiateAssociation()
 {
- // Negotiate association
+  // Negotiate association
   OFCondition cond = DcmSCU::negotiateAssociation();
   if (cond.bad())
   {
@@ -217,8 +217,8 @@ void DcmTLSSCU::closeAssociation(const DcmCloseAssociationType closeType)
 void DcmTLSSCU::enableAuthentication(const OFString& privateKey,
                                      const OFString& certFile,
                                      const char* passphrase,
-                                     const int& privKeyFormat,
-                                     const int& certFormat)
+                                     const int privKeyFormat,
+                                     const int certFormat)
 {
   m_doAuthenticate = OFTrue;
   m_privateKeyFile = privateKey;
@@ -285,7 +285,7 @@ void DcmTLSSCU::setWriteSeedFile(const OFString& seedFile)
 }
 
 
-void DcmTLSSCU::setPeerCertVerification(const DcmCertificateVerification& cert)
+void DcmTLSSCU::setPeerCertVerification(const DcmCertificateVerification cert)
 {
   m_certVerification = cert;
 }

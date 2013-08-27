@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.27 (riesmeier)
+
+- Removed "&" from constant integer parameters:
+  Removed "&" specifier from constant integer parameters since passing such
+  input values by-reference does not make any sense. Also fixed some layout
+  and formatting issues.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlsscu.h
+           dcmtls/libsrc/tlsscu.cc
+
 **** Changes from 2013.08.26 (riesmeier)
 
 - Removed class name from derived method calls:
