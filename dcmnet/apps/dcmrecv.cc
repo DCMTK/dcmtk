@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
 
     DcmStorageSCP::E_DirectoryGenerationMode opt_directoryGeneration = DcmStorageSCP::DGM_NoSubdirectory;
     DcmStorageSCP::E_FilenameGenerationMode opt_filenameGeneration = DcmStorageSCP::FGM_SOPInstanceUID;
+    DcmStorageSCP::E_DatasetStorageMode opt_datasetStorage = DcmStorageSCP::DGM_StoreToFile;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Simple DICOM storage SCP (receiver)", rcsid);
     OFCommandLine cmd;
@@ -147,6 +148,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--system-time-names",   "+fst",    "generate filename from current system time");
         cmd.addOption("--filename-extension",  "-fe",  1, "[e]xtension: string (default: none)",
                                                           "append e to all generated filenames");
+      cmd.addSubGroup("storage mode:");
+        cmd.addOption("--ignore",                         "ignore dataset, receive but do not store it");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -228,6 +231,9 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--filename-extension"))
             app.checkValue(cmd.getValue(opt_filenameExtension));
 
+        if (cmd.findOption("--ignore"))
+            opt_datasetStorage = DcmStorageSCP::DSM_Ignore;
+
         /* command line parameters */
         app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
     }
@@ -261,6 +267,7 @@ int main(int argc, char *argv[])
     storageSCP.setDirectoryGenerationMode(opt_directoryGeneration);
     storageSCP.setFilenameGenerationMode(opt_filenameGeneration);
     storageSCP.setFilenameExtension(opt_filenameExtension);
+    storageSCP.setDatasetStorageMode(opt_datasetStorage);
 
     /* load association negotiation profile from configuration file (if specified) */
     if ((opt_configFile != NULL) && (opt_profileName != NULL))

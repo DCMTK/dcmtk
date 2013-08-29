@@ -43,7 +43,8 @@ DcmStorageSCP::DcmStorageSCP()
     FilenameExtension(DEF_FilenameExtension),
     DirectoryGeneration(DGM_Default),
     FilenameGeneration(FGM_Default),
-    FilenameCreator()
+    FilenameCreator(),
+    DatasetStorage(DSM_Default)
 {
     // make sure that the SCP at least supports C-ECHO with default transfer syntax
     OFList<OFString> transferSyntaxes;
@@ -68,6 +69,7 @@ void DcmStorageSCP::clear()
     FilenameExtension = DEF_FilenameExtension;
     DirectoryGeneration = DGM_Default;
     FilenameGeneration = FGM_Default;
+    DatasetStorage = DSM_Default;
 }
 
 
@@ -94,6 +96,12 @@ DcmStorageSCP::E_FilenameGenerationMode DcmStorageSCP::getFilenameGenerationMode
 const OFString &DcmStorageSCP::getFilenameExtension() const
 {
     return FilenameExtension;
+}
+
+
+DcmStorageSCP::E_DatasetStorageMode DcmStorageSCP::getDatasetStorageMode() const
+{
+    return DatasetStorage;
 }
 
 
@@ -142,6 +150,12 @@ void DcmStorageSCP::setFilenameExtension(const OFString &extension)
 }
 
 
+void DcmStorageSCP::setDatasetStorageMode(const E_DatasetStorageMode mode)
+{
+    DatasetStorage = mode;
+}
+
+
 // further public methods
 
 OFCondition DcmStorageSCP::loadAssociationConfiguration(const OFString &filename,
@@ -179,8 +193,16 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
             status = receiveSTORERequest(storeReq, info.presentationContextID, reqDataset);
             if (status.good())
             {
-                // check and process C-STORE request
-                const Uint16 rspStatusCode = checkAndProcessSTORERequest(storeReq, fileformat);
+                Uint16 rspStatusCode = STATUS_Success;
+                // do we need to store the received dataset at all?
+                if (DatasetStorage == DSM_Ignore)
+                {
+                    // output debug message that dataset is not stored
+                    DCMNET_DEBUG("received dataset is not stored since the storage mode is set to 'ignore'");
+                } else {
+                    // check and process C-STORE request
+                    rspStatusCode = checkAndProcessSTORERequest(storeReq, fileformat);
+                }
                 // send C-STORE response (with status code)
                 status = sendSTOREResponse(info.presentationContextID, storeReq, rspStatusCode);
             }

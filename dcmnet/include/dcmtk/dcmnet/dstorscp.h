@@ -53,7 +53,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
 
     // --- public types ---
 
-    /** mode for generating subdirectories
+    /** modes for generating subdirectories
      */
     enum E_DirectoryGenerationMode
     {
@@ -79,6 +79,18 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
         FGM_CurrentSystemTime,
         /// default value
         FGM_Default = FGM_SOPInstanceUID
+    };
+
+    /** modes specifying whether and how to store the received datasets
+     */
+    enum E_DatasetStorageMode
+    {
+        /// receive dataset in memory, perform some conversions and store it to file
+        DGM_StoreToFile,
+        /// receive dataset in memory, but do not store it to file
+        DSM_Ignore,
+        /// default value
+        DSM_Default = DGM_StoreToFile
     };
 
     // --- public methods ---
@@ -122,6 +134,12 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
      */
     const OFString &getFilenameExtension() const;
 
+    /** get the mode specifying whether and how to store the received datasets
+     *  @return current mode specifying whether and how to store the received datasets
+     *    (see DcmStorageSCP::E_DatasetStorageMode)
+     */
+    E_DatasetStorageMode getDatasetStorageMode() const;
+
     // set methods
 
     /** specify the output directory to be used for the storage of the received DICOM
@@ -156,6 +174,14 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
      *  @param  extension  filename extension appended to the generated filenames
      */
     void setFilenameExtension(const OFString &extension);
+
+    /** set the mode specifying how to store the received datasets.  This mode also
+     *  allows for specifying whether to store the received datasets at all.
+     *  The default value is specified by DcmStorageSCP::DSM_Default.
+     *  @param  mode  mode to be set specifying whether and how to store the received
+     *                datasets (see DcmStorageSCP::E_DatasetStorageMode)
+     */
+    void setDatasetStorageMode(const E_DatasetStorageMode mode);
 
     // other methods
 
@@ -273,6 +299,8 @@ private:
     E_FilenameGenerationMode FilenameGeneration;
     /// unique pseudo-random filename creator, which also checks for existing files
     OFFilenameCreator FilenameCreator;
+    /// mode specifying how to store the received datasets (also allows for skipping the storage)
+    E_DatasetStorageMode DatasetStorage;
 
     // private undefined copy constructor
     DcmStorageSCP(const DcmStorageSCP &);

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.29 (riesmeier)
+
+- Introduced dataset storage mode:
+  Added new option that allows for ignoring the received dataset, i.e. the
+  DICOM dataset received with a C-STORE request message is not stored to file.
+  Affects: dcmnet/apps/dcmrecv.cc
+           dcmnet/docs/dcmrecv.man
+           dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+
 **** Changes from 2013.08.27 (riesmeier)
 
 - Restructured implementation of handleSTORERequest():

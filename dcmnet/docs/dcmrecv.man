@@ -121,6 +121,11 @@ filename generation:
 
   -fe   --filename-extension  [e]xtension: string (default: none)
           append e to all generated filenames
+
+storage mode:
+
+        --ignore
+          ignore dataset, receive but do not store it
 \endverbatim
 
 \section notes NOTES
