@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.08.30 (riesmeier)
+
+- Fixed various typos in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
 **** Changes from 2013.08.29 (riesmeier)
 
 - Introduced dataset storage mode:
