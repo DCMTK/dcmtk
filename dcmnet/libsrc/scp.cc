@@ -24,6 +24,7 @@
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
 
 // ----------------------------------------------------------------------------
 
@@ -477,21 +478,21 @@ void DcmSCP::handleAssociation()
   // or that the peer requested the release of the association (DUL_PEERREQUESTEDRELEASE).) (Also note
   // that ReceiveAndHandleCommands() will never return EC_Normal.)
   OFCondition cond = EC_Normal;
-  T_DIMSE_Message msg;
+  T_DIMSE_Message message;
   T_ASC_PresentationContextID presID;
 
   // start a loop to be able to receive more than one DIMSE command
   while( cond.good() )
   {
     // receive a DIMSE command over the network
-    cond = DIMSE_receiveCommand( m_assoc, m_cfg->getDIMSEBlockingMode(), 0, &presID, &msg, NULL );
+    cond = DIMSE_receiveCommand( m_assoc, m_cfg->getDIMSEBlockingMode(), 0, &presID, &message, NULL );
 
     // check if peer did release or abort, or if we have a valid message
     if( cond.good() )
     {
       DcmPresentationContextInfo pcInfo;
       getPresentationContextInfo(m_assoc, presID, pcInfo);
-      cond = handleIncomingCommand(&msg, pcInfo);
+      cond = handleIncomingCommand(&message, pcInfo);
     }
   }
   // Clean up on association termination.
@@ -519,22 +520,22 @@ void DcmSCP::handleAssociation()
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *msg,
+OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
                                           const DcmPresentationContextInfo &info)
 {
   OFCondition cond;
-  if( msg->CommandField == DIMSE_C_ECHO_RQ )
+  if( incomingMsg->CommandField == DIMSE_C_ECHO_RQ )
   {
     // Process C-ECHO request
-    cond = handleECHORequest( msg->msg.CEchoRQ, info.presentationContextID );
+    cond = handleECHORequest( incomingMsg->msg.CEchoRQ, info.presentationContextID );
   } else {
     // We cannot handle this kind of message. Note that the condition will be returned
     // and that the caller is responsible to end the association if desired.
     OFString tempStr;
     DCMNET_ERROR("Cannot handle this kind of DIMSE command (0x"
       << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-      << OFstatic_cast(unsigned int, msg->CommandField) << ")");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *msg, DIMSE_INCOMING));
+      << OFstatic_cast(unsigned int, incomingMsg->CommandField) << ")");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *incomingMsg, DIMSE_INCOMING));
     cond = DIMSE_BADCOMMANDTYPE;
   }
 
@@ -624,13 +625,13 @@ OFCondition DcmSCP::receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
     return DIMSE_BADMESSAGE;
   }
 
-  // Receive dataset
+  // Receive dataset (in memory)
   cond = receiveDIMSEDataset(&presIDdset, &dataset);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
     DCMNET_ERROR("Unable to receive C-STORE dataset on presentation context " << OFstatic_cast(unsigned int, presID));
-    return DIMSE_BADDATA;
+    return cond;
   }
 
   // Output request message only if trace level is enabled
@@ -660,12 +661,64 @@ OFCondition DcmSCP::receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
 }
 
 
+OFCondition DcmSCP::receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
+                                        const T_ASC_PresentationContextID presID,
+                                        const OFString &filename)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  OFString tempStr;
+  // Use presentation context ID of the command set as a default
+  T_ASC_PresentationContextID presIDdset = presID;
+
+  // Dump debug information
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    DCMNET_INFO("Received C-STORE Request");
+  else
+    DCMNET_INFO("Received C-STORE Request (MsgID " << reqMessage.MessageID << ")");
+
+  // Check if dataset is announced correctly
+  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Received C-STORE request but no dataset announced, aborting");
+    return DIMSE_BADMESSAGE;
+  }
+
+  // Receive dataset (directly to file)
+  cond = receiveSTORERequestDataset(&presIDdset, reqMessage, filename);
+  if (cond.bad())
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Unable to receive C-STORE dataset on presentation context " << OFstatic_cast(unsigned int, presID));
+    return cond;
+  }
+
+  // Output request message only if trace level is enabled
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+  // Compare presentation context ID of command and data set
+  if (presIDdset != presID)
+  {
+    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
+      "DIMSE: Presentation Contexts of Command and Data Set differ");
+  }
+
+  return cond;
+}
+
+
 OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
-                                      const T_DIMSE_C_StoreRQ &request,
+                                      const T_DIMSE_C_StoreRQ &reqMessage,
                                       const Uint16 rspStatusCode)
 {
   // Call the method doing the real work
-  return sendSTOREResponse(presID, request.MessageID, request.AffectedSOPClassUID, request.AffectedSOPInstanceUID,
+  return sendSTOREResponse(presID, reqMessage.MessageID, reqMessage.AffectedSOPClassUID, reqMessage.AffectedSOPInstanceUID,
     rspStatusCode, NULL /* statusDetail */);
 }
 
@@ -1322,24 +1375,24 @@ void DcmSCP::notifyRECEIVEProgress(const unsigned long byteCount)
 
 // Sends a DIMSE command and possibly also instance data to the configured peer DICOM application
 OFCondition DcmSCP::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
-                                     T_DIMSE_Message *msg,
+                                     T_DIMSE_Message *message,
                                      DcmDataset *dataObject,
                                      DcmDataset *statusDetail,
                                      DcmDataset **commandSet)
 {
   if (m_assoc == NULL)
     return DIMSE_ILLEGALASSOCIATION;
-  if (msg == NULL)
+  if (message == NULL)
     return DIMSE_NULLKEY;
 
   OFCondition cond;
   /* call the corresponding DIMSE function to sent the message */
   if (m_cfg->getProgressNotificationMode())
   {
-    cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, statusDetail, dataObject,
+    cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, message, statusDetail, dataObject,
                                             callbackSENDProgress, this /*callbackData*/, commandSet);
   } else {
-    cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, statusDetail, dataObject,
+    cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, message, statusDetail, dataObject,
                                             NULL /*callback*/, NULL /*callbackData*/, commandSet);
   }
   return cond;
@@ -1349,7 +1402,7 @@ OFCondition DcmSCP::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
 
 // Receive DIMSE command (excluding dataset!) over the currently open association
 OFCondition DcmSCP::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
-                                        T_DIMSE_Message *msg,
+                                        T_DIMSE_Message *message,
                                         DcmDataset **statusDetail,
                                         DcmDataset **commandSet,
                                         const Uint32 timeout)
@@ -1362,18 +1415,18 @@ OFCondition DcmSCP::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
   {
     /* call the corresponding DIMSE function to receive the command (use specified timeout) */
     cond = DIMSE_receiveCommand(m_assoc, DIMSE_NONBLOCKING, timeout, presID,
-                                msg, statusDetail, commandSet);
+                                message, statusDetail, commandSet);
   } else {
     /* call the corresponding DIMSE function to receive the command (use default timeout) */
     cond = DIMSE_receiveCommand(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(), presID,
-                                msg, statusDetail, commandSet);
+                                message, statusDetail, commandSet);
   }
   return cond;
 }
 
 // ----------------------------------------------------------------------------
 
-// Receives one dataset (of instance data) via network from another DICOM application
+// Receives one dataset (of instance data) via network from another DICOM application in memory
 OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
                                         DcmDataset **dataObject)
 {
@@ -1394,12 +1447,69 @@ OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
   if (cond.good())
   {
     DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, *presID));
-  }
-  else
-  {
+  } else {
     OFString tempStr;
     DCMNET_ERROR("Unable to receive dataset on presentation context "
       << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
+  }
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+// Receives one C-STORE request dataset via network from another DICOM application
+// (and store it directly to file)
+OFCondition DcmSCP::receiveSTORERequestDataset(T_ASC_PresentationContextID *presID,
+                                               T_DIMSE_C_StoreRQ &reqMessage,
+                                               const OFString &filename)
+{
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+  if (filename.empty())
+    return EC_InvalidFilename;
+
+  OFString tempStr;
+  DcmOutputFileStream *filestream = NULL;
+  // Receive dataset over the network and write it directly to a file
+  OFCondition cond = DIMSE_createFilestream(filename.c_str(), &reqMessage, m_assoc, *presID,
+                                            OFTrue /*writeMetaheader*/, &filestream);
+  if (cond.good())
+  {
+    if (m_cfg->getProgressNotificationMode())
+    {
+      cond = DIMSE_receiveDataSetInFile(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(),
+                                        presID, filestream, callbackRECEIVEProgress, this /*callbackData*/);
+    } else {
+      cond = DIMSE_receiveDataSetInFile(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(),
+                                        presID, filestream, NULL /*callback*/, NULL /*callbackData*/);
+    }
+    delete filestream;
+    if (cond.good())
+    {
+      DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, *presID)
+        << " and stored it directly to file");
+    } else {
+      DCMNET_ERROR("Unable to receive dataset on presentation context "
+        << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
+      // Delete created file in case of error
+      OFStandard::deleteFile(filename);
+    }
+
+  } else {
+
+    DCMNET_ERROR("Unable to receive dataset on presentation context "
+      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
+    // Could not create the filestream, so ignore the dataset
+    DIC_UL bytesRead = 0;
+    DIC_UL pdvCount = 0;
+    DCMNET_DEBUG("Ignoring incoming dataset and returning an error status to the SCU");
+    cond = DIMSE_ignoreDataSet(m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(),
+                               &bytesRead, &pdvCount);
+    if (cond.good())
+    {
+      tempStr = "Cannot create file: " + filename;
+      cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, tempStr.c_str());
+    }
   }
   return cond;
 }

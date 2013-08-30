@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.30 (riesmeier)
 
+- Receive C-STORE request dataset directly to file:
+  Added method that allows for receiving a C-STORE request dataset directly to
+  file. Using this new method, large SOP instances can be received with less
+  memory requirements and the datasets can be stored as received (i.e. without
+  any conversions).
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/scp.cc
+
 - Fixed various typos in comments.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 

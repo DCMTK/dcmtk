@@ -110,7 +110,7 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
   OFString abstractSyntax;
   /// SCP role as proposed from SCU
   Uint8 proposedSCRole;
-  /// Role acccepted by SCP for this Presentation Context
+  /// Role accepted by SCP for this Presentation Context
   Uint8 acceptedSCRole;
   /// Transfer Syntax accepted for this Presentation Context (UID)
   OFString acceptedTransferSyntax;
@@ -546,8 +546,8 @@ protected:
    *  checkSTORERequest() in order to determine the DIMSE status code to be used for
    *  the C-STORE response.
    *  @note This handler receives the dataset belonging the C-STORE request completely
-   *    in memory. If very large objects are expected to be received, another handler
-   *    should be implemented that streams the dataset directly to disc or the like.
+   *    in memory. If very large datasets are expected, another handler should be
+   *    implemented that calls the receiveSTORERequest() method with a filename.
    *  @param reqMessage [in]    The C-STORE request message that was received
    *  @param presID     [in]    The presentation context to be used. By default, the
    *                            presentation context of the request is used.
@@ -560,7 +560,9 @@ protected:
                                          const T_ASC_PresentationContextID presID,
                                          DcmDataset *&reqDataset);
 
-  /** Receive C-STORE request (and store accompanying dataset in memory)
+  /** Receive C-STORE request (and store accompanying dataset in memory).
+   *  For very large datasets, the other receiveSTORERequest() method should be used
+   *  because it stores the received dataset directly to file.
    *  @param reqMessage [in]    The C-STORE request message that was received
    *  @param presID     [in]    The presentation context to be used. By default, the
    *                            presentation context of the request is used.
@@ -573,15 +575,27 @@ protected:
                                           const T_ASC_PresentationContextID presID,
                                           DcmDataset *&reqDataset);
 
+  /** Receive C-STORE request (and store accompanying dataset directly to file).
+   *  The dataset is stored exactly as received, i.e. without any conversions.
+   *  @param reqMessage [in] The C-STORE request message that was received
+   *  @param presID     [in] The presentation context to be used. By default, the
+   *                         presentation context of the request is used.
+   *  @param filename   [in] The filename used to store the received dataset
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
+                                          const T_ASC_PresentationContextID presID,
+                                          const OFString &filename);
+
   /** Respond to the C-STORE request (with details from the request message)
    *  @param presID        [in] The presentation context ID to respond to
-   *  @param request       [in] The C-STORE request that should be responded to
+   *  @param reqMessage    [in] The C-STORE request that should be responded to
    *  @param rspStatusCode [in] The response status code. 0 means success,
    *                            others can found in the DICOM standard.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
-                                        const T_DIMSE_C_StoreRQ &request,
+                                        const T_DIMSE_C_StoreRQ &reqMessage,
                                         const Uint16 rspStatusCode);
 
   /** Respond to the C-STORE request (with given details)
@@ -830,7 +844,8 @@ protected:
   virtual OFCondition waitForAssociationRQ(T_ASC_Network *network);
 
   /** Actually process association request.
-   *  @return EC_Normal if association could be processed, error otherwise. */
+   *  @return EC_Normal if association could be processed, error otherwise.
+   */
   virtual OFCondition processAssociationRQ();
 
  /** This function checks all presentation contexts proposed by the SCU whether they are
@@ -853,10 +868,10 @@ protected:
    */
   virtual void handleAssociation();
 
-  /** Sends a DIMSE command and possibly also a dataset from a data object via network to
+  /** Send a DIMSE command and possibly also a dataset from a data object via network to
    *  another DICOM application
    *  @param presID          [in]  Presentation context ID to be used for message
-   *  @param msg             [in]  Structure that represents a certain DIMSE command which
+   *  @param message         [in]  Structure that represents a certain DIMSE command which
    *                               shall be sent
    *  @param dataObject      [in]  The instance data which shall be sent to the other DICOM
    *                               application; NULL, if there is none
@@ -866,7 +881,7 @@ protected:
    *  @return Returns EC_Normal if sending request was successful, an error code otherwise
    */
   OFCondition sendDIMSEMessage(const T_ASC_PresentationContextID presID,
-                               T_DIMSE_Message *msg,
+                               T_DIMSE_Message *message,
                                DcmDataset *dataObject,
                                DcmDataset *statusDetail = NULL,
                                DcmDataset **commandSet = NULL);
@@ -874,14 +889,14 @@ protected:
   /** Receive DIMSE command (excluding dataset!) over the currently open association
    *  @param presID       [out] Contains in the end the ID of the presentation context
    *                            which was specified in the DIMSE command received
-   *  @param msg          [out] The message received
+   *  @param message      [out] The message received
    *  @param statusDetail [out] If a non-NULL value is passed this variable will in the end
    *                            contain detailed information with regard to the status
    *                            information which is captured in the status element
    *                            (0000,0900). Note that the value for element (0000,0900) is
-   *                            not contained in this return value but in internal msg. For
-   *                            details on the structure of this object, see DICOM standard
-   *                            part 7, annex C).
+   *                            not contained in this return value but in internal message.
+   *                            For details on the structure of this object, see DICOM
+   *                            standard part 7, annex C).
    *  @param commandSet   [out] If this parameter is not NULL, it will return a copy of the
    *                            DIMSE command which was received from the other DICOM
    *                            application. The caller is responsible to de-allocate the
@@ -893,12 +908,12 @@ protected:
    *  @return EC_Normal if command could be received successfully, an error code otherwise
    */
   OFCondition receiveDIMSECommand(T_ASC_PresentationContextID *presID,
-                                  T_DIMSE_Message *msg,
+                                  T_DIMSE_Message *message,
                                   DcmDataset **statusDetail,
                                   DcmDataset **commandSet = NULL,
                                   const Uint32 timeout = 0);
 
-  /** Receives one dataset (of instance data) via network from another DICOM application
+  /** Receive one dataset (of instance data) via network from another DICOM application
    *  @param presID     [out]   Contains in the end the ID of the presentation context
    *                            which was used in the PDVs that were received on the
    *                            network. If the PDVs show different presentation context
@@ -911,6 +926,21 @@ protected:
    */
   OFCondition receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
                                   DcmDataset **dataObject);
+
+  /** Receive one C-STORE request dataset via network from another DICOM application and
+   *  store it directly to file (i.e.\ exactly as received without any conversions)
+   *  @param presID      [inout] Initially, the presentation context the C-STORE request was
+   *                             received on. Contains in the end the ID of the presentation
+   *                             context which was used in the PDVs that were received on the
+   *                             network. If the PDVs show different presentation context
+   *                             IDs, this function will return an error.
+   *  @param reqMessage  [in]    The C-STORE request message that was received
+   *  @param filename    [in]    Name of the file that is created to store the received dataset
+   *  @return EC_Normal if dataset could be received successfully, an error code otherwise
+   */
+  OFCondition receiveSTORERequestDataset(T_ASC_PresentationContextID *presID,
+                                         T_DIMSE_C_StoreRQ &reqMessage,
+                                         const OFString &filename);
 
   /** Add given element to existing status detail object or create new one.
    *  @param statusDetail  The status detail to add the element to. Status detail
@@ -947,10 +977,9 @@ private:
   /// Current association run by this SCP
   T_ASC_Association *m_assoc;
 
-  /// SCP configuration. The configuration is a shared object since in some
-  /// scenarios one might like to share a single configuration instance
-  /// with multiple SCPs without copying it, e.g. in the context of the
-  /// DcmSCPPool class.
+  /// SCP configuration. The configuration is a shared object since in some scenarios one
+  /// might like to share a single configuration instance with multiple SCPs without copying
+  /// it, e.g. in the context of the DcmSCPPool class.
   DcmSharedSCPConfig m_cfg;
 
   /** Drops association and clears internal structures to free memory

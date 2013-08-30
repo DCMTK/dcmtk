@@ -1951,7 +1951,8 @@ scp.o: scp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/dccfuidh.h ../include/dcmtk/dcmnet/dccfpcmp.h \
  ../include/dcmtk/dcmnet/dccfrsmp.h ../include/dcmtk/dcmnet/dccfenmp.h \
  ../include/dcmtk/dcmnet/dccfprmp.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmnet/diutil.h
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmnet/diutil.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrmf.h
 scpcfg.o: scpcfg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/scpcfg.h ../include/dcmtk/dcmnet/dcasccff.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
