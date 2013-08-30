@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.30 (riesmeier)
 
+- Added new dataset storage mode:
+  Added new storage mode that allows for receiving a dataset directly to file,
+  i.e. the data is written exactly as received. This is what the storescp calls
+  "bit preserving mode".
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+
 - Receive C-STORE request dataset directly to file:
   Added method that allows for receiving a C-STORE request dataset directly to
   file. Using this new method, large SOP instances can be received with less

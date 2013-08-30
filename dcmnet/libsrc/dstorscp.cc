@@ -172,48 +172,77 @@ OFCondition DcmStorageSCP::loadAssociationConfiguration(const OFString &filename
 
 // protected methods
 
-OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
+OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
                                                  const DcmPresentationContextInfo &info)
 {
     OFCondition status = EC_IllegalParameter;
-    if (msg != NULL)
+    if (incomingMsg != NULL)
     {
         // check whether we've received a supported command
-        if (msg->CommandField == DIMSE_C_ECHO_RQ)
+        if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
         {
             // handle incoming C-ECHO request
-            status = handleECHORequest(msg->msg.CEchoRQ, info.presentationContextID);
+            status = handleECHORequest(incomingMsg->msg.CEchoRQ, info.presentationContextID);
         }
-        else if (msg->CommandField == DIMSE_C_STORE_RQ)
+        else if (incomingMsg->CommandField == DIMSE_C_STORE_RQ)
         {
             // handle incoming C-STORE request
-            DcmFileFormat fileformat;
-            DcmDataset *reqDataset = fileformat.getDataset();
-            T_DIMSE_C_StoreRQ &storeReq = msg->msg.CStoreRQ;
-            status = receiveSTORERequest(storeReq, info.presentationContextID, reqDataset);
-            if (status.good())
+            T_DIMSE_C_StoreRQ &storeReq = incomingMsg->msg.CStoreRQ;
+            Uint16 rspStatusCode = STATUS_STORE_Error_CannotUnderstand;
+            // special case: bit preserving mode
+            if (DatasetStorage == DGM_StoreBitPreserving)
             {
-                Uint16 rspStatusCode = STATUS_Success;
-                // do we need to store the received dataset at all?
-                if (DatasetStorage == DSM_Ignore)
+                OFString filename;
+                // generate filename with full path (and create subdirectories if needed)
+                status = generateSTORERequestFilename(storeReq, filename);
+                if (status.good())
                 {
-                    // output debug message that dataset is not stored
-                    DCMNET_DEBUG("received dataset is not stored since the storage mode is set to 'ignore'");
-                } else {
-                    // check and process C-STORE request
-                    rspStatusCode = checkAndProcessSTORERequest(storeReq, fileformat);
+                    if (OFStandard::fileExists(filename))
+                        DCMNET_WARN("file already exists, overwriting: " << filename);
+                    // receive dataset directly to file
+                    status = receiveSTORERequest(storeReq, info.presentationContextID, filename);
+                    if (status.good())
+                    {
+                        // call the notification handler (default implementation outputs to the logger)
+                        notifyInstanceStored(filename, storeReq.AffectedSOPClassUID, storeReq.AffectedSOPInstanceUID);
+                        rspStatusCode = STATUS_Success;
+                    }
                 }
-                // send C-STORE response (with status code)
+            } else {
+                DcmFileFormat fileformat;
+                DcmDataset *reqDataset = fileformat.getDataset();
+                // receive dataset in memory
+                status = receiveSTORERequest(storeReq, info.presentationContextID, reqDataset);
+                if (status.good())
+                {
+                    // do we need to store the received dataset at all?
+                    if (DatasetStorage == DSM_Ignore)
+                    {
+                        // output debug message that dataset is not stored
+                        DCMNET_DEBUG("received dataset is not stored since the storage mode is set to 'ignore'");
+                        rspStatusCode = STATUS_Success;
+                    } else {
+                        // check and process C-STORE request
+                        rspStatusCode = checkAndProcessSTORERequest(storeReq, fileformat);
+                    }
+                }
+            }
+            // send C-STORE response (with DIMSE status code)
+            if (status.good())
                 status = sendSTOREResponse(info.presentationContextID, storeReq, rspStatusCode);
+            else if (status == DIMSE_OUTOFRESOURCES)
+            {
+                // do not overwrite the previous error status
+                sendSTOREResponse(info.presentationContextID, storeReq, STATUS_STORE_Refused_OutOfResources);
             }
         } else {
             // unsupported command
             OFString tempStr;
             DCMNET_ERROR("cannot handle this kind of DIMSE command (0x"
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                << OFstatic_cast(unsigned int, msg->CommandField)
+                << OFstatic_cast(unsigned int, incomingMsg->CommandField)
                 << "), we are a Storage SCP only");
-            DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *msg, DIMSE_INCOMING));
+            DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *incomingMsg, DIMSE_INCOMING));
             // TODO: provide more information on this error?
             status = DIMSE_BADCOMMANDTYPE;
         }
@@ -222,7 +251,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *msg,
 }
 
 
-Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &request,
+Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reqMessage,
                                                   DcmFileFormat &fileformat)
 {
     DCMNET_DEBUG("checking and processing C-STORE request");
@@ -233,10 +262,10 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reque
     {
         OFString filename;
         OFString directoryName;
-        OFString sopClassUID = request.AffectedSOPClassUID;
-        OFString sopInstanceUID = request.AffectedSOPInstanceUID;
-        // generate filename (with full path)
-        OFCondition status = generateDirAndFilename(filename, directoryName, sopClassUID, sopInstanceUID, *dataset);
+        OFString sopClassUID = reqMessage.AffectedSOPClassUID;
+        OFString sopInstanceUID = reqMessage.AffectedSOPInstanceUID;
+        // generate filename with full path
+        OFCondition status = generateDirAndFilename(filename, directoryName, sopClassUID, sopInstanceUID, dataset);
         if (status.good())
         {
             DCMNET_DEBUG("generated filename for received object: " << filename);
@@ -251,7 +280,7 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reque
                 if (status.good())
                 {
                     // call the notification handler (default implementation outputs to the logger)
-                    notifyInstanceStored(filename, sopClassUID, sopInstanceUID, *dataset);
+                    notifyInstanceStored(filename, sopClassUID, sopInstanceUID, dataset);
                     statusCode = STATUS_Success;
                 } else {
                     DCMNET_ERROR("cannot store received object: " << filename << ": " << status.text());
@@ -268,10 +297,31 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reque
 }
 
 
+OFCondition DcmStorageSCP::generateSTORERequestFilename(const T_DIMSE_C_StoreRQ &reqMessage,
+                                                        OFString &filename)
+{
+    OFString directoryName;
+    OFString sopClassUID = reqMessage.AffectedSOPClassUID;
+    OFString sopInstanceUID = reqMessage.AffectedSOPInstanceUID;
+    // generate filename (with full path)
+    OFCondition status = generateDirAndFilename(filename, directoryName, sopClassUID, sopInstanceUID);
+    if (status.good())
+    {
+        DCMNET_DEBUG("generated filename for object to be received: " << filename);
+        // create the output directory (if needed)
+        status = OFStandard::createDirectory(directoryName, OutputDirectory /* rootDir */);
+        if (status.bad())
+            DCMNET_ERROR("cannot create directory for object to be received: " << directoryName << ": " << status.text());
+    } else
+        DCMNET_ERROR("cannot generate directory or file name for object to be received: " << status.text());
+    return status;
+}
+
+
 void DcmStorageSCP::notifyInstanceStored(const OFString &filename,
                                          const OFString & /*sopClassUID*/,
                                          const OFString & /*sopInstanceUID*/,
-                                         DcmDataset & /*dataset*/) const
+                                         DcmDataset * /*dataset*/) const
 {
     // by default, output some useful information
     DCMNET_INFO("Stored received object to file: " << filename);
@@ -282,14 +332,17 @@ OFCondition DcmStorageSCP::generateDirAndFilename(OFString &filename,
                                                   OFString &directoryName,
                                                   OFString &sopClassUID,
                                                   OFString &sopInstanceUID,
-                                                  DcmDataset &dataset)
+                                                  DcmDataset *dataset)
 {
     OFCondition status = EC_Normal;
     // get SOP class and instance UID (if not yet known from the command set)
-    if (sopClassUID.empty())
-        dataset.findAndGetOFString(DCM_SOPClassUID, sopClassUID);
-    if (sopInstanceUID.empty())
-        dataset.findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
+    if (dataset != NULL)
+    {
+        if (sopClassUID.empty())
+            dataset->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
+        if (sopInstanceUID.empty())
+            dataset->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
+    }
     // generate directory name
     OFString generatedDirName;
     switch (DirectoryGeneration)
@@ -299,44 +352,50 @@ OFCondition DcmStorageSCP::generateDirAndFilename(OFString &filename,
             break;
         // use series date (if available) for subdirectory structure
         case DGM_SeriesDate:
-        {
-            OFString seriesDate;
-            DcmElement *element = NULL;
-            // try to get the series date from the dataset
-            if (dataset.findAndGetElement(DCM_SeriesDate, element).good() && (element->ident() == EVR_DA))
+            if (dataset != NULL)
             {
-                OFString dateValue;
-                DcmDate *dateElement = OFstatic_cast(DcmDate *, element);
-                // output ISO format is: YYYY-MM-DD
-                if (dateElement->getISOFormattedDate(dateValue).good() && (dateValue.length() == 10))
+                OFString seriesDate;
+                DcmElement *element = NULL;
+                // try to get the series date from the dataset
+                if (dataset->findAndGetElement(DCM_SeriesDate, element).good() && (element->ident() == EVR_DA))
                 {
-                    OFOStringStream stream;
-                    stream << StandardSubdirectory << PATH_SEPARATOR
-                           << dateValue.substr(0, 4) << PATH_SEPARATOR
-                           << dateValue.substr(5 ,2) << PATH_SEPARATOR
-                           << dateValue.substr(8, 2) << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(stream, tmpString)
-                    generatedDirName = tmpString;
-                    OFSTRINGSTREAM_FREESTR(tmpString);
+                    OFString dateValue;
+                    DcmDate *dateElement = OFstatic_cast(DcmDate *, element);
+                    // output ISO format is: YYYY-MM-DD
+                    if (dateElement->getISOFormattedDate(dateValue).good() && (dateValue.length() == 10))
+                    {
+                        OFOStringStream stream;
+                        stream << StandardSubdirectory << PATH_SEPARATOR
+                            << dateValue.substr(0, 4) << PATH_SEPARATOR
+                            << dateValue.substr(5 ,2) << PATH_SEPARATOR
+                            << dateValue.substr(8, 2) << OFStringStream_ends;
+                        OFSTRINGSTREAM_GETSTR(stream, tmpString)
+                        generatedDirName = tmpString;
+                        OFSTRINGSTREAM_FREESTR(tmpString);
+                    }
                 }
-            }
-            // alternatively, if that fails, use the current system date
-            if (generatedDirName.empty())
-            {
-                OFString currentDate;
-                status = DcmDate::getCurrentDate(currentDate);
-                if (status.good())
+                // alternatively, if that fails, use the current system date
+                if (generatedDirName.empty())
                 {
-                    OFOStringStream stream;
-                    stream << UndefinedSubdirectory << PATH_SEPARATOR
-                           << currentDate << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(stream, tmpString)
-                    generatedDirName = tmpString;
-                    OFSTRINGSTREAM_FREESTR(tmpString);
+                    OFString currentDate;
+                    status = DcmDate::getCurrentDate(currentDate);
+                    if (status.good())
+                    {
+                        OFOStringStream stream;
+                        stream << UndefinedSubdirectory << PATH_SEPARATOR
+                            << currentDate << OFStringStream_ends;
+                        OFSTRINGSTREAM_GETSTR(stream, tmpString)
+                        generatedDirName = tmpString;
+                        OFSTRINGSTREAM_FREESTR(tmpString);
+                    }
                 }
+            } else {
+                DCMNET_DEBUG("received dataset is not available in order to determine the SeriesDate "
+                    << DCM_SeriesDate << ", are you using the bit preserving mode?");
+                // no DICOM dataset given, so we cannot determine the series date
+                status = EC_CouldNotGenerateDirectoryName;
             }
             break;
-        }
     }
     if (status.good())
     {

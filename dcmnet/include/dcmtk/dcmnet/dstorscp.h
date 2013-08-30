@@ -87,6 +87,8 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
     {
         /// receive dataset in memory, perform some conversions and store it to file
         DGM_StoreToFile,
+        /// receive dataset directly to file, i.e. write data exactly as received
+        DGM_StoreBitPreserving,
         /// receive dataset in memory, but do not store it to file
         DSM_Ignore,
         /// default value
@@ -228,22 +230,35 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
     virtual Uint16 checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reqMessage,
                                                DcmFileFormat &fileformat);
 
+    /** generate a directory and file name for a DICOM dataset that will be received.
+     *  The naming scheme can be specified by the methods setDirectoryGenerationMode(),
+     *  setFilenameGenerationMode() and setFilenameExtension().
+     *  Please note that this method also creates the directory structure (if needed).
+     *  @param  reqMessage  C-STORE request message data structure used to generate the
+     *                      filename (depending on the specified options)
+     *  @param  filename    reference to variable that will store the resulting filename
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition generateSTORERequestFilename(const T_DIMSE_C_StoreRQ &reqMessage,
+                                                     OFString &filename);
+
     /** notification handler that is called for each DICOM object that has been received
      *  with a C-STORE request and stored as a DICOM file
      *  @param  filename        filename (with full path) of the object stored
      *  @param  sopClassUID     SOP Class UID of the object stored
      *  @param  sopInstanceUID  SOP Instance UID of the object stored
-     *  @param  dataset         dataset of the object stored.  Please note that this
-     *                          dataset will be deleted by the calling method, so do not
-     *                          store any references to it!
+     *  @param  dataset         pointer to dataset of the object stored (or NULL if the
+     *                          dataset has been stored directly to file).
+     *                          Please note that this dataset will be deleted by the calling
+     *                          method, so do not store any references to it!
      */
     virtual void notifyInstanceStored(const OFString &filename,
                                       const OFString &sopClassUID,
                                       const OFString &sopInstanceUID,
-                                      DcmDataset &dataset) const;
+                                      DcmDataset *dataset = NULL) const;
 
-    /** generate a directory and file name for a given DICOM dataset.  The naming scheme
-     *  that is used can be specified by the methods setDirectoryGenerationMode(),
+    /** generate a directory and file name for a DICOM dataset that has been received.
+     *  The naming scheme can be specified by the methods setDirectoryGenerationMode(),
      *  setFilenameGenerationMode() and setFilenameExtension().
      *  Please note that this method only generates the names but neither creates the
      *  directory structure nor the DICOM file.
@@ -259,15 +274,15 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
      *                          input and output parameter.  If an empty value is passed
      *                          to this method, the value of the data element SOP
      *                          Instance UID (0008,0018) is determined from the dataset.
-     *  @param  dataset         DICOM dataset for which the directory and file name
-     *                          is to be generated
+     *  @param  dataset         pointer to dataset for which the directory and file name
+     *                          is to be generated (optional)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition generateDirAndFilename(OFString &filename,
                                                OFString &directoryName,
                                                OFString &sopClassUID,
                                                OFString &sopInstanceUID,
-                                               DcmDataset &dataset);
+                                               DcmDataset *dataset = NULL);
 
     // --- public constants ---
 
