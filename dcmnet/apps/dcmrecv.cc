@@ -149,6 +149,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--filename-extension",  "-fe",  1, "[e]xtension: string (default: none)",
                                                           "append e to all generated filenames");
       cmd.addSubGroup("storage mode:");
+        cmd.addOption("--normal",              "-B",      "allow implicit format conversions (default)");
+        cmd.addOption("--bit-preserving",      "+B",      "write dataset exactly as received");
         cmd.addOption("--ignore",                         "ignore dataset, receive but do not store it");
 
     /* evaluate command line */
@@ -231,8 +233,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--filename-extension"))
             app.checkValue(cmd.getValue(opt_filenameExtension));
 
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--normal"))
+            opt_datasetStorage = DcmStorageSCP::DGM_StoreToFile;
+        if (cmd.findOption("--bit-preserving"))
+        {
+            app.checkConflict("--bit-preserving", "--series-date-subdir", opt_directoryGeneration == DcmStorageSCP::DGM_SeriesDate);
+            opt_datasetStorage = DcmStorageSCP::DGM_StoreBitPreserving;
+        }
         if (cmd.findOption("--ignore"))
             opt_datasetStorage = DcmStorageSCP::DSM_Ignore;
+        cmd.endOptionBlock();
 
         /* command line parameters */
         app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));

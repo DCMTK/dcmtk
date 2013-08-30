@@ -124,6 +124,12 @@ filename generation:
 
 storage mode:
 
+  -B    --normal
+          allow implicit format conversions (default)
+
+  +B    --bit-preserving
+          write dataset exactly as received
+
         --ignore
           ignore dataset, receive but do not store it
 \endverbatim
@@ -147,6 +153,14 @@ names and the extension ".dcm" for all DICOM files, use the following command:
 dcmrecv -v -xf storescp.cfg default <port> --series-date-subdir
                                            --short-unique-names
                                            --filename-extension .dcm
+\endverbatim
+
+In case of very large SOP instances or if the dataset should be written exactly
+as received (e.g. for debugging purposes), the "bit preserving mode" could be
+used:
+
+\verbatim
+dcmrecv -v -xf storescp.cfg default <port> --bit-preserving
 \endverbatim
 
 The received datasets are always stored as DICOM files with the same Transfer
@@ -233,6 +247,13 @@ With \<date\> consisting of "<year><month><day>" and \<time\> of
 "<hour><minute><second>.<micro-second>".  Please note that this scheme
 could result in naming conflicts if the resolution of the system time is not
 sufficiently high (i.e. does not support microseconds).
+
+\subsection limitations Limitations
+
+Please note that option \e --bit-preserving cannot be used together with
+option \e --series-date-subdir since the received dataset is stored directly
+to file and the value of the Series Date (0008,0021) is, therefore, not
+available before the file has been created.
 
 \section logging LOGGING
 
