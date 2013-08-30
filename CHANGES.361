@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.08.30 (riesmeier)
 
+- Updated copyright dates (where appropriate).
+  Affects: COPYRIGHT
+
 - Added new storage mode options:
   Added two new command line options specifying the storage mode to be used:
   --normal and --bit-preserving.

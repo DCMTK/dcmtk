@@ -5,7 +5,7 @@ Unless otherwise specified, the DCMTK software package has the following
 copyright:
 
 /*
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.
  *
  *  This software and supporting documentation were developed by
@@ -323,7 +323,7 @@ the following two copyright notices (for details see oflog/docs/LICENSE):
 // Author:  Tad E. Smith
 //
 //
-// Copyright 2001-2009 Tad E. Smith
+// Copyright 2001-2010 Tad E. Smith
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
