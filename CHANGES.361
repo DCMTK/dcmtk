@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.04 (riesmeier)
+
+- Added support for generating a Doxygen tag file:
+  Added preliminary support for generating a Doxygen tag file. This file can be
+  used to link the generated HTML documentation from external projects.
+  Closes DCMTK feature #455.
+  Affects: CMake/dcmtkPrepare.cmake
+           doxygen/CMakeLists.txt
+           doxygen/Makefile.in
+           doxygen/htmldocs.cfg
+
 **** Changes from 2013.08.30 (riesmeier)
 
 - Updated copyright dates (where appropriate).

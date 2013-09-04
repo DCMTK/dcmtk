@@ -13,16 +13,22 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 DCMTK_VERSION = $(PACKAGE_VERSION)$(PACKAGE_VERSION_SUFFIX)
+# There is no configuration option to enable the generation of a Doxygen tag
+# file, so the '#' has to be removed from the following line if needed.
+TAGFILE_NAME = # dcmtk.tag
 
 
 all: html man
 
 html:
-	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_DATA_DIR@/./" -e "s/@DOXYGEN_INPUT_DIR@/../" htmldocs.cfg > htmldocs.tmp
+	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_DATA_DIR@/./" \
+	    -e "s/@DOXYGEN_INPUT_DIR@/../" -e "s/@DOXYGEN_TAGFILE@/$(TAGFILE_NAME)/" \
+	    htmldocs.cfg > htmldocs.tmp
 	$(DOXYGEN) htmldocs.tmp
 
 man:
-	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_INPUT_DIR@/../" manpages.cfg > manpages.tmp
+	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_INPUT_DIR@/../" \
+	    manpages.cfg > manpages.tmp
 	$(DOXYGEN) manpages.tmp
 	rm -f manpages/man1/*.man.1
 	./patchman.sh
@@ -48,6 +54,11 @@ install-html:
 	for file in htmldocs/* ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir) ;\
 	done
+	if [ -n "$(TAGFILE_NAME)" ] ; then \
+		if [ -f "$(TAGFILE_NAME)" ] ; then \
+			$(INSTALL_DATA) $(TAGFILE_NAME) $(DESTDIR)$(docdir) ;\
+		fi \
+	fi
 
 
 clean:
