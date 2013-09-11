@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.11 (riesmeier)
+
+- Fixed wrong Doxygen reference to a method:
+  Fixed wrong reference in API documentation to the loadAllDataIntoMemory()
+  method (was loadAllDataElements() before).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+
 **** Changes from 2013.09.04 (riesmeier)
 
 - Added support for generating a Doxygen tag file:

@@ -237,7 +237,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
-     *    (with getXXX()) or loadAllDataElements() is called.
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
      *  @param readMode read file with or without meta header, i.e. as a fileformat or a
      *    dataset.  Use ERM_fileOnly in order to force the presence of a meta header.
      *  @return status, EC_Normal if successful, an error code otherwise

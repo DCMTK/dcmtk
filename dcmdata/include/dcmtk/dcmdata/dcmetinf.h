@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -184,7 +184,7 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
-     *    (with getXXX()) or loadAllDataElements() is called.
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition loadFile(const OFFilename &fileName,
