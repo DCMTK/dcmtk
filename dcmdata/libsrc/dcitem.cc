@@ -2289,11 +2289,12 @@ OFCondition newDicomElement(DcmElement *&newElement,
             {
                 // The attribute VR is UN with undefined length. Assume it is really
                 // a sequence so that we can catch the sequence delimitation item.
-                DcmVR sqVR(EVR_SQ); // on writing we will handle this element as SQ, not UN
-                DcmTag newTag(tag.getXTag(), sqVR);
-                if (dcmEnableCP246Support.get()) {
+                DcmTag newTag(tag);
+                newTag.setVR(DcmVR(EVR_SQ)); // on writing we will handle this element as SQ, not UN
+                if (dcmEnableCP246Support.get())
+                {
                     DCMDATA_WARN("Found element " << newTag << " with VR UN and undefined length, "
-                            "reading a sequence with transfer syntax LittleEndianExplicit (CP-246)");
+                        << "reading a sequence with transfer syntax LittleEndianImplicit (CP-246)");
                 } else {
                     DCMDATA_WARN("Found element " << newTag << " with VR UN and undefined length");
                 }

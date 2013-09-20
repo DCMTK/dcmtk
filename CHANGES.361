@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.09.20 (riesmeier)
 
+- Fixed issue with CP-246 files and private tags:
+  According to CP-246, elements with VR=UN and undefined length should be
+  interpreted as a sequence with implicit VR. This fix makes sure that the
+  code also works with private tags. It also corrects a wrong log message.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the original report.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 - Minor fixes, e.g. added Doxygen markup.
   Affects: dcmqrdb/docs/dcmqrdb.man
 
