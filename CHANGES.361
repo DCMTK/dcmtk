@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.20 (riesmeier)
+
+- Minor fixes, e.g. added Doxygen markup.
+  Affects: dcmqrdb/docs/dcmqrdb.man
+
 **** Changes from 2013.09.20 (onken)
 
 - Warning to re-create index.dat after 20130705:
