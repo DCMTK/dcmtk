@@ -26,6 +26,13 @@ The \b dcmqrscp application is intended to be used in DICOM demonstrations and
 as a compatibilitiy test tool.  In particular, \b dcmqrscp will delete images
 if its quota restrictions have been exceeded.
 
+Caution: Note that the format of dcmqrdb's binary index.dat file changed on
+20130705 due to a bug fix in the corresponding code.  An index.dat file created
+before that date will not work with dcmqrdb code compiled after that date but
+must be re-created.  Use dcmqridx for that task or re-send all images to the
+server after deleting all old files (and creating a new empty index.dat
+file).
+
 \section parameters PARAMETERS
 
 \verbatim

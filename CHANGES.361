@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.20 (onken)
+
+- Warning to re-create index.dat after 20130705:
+  The format of dcmqrdb's binary index.dat file changed on 20130705 due to a
+  bug fix in the corresponding code. An index.dat file created before that date
+  will not work with dcmqrdb code compiled after that date but must be
+  re-created.
+  Affects: dcmqrdb/docs/dcmqrdb.man
+
 **** Changes from 2013.09.11 (riesmeier)
 
 - Fixed wrong Doxygen reference to a method:
