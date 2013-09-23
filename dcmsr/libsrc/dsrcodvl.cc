@@ -163,7 +163,7 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
                                const OFBool printCodeValue,
                                const OFBool printInvalid) const
 {
-    if (isValid())
+    if (printInvalid || isValid())
     {
         OFString printString;
         stream << "(";
@@ -176,8 +176,7 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
         } else
             stream << ",";
         stream << ",\"" << DSRTypes::convertToPrintString(CodeMeaning, printString) << "\")";
-    }
-    else if (printInvalid)
+    } else
         stream << "invalid code";
 }
 

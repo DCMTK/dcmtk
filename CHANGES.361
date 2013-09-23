@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.23 (riesmeier)
+
+- Slightly changed output of print() method:
+  Invalid codes are now printed if the "printInvalid" parameter is true. By
+  default, the text "invalid code" is printed in such cases. Before this
+  modification, invalid codes were never printed and the behavior of the
+  "printInvalid" parameter was different.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/libsrc/dsrcodvl.cc
+
 **** Changes from 2013.09.20 (riesmeier)
 
 - Fixed issue with CP-246 files and private tags:

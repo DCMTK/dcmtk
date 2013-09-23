@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -137,7 +137,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *                          designator should be printed (default) or not.  If OFFalse the
      *                          output looks like this: (,,"Code Meaning")
      *  @param  printInvalid    flag indicating whether the text "invalid code" should be
-     *                          printed for invalid codes or not (default)
+     *                          printed for invalid codes (default) or the actual code triple
      */
     void print(STD_NAMESPACE ostream &stream,
                const OFBool printCodeValue = OFTrue,
