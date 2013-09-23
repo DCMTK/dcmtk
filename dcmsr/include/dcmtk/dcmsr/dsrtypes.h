@@ -362,6 +362,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// print SOP class UID of referenced objects (instead of the name)
     static const size_t PF_printSOPClassUID;
 
+    /// print code triple for invalid codes (instead of the text "invalid code")
+    static const size_t PF_printInvalidCodes;
+
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
     //@}

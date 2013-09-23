@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,7 +63,7 @@ OFCondition DSRCodeTreeNode::print(STD_NAMESPACE ostream &stream,
         DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
         stream << "=";
         DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
-        DSRCodedEntryValue::print(stream, OFTrue /*printCodeValue*/, OFTrue /*printInvalid*/);
+        DSRCodedEntryValue::print(stream, OFTrue /*printCodeValue*/, (flags & PF_printInvalidCodes) > 0 /*printInvalid*/);
     }
     return result;
 }

@@ -334,10 +334,11 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                             DCMSR_PRINT_HEADER_FIELD_START("                   ", "   ")
                         }
                         stream << dicomToReadableDateTime(dateTime, tmpString) << ", " << obsName;
-                        if (obsCode.isValid())
+                        if (obsCode.isValid() || (flags & PF_printInvalidCodes))
                         {
                             stream << " ";
-                            obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/);
+                            obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/,
+                                                  (flags & PF_printInvalidCodes) > 0 /*printInvalid*/);
                         }
                         stream << ", " << organization;
                         DCMSR_PRINT_HEADER_FIELD_END

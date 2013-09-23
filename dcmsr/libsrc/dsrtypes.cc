@@ -136,6 +136,7 @@ const size_t DSRTypes::PF_printTemplateIdentification    = 1 << 5;
 const size_t DSRTypes::PF_useANSIEscapeCodes             = 1 << 6;
 const size_t DSRTypes::PF_printLongSOPClassName          = 1 << 7;
 const size_t DSRTypes::PF_printSOPClassUID               = 1 << 8;
+const size_t DSRTypes::PF_printInvalidCodes              = 1 << 9;
 /* shortcuts */
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 

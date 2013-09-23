@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -127,7 +127,7 @@ OFBool DSRNumericMeasurementValue::isEmpty() const
 
 
 OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream &stream,
-                                              const size_t /*flags*/) const
+                                              const size_t flags) const
 {
     if (isEmpty())
     {
@@ -136,7 +136,7 @@ OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream &stream,
     } else {
         OFString printString;
         stream << "\"" << DSRTypes::convertToPrintString(NumericValue, printString) << "\" ";
-        MeasurementUnit.print(stream, OFTrue /*printCodeValue*/, OFTrue /*printInvalid*/);
+        MeasurementUnit.print(stream, OFTrue /*printCodeValue*/, (flags & DSRTypes::PF_printInvalidCodes) > 0 /*printInvalid*/);
     }
     return EC_Normal;
 }
