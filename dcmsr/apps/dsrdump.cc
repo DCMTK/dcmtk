@@ -186,6 +186,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-sopclass-long",  "+Ps",  "print long SOP class name of ref. objects");
         cmd.addOption("--print-sopclass-uid",   "+Psu", "print SOP class UID of referenced objects");
         cmd.addOption("--print-all-codes",      "+Pc",  "print all codes (incl. concept name codes)");
+        cmd.addOption("--print-invalid-codes",  "+Pi",  "print invalid codes (for debugging purposes)");
+        cmd.addOption("--no-invalid-codes",     "-Pi",  "print text \"invalid code\" instead (default)");
         cmd.addOption("--print-template-id",    "+Pt",  "print template identification information");
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
       cmd.addSubGroup("color:");
@@ -305,6 +307,14 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--print-all-codes"))
             opt_printFlags |= DSRTypes::PF_printAllCodes;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--print-invalid-codes"))
+            opt_printFlags |= DSRTypes::PF_printInvalidCodes;
+        if (cmd.findOption("--no-invalid-codes"))
+            opt_printFlags &= ~DSRTypes::PF_printInvalidCodes;
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--print-template-id"))
             opt_printFlags |= DSRTypes::PF_printTemplateIdentification;
 

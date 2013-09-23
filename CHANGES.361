@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.09.23 (riesmeier)
 
+- Added new option for printing invalid codes:
+  Added new command line option that allows for printing also invalid codes.
+  Affects: dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsrdump.man
+
 - Added new print flag for showing invalid codes:
   Added new print flag value that allows for showing also invalid codes. This
   is especially useful for debugging purposes.

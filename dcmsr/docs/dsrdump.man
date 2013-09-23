@@ -169,6 +169,12 @@ printing values:
   +Pc   --print-all-codes
           print all codes (including concept name codes)
 
+  +Pi   --print-invalid-codes
+          print invalid codes (for debugging purposes)
+
+  -Pi   --no-invalid-codes
+          print text "invalid code" instead (default)
+
   +Pt   --print-template-id
           print template identification information
 
