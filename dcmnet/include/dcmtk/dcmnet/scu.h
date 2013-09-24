@@ -411,7 +411,9 @@ public:
    *  this function is called and the incoming object stored to disk.
    *  @param presID              [in]  The presentation context the C-STORE Request was
    *                                   received on.
-   *  @param incomingObject      [in]  The dataset (the object) received
+   *  @param incomingObject      [in]  The dataset (the object) received. The function
+   *                                   takes ownership of the dataset, i.e. deletes it
+   *                                   after processing.
    *  @param continueCGETSession [out] Defines whether it is decided to wait for further
    *                                   C-GET Responses/C-STORE requests within this C-GET
    *                                   session.

@@ -1253,7 +1253,6 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
       {
         continueSession = OFFalse;
       }
-      delete rspDataset; // should be NULL if not existing
     }
 
     // Handle other DIMSE command (error since other command than GET/STORE not expected)
@@ -1368,11 +1367,12 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   {
     DCMNET_ERROR("Cannot store received object: either SOP Instance or SOP Class UID not present");
     cStoreReturnStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+    delete incomingObject;
     return EC_TagNotFound;
   }
 
   OFString filename = createStorageFilename(incomingObject);
-  DcmFileFormat dcmff(incomingObject);
+  DcmFileFormat dcmff(incomingObject, OFFalse /* do not copy but take ownership */);
   result = dcmff.saveFile(filename.c_str());
   if (result.good())
   {

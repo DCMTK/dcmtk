@@ -10,6 +10,12 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcfilefo.h
            dcmdata/libsrc/dcfilefo.cc
 
+- Do not copy DcmDataset during C-GET receive:
+  C-GET functionality does not copy the dataset any more in the standard
+  storage handler.
+  Affects:  dcmnet/include/dcmtk/dcmnet/scu.h
+            dcmnet/libsrc/scu.cc
+
 **** Changes from 2013.09.23 (riesmeier)
 
 - Added new option for printing invalid codes:
