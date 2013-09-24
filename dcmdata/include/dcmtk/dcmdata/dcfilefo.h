@@ -48,10 +48,16 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      */
     DcmFileFormat();
 
-    /** constructor
-     *  @param dataset to be copied (!) into the new DcmFileFormat object
+    /** constructor taking an existing dataset for initialization. Depending on the
+     *  parameters, a deep or shallow copy is performed.
+     *  @param dataset the dataset to be inserted into the new DcmFileFormat object. If NULL,
+     *                 an empty dataset is created and inserted instead.
+     *  @param deepCopy If OFTrue (default), a deep copy of the dataset is performed.
+     *                  Otherwise only the pointer is copied and the ownership
+     *                  of the dataset is taken over by the DcmFileFormat object.
      */
-    DcmFileFormat(DcmDataset *dataset);
+    DcmFileFormat(DcmDataset *dataset,
+                  OFBool deepCopy = OFTrue);
 
     /** copy constructor
      *  @param old element to be copied

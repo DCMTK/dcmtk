@@ -67,7 +67,8 @@ DcmFileFormat::DcmFileFormat()
 }
 
 
-DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
+DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
+                             OFBool deepCopy)
   : DcmSequenceOfItems(InternalUseTag),
     FileReadMode(ERM_autoDetect)
 {
@@ -75,13 +76,21 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
     DcmSequenceOfItems::itemList->insert(MetaInfo);
     MetaInfo->setParent(this);
 
-    DcmDataset *newDataset;
+    DcmDataset* insertion;
     if (dataset == NULL)
-        newDataset = new DcmDataset();
-    else
-        newDataset = new DcmDataset(*dataset);
-    DcmSequenceOfItems::itemList->insert(newDataset);
-    newDataset->setParent(this);
+    {
+        insertion = new DcmDataset();
+    }
+    else if (deepCopy)
+    {
+        insertion = new DcmDataset(*dataset);
+    }
+    else // shallow copy
+    {
+        insertion = dataset;
+    }
+    insertion->setParent(this);
+    DcmSequenceOfItems::itemList->insert(insertion);
 }
 
 

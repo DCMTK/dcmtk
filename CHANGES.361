@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.24 (onken)
+
+- Create DcmFileFormat from DcmDataset w/o copying:
+  Added possibility to create DcmFileFormat from existing dataset and let
+  DcmFileFormat take ownership for that dataset instead of always performing a
+  deep copy.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2013.09.23 (riesmeier)
 
 - Added new option for printing invalid codes:
