@@ -1,12 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.25 (riesmeier)
+
+- Added missing references to closed DCMTK features.
+  Affects: CHANGES.361
+
 **** Changes from 2013.09.24 (onken)
 
 - Create DcmFileFormat from DcmDataset w/o copying:
   Added possibility to create DcmFileFormat from existing dataset and let
   DcmFileFormat take ownership for that dataset instead of always performing a
-  deep copy.
+  deep copy. Closes DCMTK Feature #544.
   Affects: dcmdata/include/dcmtk/dcmdata/dcfilefo.h
            dcmdata/libsrc/dcfilefo.cc
 
@@ -25,7 +30,7 @@ Changes between releases are documented here.
 
 - Added new print flag for showing invalid codes:
   Added new print flag value that allows for showing also invalid codes. This
-  is especially useful for debugging purposes.
+  is especially useful for debugging purposes. Closes DCMTK Feature #548.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
            dcmsr/libsrc/dsrcodtn.cc
            dcmsr/libsrc/dsrdoc.cc
@@ -37,7 +42,7 @@ Changes between releases are documented here.
   Invalid codes are now printed if the "printInvalid" parameter is true. By
   default, the text "invalid code" is printed in such cases. Before this
   modification, invalid codes were never printed and the behavior of the
-  "printInvalid" parameter was different.
+  "printInvalid" parameter was different. Closes DCMTK Feature #548.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
            dcmsr/libsrc/dsrcodvl.cc
 
