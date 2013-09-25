@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.09.25 (riesmeier)
 
+- Fixed typos.
+  Affects: dcmdata/apps/img2dcm.cc
+
 - Added missing references to closed DCMTK features.
   Affects: CHANGES.361
 

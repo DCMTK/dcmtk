@@ -174,9 +174,9 @@ static OFCondition startConversion(OFCommandLine& cmd,
 
   // Main class for controlling conversion
   Image2Dcm i2d;
-  // Output plugin to use (ie. SOP class to write)
+  // Output plugin to use (i.e. SOP class to write)
   I2DOutputPlug *outPlug = NULL;
-  // Input plugin to use (ie. file format to read)
+  // Input plugin to use (i.e. file format to read)
   I2DImgSource *inputPlug = NULL;
   // Group length encoding mode for output DICOM file
   E_GrpLenEncoding grpLengthEnc = EGL_recalcGL;
@@ -192,7 +192,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   E_FileWriteMode writeMode = EWM_fileformat;
   // Override keys are applied at the very end of the conversion "pipeline"
   OFList<OFString> overrideKeys;
-  // The transfersytanx proposed to be written by output plugin
+  // The transfer syntax proposed to be written by output plugin
   E_TransferSyntax writeXfer;
 
   // Parse rest of command line options
@@ -258,7 +258,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   if (!outPlug) // default is the old Secondary Capture object
     outPlug = new I2DOutputPlugSC();
   if (outPlug == NULL) return EC_MemoryExhausted;
-  OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiatiated output plugin: " << outPlug->ident());
+  OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiated output plugin: " << outPlug->ident());
 
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-file"))    writeMode = EWM_fileformat;
