@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.26 (riesmeier)
+
+- Added support for <InlineBinary> XML element:
+  Added preliminary support for the <InlineBinary> XML element, which has been
+  introduced to the Native DICOM Model with Supplement 163 (Store Over the Web
+  by Representations State Transfer Services). Currently, data elements with a
+  VR of OB, OW and UN can be encoded as base64, i.e. OD and OF are still
+  missing. Partially closes DCMTK Feature #549.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.man
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2013.09.25 (riesmeier)
 
 - Fixed typos.

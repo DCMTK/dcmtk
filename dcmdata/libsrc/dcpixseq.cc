@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -152,11 +152,20 @@ OFCondition DcmPixelSequence::writeXML(STD_NAMESPACE ostream &out,
         /* for an empty value field, we do not need to do anything */
         if (getLengthField() > 0)
         {
-            /* generate a new UID but the binary data is not (yet) written. */
-            OFUUID uuid;
-            out << "<BulkData uuid=\"";
-            uuid.print(out, OFUUID::ER_RepresentationHex);
-            out << "\"/>" << OFendl;
+            /* encode binary data as Base64 */
+            if (flags & DCMTypes::XF_encodeBase64)
+            {
+                out << "<InlineBinary>";
+                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
+                OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+                out << "</InlineBinary>" << OFendl;
+            } else {
+                /* generate a new UID but the binary data is not (yet) written. */
+                OFUUID uuid;
+                out << "<BulkData uuid=\"";
+                uuid.print(out, OFUUID::ER_RepresentationHex);
+                out << "\"/>" << OFendl;
+            }
         }
         /* write XML end tag */
         writeXMLEndTag(out, flags);

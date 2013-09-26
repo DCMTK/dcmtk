@@ -158,8 +158,6 @@ DCMTK-specific format (not with --native-format):
           use specified DTD file (only with +Xe)
           (default: /usr/local/share/dcmtk/dcm2xml.dtd)
 
-DICOM data elements (not with --native-format):
-
   +Wn   --write-element-name
           write name of the DICOM data elements (default)
 
@@ -170,8 +168,15 @@ DICOM data elements (not with --native-format):
           write binary data of OB and OW elements
           (default: off, be careful with --load-all)
 
+encoding of binary data:
+
   +Eh   --encode-hex
-          encode binary data as hex numbers (default)
+          encode binary data as hex numbers
+          (default for DCMTK-specific format)
+
+  +Eu   --encode-uuid
+          encode binary data as a UUID reference
+          (default for Native DICOM Model)
 
   +Eb   --encode-base64
           encode binary data as Base64 (RFC 2045, MIME)
@@ -254,22 +259,29 @@ standard, part 19 ("Application Hosting").
 \subsection bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
-or OW, as well as OF values are not written to the XML output because of their
-size.  Instead, for each element, a new Universally Unique Identifier (UUID) is
-being generated and written as an attribute of a \<BulkData\> XML element.
-So far, there is no possibility to write an additional file to hold the binary
-data for each of the binary data chunks.  This is not required by the standard,
-however, it might be useful for implementing an Application Hosting interface;
-thus this feature may be available in future versions of \b dcm2xml.
+or OW, as well as OD, OF and UN values are by default not written to the XML
+output because of their size.  Instead, for each element, a new Universally
+Unique Identifier (UUID) is being generated and written as an attribute of a
+\<BulkData\> XML element.  So far, there is no possibility to write an
+additional file to hold the binary data for each of the binary data chunks.
+This is not required by the standard, however, it might be useful for
+implementing an Application Hosting interface; thus this feature may be
+available in future versions of \b dcm2xml.
+
+In addition, Supplement 163 (Store Over the Web by Representations State
+Transfer Services) introduces a new \<InlineBinary\> XML element that allows
+for encoding binary data as Base64.  Currently, the command line option
+\e --encode-base64 enables this encoding for the following VRs: OB, OW, UN.
+That means in particular, OD and OF are still missing.
 
 \subsection known_issues Known Issues
 
 In addition to what is written in the above section on "Bulk Data", there are
 further known issues with the current implementation of the Native DICOM Model
-format.  For example, large element values with a VR other than OB, OW or OF
-are currently never written als bulk data, although it might be useful, e.g. for
-very long text elements (especially UT) or very long numeric fields (of various
-VRs).
+format.  For example, large element values with a VR other than OB, OD, OF, OW
+or UN are currently never written as bulk data, although it might be useful,
+e.g. for very long text elements (especially UT) or very long numeric fields (of
+various VRs).
 
 \section notes NOTES
 
@@ -369,6 +381,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

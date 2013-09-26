@@ -284,11 +284,12 @@ int main(int argc, char *argv[])
         optStr += ")";
         cmd.addOption("--use-dtd-file",       "+Xf", 1, "[f]ilename: string",
                                                         optStr.c_str());
-      cmd.addSubGroup("DICOM data elements (not with --native-format):");
         cmd.addOption("--write-element-name", "+Wn",    "write name of the DICOM data elements (default)");
         cmd.addOption("--no-element-name",    "-Wn",    "do not write name of the DICOM data elements");
         cmd.addOption("--write-binary-data",  "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
-        cmd.addOption("--encode-hex",         "+Eh",    "encode binary data as hex numbers (default)");
+      cmd.addSubGroup("encoding of binary data:");
+        cmd.addOption("--encode-hex",         "+Eh",    "encode binary data as hex numbers\n(default for DCMTK-specific format)");
+        cmd.addOption("--encode-uuid",        "+Eu",    "encode binary data as a UUID reference\n(default for Native DICOM Model)");
         cmd.addOption("--encode-base64",      "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
 
     /* evaluate command line */
@@ -432,10 +433,15 @@ int main(int argc, char *argv[])
             app.checkDependence("--encode-hex", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
             opt_writeFlags &= ~DCMTypes::XF_encodeBase64;
         }
+        if (cmd.findOption("--encode-uuid"))
+        {
+            app.checkDependence("--encode-uuid", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
+            opt_writeFlags &= ~DCMTypes::XF_encodeBase64;
+        }
         if (cmd.findOption("--encode-base64"))
         {
-            app.checkConflict("--encode-base64", "--native-format", (opt_writeFlags & DCMTypes::XF_useNativeModel) > 0);
-            app.checkDependence("--encode-base64", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
+            if (!(opt_writeFlags & DCMTypes::XF_useNativeModel))
+                app.checkDependence("--encode-base64", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
             opt_writeFlags |= DCMTypes::XF_encodeBase64;
         }
         cmd.endOptionBlock();
