@@ -195,28 +195,31 @@ struct DCMTK_DCMDATA_EXPORT DCMTypes
      */
     //@{
 
-    /// add document type definition (DTD)
+    /// add document type definition (DTD). DCMTK-specific format only.
     static const size_t XF_addDocumentType;
 
-    /// write binary data to XML output file
+    /// write binary data to XML output file. DCMTK-specific format only.
     static const size_t XF_writeBinaryData;
 
-    /// encode binary data as Base64 (MIME)
+    /// encode binary data as Base64 (MIME).
+    /// - For the DCMTK-specific format, the default is to use hex numbers.
+    /// - For the Native DICOM Model, the default is to use a UUID reference.
     static const size_t XF_encodeBase64;
 
-    /// use XML namespace URI (value depends on output format)
+    /// use XML namespace URI. The value depends on the selected output format.
     static const size_t XF_useXMLNamespace;
 
-    /// embed content of document type definition
+    /// embed content of document type definition. DCMTK-specific format only.
     static const size_t XF_embedDocumentType;
 
-    /// don't write name of the DICOM data elements
+    /// don't write name of the DICOM data elements. DCMTK-specific format only.
     static const size_t XF_omitDataElementName;
 
-    /// convert non-ASCII characters to numeric values
+    /// convert non-ASCII characters to numeric values. DCMTK-specific format only.
     static const size_t XF_convertNonASCII;
 
-    /// write data in "DICOM Native Model" format as defined for Application Hosting (DICOM part 19)
+    /// write data in "Native DICOM Model" format as defined for Application Hosting (DICOM part 19).
+    /// The default is to use the DCMTK-specific format.
     static const size_t XF_useNativeModel;
 
     //@}

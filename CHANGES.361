@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.09.26 (riesmeier)
 
+- Clarified use of writeXML() flags:
+  Made more clear which writeXML() flags can be used for which output format.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+
 - Added support for <InlineBinary> XML element:
   Added preliminary support for the <InlineBinary> XML element, which has been
   introduced to the Native DICOM Model with Supplement 163 (Store Over the Web
