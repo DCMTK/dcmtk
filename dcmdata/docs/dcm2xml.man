@@ -268,7 +268,7 @@ This is not required by the standard, however, it might be useful for
 implementing an Application Hosting interface; thus this feature may be
 available in future versions of \b dcm2xml.
 
-In addition, Supplement 163 (Store Over the Web by Representations State
+In addition, Supplement 163 (Store Over the Web by Representational State
 Transfer Services) introduces a new \<InlineBinary\> XML element that allows
 for encoding binary data as Base64.  Currently, the command line option
 \e --encode-base64 enables this encoding for the following VRs: OB, OW, UN.

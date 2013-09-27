@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.27 (riesmeier)
+
+- Fixed typo copied from Supplement 163:
+  Fixed typo copied from the cover page of the Supplement 163 document.
+  Affects: dcmdata/docs/dcm2xml.man
+
 **** Changes from 2013.09.26 (riesmeier)
 
 - Clarified use of writeXML() flags:
@@ -10,7 +16,7 @@ Changes between releases are documented here.
 - Added support for <InlineBinary> XML element:
   Added preliminary support for the <InlineBinary> XML element, which has been
   introduced to the Native DICOM Model with Supplement 163 (Store Over the Web
-  by Representations State Transfer Services). Currently, data elements with a
+  by Representational State Transfer Services). Currently, data elements with a
   VR of OB, OW and UN can be encoded as base64, i.e. OD and OF are still
   missing. Partially closes DCMTK Feature #549.
   Affects: dcmdata/apps/dcm2xml.cc
