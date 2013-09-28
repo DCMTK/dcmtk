@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.28 (riesmeier)
+
+- Output a warning message if the VR is unknown:
+  Output a warning message if the VR of a Tag in the dump file is unknown. This
+  could happen if the VR is neither specified in the dump file nor it can be
+  determined from the data dictionary. In such cases, the VR "UN" us used.
+  Affects: dcmdata/apps/dump2dcm.cc
+
 **** Changes from 2013.09.27 (riesmeier)
 
 - Fixed typo copied from Supplement 163:
