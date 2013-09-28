@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.09.28 (riesmeier)
 
+- Output currently processed line of input file:
+  Output the number of the currently processed text line of the input file to
+  the trace logger. This might be useful for debugging purposes.
+  Affects: dcmdata/apps/dump2dcm.cc
+
 - Output a warning message if the VR is unknown:
   Output a warning message if the VR of a Tag in the dump file is unknown. This
   could happen if the VR is neither specified in the dump file nor it can be

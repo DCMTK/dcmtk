@@ -681,8 +681,8 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
 
 static OFBool
 readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
-         FILE *infile, const char *ifname, E_TransferSyntax &xfer,
-         const OFBool stopOnErrors, const unsigned long maxLineLength)
+             FILE *infile, const char *ifname, E_TransferSyntax &xfer,
+             const OFBool stopOnErrors, const unsigned long maxLineLength)
 {
     char *lineBuf = new char[maxLineLength];
     int lineNumber = 0;
@@ -704,6 +704,8 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
     while (getLine(lineBuf, OFstatic_cast(int, maxLineLength), infile, lineNumber + 1))
     {
         lineNumber++;
+
+        OFLOG_TRACE(dump2dcmLogger, "processing line " << lineNumber << " of the input file");
 
         // ignore empty lines and comment lines
         if (onlyWhitespace(lineBuf))
