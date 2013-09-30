@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -123,6 +123,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds16BitFiel
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SequDelimitationItemMissing;
 /// Missing Item Delimitation Item while reading an item
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemDelimitationItemMissing;
+/// Sequence delimiter occurs before explicit item length is completely read
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PrematureSequDelimitationItem;
 
 // status code constants
 

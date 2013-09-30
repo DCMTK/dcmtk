@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.31 (onken)
+
+- Support explicit item length denoting too many bytes:
+  Added flag that allows to ignore explicit item lengths that denote more
+  bytes than the contained elements actually contribute.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tparser.cc
+
 **** Changes from 2013.10.30 (riesmeier)
 
 - Fixed small issue reported by CMake 2.8.12:

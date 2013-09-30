@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -219,6 +219,35 @@ OFTEST(dcmdata_parser_wrongDelimitationItemForItem)
         if (dset.card() != 2)
             OFCHECK_FAIL("There should be exactly 2 elements on the main dataset level, but " << dset.card() << " found");
     } else {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+    }
+}
+
+OFTEST(dcmdata_parser_explicitItemLengthTooLarge)
+{
+    /* Produce some test data: Sequence with single item, containing a single element. */
+    const Uint8 data[] = {
+        IMPLICIT_TAG_AND_LENGTH(DCM_RequestAttributesSequence, UNDEFINED_LENGTH),
+        ITEM(12), // 4 for tag, 4 for length, and 4 bytes extra that should produce the error
+        IMPLICIT_TAG_AND_LENGTH(DCM_CodeValue, 0),
+        SEQUENCE_END
+    };
+    DcmDataset dset;
+    OFCondition cond;
+
+    // This should complain about the item being too large
+    dcmIgnoreParsingErrors.set(OFFalse);
+    cond = readDataset(dset, data, sizeof(data), EXS_LittleEndianImplicit);
+    if (cond != EC_PrematureSequDelimitationItem)
+    {
+        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item occured before Item was completely read', but got: " << cond.text());
+    }
+
+    // This should ignore the error during parsing
+    dcmIgnoreParsingErrors.set(OFTrue);
+    cond = readDataset(dset, data, sizeof(data), EXS_LittleEndianImplicit);
+    if (cond.bad())
+    {
         OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
     }
 }

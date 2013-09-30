@@ -1052,7 +1052,21 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
        )
     {
         const offile_off_t remainingItemBytes = valueLengthItem - (inStream.tell() - fStartPosition);
-        if (valueLength > remainingItemBytes)
+        /* is the explicit item length too small to cover the full value of the element value length to be read? */
+        if (remainingItemBytes < 0)
+        {
+            DCMDATA_WARN("DcmItem: Explicit item length (" << valueLengthItem << " bytes) too large for the elements contained in the item");
+            /* if the next tag is the sequence delimiter item, we can adapt to the situation */
+            if (newTag.getXTag() == DCM_SequenceDelimitationItem)
+            {
+                DCMDATA_WARN("DcmItem: Sequence delimitation occured before all bytes announced by explicit item length could be read");
+                l_error = EC_PrematureSequDelimitationItem;
+                /* rewind to start of sequence delimiter which is read in a regular way */
+                /* by DcmSequenceOfItems later (if error is ignored in DcmItem::read()) */
+                inStream.putback();
+            }
+        }
+        else if (valueLength > remainingItemBytes)
         {
             DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
                 << " larger (" << valueLength << ") than remaining bytes ("
@@ -1127,6 +1141,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
     else if (l_error != EC_ItemEnd)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
+
         // dump some information if required
         if (dcmIgnoreParsingErrors.get() || (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_SequEnd)))
         {
@@ -1217,6 +1232,16 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                        break;
                     inStream.skip(bytesToSkip);
                     errorFlag = EC_Normal;
+                }
+                /* if desired, accept premature sequence delimitation item and continue as if item has been completely read. */
+                /* The stream position has been rewound to the start position of the sequence end */
+                /* delimiter tag in order to let DcmSequenceOfItems handle the delimiter in the reading routine. */
+                else if ( (errorFlag == EC_PrematureSequDelimitationItem) && dcmIgnoreParsingErrors.get() )
+                {
+                     DCMDATA_WARN("DcmItem: Sequence delimitation occured before all bytes announced by explicit item length could be read"
+                         << ", trying to continue as if item was completely read");
+                    errorFlag = EC_ItemEnd;  // make sure that error code leads to normal return from item reading loop
+                    break; // we are completed with the item since sequence is closed
                 }
                 else /* continue with normal case: parse rest of element */
                 {
