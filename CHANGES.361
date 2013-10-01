@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.01 (riesmeier)
+
+- Removed superfluous footnote symbol "(*)".
+  Affects: dcmwlm/docs/wlmscpfs.man
+
 **** Changes from 2013.09.28 (riesmeier)
 
 - Output currently processed line of input file:

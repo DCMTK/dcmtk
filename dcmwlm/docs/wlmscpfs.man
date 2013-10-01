@@ -246,7 +246,7 @@ option \e --prefer-deflated is used, also the following transfer syntax
 is accepted.
 
 \verbatim
-DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99 (*)
+DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99
 \endverbatim
 
 The \b wlmscpfs application does not support extended negotiation.
@@ -435,6 +435,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
