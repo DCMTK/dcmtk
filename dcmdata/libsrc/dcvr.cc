@@ -123,7 +123,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_OverlayData, "OverlayData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
     { EVR_UNKNOWN2B, "??", sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL , 0, DCM_UndefinedLength },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
 };
 
@@ -148,7 +148,7 @@ public:
 DcmVRDict_checker::DcmVRDict_checker()
   : error_found(OFFalse)
 {
-    for (int i=0; i<DcmVRDict_DIM; i++) {
+    for (int i = 0; i < DcmVRDict_DIM; i++) {
         if (DcmVRDict[i].vr != i) {
             error_found = OFTrue;
             DCMDATA_FATAL("DcmVRDict: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName);
@@ -168,7 +168,7 @@ const DcmVRDict_checker DcmVRDict_startup_check();
 void
 DcmVR::setVR(DcmEVR evr)
 {
-    if ( (OFstatic_cast(int, evr) >= 0) && (OFstatic_cast(int, evr) < DcmVRDict_DIM)) {
+    if ((OFstatic_cast(int, evr) >= 0) && (OFstatic_cast(int, evr) < DcmVRDict_DIM)) {
         vr = evr;
     } else {
         vr = EVR_UNKNOWN;
@@ -179,11 +179,11 @@ void
 DcmVR::setVR(const char* vrName)
 {
     vr = EVR_UNKNOWN;   /* default */
-    if ( vrName != NULL)
+    if (vrName != NULL)
     {
         int found = OFFalse;
         int i = 0;
-        for (i=0;  (!found && (i < DcmVRDict_DIM)); i++)
+        for (i = 0;  (!found && (i < DcmVRDict_DIM)); i++)
         {
             if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0)
             {
@@ -201,9 +201,9 @@ DcmVR::setVR(const char* vrName)
          * All other VR strings are treated as "illegal" VRs.
          */
         register char c1 = *vrName;
-        register char c2 = (c1)?(*(vrName+1)):('\0');
-        if ((c1=='?')&&(c2=='?')) vr = EVR_UNKNOWN2B;
-        if (!found && ((c1<'A')||(c1>'Z')||(c2<'A')||(c2>'Z'))) vr = EVR_UNKNOWN2B;
+        register char c2 = (c1) ? (*(vrName + 1)) : ('\0');
+        if ((c1 == '?') && (c2 == '?')) vr = EVR_UNKNOWN2B;
+        if (!found && ((c1 < 'A') || (c1 > 'Z') || (c2 < 'A') || (c2 > 'Z'))) vr = EVR_UNKNOWN2B;
     }
 }
 
@@ -241,7 +241,8 @@ DcmVR::getValidEVR() const
     */
     if (evr == EVR_UN)
     {
-      if (!dcmEnableUnknownVRGeneration.get()) evr = EVR_OB; /* handle UN as if OB */
+        if (!dcmEnableUnknownVRGeneration.get())
+            evr = EVR_OB; /* handle UN as if OB */
     }
 
     /*
@@ -250,7 +251,8 @@ DcmVR::getValidEVR() const
     */
     if (evr == EVR_UT)
     {
-      if (!dcmEnableUnlimitedTextVRGeneration.get()) evr = EVR_OB; /* handle UT as if OB */
+        if (!dcmEnableUnlimitedTextVRGeneration.get())
+            evr = EVR_OB; /* handle UT as if OB */
     }
     return evr;
 }
@@ -304,18 +306,21 @@ DcmVR::usesExtendedLengthEncoding() const
     return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_EXTENDEDLENGTHENCODING) ? OFTrue : OFFalse;
 }
 
-Uint32 DcmVR::getMinValueLength() const
+Uint32
+DcmVR::getMinValueLength() const
 {
     return (DcmVRDict[vr].minValueLength);
 }
 
-Uint32 DcmVR::getMaxValueLength() const
+Uint32
+DcmVR::getMaxValueLength() const
 {
     return (DcmVRDict[vr].maxValueLength);
 }
 
-/* returns true if the vr is equivalent */
-OFBool DcmVR::isEquivalent(const DcmVR& avr) const
+/* returns true if the VR is equivalent */
+OFBool
+DcmVR::isEquivalent(const DcmVR& avr) const
 {
     DcmEVR evr = avr.getEVR();
     if (vr == evr) return OFTrue;
