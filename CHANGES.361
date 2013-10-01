@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.01 (riesmeier)
 
+- Added trace log message on VR replacement:
+  Output message to trace logger when a post-1993 value representation like UT
+  or UN is replaced by OB because support for these "new" VRs is disabled.
+  Affects: dcmdata/libsrc/dcvr.cc
+
 - Fixed various coding style issues.
   Affects: dcmdata/libsrc/dcvr.cc
 

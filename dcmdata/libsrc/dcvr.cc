@@ -242,7 +242,10 @@ DcmVR::getValidEVR() const
     if (evr == EVR_UN)
     {
         if (!dcmEnableUnknownVRGeneration.get())
+        {
+            DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UN\" replaced by \"OB\" since support is disabled");
             evr = EVR_OB; /* handle UN as if OB */
+        }
     }
 
     /*
@@ -252,7 +255,10 @@ DcmVR::getValidEVR() const
     if (evr == EVR_UT)
     {
         if (!dcmEnableUnlimitedTextVRGeneration.get())
+        {
+            DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UT\" replaced by \"OB\" since support is disabled");
             evr = EVR_OB; /* handle UT as if OB */
+        }
     }
     return evr;
 }
