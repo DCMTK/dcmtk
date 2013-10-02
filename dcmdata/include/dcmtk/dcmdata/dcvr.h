@@ -26,13 +26,25 @@
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 
-/** Global flag to enable/disable the generation of VR=UN
+/** Global flag to enable/disable the generation of VR=UN, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnknownVRGeneration; /* default OFTrue */
 
-/** Global flag to enable/disable the generation of VR=UT
+/** Global flag to enable/disable the generation of VR=UT, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=OF, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=OD, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the automatic re-conversion of defined
  *  length UN elements read in an explicit VR transfer syntax, if the real
@@ -83,16 +95,16 @@ enum DcmEVR
     /// long text
     EVR_LT,
 
-    /// other byte
+    /// other byte string
     EVR_OB,
 
-    /// other double
+    /// other double string
     EVR_OD,
 
-    /// other float
+    /// other float string
     EVR_OF,
 
-    /// other word
+    /// other word string
     EVR_OW,
 
     /// person name
@@ -140,7 +152,7 @@ enum DcmEVR
     /// na="not applicable", for data which has no VR
     EVR_na,
 
-    /// up="unsigned pointer", used internally for DICOMDIR suppor
+    /// up="unsigned pointer", used internally for DICOMDIR support
     EVR_up,
 
     /// used internally for items
@@ -173,7 +185,7 @@ enum DcmEVR
     /// unknown value representation
     EVR_UN,
 
-    /// used internally for uncompressed pixeld data
+    /// used internally for uncompressed pixel data
     EVR_PixelData,
 
     /// used internally for overlay data

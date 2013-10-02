@@ -34,6 +34,8 @@
  */
 OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
 
 /*
@@ -114,7 +116,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
-    /* Unknown Value Representation - Supplement 14 */
+    /* Unknown Value Representation */
     { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
     /* Pixel Data - only used in ident() */
@@ -216,50 +218,63 @@ DcmVR::getValidEVR() const
         evr = vr;
     } else {
         switch (vr) {
-        case EVR_up:
-            evr = EVR_UL;
+            case EVR_up:
+                evr = EVR_UL;
+                break;
+            case EVR_xs:
+                evr = EVR_US;
+                break;
+            case EVR_lt:
+                evr = EVR_OW;
+                break;
+            case EVR_ox:
+            case EVR_pixelSQ:
+                evr = EVR_OB;
+                break;
+            default:
+                evr = EVR_UN;   /* handle as Unknown VR */
+                break;
+        }
+    }
+
+    /*
+    ** If the generation of post-1993 VRs is not globally enabled then use OB instead.
+    ** We may not want to generate these "new" VRs if other software cannot handle it.
+    */
+    switch (evr) {
+        case EVR_UN:
+            if (!dcmEnableUnknownVRGeneration.get())
+            {
+                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UN\" replaced by \"OB\" since support is disabled");
+                evr = EVR_OB; /* handle UN as if OB */
+            }
             break;
-        case EVR_xs:
-            evr = EVR_US;
+        case EVR_UT:
+            if (!dcmEnableUnlimitedTextVRGeneration.get())
+            {
+                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UT\" replaced by \"OB\" since support is disabled");
+                evr = EVR_OB; /* handle UT as if OB */
+            }
             break;
-        case EVR_lt:
-            evr = EVR_OW;
+        case EVR_OF:
+            if (!dcmEnableOtherFloatStringVRGeneration.get())
+            {
+                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"OF\" replaced by \"OB\" since support is disabled");
+                evr = EVR_OB; /* handle OF as if OB */
+            }
             break;
-        case EVR_ox:
-        case EVR_pixelSQ:
-            evr = EVR_OB;
+        case EVR_OD:
+            if (!dcmEnableOtherDoubleStringVRGeneration.get())
+            {
+                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"OD\" replaced by \"OB\" since support is disabled");
+                evr = EVR_OB; /* handle OD as if OB */
+            }
             break;
         default:
-            evr = EVR_UN;   /* handle as Unknown VR (Supplement 14) */
+            /* in all other cases, do nothing */
             break;
-        }
     }
 
-    /*
-    ** If the generation of UN is not globally enabled then use OB instead.
-    ** We may not want to generate UN if other software cannot handle it.
-    */
-    if (evr == EVR_UN)
-    {
-        if (!dcmEnableUnknownVRGeneration.get())
-        {
-            DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UN\" replaced by \"OB\" since support is disabled");
-            evr = EVR_OB; /* handle UN as if OB */
-        }
-    }
-
-    /*
-    ** If the generation of UT is not globally enabled then use OB instead.
-    ** We may not want to generate UT if other software cannot handle it.
-    */
-    if (evr == EVR_UT)
-    {
-        if (!dcmEnableUnlimitedTextVRGeneration.get())
-        {
-            DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UT\" replaced by \"OB\" since support is disabled");
-            evr = EVR_OB; /* handle UT as if OB */
-        }
-    }
     return evr;
 }
 

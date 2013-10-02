@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.02 (riesmeier)
+
+- Added two new global flags for VR generation:
+  Added global flags for enabling/disabling the support of OF and OD as a valid
+  VR. When disabling the support for these post-1993 VRs, OB is used instead.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libsrc/dcvr.c
+
 **** Changes from 2013.10.01 (riesmeier)
 
 - Added trace log message on VR replacement:
