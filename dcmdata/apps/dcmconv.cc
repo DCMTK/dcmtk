@@ -463,11 +463,15 @@ int main(int argc, char *argv[])
       {
         dcmEnableUnknownVRGeneration.set(OFTrue);
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
+        dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
+        dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
         dcmEnableUnknownVRGeneration.set(OFFalse);
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+        dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+        dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 

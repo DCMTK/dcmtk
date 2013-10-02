@@ -938,8 +938,8 @@ int main(int argc, char *argv[])
 
     if ((opt_cfgID == 0)&&(! opt_terminate))
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "parameter receiver-id required unless --terminate is specified");
-        return 10;
+      OFLOG_FATAL(dcmpsrcvLogger, "parameter receiver-id required unless --terminate is specified");
+      return 10;
     }
 
     if (opt_cfgName)
@@ -951,14 +951,14 @@ int main(int argc, char *argv[])
         return 10;
       }
     } else {
-        OFLOG_FATAL(dcmpsrcvLogger, "missing configuration file name");
-        return 10;
+      OFLOG_FATAL(dcmpsrcvLogger, "missing configuration file name");
+      return 10;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmpsrcvLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(dcmpsrcvLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     DVConfiguration dvi(opt_cfgName);
@@ -1074,21 +1074,21 @@ int main(int argc, char *argv[])
 #else
     if (useTLS)
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "not compiled with OpenSSL, cannot use TLS");
-        return 10;
+      OFLOG_FATAL(dcmpsrcvLogger, "not compiled with OpenSSL, cannot use TLS");
+      return 10;
     }
 #endif
 
     if (networkAETitle==NULL)
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "no application entity title");
-        return 10;
+      OFLOG_FATAL(dcmpsrcvLogger, "no application entity title");
+      return 10;
     }
 
     if (networkPort==0)
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "no or invalid port number");
-        return 10;
+      OFLOG_FATAL(dcmpsrcvLogger, "no or invalid port number");
+      return 10;
     }
 
 #ifndef DISABLE_PORT_PERMISSION_CHECK
@@ -1096,8 +1096,8 @@ int main(int argc, char *argv[])
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "cannot listen on port " << networkPort << ", insufficient privileges");
-        return 10;
+      OFLOG_FATAL(dcmpsrcvLogger, "cannot listen on port " << networkPort << ", insufficient privileges");
+      return 10;
     }
 #endif
 #endif
@@ -1105,14 +1105,16 @@ int main(int argc, char *argv[])
     if (networkMaxPDU==0) networkMaxPDU = DEFAULT_MAXPDU;
     else if (networkMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU);
-        networkMaxPDU = DEFAULT_MAXPDU;
+      OFLOG_FATAL(dcmpsrcvLogger, "max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU);
+      networkMaxPDU = DEFAULT_MAXPDU;
     }
 
     if (networkDisableNewVRs)
     {
       dcmEnableUnknownVRGeneration.set(OFFalse);
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
     }
 
     OFOStringStream verboseParameters;

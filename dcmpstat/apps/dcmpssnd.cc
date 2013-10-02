@@ -564,6 +564,8 @@ int main(int argc, char *argv[])
     {
       dcmEnableUnknownVRGeneration.set(OFFalse);
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
     }
 
     OFOStringStream verboseParameters;

@@ -997,6 +997,8 @@ int main(int argc, char *argv[])
     {
         dcmEnableUnknownVRGeneration.set(OFFalse);
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+        dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+        dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
     }
 
     OFLOG_INFO(dcmprscuLogger, "Printer parameters for '" <<  opt_printer << "':");

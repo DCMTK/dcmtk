@@ -3,6 +3,36 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.02 (riesmeier)
 
+- Made use of new global flags for VR generation:
+  The new global flags for enabling/disabling the support of OF and OD as a
+  valid VR are now used for the "post-1993 VR" command line options.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmwlm/apps/wlcefs.cc
+
 - Added two new global flags for VR generation:
   Added global flags for enabling/disabling the support of OF and OD as a valid
   VR. When disabling the support for these post-1993 VRs, OB is used instead.

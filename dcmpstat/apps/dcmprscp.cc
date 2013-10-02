@@ -282,14 +282,16 @@ int main(int argc, char *argv[])
 
     if (targetPort == 0)
     {
-        OFLOG_FATAL(dcmprscpLogger, "no or invalid port number for print scp '" << opt_printer << "'");
-        return 10;
+      OFLOG_FATAL(dcmprscpLogger, "no or invalid port number for print scp '" << opt_printer << "'");
+      return 10;
     }
 
     if (targetDisableNewVRs)
     {
-        dcmEnableUnknownVRGeneration.set(OFFalse);
-        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+      dcmEnableUnknownVRGeneration.set(OFFalse);
+      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
     }
 
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */
@@ -434,8 +436,8 @@ int main(int argc, char *argv[])
 #else
     if (targetUseTLS)
     {
-        OFLOG_FATAL(dcmprscpLogger, "not compiled with OpenSSL, cannot use TLS");
-        return 10;
+      OFLOG_FATAL(dcmprscpLogger, "not compiled with OpenSSL, cannot use TLS");
+      return 10;
     }
 #endif
 
@@ -493,8 +495,8 @@ int main(int argc, char *argv[])
       connected = 0;
       while (!connected)
       {
-         connected = ASC_associationWaiting(net, timeout);
-         if (!connected) cleanChildren();
+        connected = ASC_associationWaiting(net, timeout);
+        if (!connected) cleanChildren();
       }
       switch (printSCP.negotiateAssociation(*net))
       {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -448,11 +448,15 @@ int main(int argc, char *argv[])
         {
             dcmEnableUnknownVRGeneration.set(OFTrue);
             dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
+            dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
+            dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
         }
         if (cmd.findOption("--disable-new-vr"))
         {
             dcmEnableUnknownVRGeneration.set(OFFalse);
             dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+            dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+            dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
         }
         cmd.endOptionBlock();
 
