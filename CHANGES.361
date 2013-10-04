@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.04 (riesmeier)
+
+- Updated our email address for bug reports.
+  Affects: CMake/dcmtkPrepare.cmake
+           README
+           config/configure.in
+           dcmwlm/docs/wwwapp.txt
+           doxygen/htmldocs.dox
+
 **** Changes from 2013.10.02 (riesmeier)
 
 - Made use of new global flags for VR generation:

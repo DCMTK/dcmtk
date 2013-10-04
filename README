@@ -43,7 +43,7 @@ There is also a Wiki system where additional information can be found:
 If you find bugs or other problems with this software, we would appreciate
 hearing about them.  Please send electronic mail to:
 
-        dicom-bugs/at/offis/dot/de
+        bugs/at/dcmtk/dot/org
 
 Please try to describe the problem in detail and if possible give a
 suggested fix.  For general questions on how to compile, install or use

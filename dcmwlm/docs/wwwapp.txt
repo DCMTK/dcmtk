@@ -1,11 +1,11 @@
 
        DICOM Basic Worklist Management - WWW Application
-                               
-                    Kuratorium OFFIS e.V.,
+
+                OFFIS e.V., R&D Division Health
             Escherweg 2, D-26121 Oldenburg, Germany
-                               
+
 Version: 1.2
-Last Modification: 02 December 2002
+Last Modification: 4 October 2013
 
 INTRODUCTION
 
@@ -121,7 +121,7 @@ install".
      $prefs{'data_path'} = '/home/www/data';
 
   5. CREATE STORAGE AREAS
-  
+
   For  each  storage area you want to support, perform  the
   following steps:
 
@@ -135,7 +135,7 @@ install".
 
   b) In the subdirectory, create a file named "lockfile", e.g.:
      touch /home/www/data/AETITLE_1/lockfile
-     
+
   Initially,  the  storage areas will have no passwords  (empty
   passwords).  You  may  use  your  Web  browser  to  set   new
   passwords, which must be at least 6 characters long.
@@ -146,7 +146,7 @@ install".
   which  simply means that the WWW application will  not  allow
   users  to change the password. To declare a storage  area  as
   public, simply create a file named "public" in the appropriate
-  directory, e.g. 
+  directory, e.g.
   touch /home/www/data/AETITLE_1/public
   If  you  want a public storage area to be password protected,
   simply  set the password from the Web browser before creating
@@ -168,8 +168,8 @@ current status of the system using a DICOM Worklist SCU.
 
 PROBLEMS
 
-Should   you  experience   problems,   please  contact  us  at 
-dicom-bugs@offis.de.
+Should   you  experience   problems,   please  contact  us  at
+bugs@dcmtk.org.
 Please include  the following  information with  your request:
 * Problem description
 * Version of Source Code used
