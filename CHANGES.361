@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.04 (riesmeier)
 
+- Updated to autoconf 2.69.
+  Affects: config/configure
+           config/confmod
+
 - Updated our email address for bug reports.
   Affects: CMake/dcmtkPrepare.cmake
            README
