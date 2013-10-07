@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.07 (riesmeier)
+
+- Added definition of DCMTK_PACKAGE_URL:
+  Added definition of DCMTK_PACKAGE_URL in order to be consistent with the
+  GNU autoconf (aka configure) system. However, this setting is currently
+  unused and, therefore, uncommented/disabled.
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2013.10.04 (riesmeier)
 
 - Updated to autoconf 2.69.
