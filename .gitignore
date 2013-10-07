@@ -22,6 +22,7 @@ config/autom4te.cache/
 
 # HTML documentation
 doxygen/htmldocs/
+doxygen/dcmtk.tag
 
 # Built binary files
 */tests/tests
