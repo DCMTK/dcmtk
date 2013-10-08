@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.08 (riesmeier)
+
+- Also updated autoconf support files:
+  After updating the configure script to autoconf 2.69, now also the support
+  files that are shipped with the autoconf package have been updated.
+  Affects: config/config.guess
+           config/config.sub
+           config/install-sh
+
 **** Changes from 2013.10.07 (riesmeier)
 
 - Added definition of DCMTK_PACKAGE_URL:
