@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.08 (riesmeier)
 
+- Updated automake script to version 1.14:
+  Updated script that creates filesystem directories to the most recent version
+  of automake, even though only minor changes were made.
+  Affects: config/mkinstalldirs
+
 - Also updated autoconf support files:
   After updating the configure script to autoconf 2.69, now also the support
   files that are shipped with the autoconf package have been updated.
