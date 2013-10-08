@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,7 +39,7 @@ public:
     enum E_Representation {
         /** The UUID is printed as one, long integer in base 10 (up to 39 digits long) */
         ER_RepresentationInteger,
-        /** The UUID is printed in hexadecimal notation with hypens (-) separating groups */
+        /** The UUID is printed in hexadecimal notation with hyphens (-) separating groups */
         ER_RepresentationHex,
         /** The UUID is printed as one, long integer with the prefix "2.25." */
         ER_RepresentationOID,

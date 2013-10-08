@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -310,18 +310,18 @@ static void divide_by(Uint32 n, Uint32 d, Uint32& res, Uint32& rem)
 
 void OFUUID::printInteger(STD_NAMESPACE ostream& stream) const
 {
-    // Oh shit, converting a 128bit integer to its base 10 representation. Not funny.
+    // Oh sh.., converting a 128-bit integer to its base 10 representation. Not funny.
 
-    // A 128 bit int has at most 39 characters in base 10
+    // A 128-bit int has at most 39 characters in base 10
     char buffer[40];
-    // Our current 128 bit state
+    // Our current 128-bit state
     Uint32 data[4];
     struct BinaryRepresentation representation;
     /* Current buffer index (we are generating the last character of the output
      * first, so we have write it into buffer in reverse order) */
     int idx = sizeof(buffer) - 1;
 
-    /* First we convert the 128bit integer into four 32bit integers */
+    // First we convert the 128-bit integer into four 32-bit integers
     getBinaryRepresentation(representation);
     for (int i = 0; i < 4; i++) {
         data[i]  = representation.value[0 + 4*i] << 24;
@@ -331,7 +331,7 @@ void OFUUID::printInteger(STD_NAMESPACE ostream& stream) const
     }
 
     if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 0) {
-        /* This should never happen, but we can still handle it! :-) */
+        // This should never happen, but we can still handle it! :-)
         stream << "0";
         return;
     }
