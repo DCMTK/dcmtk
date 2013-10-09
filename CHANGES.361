@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.09 (riesmeier)
+
+- Fixed various typos.
+  Affects: dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/include/dcmtk/dcmnet/scpthrd.h
+
 **** Changes from 2013.10.08 (riesmeier)
 
 - Fixed typos.

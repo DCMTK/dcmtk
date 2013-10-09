@@ -37,7 +37,7 @@ class DCMTK_DCMNET_EXPORT DcmThreadSCP : public DcmSCP
 
 public:
 
-  /** Constructor. Initializies internal member variables.
+  /** Constructor. Initializes internal member variables.
    */
   DcmThreadSCP();
 
