@@ -732,7 +732,7 @@ OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreI
   else
   {
     // if it is existent and has items, check every item for completeness
-    for( unsigned long i=0 ; i<((DcmSequenceOfItems*)codeSequence)->card() && codeSequenceComplete ; i++ )
+    for( unsigned long i=0 ; i<((DcmSequenceOfItems*)codeSequence)->card() && codeSequenceComplete;i++ )
     {
       if( AttributeIsAbsentOrEmpty( DCM_CodeValue, ((DcmSequenceOfItems*)codeSequence)->getItem(i) ) ||
           AttributeIsAbsentOrEmpty( DCM_CodingSchemeDesignator, ((DcmSequenceOfItems*)codeSequence)->getItem(i) ) )
@@ -837,48 +837,58 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           break;
 
         case 6:
-          // matching key attribute is DCM_PatientID (LO, 1)
-          matchFound = PatientsIDsMatch( mkaValuesDataset[6], mkaValuesSearchMask[6] );
+          // matching key attribute is DCM_ResponsiblePerson (PN, 1)
+          matchFound = CaseSensitiveSingleValueOrWildcardStripSpacesMatch( mkaValuesDataset[6], mkaValuesSearchMask[6] );
           break;
 
         case 7:
-          // matching key attribute is DCM_AccessionNumber (SH, 2)
-          matchFound = AccessionNumbersMatch( mkaValuesDataset[7], mkaValuesSearchMask[7] );
+          // matching key attribute is DCM_ResponsiblePersonRole (CS, 1)
+          matchFound = CaseSensitiveSingleValueOrWildcardMatch( mkaValuesDataset[7], mkaValuesSearchMask[7] );
           break;
 
         case 8:
-          // matching key attribute is DCM_RequestedProcedureID (SH, 1)
-          matchFound = RequestedProcedureIdsMatch( mkaValuesDataset[8], mkaValuesSearchMask[8] );
+          // matching key attribute is DCM_PatientID (LO, 1)
+          matchFound = PatientsIDsMatch( mkaValuesDataset[8], mkaValuesSearchMask[8] );
           break;
 
         case 9:
-          // matching key attribute is DCM_ReferringPhysicianName (PN, 2)
-          matchFound = ReferringPhysicianNamesMatch( mkaValuesDataset[9], mkaValuesSearchMask[9] );
+          // matching key attribute is DCM_AccessionNumber (SH, 2)
+          matchFound = AccessionNumbersMatch( mkaValuesDataset[9], mkaValuesSearchMask[9] );
           break;
 
         case 10:
-          // matching key attribute is DCM_PatientSex (CS, 2)
-          matchFound = PatientsSexesMatch( mkaValuesDataset[10], mkaValuesSearchMask[10] );
+          // matching key attribute is DCM_RequestedProcedureID (SH, 1)
+          matchFound = RequestedProcedureIdsMatch( mkaValuesDataset[10], mkaValuesSearchMask[10] );
           break;
 
         case 11:
-          // matching key attribute is DCM_RequestingPhysician (PN, 2)
-          matchFound = RequestingPhysiciansMatch( mkaValuesDataset[11], mkaValuesSearchMask[11] );
+          // matching key attribute is DCM_ReferringPhysicianName (PN, 2)
+          matchFound = ReferringPhysicianNamesMatch( mkaValuesDataset[11], mkaValuesSearchMask[11] );
           break;
 
         case 12:
-          // matching key attribute is DCM_AdmissionID (LO, 2)
-          matchFound = AdmissionIdsMatch( mkaValuesDataset[12], mkaValuesSearchMask[12] );
+          // matching key attribute is DCM_PatientSex (CS, 2)
+          matchFound = PatientsSexesMatch( mkaValuesDataset[12], mkaValuesSearchMask[12] );
           break;
 
         case 13:
-          // matching key attribute is DCM_RequestedProcedurePriority (SH, 2)
-          matchFound = RequestedProcedurePrioritiesMatch( mkaValuesDataset[13], mkaValuesSearchMask[13] );
+          // matching key attribute is DCM_RequestingPhysician (PN, 2)
+          matchFound = RequestingPhysiciansMatch( mkaValuesDataset[13], mkaValuesSearchMask[13] );
           break;
 
         case 14:
+          // matching key attribute is DCM_AdmissionID (LO, 2)
+          matchFound = AdmissionIdsMatch( mkaValuesDataset[14], mkaValuesSearchMask[14] );
+          break;
+
+        case 15:
+          // matching key attribute is DCM_RequestedProcedurePriority (SH, 2)
+          matchFound = RequestedProcedurePrioritiesMatch( mkaValuesDataset[15], mkaValuesSearchMask[15] );
+          break;
+
+        case 16:
           // matching key attribute is DCM_PatientBirthDate (DA, 2)
-          matchFound = PatientsBirthDatesMatch( mkaValuesDataset[14], mkaValuesSearchMask[14] );
+          matchFound = PatientsBirthDatesMatch( mkaValuesDataset[16], mkaValuesSearchMask[16] );
           break;
 
         default:
@@ -926,15 +936,17 @@ void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDa
       case 3 : tag = DCM_Modality                          ; break;
       case 4 : tag = DCM_ScheduledPerformingPhysicianName  ; break;
       case 5 : tag = DCM_PatientName                       ; break;
-      case 6 : tag = DCM_PatientID                         ; break;
-      case 7 : tag = DCM_AccessionNumber                   ; break;
-      case 8 : tag = DCM_RequestedProcedureID              ; break;
-      case 9 : tag = DCM_ReferringPhysicianName            ; break;
-      case 10 : tag = DCM_PatientSex                       ; break;
-      case 11 : tag = DCM_RequestingPhysician              ; break;
-      case 12 : tag = DCM_AdmissionID                      ; break;
-      case 13 : tag = DCM_RequestedProcedurePriority       ; break;
-      case 14 : tag = DCM_PatientBirthDate                 ; break;
+      case 6 : tag = DCM_ResponsiblePerson                 ; break;
+      case 7 : tag = DCM_ResponsiblePersonRole             ; break;
+      case 8 : tag = DCM_PatientID                         ; break;
+      case 9 : tag = DCM_AccessionNumber                   ; break;
+      case 10 : tag = DCM_RequestedProcedureID             ; break;
+      case 11 : tag = DCM_ReferringPhysicianName           ; break;
+      case 12 : tag = DCM_PatientSex                       ; break;
+      case 13 : tag = DCM_RequestingPhysician              ; break;
+      case 14 : tag = DCM_AdmissionID                      ; break;
+      case 15 : tag = DCM_RequestedProcedurePriority       ; break;
+      case 16 : tag = DCM_PatientBirthDate                 ; break;
       default:                                               break;
     }
 

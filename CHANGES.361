@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.10 (onken)
+
+- Worklist SCP support for Responsible Person/Role:
+  Added support for attributes Responsible Person and Responsible Person Role
+  as Matching and Return Keys to worklist server.
+  Affects: dcmwlm/docs/wlmscpfs.man
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2013.10.10 (riesmeier)
 
 - Updated comment on current character set issue.
