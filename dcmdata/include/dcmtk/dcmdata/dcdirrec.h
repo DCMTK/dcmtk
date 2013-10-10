@@ -214,6 +214,13 @@ public:
     /// returns current status flag
     inline OFCondition error() const { return errorFlag; }
 
+    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should be
+     *  checked by convertCharacterSet() or not, i.e.\ whether this element might be
+     *  present on this dataset-level.
+     *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
+     */
+    virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
+
     /** convert all element values that are contained in this record and that are
      *  affected by SpecificCharacterSet from the given source character set to the given
      *  destination character set. The defined terms for a particular character set can
@@ -297,7 +304,7 @@ public:
      *  in this list. If not all information for an attribute could be
      *  read from the stream, the function returns EC_StreamNotifyClient.
      *  @param inStream      The stream which contains the information.
-     *  @param xfer         The transfer syntax which was used to encode
+     *  @param xfer          The transfer syntax which was used to encode
      *                       the information in inStream.
      *  @param glenc         Encoding type for group length; specifies
      *                       what will be done with group length tags.
@@ -328,7 +335,7 @@ public:
      *  for a DICOM object with a given attribute within a given container,
      *  hierarchically, from a starting position identified through a cursor stack.
      *  @param xtag the DICOM attribute tag we are searching for
-     *  @param resultStack Depending on the search mode (see below), this parameter
+     *  @param resultStack depending on the search mode (see below), this parameter
      *     either serves as an input and output parameter, or as an output parameter
      *     only (the latter being the default). When used as an input parameter,
      *     the cursor stack defines the start position for the search within a
@@ -365,7 +372,7 @@ public:
      */
     virtual OFCondition assignToMRDR(DcmDirectoryRecord *mrdr );    // in
 
-    /** open a DICOM file and make this directory record into adirectory
+    /** open a DICOM file and make this directory record into a directory
      *  record for that DICOM file. The most relevant record keys
      *  (SOP Class UID, SOP instance UID, Transfer Syntax UID) are inserted
      *  into the directory record.
@@ -493,12 +500,6 @@ protected:
     OFCondition         masterInsertSub(DcmDirectoryRecord *dirRec,
                                         const unsigned long where = DCM_EndOfListIndex);
     OFCondition         purgeReferencedFile();
-
-    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should
-     *  be checked by convertCharacterSet() or not
-     *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
-     */
-    virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
 
 private:
 

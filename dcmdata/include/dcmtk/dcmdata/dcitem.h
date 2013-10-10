@@ -270,6 +270,13 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
+    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should be
+     *  checked by convertCharacterSet() or not, i.e.\ whether this element might be
+     *  present on this dataset-level. This method is reimplemented in derived classes.
+     *  @return always returns OFFalse, i.e.\ SpecificCharacterSet should not be checked
+     */
+    virtual OFBool checkForSpecificCharacterSet() const { return OFFalse; }
+
     /** convert all element values that are contained in this item and that are affected
      *  by SpecificCharacterSet from the given source character set to the given
      *  destination character set. The defined terms for a particular character set can
@@ -1255,13 +1262,6 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     void updateSpecificCharacterSet(OFCondition &status,
                                     const DcmSpecificCharacterSet &converter);
-
-    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should
-     *  be checked by convertCharacterSet() or not. This method is reimplemented in
-     *  derived classes.
-     *  @return always returns OFFalse, i.e.\ SpecificCharacterSet should not be checked
-     */
-    virtual OFBool checkForSpecificCharacterSet() const { return OFFalse; }
 
 
   private:

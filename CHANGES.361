@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Added method to determine SpecificCharacterSet:
+  Added method to class DcmCharString that allows for determining the value of
+  the SpecificCharacterSet element of the surrounding dataset/item.
+  Closes DCMTK Feature #555.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcchrstr.cc
+
 - Fixed various typos in comments.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcitem.cc

@@ -325,10 +325,9 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      */
     void removeAllButCurrentRepresentations();
 
-  protected:
-
-    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should
-     *  be checked by convertCharacterSet() or not
+    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should be
+     *  checked by convertCharacterSet() or not, i.e.\ whether this element might be
+     *  present on this dataset-level.
      *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
      */
     virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }

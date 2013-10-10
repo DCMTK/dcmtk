@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -135,6 +135,16 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      *  @param characters delimiter characters to be used for character set conversion
      */
     void setDelimiterChars(const OFString &characters) { delimiterChars = characters; }
+
+    /** get value of the SpecificCharacterSet element of the surrounding dataset/item
+     *  @param charset reference to variable that will store the result value. The
+     *    variable is not cleared in case of error!
+     *  @return status, EC_Normal if successful (i.e. the element could be found),
+     *    an error code otherwise. Typical error code are:
+     *    - EC_TagNotFound if the SpecificCharacterSet element could not be found
+     *    - EC_CorruptedData if this object is not contained in a dataset/item
+     */
+    OFCondition getSpecificCharacterSet(OFString &charset);
 
   private:
 

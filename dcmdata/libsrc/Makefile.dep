@@ -96,8 +96,10 @@ dcchrstr.o: dcchrstr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../include/dcmtk/dcmdata/dcdefine.h ../include/dcmtk/dcmdata/dcchrstr.h \
- ../include/dcmtk/dcmdata/dcbytstr.h ../include/dcmtk/dcmdata/dctypes.h \
+ ../include/dcmtk/dcmdata/dcdefine.h ../include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
  ../../oflog/include/dcmtk/oflog/config.h \
@@ -124,13 +126,14 @@ dcchrstr.o: dcchrstr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcobject.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../include/dcmtk/dcmdata/dcerror.h ../include/dcmtk/dcmdata/dcxfer.h \
  ../include/dcmtk/dcmdata/dcvr.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcstack.h
+ ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcstack.h \
+ ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcchrstr.h \
+ ../include/dcmtk/dcmdata/dcbytstr.h ../include/dcmtk/dcmdata/dcelem.h
 dccodec.o: dccodec.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dccodec.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \

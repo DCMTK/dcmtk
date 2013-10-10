@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
+#include "dcmtk/dcmdata/dcitem.h"     /* for class DcmItem */
+#include "dcmtk/dcmdata/dcdeftag.h"   /* for tag definitions */
 
 //
 // This implementation does not support 16 bit character sets. Since 8 bit
@@ -194,6 +196,36 @@ OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converte
                     << getTagName() << " " << getTag() << " because the value has not changed");
             }
         }
+    }
+    return status;
+}
+
+
+// ********************************
+
+
+OFCondition DcmCharString::getSpecificCharacterSet(OFString &charset)
+{
+    OFCondition status = EC_CorruptedData;
+    // start with current dataset-level
+    DcmItem *item = getParentItem();
+    while ((item != NULL) && status.bad())
+    {
+        // check whether the attribute SpecificCharacterSet should be present at all
+        if (item->checkForSpecificCharacterSet())
+        {
+            // by default, the string components are normalized (i.e. padding is removed)
+            status = item->findAndGetOFStringArray(DCM_SpecificCharacterSet, charset);
+        }
+        // if element could not be found, go one level up
+        if (status.bad())
+            item = item->getParentItem();
+    }
+    // output some debug information
+    if (status.good())
+    {
+        DCMDATA_TRACE("DcmCharString::getSpecificCharacterSet() element " << getTagName()
+            << " " << getTag() << " uses character set \"" << charset << "\"");
     }
     return status;
 }
