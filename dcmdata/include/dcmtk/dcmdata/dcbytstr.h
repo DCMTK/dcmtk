@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -325,13 +325,16 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      *  @param vr two-character identifier of the VR to be checked (lower case)
      *  @param vrID expected numeric identifier of the VR
      *  @param maxLen maximum number of characters allowed for a single value (0 = no check)
+     *  @param charset character set (according to the value of the SpecificCharacterSet
+     *    element) to be used for checking the string value. The default is ASCII (7-bit).
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm,
                                         const OFString &vr,
                                         const int vrID,
-                                        const size_t maxLen = 0);
+                                        const size_t maxLen = 0,
+                                        const OFString &charset = "");
 
 private:
 

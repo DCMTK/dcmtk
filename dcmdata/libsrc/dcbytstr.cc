@@ -729,7 +729,8 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
                                             const OFString &vm,
                                             const OFString &vr,
                                             const int vrID,
-                                            const size_t maxLen)
+                                            const size_t maxLen,
+                                            const OFString &charset)
 {
     OFCondition result = EC_Normal;
     const size_t valLen = value.length();
@@ -741,9 +742,13 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
             /* check value length (if a maximum is specified) */
             if ((maxLen > 0) && (value.length() > maxLen))
                 result = EC_MaximumLengthViolated;
-            /* check value representation */
-            else if (DcmElement::scanValue(value, vr) != vrID)
-                result = EC_ValueRepresentationViolated;
+            /* currently, the VR checker only supports ASCII and Latin-1 */
+            else if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
+            {
+                /* check value representation */
+                if (DcmElement::scanValue(value, vr) != vrID)
+                    result = EC_ValueRepresentationViolated;
+            }
         } else {
             size_t posStart = 0;
             unsigned long vmNum = 0;
@@ -759,7 +764,10 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
                 {
                     result = EC_MaximumLengthViolated;
                     break;
-                } else {
+                }
+                /* currently, the VR checker only supports ASCII and Latin-1 */
+                else if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
+                {
                     /* check value representation */
                     if (DcmElement::scanValue(value, vr, posStart, length) != vrID)
                     {

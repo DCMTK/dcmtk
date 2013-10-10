@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,12 @@ OFCondition DcmUnlimitedText::checkValue(const OFString & /*vm*/,
     /* get "raw value" without any modifications (if possible) */
     OFCondition l_error = getStringValue(strVal);
     if (l_error.good())
-        l_error = DcmUnlimitedText::checkStringValue(strVal);
+    {
+        OFString charset;
+        /* try to determine the value of the SpecificCharacterSet element */
+        getSpecificCharacterSet(charset);
+        l_error = DcmUnlimitedText::checkStringValue(strVal, charset);
+    }
     return l_error;
 }
 
@@ -121,7 +126,8 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 // ********************************
 
 
-OFCondition DcmUnlimitedText::checkStringValue(const OFString &value)
+OFCondition DcmUnlimitedText::checkStringValue(const OFString &value,
+                                               const OFString &charset)
 {
-    return DcmByteString::checkStringValue(value, "" /* vm */, "lt", 14 /*, maxLength: 4294967295 characters */);
+    return DcmByteString::checkStringValue(value, "" /* vm */, "lt", 14, 0 /* maxLen: no check */, charset);
 }

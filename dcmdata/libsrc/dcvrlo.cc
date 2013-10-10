@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,7 +83,12 @@ OFCondition DcmLongString::checkValue(const OFString &vm,
     /* get "raw value" without any modifications (if possible) */
     OFCondition l_error = getStringValue(strVal);
     if (l_error.good())
-        l_error = DcmLongString::checkStringValue(strVal, vm);
+    {
+        OFString charset;
+        /* try to determine the value of the SpecificCharacterSet element */
+        getSpecificCharacterSet(charset);
+        l_error = DcmLongString::checkStringValue(strVal, vm, charset);
+    }
     return l_error;
 }
 
@@ -106,7 +111,8 @@ OFCondition DcmLongString::getOFString(OFString &stringVal,
 
 
 OFCondition DcmLongString::checkStringValue(const OFString &value,
-                                            const OFString &vm)
+                                            const OFString &vm,
+                                            const OFString &charset)
 {
-    return DcmByteString::checkStringValue(value, vm, "lo", 12 /*, maxLen: 64 characters */);
+    return DcmByteString::checkStringValue(value, vm, "lo", 12, 0 /* maxLen: no check */, charset);
 }

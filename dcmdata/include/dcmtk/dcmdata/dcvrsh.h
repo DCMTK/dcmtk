@@ -112,10 +112,13 @@ class DCMTK_DCMDATA_EXPORT DcmShortString
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
+     *  @param charset character set (according to the value of the SpecificCharacterSet
+     *    element) to be used for checking the string value. The default is ASCII (7-bit).
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkStringValue(const OFString &value,
-                                        const OFString &vm = "1-n");
+                                        const OFString &vm = "1-n",
+                                        const OFString &charset = "");
 };
 
 

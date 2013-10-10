@@ -3,6 +3,27 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Added 'charset' parameter to checkStringValue():
+  Added optional character set parameter to static function checkStringValue()
+  in order to make sure that only ASCII and Latin-1 strings are checked for
+  their conformance with the VR definition (this is a current limitation of the
+  underlying VR checker). Also the checkValue() method now uses the value of
+  the SpecificCharacterSet element of the surrounding dataset/item.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcvrlo.h
+           dcmdata/include/dcmtk/dcmdata/dcvrlt.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsh.h
+           dcmdata/include/dcmtk/dcmdata/dcvrst.h
+           dcmdata/include/dcmtk/dcmdata/dcvrut.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrut.cc
+
 - Added method to determine SpecificCharacterSet:
   Added method to class DcmCharString that allows for determining the value of
   the SpecificCharacterSet element of the surrounding dataset/item.
