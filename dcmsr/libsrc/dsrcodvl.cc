@@ -257,12 +257,12 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
                                              const OFString &type)
 {
     /* read CodeSequence */
-    DcmSequenceOfItems dseq(tagKey);
-    OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", type, result);
+    DcmSequenceOfItems *dseq = NULL;
+    OFCondition result = dataset.findAndGetSequence(tagKey, dseq);
+    DSRTypes::checkElementValue(dseq, tagKey, "1", type, result);
     if (result.good())
     {
-        DcmItem *ditem = dseq.getItem(0);
+        DcmItem *ditem = dseq->getItem(0);
         if (ditem != NULL)
         {
             /* read Code */

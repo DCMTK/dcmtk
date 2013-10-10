@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Avoid unnecessary copies of sequence elements:
+  By referencing the sequence elements instead of copying, it is also possible
+  to access the SpecificCharacterSet element of the surrounding dataset/item,
+  which is needed for the VR checker. Partially closes DCMTK Bug #547.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+
 - Added new variant of checkElementValue():
   This new variant gets a pointer to a DICOM element (and not a reference).
   In addition, the getAndCheckXXXFromDataset() methods now make sure that no

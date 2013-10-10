@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,16 +91,16 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetID, StorageMediaFileSetID, "1", "3", "ReferencedSeriesSequence");
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetUID, StorageMediaFileSetUID, "1", "3", "ReferencedSeriesSequence");
     /* then, check whether sequence is present and non-empty */
-    DcmSequenceOfItems sequence(DCM_ReferencedSOPSequence);
-    OFCondition result = getElementFromDataset(dataset, sequence);
-    checkElementValue(sequence, "1-n", "1", result);
+    DcmSequenceOfItems *sequence = NULL;
+    OFCondition result = dataset.findAndGetSequence(DCM_ReferencedSOPSequence, sequence);
+    checkElementValue(sequence, DCM_ReferencedSOPSequence, "1-n", "1", result);
     if (result.good())
     {
-        const unsigned long count = sequence.card();
+        const unsigned long count = sequence->card();
         /* iterate over all sequence items */
         for (unsigned long i = 0; i < count; i++)
         {
-            DcmItem *item = sequence.getItem(i);
+            DcmItem *item = sequence->getItem(i);
             if (item != NULL)
             {
                 /* get the SOP class and SOP instance UID */
@@ -449,16 +449,16 @@ size_t DSRSOPInstanceReferenceList::StudyStruct::getNumberOfInstances() const
 OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset)
 {
     /* first, check whether sequence is present and non-empty */
-    DcmSequenceOfItems sequence(DCM_ReferencedSeriesSequence);
-    OFCondition result = getElementFromDataset(dataset, sequence);
-    checkElementValue(sequence, "1-n", "1", result);
+    DcmSequenceOfItems *sequence = NULL;
+    OFCondition result = dataset.findAndGetSequence(DCM_ReferencedSeriesSequence, sequence);
+    checkElementValue(sequence, DCM_ReferencedSeriesSequence, "1-n", "1", result);
     if (result.good())
     {
-        const unsigned long count = sequence.card();
+        const unsigned long count = sequence->card();
         /* iterate over all sequence items */
         for (unsigned long i = 0; i < count; i++)
         {
-            DcmItem *item = sequence.getItem(i);
+            DcmItem *item = sequence->getItem(i);
             if (item != NULL)
             {
                 /* get the series instance UID */
@@ -825,17 +825,17 @@ size_t DSRSOPInstanceReferenceList::getNumberOfInstances() const
 OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset)
 {
     /* first, check whether sequence is present and non-empty */
-    DcmSequenceOfItems sequence(SequenceTag);
-    OFCondition result = getElementFromDataset(dataset, sequence);
-    checkElementValue(sequence, "1-n", "1C", result);
+    DcmSequenceOfItems *sequence = NULL;
+    OFCondition result = dataset.findAndGetSequence(SequenceTag, sequence);
+    checkElementValue(sequence, SequenceTag, "1-n", "1C", result);
     if (result.good())
     {
         OFString sequenceName = DcmTag(SequenceTag).getTagName();
-        const unsigned long count = sequence.card();
+        const unsigned long count = sequence->card();
         /* iterate over all sequence items */
         for (unsigned long i = 0; i < count; i++)
         {
-            DcmItem *item = sequence.getItem(i);
+            DcmItem *item = sequence->getItem(i);
             if (item != NULL)
             {
                 /* get the study instance UID */

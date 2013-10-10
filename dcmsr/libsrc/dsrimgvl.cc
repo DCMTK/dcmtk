@@ -258,17 +258,17 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
     /* read IconImageSequence (optional) */
     if (result.good())
     {
-        DcmSequenceOfItems dseq(DCM_IconImageSequence);
+        DcmSequenceOfItems *dseq = NULL;
         /* use local status variable since the sequence is optional */
-        const OFCondition seqStatus = DSRTypes::getElementFromDataset(dataset, dseq);
-        DSRTypes::checkElementValue(dseq, "1", "3", seqStatus, "IMAGE content item");
+        const OFCondition seqStatus = dataset.findAndGetSequence(DCM_IconImageSequence, dseq);
+        DSRTypes::checkElementValue(dseq, DCM_IconImageSequence, "1", "3", seqStatus, "IMAGE content item");
         if (seqStatus.good())
         {
             /* check for empty sequence (allowed!) */
-            if (!dseq.isEmpty())
+            if (!dseq->isEmpty())
             {
                 /* read first item */
-                DcmItem *ditem = dseq.getItem(0);
+                DcmItem *ditem = dseq->getItem(0);
                 if ((ditem != NULL) && !ditem->isEmpty())
                 {
                     /* try to load/process the icon image */

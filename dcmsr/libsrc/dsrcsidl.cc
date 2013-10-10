@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2012, OFFIS e.V.
+ *  Copyright (C) 2003-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,18 +74,18 @@ size_t DSRCodingSchemeIdentificationList::getNumberOfItems() const
 OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
 {
     /* first, check whether sequence is present and non-empty */
-    DcmSequenceOfItems sequence(DCM_CodingSchemeIdentificationSequence);
-    OFCondition result = getElementFromDataset(dataset, sequence);
-    checkElementValue(sequence, "1-n", "3", result, "SOPCommonModule");
+    DcmSequenceOfItems *sequence = NULL;
+    OFCondition result = dataset.findAndGetSequence(DCM_CodingSchemeIdentificationSequence, sequence);
+    checkElementValue(sequence, DCM_CodingSchemeIdentificationSequence, "1-n", "3", result, "SOPCommonModule");
     if (result.good())
     {
         ItemStruct *item = NULL;
         OFString codingSchemeDesignator;
-        const unsigned long count = sequence.card();
+        const unsigned long count = sequence->card();
         /* iterate over all sequence items */
         for (unsigned long i = 0; i < count; i++)
         {
-            DcmItem *ditem = sequence.getItem(i);
+            DcmItem *ditem = sequence->getItem(i);
             if (ditem != NULL)
             {
                 /* get the coding scheme designator */

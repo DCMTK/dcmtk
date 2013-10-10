@@ -167,13 +167,13 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
                                                      const OFString &type)
 {
     /* read ReferencedSOPSequence */
-    DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
-    OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", type, result, "content item");
+    DcmSequenceOfItems *dseq = NULL;
+    OFCondition result = dataset.findAndGetSequence(DCM_ReferencedSOPSequence, dseq);
+    DSRTypes::checkElementValue(dseq, DCM_ReferencedSOPSequence, "1", type, result, "content item");
     if (result.good())
     {
         /* read first item */
-        DcmItem *ditem = dseq.getItem(0);
+        DcmItem *ditem = dseq->getItem(0);
         if (ditem != NULL)
             result = readItem(*ditem);
         else

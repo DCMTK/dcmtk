@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -90,18 +90,18 @@ OFCondition DSRImageFrameList::print(STD_NAMESPACE ostream &stream,
 OFCondition DSRImageFrameList::read(DcmItem &dataset)
 {
     /* get integer string from dataset */
-    DcmIntegerString delem(DCM_ReferencedFrameNumber);
-    OFCondition result = DSRTypes::getElementFromDataset(dataset, delem);
+    DcmElement *delem = NULL;
+    OFCondition result = dataset.findAndGetElement(DCM_ReferencedFrameNumber, delem);
     if (result.good())
     {
         /* clear internal list */
         clear();
         Sint32 value = 0;
-        const unsigned long count = delem.getVM();
+        const unsigned long count = delem->getVM();
         /* fill list with values from integer string */
         for (unsigned long i = 0; i < count; i++)
         {
-            if (delem.getSint32(value, i).good())
+            if (delem->getSint32(value, i).good())
                 addItem(value);
         }
     }

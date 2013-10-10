@@ -270,16 +270,16 @@ OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset) const
 OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset)
 {
     /* read MeasuredValueSequence */
-    DcmSequenceOfItems dseq(DCM_MeasuredValueSequence);
-    OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", "2", result, "NUM content item");
+    DcmSequenceOfItems *dseq = NULL;
+    OFCondition result = dataset.findAndGetSequence(DCM_MeasuredValueSequence, dseq);
+    DSRTypes::checkElementValue(dseq, DCM_MeasuredValueSequence, "1", "2", result, "NUM content item");
     if (result.good())
     {
         /* check for empty sequence (allowed!) */
-        if (!dseq.isEmpty())
+        if (!dseq->isEmpty())
         {
             /* read first item */
-            DcmItem *ditem = dseq.getItem(0);
+            DcmItem *ditem = dseq->getItem(0);
             if (ditem != NULL)
                 result = readItem(*ditem);
             else
