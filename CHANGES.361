@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.10 (riesmeier)
+
+- Fixed various typos in comments.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2013.10.09 (riesmeier)
 
 - Fixed various typos.

@@ -233,7 +233,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream &inStream)
     /* if both tag variables show an error, we encountered an invalid tag */
     if ((taglittle.error().bad()) && (tagbig.error().bad()))
     {
-        /* in case we encounterd an invalid tag, we want to assume that the used transfer syntax */
+        /* in case we encountered an invalid tag, we want to assume that the used transfer syntax */
         /* is a little endian transfer syntax. Now we have to figure out, if it is an implicit or */
         /* explicit transfer syntax. Hence, check if the last 2 bytes represent a valid VR. */
         if (foundVR(&tagAndVR[4]))
@@ -250,7 +250,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream &inStream)
     /* if at least one tag variable did not show an error, we encountered a valid tag */
     else
     {
-        /* in case we encounterd a valid tag, we want to figure out, if it is an implicit or */
+        /* in case we encountered a valid tag, we want to figure out, if it is an implicit or */
         /* explicit transfer syntax. Hence, check if the last 2 bytes represent a valid VR. */
         if (foundVR(&tagAndVR[4]))
         {
@@ -698,7 +698,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             paddingGL = OFstatic_cast(DcmUnsignedLong *, dO);
 
                         /* if actGLElem contains a valid pointer it was set in one of the last iterations */
-                        /* to the group lenght element of the last group. We need to write the current computed */
+                        /* to the group length element of the last group. We need to write the current computed */
                         /* group length value to this element. Exception: If group length exceeds maximum possible */
                         /* value, than remove group length element instead of setting it */
                         if (actGLElem != NULL)
@@ -812,7 +812,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                 /* padding element so that it has the correct size */
                 padding -= tmplen;
 
-                /* create an array of a corresponding size and set the arrayfields */
+                /* create an array of a corresponding size and set the array fields */
                 Uint8 * padBytes = new Uint8[padding];
                 memzero(padBytes, size_t(padding));
 
@@ -877,7 +877,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
 
     /* check if either 4 (for implicit transfer syntaxes) or 6 (for explicit transfer */
     /* syntaxes) bytes are available in (i.e. can be read from) inStream. if an error */
-    /* occured while performing this check return this error */
+    /* occurred while performing this check return this error */
     if (inStream.avail() < (xferSyn.isExplicitVR() ? 6u:4u))
         return EC_StreamNotifyClient;
 
@@ -1088,13 +1088,13 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
     OFBool readAsUN = OFFalse;
     OFCondition l_error = newDicomElement(subElem, newTag, newLength, &privateCreatorCache, readAsUN);
 
-    /* if no error occured and subElem does not equal NULL, go ahead */
+    /* if no error occurred and subElem does not equal NULL, go ahead */
     if (l_error.good() && subElem != NULL)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
 
         /* insert the new element into the (sorted) element list and */
-        /* assign information which was read from the instream to it */
+        /* assign information which was read from the inStream to it */
         subElem->transferInit();
         /* we need to read the content of the attribute, no matter if */
         /* inserting the attribute succeeds or fails */
@@ -1115,10 +1115,10 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
             delete subElem;
         }
     }
-    /* else if an error occured, try to recover from this error */
+    /* else if an error occurred, try to recover from this error */
     else if (l_error == EC_InvalidTag)
     {
-        /* This is the second Putback operation on the putback mark in */
+        /* This is the second putback operation on the putback mark in */
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
         inStream.putback();
@@ -1221,7 +1221,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                 else /* continue with normal case: parse rest of element */
                 {
                     /* if there was an error while we were reading from the stream, terminate the while-loop */
-                    /* (note that if the last element had been read from the instream in the last iteration, */
+                    /* (note that if the last element had been read from the inStream in the last iteration, */
                     /* another iteration will be started, and of course then readTagAndLength(...) above will */
                     /* return that it encountered the end of the stream. It is only then (and here) when the */
                     /* while loop will be terminated.) */
@@ -1383,7 +1383,7 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
             else
             {
                 // Every subelement of the item is written but it
-                // is not possible to write the delimination item into the buffer.
+                // is not possible to write the delimitation item into the buffer.
                 errorFlag = EC_StreamNotifyClient;
                 setTransferState(ERW_inWork);
             }
@@ -1556,7 +1556,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                             OFBool replaceOld,
                             OFBool checkInsertOrder)
 {
-    /* intialize error flag with ok */
+    /* initialize error flag with ok */
     errorFlag = EC_Normal;
     /* do something only if the pointer which was passed does not equal NULL */
     if (elem != NULL)
@@ -2337,7 +2337,7 @@ OFCondition nextUp(DcmStack &stack)
 
 
 /*
-** Simple tests for existance
+** Simple tests for existence
 */
 
 OFBool DcmItem::tagExists(const DcmTagKey &key,

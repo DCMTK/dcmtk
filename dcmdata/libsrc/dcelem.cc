@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -407,7 +407,7 @@ OFCondition DcmElement::getOFStringArray(OFString &value,
      */
     errorFlag = EC_Normal;
     const unsigned long count = getVM();
-    /* intialize result string */
+    /* initialize result string */
     value.clear();
     if (count > 0)
     {
@@ -532,7 +532,7 @@ OFCondition DcmElement::loadAllDataIntoMemory()
 
 OFCondition DcmElement::loadValue(DcmInputStream *inStream)
 {
-    /* initiailze return value */
+    /* initialize return value */
     errorFlag = EC_Normal;
     /* only if the length of this element does not equal 0, read information */
     if (getLengthField() != 0)
@@ -550,7 +550,6 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* accessible through fLoadValue. Hence, reassign readStream */
             readStream = fLoadValue->create();
 
-            /* set isStreamNew to OFTrue */
             isStreamNew = OFTrue;
 
             /* reset number of transferred bytes to zero */
@@ -564,7 +563,7 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* if we encountered the end of the stream, set the error flag correspondingly */
             if (errorFlag.good() && readStream->eos())
                 errorFlag = EC_EndOfStream;
-            /* if we did not encounter the end of the stream and no error occured so far, go ahead */
+            /* if we did not encounter the end of the stream and no error occurred so far, go ahead */
             else if (errorFlag.good())
             {
                 /* if the object which holds this element's value does not yet exist, create it */
@@ -578,7 +577,7 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                     /* determine how many bytes shall be read from the stream */
                     const Uint32 readLength = getLengthField() - getTransferredBytes();
 
-                    /* read a corresponding amount of bytes from the stream, store the information in fvalue */
+                    /* read a corresponding amount of bytes from the stream, store the information in fValue */
                     /* increase the counter that counts how many bytes were actually read */
                     incTransferredBytes(OFstatic_cast(Uint32, readStream->read(&fValue[getTransferredBytes()], readLength)));
 
@@ -618,7 +617,7 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
 Uint8 *DcmElement::newValueField()
 {
     Uint8 * value;
-    /* if this element's lenght is odd */
+    /* if this element's length is odd */
     Uint32 lengthField = getLengthField();
     if (lengthField & 1)
     {
@@ -653,7 +652,7 @@ Uint8 *DcmElement::newValueField()
             setLengthField(lengthField);           // make Length even
         }
     }
-    /* if this element's length is even, create a corresponding array of Lenght bytes */
+    /* if this element's length is even, create a corresponding array of Length bytes */
     else
 #ifdef HAVE_STD__NOTHROW
         // we want to use a non-throwing new here if available.
@@ -1039,7 +1038,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                     << " larger (" << getLengthField() << ") than remaining bytes in file");
             }
         }
-        /* if we did not encounter the end of the stream and no error occured so far, go ahead */
+        /* if we did not encounter the end of the stream and no error occurred so far, go ahead */
         else if (errorFlag.good())
         {
             /* if the transfer state is ERW_init, we need to prepare */
