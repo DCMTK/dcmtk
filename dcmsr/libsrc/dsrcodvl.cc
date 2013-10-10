@@ -592,15 +592,16 @@ OFCondition DSRCodedEntryValue::checkCode(const OFString &codeValue,
     /* first, make sure that the mandatory values are non-empty */
     if (codeValue.empty() || codingSchemeDesignator.empty() || codeMeaning.empty())
         result = SR_EC_InvalidValue;
-    /* then, check whether the passed values are valid */
+    /* then, check whether the passed values are valid with regards to VR and VM
+     * (unfortunately, we do not know the character set, so "UNKNOWN" is used.) */
     if (result.good())
-        result = DcmShortString::checkStringValue(codeValue, "1");
+        result = DcmShortString::checkStringValue(codeValue, "1", "UNKNOWN");
     if (result.good())
-        result = DcmShortString::checkStringValue(codingSchemeDesignator, "1");
+        result = DcmShortString::checkStringValue(codingSchemeDesignator, "1", "UNKNOWN");
     if (result.good())
-        result = DcmShortString::checkStringValue(codingSchemeVersion, "1");
+        result = DcmShortString::checkStringValue(codingSchemeVersion, "1", "UNKNOWN");
     if (result.good())
-        result = DcmLongString::checkStringValue(codeMeaning, "1");
+        result = DcmLongString::checkStringValue(codeMeaning, "1", "UNKNOWN");
     /* tbd: also need to check correctness of the code (requires code dictionary) */
     return result;
 }

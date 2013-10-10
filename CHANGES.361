@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Enhanced implementation of checkCode() method:
+  Made sure that the checkCode() method does not reject valid code values that
+  use extended characters that are not yet supported by dcmdata's VR checker
+  (i.e. all but ASCII and ISO Latin-1). Partially closes DCMTK Bug #547.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+
 - Avoid unnecessary copies of sequence elements:
   By referencing the sequence elements instead of copying, it is also possible
   to access the SpecificCharacterSet element of the surrounding dataset/item,
