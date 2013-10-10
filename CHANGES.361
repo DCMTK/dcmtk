@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Added new variant of checkElementValue():
+  This new variant gets a pointer to a DICOM element (and not a reference).
+  In addition, the getAndCheckXXXFromDataset() methods now make sure that no
+  element copy is created _before_ the element is checked. This is because
+  otherwise there would be no access to the SpecificCharacterSet element of
+  the surrounding dataset/item, which is needed for the VR checker.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
 - Added 'charset' parameter to checkStringValue():
   Added optional character set parameter to static function checkStringValue()
   in order to make sure that only ASCII and Latin-1 strings are checked for

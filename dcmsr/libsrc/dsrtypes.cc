@@ -978,54 +978,65 @@ OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
 }
 
 
-OFBool DSRTypes::checkElementValue(DcmElement &delem,
+OFBool DSRTypes::checkElementValue(DcmElement *delem,
+                                   const DcmTagKey &tagKey,
                                    const OFString &vm,
                                    const OFString &type,
                                    const OFCondition &searchCond,
                                    const char *moduleName)
 {
     OFBool result = OFTrue;
-    DcmTag tag = delem.getTag();
-    const OFString tagName = tag.getTagName();
+    const OFString tagName = DcmTag(tagKey).getTagName();
     const OFString module = (moduleName == NULL) ? "SR document" : moduleName;
     /* NB: type 1C and 2C cannot be checked, assuming to be optional */
     if (((type == "1") || (type == "2")) && searchCond.bad())
     {
-        DCMSR_WARN(tagName << " " << tag << " absent in " << module << " (type " << type << ")");
+        DCMSR_WARN(tagName << " " << tagKey << " absent in " << module << " (type " << type << ")");
         result = OFFalse;
     }
-    else if (delem.isEmpty(OFTrue /*normalize*/))
+    else if ((delem == NULL) || delem->isEmpty(OFTrue /*normalize*/))
     {
         /* however, type 1C should never be present with empty value */
         if (((type == "1") || (type == "1C")) && searchCond.good())
         {
-            DCMSR_WARN(tagName << " " << tag << " empty in " << module << " (type " << type << ")");
+            DCMSR_WARN(tagName << " " << tagKey << " empty in " << module << " (type " << type << ")");
             result = OFFalse;
         }
     } else {
-        const OFCondition checkResult = delem.checkValue(vm, OFTrue /*oldFormat*/);
+        const OFCondition checkResult = delem->checkValue(vm, OFTrue /*oldFormat*/);
         if (checkResult == EC_ValueRepresentationViolated)
         {
-            DCMSR_WARN(tagName << " " << tag << " violates VR definition in " << module);
+            DCMSR_WARN(tagName << " " << tagKey << " violates VR definition in " << module);
             result = OFFalse;
         }
         else if (checkResult == EC_ValueMultiplicityViolated)
         {
-            const OFString vmText = (delem.getVR() == EVR_SQ) ? " #items" : " VM";
-            DCMSR_WARN(tagName << " " << tag << vmText << " != " << vm << " in " << module);
+            const OFString vmText = (delem->getVR() == EVR_SQ) ? " #items" : " VM";
+            DCMSR_WARN(tagName << " " << tagKey << vmText << " != " << vm << " in " << module);
             result = OFFalse;
         }
         else if (checkResult == EC_MaximumLengthViolated)
         {
-            DCMSR_WARN(tagName << " " << tag << " violates maximum VR length in " << module);
+            DCMSR_WARN(tagName << " " << tagKey << " violates maximum VR length in " << module);
             result = OFFalse;
         }
         else if (checkResult.bad())
         {
-            DCMSR_DEBUG("INTERNAL ERROR while checking value of " << tagName << " " << tag << " in " << module);
+            DCMSR_DEBUG("INTERNAL ERROR while checking value of " << tagName << " " << tagKey << " in " << module);
         }
     }
     return result;
+}
+
+
+OFBool DSRTypes::checkElementValue(DcmElement &delem,
+                                   const OFString &vm,
+                                   const OFString &type,
+                                   const OFCondition &searchCond,
+                                   const char *moduleName)
+{
+    /* call the real function */
+    return checkElementValue(&delem, delem.getTag(), vm, type, searchCond, moduleName);
 }
 
 
@@ -1035,8 +1046,19 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
                                                     const OFString &type,
                                                     const char *moduleName)
 {
-    OFCondition result = getElementFromDataset(dataset, delem);
-    if (!checkElementValue(delem, vm, type, result, moduleName))
+    DcmStack stack;
+    const DcmTagKey tagKey = delem.getTag();
+    OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
+    if (result.good())
+    {
+        /* copy object from search stack */
+        result = delem.copyFrom(*stack.top());
+        /* we need a reference to the original element in order to determine the SpecificCharacterSet */
+        if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName))
+            result = SR_EC_InvalidValue;
+    }
+    /* the element could not be found in the dataset */
+    else if (!checkElementValue(delem, vm, type, result, moduleName))
         result = SR_EC_InvalidValue;
     return result;
 }
@@ -1054,13 +1076,10 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
     if (result.good())
     {
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
-        if (delem != NULL)
-        {
-            if (!checkElementValue(*delem, vm, type, result, moduleName))
-                result = SR_EC_InvalidValue;
-            delem->getOFString(stringValue, 0);
-        } else
-            result = EC_CorruptedData;
+        /* we need a reference to the original element in order to determine the SpecificCharacterSet */
+        if (!checkElementValue(delem, tagKey, vm, type, result, moduleName))
+            result = SR_EC_InvalidValue;
+        delem->getOFString(stringValue, 0);
     } else {
         if ((type == "1") || (type == "2"))
         {
