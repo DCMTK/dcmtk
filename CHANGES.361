@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Updated comment on current character set issue.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrtextn.cc
+
 - Use helper function findAndGetSequence():
   Use helper function DcmItem::findAndGetSequence() instead of the low-level
   search() method, which requires a DcmStack instance.

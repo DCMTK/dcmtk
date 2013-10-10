@@ -148,7 +148,6 @@ void DSRCodedEntryValue::clear()
 
 OFBool DSRCodedEntryValue::isValid() const
 {
-    /* tbd: there might be an issue with checking extended characters! */
     return checkCurrentValue().good();
 }
 
@@ -592,8 +591,8 @@ OFCondition DSRCodedEntryValue::checkCode(const OFString &codeValue,
     /* first, make sure that the mandatory values are non-empty */
     if (codeValue.empty() || codingSchemeDesignator.empty() || codeMeaning.empty())
         result = SR_EC_InvalidValue;
-    /* then, check whether the passed values are valid with regards to VR and VM
-     * (unfortunately, we do not know the character set, so "UNKNOWN" is used.) */
+    /* then, check whether the passed values are valid with regards to VR and VM.
+     * tbd: unfortunately, we do not know the character set, so "UNKNOWN" is used. */
     if (result.good())
         result = DcmShortString::checkStringValue(codeValue, "1", "UNKNOWN");
     if (result.good())

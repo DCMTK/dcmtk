@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,7 +59,6 @@ void DSRPNameTreeNode::clear()
 OFBool DSRPNameTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    /* tbd: there might be an issue with checking extended characters! */
     return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();;
 }
 
@@ -197,8 +196,9 @@ OFCondition DSRPNameTreeNode::checkValue(const OFString &personNameValue) const
 {
     /* first, make sure that the mandatory value is non-empty */
     OFCondition result = DSRStringValue::checkValue(personNameValue);
-    /* then, check whether the passed value is valid */
+    /* then, check whether the passed value is valid with regards to VR and VM.
+     * tbd: unfortunately, we do not know the character set, so "UNKNOWN" is used. */
     if (result.good())
-        result = DcmPersonName::checkStringValue(personNameValue, "1");
+        result = DcmPersonName::checkStringValue(personNameValue, "1", "UNKNOWN");
     return result;
 }
