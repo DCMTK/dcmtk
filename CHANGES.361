@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Use helper function findAndGetSequence():
+  Use helper function DcmItem::findAndGetSequence() instead of the low-level
+  search() method, which requires a DcmStack instance.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
 - Report warning on unsupported character sets:
   Report a warning message on SpecificCharacterSet values that are not (yet)
   supported by the VR checker in the dcmdata module (i.e. all but ASCII and
