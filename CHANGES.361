@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.10 (riesmeier)
 
+- Report warning on unsupported character sets:
+  Report a warning message on SpecificCharacterSet values that are not (yet)
+  supported by the VR checker in the dcmdata module (i.e. all but ASCII and
+  ISO Latin-1).
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
 - Enhanced implementation of checkCode() method:
   Made sure that the checkCode() method does not reject valid code values that
   use extended characters that are not yet supported by dcmdata's VR checker

@@ -422,6 +422,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
     /* dataset is OK */
     if (result.good())
     {
+        OFString tmpString;
         OFCondition searchCond = EC_Normal;
         OFCondition obsSearchCond = EC_Normal;
 
@@ -433,6 +434,10 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", "SOPCommonModule");
         if (SpecificCharacterSet.getVM() > 1)
             DCMSR_WARN("Multiple values for Specific Character Set are not supported");
+        getStringValueFromElement(SpecificCharacterSet, tmpString);
+        /* currently, the VR checker in 'dcmdata' only supports ASCII and Latin-1 */
+        if (!tmpString.empty() && (tmpString != "ISO_IR 6") && (tmpString != "ISO_IR 100"))
+            DCMSR_WARN("The VR checker does not support this Specific Character Set: " << tmpString);
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
@@ -525,7 +530,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         removeAttributeFromSequence(PerformedProcedureCode, DCM_DigitalSignaturesSequence);
 
         /* update internal enumerated values and perform additional checks */
-        OFString tmpString;
+
         /* Key Object Selection Documents do not contain the SR Document General Module */
         if (documentType != DT_KeyObjectSelectionDocument)
         {
