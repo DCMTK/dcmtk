@@ -30,11 +30,11 @@
 // character sets are supported by the class DcmByteString the class
 // DcmCharString is derived from DcmByteString without any extensions.
 //
-// If the extension for 16 bit character sets will be implemented this class
+// If the extension for 16 bit character sets will be implemented, this class
 // must be derived directly from DcmElement. This class is designed to support
 // the value representations (LO, LT, PN, SH, ST, UT). They are a problem because
 // their value width (1, 2, .. Bytes) is specified by the element
-// SpecificCharacterSet (0008, 0005) and an implementation must support
+// SpecificCharacterSet (0008,0005) and an implementation must support
 // different value widths that cannot be derived from the value representation.
 //
 
@@ -140,7 +140,7 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      *  @param charset reference to variable that will store the result value. The
      *    variable is not cleared in case of error!
      *  @return status, EC_Normal if successful (i.e. the element could be found),
-     *    an error code otherwise. Typical error code are:
+     *    an error code otherwise. Typical error codes are:
      *    - EC_TagNotFound if the SpecificCharacterSet element could not be found
      *    - EC_CorruptedData if this object is not contained in a dataset/item
      */

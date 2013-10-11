@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.11 (riesmeier)
 
+- Minor fixes in comments.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+
 - Fixed memory leak in log4cplus code:
   Fixed small memory leak (4 bytes) in log4cplus code, which was reported by
   valgrind as "still reachable" after program exit.
