@@ -53,7 +53,7 @@ DCMTK_LOG4CPLUS_EXPORT tostream & tcerr = CERR;
 #endif // UNICODE
 
 
-namespace 
+namespace
 {
 
 
@@ -88,7 +88,7 @@ struct DefaultContext
 
 
 enum DCState
-{ 
+{
     DC_UNINITIALIZED,
     DC_INITIALIZED,
     DC_DESTROYED
@@ -98,7 +98,7 @@ enum DCState
 static DCState default_context_state;
 static DefaultContext * default_context;
 
-   
+
 struct destroy_default_context
 {
     ~destroy_default_context ()
@@ -125,7 +125,7 @@ alloc_dc ()
         throw STD_NAMESPACE logic_error ("alloc_dc() called in DC_INITIALIZED state.");
 
     default_context = new DefaultContext;
-    
+
     if (default_context_state == DC_DESTROYED)
         default_context->loglog.error (
             DCMTK_LOG4CPLUS_TEXT ("Re-initializing default context after it has")
@@ -180,7 +180,7 @@ getTTCCLayoutTimeBase ()
 
 
 LogLevelManager &
-getLogLevelManager () 
+getLogLevelManager ()
 {
     return get_dc ()->log_level_manager;
 }
@@ -193,7 +193,7 @@ getDefaultHierarchy ()
 }
 
 
-NDC & 
+NDC &
 getNDC ()
 {
     return get_dc ()->ndc;
@@ -440,8 +440,8 @@ DllMain (DCMTK_LOG4CPLUS_DLLMAIN_HINSTANCE /*hinstDLL*/, DWORD fdwReason,
     LPVOID /*lpReserved*/)
 {
     // Perform actions based on the reason for calling.
-    switch( fdwReason ) 
-    { 
+    switch( fdwReason )
+    {
     case DLL_PROCESS_ATTACH:
     {
         log4cplus::initializeLog4cplus();
@@ -485,7 +485,7 @@ DllMain (DCMTK_LOG4CPLUS_DLLMAIN_HINSTANCE /*hinstDLL*/, DWORD fdwReason,
 
     return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
- 
+
 #else
 
 namespace {
@@ -501,6 +501,9 @@ namespace {
         {
             // Last thread cleanup.
             dcmtk::log4cplus::threadCleanup ();
+
+            dcmtk::log4cplus::thread::impl::tls_cleanup (
+                dcmtk::log4cplus::internal::tls_storage_key);
         }
     } static initializer;
 }

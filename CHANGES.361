@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.11 (riesmeier)
+
+- Fixed memory leak in log4cplus code:
+  Fixed small memory leak (4 bytes) in log4cplus code, which was reported by
+  valgrind as "still reachable" after program exit.
+  Also see http://sourceforge.net/p/log4cplus/bugs/278/
+  Affects: oflog/libsrc/globinit.cc
+
 **** Changes from 2013.10.11 (onken)
 
 - Replaced tabs with spaces.
