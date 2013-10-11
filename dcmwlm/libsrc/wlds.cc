@@ -1208,8 +1208,8 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
   {
     if( elementKey == DCM_ScheduledProcedureStepSequence ||
         elementKey == DCM_PatientName                    ||
-		    elementKey == DCM_ResponsiblePerson              ||
-		    elementKey == DCM_ResponsiblePersonRole          ||
+        elementKey == DCM_ResponsiblePerson              ||
+        elementKey == DCM_ResponsiblePersonRole          ||
         elementKey == DCM_PatientID                      ||
         elementKey == DCM_AccessionNumber                ||
         elementKey == DCM_RequestedProcedureID           ||
@@ -1397,8 +1397,8 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_CurrentPatientLocation                            ||
         elementKey == DCM_ReferencedPatientSequence                         ||
         elementKey == DCM_PatientName                                       ||
-		    elementKey == DCM_ResponsiblePerson                                 ||
-		    elementKey == DCM_ResponsiblePersonRole                             ||
+        elementKey == DCM_ResponsiblePerson                                 ||
+        elementKey == DCM_ResponsiblePersonRole                             ||
         elementKey == DCM_PatientID                                         ||
         elementKey == DCM_IssuerOfPatientID                                 ||
         elementKey == DCM_PatientBirthDate                                  ||

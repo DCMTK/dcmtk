@@ -1,7 +1,12 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2013.10.10 (onken)
+**** Changes from 2013.10.11 (onken)
+
+- Replaced tabs with spaces.
+  Affects: dcmwlm/libsrc/wlds.cc
+
+**** Changes from 2013.10.11 (onken)
 
 - Worklist SCP support for Responsible Person/Role:
   Added support for attributes Responsible Person and Responsible Person Role
