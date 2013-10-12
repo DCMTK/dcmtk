@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.12 (riesmeier)
 
+- Removed outdated custom CSS file.
+  Affects: doxygen/htmldocs.cfg
+  Removed: doxygen/htmldocs.css
+
 - Updated Doxygen configuration files:
   Updated Doxygen configuration files to a more recent version (1.8.1.2).
   Affects: doxygen/htmldocs.cfg
