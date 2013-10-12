@@ -344,7 +344,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *    contain wide characters if support enabled. Since there are various constructors
      *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
      *    directly to this parameter.
-     *  @return OFTrue if deletion was successul, OFFalse otherwise
+     *  @return OFTrue if deletion was successful, OFFalse otherwise
      */
     static OFBool deleteFile(const OFFilename &filename);
 
@@ -506,7 +506,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** decode "Base64" encoded string.
      *  Any character that does not belong to the Base64 alphabet (0..9, A..Z, a..z, + and /) is
      *  ignored when decoding the input string.  This is especially true for line breaks which are
-     *  usually contained in MIME (RFC 2045) encoded streams (see above).  The first occurence of
+     *  usually contained in MIME (RFC 2045) encoded streams (see above).  The first occurrence of
      *  a '=' character is taken as evidence that the end of the data has been reached.
      *  NB: The memory buffer in which the binary output is stored is allocated inside this function
      *      and has to to be freed (using "delete[]") by the caller!  Do not pass a pointer to an
@@ -530,12 +530,11 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  a successful conversion could be performed.
      *  The precision of this implementation is limited to approx. 9
      *  decimal digits.
-     *  The use of this implementation can be disabled by defining
-     *  the macro DISABLE_OFSTD_ATOF at compile time; in this case,
-     *  the locale dependent Posix implementation of sscanf is used and
-     *  the application is responsible for making sure that the Posix locale
-     *  is activated at all times.
-     *
+     *  @note The use of this implementation can be disabled by defining
+     *    the macro DISABLE_OFSTD_ATOF at compile time; in this case,
+     *    the locale dependent Posix implementation of sscanf is used and
+     *    the application is responsible for making sure that the Posix locale
+     *    is activated at all times.
      *  @param s
      *    A decimal ASCII floating-point number, optionally preceded by white
      *    space. Must have form "-I.FE-X", where I is the integer part of the
@@ -560,17 +559,14 @@ class DCMTK_OFSTD_EXPORT OFStandard
       *  This function works similar to sprintf(), except that this
       *  implementation is not affected by a locale setting.
       *  The radix character is always '.'.
-      *
       *  This implementation guarantees that the given string size
       *  is always respected by using strlcpy to copy the formatted
       *  string into the target buffer.
-      *
-      *  The use of this implementation can be disabled by defining
-      *  the macro DISABLE_OFSTD_FTOA at compile time; in this case,
-      *  the locale dependent Posix implementation of sprintf is used and
-      *  the application is responsible for making sure that the Posix locale
-      *  is activated at all times.
-      *
+      *  @note The use of this implementation can be disabled by defining
+      *    the macro DISABLE_OFSTD_FTOA at compile time; in this case,
+      *    the locale dependent Posix implementation of sprintf is used and
+      *    the application is responsible for making sure that the Posix locale
+      *    is activated at all times.
       *  @param target pointer to target string buffer
       *  @param targetSize size of target string buffer
       *  @param value double value to be formatted
@@ -617,7 +613,8 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** makes the current process sleep until seconds seconds have
      *  elapsed or a signal arrives which is not ignored
      *  @param seconds number of seconds to sleep
-     *  @return zero if the requested time has elapsed, or the number of seconds left to sleep
+     *  @return zero if the requested time has elapsed, or the number of seconds
+     *    left to sleep
      */
     static inline unsigned int sleep(unsigned int seconds)
     {

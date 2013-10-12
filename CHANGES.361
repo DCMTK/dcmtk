@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.12 (riesmeier)
+
+- Minor changes to comments.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2013.10.11 (riesmeier)
 
 - Minor fixes in comments.
@@ -16,8 +22,6 @@ Changes between releases are documented here.
 
 - Replaced tabs with spaces.
   Affects: dcmwlm/libsrc/wlds.cc
-
-**** Changes from 2013.10.11 (onken)
 
 - Worklist SCP support for Responsible Person/Role:
   Added support for attributes Responsible Person and Responsible Person Role

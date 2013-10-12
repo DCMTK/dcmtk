@@ -886,7 +886,7 @@ OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
     while (pos < length)
     {
         const size_t c = OFstatic_cast(unsigned char, sourceString.at(pos));
-        /* TODO: do we always need to check for the NULL byte? */
+        /* TODO: do we also need to check for the NULL byte? */
         if ((c == '<') || (c == '>') || (c == '&') || (c == '"') || (c == '\'') ||
             (c == 10) || (c == 13) || (convertNonASCII && ((c < 32) || (c >= 127))))
         {
@@ -1298,7 +1298,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     const char *pExp; // Temporarily holds location of exponent in string.
 
     /* Exponent that derives from the fractional part.  Under normal
-     * circumstatnces, it is the negative of the number of digits in F.
+     * circumstances, it is the negative of the number of digits in F.
      * However, if I is very long, the last digits of I get dropped
      * (otherwise a long I with a large negative exponent could cause an
      * unnecessary overflow on I alone).  In this case, fracExp is
