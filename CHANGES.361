@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.12 (riesmeier)
 
+- Updated Doxygen configuration files:
+  Updated Doxygen configuration files to a more recent version (1.8.1.2).
+  Affects: doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
 - Minor changes to comments.
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h
            ofstd/libsrc/ofstd.cc
