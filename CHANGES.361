@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.14 (riesmeier)
 
+- Fixed source code formatting and various comments.
+  Affects: dcmdata/libsrc/dcmetinf.cc
+
 - Fixed timeout issue in handleAssociation():
   Fixed issue with timeout parameter not being passed to DIMSE_receiveCommand()
   in DcmSCP::handleAssociation() method. This prevented the non-blocking mode

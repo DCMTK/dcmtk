@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,28 +68,28 @@ DcmMetaInfo::DcmMetaInfo(const DcmMetaInfo &old)
 
 DcmMetaInfo& DcmMetaInfo::operator=(const DcmMetaInfo& obj)
 {
-  if (this != &obj)
-  {
-    // copy parent's member variables
-    DcmItem::operator=(obj);
-    // copy DcmMetaInfo's member variables
-    preambleUsed = obj.preambleUsed;
-    fPreambleTransferState = obj.fPreambleTransferState;
-    Xfer = obj.Xfer;
-    memcpy(filePreamble, obj.filePreamble, 128);
-  }
-  return *this;
+    if (this != &obj)
+    {
+        // copy parent's member variables
+        DcmItem::operator=(obj);
+        // copy DcmMetaInfo's member variables
+        preambleUsed = obj.preambleUsed;
+        fPreambleTransferState = obj.fPreambleTransferState;
+        Xfer = obj.Xfer;
+        memcpy(filePreamble, obj.filePreamble, 128);
+    }
+    return *this;
 }
 
 
 OFCondition DcmMetaInfo::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmMetaInfo &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmMetaInfo &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -233,22 +233,27 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         const Uint32 readLen = preambleLen - getTransferredBytes();
         if (readLen > 0)
             incTransferredBytes(OFstatic_cast(Uint32, inStream.read(&filePreamble[getTransferredBytes()], readLen)));
+        // file too short, no preamble
         if (inStream.eos() && getTransferredBytes() != preambleLen)
-        {   // file too short, no preamble
+        {
             inStream.putback();
             DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short ("
                 << preambleLen << ") < " << DCM_PreambleLen + DCM_MagicLen << " bytes");
             this -> setPreamble();
             fPreambleTransferState = ERW_ready;
         }
-        else if (getTransferredBytes() == preambleLen)    // check Preamble and DICOM Prefix
-        {   // set prefix to appropriate position
+        // check preamble and DICOM prefix
+        else if (getTransferredBytes() == preambleLen)
+        {
+            // set prefix to appropriate position
             char *prefix = filePreamble + DCM_PreambleLen;
             if (memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0)
             {
-                hasPreamble = OFTrue;  // Preamble present
+                // preamble present
+                hasPreamble = OFTrue;
                 // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-            } else {                   // no Preamble
+            } else {
+                // no preamble
                 this -> setPreamble();
                 inStream.putback();
             }
@@ -267,7 +272,8 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             (tmpXferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
             xferSyn.getXfer() == EXS_Unknown)
         {
-            newxfer = tmpXferSyn.getXfer();   // use determined xfer
+            // use determined transfer syntax
+            newxfer = tmpXferSyn.getXfer();
             if (xferSyn.getXfer() != EXS_Unknown)
                 DCMDATA_WARN("DcmMetaInfo: TransferSyntax of MetaInfo is other than expected");
         } else
@@ -371,7 +377,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
     {
         Xfer = xfer;
         E_TransferSyntax newxfer = xfer;
-        /* figure out if the stream reported an error */
+        // figure out if the stream reported an error
         errorFlag = inStream.status();
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
@@ -429,7 +435,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             if (getTransferState() == ERW_inWork && getLengthField() != 0 && (errorFlag.good() ||
                 ((errorFlag == EC_CorruptedData) && (getLengthField() == DCM_UndefinedLength))))
             {
-                /* start with "no error" in order to handle meta-header with only one data element */
+                // start with "no error" in order to handle meta-header with only one data element
                 errorFlag = EC_Normal;
 #endif
                 while (inStream.good() && !inStream.eos() &&
@@ -518,9 +524,9 @@ OFCondition DcmMetaInfo::write(
      *
      * Parameters:
      *   outStream - [inout] The stream that the information will be written to.
-     *   oxfer     - [in] The transfer syntax which shall be used. (is not necessary since the meta header
-     *                    shall always be encoded in the explicit VR little endian transfer syntax)
-     *   enctype   - [in] Encoding type for sequences. Specifies how sequences will be handled.
+     *   oxfer     - [in]    The transfer syntax which shall be used. (is not necessary since the meta header
+     *                       shall always be encoded in the explicit VR little endian transfer syntax)
+     *   enctype   - [in]    Encoding type for sequences. Specifies how sequences will be handled.
      */
 {
     /* if the transfer state of this is not initialized, this is an illegal call */
@@ -564,7 +570,7 @@ OFCondition DcmMetaInfo::write(
                         errorFlag = EC_StreamNotifyClient;
                 }
             }
-            /* if the file premable and the DICOM prefix have been written, go */
+            /* if the file preamble and the DICOM prefix have been written, go */
             /* ahead and write the meta header's data elements to the stream. */
             /* (note that at this point elementList->get() should never be NULL, */
             /* but lets play the game safe here...) */
