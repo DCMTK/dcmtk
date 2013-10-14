@@ -485,7 +485,8 @@ void DcmSCP::handleAssociation()
   while( cond.good() )
   {
     // receive a DIMSE command over the network
-    cond = DIMSE_receiveCommand( m_assoc, m_cfg->getDIMSEBlockingMode(), 0, &presID, &message, NULL );
+    cond = DIMSE_receiveCommand( m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(),
+                                 &presID, &message, NULL );
 
     // check if peer did release or abort, or if we have a valid message
     if( cond.good() )

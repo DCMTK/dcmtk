@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.14 (riesmeier)
+
+- Fixed timeout issue in handleAssociation():
+  Fixed issue with timeout parameter not being passed to DIMSE_receiveCommand()
+  in DcmSCP::handleAssociation() method. This prevented the non-blocking mode
+  from working correctly.
+  Thanks to forum user "wrenashe" for the report and suggested fix.
+  Affects: dcmnet/libsrc/scp.cc
+
 **** Changes from 2013.10.12 (riesmeier)
 
 - Updated URL of DCMTK's home page.
