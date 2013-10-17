@@ -1,5 +1,5 @@
 <!-- Document Type Definition for DCMTK tools dcm2xml and xml2dcm.
-     Copyright (C) 2002-2010, OFFIS e.V. 
+     Copyright (C) 2002-2013, OFFIS e.V.
      All rights reserved.  See COPYRIGHT file for details. -->
 
 <!ELEMENT file-format ( meta-header, data-set ) >
@@ -34,7 +34,7 @@
 <!ATTLIST item len NMTOKEN #IMPLIED >
 <!ATTLIST item offset NMTOKEN #IMPLIED >
 
-<!ELEMENT pixel-item ( CDATA ) >
+<!ELEMENT pixel-item ( #PCDATA ) >
 <!ATTLIST pixel-item binary ( yes | hidden | base64 | file ) "yes" >
 <!ATTLIST pixel-item len NMTOKEN #IMPLIED >
 <!ATTLIST pixel-item loaded ( yes | no ) "yes" >

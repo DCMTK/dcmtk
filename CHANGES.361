@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.17 (riesmeier)
+
+- Fixed wrong content type of XML element in DTD:
+  According to the W3C XML specification, "CDATA" is not allowed in the content
+  model for elements. So, for the "pixel-item" element it has been replaced by
+  "#PCDATA" (which is allowed). Thanks to forum user "wrenashe" for the report.
+  Affects: dcmdata/data/dcm2xml.dtd
+
 **** Changes from 2013.10.14 (riesmeier)
 
 - Fixed source code formatting and various comments.
