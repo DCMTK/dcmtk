@@ -108,8 +108,8 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     /** get name components from the element value.
      *  The DICOM PN consists of up to three component groups separated by a "=". The
      *  supported format is "[CG0[=CG1[=CG2]]]" where the brackets enclose optional
-     *  parts and CG0 is a single-byte character representation, CG1 an ideographic
-     *  representation, and CG2 a phonetic representation of the name.
+     *  parts and CG0 is an alphabetic representation, CG1 an ideographic representation,
+     *  and CG2 a phonetic representation of the name.
      *  Each component group may consist of up to five components separated by a "^".
      *  The format is "[lastName[^firstName[^middleName[^namePrefix[^nameSuffix]]]]";
      *  each component group and each component might be empty.
@@ -178,8 +178,8 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     /** get name components from specified DICOM person name.
      *  The DICOM PN consists of up to three component groups separated by a "=". The
      *  supported format is "[CG0[=CG1[=CG2]]]" where the brackets enclose optional
-     *  parts and CG0 is a single-byte character representation, CG1 an ideographic
-     *  representation, and CG2 a phonetic representation of the name.
+     *  parts and CG0 is an alphabetic representation, CG1 an ideographic representation,
+     *  and CG2 a phonetic representation of the name.
      *  Each component group may consist of up to five components separated by a "^".
      *  The format is "[lastName[^firstName[^middleName[^namePrefix[^nameSuffix]]]]";
      *  each component group and each component might be empty.
@@ -206,15 +206,14 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     /** get single component group from specified DICOM person name.
      *  The DICOM PN consists of up to three component groups separated by a "=". The
      *  supported format is "[CG0[=CG1[=CG2]]]" where the brackets enclose optional
-     *  parts and CG0 is a single-byte character representation, CG1 an ideographic
-     *  representation, and CG2 a phonetic representation of the name.  Each component
-     *  group might be empty.
+     *  parts and CG0 is an alphabetic representation, CG1 an ideographic representation,
+     *  and CG2 a phonetic representation of the name. Each component group might be empty.
      *  The returned component group will contain component delimiters ("^") as they are
      *  stored within the very component group, i.e. superfluous component delimiters are
      *  not removed.
      *  @param allCmpGroups string value in DICOM PN format to component group from
      *  @param groupNo index of the component group (0..2) to be extracted
-     *  @param cmpGroup reference to string variable where selected component gruop shall be
+     *  @param cmpGroup reference to string variable where selected component group shall be
      *    stored
      *  @return EC_Normal upon success, an error code otherwise. Especially, if a component
      *    group exists (always for group 0, for group 1 and 2 depending on whether
