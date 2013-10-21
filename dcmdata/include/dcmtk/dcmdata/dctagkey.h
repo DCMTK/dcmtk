@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,7 +126,7 @@ public:
      *  Used for fast look-up in the DICOM dictionary.
      *  @return hash code for this tag
      */
-    Uint32 hash() const; // generate simple hash code
+    Uint32 hash() const;
 
     /** assignment operator for initializing this tag key from an existing one
      *  @param key [in] The key to copy from

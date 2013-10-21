@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.21 (riesmeier)
 
+- Removed redundant API comment.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
+
 - Fixed outdated comment on 1st PN component group:
   Fixed outdated comment on first component group of a Person Name (PN) value.
   According to CP-964, the first component group defines an alphabetic (and not
