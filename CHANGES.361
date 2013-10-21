@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.21 (riesmeier)
+
+- Do not output group length in Native DICOM Model:
+  Do not output group length elements (gggg,0000) in Native DICOM Model format
+  (as per PS 3.19 section A.1.1, introduced with Supplement 166).
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2013.10.17 (riesmeier)
 
 - Fixed wrong content type of XML element in DTD:

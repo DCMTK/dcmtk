@@ -1411,42 +1411,47 @@ void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream &out,
 OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags)
 {
-    /* write XML start tag */
-    writeXMLStartTag(out, flags);
-    /* write element value (if loaded) */
-    if (valueLoaded())
+    /* do not output group length elements in Native DICOM Model
+     * (as per PS 3.19 section A.1.1, introduced with Supplement 166) */
+    if (!(flags & DCMTypes::XF_useNativeModel) || !getTag().isGroupLength())
     {
-        OFString value;
-        const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
-        if (flags & DCMTypes::XF_useNativeModel)
+        /* write XML start tag */
+        writeXMLStartTag(out, flags);
+        /* write element value (if loaded) */
+        if (valueLoaded())
         {
-            const unsigned long vm = getVM();
-            for (unsigned long valNo = 0; valNo < vm; valNo++)
+            OFString value;
+            const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
+            if (flags & DCMTypes::XF_useNativeModel)
             {
-                if (getOFString(value, valNo).good())
+                const unsigned long vm = getVM();
+                for (unsigned long valNo = 0; valNo < vm; valNo++)
                 {
-                    out << "<Value number=\"" << (valNo + 1) << "\">";
+                    if (getOFString(value, valNo).good())
+                    {
+                        out << "<Value number=\"" << (valNo + 1) << "\">";
+                        /* check whether conversion to XML markup string is required */
+                        if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
+                            OFStandard::convertToMarkupStream(out, value, convertNonASCII);
+                        else
+                            out << value;
+                        out << "</Value>" << OFendl;
+                    }
+                }
+            } else {
+                if (getOFStringArray(value).good())
+                {
                     /* check whether conversion to XML markup string is required */
                     if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
                         OFStandard::convertToMarkupStream(out, value, convertNonASCII);
                     else
                         out << value;
-                    out << "</Value>" << OFendl;
                 }
             }
-        } else {
-            if (getOFStringArray(value).good())
-            {
-                /* check whether conversion to XML markup string is required */
-                if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
-                    OFStandard::convertToMarkupStream(out, value, convertNonASCII);
-                else
-                    out << value;
-            }
         }
+        /* write XML end tag  */
+        writeXMLEndTag(out, flags);
     }
-    /* write XML end tag  */
-    writeXMLEndTag(out, flags);
     /* always report success */
     return EC_Normal;
 }
