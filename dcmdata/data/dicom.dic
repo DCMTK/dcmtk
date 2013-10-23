@@ -25,7 +25,7 @@
 # supplements and correction items have been incorporated:
 # - Supplement 152, 154, 157, 158, 163.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
-#      1249, 1258, 1269.
+#      1249, 1258, 1268, 1269.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3347,7 +3347,7 @@
 #---------------------------------------------------------------------------
 #
 # Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216,
-#                  1236, 1246, 1248, 1249, 1258, 1269
+#                  1236, 1246, 1248, 1249, 1258, 1268, 1269
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
@@ -3388,6 +3388,8 @@
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	CP_1249/retired
 #
 (0062,0011)	SQ	SegmentedPropertyTypeModifierCodeSequence	1	CP_1258
+#
+(0062,0012)	SQ	UsedSegmentsSequence	1	CP_1268
 #
 (0018,2041)	SQ	BiopsyTargetSequence	1	CP_1269
 (0018,2042)	UI	TargetUID	1	CP_1269

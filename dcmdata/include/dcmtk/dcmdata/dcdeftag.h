@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-08-20 14:55:32
+**   Date: 2013-10-23 14:47:47
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-08-20 14:55:32"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-10-23 14:47:47"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3647
+** Number of entries: 3648
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2363,6 +2363,7 @@
 #define DCM_SegmentedPropertyTypeCodeSequence    DcmTagKey(0x0062, 0x000f)
 #define DCM_SegmentationFractionalType           DcmTagKey(0x0062, 0x0010)
 #define DCM_SegmentedPropertyTypeModifierCodeSequence DcmTagKey(0x0062, 0x0011)
+#define DCM_UsedSegmentsSequence                 DcmTagKey(0x0062, 0x0012)
 #define DCM_DeformableRegistrationSequence       DcmTagKey(0x0064, 0x0002)
 #define DCM_SourceFrameOfReferenceUID            DcmTagKey(0x0064, 0x0003)
 #define DCM_DeformableRegistrationGridSequence   DcmTagKey(0x0064, 0x0005)

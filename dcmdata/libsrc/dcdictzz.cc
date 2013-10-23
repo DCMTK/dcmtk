@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-08-20 14:55:39
+**   Date: 2013-10-23 14:47:54
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2013-08-20 14:55:39";
+const char* dcmBuiltinDictBuildDate = "2013-10-23 14:47:54";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -19773,6 +19773,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0062, 0x0011, 0x0062, 0x0011,
       EVR_SQ, "SegmentedPropertyTypeModifierCodeSequence", 1, 1, "CP_1258",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0062, 0x0012, 0x0062, 0x0012,
+      EVR_SQ, "UsedSegmentsSequence", 1, 1, "CP_1268",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0064, 0x0002, 0x0064, 0x0002,
