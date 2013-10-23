@@ -627,6 +627,7 @@ IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
+CornealTopographyMapStorage                          1.2.840.10008.5.1.4.1.1.82.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3

@@ -23,7 +23,7 @@ access restriction rules to limit operations to specific peer application
 entities.
 
 The \b dcmqrscp application is intended to be used in DICOM demonstrations and
-as a compatibilitiy test tool.  In particular, \b dcmqrscp will delete images
+as a compatibility test tool.  In particular, \b dcmqrscp will delete images
 if its quota restrictions have been exceeded.
 
 Caution: Note that the format of <b>dcmqrdb's</b> binary \e index.dat file
@@ -441,7 +441,7 @@ command line option).  When another application connects, \b dcmqrscp expects
 it to be a DICOM application and to use calling and called AE Titles specified
 in <b>dcmqrscp's</b> configuration file.  \b dcmqrscp will accept associations
 with Presentation Contexts for SOP Classes of the Verification Service Class,
-Storage Service Class and Query/Retreive Service Class.  Associations will be
+Storage Service Class and Query/Retrieve Service Class.  Associations will be
 rejected or Presentation Contexts will be refused if the peer application does
 not have appropriate access rights as specified by \b dcmqrscp configuration
 file.
@@ -732,6 +732,7 @@ IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
+CornealTopographyMapStorage                          1.2.840.10008.5.1.4.1.1.82.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3

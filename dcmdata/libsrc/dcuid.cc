@@ -16,7 +16,7 @@
  *  Author:  Andrew Hewett
  *
  *  Purpose:
- *  Definitions of "well known" DICOM Unique Indentifiers,
+ *  Definitions of "well known" DICOM Unique Identifiers,
  *  routines for finding and creating UIDs.
  *
  */
@@ -148,6 +148,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_Comprehensive3DSRStorage,                            "Comprehensive3DSRStorage" },
     { UID_ComprehensiveSRStorage,                              "ComprehensiveSRStorage" },
     { UID_ComputedRadiographyImageStorage,                     "ComputedRadiographyImageStorage" },
+    { UID_CornealTopographyMapStorage,                         "CornealTopographyMapStorage" },
     { UID_CTImageStorage,                                      "CTImageStorage" },
     { UID_DeformableSpatialRegistrationStorage,                "DeformableSpatialRegistrationStorage" },
     { UID_DigitalIntraOralXRayImageStorageForPresentation,     "DigitalIntraOralXRayImageStorageForPresentation" },
@@ -527,6 +528,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_Comprehensive3DSRStorage,
     UID_ComprehensiveSRStorage,
     UID_ComputedRadiographyImageStorage,
+    UID_CornealTopographyMapStorage,
     UID_CTImageStorage,
     UID_DeformableSpatialRegistrationStorage,
     UID_DigitalIntraOralXRayImageStorageForPresentation,
@@ -773,6 +775,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_XRayRadiationDoseSRStorage,
     UID_XRayRadiofluoroscopicImageStorage,
     // recently approved
+//  UID_CornealTopographyMapStorage,
 //  UID_LegacyConvertedEnhancedCTImageStorage,
 //  UID_LegacyConvertedEnhancedMRImageStorage,
 //  UID_LegacyConvertedEnhancedPETImageStorage,
@@ -916,6 +919,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_BreastTomosynthesisImageStorage,
     UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
+    UID_CornealTopographyMapStorage,
     UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalIntraOralXRayImageStorageForProcessing,
     UID_DigitalMammographyXRayImageStorageForPresentation,
@@ -993,7 +997,7 @@ typedef struct {
 ** The modalities table defines a short character code for each
 ** Storage SOP Class for use in filenames.
 ** It also gives a typical size for each SOP Instance.  This will
-** ususally be way out, but is useful in user interfaces to give an
+** usually be way out, but is useful in user interfaces to give an
 ** idea of progress when receiving an image (C-STORE does not indicate
 ** the size of an image being transmitted).
 */
@@ -1013,6 +1017,7 @@ static const DcmModalityTable modalities[] = {
     { UID_Comprehensive3DSRStorage,                                "SR3", 4096 },
     { UID_ComprehensiveSRStorage,                                  "SRc", 4096 },
     { UID_ComputedRadiographyImageStorage,                         "CR",  2048 * 2048 * 2 },
+    { UID_CornealTopographyMapStorage,                             "CM",  512 * 512 },
     { UID_CTImageStorage,                                          "CT",  512 * 512 * 2 },
     { UID_DeformableSpatialRegistrationStorage,                    "RGd", 4096 },
     { UID_DigitalIntraOralXRayImageStorageForPresentation,         "DXo", 1024 * 1024 * 2 },
@@ -1597,8 +1602,8 @@ static unsigned long hostIdentifier = 0;
 
 
 /*
-** char* generateUniqueIdentifer(char* buf)
-** Creates a Unique Identifer in buf and returns buf.
+** char* generateUniqueIdentifier(char* buf)
+** Creates a Unique Identifier in buf and returns buf.
 ** buf must be at least 65 bytes.
 */
 

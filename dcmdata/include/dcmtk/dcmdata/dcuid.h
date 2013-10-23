@@ -16,7 +16,7 @@
  *  Author:  Andrew Hewett
  *
  *  Purpose:
- *  Definitions of "well known" DICOM Unique Indentifiers,
+ *  Definitions of "well known" DICOM Unique Identifiers,
  *  routines for finding and creating UIDs.
  *
  */
@@ -103,7 +103,7 @@ extern DCMTK_DCMDATA_EXPORT const char* dcmImageSOPClassUIDs[];
 /// number of entries in dcmImageSOPClassUIDs
 extern DCMTK_DCMDATA_EXPORT const int numberOfDcmImageSOPClassUIDs;
 
-/** creates a Unique Identifer in uid and returns uid.
+/** creates a Unique Identifier in uid and returns uid.
  *  uid must be at least 65 bytes. Care is taken to make sure
  *  that the generated UID is 64 characters or less.
  *  If a prefix string is not passed as the second argument a
@@ -223,7 +223,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 /*
 ** Useful UID prefixes. These can be whatever you want.
 **
-** These site UIDs are arbitary, non-standard, with no meaning
+** These site UIDs are arbitrary, non-standard, with no meaning
 ** and can be changed at any time.  Do _not_ rely on these values.
 ** Do _not_ assume any semantics when using these suffixes.
 **
@@ -437,6 +437,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_MacularGridThicknessAndVolumeReportStorage             "1.2.840.10008.5.1.4.1.1.79.1"
 #define UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage "1.2.840.10008.5.1.4.1.1.80.1"
 #define UID_OphthalmicThicknessMapStorage                          "1.2.840.10008.5.1.4.1.1.81.1"
+#define UID_CornealTopographyMapStorage                            "1.2.840.10008.5.1.4.1.1.82.1"
 #define UID_BasicTextSRStorage                                     "1.2.840.10008.5.1.4.1.1.88.11"
 #define UID_EnhancedSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.22"
 #define UID_ComprehensiveSRStorage                                 "1.2.840.10008.5.1.4.1.1.88.33"

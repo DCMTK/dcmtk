@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.23 (riesmeier)
 
+- Added support for new UID from Supplement 168:
+  Added support for new SOP Class UID from Supplement 168 (Corneal Topography
+  Map Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 - Added support for Supplement 168 to data dictionary:
   Added support for final text version of Supplement 168 (Corneal Topography
   Map Storage SOP Class) to the data dictionary.
