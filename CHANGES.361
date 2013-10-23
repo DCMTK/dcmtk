@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.23 (riesmeier)
 
+- Added support for Supplement 168 to data dictionary:
+  Added support for final text version of Supplement 168 (Corneal Topography
+  Map Storage SOP Class) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for CP-1268 to data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h

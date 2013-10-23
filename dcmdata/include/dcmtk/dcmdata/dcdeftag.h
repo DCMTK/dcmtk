@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-10-23 14:47:47
+**   Date: 2013-10-23 14:59:20
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-10-23 14:47:47"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-10-23 14:59:20"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3648
+** Number of entries: 3678
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2187,6 +2187,36 @@
 #define DCM_ReferencedRefractiveMeasurementsSequence DcmTagKey(0x0046, 0x0145)
 #define DCM_SpherePower                          DcmTagKey(0x0046, 0x0146)
 #define DCM_CylinderPower                        DcmTagKey(0x0046, 0x0147)
+#define DCM_CornealTopographySurface             DcmTagKey(0x0046, 0x0201)
+#define DCM_CornealVertexLocation                DcmTagKey(0x0046, 0x0202)
+#define DCM_PupilCentroidXCoordinate             DcmTagKey(0x0046, 0x0203)
+#define DCM_PupilCentroidYCoordinate             DcmTagKey(0x0046, 0x0204)
+#define DCM_EquivalentPupilRadius                DcmTagKey(0x0046, 0x0205)
+#define DCM_CornealTopographyMapTypeCodeSequence DcmTagKey(0x0046, 0x0207)
+#define DCM_VerticesOfTheOutlineOfPupil          DcmTagKey(0x0046, 0x0208)
+#define DCM_CornealTopographyMappingNormalsSequence DcmTagKey(0x0046, 0x0210)
+#define DCM_MaximumCornealCurvatureSequence      DcmTagKey(0x0046, 0x0211)
+#define DCM_MaximumCornealCurvature              DcmTagKey(0x0046, 0x0212)
+#define DCM_MaximumCornealCurvatureLocation      DcmTagKey(0x0046, 0x0213)
+#define DCM_MinimumKeratometricSequence          DcmTagKey(0x0046, 0x0215)
+#define DCM_SimulatedKeratometricCylinderSequence DcmTagKey(0x0046, 0x0218)
+#define DCM_AverageCornealPower                  DcmTagKey(0x0046, 0x0220)
+#define DCM_CornealISValue                       DcmTagKey(0x0046, 0x0224)
+#define DCM_AnalyzedArea                         DcmTagKey(0x0046, 0x0227)
+#define DCM_SurfaceRegularityIndex               DcmTagKey(0x0046, 0x0230)
+#define DCM_SurfaceAsymmetryIndex                DcmTagKey(0x0046, 0x0232)
+#define DCM_CornealEccentricityIndex             DcmTagKey(0x0046, 0x0234)
+#define DCM_KeratoconusPredictionIndex           DcmTagKey(0x0046, 0x0236)
+#define DCM_DecimalPotentialVisualAcuity         DcmTagKey(0x0046, 0x0238)
+#define DCM_CornealTopographyMapQualityEvaluation DcmTagKey(0x0046, 0x0242)
+#define DCM_SourceImageCornealProcessedDataSequence DcmTagKey(0x0046, 0x0244)
+#define DCM_CornealPointLocation                 DcmTagKey(0x0046, 0x0247)
+#define DCM_CornealPointEstimated                DcmTagKey(0x0046, 0x0248)
+#define DCM_AxialPower                           DcmTagKey(0x0046, 0x0249)
+#define DCM_TangentialPower                      DcmTagKey(0x0046, 0x0250)
+#define DCM_RefractivePower                      DcmTagKey(0x0046, 0x0251)
+#define DCM_RelativeElevation                    DcmTagKey(0x0046, 0x0252)
+#define DCM_CornealWavefront                     DcmTagKey(0x0046, 0x0253)
 #define DCM_ImagedVolumeWidth                    DcmTagKey(0x0048, 0x0001)
 #define DCM_ImagedVolumeHeight                   DcmTagKey(0x0048, 0x0002)
 #define DCM_ImagedVolumeDepth                    DcmTagKey(0x0048, 0x0003)

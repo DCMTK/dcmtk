@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152, 154, 157, 158, 163.
+# - Supplement 152, 154, 157, 158, 163, 168.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
 #      1249, 1258, 1268, 1269.
 #
@@ -3343,6 +3343,41 @@
 #
 (0008,1190)	UT	RetrieveURL	1	Supplement_163
 (0008,1196)	US	WarningReason	1	Supplement_163
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 168 (Corneal Topography Map Storage SOP Class)
+#
+(0046,0201)	CS	CornealTopographySurface	1	Supplement_168
+(0046,0202)	FL	CornealVertexLocation	2	Supplement_168
+(0046,0203)	FL	PupilCentroidXCoordinate	1	Supplement_168
+(0046,0204)	FL	PupilCentroidYCoordinate	1	Supplement_168
+(0046,0205)	FL	EquivalentPupilRadius	1	Supplement_168
+(0046,0207)	SQ	CornealTopographyMapTypeCodeSequence	1	Supplement_168
+(0046,0208)	IS	VerticesOfTheOutlineOfPupil	2-2n	Supplement_168
+(0046,0210)	SQ	CornealTopographyMappingNormalsSequence	1	Supplement_168
+(0046,0211)	SQ	MaximumCornealCurvatureSequence	1	Supplement_168
+(0046,0212)	FL	MaximumCornealCurvature	1	Supplement_168
+(0046,0213)	FL	MaximumCornealCurvatureLocation	2	Supplement_168
+(0046,0215)	SQ	MinimumKeratometricSequence	1	Supplement_168
+(0046,0218)	SQ	SimulatedKeratometricCylinderSequence	1	Supplement_168
+(0046,0220)	FL	AverageCornealPower	1	Supplement_168
+(0046,0224)	FL	CornealISValue	1	Supplement_168
+(0046,0227)	FL	AnalyzedArea	1	Supplement_168
+(0046,0230)	FL	SurfaceRegularityIndex	1	Supplement_168
+(0046,0232)	FL	SurfaceAsymmetryIndex	1	Supplement_168
+(0046,0234)	FL	CornealEccentricityIndex	1	Supplement_168
+(0046,0236)	FL	KeratoconusPredictionIndex	1	Supplement_168
+(0046,0238)	FL	DecimalPotentialVisualAcuity	1	Supplement_168
+(0046,0242)	CS	CornealTopographyMapQualityEvaluation	1	Supplement_168
+(0046,0244)	SQ	SourceImageCornealProcessedDataSequence	1	Supplement_168
+(0046,0247)	FL	CornealPointLocation	3	Supplement_168
+(0046,0248)	CS	CornealPointEstimated	1	Supplement_168
+(0046,0249)	FL	AxialPower	1	Supplement_168
+(0046,0250)	FL	TangentialPower	1	Supplement_168
+(0046,0251)	FL	RefractivePower	1	Supplement_168
+(0046,0252)	FL	RelativeElevation	1	Supplement_168
+(0046,0253)	FL	CornealWavefront	1	Supplement_168
 #
 #---------------------------------------------------------------------------
 #
