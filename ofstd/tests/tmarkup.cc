@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -94,11 +94,11 @@ OFTEST(ofstd_markup_5)
 {
     OFString resultStr;
     const size_t sourceLen = 79;
-    // HTML 3.2: the source string contains a NULL byte!
+    // HTML 3.2: source string contains a NULL byte!
     const OFString sourceStr(("This is a test\0, with <special> characters & \"some\" other 'dirty' tricks!\rJ\366rg\n"), sourceLen);
     const OFString markupStr1 = "This is a test&#0;, with &lt;special&gt; characters &amp; &#34;some&#34; other &#39;dirty&#39; tricks!<br>\nJ&#246;rg<br>\n";
     const OFString markupStr2 = "This is a test&#0;, with &lt;special&gt; characters &amp; &#34;some&#34; other &#39;dirty&#39; tricks!&para;J&#246;rg&para;";
-    const OFString markupStr3 = "This is a test\0, with &lt;special&gt; characters &amp; &#34;some&#34; other &#39;dirty&#39; tricks!&para;J&#246;rg&para;";
+    const OFString markupStr3 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&para;J\366rg&para;";
 
     OFCHECK_EQUAL(sourceStr.length(), sourceLen);
     OFCHECK(OFStandard::checkForMarkupConversion(sourceStr, OFTrue /* convertNonASCII */));
@@ -108,5 +108,20 @@ OFTEST(ofstd_markup_5)
     OFStandard::convertToMarkupString(sourceStr, resultStr, OFFalse /* convertNonASCII */, OFStandard::MM_HTML32, OFFalse /* newlineAllowed */);
     OFCHECK_EQUAL(resultStr, markupStr2);
     OFStandard::convertToMarkupString(sourceStr, resultStr, OFFalse /* convertNonASCII */, OFStandard::MM_XHTML, OFFalse /* newlineAllowed */);
-    OFCHECK_EQUAL(resultStr, "This is a test" /* string is truncated at the NULL byte */);
+    OFCHECK_EQUAL(resultStr, markupStr3);
+}
+
+OFTEST(ofstd_markup_6)
+{
+    OFString resultStr;
+    const size_t sourceLen = 37;
+    // XML: source string contains a NULL byte!
+    const OFString sourceStr(("This is a test\0, with a NULL byte."), sourceLen);
+    const OFString markupStr = "This is a test, with a NULL byte.";
+
+    OFCHECK_EQUAL(sourceStr.length(), sourceLen);
+    OFCHECK(OFStandard::checkForMarkupConversion(sourceStr));
+
+    OFStandard::convertToMarkupString(sourceStr, resultStr);
+    OFCHECK_EQUAL(resultStr, markupStr);
 }

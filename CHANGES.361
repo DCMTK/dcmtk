@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.24 (riesmeier)
 
+- Adapted test cases for markup conversion:
+  Added a new test case and adapted an existing one for the new behavior of
+  the "convert to markup" functions with regards to embedded NULL bytes,
+  Affects: ofstd/tests/tests.cc
+           ofstd/tests/tmarkup.cc
+
 - Never output NULL bytes to markup string/stream:
   Made sure that a NULL byte is never output to HTML/XHTML/XML mnenonic string
   or stream. Only if non-ASCII characters are converted to their numeric value

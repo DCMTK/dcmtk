@@ -64,6 +64,7 @@ OFTEST_REGISTER(ofstd_markup_2);
 OFTEST_REGISTER(ofstd_markup_3);
 OFTEST_REGISTER(ofstd_markup_4);
 OFTEST_REGISTER(ofstd_markup_5);
+OFTEST_REGISTER(ofstd_markup_6);
 OFTEST_REGISTER(ofstd_testPaths);
 #ifdef WITH_THREADS
 OFTEST_REGISTER(ofstd_thread);
