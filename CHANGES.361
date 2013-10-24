@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.24 (riesmeier)
+
+- Never output NULL bytes to markup string/stream:
+  Made sure that a NULL byte is never output to HTML/XHTML/XML mnenonic string
+  or stream. Only if non-ASCII characters are converted to their numeric value
+  (&#nnn;), they will be "visible".
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2013.10.23 (riesmeier)
 
 - Added support for new UID from Supplement 168:

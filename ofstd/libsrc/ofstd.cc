@@ -886,8 +886,8 @@ OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
     while (pos < length)
     {
         const size_t c = OFstatic_cast(unsigned char, sourceString.at(pos));
-        /* TODO: do we also need to check for the NULL byte? */
         if ((c == '<') || (c == '>') || (c == '&') || (c == '"') || (c == '\'') ||
+            (c == 0) || /* a NULL byte should never be added to the output */
             (c == 10) || (c == 13) || (convertNonASCII && ((c < 32) || (c >= 127))))
         {
             /* return on the first character that needs to be converted */
@@ -921,7 +921,7 @@ OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
         /* greater than */
         else if (c == '>')
             out << "&gt;";
-        /* ampers and */
+        /* ampersand */
         else if (c == '&')
             out << "&amp;";
         /* quotation mark */
@@ -972,8 +972,10 @@ OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
             {
                 /* convert < #32 and >= #127 to Unicode (ISO Latin-1) */
                 out << "&#" << charValue << ";";
-            } else {
-                /* just append (TODO: what about the NULL byte?) */
+            }
+            else if (charValue != 0)
+            {
+                /* just append (if not a NULL byte) */
                 out << c;
             }
         }
