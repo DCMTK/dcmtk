@@ -52,7 +52,7 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
 
   public:
 
-    /** default contructor
+    /** default constructor
      */
     DSRImageReferenceValue();
 

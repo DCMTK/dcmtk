@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.25 (riesmeier)
 
+- Fixed small typos in comments.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3vl.h
+           dcmsr/include/dcmtk/dcmsr/dsrscovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrstrvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+
 - Added comments on missing features:
   Added comments that the conditional/optional attributes Referenced Segment
   Number (0062,000B) and Referenced Real World Value Mapping Instance Sequence

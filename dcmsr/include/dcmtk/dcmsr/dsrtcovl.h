@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,7 +45,7 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 
   public:
 
-    /** default contructor
+    /** default constructor
      */
     DSRTemporalCoordinatesValue();
 
@@ -212,7 +212,7 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 
     /** read temporal coordinates value from dataset.
      *  Please note that all three lists are (tried to) read from the dataset.  If more than
-     *  one list is present a warning messsage is reported.
+     *  one list is present a warning message is reported.
      ** @param  dataset  DICOM dataset from which the value should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */

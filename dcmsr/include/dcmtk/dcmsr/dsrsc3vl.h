@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2012, OFFIS e.V.
+ *  Copyright (C) 2010-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,7 +43,7 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
 
   public:
 
-    /** default contructor
+    /** default constructor
      */
     DSRSpatialCoordinates3DValue();
 

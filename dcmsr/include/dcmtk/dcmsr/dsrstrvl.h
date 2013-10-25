@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
 
   public:
 
-    /** default contructor
+    /** default constructor
      */
     DSRStringValue();
 
@@ -87,7 +87,7 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
      *  @param  maxLength  maximum number of characters to be printed.  If the string value is
      *                     longer the output is shortened automatically and three dots "..." are
      *                     added.  The value of 'maxLength' includes these three trailing char's.
-     *                     A value of 0 turns this meachanism off (default), i.e. the full string
+     *                     A value of 0 turns this mechanism off (default), i.e. the full string
      *                     value is printed.
      */
     void print(STD_NAMESPACE ostream &stream,

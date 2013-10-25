@@ -44,7 +44,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
   public:
 
-    /** default contructor
+    /** default constructor
      */
     DSRCodedEntryValue();
 
