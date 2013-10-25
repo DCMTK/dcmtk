@@ -252,9 +252,13 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
     /* read ReferencedFrameNumber (conditional) */
     if (result.good())
         FrameList.read(dataset);
+    /* tbd: read ReferencedSegmentNumber (conditional) */
+
     /* read ReferencedSOPSequence (Presentation State, optional) */
     if (result.good())
         PresentationState.readSequence(dataset, "3" /*type*/);
+    /* tbd: read ReferencedRealWorldValueMappingInstanceSequence (optional) */
+
     /* read IconImageSequence (optional) */
     if (result.good())
     {

@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.25 (riesmeier)
 
+- Added comments on missing features:
+  Added comments that the conditional/optional attributes Referenced Segment
+  Number (0062,000B) and Referenced Real World Value Mapping Instance Sequence
+  (0008,114B) are not yet supported by this class. Such still-missing features
+  are marked with "tbd" (to be done) throughout the "dcmsr" module.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/libsrc/dsrimgvl.cc
+
 - Use helper method for deleting data elements:
   Use the helper method DcmItem::findAndDeleteElement() for deleting certain
   data elements in all items of a particular sequence.

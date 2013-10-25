@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -362,6 +362,10 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     DSRCompositeReferenceValue PresentationState;
     /// list of referenced frame numbers (associated DICOM VR=IS, VM=1-n, type 1C)
     DSRImageFrameList FrameList;
+    // tbd: list of referenced segment numbers (conditional)
+
+    // tbd: composite reference value to real world value mapping instance (optional)
+
     /// icon image from Icon Image Sequence (optional)
     DicomImage *IconImage;
 };
