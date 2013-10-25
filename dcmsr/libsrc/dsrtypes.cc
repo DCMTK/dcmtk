@@ -877,13 +877,8 @@ void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
     while ((dobj = sequence.nextInContainer(dobj)) != NULL)
     {
         DcmItem *ditem = OFstatic_cast(DcmItem *, dobj);
-        /* search for attribute and remove date element (if found) */
-        DcmStack stack;
-        if (ditem->search(tagKey, stack, ESM_fromHere, OFTrue /*searchIntoSub*/).good())
-        {
-            while (!stack.empty())
-                delete ditem->remove(stack.pop());
-        }
+        /* remove specified data elements (on all nesting levels) */
+        ditem->findAndDeleteElement(tagKey, OFTrue /*allOccurrences*/);
     }
 }
 

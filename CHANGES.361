@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.25 (riesmeier)
 
+- Use helper method for deleting data elements:
+  Use the helper method DcmItem::findAndDeleteElement() for deleting certain
+  data elements in all items of a particular sequence.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
 - Iterate more efficiently over sequence items:
   Changed the way sequence items are iterated. Now, the nextInContainer()
   method of the DcmSequenceOfItems class is used instead of getItem(). This
