@@ -745,96 +745,92 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
         E_RelationshipType relationshipType = RT_invalid;
         /* important: NULL indicates first child node */
         DSRDocumentTreeNode *node = NULL;
-        DcmItem *ditem = NULL;
-        const unsigned long count = dseq->card();
         /* for all items in the sequence */
         unsigned long i = 0;
-        while ((i < count) && result.good())
+        DcmObject *dobj = NULL;
+        while (((dobj = dseq->nextInContainer(dobj)) != NULL) && result.good())
         {
-            ditem = dseq->getItem(i);
-            if (ditem != NULL)
+            DcmItem *ditem = OFstatic_cast(DcmItem *, dobj);
+            DSRDocumentTreeNode *newNode = NULL;
+            /* create current location string */
+            char buffer[20];
+            OFString location = posString;
+            if (!location.empty())
+                location += ".";
+            location += numberToString(OFstatic_cast(size_t, i + 1), buffer);
+            if (flags & RF_showCurrentlyProcessedItem)
+                DCMSR_INFO("Processing content item " << location);
+            /* read RelationshipType */
+            result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1", "content item");
+            if (result.good() || (flags & RF_acceptUnknownRelationshipType))
             {
-                DSRDocumentTreeNode *newNode = NULL;
-                /* create current location string */
-                char buffer[20];
-                OFString location = posString;
-                if (!location.empty())
-                    location += ".";
-                location += numberToString(OFstatic_cast(size_t, i + 1), buffer);
-                if (flags & RF_showCurrentlyProcessedItem)
-                    DCMSR_INFO("Processing content item " << location);
-                /* read RelationshipType */
-                result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1", "content item");
-                if (result.good() || (flags & RF_acceptUnknownRelationshipType))
+                relationshipType = definedTermToRelationshipType(tmpString);
+                /* check relationship type */
+                if (relationshipType == RT_invalid)
                 {
-                    relationshipType = definedTermToRelationshipType(tmpString);
-                    /* check relationship type */
-                    if (relationshipType == RT_invalid)
+                    printUnknownValueWarningMessage("RelationshipType", tmpString.c_str());
+                    if (flags & RF_acceptUnknownRelationshipType)
+                        relationshipType = RT_unknown;
+                }
+                /* check for by-reference relationship */
+                DcmUnsignedLong referencedContentItemIdentifier(DCM_ReferencedContentItemIdentifier);
+                if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", "content item").good())
+                {
+                    /* create new node (by-reference, no constraint checker required) */
+                    result = createAndAppendNewNode(node, relationshipType, VT_byReference);
+                    /* read ReferencedContentItemIdentifier (again) */
+                    if (result.good())
                     {
-                        printUnknownValueWarningMessage("RelationshipType", tmpString.c_str());
-                        if (flags & RF_acceptUnknownRelationshipType)
-                            relationshipType = RT_unknown;
+                        newNode = node;
+                        result = node->readContentItem(*ditem);
                     }
-                    /* check for by-reference relationship */
-                    DcmUnsignedLong referencedContentItemIdentifier(DCM_ReferencedContentItemIdentifier);
-                    if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", "content item").good())
+                } else {
+                    /* read ValueType (from DocumentContentMacro) - required to create new node */
+                    result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1", "content item");
+                    if (result.good())
                     {
-                        /* create new node (by-reference, no constraint checker required) */
-                        result = createAndAppendNewNode(node, relationshipType, VT_byReference);
-                        /* read ReferencedContentItemIdentifier (again) */
-                        if (result.good())
+                        /* read by-value relationship */
+                        valueType = definedTermToValueType(tmpString);
+                        /* check value type */
+                        if (valueType != VT_invalid)
                         {
-                            newNode = node;
-                            result = node->readContentItem(*ditem);
-                        }
-                    } else {
-                        /* read ValueType (from DocumentContentMacro) - required to create new node */
-                        result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1", "content item");
-                        if (result.good())
-                        {
-                            /* read by-value relationship */
-                            valueType = definedTermToValueType(tmpString);
-                            /* check value type */
-                            if (valueType != VT_invalid)
+                            /* create new node (by-value) */
+                            result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
+                            /* read RelationshipMacro */
+                            if (result.good())
                             {
-                                /* create new node (by-value) */
-                                result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
-                                /* read RelationshipMacro */
+                                newNode = node;
+                                result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags);
+                                /* read DocumentContentMacro */
                                 if (result.good())
-                                {
-                                    newNode = node;
-                                    result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags);
-                                    /* read DocumentContentMacro */
-                                    if (result.good())
-                                        result = node->readDocumentContentMacro(*ditem, location.c_str(), flags);
-                                } else {
-                                    /* create new node failed */
-
-                                    /* determine document type */
-                                    const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
-                                    DCMSR_ERROR("Cannot add \"" << relationshipTypeToReadableName(relationshipType) << " "
-                                        << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
-                                        << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
-                                        << documentTypeToReadableName(documentType));
-                                }
+                                    result = node->readDocumentContentMacro(*ditem, location.c_str(), flags);
                             } else {
-                                /* unknown/unsupported value type */
-                                printUnknownValueWarningMessage("ValueType", tmpString.c_str());
-                                result = SR_EC_UnknownValueType;
+                                /* create new node failed */
+
+                                /* determine document type */
+                                const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
+                                DCMSR_ERROR("Cannot add \"" << relationshipTypeToReadableName(relationshipType) << " "
+                                    << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
+                                    << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
+                                    << documentTypeToReadableName(documentType));
                             }
+                        } else {
+                            /* unknown/unsupported value type */
+                            printUnknownValueWarningMessage("ValueType", tmpString.c_str());
+                            result = SR_EC_UnknownValueType;
                         }
                     }
                 }
-                /* check for any errors */
-                if (result.bad())
-                {
-                    printContentItemErrorMessage("Reading", result, newNode, location.c_str());
-                    /* print current data set (item) that caused the error */
-                    DCMSR_DEBUG(OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl
-                        << DcmObject::PrintHelper(*ditem, DCMTypes::PF_convertToOctalNumbers, 1) << OFString(78, '-'));
-                }
-            } else
-                result = SR_EC_InvalidDocumentTree;
+            }
+            /* check for any errors */
+            if (result.bad())
+            {
+                printContentItemErrorMessage("Reading", result, newNode, location.c_str());
+                /* print current data set (item) that caused the error */
+                DCMSR_DEBUG(OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl
+                    << DcmObject::PrintHelper(*ditem, DCMTypes::PF_convertToOctalNumbers, 1) << OFString(78, '-'));
+            }
+            /* increment the counter (needed for generating the location string) */
             i++;
         }
         /* skipping complete sub-tree if flag is set */

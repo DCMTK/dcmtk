@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.25 (riesmeier)
+
+- Iterate more efficiently over sequence items:
+  Changed the way sequence items are iterated. Now, the nextInContainer()
+  method of the DcmSequenceOfItems class is used instead of getItem(). This
+  approach is much more efficient when a sequence contains a huge number of
+  items, because of the current implementation of the getItem() method.
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrrefin.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2013.10.24 (riesmeier)
 
 - Adapted test cases for markup conversion:

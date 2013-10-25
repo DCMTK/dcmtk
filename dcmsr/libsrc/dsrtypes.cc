@@ -872,23 +872,17 @@ OFCondition DSRTypes::addElementToDataset(OFCondition &result,
 void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
                                            const DcmTagKey &tagKey)
 {
-    DcmStack stack;
-    DcmItem *item = NULL;
-    const size_t count = OFstatic_cast(size_t, sequence.card());
     /* iterate over all sequence items */
-    for (size_t i = 0; i < count; i++)
+    DcmObject *dobj = NULL;
+    while ((dobj = sequence.nextInContainer(dobj)) != NULL)
     {
-        /* not very efficient, should be replaced by nextObject() sometime */
-        item = sequence.getItem(i);
-        if (item != NULL)
+        DcmItem *ditem = OFstatic_cast(DcmItem *, dobj);
+        /* search for attribute and remove date element (if found) */
+        DcmStack stack;
+        if (ditem->search(tagKey, stack, ESM_fromHere, OFTrue /*searchIntoSub*/).good())
         {
-            /* should not be necessary, but is more secure */
-            stack.clear();
-            if (item->search(tagKey, stack, ESM_fromHere, OFTrue /*searchIntoSub*/).good())
-            {
-                while (!stack.empty())
-                    delete item->remove(stack.pop());
-            }
+            while (!stack.empty())
+                delete ditem->remove(stack.pop());
         }
     }
 }

@@ -81,27 +81,24 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
     {
         ItemStruct *item = NULL;
         OFString codingSchemeDesignator;
-        const unsigned long count = sequence->card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < count; i++)
+        DcmObject *dobj = NULL;
+        while ((dobj = sequence->nextInContainer(dobj)) != NULL)
         {
-            DcmItem *ditem = sequence->getItem(i);
-            if (ditem != NULL)
+            DcmItem *ditem = OFstatic_cast(DcmItem *, dobj);
+            /* get the coding scheme designator */
+            if (getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeDesignator, codingSchemeDesignator, "1", "1", "CodingSchemeIdentificationSequence").good())
             {
-                /* get the coding scheme designator */
-                if (getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeDesignator, codingSchemeDesignator, "1", "1", "CodingSchemeIdentificationSequence").good())
+                /* add new item to the list */
+                if (addItem(codingSchemeDesignator, item).good())
                 {
-                    /* add new item to the list */
-                    if (addItem(codingSchemeDesignator, item).good())
-                    {
-                        /* read additional information */
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeRegistry, item->CodingSchemeRegistry, "1", "1C", "CodingSchemeIdentificationSequence");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeUID, item->CodingSchemeUID, "1", "1C", "CodingSchemeIdentificationSequence");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "1", "2C", "CodingSchemeIdentificationSequence");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3", "CodingSchemeIdentificationSequence");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3", "CodingSchemeIdentificationSequence");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3", "CodingSchemeIdentificationSequence");
-                    }
+                    /* read additional information */
+                    getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeRegistry, item->CodingSchemeRegistry, "1", "1C", "CodingSchemeIdentificationSequence");
+                    getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeUID, item->CodingSchemeUID, "1", "1C", "CodingSchemeIdentificationSequence");
+                    getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "1", "2C", "CodingSchemeIdentificationSequence");
+                    getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3", "CodingSchemeIdentificationSequence");
+                    getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3", "CodingSchemeIdentificationSequence");
+                    getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3", "CodingSchemeIdentificationSequence");
                 }
             }
         }

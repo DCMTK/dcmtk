@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,23 +81,20 @@ OFCondition DSRReferencedInstanceList::read(DcmItem &dataset)
     {
         ItemStruct *item = NULL;
         OFString sopClassUID, instanceUID;
-        const unsigned long count = sequence.card();
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < count; i++)
+        DcmObject *dobj = NULL;
+        while ((dobj = sequence.nextInContainer(dobj)) != NULL)
         {
-            DcmItem *ditem = sequence.getItem(i);
-            if (ditem != NULL)
+            DcmItem *ditem = OFstatic_cast(DcmItem *, dobj);
+            /* get the SOP class and instance UID */
+            if (getAndCheckStringValueFromDataset(*ditem, DCM_ReferencedSOPClassUID, sopClassUID, "1", "1", "ReferencedInstanceSequence").good() &&
+                getAndCheckStringValueFromDataset(*ditem, DCM_ReferencedSOPInstanceUID, instanceUID, "1", "1", "ReferencedInstanceSequence").good())
             {
-                /* get the SOP class and instance UID */
-                if (getAndCheckStringValueFromDataset(*ditem, DCM_ReferencedSOPClassUID, sopClassUID, "1", "1", "ReferencedInstanceSequence").good() &&
-                    getAndCheckStringValueFromDataset(*ditem, DCM_ReferencedSOPInstanceUID, instanceUID, "1", "1", "ReferencedInstanceSequence").good())
+                /* add new item to the list */
+                if (addItem(sopClassUID, instanceUID, item).good())
                 {
-                    /* add new item to the list */
-                    if (addItem(sopClassUID, instanceUID, item).good())
-                    {
-                        /* read additional information */
-                        item->PurposeOfReference.readSequence(*ditem, DCM_PurposeOfReferenceCodeSequence, "1");
-                    }
+                    /* read additional information */
+                    item->PurposeOfReference.readSequence(*ditem, DCM_PurposeOfReferenceCodeSequence, "1");
                 }
             }
         }
