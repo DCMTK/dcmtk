@@ -125,19 +125,23 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *  enabled, a warning message is printed if the sequence is absent or contains more than
      *  one item.
      ** @param  dataset  DICOM dataset from which the sequence should be read
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be read
      *  @param  type     value type of the sequence (valid value: "1", "2", something else)
      *                   This parameter is used for checking purpose, any difference is reported.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readSequence(DcmItem &dataset,
+                                     const DcmTagKey &tagKey,
                                      const OFString &type);
 
     /** write referenced SOP sequence to dataset.
      *  If the value is empty an empty sequence (without any items) is written.
      ** @param  dataset  DICOM dataset to which the sequence should be written
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSequence(DcmItem &dataset) const;
+    virtual OFCondition writeSequence(DcmItem &dataset,
+                                      const DcmTagKey &tagKey) const;
 
     /** render composite reference value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written

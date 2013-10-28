@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,14 +87,14 @@ OFCondition DSRCompositeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 OFCondition DSRCompositeTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read ReferencedSOPSequence */
-    return DSRCompositeReferenceValue::readSequence(dataset, "1" /* type */);
+    return DSRCompositeReferenceValue::readSequence(dataset, DCM_ReferencedSOPSequence, "1" /* type */);
 }
 
 
 OFCondition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write ReferencedSOPSequence */
-    return DSRCompositeReferenceValue::writeSequence(dataset);
+    return DSRCompositeReferenceValue::writeSequence(dataset, DCM_ReferencedSOPSequence);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,7 +59,8 @@ class DCMTK_DCMSR_EXPORT DSRImageTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes are valid.
+     *  The content item is valid if the two base classes are valid.  See
+     *  DSRDocumentTreeNode::isValid() and DSRImageReferenceValue::isValid().
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -74,6 +75,9 @@ class DCMTK_DCMSR_EXPORT DSRImageTreeNode
     /** print content item.
      *  A typical output looks like this: contains IMAGE:=(CT image,"1.2.3") or
      *  (CT image,"1.2.3"),(GSPS,"1.2.3.4") if a presentation state is present.
+     *  If the SOP class UID is unknown, the UID is printed instead of the related name.
+     *  Also, the list of referenced frame numbers is shown, but not the UIDs of the
+     *  real world value mapping object (if referenced).
      ** @param  stream  output stream to which the content item should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise

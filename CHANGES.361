@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.28 (riesmeier)
+
+- Added support for Real World Value Mapping objects:
+  Added support for referencing objects of the Real World Value Mapping Storage
+  SOP class from IMAGE content items. Partially closes DCMTK Feature #149.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrwavtn.cc
+
 **** Changes from 2013.10.25 (riesmeier)
 
 - Fixed small typos in comments.

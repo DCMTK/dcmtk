@@ -32,8 +32,9 @@
 
 DSRImageReferenceValue::DSRImageReferenceValue()
   : DSRCompositeReferenceValue(),
-    PresentationState(),
     FrameList(),
+    PresentationState(),
+    RealWorldValueMapping(),
     IconImage(NULL)
 {
 }
@@ -43,8 +44,9 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &sopClassUID,
                                                const OFString &sopInstanceUID,
                                                const OFBool check)
   : DSRCompositeReferenceValue(),
-    PresentationState(),
     FrameList(),
+    PresentationState(),
+    RealWorldValueMapping(),
     IconImage(NULL)
 {
     /* use the set method for checking purposes */
@@ -58,8 +60,9 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
                                                const OFString &pstateSOPInstanceUID,
                                                const OFBool check)
   : DSRCompositeReferenceValue(),
-    PresentationState(),
     FrameList(),
+    PresentationState(),
+    RealWorldValueMapping(),
     IconImage(NULL)
 {
     /* use the set methods for checking purposes */
@@ -70,8 +73,9 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
 
 DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &referenceValue)
   : DSRCompositeReferenceValue(referenceValue),
-    PresentationState(referenceValue.PresentationState),
     FrameList(referenceValue.FrameList),
+    PresentationState(referenceValue.PresentationState),
+    RealWorldValueMapping(referenceValue.RealWorldValueMapping),
     IconImage(NULL)
 {
     /* do not check values since this would be unexpected to the user */
@@ -85,8 +89,9 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &ref
 DSRImageReferenceValue::DSRImageReferenceValue(const DSRCompositeReferenceValue &imageReferenceValue,
                                                const DSRCompositeReferenceValue &pstateReferenceValue)
   : DSRCompositeReferenceValue(imageReferenceValue),
-    PresentationState(pstateReferenceValue),
     FrameList(),
+    PresentationState(pstateReferenceValue),
+    RealWorldValueMapping(),
     IconImage(NULL)
 {
 }
@@ -102,8 +107,9 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
 {
     DSRCompositeReferenceValue::operator=(referenceValue);
     /* do not check since this would be unexpected to the user */
-    PresentationState = referenceValue.PresentationState;
     FrameList = referenceValue.FrameList;
+    PresentationState = referenceValue.PresentationState;
+    RealWorldValueMapping = referenceValue.RealWorldValueMapping;
     /* create copy of icon image (if any), first frame only */
     IconImage = (referenceValue.IconImage != NULL) ? referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/) : NULL;
     return *this;
@@ -113,15 +119,17 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
 void DSRImageReferenceValue::clear()
 {
     DSRCompositeReferenceValue::clear();
-    PresentationState.clear();
     FrameList.clear();
+    PresentationState.clear();
+    RealWorldValueMapping.clear();
     deleteIconImage();
 }
 
 
 OFBool DSRImageReferenceValue::isValid() const
 {
-    return DSRCompositeReferenceValue::isValid() && checkPresentationState(PresentationState).good();
+    return DSRCompositeReferenceValue::isValid() && checkPresentationState(PresentationState).good()
+                                                 && checkRealWorldValueMapping(RealWorldValueMapping).good();
 }
 
 
@@ -212,10 +220,17 @@ OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
         }
         if (result.good())
         {
-            /* presentation state (optional) */
+            /* presentation state object (optional) */
             cursor = doc.getNamedNode(cursor.getChild(), "pstate", OFFalse /*required*/);
             if (cursor.getChild().valid())
                 result = PresentationState.readXML(doc, cursor);
+        }
+        if (result.good())
+        {
+            /* real world value mapping object (optional) */
+            cursor = doc.getNamedNode(cursor.getChild(), "mapping", OFFalse /*required*/);
+            if (cursor.getChild().valid())
+                result = RealWorldValueMapping.readXML(doc, cursor);
         }
     }
     return result;
@@ -226,18 +241,28 @@ OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
                                              const size_t flags) const
 {
     OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags);
+    /* frame list (optional) */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !FrameList.isEmpty())
     {
         stream << "<frames>";
         FrameList.print(stream);
         stream << "</frames>" << OFendl;
     }
+    /* presentation state object (optional) */
     if ((flags & DSRTypes::XF_writeEmptyTags) || PresentationState.isValid())
     {
         stream << "<pstate>" << OFendl;
         if (PresentationState.isValid())
             PresentationState.writeXML(stream, flags);
         stream << "</pstate>" << OFendl;
+    }
+    /* real world value mapping object (optional) */
+    if ((flags & DSRTypes::XF_writeEmptyTags) || RealWorldValueMapping.isValid())
+    {
+        stream << "<mapping>" << OFendl;
+        if (RealWorldValueMapping.isValid())
+            RealWorldValueMapping.writeXML(stream, flags);
+        stream << "</mapping>" << OFendl;
     }
     return result;
 }
@@ -256,9 +281,10 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
 
     /* read ReferencedSOPSequence (Presentation State, optional) */
     if (result.good())
-        PresentationState.readSequence(dataset, "3" /*type*/);
-    /* tbd: read ReferencedRealWorldValueMappingInstanceSequence (optional) */
-
+        PresentationState.readSequence(dataset, DCM_ReferencedSOPSequence, "3" /*type*/);
+    /* read ReferencedRealWorldValueMappingInstanceSequence (optional) */
+    if (result.good())
+        RealWorldValueMapping.readSequence(dataset, DCM_ReferencedRealWorldValueMappingInstanceSequence, "3" /*type*/);
     /* read IconImageSequence (optional) */
     if (result.good())
     {
@@ -306,7 +332,13 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
     if (result.good())
     {
         if (PresentationState.isValid())
-            result = PresentationState.writeSequence(dataset);
+            result = PresentationState.writeSequence(dataset, DCM_ReferencedSOPSequence);
+    }
+    /* write ReferencedRealWorldValueMappingInstanceSequence (optional) */
+    if (result.good())
+    {
+        if (RealWorldValueMapping.isValid())
+            result = RealWorldValueMapping.writeSequence(dataset, DCM_ReferencedRealWorldValueMappingInstanceSequence);
     }
     /* write IconImageSequence (optional) */
     if (result.good() && (IconImage != NULL))
@@ -357,7 +389,7 @@ OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
     else
         docStream << "unknown";
     docStream << " image";
-    /* text: pstate */
+    /* text: presentation state */
     if (PresentationState.isValid())
         docStream << " with presentation state";
     docStream << "</a>";
@@ -536,6 +568,22 @@ OFCondition DSRImageReferenceValue::setPresentationState(const DSRCompositeRefer
 }
 
 
+OFCondition DSRImageReferenceValue::setRealWorldValueMapping(const DSRCompositeReferenceValue &mappingValue,
+                                                             const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* check whether the passed value is valid */
+    if (check)
+        result = checkRealWorldValueMapping(mappingValue);
+    /* both UID values need to be empty or non-empty (optional) */
+    else if (mappingValue.getSOPClassUID().empty() != mappingValue.getSOPInstanceUID().empty())
+        result = SR_EC_InvalidValue;
+    if (result.good())
+        RealWorldValueMapping = mappingValue;
+    return result;
+}
+
+
 OFBool DSRImageReferenceValue::appliesToFrame(const Sint32 frameNumber) const
 {
     OFBool result = OFTrue;
@@ -559,11 +607,23 @@ OFCondition DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID
 OFCondition DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const
 {
     OFCondition result = EC_Normal;
-    /* the reference to a presentation state is optional, so an empty value is also valid */
+    /* the reference to a presentation state object is optional, so an empty value is also valid */
     if (!referenceValue.isEmpty())
     {
-        result = referenceValue.checkCurrentValue();
-        if (result.good() && (DSRTypes::sopClassUIDToPresentationStateType(referenceValue.getSOPClassUID()) == DSRTypes::PT_invalid))
+        if (DSRTypes::sopClassUIDToPresentationStateType(referenceValue.getSOPClassUID()) == DSRTypes::PT_invalid)
+            result = SR_EC_InvalidValue;
+    }
+    return result;
+}
+
+
+OFCondition DSRImageReferenceValue::checkRealWorldValueMapping(const DSRCompositeReferenceValue &referenceValue) const
+{
+    OFCondition result = EC_Normal;
+    /* the reference to a real world value mapping object is optional, so an empty value is also valid */
+    if (!referenceValue.isEmpty())
+    {
+        if (referenceValue.getSOPClassUID() != UID_RealWorldValueMappingStorage)
             result = SR_EC_InvalidValue;
     }
     return result;

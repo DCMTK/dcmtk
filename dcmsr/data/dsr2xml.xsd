@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2012, OFFIS e.V.
+      Copyright (C) 2003-2013, OFFIS e.V.
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -615,6 +615,7 @@
                     <xsd:sequence>
                       <xsd:element name="frames" type="dsr:IntegerList" minOccurs="0"/>
                       <xsd:element name="pstate" type="dsr:ReferencedSOP" minOccurs="0"/>
+                      <xsd:element name="mapping" type="dsr:ReferencedSOP" minOccurs="0"/>
                     </xsd:sequence>
                   </xsd:extension>
                 </xsd:complexContent>

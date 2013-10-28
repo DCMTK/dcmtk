@@ -164,12 +164,13 @@ OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset) const
 
 
 OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
+                                                     const DcmTagKey &tagKey,
                                                      const OFString &type)
 {
-    /* read ReferencedSOPSequence */
+    /* read specified sequence with its item */
     DcmSequenceOfItems *dseq = NULL;
-    OFCondition result = dataset.findAndGetSequence(DCM_ReferencedSOPSequence, dseq);
-    DSRTypes::checkElementValue(dseq, DCM_ReferencedSOPSequence, "1", type, result, "content item");
+    OFCondition result = dataset.findAndGetSequence(tagKey, dseq);
+    DSRTypes::checkElementValue(dseq, tagKey, "1", type, result, "content item");
     if (result.good())
     {
         /* read first item */
@@ -183,11 +184,12 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset) const
+OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
+                                                      const DcmTagKey &tagKey) const
 {
     OFCondition result = EC_MemoryExhausted;
-    /* write ReferencedSOPSequence */
-    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedSOPSequence);
+    /* write specified sequence with its item */
+    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(tagKey);
     if (dseq != NULL)
     {
         DcmItem *ditem = new DcmItem();
