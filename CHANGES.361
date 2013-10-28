@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.28 (riesmeier)
 
+- Added comment on getFrameList() method:
+  Added clarifying note on the getFrameList() method (based on the DICOM
+  standard text, Table C.18.4-1 in PS 3.3-2011).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+
 - Added support for Real World Value Mapping objects:
   Added support for referencing objects of the Real World Value Mapping Storage
   SOP class from IMAGE content items. Partially closes DCMTK Feature #149.

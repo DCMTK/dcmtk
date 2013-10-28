@@ -321,7 +321,10 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     OFCondition setRealWorldValueMapping(const DSRCompositeReferenceValue &mappingValue,
                                          const OFBool check = OFTrue);
 
-    /** get reference to list of referenced frame numbers
+    /** get reference to list of referenced frame numbers.
+     *  According to the DICOM standard, this list is required if the referenced image has
+     *  multiple frames and the reference does not apply to all frames.  Please note that
+     *  the first frame is donated as frame number 1; the values are not checked!
      ** @return reference to frame list
      */
     inline DSRImageFrameList &getFrameList()
