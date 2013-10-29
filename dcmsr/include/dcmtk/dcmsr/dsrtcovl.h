@@ -36,7 +36,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for temporal coordinate values
+/** Class for temporal coordinates values
  */
 class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 {
@@ -235,7 +235,7 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
      *  @param  dateTimeList        list of referenced date/time to be checked
      *  @param  reportWarnings      if enabled, report a warning message on each deviation
      *                              from an expected value to the logger
-     ** @return status, EC_Normal if graphic type and data are valid, an error code otherwise
+     ** @return status, EC_Normal if checked data is valid, an error code otherwise
      */
     OFCondition checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
                           const DSRReferencedSamplePositionList &samplePositionList,

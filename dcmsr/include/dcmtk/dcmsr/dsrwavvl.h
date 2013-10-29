@@ -93,7 +93,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     /** print waveform reference.
      *  The output of a typical waveform reference value looks like this: (HemodynamicWaveform
      *  Storage,"1.2.3")
-     *  If the SOP class UID is unknown the UID is printed instead of the related name.
+     *  If the SOP class UID is unknown, the UID is printed instead of the related name.
      ** @param  stream  output stream to which the image reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise

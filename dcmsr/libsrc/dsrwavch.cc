@@ -90,7 +90,7 @@ OFCondition DSRWaveformChannelList::print(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRWaveformChannelList::read(DcmItem &dataset)
 {
-    /* get integer string from dataset */
+    /* get integer array from dataset */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
     OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", "WAVEFORM content item");
     if (result.good())
@@ -100,7 +100,7 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset)
         Uint16 group = 0;
         Uint16 channel = 0;
         const unsigned long count = delem.getVM();
-        /* fill list with values from integer string */
+        /* fill list with values from integer array */
         unsigned long i = 0;
         while ((i < count) && result.good())
         {
@@ -120,7 +120,7 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset)
 OFCondition DSRWaveformChannelList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
-    /* fill string with values from list */
+    /* fill integer array with values from list */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
     const OFListConstIterator(DSRWaveformChannelItem) endPos = ItemList.end();
     OFListConstIterator(DSRWaveformChannelItem) iterator = ItemList.begin();

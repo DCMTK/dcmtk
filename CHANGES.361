@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.29 (riesmeier)
 
+- Slightly enhanced comments.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtcovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+           dcmsr/libsrc/dsrwavch.cc
+
 - Moved checkCurrentValue() to "protected" section:
   Moved method checkCurrentValue() to the "protected" section of the class in
   order to be consistent with other similar classes.
