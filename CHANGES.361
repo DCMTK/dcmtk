@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.29 (riesmeier)
 
+- Check return value of write() methods:
+  Check return value when writing data from one of the three lists, i.e.
+  SamplePositionList, TimeOffsetList or DateTimeList.
+  Affects: dcmsr/libsrc/dsrtcovl.cc
+
 - Slightly enhanced comments.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrtcovl.h
            dcmsr/include/dcmtk/dcmsr/dsrwavvl.h

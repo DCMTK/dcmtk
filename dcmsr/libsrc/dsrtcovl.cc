@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -206,11 +206,11 @@ OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset) const
     {
         /* write data (only one list) */
         if (!SamplePositionList.isEmpty())
-            SamplePositionList.write(dataset);
+            result = SamplePositionList.write(dataset);
         else if (!TimeOffsetList.isEmpty())
-            TimeOffsetList.write(dataset);
+            result = TimeOffsetList.write(dataset);
         else
-            DateTimeList.write(dataset);
+            result = DateTimeList.write(dataset);
     }
     /* check data and report warnings if any */
     checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DateTimeList, OFTrue /*reportWarnings*/);
@@ -349,7 +349,7 @@ OFCondition DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRan
     else if (!list1 && !list2 && !list3)
     {
         REPORT_WARNING("ReferencedSamplePositions/TimeOffsets/DateTime empty in TCOORD content item")
-        /* invalid: all lists are empty (type 1C) */
+        /* invalid: all lists are empty (type 1C condition violated) */
         result = SR_EC_InvalidValue;
     }
     return result;
