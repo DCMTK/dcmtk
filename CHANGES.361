@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.29 (riesmeier)
+
+- Moved checkCurrentValue() to "protected" section:
+  Moved method checkCurrentValue() to the "protected" section of the class in
+  order to be consistent with other similar classes.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+
 **** Changes from 2013.10.28 (riesmeier)
 
 - Added comment on getFrameList() method:

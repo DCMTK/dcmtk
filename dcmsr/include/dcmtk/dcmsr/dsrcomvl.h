@@ -96,7 +96,7 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
 
     /** print reference value.
      *  The output of a typical composite reference value looks like this: (BasicTextSR,"1.2.3").
-     *  If the SOP class UID is unknown the UID is printed instead of the related name.
+     *  If the SOP class UID is unknown, the UID is printed instead of the related name.
      ** @param  stream  output stream to which the reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -235,12 +235,6 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     OFCondition setSOPInstanceUID(const OFString &sopInstanceUID,
                                   const OFBool check = OFTrue);
 
-    /** check the currently stored reference value for validity.
-     *  See below checkXXX() methods for details.
-     ** @return status, EC_Normal if current value is valid, an error code otherwise
-     */
-    OFCondition checkCurrentValue() const;
-
 
   protected:
 
@@ -281,6 +275,12 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
     virtual OFCondition checkSOPInstanceUID(const OFString &sopInstanceUID) const;
+
+    /** check the currently stored reference value for validity.
+     *  See above checkXXX() methods for details.
+     ** @return status, EC_Normal if current value is valid, an error code otherwise
+     */
+    OFCondition checkCurrentValue() const;
 
     /// reference SOP class UID (VR=UI, type 1)
     OFString SOPClassUID;
