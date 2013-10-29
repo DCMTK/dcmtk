@@ -613,7 +613,10 @@
                 <xsd:complexContent>
                   <xsd:extension base="dsr:ReferencedSOP">
                     <xsd:sequence>
-                      <xsd:element name="frames" type="dsr:IntegerList" minOccurs="0"/>
+                      <xsd:choice>
+                        <xsd:element name="frames" type="dsr:IntegerList" minOccurs="0"/>
+                        <xsd:element name="segments" type="dsr:IntegerList" minOccurs="0"/>
+                      </xsd:choice>
                       <xsd:element name="pstate" type="dsr:ReferencedSOP" minOccurs="0"/>
                       <xsd:element name="mapping" type="dsr:ReferencedSOP" minOccurs="0"/>
                     </xsd:sequence>

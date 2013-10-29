@@ -23,15 +23,15 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 LOCALDEFS =
 
 objs = dsrdoc.o dsrtree.o dsrtncsr.o dsrdoctn.o dsrdoctr.o \
-	dsrimgfr.o dsrscogr.o dsrsc3gr.o dsrtcodt.o dsrtcosp.o dsrtcoto.o \
-	dsrwavch.o dsrcitem.o dsrtypes.o dsrstrvl.o dsrcodvl.o dsrnumvl.o \
-	dsrscovl.o dsrsc3vl.o dsrtcovl.o dsrcomvl.o dsrimgvl.o dsrwavvl.o \
-	dsrtextn.o dsrcodtn.o dsrnumtn.o dsrdtitn.o dsrdattn.o dsrtimtn.o \
-	dsruidtn.o dsrpnmtn.o dsrscotn.o dsrsc3tn.o dsrtcotn.o dsrcomtn.o \
-	dsrimgtn.o dsrwavtn.o dsrcontn.o dsrreftn.o dsrsoprf.o dsrrefin.o \
-	dsrcsidl.o dsrxmlc.o dsrxmld.o dsriodcc.o dsrbascc.o dsrenhcc.o \
-	dsrcomcc.o dsrkeycc.o dsrmamcc.o dsrchecc.o dsrcolcc.o dsrprocc.o \
-	dsrxrdcc.o dsrspecc.o dsrmaccc.o dsrimpcc.o dsrc3dcc.o
+	dsrimgfr.o dsrimgse.o dsrscogr.o dsrsc3gr.o dsrtcodt.o dsrtcosp.o \
+	dsrtcoto.o dsrwavch.o dsrcitem.o dsrtypes.o dsrstrvl.o dsrcodvl.o \
+	dsrnumvl.o dsrscovl.o dsrsc3vl.o dsrtcovl.o dsrcomvl.o dsrimgvl.o \
+	dsrwavvl.o dsrtextn.o dsrcodtn.o dsrnumtn.o dsrdtitn.o dsrdattn.o \
+	dsrtimtn.o dsruidtn.o dsrpnmtn.o dsrscotn.o dsrsc3tn.o dsrtcotn.o \
+	dsrcomtn.o dsrimgtn.o dsrwavtn.o dsrcontn.o dsrreftn.o dsrsoprf.o \
+	dsrrefin.o dsrcsidl.o dsrxmlc.o dsrxmld.o dsriodcc.o dsrbascc.o \
+	dsrenhcc.o dsrcomcc.o dsrkeycc.o dsrmamcc.o dsrchecc.o dsrcolcc.o \
+	dsrprocc.o dsrxrdcc.o dsrspecc.o dsrmaccc.o dsrimpcc.o dsrc3dcc.o
 library = libdcmsr.$(LIBEXT)
 
 

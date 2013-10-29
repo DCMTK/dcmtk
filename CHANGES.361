@@ -3,6 +3,22 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.29 (riesmeier)
 
+- Added support for Referenced Segment Number:
+  Added support for the optional list of referenced segment numbers to IMAGE
+  content items. Partially closes DCMTK Feature #149.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrimgse.h
+           dcmsr/libsrc/dsrimgse.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrimgfr.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/tests/Makefile.dep
+
 - Check return value of write() methods:
   Check return value when writing data from one of the three lists, i.e.
   SamplePositionList, TimeOffsetList or DateTimeList.

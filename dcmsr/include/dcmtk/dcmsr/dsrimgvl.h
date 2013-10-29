@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrimgfr.h"
+#include "dcmtk/dcmsr/dsrimgse.h"
 
 
 /*-----------------------*
@@ -118,8 +119,10 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
 
     /** check whether the current image reference value is valid.
      *  The reference value is valid if both SOP class UID and SOP instance UID are valid (see
-     *  checkSOP...UID() for details), as well as the optional presentation state and real world
-     *  value mapping objects (see checkPresentationState() and checkRealWorldValueMapping()).
+     *  checkSOPClassUID() and checkSOPInstanceUID() for details), as well as the optional
+     *  presentation state and real world value mapping objects (see checkPresentationState()
+     *  and checkRealWorldValueMapping(), respectively).  Also the presence of the optional
+     *  list of frame and segment numbers is checked using checkListData().
      ** @return OFTrue if reference value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -136,8 +139,8 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *  The output of a typical image reference value looks like this: (CT image,"1.2.3") or
      *  (CT image,"1.2.3"),(GSPS,"1.2.3.4") if a presentation state is present.
      *  If the SOP class UID is unknown, the UID is printed instead of the related name.
-     *  Also, the list of referenced frame numbers is shown, but not the two UIDs of the
-     *  real world value mapping object (if referenced).
+     *  Also, the list of referenced frame/segment numbers is shown, but not the two UIDs of
+     *  the real world value mapping object (if referenced).
      ** @param  stream  output stream to which the image reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -323,13 +326,24 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
 
     /** get reference to list of referenced frame numbers.
      *  According to the DICOM standard, this list is required if the referenced image has
-     *  multiple frames and the reference does not apply to all frames.  Please note that
-     *  the first frame is donated as frame number 1; the values are not checked!
+     *  multiple frames, and the reference does not apply to all frames and the list of
+     *  referenced segment numbers is empty/absent.
      ** @return reference to frame list
      */
     inline DSRImageFrameList &getFrameList()
     {
         return FrameList;
+    }
+
+    /** get reference to list of referenced segment numbers.
+     *  According to the DICOM standard, this list is required if the referenced image is
+     *  a segmentation object, and the reference does not apply to all segments and the list
+     *  of referenced frame numbers is empty/absent.
+     ** @return reference to segment list
+     */
+    inline DSRImageSegmentList &getSegmentList()
+    {
+        return SegmentList;
     }
 
     /** check whether the image reference applies to a specific frame.
@@ -339,6 +353,14 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      ** @return OFTrue if reference applies to the specified frame, OFFalse otherwise
      */
     OFBool appliesToFrame(const Sint32 frameNumber) const;
+
+    /** check whether the image reference applies to a specific segment.
+     *  The image reference applies to a segment (of a segmentation image) if the list of
+     *  referenced segment numbers is empty or the segment number is part of the list.
+     ** @param  segmentNumber  number of the segment to be checked
+     ** @return OFTrue if reference applies to the specified segment, OFFalse otherwise
+     */
+    OFBool appliesToSegment(const Uint16 segmentNumber) const;
 
 
   protected:
@@ -389,13 +411,33 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      */
     virtual OFCondition checkRealWorldValueMapping(const DSRCompositeReferenceValue &referenceValue) const;
 
+    /** check the given list of frame and segment numbers for validity.
+     *  The only check that is currently performed is that either both lists are empty or only
+     *  one of them is non-empty, because otherwise the "type 1C" condition would be violated.
+     ** @param  frameList       list of referenced frame numbers to be checked
+     *  @param  segmentList     list of referenced segment numbers to be checked
+     *  @param  reportWarnings  if enabled, report a warning message on each deviation from an
+     *                          expected value to the logger
+     ** @return status, EC_Normal if checked data is valid, an error code otherwise
+     */
+    OFCondition checkListData(const DSRImageFrameList &frameList,
+                              const DSRImageSegmentList &segmentList,
+                              const OFBool reportWarnings = OFFalse) const;
+
+    /** check the currently stored image reference value for validity.
+     *  See above checkXXX() methods and DSRCompositeReferenceValue::checkCurrentValue()
+     *  for details.
+     ** @return status, EC_Normal if current value is valid, an error code otherwise
+     */
+    OFCondition checkCurrentValue() const;
+
 
   private:
 
     /// list of referenced frame numbers (associated DICOM VR=IS, VM=1-n, type 1C)
     DSRImageFrameList FrameList;
-    // tbd: list of referenced segment numbers (conditional)
-
+    /// list of referenced segment numbers (associated DICOM VR=US, VM=1-n, type 1C)
+    DSRImageSegmentList SegmentList;
     /// composite reference value (UIDs) to presentation state object (optional)
     DSRCompositeReferenceValue PresentationState;
     /// composite reference value (UIDs) to real world value mapping object (optional)

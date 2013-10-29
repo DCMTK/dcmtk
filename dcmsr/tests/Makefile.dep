@@ -114,9 +114,9 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrtcodt.h ../include/dcmtk/dcmsr/dsrtcosp.h \
  ../include/dcmtk/dcmsr/dsrtcoto.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrimgvl.h ../include/dcmtk/dcmsr/dsrimgfr.h \
- ../include/dcmtk/dcmsr/dsrwavvl.h ../include/dcmtk/dcmsr/dsrwavch.h \
- ../include/dcmtk/dcmsr/dsrsoprf.h ../include/dcmtk/dcmsr/dsrrefin.h \
- ../include/dcmtk/dcmsr/dsrcsidl.h
+ ../include/dcmtk/dcmsr/dsrimgse.h ../include/dcmtk/dcmsr/dsrwavvl.h \
+ ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrsoprf.h \
+ ../include/dcmtk/dcmsr/dsrrefin.h ../include/dcmtk/dcmsr/dsrcsidl.h
 tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \

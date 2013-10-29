@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -16,14 +16,14 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRImageFrameList
+ *    classes: DSRImageSegmentList
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmsr/dsrimgfr.h"
+#include "dcmtk/dcmsr/dsrimgse.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -35,39 +35,39 @@
 #endif
 
 /* declared in class DSRListOfItems<T> */
-EXPLICIT_SPECIALIZATION const Sint32 DSRListOfItems<Sint32>::EmptyItem = 0;
+EXPLICIT_SPECIALIZATION const Uint16 DSRListOfItems<Uint16>::EmptyItem = 0;
 
 
-DSRImageFrameList::DSRImageFrameList()
-  : DSRListOfItems<Sint32>()
+DSRImageSegmentList::DSRImageSegmentList()
+  : DSRListOfItems<Uint16>()
 {
 }
 
 
-DSRImageFrameList::DSRImageFrameList(const DSRImageFrameList &lst)
-  : DSRListOfItems<Sint32>(lst)
+DSRImageSegmentList::DSRImageSegmentList(const DSRImageSegmentList &lst)
+  : DSRListOfItems<Uint16>(lst)
 {
 }
 
 
-DSRImageFrameList::~DSRImageFrameList()
+DSRImageSegmentList::~DSRImageSegmentList()
 {
 }
 
 
-DSRImageFrameList &DSRImageFrameList::operator=(const DSRImageFrameList &lst)
+DSRImageSegmentList &DSRImageSegmentList::operator=(const DSRImageSegmentList &lst)
 {
-    DSRListOfItems<Sint32>::operator=(lst);
+    DSRListOfItems<Uint16>::operator=(lst);
     return *this;
 }
 
 
-OFCondition DSRImageFrameList::print(STD_NAMESPACE ostream &stream,
+OFCondition DSRImageSegmentList::print(STD_NAMESPACE ostream &stream,
                                      const size_t flags,
                                      const char separator) const
 {
-    const OFListConstIterator(Sint32) endPos = ItemList.end();
-    OFListConstIterator(Sint32) iterator = ItemList.begin();
+    const OFListConstIterator(Uint16) endPos = ItemList.end();
+    OFListConstIterator(Uint16) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
@@ -87,22 +87,22 @@ OFCondition DSRImageFrameList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRImageFrameList::read(DcmItem &dataset)
+OFCondition DSRImageSegmentList::read(DcmItem &dataset)
 {
-    /* get integer string from dataset */
-    DcmIntegerString delem(DCM_ReferencedFrameNumber);
+    /* get integer array from dataset */
+    DcmUnsignedShort delem(DCM_ReferencedSegmentNumber);
     OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "IMAGE content item");
     if (result.good())
     {
         /* clear internal list */
         clear();
-        Sint32 value = 0;
+        Uint16 value = 0;
         const unsigned long count = delem.getVM();
-        /* fill list with values from integer string */
+        /* fill list with values from integer array */
         unsigned long i = 0;
         while ((i < count) && result.good())
         {
-            result = delem.getSint32(value, i++);
+            result = delem.getUint16(value, i++);
             if (result.good())
                 addItem(value);
         }
@@ -111,37 +111,27 @@ OFCondition DSRImageFrameList::read(DcmItem &dataset)
 }
 
 
-OFCondition DSRImageFrameList::write(DcmItem &dataset) const
+OFCondition DSRImageSegmentList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
-    /* fill integer string with values from list */
-    OFString tmpString;
-    char buffer[16];
-    const OFListConstIterator(Sint32) endPos = ItemList.end();
-    OFListConstIterator(Sint32) iterator = ItemList.begin();
-    while (iterator != endPos)
+    /* fill integer array with values from list */
+    DcmUnsignedShort delem(DCM_ReferencedSegmentNumber);
+    const OFListConstIterator(Uint16) endPos = ItemList.end();
+    OFListConstIterator(Uint16) iterator = ItemList.begin();
+    unsigned long i = 0;
+    while ((iterator != endPos) && result.good())
     {
-        if (!tmpString.empty())
-            tmpString += '\\';
-#if SIZEOF_LONG == 8
-        sprintf(buffer, "%d", *iterator);
-#else
-        sprintf(buffer, "%ld", *iterator);
-#endif
-        tmpString += buffer;
+        result = delem.putUint16((*iterator), i++);
         iterator++;
     }
-    /* set integer string */
-    DcmIntegerString delem(DCM_ReferencedFrameNumber);
-    result = delem.putOFStringArray(tmpString);
     /* add to dataset */
     if (result.good())
-        result = DSRTypes::addElementToDataset(result, dataset, new DcmIntegerString(delem), "1-n", "1", "IMAGE content item");
+        result = DSRTypes::addElementToDataset(result, dataset, new DcmUnsignedShort(delem), "1-n", "1", "IMAGE content item");
     return result;
 }
 
 
-OFCondition DSRImageFrameList::putString(const char *stringValue)
+OFCondition DSRImageSegmentList::putString(const char *stringValue)
 {
     OFCondition result = EC_Normal;
     /* clear internal list */
@@ -149,19 +139,15 @@ OFCondition DSRImageFrameList::putString(const char *stringValue)
     /* check input string */
     if ((stringValue != NULL) && (strlen(stringValue) > 0))
     {
-        Sint32 value = 0;
+        Uint16 value = 0;
         const char *ptr = stringValue;
-        /* retrieve frame values from string */
+        /* retrieve segment values from string */
         while (result.good() && (ptr != NULL))
         {
-#if SIZEOF_LONG == 8
-            if (sscanf(ptr, "%d", &value) == 1)
-#else
-            if (sscanf(ptr, "%ld", &value) == 1)
-#endif
+            if (sscanf(ptr, "%hu", &value) == 1)
             {
                 addItem(value);
-                /* jump to next frame value */
+                /* jump to next segment value */
                 ptr = strchr(ptr, ',');
                 if (ptr != NULL)
                     ptr++;
