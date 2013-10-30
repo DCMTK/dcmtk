@@ -6,7 +6,7 @@ IF(WIN32)
 
   # libxml support: find out whether user has library
   GET_FILENAME_COMPONENT(LIBXML_DIR "${DCMTK_SOURCE_DIR}/../libxml2-2.7.7" ABSOLUTE)
-  FIND_PATH(WITH_LIBXMLINC "/include/libxml/parser.h" "${LIBXML_DIR}"/ NO_DEFAULT_PATH)
+  FIND_PATH(WITH_LIBXMLINC "/include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
 
   # libpng support: find out whether user has library
   GET_FILENAME_COMPONENT(LIBPNG_DIR "${DCMTK_SOURCE_DIR}/../libpng-1.4.2" ABSOLUTE)

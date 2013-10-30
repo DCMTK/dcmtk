@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.30 (riesmeier)
 
+- Fixed small issue reported by CMake 2.8.12:
+  A trailing "/" had to be removed in order to keep CMake 2.8.12 quiet.
+  Affects: CMake/3rdparty.cmake
+
 - Updated CMake version:
   Updated information on latest CMake version that has been tested to "2.8.12".
   Affects: CMake/dcmtkPrepare.cmake
