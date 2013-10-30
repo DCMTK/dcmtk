@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.10.30 (riesmeier)
+
+- Updated CMake version:
+  Updated information on latest CMake version that has been tested to "2.8.12".
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2013.10.29 (riesmeier)
 
 - Added support for Referenced Segment Number:
