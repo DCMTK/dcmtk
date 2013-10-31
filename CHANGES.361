@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2013.10.31 (onken)
 
+- Corrected misleading transfer syntax error message:
+  When sending C-ECHO failed because no valid transfer syntax for the
+  Verification SOP Class could be found, then a misleading error message
+  was triggered complaining about missing Verification SOP Class support
+  for Little Endian Implicit. Now the message does only tell that no
+  valid presentation context for C-ECHO could be found.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the
+  original report.
+  Affects: dcmnet/libsrc/scu.cc
+
+**** Changes from 2013.10.31 (onken)
+
 - Support explicit item length denoting too many bytes:
   Added flag that allows to ignore explicit item lengths that denote more
   bytes than the contained elements actually contribute.

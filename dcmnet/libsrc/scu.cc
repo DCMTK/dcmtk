@@ -601,9 +601,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     pcid = findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
   if (pcid == 0)
   {
-    DCMNET_ERROR("No presentation context found for sending C-ECHO with SOP Class / Transfer Syntax: "
-      << dcmFindNameOfUID(UID_VerificationSOPClass, "") << " / "
-      << DcmXfer(UID_LittleEndianImplicitTransferSyntax).getXferName());
+    DCMNET_ERROR("No valid presentation context found for sending C-ECHO using SOP Class: "  << dcmFindNameOfUID(UID_VerificationSOPClass, "")) ;
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
