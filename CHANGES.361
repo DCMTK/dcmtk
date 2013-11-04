@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.04 (riesmeier)
+
+- Added Corneal Topography Map Storage SOP Class:
+  Added Corneal Topography Map Storage SOP Class (introduced only recently with
+  Supplement 168) to the list of accepted SOP classes, since there still was
+  one entry left.
+  Affects: dcmnet/etc/storescp.cfg
+
 **** Changes from 2013.10.31 (onken)
 
 - Corrected misleading transfer syntax error message:
@@ -12,8 +20,6 @@ Changes between releases are documented here.
   Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the
   original report.
   Affects: dcmnet/libsrc/scu.cc
-
-**** Changes from 2013.10.31 (onken)
 
 - Support explicit item length denoting too many bytes:
   Added flag that allows to ignore explicit item lengths that denote more
