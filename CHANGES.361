@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.07 (riesmeier)
+
+- Fixed bug that could cause a crash:
+  Fixed bug that could cause a crash when processing an image with an empty
+  value for Image Type. This could cause a NULL pointer to be dereferenced.
+  Thanks to Tiago D'Agostini <tiago.dagostini@pixeon.com> for the report.
+  Affects: dcmimage/apps/dcmscale.cc
+
 **** Changes from 2013.11.04 (riesmeier)
 
 - Added Corneal Topography Map Storage SOP Class:

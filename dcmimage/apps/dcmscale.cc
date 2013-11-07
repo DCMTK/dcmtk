@@ -606,10 +606,13 @@ int main(int argc, char *argv[])
     const char *oldImageType = NULL;
     if (dataset->findAndGetString(DCM_ImageType, oldImageType).good())
     {
-        // append old image type information beginning with second entry
-        const char *pos = strchr(oldImageType, '\\');
-        if (pos != NULL)
-            imageType += pos;
+        if (oldImageType != NULL)
+        {
+            // append old image type information beginning with second entry
+            const char *pos = strchr(oldImageType, '\\');
+            if (pos != NULL)
+                imageType += pos;
+        }
     }
     dataset->putAndInsertString(DCM_ImageType, imageType.c_str());
 
