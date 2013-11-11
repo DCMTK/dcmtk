@@ -365,6 +365,12 @@ QueryRetrieveLevel attribute and one or more of the so-called "unique key
 attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID and
 SOPInstanceUID).
 
+In case the storage client does not end the connection while \b movescu is
+playing the role of the storage server (i. e. the \e --port is used) but the
+client instead expects \b movescu to close down the storage connection,
+\b movescu will wait infinitely.  In that case \b movescu will neither close
+the association that was used to issue the C-MOVE request to the C-MOVE server.
+
 \subsection dicom_conformance DICOM Conformance
 
 \subsubsection scu_conformance SCU Conformance

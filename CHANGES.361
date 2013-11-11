@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.11 (onken)
 
+- Described movescu storage SCP timeout problem:
+  In case movescu acts as a storage SCP, it hangs forever if storage client
+  never closes the underlying association.
+  Affects: dcmnet/docs/movescu.man
+
 - Fixed comments.
   Affects: dcmwlm/libsrc/wlfsim.cc
 
