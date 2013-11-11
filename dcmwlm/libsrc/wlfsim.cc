@@ -837,12 +837,12 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           break;
 
         case 6:
-          // matching key attribute is DCM_ResponsiblePerson (PN, 1)
+          // matching key attribute is DCM_ResponsiblePerson (PN, 3)
           matchFound = CaseSensitiveSingleValueOrWildcardStripSpacesMatch( mkaValuesDataset[6], mkaValuesSearchMask[6] );
           break;
 
         case 7:
-          // matching key attribute is DCM_ResponsiblePersonRole (CS, 1)
+          // matching key attribute is DCM_ResponsiblePersonRole (CS, 3)
           matchFound = CaseSensitiveSingleValueOrWildcardMatch( mkaValuesDataset[7], mkaValuesSearchMask[7] );
           break;
 

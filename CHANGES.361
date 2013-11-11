@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.11 (onken)
+
+- Fixed comments.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2013.11.07 (riesmeier)
 
 - Fixed bug that could cause a crash:
