@@ -13,6 +13,20 @@ IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.12)
   SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.12 CACHE STRING "Latest version of CMake when this project was released." FORCE)
 ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.12)
 
+# Make sure CMAKE_BUILD_TYPE has a value. Default to release.
+# CMAKE_CONFIGURATION_TYPES is set for generators that support multiple
+# configuration types (and have per-configuration subdirectories like
+# Debug and Release). It is empty for other generators and for those
+# generators the build type is controlled at CMake time by CMAKE_BUILD_TYPE.
+# http://www.cmake.org/pipermail/cmake/2006-January/008065.html
+IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  MESSAGE(STATUS "Setting build type to 'Release' as none was specified.")
+  SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+ENDIF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+
+
 # Basic version information
 # (Starting with version 3.5.5, an odd number at the last position indicates
 #  a development snapshot and an even number indicates an official release.)

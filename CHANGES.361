@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.11 (onken)
 
+- Make sure CMAKE_BUILD_TYPE has a default value:
+  CMAKE_CONFIGURATION_TYPES is set for generators that support multiple
+  configuration types (and have per-configuration subdirectories like
+  Debug and Release). It is empty for other generators and for those
+  generators the build type is controlled at CMake time by
+  CMAKE_BUILD_TYPE. Patch ensures that CMAKE-BUILD-TYPE has "Release" as
+  a default value. Thanks to Kent Williams <norman-k-williams@uiowa.edu>
+  and Jean-Christophe Fillion-Robin <jchris.fillionr@kitware.com> for
+  the patch.
+  Affects: CMake/dcmtkPrepare.cmake
+
 - Described movescu storage SCP timeout problem:
   In case movescu acts as a storage SCP, it hangs forever if storage client
   never closes the underlying association.
