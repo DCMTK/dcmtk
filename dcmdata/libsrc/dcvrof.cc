@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,8 +113,6 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
             out << "\"/>" << OFendl;
         }
     } else {
-        /* write XML start tag */
-        writeXMLStartTag(out, flags);
         /* write element value (if loaded) */
         if (valueLoaded())
         {

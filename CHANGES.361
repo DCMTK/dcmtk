@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.12 (onken)
+
+- Fixed doubled tag output in XML output of VR OF:
+  Fixed doubled tag output in XML output of VR OF. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the report and suggested patch.
+  Affects: dcmdata/libsrc/dcvrof.cc
+
 **** Changes from 2013.11.11 (onken)
 
 - Make sure CMAKE_BUILD_TYPE has a default value:
