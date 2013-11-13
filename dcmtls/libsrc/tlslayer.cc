@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -166,18 +166,21 @@ const char *DcmTLSTransportLayer::findOpenSSLCipherSuiteName(const char *tlsCiph
   return NULL;
 }
 
-DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile)
+DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile, OFBool initializeOpenSSL)
 : DcmTransportLayer(networkRole)
 , transportLayerContext(NULL)
 , canWriteRandseed(OFFalse)
 , privateKeyPasswd()
 {
-   // the call to SSL_library_init was not needed in OpenSSL versions prior to 0.9.8,
-   // but the API has been available at least since 0.9.5.
-   SSL_library_init();
-   SSL_load_error_strings();
-   SSLeay_add_all_algorithms();
-   seedPRNG(randFile);
+   if (initializeOpenSSL)
+   {
+     // the call to SSL_library_init was not needed in OpenSSL versions prior to 0.9.8,
+     // but the API has been available at least since 0.9.5.
+     SSL_library_init();
+     SSL_load_error_strings();
+     SSLeay_add_all_algorithms();
+     seedPRNG(randFile);
+   }
 
    if (networkRole == DICOM_APPLICATION_ACCEPTOR)
    {

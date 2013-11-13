@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,8 +78,12 @@ public:
    *  @param networkRole network role to be used by the application, influences
    *    the choice of the secure transport layer code.
    *  @param randFile path to file used to feed the random generator
+   *  @param initializeOpenSSL Determines if OpenSSL library should be initialized.
+   *    Some setups (e.g. multi-threaded environments) may be interested in using
+   *    more than one TLS transport layer at a time and thus must make sure the
+   *    libary is only initialized once.
    */
-  DcmTLSTransportLayer(int networkRole, const char *randFile);
+  DcmTLSTransportLayer(int networkRole, const char *randFile, OFBool initializeOpenSSL = OFTrue);
 
   /// destructor
   virtual ~DcmTLSTransportLayer();

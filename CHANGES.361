@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.13 (onken)
+
+- Avoid second OpenSSL initialization in constructor:
+  OpenSSL's one-time initialization is performed in the TLS layer
+  constructor. In multi-threaded environments this leads to multiple
+  initialization calls if  more than one association is used at the
+  same time. Thus a parameter was added in order to disable the
+  initialization code if desired. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the report and suggested patch.
+
 **** Changes from 2013.11.13 (riesmeier)
 
 - Fixed issue with color icon images:
