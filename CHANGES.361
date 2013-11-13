@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.12 (riesmeier)
+
+- Fixed doubled output of XML start tag for VR=OD.
+  Affects: dcmdata/libsrc/dcvrod.cc
+
 **** Changes from 2013.11.12 (onken)
 
 - Fixed doubled tag output in XML output of VR OF:

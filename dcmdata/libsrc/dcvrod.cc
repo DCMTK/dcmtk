@@ -113,8 +113,6 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
             out << "\"/>" << OFendl;
         }
     } else {
-        /* write XML start tag */
-        writeXMLStartTag(out, flags);
         /* write element value (if loaded) */
         if (valueLoaded())
         {
