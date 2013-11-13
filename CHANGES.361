@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.12 (riesmeier)
 
+- Added comment on wrong color model for icon images:
+  Added comment on relevant API methods that for color images, the photometric
+  interpretation "RGB" is used, which is not allowed according to the DICOM
+  standard (see PS 3.3 Section F.7). This will be fixed in the future by using
+  "PALETTE COLOR" instead. Noted as DCMTK Bug #577.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/libsrc/dsrimgvl.cc
+
 - Fixed doubled output of XML start tag for VR=OD.
   Affects: dcmdata/libsrc/dcvrod.cc
 

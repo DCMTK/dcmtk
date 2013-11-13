@@ -380,6 +380,9 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
             {
                 /* delete unwanted element NumberOfFrames (0028,0008) */
                 ditem->findAndDeleteElement(DCM_NumberOfFrames);
+                /* tbd: color images are written as RGB, which is forbidden according to DICOM PS 3.3 Section F.7.
+                 *      The Photometric Interpretation (0028,0004) "PALETTE COLOR" should be used instead, which
+                 *      would also make sure that Planar Configuration (0028,0006) is absent. */
             } else
                 result = EC_CorruptedData;
         }

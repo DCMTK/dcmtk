@@ -186,6 +186,9 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *  computed min-max VOI window is selected.
      *  Please note that this icon image is only used in readItem() and writeItem() but not in
      *  the other input/output methods.
+     *  @warn For color images, the photometric interpretation "RGB" is used, which is not
+     *        allowed according to the DICOM standard (see PS 3.3 Section F.7).  This will
+     *        be fixed in the future by using "PALETTE COLOR" instead.
      ** @param  filename  name of the DICOM image file to be used to create the icon image
      *  @param  frame     number of the frame to be used to create the icon image
      *                    (0 = 1st frame)
@@ -207,6 +210,9 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *  computed min-max VOI window is selected.
      *  Please note that this icon image is only used in readItem() and writeItem() but not in
      *  the other input/output methods.
+     *  @warn For color images, the photometric interpretation "RGB" is used, which is not
+     *        allowed according to the DICOM standard (see PS 3.3 Section F.7).  This will
+     *        be fixed in the future by using "PALETTE COLOR" instead.
      ** @param  object  pointer to DICOM data structures (fileformat, dataset or item) that
      *                  contain the DICOM image to be used to create the icon image
      *  @param  xfer    transfer syntax of the 'object'.  In case of a fileformat or dataset,
@@ -230,6 +236,9 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *  by 128 columns".
      *  Please note that this icon image is only used in readItem() and writeItem() but not in
      *  the other input/output methods.
+     *  @warn For color images, the photometric interpretation "RGB" is used, which is not
+     *        allowed according to the DICOM standard (see PS 3.3 Section F.7).  This will
+     *        be fixed in the future by using "PALETTE COLOR" instead.
      ** @param  image   pointer to DICOM image to be used to create the icon image.  Only
      *                  single frame images should be passed since only the first frame is
      *                  used.
