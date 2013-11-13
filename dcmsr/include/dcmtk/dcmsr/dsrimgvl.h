@@ -180,15 +180,15 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
                                    const size_t flags) const;
 
     /** create an icon image from the given DICOM image and associate it with this image
-     *  reference.  According to the DICOM standard, this icon image should be representative
-     *  of the referenced image and the size of the icon image "may be no greater than 128 rows
-     *  by 128 columns".  For monochrome images, either the first stored or an automatically
-     *  computed min-max VOI window is selected.
-     *  Please note that this icon image is only used in readItem() and writeItem() but not in
-     *  the other input/output methods.
-     *  @warn For color images, the photometric interpretation "RGB" is used, which is not
-     *        allowed according to the DICOM standard (see PS 3.3 Section F.7).  This will
-     *        be fixed in the future by using "PALETTE COLOR" instead.
+     *  reference.
+     *  According to the DICOM standard, this icon image should be representative of the
+     *  referenced image and the size of the icon image "may be no greater than 128 rows by
+     *  128 columns".  For monochrome images, either the first stored or an automatically
+     *  computed min-max VOI window is selected.  Color images are converted automatically to
+     *  the photometric interpretation "PALETTE COLOR" (with 256 colors) when written to the
+     *  DICOM dataset.
+     *  Please note that this icon image is only used in readItem() and writeItem() but not
+     *  in the other input/output methods.
      ** @param  filename  name of the DICOM image file to be used to create the icon image
      *  @param  frame     number of the frame to be used to create the icon image
      *                    (0 = 1st frame)
@@ -204,15 +204,15 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
                                 const unsigned long height = 64);
 
     /** create an icon image from the given DICOM image and associate it with this image
-     *  reference.  According to the DICOM standard, this icon image should be representative
-     *  of the referenced image and the size of the icon image "may be no greater than 128 rows
-     *  by 128 columns".  For monochrome images, either the first stored or an automatically
-     *  computed min-max VOI window is selected.
-     *  Please note that this icon image is only used in readItem() and writeItem() but not in
-     *  the other input/output methods.
-     *  @warn For color images, the photometric interpretation "RGB" is used, which is not
-     *        allowed according to the DICOM standard (see PS 3.3 Section F.7).  This will
-     *        be fixed in the future by using "PALETTE COLOR" instead.
+     *  reference.
+     *  According to the DICOM standard, this icon image should be representative of the
+     *  referenced image and the size of the icon image "may be no greater than 128 rows by
+     *  128 columns".  For monochrome images, either the first stored or an automatically
+     *  computed min-max VOI window is selected.  Color images are converted automatically to
+     *  the photometric interpretation "PALETTE COLOR" (with 256 colors) when written to the
+     *  DICOM dataset.
+     *  Please note that this icon image is only used in readItem() and writeItem() but not
+     *  in the other input/output methods.
      ** @param  object  pointer to DICOM data structures (fileformat, dataset or item) that
      *                  contain the DICOM image to be used to create the icon image
      *  @param  xfer    transfer syntax of the 'object'.  In case of a fileformat or dataset,
@@ -231,14 +231,13 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
                                 const unsigned long height = 64);
 
     /** create an icon image from the given DICOM image and associate it with this image
-     *  reference.  According to the DICOM standard, this icon image should be representative
-     *  of the referenced image and the size of the icon image "may be no greater than 128 rows
-     *  by 128 columns".
-     *  Please note that this icon image is only used in readItem() and writeItem() but not in
-     *  the other input/output methods.
-     *  @warn For color images, the photometric interpretation "RGB" is used, which is not
-     *        allowed according to the DICOM standard (see PS 3.3 Section F.7).  This will
-     *        be fixed in the future by using "PALETTE COLOR" instead.
+     *  reference.
+     *  According to the DICOM standard, this icon image should be representative of the
+     *  referenced image and the size of the icon image "may be no greater than 128 rows by
+     *  128 columns".  Color images are converted automatically to the photometric
+     *  interpretation "PALETTE COLOR" (with 256 colors) when written to the DICOM dataset.
+     *  Please note that this icon image is only used in readItem() and writeItem() but not
+     *  in the other input/output methods.
      ** @param  image   pointer to DICOM image to be used to create the icon image.  Only
      *                  single frame images should be passed since only the first frame is
      *                  used.

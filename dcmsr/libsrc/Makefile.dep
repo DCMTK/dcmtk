@@ -2467,7 +2467,9 @@ dsrimgvl.o: dsrimgvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
  ../../dcmimage/include/dcmtk/dcmimage/diregist.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diregbas.h \
- ../../dcmimage/include/dcmtk/dcmimage/dicdefin.h
+ ../../dcmimage/include/dcmtk/dcmimage/dicdefin.h \
+ ../../dcmimage/include/dcmtk/dcmimage/diquant.h \
+ ../../dcmimage/include/dcmtk/dcmimage/diqttype.h
 dsrimpcc.o: dsrimpcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrimpcc.h ../include/dcmtk/dcmsr/dsriodcc.h \
  ../include/dcmtk/dcmsr/dsrtypes.h \

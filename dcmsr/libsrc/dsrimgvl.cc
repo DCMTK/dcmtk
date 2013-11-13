@@ -28,6 +28,7 @@
 #include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/dcmimage/diregist.h"  /* add support for color images */
+#include "dcmtk/dcmimage/diquant.h"   /* for DcmQuant */
 
 
 DSRImageReferenceValue::DSRImageReferenceValue()
@@ -375,16 +376,22 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
         result = dataset.findOrCreateSequenceItem(DCM_IconImageSequence, ditem, 0 /*position*/);
         if (result.good())
         {
-            /* write icon image */
-            if (IconImage->writeFrameToDataset(*ditem))
+            /* monochrome images can be written directly */
+            if (IconImage->isMonochrome())
             {
-                /* delete unwanted element NumberOfFrames (0028,0008) */
-                ditem->findAndDeleteElement(DCM_NumberOfFrames);
-                /* tbd: color images are written as RGB, which is forbidden according to DICOM PS 3.3 Section F.7.
-                 *      The Photometric Interpretation (0028,0004) "PALETTE COLOR" should be used instead, which
-                 *      would also make sure that Planar Configuration (0028,0006) is absent. */
-            } else
-                result = EC_CorruptedData;
+                /* write icon image to dataset */
+                if (IconImage->writeFrameToDataset(*ditem))
+                {
+                    /* delete unwanted element NumberOfFrames (0028,0008) */
+                    ditem->findAndDeleteElement(DCM_NumberOfFrames);
+                } else
+                    result = EC_CorruptedData;
+            } else {
+                OFString tmpString;
+                /* color images need to be converted to "PALETTE COLOR" */
+                result = DcmQuant::createPaletteColorImage(*IconImage, *ditem, OFTrue /*writeAsOW*/, OFFalse /*write16BitEntries*/,
+                    OFFalse /*floydSteinberg*/, 256 /*numberOfColors*/, tmpString /*description*/);
+            }
         }
     }
     /* check data and report warnings if any */

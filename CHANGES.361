@@ -1,7 +1,16 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2013.11.12 (riesmeier)
+**** Changes from 2013.11.13 (riesmeier)
+
+- Fixed issue with color icon images:
+  According to the DICOM standard, color icon images should always be written
+  with a value of "PALETTE COLOR" for Photometric Interpretation. Before this
+  fix, also other color models like "RGB" were created for the optional icon
+  image of an IMAGE content item. Closes DCMTK Bug #577.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/dsrimgvl.cc
 
 - Added comment on wrong color model for icon images:
   Added comment on relevant API methods that for color images, the photometric
