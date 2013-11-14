@@ -1,7 +1,7 @@
-.TH "dcmqrscp" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmqrscp \- DICOM image archive (central test node)
+dcmqrscp \- DICOM image archive (central test node) 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -13,7 +13,9 @@ dcmqrscp [options] [port]
 .PP
 The Image Central Test Node (\fBdcmqrscp\fP) Application implements a simple image archive\&. It manages a number of storage areas and allows images to be stored in these storage areas using the DICOM Storage Service Class\&. It also allows image attributes to be queried and images to be retrieved using the DICOM Query/Retrieve Service Class\&. The \fBdcmqrscp\fP application also implements access restriction rules to limit operations to specific peer application entities\&.
 .PP
-The \fBdcmqrscp\fP application is intended to be used in DICOM demonstrations and as a compatibilitiy test tool\&. In particular, \fBdcmqrscp\fP will delete images if its quota restrictions have been exceeded\&.
+The \fBdcmqrscp\fP application is intended to be used in DICOM demonstrations and as a compatibility test tool\&. In particular, \fBdcmqrscp\fP will delete images if its quota restrictions have been exceeded\&.
+.PP
+Caution: Note that the format of \fBdcmqrdb's\fP binary \fIindex\&.dat\fP file changed on 20130705 due to a bug fix in the corresponding code\&. An \fIindex\&.dat\fP file created before that date will not work with dcmqrdb code compiled after that date but must be re-created\&. Use \fBdcmqridx\fP for that task or re-send all images to the server after deleting all old files (and creating a new empty \fIindex\&.dat\fP file)\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -422,7 +424,7 @@ deflate compression level (only with --propose-deflated or
 .SH "NOTES"
 .PP
 .SS "Operation"
-\fBdcmqrscp\fP waits for another application to connect at the presentation address (port number) specified in its configuration file (or overridden by a command line option)\&. When another application connects, \fBdcmqrscp\fP expects it to be a DICOM application and to use calling and called AE Titles specified in \fBdcmqrscp's\fP configuration file\&. \fBdcmqrscp\fP will accept associations with Presentation Contexts for SOP Classes of the Verification Service Class, Storage Service Class and Query/Retreive Service Class\&. Associations will be rejected or Presentation Contexts will be refused if the peer application does not have appropriate access rights as specified by \fBdcmqrscp\fP configuration file\&.
+\fBdcmqrscp\fP waits for another application to connect at the presentation address (port number) specified in its configuration file (or overridden by a command line option)\&. When another application connects, \fBdcmqrscp\fP expects it to be a DICOM application and to use calling and called AE Titles specified in \fBdcmqrscp's\fP configuration file\&. \fBdcmqrscp\fP will accept associations with Presentation Contexts for SOP Classes of the Verification Service Class, Storage Service Class and Query/Retrieve Service Class\&. Associations will be rejected or Presentation Contexts will be refused if the peer application does not have appropriate access rights as specified by \fBdcmqrscp\fP configuration file\&.
 .PP
 \fBdcmqrscp\fP will receive images on Presentation Contexts of the Storage Service Class, write them to a configurable storage area associated with the class AE title, extract attributes from these images and store them in a database\&. \fBdcmqrscp\fP will receive query requests and generate query responses on Presentation Contexts of the Query/Retrieve Service class\&. \fBdcmqrscp\fP will receive retrieve requests and generate retrieve responses on Presentation Contexts of the Query/Retrieve Service class\&. \fBdcmqrscp\fP will also process C-CANCEL messages to interrupt query/retrieve operations\&.
 .PP
@@ -702,6 +704,7 @@ IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
+CornealTopographyMapStorage                          1.2.840.10008.5.1.4.1.1.82.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
@@ -869,14 +872,14 @@ The \fBdcmqrscp\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information
+\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information 
 .br
-\fI<docdir>/dcmqrset\&.txt\fP - setup information
+\fI<docdir>/dcmqrset\&.txt\fP - setup information 
 .br
 \fI<etcdir>/dcmqrscp\&.cfg\fP - example configuration file
 .SH "SEE ALSO"
 .PP
-\fBdcmqrti\fP(1)
+\fBdcmqridx\fP(1), \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1993-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

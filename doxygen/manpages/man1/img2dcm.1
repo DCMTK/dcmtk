@@ -1,7 +1,7 @@
-.TH "img2dcm" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-img2dcm \- Convert standard image formats into DICOM format
+img2dcm \- Convert standard image formats into DICOM format 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -190,7 +190,7 @@ Using the \fI--dataset-from\fP option \fBimg2dcm\fP is forced to import attribut
 .PP
 .PD 0
 .IP "\(bu" 2
-The \fI--study-from\fP and \fI--series-from\fP options (mutually exclusive) can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. The following attributes are taken over:
+The \fI--study-from\fP and \fI--series-from\fP options (mutually exclusive) can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. The following attributes are taken over: 
 .PP
 .nf
       Patient Level:
@@ -227,7 +227,7 @@ The \fI--key\fP option can be used to add further attributes to the DICOM output
 .SS "UIDs"
 New Study and Series Instance UIDs are generated \fBif necessary\fP after applying the \fI--study-from\fP and \fI--series\fP options\&. If Study Instance UID or Series Instance UID are not present after these steps, they are newly generated, independently from each other\&. A contrary behaviour is chosen for the SOP Instance UID that one could expect to be taken over when using the \fI--dataset-from\fP option\&. This is \fBnot\fP the case, the SOP Instance UID is \fBnot\fP copied to the new object\&. This should be the desirable behaviour for most use cases\&. However, if a certain SOP Instance UID should be inserted into the new object, the \fI--key\fP option should be used\&.
 .SS "Input Templates"
-For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defined templates which can be used for the \fI--dataset-from\fP option (see sample files \fISC\&.dump\fP and \fIVLP\&.dump\fP)\&. These templates should be filled with the desired values and then must be dumped (converted) to a DICOM file before actually being used with \fBimg2dcm\fP\&. Use \fBdump2dcm\fP to convert the dump to DICOM\&. Example:
+For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defined templates which can be used for the \fI--dataset-from\fP option (see sample files \fISC\&.dump\fP and \fIVLP\&.dump\fP)\&. These templates should be filled with the desired values and then must be dumped (converted) to a DICOM file before actually being used with \fBimg2dcm\fP\&. Use \fBdump2dcm\fP to convert the dump to DICOM\&. Example: 
 .PP
 .nf
   dump2dcm SC.dump SC.dcm
@@ -274,45 +274,45 @@ Here are some examples that show how the \fBimg2dcm\fP application can be used\&
 .PP
 .PD 0
 .IP "1." 4
-img2dcm image\&.jpg out\&.dcm
+img2dcm image\&.jpg out\&.dcm 
 .br
-Read JPEG file 'image\&.jpg', convert to the old Secondary Capture SOP class and save the result to DICOM file 'out\&.dcm'\&. This is the easiest way of using \fBimg2dcm\fP\&. Any type 1 and type 2 attributes required for writing valid objects of this SOP class are inserted automatically\&.
+Read JPEG file 'image\&.jpg', convert to the old Secondary Capture SOP class and save the result to DICOM file 'out\&.dcm'\&. This is the easiest way of using \fBimg2dcm\fP\&. Any type 1 and type 2 attributes required for writing valid objects of this SOP class are inserted automatically\&. 
 .PP
 
 .IP "2." 4
-img2dcm -i BMP image\&.bmp out\&.dcm
+img2dcm -i BMP image\&.bmp out\&.dcm 
 .br
-Same as above but tells img2dcm to read a BMP file instead of JPEG\&.
+Same as above but tells img2dcm to read a BMP file instead of JPEG\&. 
 .PP
 
 .IP "3." 4
-img2dcm image\&.jpg out\&.dcm -vlp -k 'PatientName=Bond^James'
+img2dcm image\&.jpg out\&.dcm -vlp -k 'PatientName=Bond^James' 
 .br
-Same as first example, but writes Visible Light Photographic Image object to 'out\&.dcm' and sets PatientName to 'Bond^James' which otherwise would be left empty\&.
+Same as first example, but writes Visible Light Photographic Image object to 'out\&.dcm' and sets PatientName to 'Bond^James' which otherwise would be left empty\&. 
 .PP
 
 .IP "4." 4
-img2dcm image\&.jpg out\&.dcm --series-from template\&.dcm -k 'PatientName=Bond^James'
+img2dcm image\&.jpg out\&.dcm --series-from template\&.dcm -k 'PatientName=Bond^James' 
 .br
-Same as 1), but imports patient/study/series infomation from DICOM file 'template\&.dcm'\&. Please note that attribute PatientName will contain 'Bond^James' at the end, any value from 'template\&.dcm' will be overwritten\&. That is, because the -k option is applied at the very end of the conversion pipeline (see above)\&.
+Same as 1), but imports patient/study/series infomation from DICOM file 'template\&.dcm'\&. Please note that attribute PatientName will contain 'Bond^James' at the end, any value from 'template\&.dcm' will be overwritten\&. That is, because the -k option is applied at the very end of the conversion pipeline (see above)\&. 
 .PP
 
 .IP "5." 4
-img2dcm image\&.jpg out\&.dcm --no-checks
+img2dcm image\&.jpg out\&.dcm --no-checks 
 .br
-Same as 1), but does not perform any attribute checking and no type 1 and type 2 attribute insertion! So in this case, an invalid DICOM object would be generated\&. This can be interesting if the output file is not meant to be completed but will undergo further transformations, e\&. g\&. adding attributes using \fBdcmodify\fP\&. Only use option \fI--no-checks\fP if you know what you are doing!
+Same as 1), but does not perform any attribute checking and no type 1 and type 2 attribute insertion! So in this case, an invalid DICOM object would be generated\&. This can be interesting if the output file is not meant to be completed but will undergo further transformations, e\&. g\&. adding attributes using \fBdcmodify\fP\&. Only use option \fI--no-checks\fP if you know what you are doing! 
 .PP
 
 .IP "6." 4
-img2dcm image\&.jpg out\&.dcm --no-type1-invent
+img2dcm image\&.jpg out\&.dcm --no-type1-invent 
 .br
-Same as 1), but does not insert missing type 1 attributes and/or their values\&. Type 2 attributes will be inserted\&. Note that in this case it must be assured that all type 1 attributes are provided by other means, i\&. e\&. by adding them with the \fI--key\fP option\&. Otherwise, \fBimg2dcm\fP will report an error and will stop converting\&.
+Same as 1), but does not insert missing type 1 attributes and/or their values\&. Type 2 attributes will be inserted\&. Note that in this case it must be assured that all type 1 attributes are provided by other means, i\&. e\&. by adding them with the \fI--key\fP option\&. Otherwise, \fBimg2dcm\fP will report an error and will stop converting\&. 
 .PP
 
 .IP "7." 4
-img2dcm image\&.jpg out\&.dcm --keep-appn --insist-on-jfif
+img2dcm image\&.jpg out\&.dcm --keep-appn --insist-on-jfif 
 .br
-Same as 1), but takes over APPn information like EXIF into the DICOM object's resulting JPEG stream\&. Further, \fI--insist-on-jfif\fP will force \fBimg2dcm\fP to abort if no JFIF information is existent in the source file\&.
+Same as 1), but takes over APPn information like EXIF into the DICOM object's resulting JPEG stream\&. Further, \fI--insist-on-jfif\fP will force \fBimg2dcm\fP to abort if no JFIF information is existent in the source file\&. 
 .PP
 
 .PP
@@ -335,7 +335,7 @@ The \fBimg2dcm\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/SC\&.dump\fP - Sample dump file for Secondary Capture images
+\fI<datadir>/SC\&.dump\fP - Sample dump file for Secondary Capture images 
 .br
 \fI<datadir>/VLP\&.dump\fP - Sample dump file for Visible Light Photographic images
 .SH "SEE ALSO"
@@ -343,4 +343,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

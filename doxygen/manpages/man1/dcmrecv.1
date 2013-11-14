@@ -1,7 +1,7 @@
-.TH "dcmrecv" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmrecv" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmrecv \- Simple DICOM storage SCP (receiver)
+dcmrecv \- Simple DICOM storage SCP (receiver) 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -115,6 +115,17 @@ filename generation:
 
   -fe   --filename-extension  [e]xtension: string (default: none)
           append e to all generated filenames
+
+storage mode:
+
+  -B    --normal
+          allow implicit format conversions (default)
+
+  +B    --bit-preserving
+          write dataset exactly as received
+
+        --ignore
+          ignore dataset, receive but do not store it
 .fi
 .PP
 .SH "NOTES"
@@ -135,6 +146,14 @@ If you prefer some automatically created subdirectory structure, shorter file na
 dcmrecv -v -xf storescp.cfg default <port> --series-date-subdir
                                            --short-unique-names
                                            --filename-extension .dcm
+.fi
+.PP
+.PP
+In case of very large SOP instances or if the dataset should be written exactly as received (e\&.g\&. for debugging purposes), the 'bit preserving mode' could be used:
+.PP
+.PP
+.nf
+dcmrecv -v -xf storescp.cfg default <port> --bit-preserving
 .fi
 .PP
 .PP
@@ -201,6 +220,8 @@ Finally, option \fI--system-time-names\fP allows for generating filenames based 
 .PP
 .PP
 With <date> consisting of '<year><month><day>' and <time> of '<hour><minute><second>\&.<micro-second>'\&. Please note that this scheme could result in naming conflicts if the resolution of the system time is not sufficiently high (i\&.e\&. does not support microseconds)\&.
+.SS "Limitations"
+Please note that option \fI--bit-preserving\fP cannot be used together with option \fI--series-date-subdir\fP since the received dataset is stored directly to file and the value of the Series Date (0008,0021) is, therefore, not available before the file has been created\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -253,7 +274,7 @@ The \fBdcmrecv\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/asconfig\&.txt\fP - configuration file documentation
+\fI<docdir>/asconfig\&.txt\fP - configuration file documentation 
 .br
 \fI<etcdir>/storescp\&.cfg\fP - example association negotiation profile
 .SH "SEE ALSO"
@@ -261,4 +282,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmsend\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

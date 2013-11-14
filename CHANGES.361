@@ -1,6 +1,10 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.14 (thiel)
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2013.11.13 (onken)
 
 - Avoid second OpenSSL initialization in constructor:

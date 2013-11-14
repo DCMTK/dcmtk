@@ -1,7 +1,7 @@
-.TH "wlmscpfs" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
+wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files) 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -209,7 +209,7 @@ If compiled with zlib support enabled (see \fI--version\fP output) and if option
 .PP
 .PP
 .nf
-DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99 (*)
+DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99
 .fi
 .PP
 .PP
@@ -225,6 +225,8 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
 (0010,0020) PatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
+(0010,2297) Responsible Person
+(0010,2298) Responsible Person Role
 (0032,1032) RequestingPhysician
 (0038,0010) AdmissionID
 (0040,0100) ScheduledProcedureStepSequence
@@ -238,7 +240,7 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
 .fi
 .PP
 .PP
-As return keys the following attributes are currently supported by \fBwlmscpfs:\fP
+As return keys the following attributes are currently supported by \fBwlmscpfs:\fP 
 .PP
 .PP
 .nf
@@ -273,6 +275,8 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0010,21b0) AdditionalPatientHistory
 (0010,21c0) PregnancyStatus
 (0010,21d0) LastMenstrualDate
+(0010,2297) Responsible Person
+(0010,2298) Responsible Person Role
 (0010,4000) PatientComments
 (0020,000d) StudyInstanceUID
 (0032,1032) RequestingPhysician
@@ -353,4 +357,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

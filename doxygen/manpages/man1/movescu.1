@@ -1,7 +1,7 @@
-.TH "movescu" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-movescu \- DICOM retrieve (C-MOVE) SCU
+movescu \- DICOM retrieve (C-MOVE) SCU 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -334,6 +334,8 @@ The C-MOVE operation of the Query/Retrieve Service Class is able retrieve images
 .PP
 The \fBmovescu\fP application makes no attempt to prevent incorrect queries\&. In particular, the query keys of a C-MOVE request should only contain the QueryRetrieveLevel attribute and one or more of the so-called 'unique key
 attributes' (PatientID, StudyInstanceUID, SeriesInstanceUID and SOPInstanceUID)\&.
+.PP
+In case the storage client does not end the connection while \fBmovescu\fP is playing the role of the storage server (i\&. e\&. the \fI--port\fP is used) but the client instead expects \fBmovescu\fP to close down the storage connection, \fBmovescu\fP will wait infinitely\&. In that case \fBmovescu\fP will neither close the association that was used to issue the C-MOVE request to the C-MOVE server\&.
 .SS "DICOM Conformance"
 .SS "SCU Conformance"
 The \fBmovescu\fP application supports the following SOP Classes as an SCU:
@@ -583,4 +585,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBfindscu\fP(1), \fBstorescp\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

@@ -1,7 +1,7 @@
-.TH "dcmcjpeg" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpeg" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
+dcmcjpeg \- Encode DICOM file to JPEG transfer syntax 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -534,9 +534,9 @@ A few examples:
 .PP
 .PD 0
 .IP "\(bu" 2
-MR images are required to have BitsAllocated=16\&.
+MR images are required to have BitsAllocated=16\&. 
 .IP "\(bu" 2
-NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric interpretation but not with RGB or YBR_FULL (which effectively prevents compression)\&.
+NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric interpretation but not with RGB or YBR_FULL (which effectively prevents compression)\&. 
 .IP "\(bu" 2
 Hardcopy Color images must have RGB color model which is a problem if lossy compression is to be performed\&.
 .PP
@@ -546,13 +546,13 @@ With version DCMTK 3\&.5\&.4 a new encoder for truely lossless JPEG compression 
 .PP
 .PD 0
 .IP "\(bu" 2
-Only source images with Bits Allocated 8 or 16 are supported
+Only source images with Bits Allocated 8 or 16 are supported 
 .IP "\(bu" 2
-Options for color space conversions, windowing or pixel scaling are ignored or overridden
+Options for color space conversions, windowing or pixel scaling are ignored or overridden 
 .IP "\(bu" 2
-Photometric Interpretations YBR_FULL_422, YBR_PARTIAL_422, YBR_PARTIAL_420, YBR_ICT, YBR_RCT are not supported
+Photometric Interpretations YBR_FULL_422, YBR_PARTIAL_422, YBR_PARTIAL_420, YBR_ICT, YBR_RCT are not supported 
 .IP "\(bu" 2
-The encoder changes automatically Planar Configuration from 1 to 0 if necessary
+The encoder changes automatically Planar Configuration from 1 to 0 if necessary 
 .IP "\(bu" 2
 The compression ratio can be lower than in \fI--pseudo-lossless\fP mode
 .PP
@@ -614,4 +614,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

@@ -1,7 +1,7 @@
-.TH "storescp" 1 "Mon Aug 12 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-storescp \- DICOM storage (C-STORE) SCP
+storescp \- DICOM storage (C-STORE) SCP 
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -413,7 +413,7 @@ The other \fI--sort-xxx\fP options work in a similar manner, only the subdirecto
 .fi
 .PP
 .PP
-and for option \fI--sort-on-patientname\fP
+and for option \fI--sort-on-patientname\fP 
 .PP
 .PP
 .nf
@@ -439,13 +439,13 @@ Option \fI--exec-on-reception\fP allows to execute a certain command line after 
 .PP
 .PD 0
 .IP "\(bu" 2
-\fB#p:\fP complete path to the output directory into which the last DICOM object was stored (not available with option \fI--ignore\fP though)
+\fB#p:\fP complete path to the output directory into which the last DICOM object was stored (not available with option \fI--ignore\fP though) 
 .IP "\(bu" 2
-\fB#f:\fP filename of the current output file (not available with option \fI--ignore\fP though)
+\fB#f:\fP filename of the current output file (not available with option \fI--ignore\fP though) 
 .IP "\(bu" 2
-\fB#a:\fP calling application entity title of the peer Storage SCU
+\fB#a:\fP calling application entity title of the peer Storage SCU 
 .IP "\(bu" 2
-\fB#c:\fP called application entity title used by the peer Storage SCU to address \fBstorescp\fP
+\fB#c:\fP called application entity title used by the peer Storage SCU to address \fBstorescp\fP 
 .IP "\(bu" 2
 \fB#r:\fP calling presentation address, i\&.e\&. hostname or IP address of the peer Storage SCU
 .PP
@@ -566,6 +566,7 @@ IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
+CornealTopographyMapStorage                          1.2.840.10008.5.1.4.1.1.82.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
@@ -683,7 +684,7 @@ The \fBstorescp\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/asconfig\&.txt\fP - configuration file documentation
+\fI<docdir>/asconfig\&.txt\fP - configuration file documentation 
 .br
 \fI<etcdir>/storescp\&.cfg\fP - example association negotiation profile
 .SH "SEE ALSO"
@@ -691,4 +692,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBstorescu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
