@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.15 (riesmeier)
 
+- Avoid CMake warning on non-installable files.
+  Affects: dcmdata/libsrc/CMakeLists.txt
+
 - Fixed build issue with shared libraries (Win32):
   Fixed link errors on Windows systems when building with BUILD_SHARED_LIB set
   to "ON". This caused the executables "mkdictbi" and "mkdeftag" to fail.
