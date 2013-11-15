@@ -1,7 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.15 (riesmeier)
+
+- Removed trailing white spaces from man pages files.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2013.11.14 (thiel)
+
 - Updated man pages for new development snapshot.
   Affects: doxygen/manpages/man1/*
 
@@ -14,6 +20,8 @@ Changes between releases are documented here.
   same time. Thus a parameter was added in order to disable the
   initialization code if desired. Thanks to Peter Klotz
   <Peter.Klotz@ith-icoserve.com> for the report and suggested patch.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlslayer.h
+           dcmtls/libsrc/tlslayer.cc
 
 **** Changes from 2013.11.13 (riesmeier)
 
