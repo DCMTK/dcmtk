@@ -231,7 +231,8 @@
 #define DCMTK_LOG4CPLUS_DEBUGGING
 #endif
 
-/* These two are not needed since we build static libraries */
+/* These are not needed since config.h uses DCMTK_DECL_EXPORT/IMPORT directly */
+#if 0
 /* Defined if the compiler understands __declspec(dllexport) or
    __attribute__((visibility("default"))) construct. */
 #define DCMTK_LOG4CPLUS_DECLSPEC_EXPORT
@@ -243,12 +244,14 @@
 /* Defined if the compiler understands
    __attribute__((visibility("hidden"))) construct. */
 #define DCMTK_LOG4CPLUS_DECLSPEC_PRIVATE
+#endif
 
-/* */
-#define DCMTK_LOG4CPLUS_HAVE_TLS_SUPPORT
+/* This define is unused and thus its value does not matter */
+#undef DCMTK_LOG4CPLUS_HAVE_TLS_SUPPORT
 
-/* */
-#define DCMTK_LOG4CPLUS_THREAD_LOCAL_VAR
+/* Configure should set this to thread_local, __declspec(thread) or __thread,
+ * whatever works. However, let's just use the TLS functions directly instead. */
+#undef DCMTK_LOG4CPLUS_THREAD_LOCAL_VAR
 
 /* Defined if the host OS provides ENAMETOOLONG errno value. */
 #ifdef HAVE_ENAMETOOLONG

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.17 (schlachter)
+
+- Don't set the defines for thread local storage support incorrectly:
+  If DCMTK_LOG4CPLUS_HAVE_TLS_SUPPORT is defined, the code uses it to mark
+  variables as thread-local and expects the compiler to implement this.
+  Otherwise, calls into the thread library are used. So defining it to an
+  empty value makes oflog thread-unsafe. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the report and a test case.
+  Affects: oflog/include/dcmtk/oflog/config/defines.h
+
 **** Changes from 2013.11.15 (riesmeier)
 
 - Avoid CMake warning on non-installable files.
