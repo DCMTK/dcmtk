@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.18 (riesmeier)
 
+- Removed redundant and outdated Word document:
+  Removed redundant and outdated Word document "wwwapp.doc", which used to
+  contain the same information as "wwwapp.txt". Closes DCMTK Feature #556.
+  Removed: dcmwlm/docs/wwwapp.doc
+
 - Added missing break statements to switch cases:
   Added missing break statements to switch cases, which previously resulted in
   a wrong return value of the CheckMatchingKey() method. Thanks to Peter Klotz
