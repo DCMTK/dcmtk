@@ -329,7 +329,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
       // which pertains to a certain command line option
       if( noSequenceExpansion == OFFalse )
       {
-        // if the user did not explicitely disable the expansion of empty sequences in C-FIND request
+        // if the user did not explicitly disable the expansion of empty sequences in C-FIND request
         // messages go ahead and expand this sequence according to the remark above
         ExpandEmptySequenceInSearchMask( element );
       }
@@ -431,7 +431,7 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
 //                contains a sequence attribute which contains no item or a single empty item, all
 //                attributes from that particular sequence are in fact queried and shall be returned
 //                by the SCP. This implementation accounts for this specification by inserting a
-//                corresponding single item with all required attributes into such emtpy sequences.
+//                corresponding single item with all required attributes into such empty sequences.
 //                This function performs the insertion of the required item and attributes.
 // Parameters   : element - [inout] Pointer to the currently processed element.
 // Return Value : none.
@@ -656,7 +656,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     case EVR_TM:
       // get string value
@@ -670,7 +671,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     case EVR_CS:
       // get string value
@@ -684,7 +686,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     case EVR_AE:
       // get string value
@@ -698,7 +701,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     case EVR_PN:
       // get string value
@@ -712,7 +716,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     case EVR_LO:
       // get string value
@@ -726,7 +731,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     case EVR_SH:
       // get string value
@@ -740,7 +746,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         ok = OFFalse;
       }
       else
-        return OFTrue;
+        ok = OFTrue;
+      break;
 
     default:
       break;

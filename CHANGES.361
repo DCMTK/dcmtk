@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.18 (riesmeier)
+
+- Added missing break statements to switch cases:
+  Added missing break statements to switch cases, which previously resulted in
+  a wrong return value of the CheckMatchingKey() method. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the bug report and patch.
+  Affects: dcmwlm/libsrc/wlds.cc
+
 **** Changes from 2013.11.17 (schlachter)
 
 - Don't set the defines for thread local storage support incorrectly:
