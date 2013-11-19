@@ -167,6 +167,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--ignore-constraints",   "-Ec",  "ignore relationship content constraints");
         cmd.addOption("--ignore-item-errors",   "-Ee",  "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",   "-Ei",  "skip invalid content items (incl. sub-tree)");
+        cmd.addOption("--disable-vr-checker",   "-Dv",  "disable check for VR-conformant string values");
 #ifdef WITH_LIBICONV
       cmd.addSubGroup("specific character set:");
         cmd.addOption("--convert-to-utf8",      "+U8",  "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
@@ -269,6 +270,8 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::RF_ignoreContentItemErrors;
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
+        if (cmd.findOption("--disable-vr-checker"))
+            dcmEnableVRCheckerForStringValues.set(OFFalse);
 #ifdef WITH_LIBICONV
         if (cmd.findOption("--convert-to-utf8")) opt_convertToUTF8 = OFTrue;
 #endif

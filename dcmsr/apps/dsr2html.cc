@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -220,6 +220,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--ignore-constraints",   "-Ec",    "ignore relationship content constraints");
         cmd.addOption("--ignore-item-errors",   "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
+        cmd.addOption("--disable-vr-checker",   "-Dv",    "disable check for VR-conformant string values");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string",
@@ -335,6 +336,8 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::RF_ignoreContentItemErrors;
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
+        if (cmd.findOption("--disable-vr-checker"))
+            dcmEnableVRCheckerForStringValues.set(OFFalse);
 
         /* character set options */
         cmd.beginOptionBlock();

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -163,6 +163,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("processing options:");
+      cmd.addSubGroup("error handling:");
+        cmd.addOption("--disable-vr-checker",   "-Dv",    "disable check for VR-conformant string values");
       cmd.addSubGroup("specific character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string",
@@ -246,6 +248,8 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         /* processing options */
+        if (cmd.findOption("--disable-vr-checker"))
+            dcmEnableVRCheckerForStringValues.set(OFFalse);
         cmd.beginOptionBlock();
         if (cmd.findOption("--charset-require"))
             opt_defaultCharset = NULL;

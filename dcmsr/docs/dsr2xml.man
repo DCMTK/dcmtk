@@ -67,30 +67,6 @@ xmlfile-out  XML output filename (default: stdout)
          use config file f for the logger
 \endverbatim
 
-\subsection processing_options processing options
-\verbatim
-specific character set:
-
-  +Cr  --charset-require
-         require declaration of extended charset (default)
-
-  +Ca  --charset-assume  [c]harset: string
-         assume charset c if no extended charset declared
-
-  +Cc  --charset-check-all
-         check all data elements with string values
-         (default: only PN, LO, LT, SH, ST and UT)
-
-         # this option is only used for the mapping to an appropriate
-         # XML character encoding, but not for the conversion to UTF-8
-
-  +U8  --convert-to-utf8
-         convert all element values that are affected
-         by Specific Character Set (0008,0005) to UTF-8
-
-         # requires support from the libiconv toolkit
-\endverbatim
-
 \subsection input_options input options
 \verbatim
 input file format:
@@ -120,6 +96,35 @@ input transfer syntax:
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+\endverbatim
+
+\subsection processing_options processing options
+\verbatim
+error handling:
+
+  -Dv  --disable-vr-checker
+         disable check for VR-conformant string values
+
+specific character set:
+
+  +Cr  --charset-require
+         require declaration of extended charset (default)
+
+  +Ca  --charset-assume  [c]harset: string
+         assume charset c if no extended charset declared
+
+  +Cc  --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
+
+         # this option is only used for the mapping to an appropriate
+         # XML character encoding, but not for the conversion to UTF-8
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
 \endverbatim
 
 \subsection output_options output options
@@ -293,6 +298,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

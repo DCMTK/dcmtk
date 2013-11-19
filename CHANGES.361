@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.19 (riesmeier)
 
+- Added new option for disabling the VR checker:
+  Added new command line option that allows for disabling the VR checker by
+  setting the recently introduced global "dcmdata" flag accordingly.
+  Affects: dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+
 - Added global flag for disabling the VR checker:
   Added global flag that allows for disabling the VR checker used by the
   various checkStringValue() methods. Since this checker is currently limited

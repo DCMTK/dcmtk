@@ -120,6 +120,9 @@ error handling:
   -Ei   --skip-invalid-items
           skip invalid content items (including sub-tree)
 
+  -Dv   --disable-vr-checker
+          disable check for VR-conformant string values
+
 specific character set:
 
   +U8   --convert-to-utf8

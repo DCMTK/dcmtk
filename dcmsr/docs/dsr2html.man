@@ -122,6 +122,9 @@ error handling:
   -Ei  --skip-invalid-items
          skip invalid content items (incl. sub-tree)
 
+  -Dv  --disable-vr-checker
+         disable check for VR-conformant string values
+
 specific character set:
 
   +Cr  --charset-require
@@ -338,6 +341,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
