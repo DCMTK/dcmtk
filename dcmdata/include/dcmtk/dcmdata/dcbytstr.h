@@ -30,6 +30,17 @@
 #include "dcmtk/ofstd/ofstring.h"
 
 
+/** This flag defines whether the VR checker is actually used by the various
+ *  checkStringValue() methods.  Since this checker is currently limited to
+ *  ASCII and Latin-1, and the detection of the character set might fail for
+ *  incorrectly encoded DICOM datasets, this check can be disabled globally.
+ *  Please note, however, that other checks (i.e. VM and max. value length)
+ *  are still performed if the optional parameters are set accordingly.
+ *  By default, the VR checker is enabled (value: "OFTrue").
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableVRCheckerForStringValues;  /* default: OFTrue */
+
+
 /** base class for all DICOM value representations storing a character string
  */
 class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement

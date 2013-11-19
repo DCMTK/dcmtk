@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Gerd Ehlers
+ *  Author:  Gerd Ehlers, Joerg Riesmeier
  *
  *  Purpose: Interface of class DcmPersonName
  *

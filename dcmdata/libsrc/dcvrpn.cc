@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Gerd Ehlers, Andreas Barth
+ *  Author:  Gerd Ehlers, Andreas Barth, Joerg Riesmeier
  *
  *  Purpose: Implementation of class DcmPersonName
  *
@@ -450,15 +450,18 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
             /* search for next component separator */
             const size_t posEnd = value.find('\\', posStart);
             const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
-            /* currently, the VR checker only supports ASCII and Latin-1 */
-            if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
+            if (dcmEnableVRCheckerForStringValues.get())
             {
-                /* check value representation */
-                const int vrID = DcmElement::scanValue(value, "pn", posStart, length);
-                if (vrID != 11)
+                /* currently, the VR checker only supports ASCII and Latin-1 */
+                if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
                 {
-                    result = EC_ValueRepresentationViolated;
-                    break;
+                    /* check value representation */
+                    const int vrID = DcmElement::scanValue(value, "pn", posStart, length);
+                    if (vrID != 11)
+                    {
+                        result = EC_ValueRepresentationViolated;
+                        break;
+                    }
                 }
             }
             posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;

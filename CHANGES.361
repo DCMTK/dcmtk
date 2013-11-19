@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.19 (riesmeier)
+
+- Added global flag for disabling the VR checker:
+  Added global flag that allows for disabling the VR checker used by the
+  various checkStringValue() methods. Since this checker is currently limited
+  to ASCII and Latin-1, and the detection of the character set might fail for
+  incorrectly encoded DICOM datasets, this check can be disabled globally.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrtm.cc
+
 **** Changes from 2013.11.18 (riesmeier)
 
 - Removed redundant and outdated Word document:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -265,29 +265,32 @@ OFCondition DcmDate::checkStringValue(const OFString &value,
     const size_t valLen = value.length();
     if (valLen > 0)
     {
-      size_t posStart = 0;
-      unsigned long vmNum = 0;
-      /* iterate over all value components */
-      while (posStart != OFString_npos)
-      {
-        ++vmNum;
-        /* search for next component separator */
-        const size_t posEnd = value.find('\\', posStart);
-        const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
-        /* check value representation */
-        const int vrID = DcmElement::scanValue(value, "da", posStart, length);
-        if ((vrID != 2) && (!oldFormat || (vrID != 3)) && (vrID != 17))
+        size_t posStart = 0;
+        unsigned long vmNum = 0;
+        /* iterate over all value components */
+        while (posStart != OFString_npos)
         {
-          result = EC_ValueRepresentationViolated;
-          break;
+            ++vmNum;
+            /* search for next component separator */
+            const size_t posEnd = value.find('\\', posStart);
+            const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+            if (dcmEnableVRCheckerForStringValues.get())
+            {
+                /* check value representation */
+                const int vrID = DcmElement::scanValue(value, "da", posStart, length);
+                if ((vrID != 2) && (!oldFormat || (vrID != 3)) && (vrID != 17))
+                {
+                    result = EC_ValueRepresentationViolated;
+                    break;
+                }
+            }
+            posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
         }
-        posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
-      }
-      if (result.good() && !vm.empty())
-      {
-        /* check value multiplicity */
-        result = DcmElement::checkVM(vmNum, vm);
-      }
+        if (result.good() && !vm.empty())
+        {
+            /* check value multiplicity */
+            result = DcmElement::checkVM(vmNum, vm);
+        }
     }
     return result;
 }
