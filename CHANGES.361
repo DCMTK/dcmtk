@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.21 (riesmeier)
+
+- Fixed minor Doxygen-related issue in documentation:
+  Doxygen, the tool that is used for generating the HTML documentation from
+  source code, requires that a "." is escaped under certain conditions, e.g.
+  if this character does not define the end of a sentence as used for short
+  class descriptions.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2013.11.19 (riesmeier)
 
 - Added new option for disabling the VR checker:

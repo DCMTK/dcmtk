@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2012, OFFIS e.V.
+ *  Copyright (C) 2006-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -96,7 +96,7 @@ typedef int offile_errno_t;
 
 
 /** class for managing filenames consisting either of conventional (8-bit) or
- *  wide (e.g. 16-bit) characters.  The wide character support is currently
+ *  wide (e.g.\ 16-bit) characters.  The wide character support is currently
  *  Windows-specific because most other operating systems use UTF-8, which is
  *  compatible with conventional 8-bit character strings.
  */
@@ -397,7 +397,8 @@ public:
    *  associated with a standard text stream (stderr, stdin, or stdout).
    *  @param filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
-   *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
+   *  @return true if stream was successfully created, false otherwise, in
+   *    which case the error code is set.
    */
   OFBool freopen(const char *filename, const char *modes)
   {
@@ -414,7 +415,8 @@ public:
   /** generates a unique temporary filename. The temporary file is then opened
    *  in binary read/write (w+b) mode. The file will be automatically deleted
    *  when it is closed or the program terminates normally.
-   *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
+   *  @return true if stream was successfully created, false otherwise, in
+   *    which case the error code is set.
    */
   OFBool tmpfile()
   {
@@ -463,7 +465,8 @@ public:
   /** waits for the associated process (created with popen) to terminate and
    *  returns the exit status of the command as returned by wait4.
    *  In this implementation, fclose and pclose can be used synonymously.
-   *  @return process ID of the child which exited, or -1 on error, in which case the error code is set
+   *  @return process ID of the child which exited, or -1 on error, in which
+   *    case the error code is set
    */
   int pclose() { return fclose(); }
 
