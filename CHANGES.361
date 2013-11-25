@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.25 (riesmeier)
+
+- Fixed name of PN component in Native DICOM Model:
+  Fixed name of first PersonName (PN) component in Native DICOM Model.
+  According to Supplement 166 (QIDO-RS) the XML element name is "Alphabetic"
+  (and not "SingleByte" as it was before).
+  Affects: dcmdata/libsrc/dcvrpn.cc
+
 **** Changes from 2013.11.21 (riesmeier)
 
 - Fixed minor Doxygen-related issue in documentation:

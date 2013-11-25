@@ -125,7 +125,7 @@ OFCondition DcmPersonName::writeXML(STD_NAMESPACE ostream &out,
             /* strings to hold family, first, and middle name as well as prefix and suffix component */
             OFString components[5];
             /* arrays in order to permit looping while creating the output */
-            const char* compGroupNames[3] = { "SingleByte", "Ideographic", "Phonetic" };
+            const char* compGroupNames[3] = { "Alphabetic", "Ideographic", "Phonetic" };
             const char* compNames[5] = { "FamilyName", "GivenName", "MiddleName", "NamePrefix", "NameSuffix" };
             for (unsigned int it = 0; it < vm; it++)
             {
