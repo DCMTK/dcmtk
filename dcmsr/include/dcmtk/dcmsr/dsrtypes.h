@@ -100,7 +100,7 @@ class DSRIODConstraintChecker;
 
 
 /*-----------------------*
- *  contant definitions  *
+ *  constant definitions  *
  *-----------------------*/
 
 /** @name specific error conditions for module dcmsr.
@@ -676,7 +676,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         CS_Japanese,
         /// ISO-IR 166: Thai
         CS_Thai,
-        // UTF-8: Unicode in UTF-8
+        /// UTF-8: Unicode in UTF-8
         CS_UTF8,
         /// internal type used to mark the last entry
         CS_last = CS_UTF8
@@ -1090,7 +1090,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      */
     static OFBool checkForValidReference(const OFString &stringValue);
 
-    /** create specified SR IOD content relationship contraint checker object.
+    /** create specified SR IOD content relationship constraint checker object.
      *  Please note that the created object has to be deleted by the caller.
      ** @param  documentType  associated SR document type for which the checker object is created
      ** @return pointer to new IOD checker object if successful, NULL if document type is not supported
@@ -1102,7 +1102,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      *  It facilitates the introduction of new relationship/value types and the maintenance.
      ** @param  relationshipType  relationship type of the node to be created
      *  @param  valueType         value type of the node to be created
-     ** @return pointer to the new document tree nodeif successful, NULL otherwise
+     ** @return pointer to the new document tree node if successful, NULL otherwise
      */
     static DSRDocumentTreeNode *createDocumentTreeNode(const E_RelationshipType relationshipType,
                                                        const E_ValueType valueType);

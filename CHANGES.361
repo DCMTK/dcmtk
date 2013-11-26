@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.26 (riesmeier)
+
+- Fixed minor Doxygen-related issue in documentation:
+  Doxygen requires three slashes "///" for documenting entities, e.g. members
+  of an enumeration type. One slash was missing for CS_UTF8 in E_CharacterSet.
+  Also fixed various typos in comments.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+
 **** Changes from 2013.11.25 (riesmeier)
 
 - Fixed name of PN component in Native DICOM Model:
