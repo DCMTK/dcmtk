@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.26 (riesmeier)
 
+- Fixed issue with test "ofstd_markup_6" (Win32):
+  Fixed issue with test "ofstd_markup_6" not running successfully on Windows
+  systems (due to an incorrect length of the input string value).
+  Thanks to forum user "ghleclerc" for the report.
+  Affects: ofstd/tests/tmarkup.cc
+
 - Fixed minor Doxygen-related issue in documentation:
   Doxygen requires three slashes "///" for documenting entities, e.g. members
   of an enumeration type. One slash was missing for CS_UTF8 in E_CharacterSet.
