@@ -230,7 +230,7 @@ request could not be sent to the storage SCP.
 
 If more than 128 presentation contexts are needed, which is the maximum number
 allowed according to the DICOM standard, a new association is started after the
-previous one has been completed.  In cases where this behaviour is unwanted, it
+previous one has been completed.  In cases where this behavior is unwanted, it
 can be disabled using option \e --single-association.  In addition, whether
 only lossless compressed data sets are decompressed (if needed), which is the
 default, or also lossy compressed data sets can be specified using the
@@ -300,7 +300,7 @@ has to propose the default transfer syntax in at least one presentation context
 associated with each abstract syntax (i.e. SOP class).  This requirement is
 waived when the SCU only has access to the SOP instance in lossy compressed
 form.  With option \e --no-illegal-proposal the strict DICOM-conformant
-behaviour can be enforced, i.e. no possibly illegal presentation context will
+behavior can be enforced, i.e. no possibly illegal presentation context will
 be proposed but the corresponding SOP instance will be rejected (if needed).
 
 Please note, however, that the default transfer syntax for "Lossless JPEG
@@ -336,7 +336,7 @@ multiple values are allowed (1-n), a combination of both means 0 to n values.
 Command line options are distinguished from parameters by a leading '+' or '-'
 sign, respectively.  Usually, order and position of command line options are
 arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
+exclusive the rightmost appearance is used.  This behavior conforms to the
 standard evaluation rules of common Unix shells.
 
 In addition, one or more command files can be specified using an '@' sign as a
@@ -345,7 +345,7 @@ is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator unless they appear between two
 quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
-allows to summarize common combinations of options/parameters and avoids
+allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
@@ -393,7 +393,7 @@ in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
-The default behaviour should be preferred and the \e DCMDICTPATH environment
+The default behavior should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
 \e PATH variable in that a colon (":") separates entries.  On Windows systems,

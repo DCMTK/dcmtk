@@ -253,10 +253,10 @@ New Study and Series Instance UIDs are generated <b>if necessary</b> after
 applying the \e --study-from and \e --series options. If Study Instance UID or
 Series Instance UID are not present after these steps, they are newly generated,
 independently from each other.
-A contrary behaviour is chosen for the SOP Instance UID that one could expect
+A contrary behavior is chosen for the SOP Instance UID that one could expect
 to be taken over when using the \e --dataset-from option. This is \b not the
 case, the SOP Instance UID is \b not copied to the new object. This should
-be the desirable behaviour for most use cases. However, if a certain SOP
+be the desirable behavior for most use cases. However, if a certain SOP
 Instance UID should be inserted into the new object, the \e --key option should
 be used.
 
@@ -290,8 +290,8 @@ and slightly transformed (e. g. JFIF header is cut off) to allow fast
 conversion of even big JPEG files without the need of decoding and re-encoding.
 The JPEG plugin chooses the necessary output transfer syntax automatically
 depending on the actual encoding of the data inside the JPEG file. Therefore,
-the following Transfer Syntaxes (and their corresponding JPEG encodings) are used
-by the JPEG plugin:
+the following Transfer Syntaxes (and their corresponding JPEG encodings) are
+used by the JPEG plugin:
 
 \li JPEG Coding Process 1
     Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
@@ -311,7 +311,7 @@ The support for the Extended JPEG Transfer Syntax can be disabled
 (\e --disable-ext option) as well as the support for the (retired) Progressive
 JPEG Transfer Syntax (\e --disable-progr option).
 
-JPEG lossless encoding as well as any arithmethic or hierarchical JPEG encoding
+JPEG lossless encoding as well as any arithmetic or hierarchical JPEG encoding
 modes are not supported by the plugin.
 
 JFIF (JPEG File Interchange Format) information facilitates optional APPn
@@ -351,10 +351,10 @@ Please note that the first one is deprecated according to the DICOM standard
 but is selected as a default because it is widely supported. Future versions
 of \b img2dcm might provide further output plugins for other SOP Classes.
 
-For the new Secondary Capture SOP classes, it is not possible to specifiy which
+For the new Secondary Capture SOP classes, it is not possible to specify which
 specific SOP class should be used for output. That is because these new SOP
-classes are differentiated from each other by colour depth (1/8/16) and the
-fact whether the image is black/white or colour. That is why \b img2dcm decides
+classes are differentiated from each other by color depth (1/8/16) and the
+fact whether the image is black/white or color. That is why \b img2dcm decides
 during conversion, which output SOP class is suitable for a given source image.
 
 \section examples EXAMPLES
@@ -449,7 +449,7 @@ multiple values are allowed (1-n), a combination of both means 0 to n values.
 Command line options are distinguished from parameters by a leading '+' or '-'
 sign, respectively.  Usually, order and position of command line options are
 arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
+exclusive the rightmost appearance is used.  This behavior conforms to the
 standard evaluation rules of common Unix shells.
 
 In addition, one or more command files can be specified using an '@' sign as a
@@ -458,7 +458,7 @@ is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator unless they appear between two
 quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
-allows to summarize common combinations of options/parameters and avoids
+allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
@@ -470,7 +470,7 @@ in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
-The default behaviour should be preferred and the \e DCMDICTPATH environment
+The default behavior should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
 \e PATH variable in that a colon (":") separates entries.  On Windows systems,
@@ -491,6 +491,6 @@ images
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

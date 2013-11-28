@@ -56,6 +56,6 @@ sample characteristics file monitors, cameras, printers and scanners.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

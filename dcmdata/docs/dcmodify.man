@@ -14,9 +14,9 @@ dcmodify [options] dcmfile-in...
 
 \section description DESCRIPTION
 
-\b dcmodify is a tool that allows to modify, insert and delete tags and items
-in DICOM files.  Sequences and tags with a value multiplicity > 1 are also
-supported.  Metaheader information and the tag's VR can not be modified
+\b dcmodify is a tool that allows one to modify, insert and delete tags and
+items in DICOM files.  Sequences and tags with a value multiplicity > 1 are
+also supported.  Metaheader information and the tag's VR can not be modified
 directly by \b dcmodify at this time.  In addition to tag modifications,
 \b dcmodify makes available some input options - forcing \b dcmodify to
 handle its input files as the user specifies - and output options to control
@@ -29,12 +29,11 @@ representation (VR).  Usually, an error message is printed but generally the
 user should take care of the right VR usage.
 
 If \b dcmodify doesn't know the tag it should insert, then the tag's VR is set
-to UN and the value provided on commandline is interpreted as being a
-series of hexadecimal numbers (like they are provided for VR=OB). Please
-insert these tags into the dictionary to avoid this behaviour.  Also,
-specifying the \e -iun option, it is possible to force \b dcmodify to
-leave UN values untouched.  Using option \e -u lets \b dcmodify saving all
-VR=UN attributes as OB.
+to UN and the value provided on command line is interpreted as being a series
+of hexadecimal numbers (like they are provided for VR=OB).  Please insert these
+tags into the dictionary to avoid this behavior.  Also, specifying the \e -iun
+option, it is possible to force \b dcmodify to leave UN values untouched.
+Using option \e -u lets \b dcmodify saving all VR=UN attributes as OB.
 
 \b dcmodify is able to work with so-called tag paths to access tags in
 sequences.  The (pseudo-formalized) syntax is
@@ -327,7 +326,7 @@ dictionary.  So please be careful to enter only values that match the tag's VR.
 
 If you wish to change a private tags value \e and VR, because you just added
 this tag to your dictionary, you can delete it with \b dcmodify and re-insert
-it.  Then \b dcmodify uses your dicitionary entry to determine the right VR
+it.  Then \b dcmodify uses your dictionary entry to determine the right VR
 (also see subsection insertions).
 
 Also, see description above how inserting values into elements with unknown VR
@@ -347,11 +346,11 @@ For the deletion of private non-reservation tags there are no special issues.
 \b dcmodify will automatically correct 'Media Storage SOP Class UID' and
 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the
 related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via
-insert or modify mode options.  You can disable this behaviour by using the
+insert or modify mode options.  You can disable this behavior by using the
 \e -nmu option.
 
 If you generate new UID's with \e -gst, \e -gse or \e -gin, this will only
-affect the UID you choosed to generate.  So if you use \e -gst to generate a
+affect the UID you chose to generate.  So if you use \e -gst to generate a
 new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID'
 will not be affected!  This gives you the possibility to generate each value
 separately.  Normally, you would also modify the 'underlying' UIDs.  As a
@@ -360,7 +359,7 @@ disadvantage of this flexibility, the user has to assure, that when creating
 by the user as necessary.
 
 When choosing the \e -gin option, the related metaheader tag ('Media Storage
-SOP Instance UID') is updated automatically.  This behaviour cannot be
+SOP Instance UID') is updated automatically.  This behavior cannot be
 disabled.
 
 \section creating_new_files CREATING NEW FILES
@@ -368,8 +367,8 @@ disabled.
 Option \e --create-file lets \b dcmodify create a file if it does not already
 exist on disk. This can be used in order to create files from scratch by
 performing consecutive insertions with options like \e --insert. This might
-especially become handy when creating query files for tools like findscu or
-movescu. In case no specific output transfer syntax is defined, \b dcmodify
+especially become handy when creating query files for tools like \b findscu or
+\b movescu. In case no specific output transfer syntax is defined, \b dcmodify
 chooses Little Endian Explicit Uncompressed for output. Files that are newly
 created are always written as DICOM file format, i.e. option \e --write-dataset
 is not permitted together with \e --create. This way, at least the metaheader
@@ -394,7 +393,7 @@ possible for all basic operations, i.e. modifying \e -m, inserting \e -i and
 intermediate path nodes a powerful tool for construction and processing complex
 datasets.
 
-The options \e -ma and \e -ea for modifying or deleting all occurences of a
+The options \e -ma and \e -ea for modifying or deleting all occurrences of a
 DICOM element based on its tag do not accept any wildcards but only work on
 single elements (i.e. a single dictionary name or tag key).
 
@@ -514,7 +513,7 @@ single elements (i.e. a single dictionary name or tag key).
 one returns an error, the others are being performed anyway.  However in case
 of any error, the modified file is not saved, unless the \e --ignore-errors
 option is specified.  If that option is selected, \b dcmodify also
-continues modifying further files specified on commandline; otherwise
+continues modifying further files specified on command line; otherwise
 \b dcmodify exits after the first file that had modification errors.
 
 If the \e --ignore-missing-tags option is enabled, any modify or erase
@@ -551,7 +550,7 @@ multiple values are allowed (1-n), a combination of both means 0 to n values.
 Command line options are distinguished from parameters by a leading '+' or '-'
 sign, respectively.  Usually, order and position of command line options are
 arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
+exclusive the rightmost appearance is used.  This behavior conforms to the
 standard evaluation rules of common Unix shells.
 
 In addition, one or more command files can be specified using an '@' sign as a
@@ -560,7 +559,7 @@ is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator unless they appear between two
 quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
-allows to summarize common combinations of options/parameters and avoids
+allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
@@ -572,7 +571,7 @@ in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
-The default behaviour should be preferred and the \e DCMDICTPATH environment
+The default behavior should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
 \e PATH variable in that a colon (":") separates entries.  On Windows systems,

@@ -30,7 +30,7 @@ DICOM "magic word" 'DICM' at byte position 128.  No attempt is made to parse
 the complete data set.  For each file the test result is printed to \e stdout
 in the form "yes: <filename>\n" or "no: <filename>\n".  The utility terminates
 with a return code corresponding to the number of files found to be non-DICOM,
-i.e. if all files pass as DICOM files, the return value is 0.  This behaviour
+i.e. if all files pass as DICOM files, the return value is 0.  This behavior
 is intended for use in shell script programming.
 
 \section see_also SEE ALSO
@@ -39,6 +39,6 @@ is intended for use in shell script programming.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1997-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1997-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

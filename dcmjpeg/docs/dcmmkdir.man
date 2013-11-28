@@ -55,7 +55,7 @@ Currently the following profiles are supported (others might be added later):
 \li Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 
 This tool extends \b dcmgpdir which can only create General Purpose \e DICOMDIR
-files.  The default behaviour of \b dcmmkdir (with \e --general-purpose) is
+files.  The default behavior of \b dcmmkdir (with \e --general-purpose) is
 equivalent to that of \b dcmgpdir.
 
 \section parameters PARAMETERS
@@ -351,18 +351,18 @@ length encoding in sequences and items:
 
 \section notes NOTES
 
-All files specified on the command line (or discovered by recursivly examining
+All files specified on the command line (or discovered by recursively examining
 the contents of directories with the \e +r option) are first evaluated for
 their compatibility with the specified Media Storage Application Profile (Part
 11).  Only appropriate files encoded using one of the allowed Transfer Syntaxes
 will be accepted.  Files having invalid filenames will be rejected (the rules
 can be relaxed via the \e +m option).  Files missing required attributes will
-be rejected (the \e +I option can relax this behaviour).
+be rejected (the \e +I option can relax this behavior).
 
 A \e DICOMDIR file will only be constructed if all files have passed initial
 tests.
 
-The \b dcmmkdir utility also allows to append new entries to and to update
+The \b dcmmkdir utility also allows one to append new entries to and to update
 existing entries in a \e DICOMDIR file.  Using option \e +A new entries are
 only appended to the DICOMDIR, i.e. existing records like the ones for PATIENT
 information are not updated.  Using option \e +U also existing records are
@@ -418,7 +418,7 @@ multiple values are allowed (1-n), a combination of both means 0 to n values.
 Command line options are distinguished from parameters by a leading '+' or '-'
 sign, respectively.  Usually, order and position of command line options are
 arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
+exclusive the rightmost appearance is used.  This behavior conforms to the
 standard evaluation rules of common Unix shells.
 
 In addition, one or more command files can be specified using an '@' sign as a
@@ -427,7 +427,7 @@ is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator unless they appear between two
 quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
-allows to summarize common combinations of options/parameters and avoids
+allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
@@ -439,7 +439,7 @@ in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
-The default behaviour should be preferred and the \e DCMDICTPATH environment
+The default behavior should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
 \e PATH variable in that a colon (":") separates entries.  On Windows systems,
@@ -453,6 +453,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -112,7 +112,7 @@ conflict with another command.
 
 The "help" command gives a summary of all available commands. Its output is
 shown underneath.  In order to separate the examples from surrounding text,
-all examples are bracketted by dashed lines.  These lines do not appear when
+all examples are bracketed by dashed lines.  These lines do not appear when
 running the program.
 
 \verbatim
@@ -158,7 +158,7 @@ peer AE.  The fourth column shows the hostname and TCP/IP port number of the
 peer AE.
 
 When invoked with an argument index, the "title" command will set the current
-peer AE.  The \b dcmqrti program will attempt to initate an association to the
+peer AE.  The \b dcmqrti program will attempt to initiate an association to the
 current peer AE when asked to send a study/series/image or to send an echo.
 
 \subsubsection database_command "database" Command
@@ -402,7 +402,7 @@ multiple values are allowed (1-n), a combination of both means 0 to n values.
 Command line options are distinguished from parameters by a leading '+' or '-'
 sign, respectively.  Usually, order and position of command line options are
 arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
+exclusive the rightmost appearance is used.  This behavior conforms to the
 standard evaluation rules of common Unix shells.
 
 In addition, one or more command files can be specified using an '@' sign as a
@@ -411,7 +411,7 @@ is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator unless they appear between two
 quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
-allows to summarize common combinations of options/parameters and avoids
+allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
@@ -423,7 +423,7 @@ in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built into
 the application (default for Windows).
 
-The default behaviour should be preferred and the \e DCMDICTPATH environment
+The default behavior should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
 \e PATH variable in that a colon (":") separates entries.  On Windows systems,
@@ -443,6 +443,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2012 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

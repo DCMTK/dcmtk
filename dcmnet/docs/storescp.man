@@ -459,7 +459,7 @@ dot "." is not added automatically).  This suffix is not appended to the
 filenames created by \e --rename-on-eostudy to maintain the length of 8
 characters.
 
-Option \e --exec-on-reception allows to execute a certain command line after
+Option \e --exec-on-reception allows one to execute a certain command line after
 having received and processed one DICOM object (through a C-STORE-RQ message).
 The command line to be executed is passed to this option as a parameter.  The
 specified command line may contain a number of placeholders which will be
@@ -479,7 +479,7 @@ The specified command line is executed as a separate process, so that the
 execution of \b storescp will not be held back.  This behavior can be influenced
 with the \e --exec-sync option.
 
-Option \e --exec-on-eostudy allows to execute a certain command line when all
+Option \e --exec-on-eostudy allows one to execute a certain command line when all
 DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
 '\#f', which is not supported.  A study is considered complete by \b storescp
@@ -682,11 +682,11 @@ LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 \endverbatim
 
-The default behaviour of the \b storescp application is to prefer transfer
+The default behavior of the \b storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.
 If \b storescp is running on big-endian hardware it will prefer
 BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa).
-This behaviour can be changed with the \e --prefer options (see above).  Using
+This behavior can be changed with the \e --prefer options (see above).  Using
 option \e --accept-all any of the following transfer syntaxes is supported:
 
 \verbatim
@@ -753,7 +753,7 @@ privileges, which may be a security risk.
 \subsection profiles Association Negotiation Profiles and Configuration Files
 
 \b storescp supports a flexible mechanism for specifying the DICOM network
-association negotiation behaviour, based on so-called "association negotiation
+association negotiation behavior, based on so-called "association negotiation
 profiles" which may be read from a configuration file.  The format and
 semantics of this configuration file are documented in \e asconfig.txt.
 
@@ -785,7 +785,7 @@ multiple values are allowed (1-n), a combination of both means 0 to n values.
 Command line options are distinguished from parameters by a leading '+' or '-'
 sign, respectively.  Usually, order and position of command line options are
 arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
+exclusive the rightmost appearance is used.  This behavior conforms to the
 standard evaluation rules of common Unix shells.
 
 In addition, one or more command files can be specified using an '@' sign as a
@@ -794,7 +794,7 @@ is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator unless they appear between two
 quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
-allows to summarize common combinations of options/parameters and avoids
+allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
@@ -806,7 +806,7 @@ in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
-The default behaviour should be preferred and the \e DCMDICTPATH environment
+The default behavior should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
 \e PATH variable in that a colon (":") separates entries.  On Windows systems,
