@@ -115,6 +115,14 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition writeXML(STD_NAMESPACE ostream &out,
+                         const size_t flags = 0);
+
     /** get particular tag value
      *  @param tagVal reference to result variable (cleared in case of error)
      *  @param pos index of the value to be retrieved (0..vm-1)

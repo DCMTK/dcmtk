@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -144,6 +144,47 @@ void DcmAttributeTag::print(STD_NAMESPACE ostream& out,
             printInfoLine(out, flags, level, "(no value available)");
     } else
         printInfoLine(out, flags, level, "(not loaded)");
+}
+
+
+// ********************************
+
+
+OFCondition DcmAttributeTag::writeXML(STD_NAMESPACE ostream &out,
+                                      const size_t flags)
+{
+    /* AT requires special handling in the Native DICOM Model format */
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        /* write normal XML start tag */
+        DcmElement::writeXMLStartTag(out, flags);
+        /* get unsigned integer data */
+        Uint16 *uintVals;
+        getUint16Array(uintVals);
+        const unsigned long vm = getVM();
+        /* check for empty/invalid value */
+        if ((uintVals != NULL) && (vm > 0))
+        {
+            out << STD_NAMESPACE uppercase << STD_NAMESPACE setfill('0');
+            /* print tag values "ggggeeee" in hex mode (upper case!) */
+            for (unsigned long valNo = 0; valNo < vm; valNo++)
+            {
+                out << "<Value number=\"" << (valNo + 1) << "\">";
+                out << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << (*(uintVals++));
+                out << STD_NAMESPACE setw(4) << (*(uintVals++)) << STD_NAMESPACE dec;
+                out << "</Value>" << OFendl;
+            }
+            /* reset i/o manipulators */
+            out << STD_NAMESPACE nouppercase << STD_NAMESPACE setfill(' ');
+        }
+        /* write normal XML end tag */
+        DcmElement::writeXMLEndTag(out, flags);
+        /* always report success */
+        return EC_Normal;
+    } else  {
+        /* DCMTK-specific format does not require anything special */
+        return DcmElement::writeXML(out, flags);
+    }
 }
 
 

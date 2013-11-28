@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.28 (riesmeier)
 
+- Fixed output of AT values in Native DICOM Model:
+  Fixed wrong output format for Attribute Tag (AT) values in the Native DICOM
+  Model. Supplement 166 (QIDO-RS) clarifies that the format is "GGGGEEEE", and
+  not "(gggg,eeee)" as it was before (which is DCMTK's default string output
+  format for AT values). Closes DCMTK Bug #551.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/libsrc/dcvrat.cc
+
 - Fixed various typos in man pages.
   Thanks to Mathieu Malaterre <malat@debian.org> for the original report.
   Affects: dcmdata/docs/dcm2pdf.man
