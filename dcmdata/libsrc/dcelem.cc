@@ -1321,7 +1321,7 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
     out << " tag=\"";
     out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
         << STD_NAMESPACE setw(4) << tag.getGTag();
-    /* in Native DICOM Model, write "ggggeeee" (no comma) */
+    /* in Native DICOM Model, write "ggggeeee" (no comma, upper case!) */
     if (flags & DCMTypes::XF_useNativeModel)
     {
         /* for private element numbers, zero out 2 first element digits */
@@ -1417,12 +1417,12 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
     {
         /* write XML start tag */
         writeXMLStartTag(out, flags);
-        /* write element value (if loaded) */
-        if (valueLoaded())
+        OFString value;
+        const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
+        if (flags & DCMTypes::XF_useNativeModel)
         {
-            OFString value;
-            const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
-            if (flags & DCMTypes::XF_useNativeModel)
+            /* write element value (if non-empty) */
+            if (!isEmpty())
             {
                 const unsigned long vm = getVM();
                 for (unsigned long valNo = 0; valNo < vm; valNo++)
@@ -1438,7 +1438,11 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
                         out << "</Value>" << OFendl;
                     }
                 }
-            } else {
+            }
+        } else {
+            /* write element value (only if loaded) */
+            if (valueLoaded())
+            {
                 if (getOFStringArray(value).good())
                 {
                     /* check whether conversion to XML markup string is required */

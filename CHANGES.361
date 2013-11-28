@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.11.28 (riesmeier)
 
+- Do not check valueLoaded() for Native DICOM Model:
+  Do not check whether a value has actually been loaded when writing an element
+  value to XML output in the Native DICOM Model. This is because this concept
+  is only known to the DCMTK-specific output format.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Fixed output of AT values in Native DICOM Model:
   Fixed wrong output format for Attribute Tag (AT) values in the Native DICOM
   Model. Supplement 166 (QIDO-RS) clarifies that the format is "GGGGEEEE", and
