@@ -26,6 +26,7 @@
 
 #include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcvrfd.h"
+#include "dcmtk/dcmdata/dcswap.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for UID generation */
 
 
@@ -106,11 +107,24 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
         /* for an empty value field, we do not need to do anything */
         if (getLengthField() > 0)
         {
-            /* generate a new UID but the binary data is not (yet) written. */
-            OFUUID uuid;
-            out << "<BulkData uuid=\"";
-            uuid.print(out, OFUUID::ER_RepresentationHex);
-            out << "\"/>" << OFendl;
+            /* encode binary data as Base64 */
+            if (flags & DCMTypes::XF_encodeBase64)
+            {
+                out << "<InlineBinary>";
+                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
+                /* Base64 encoder requires big endian input data */
+                swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Float64));
+                /* update the byte order indicator variable correspondingly */
+                setByteOrder(EBO_BigEndian);
+                OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+                out << "</InlineBinary>" << OFendl;
+            } else {
+                /* generate a new UID but the binary data is not (yet) written. */
+                OFUUID uuid;
+                out << "<BulkData uuid=\"";
+                uuid.print(out, OFUUID::ER_RepresentationHex);
+                out << "\"/>" << OFendl;
+            }
         }
     } else {
         /* write element value (if loaded) */

@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.11.29 (riesmeier)
+
+- Completed support for <InlineBinary> XML element:
+  Completed support for the <InlineBinary> XML element used by the Native DICOM
+  Model format. Now, also data elements with a VR of OD and OF can be encoded
+  as base64. Closes DCMTK Feature #549.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcvrod.cc
+           dcmdata/libsrc/dcvrof.cc
+
 **** Changes from 2013.11.28 (riesmeier)
 
 - Do not check valueLoaded() for Native DICOM Model:

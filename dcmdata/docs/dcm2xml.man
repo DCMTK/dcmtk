@@ -241,7 +241,8 @@ additional attribute "binary" with a value of "hidden" (default is "no").  The
 command line option \e --write-binary-data causes also binary value fields to
 be printed (attribute value is "yes" or "base64").  But, be careful when using
 this option together with \e --load-all because of the large amounts of pixel
-data that might be printed to the output.
+data that might be printed to the output.  Please note that in this context
+element values with a VR of OD or OF are not regarded as "binary information".
 
 Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
 are separated by a backslash "\" (except for Base64 encoded data).  The "len"
@@ -271,8 +272,8 @@ available in future versions of \b dcm2xml.
 In addition, Supplement 163 (Store Over the Web by Representational State
 Transfer Services) introduces a new \<InlineBinary\> XML element that allows
 for encoding binary data as Base64.  Currently, the command line option
-\e --encode-base64 enables this encoding for the following VRs: OB, OW, UN.
-That means in particular, OD and OF are still missing.
+\e --encode-base64 enables this encoding for the following VRs: OB, OD, OF, OW,
+and UN.
 
 \subsection known_issues Known Issues
 
