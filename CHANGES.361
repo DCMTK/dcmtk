@@ -3,11 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2013.12.05 (onken)
 
-- Documentation for CMAKE_BUILD_TYPE default value.
+- Fixed typo.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlslayer.h
 
+- Documentation for CMAKE_BUILD_TYPE default value.
   Thanks to Mathieu Malaterre <malat@debian.org> for pointing to the fact that
   having no default value in some situations is important and Jean-Christophe
   Fillion-Robin <jchris.fillionr@kitware.com> for giving a solution.
+  Affects: CMake/dcmtkPrepare.cmake
+           INSTALL
 
 **** Changes from 2013.11.29 (riesmeier)
 
