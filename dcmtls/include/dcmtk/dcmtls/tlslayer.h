@@ -81,7 +81,7 @@ public:
    *  @param initializeOpenSSL Determines if OpenSSL library should be initialized.
    *    Some setups (e.g. multi-threaded environments) may be interested in using
    *    more than one TLS transport layer at a time and thus must make sure the
-   *    libary is only initialized once.
+   *    library is only initialized once.
    */
   DcmTLSTransportLayer(int networkRole, const char *randFile, OFBool initializeOpenSSL = OFTrue);
 
