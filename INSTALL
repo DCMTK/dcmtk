@@ -673,6 +673,24 @@ Please note that support for shared libraries is still pretty new in DCMTK and
 thus not that mature.
 
 
+Default value for CMAKE_BUILD_TYPE
+----------------------------------
+
+CMAKE_BUILD_TYPE is set to value "Release" if none is specified by the
+selected build file generator. For those generators that support multiple
+configuration types (e.g. Debug, Release), CMAKE_CONFIGURATION_TYPES holds
+possible values.  For other generators this value is empty, and for those
+generators the build type is controlled at CMake time by CMAKE_BUILD_TYPE.
+See http://www.cmake.org/pipermail/cmake/2006-January/008065.html for details.
+
+To disable the CMAKE_BUILD_TYPE default value, set CMAKE_BUILD_TYPE to value
+"None" during CMake configuration, e.g. use "-DCMAKE_BUILD_TYPE:STRING=None"
+on the command line.  This may be useful if the compiler flags should be
+controlled manually (e.g. as defined in environment variables like CXXFLAGS)
+and no CMake defaults related to the selected configuration type
+kick in.
+
+
 HTML DOCUMENTATION AND MAN PAGES
 ================================
 

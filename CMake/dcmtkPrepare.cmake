@@ -13,12 +13,19 @@ IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.12)
   SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.12 CACHE STRING "Latest version of CMake when this project was released." FORCE)
 ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.12)
 
-# Make sure CMAKE_BUILD_TYPE has a value. Default to release.
-# CMAKE_CONFIGURATION_TYPES is set for generators that support multiple
-# configuration types (and have per-configuration subdirectories like
-# Debug and Release). It is empty for other generators and for those
+# CMAKE_BUILD_TYPE is set to value "Release" if none is specified by the
+# selected build file generator. For those generators that support multiple
+# configuration types (e.g. Debug, Release), CMAKE_CONFIGURATION_TYPES holds
+# possible values.  For other generators this value is empty, and for those
 # generators the build type is controlled at CMake time by CMAKE_BUILD_TYPE.
-# http://www.cmake.org/pipermail/cmake/2006-January/008065.html
+# See http://www.cmake.org/pipermail/cmake/2006-January/008065.html for
+# details.
+#
+# To disable the CMAKE_BUILD_TYPE default value, set CMAKE_BUILD_TYPE to value
+# "None" during CMake configuration, e.g. use "-DCMAKE_BUILD_TYPE:STRING=None"
+# on the command line.  This may be useful if the compiler flags should be
+# controlled manually (e.g. as defined in environment variables like CXXFLAGS)
+# and no CMake defaults related to the selected configuration type kick in.
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   MESSAGE(STATUS "Setting build type to 'Release' as none was specified.")
   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
