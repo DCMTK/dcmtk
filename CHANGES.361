@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.12.10 (onken)
+
+- Fixed some inconsistencies in documentation.
+  Affects: INSTALL
+
 **** Changes from 2013.12.05 (onken)
 
 - Fixed typo.
