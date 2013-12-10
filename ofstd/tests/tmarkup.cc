@@ -114,7 +114,7 @@ OFTEST(ofstd_markup_5)
 OFTEST(ofstd_markup_6)
 {
     OFString resultStr;
-    const size_t sourceLen = 36;
+    const size_t sourceLen = 34;
     // XML: source string contains a NULL byte!
     const OFString sourceStr(("This is a test\0, with a NULL byte."), sourceLen);
     const OFString markupStr = "This is a test, with a NULL byte.";

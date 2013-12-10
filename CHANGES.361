@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.12.10 (riesmeier)
+
+- Second try to fix the issue with "ofstd_markup_6":
+  The error in test "ofstd_markup_6" still occurred on various systems.
+  Thanks to Mathieu Malaterre <malat@debian.org> for pointing this out.
+  Affects: ofstd/tests/tmarkup.cc
+
 **** Changes from 2013.12.10 (onken)
 
 - Fixed some inconsistencies in documentation.
