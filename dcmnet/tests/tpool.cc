@@ -35,7 +35,7 @@ protected:
     void run()
     {
         negotiateAssociation();
-        result = sendECHORequest( 0 );
+        result = sendECHORequest(0);
         closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
     }
 };
@@ -51,58 +51,58 @@ protected:
 };
 
 
-/* Test starts pool with a maximum of 5 SCP workers. All workers are
-   configured to respond to C-ECHO (Verification  SOP Class). 5 SCU
-   threads are created and connect simultanously to the pool, send
-   C-ECHO messages are relase the association.
-   Currently the pool ends itself after 3 seconds without connection
-   request. This can be changed to a "shutDown()" call on the pool
-   once it is implemented
-*/
+/* Test starts pool with a maximum of 5 SCP workers (default value).
+ * All workers are configured to respond to C-ECHO (Verification SOP
+ * Class). 20 SCU threads are created and connect simultaneously to
+ * the pool, send C-ECHO messages are release the association.
+ * Currently the pool ends itself after 3 seconds without connection
+ * request. This can be changed to a "shutDown()" call on the pool
+ * once it is implemented.
+ */
 OFTEST(dcmnet_scp_pool)
 {
     TestPool pool;
     DcmSCPConfig& config = pool.getConfig();
 
-    config.setAETitle( "PoolTestSCP" );
-    config.setPort( 11112 );
-    config.setConnectionBlockingMode( DUL_NOBLOCK );
+    config.setAETitle("PoolTestSCP");
+    config.setPort(11112);
+    config.setConnectionBlockingMode(DUL_NOBLOCK);
 
-    /* Stop listening after 3 seconds. This makes sure the
-       server pool exits 3 seconds after the last connection request
-       of the SCUs. As soon as it is possible to shut down the pool
-       via API (currently under test), this should be done instead of
-       exiting via connection timeout.
+    /* Stop listening after 3 seconds. This makes sure the server pool
+     * exits 3 seconds after the last connection request of the SCUs.
+     * As soon as it is possible to shut down the pool via API
+     * (currently under test), this should be done instead of exiting
+     * via connection timeout.
      */
-    config.setConnectionTimeout( 3 );
+    config.setConnectionTimeout(3);
 
-    pool.setMaxThreads( 20 );
+    pool.setMaxThreads(20);
     OFList<OFString> xfers;
     xfers.push_back(UID_LittleEndianExplicitTransferSyntax);
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
-    config.addPresentationContext(UID_VerificationSOPClass,xfers);
+    config.addPresentationContext(UID_VerificationSOPClass, xfers);
 
-    OFVector<TestSCU*> scus( 20 );
-    for( OFVector<TestSCU*>::iterator it1 = scus.begin(); it1 != scus.end(); ++it1 )
+    OFVector<TestSCU*> scus(20);
+    for (OFVector<TestSCU*>::iterator it1 = scus.begin(); it1 != scus.end(); ++it1)
     {
         *it1 = new TestSCU;
-        (*it1)->setAETitle( "PoolTestSCU" );
-        (*it1)->setPeerAETitle( "PoolTestSCP" );
-        (*it1)->setPeerHostName( "localhost" );
-        (*it1)->setPeerPort( 11112 );
-        (*it1)->addPresentationContext(UID_VerificationSOPClass,xfers);
+        (*it1)->setAETitle("PoolTestSCU");
+        (*it1)->setPeerAETitle("PoolTestSCP");
+        (*it1)->setPeerHostName("localhost");
+        (*it1)->setPeerPort(11112);
+        (*it1)->addPresentationContext(UID_VerificationSOPClass, xfers);
         (*it1)->initNetwork();
     }
 
     pool.start();
 
-    for( OFVector<TestSCU*>::const_iterator it2 = scus.begin(); it2 != scus.end(); ++it2 )
+    for (OFVector<TestSCU*>::const_iterator it2 = scus.begin(); it2 != scus.end(); ++it2)
         (*it2)->start();
 
-    for( OFVector<TestSCU*>::iterator it3 = scus.begin(); it3 != scus.end(); ++it3 )
+    for (OFVector<TestSCU*>::iterator it3 = scus.begin(); it3 != scus.end(); ++it3)
     {
         (*it3)->join();
-        OFCHECK( (*it3)->result.good() );
+        OFCHECK((*it3)->result.good());
         delete *it3;
     }
 
@@ -110,7 +110,7 @@ OFTEST(dcmnet_scp_pool)
     // pool.stopAfterCurrentAssociations();
     pool.join();
 
-    OFCHECK( pool.result.good() );
+    OFCHECK(pool.result.good());
 }
 
 #endif // WITH_THREADS

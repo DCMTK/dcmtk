@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.12.11 (riesmeier)
+
+- Fixed typos, comments and coding style.
+  Affects: dcmnet/tests/tpool.cc
+
 **** Changes from 2013.12.10 (riesmeier)
 
 - Second try to fix the issue with "ofstd_markup_6":
