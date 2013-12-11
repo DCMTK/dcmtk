@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2013.12.11 (riesmeier)
 
+- Replaced deprecated DcmSCU::closeAssociation():
+  Replaced call to DcmSCU::closeAssociation(DCMSCU_RELEASE_ASSOCIATION) by
+  DcmSCU::releaseAssociation() since the former is deprecated.
+  Affects: dcmnet/tests/tpool.cc
+
 - Fixed typos, comments and coding style.
   Affects: dcmnet/tests/tpool.cc
 

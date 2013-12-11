@@ -36,7 +36,7 @@ protected:
     {
         negotiateAssociation();
         result = sendECHORequest(0);
-        closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
+        releaseAssociation();
     }
 };
 
