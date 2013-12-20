@@ -24,11 +24,11 @@
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmdata/dctk.h"     /* Covers most common dcmdata classes */
+#include "dcmtk/dcmdata/dctk.h"     /* covers most common dcmdata classes */
 #include "dcmtk/dcmnet/dcompat.h"
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
-#include "dcmtk/dcmnet/dcasccff.h"  /* For reading a association config file */
-#include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association config file infos */
+#include "dcmtk/dcmnet/dcasccff.h"  /* for reading a association config file */
+#include "dcmtk/dcmnet/dcasccfg.h"  /* for holding association config file infos */
 #include "dcmtk/ofstd/oflist.h"
 
 
@@ -55,9 +55,9 @@ enum DcmStorageMode
   /// Try to store the objects to disk
   DCMSCU_STORAGE_DISK,
   /// Try to store to disk in bit-preserving mode. This is especially useful
-  /// for huge files that cannot fully be received in memory since the
-  /// data is directly streamed to disk. Originally, this was introduced for
-  /// DICOM signatures which can be kept valid this way.
+  /// for huge files that cannot fully be received in memory since the data
+  /// is directly streamed to disk. Originally, this was introduced for DICOM
+  /// signatures which can be kept valid this way.
   DCMSCU_STORAGE_BIT_PRESERVING
 };
 
@@ -85,7 +85,7 @@ class DCMTK_DCMNET_EXPORT QRResponse
   /// equals message ID from request)
   Uint16 m_messageIDRespondedTo;
 
-  /// Optional response field according to part 7 of the standard
+  /// Optional response field according to part 7 of the standard.
   /// If present, equals SOP Class UID from request.
   OFString m_affectedSOPClassUID;
 
@@ -440,7 +440,7 @@ public:
                                              T_DIMSE_C_StoreRQ *request);
 
   /** Sends a C-FIND Request on given presentation context and receives list of responses.
-   *  The function receives the first response and then calls the function handleFINDResponse
+   *  The function receives the first response and then calls the function handleFINDResponse()
    *  which gets the relevant presentation context together with the response dataset and
    *  status information. Then it waits again for the next response, if there are more to
    *  come (i.e. response status is PENDING). In the end, after receiving all responses, the
@@ -579,8 +579,8 @@ public:
    */
   void setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode);
 
-  /** Set SCU's AETitle to be used in association negotiation
-   *  @param myAETtitle [in] The SCU's AETitle to be used
+  /** Set SCU's AE title to be used in association negotiation
+   *  @param myAETtitle [in] The SCU's AE title to be used
    */
   void setAETitle(const OFString &myAETtitle);
 
@@ -589,8 +589,8 @@ public:
    */
   void setPeerHostName(const OFString &peerHostName);
 
-  /** Set SCP's AETitle to talk to in association negotiation
-   *  @param peerAETitle [in] The SCP's AETitle to be used
+  /** Set SCP's AE title to talk to in association negotiation
+   *  @param peerAETitle [in] The SCP's AE title to be used
    */
   void setPeerAETitle(const OFString &peerAETitle);
 
@@ -622,7 +622,7 @@ public:
   /** Set the directory that should be used by the standard C-GET handler to store objects
    *  that come in with the corresponding C-STORE requests
    *  @param storeDir [in] The directory to store to. It is checked in handleSTORERequest()
-   *                       whether the directory is writeable and readable. Per default, the
+   *                       whether the directory is writeable and readable. By default, the
    *                       received objects are stored in the current working directory.
    */
   void setStorageDir(const OFString &storeDir);
@@ -633,8 +633,8 @@ public:
   void setStorageMode(const DcmStorageMode storageMode);
 
   /** Set whether to show presentation contexts in verbose or debug mode
-   *  @param mode [in] Show presentation contexts in verbose mode if OFTrue. By default, the
-   *                   presentation contexts are shown in debug mode.
+   *  @param mode [in] Show presentation contexts in verbose mode if OFTrue. By default,
+   *                   the presentation contexts are shown in debug mode.
    */
   void setVerbosePCMode(const OFBool mode);
 
@@ -669,8 +669,8 @@ public:
    */
   T_DIMSE_BlockingMode getDIMSEBlockingMode() const;
 
-  /** Returns the SCU's own configured AETitle
-   *  @return The AETitle configured for this SCU
+  /** Returns the SCU's own configured AE title
+   *  @return The AE title configured for this SCU
    */
   const OFString &getAETitle() const;
 
@@ -679,8 +679,8 @@ public:
    */
   const OFString &getPeerHostName() const;
 
-  /** Returns the SCP's (peer's) AETitle configured
-   *  @return The AETitle configured to be talked to
+  /** Returns the SCP's (peer's) AE title configured
+   *  @return The AE title configured to be talked to
    */
   const OFString &getPeerAETitle() const;
 
@@ -900,7 +900,7 @@ protected:
    *  Instance UID from a dataset and combining that with the configured storage directory.
    *  The SOP class is used to create an initial two letter abbreviation for the
    *  corresponding modality, e.g. CT. An example for a storage filename created by this
-   *  function is /storage_dir/CT.1.2.3.4.5 for a CT with SOP Instance UID 1.2.3.4.
+   *  function is "/storage_dir/CT.1.2.3.4.5" for a CT with SOP Instance UID "1.2.3.4.5".
    *  This function might be overwritten to change the filename behaviour completely. This
    *  function is only called if the SCU is in DCMSCU_STORAGE_DISK mode.
    *  @param dataset [in] The dataset that should be stored to disk
@@ -989,50 +989,50 @@ private:
   /// The last DIMSE successfully sent, unresponded DIMSE request
   T_DIMSE_Message *m_openDIMSERequest;
 
-  /// Maximum PDU size
+  /// Maximum PDU size (default: 16384 bytes)
   Uint32 m_maxReceivePDULength;
 
-  /// DIMSE blocking mode
+  /// DIMSE blocking mode (default: blocking)
   T_DIMSE_BlockingMode m_blockMode;
 
-  /// AEtitle of this application
+  /// AE title of this application (default: ANY-SCU)
   OFString m_ourAETitle;
 
   /// Peer hostname
   OFString m_peer;
 
-  /// AEtitle of remote application
+  /// AE title of remote application (default: ANY-SCP)
   OFString m_peerAETitle;
 
-  /// Port of remote application entity
+  /// Port of remote application entity (default: 104)
   Uint16 m_peerPort;
 
-  /// DIMSE timeout
+  /// DIMSE timeout (default: unlimited)
   Uint32 m_dimseTimeout;
 
-  /// ACSE timeout
+  /// ACSE timeout (default: 30 seconds)
   Uint32 m_acseTimeout;
 
-  /// Storage directory for objects received with C-STORE due to a
-  /// running C-GET session. Per default, the received objects
-  /// are stored in the current working directory.
+  /// Storage directory for objects received with C-STORE due to a running
+  /// C-GET session. By default, the received objects are stored in the current
+  /// working directory.
   OFString m_storageDir;
 
   /// Set whether bit preserving storage should be enabled, i.e.\ any objects
-  /// retrieved via C-STORE should be written directly to disk without
-  /// any data correction/re-computation (e.g.\ group length calculations,
-  /// padding, etc.). This is especially interesting for retaining valid
-  /// signatures, and also to receive huge files which cannot be fully received
-  /// in memory. Default is OFFalse (no bit preserving) storage.
+  /// retrieved via C-STORE should be written directly to disk without any data
+  /// correction/re-computation (e.g.\ group length calculations, padding, etc.).
+  /// This is especially interesting for retaining valid signatures, and also to
+  /// receive huge files which cannot be fully received in memory.
+  /// Default value: DCMSCU_STORAGE_DISK
   DcmStorageMode m_storageMode;
 
-  /// Verbose PC mode
+  /// Verbose PC mode (default: disabled)
   OFBool m_verbosePCMode;
 
-  /// Dataset conversion mode
+  /// Dataset conversion mode (default: disabled)
   OFBool m_datasetConversionMode;
 
-  /// Progress notification mode
+  /// Progress notification mode (default: enabled)
   OFBool m_progressNotificationMode;
 
   /** Returns next available message ID free to be used by SCU
