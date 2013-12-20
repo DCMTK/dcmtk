@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2013.12.20 (riesmeier)
 
+- Again, fixed comments to be consistent with code.
+  Affects: dcmnet/tests/tpool.cc
+
 - Cleaned up source code in various aspects:
   Made evaluation of command line parameters and options more consistent with
   the other command line tools, fixed inconsistencies regarding log output,

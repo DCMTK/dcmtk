@@ -51,13 +51,12 @@ protected:
 };
 
 
-/* Test starts pool with a maximum of 5 SCP workers (default value).
- * All workers are configured to respond to C-ECHO (Verification SOP
- * Class). 20 SCU threads are created and connect simultaneously to
- * the pool, send C-ECHO messages are release the association.
- * Currently the pool ends itself after 3 seconds without connection
- * request. This can be changed to a "shutDown()" call on the pool
- * once it is implemented.
+/* Test starts pool with a maximum of 20 SCP workers. All workers are
+ * configured to respond to C-ECHO (Verification SOP Class). 20 SCU
+ * threads are created and connect simultaneously to the pool, send
+ * C-ECHO messages and release the association. Currently the pool
+ * ends itself after 3 seconds without connection request. This can
+ * be changed to a shutDown() call on the pool once it is implemented.
  */
 OFTEST(dcmnet_scp_pool)
 {
