@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2013.12.20 (riesmeier)
 
+- Cleaned up source code in various aspects:
+  Made evaluation of command line parameters and options more consistent with
+  the other command line tools, fixed inconsistencies regarding log output,
+  used appropriate DcmSCU methods when closing an association, etc.
+  Affects: dcmnet/apps/getscu.cc
+
 - Removed check on number of command line arguments:
   Since the tool has at least one mandatory command line parameter, there is no
   need to check OFCommandLine::getArgCount() explicitly.
