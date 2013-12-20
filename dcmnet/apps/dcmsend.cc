@@ -230,9 +230,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv))
     {
-        /* print help text and exit */
-        if (cmd.getArgCount() == 0)
-            app.printUsage();
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
