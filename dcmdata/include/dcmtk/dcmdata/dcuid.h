@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -400,6 +400,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_XRay3DAngiographicImageStorage                         "1.2.840.10008.5.1.4.1.1.13.1.1"
 #define UID_XRay3DCraniofacialImageStorage                         "1.2.840.10008.5.1.4.1.1.13.1.2"
 #define UID_BreastTomosynthesisImageStorage                        "1.2.840.10008.5.1.4.1.1.13.1.3"
+#define UID_BreastProjectionXRayImageStorageForPresentation        "1.2.840.10008.5.1.4.1.1.13.1.4"
+#define UID_BreastProjectionXRayImageStorageForProcessing          "1.2.840.10008.5.1.4.1.1.13.1.5"
 #define UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation "1.2.840.10008.5.1.4.1.1.14.1"
 #define UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing "1.2.840.10008.5.1.4.1.1.14.2"
 #define UID_NuclearMedicineImageStorage                            "1.2.840.10008.5.1.4.1.1.20"

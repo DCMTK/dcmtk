@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,6 +140,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_BasicTextSRStorage,                                  "BasicTextSRStorage" },
     { UID_BasicVoiceAudioWaveformStorage,                      "BasicVoiceAudioWaveformStorage" },
     { UID_BlendingSoftcopyPresentationStateStorage,            "BlendingSoftcopyPresentationStateStorage" },
+    { UID_BreastProjectionXRayImageStorageForPresentation,     "BreastProjectionXRayImageStorageForPresentation" },
+    { UID_BreastProjectionXRayImageStorageForProcessing,       "BreastProjectionXRayImageStorageForProcessing" },
     { UID_BreastTomosynthesisImageStorage,                     "BreastTomosynthesisImageStorage" },
     { UID_CardiacElectrophysiologyWaveformStorage,             "CardiacElectrophysiologyWaveformStorage" },
     { UID_ChestCADSRStorage,                                   "ChestCADSRStorage" },
@@ -511,8 +513,7 @@ static const int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
  *  AND IS LARGER THAN 64 ENTRIES.
  */
 
-const char* dcmAllStorageSOPClassUIDs[] =
-{
+const char* dcmAllStorageSOPClassUIDs[] = {
     UID_AmbulatoryECGWaveformStorage,
     UID_ArterialPulseWaveformStorage,
     UID_AutorefractionMeasurementsStorage,
@@ -520,6 +521,8 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_BasicTextSRStorage,
     UID_BasicVoiceAudioWaveformStorage,
     UID_BlendingSoftcopyPresentationStateStorage,
+    UID_BreastProjectionXRayImageStorageForPresentation,
+    UID_BreastProjectionXRayImageStorageForProcessing,
     UID_BreastTomosynthesisImageStorage,
     UID_CardiacElectrophysiologyWaveformStorage,
     UID_ChestCADSRStorage,
@@ -666,8 +669,7 @@ const int numberOfAllDcmStorageSOPClassUIDs = (sizeof(dcmAllStorageSOPClassUIDs)
  *  120 entries (currently: 120) to leave enough room for FIND/MOVE
  *  presentation contexts.
  */
-const char* dcmLongSCUStorageSOPClassUIDs[] =
-{
+const char* dcmLongSCUStorageSOPClassUIDs[] = {
     UID_AmbulatoryECGWaveformStorage,
     UID_ArterialPulseWaveformStorage,
     UID_AutorefractionMeasurementsStorage,
@@ -775,6 +777,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_XRayRadiationDoseSRStorage,
     UID_XRayRadiofluoroscopicImageStorage,
     // recently approved
+//  UID_BreastProjectionXRayImageStorageForPresentation,
+//  UID_BreastProjectionXRayImageStorageForProcessing,
 //  UID_CornealTopographyMapStorage,
 //  UID_LegacyConvertedEnhancedCTImageStorage,
 //  UID_LegacyConvertedEnhancedMRImageStorage,
@@ -915,7 +919,8 @@ const int numberOfDcmShortSCUStorageSOPClassUIDs = (sizeof(dcmShortSCUStorageSOP
 ** size of the array.
 */
 const char* dcmImageSOPClassUIDs[] = {
-
+    UID_BreastProjectionXRayImageStorageForPresentation,
+    UID_BreastProjectionXRayImageStorageForProcessing,
     UID_BreastTomosynthesisImageStorage,
     UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
@@ -1009,6 +1014,8 @@ static const DcmModalityTable modalities[] = {
     { UID_BasicTextSRStorage,                                      "SRt", 4096 },
     { UID_BasicVoiceAudioWaveformStorage,                          "AUV", 4096 },
     { UID_BlendingSoftcopyPresentationStateStorage,                "PSb", 4096 },
+    { UID_BreastProjectionXRayImageStorageForPresentation,         "BX",  4096 * 4096 * 2 },
+    { UID_BreastProjectionXRayImageStorageForProcessing,           "BP",  4096 * 4096 * 2 },
     { UID_BreastTomosynthesisImageStorage,                         "BT",  4096 * 4096 * 2 },
     { UID_CardiacElectrophysiologyWaveformStorage,                 "WVc", 4096 },
     { UID_ChestCADSRStorage,                                       "SRh", 4096 },

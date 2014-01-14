@@ -695,6 +695,8 @@ RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.
 XRay3DAngiographicImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.1
 XRay3DCraniofacialImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.2
 BreastTomosynthesisImageStorage                      1.2.840.10008.5.1.4.1.1.13.1.3
+BreastProjectionXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.13.1.4
+BreastProjectionXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.13.1.5
 IntravascularOpt.Coh.Tom.ImageStorageForPresentation 1.2.840.10008.5.1.4.1.1.14.1
 IntravascularOpt.Coh.Tom.ImageStorageForProcessing   1.2.840.10008.5.1.4.1.1.14.2
 NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
@@ -956,6 +958,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

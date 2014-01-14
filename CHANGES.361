@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2014.01.14 (riesmeier)
 
+- Added support for new UIDs from Supplement 165:
+  Added support for new SOP Class UIDs from Supplement 165 (Breast Projection
+  X-Ray Image Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 - Added support for Supplement 165 to data dictionary:
   Added support for final text version of Supplement 165 (Breast Projection
   X-Ray Image Storage SOP Class) to the data dictionary.
