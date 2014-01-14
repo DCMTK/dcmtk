@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-10-23 14:59:20
+**   Date: 2014-01-14 11:55:46
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-10-23 14:59:20"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-14 11:55:46"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3678
+** Number of entries: 3683
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -79,6 +79,8 @@
 #define DCM_ImplementationClassUID               DcmTagKey(0x0002, 0x0012)
 #define DCM_ImplementationVersionName            DcmTagKey(0x0002, 0x0013)
 #define DCM_SourceApplicationEntityTitle         DcmTagKey(0x0002, 0x0016)
+#define DCM_SendingApplicationEntityTitle        DcmTagKey(0x0002, 0x0017)
+#define DCM_ReceivingApplicationEntityTitle      DcmTagKey(0x0002, 0x0018)
 #define DCM_PrivateInformationCreatorUID         DcmTagKey(0x0002, 0x0100)
 #define DCM_PrivateInformation                   DcmTagKey(0x0002, 0x0102)
 #define DCM_FileSetID                            DcmTagKey(0x0004, 0x1130)
@@ -995,6 +997,8 @@
 #define DCM_ASLSlabSequence                      DcmTagKey(0x0018, 0x9260)
 #define DCM_ChemicalShiftMinimumIntegrationLimitInppm DcmTagKey(0x0018, 0x9295)
 #define DCM_ChemicalShiftMaximumIntegrationLimitInppm DcmTagKey(0x0018, 0x9296)
+#define DCM_WaterReferenceAcquisition            DcmTagKey(0x0018, 0x9297)
+#define DCM_EchoPeakPosition                     DcmTagKey(0x0018, 0x9298)
 #define DCM_CTAcquisitionTypeSequence            DcmTagKey(0x0018, 0x9301)
 #define DCM_AcquisitionType                      DcmTagKey(0x0018, 0x9302)
 #define DCM_TubeAngle                            DcmTagKey(0x0018, 0x9303)
@@ -3100,6 +3104,7 @@
 #define DCM_ROIElementalCompositionSequence      DcmTagKey(0x3006, 0x00b6)
 #define DCM_ROIElementalCompositionAtomicNumber  DcmTagKey(0x3006, 0x00b7)
 #define DCM_ROIElementalCompositionAtomicMassFraction DcmTagKey(0x3006, 0x00b8)
+#define DCM_AdditionalRTROIIdentificationCodeSequence DcmTagKey(0x3006, 0x00b9)
 #define DCM_RETIRED_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
 #define DCM_RETIRED_RelatedFrameOfReferenceUID   DcmTagKey(0x3006, 0x00c2)
 #define DCM_RETIRED_FrameOfReferenceTransformationType DcmTagKey(0x3006, 0x00c4)

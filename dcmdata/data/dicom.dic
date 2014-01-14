@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2013, OFFIS e.V.
+#  Copyright (C) 1994-2014, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -25,7 +25,7 @@
 # supplements and correction items have been incorporated:
 # - Supplement 152, 154, 157, 158, 163, 168.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
-#      1249, 1258, 1268, 1269.
+#      1249, 1258, 1268, 1269, 1287, 1294, 1297.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3382,7 +3382,8 @@
 #---------------------------------------------------------------------------
 #
 # Correction Items 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216,
-#                  1236, 1246, 1248, 1249, 1258, 1268, 1269
+#                  1236, 1246, 1248, 1249, 1258, 1268, 1269, 1287, 1294,
+#                  1297
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
@@ -3432,6 +3433,14 @@
 (0018,2044)	FL	CalculatedTargetPosition	3	CP_1269
 (0018,2045)	SH	TargetLabel	1	CP_1269
 (0018,2046)	FL	DisplayedZValue	1	CP_1269
+#
+(3006,00B9)	SQ	AdditionalRTROIIdentificationCodeSequence	1	CP_1287
+#
+(0018,9297)	CS	WaterReferenceAcquisition	1	CP_1294
+(0018,9298)	IS	EchoPeakPosition	1	CP_1294
+#
+(0002,0017)	AE	SendingApplicationEntityTitle	1	CP_1297
+(0002,0018)	AE	ReceivingApplicationEntityTitle	1	CP_1297
 #
 #---------------------------------------------------------------------------
 #
