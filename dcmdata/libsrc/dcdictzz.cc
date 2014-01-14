@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-14 11:56:35
+**   Date: 2014-01-14 12:13:57
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-01-14 11:56:35";
+const char* dcmBuiltinDictBuildDate = "2014-01-14 12:13:57";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -5823,6 +5823,82 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9538, 0x0018, 0x9538,
       EVR_SQ, "PerProjectionAcquisitionSequence", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9541, 0x0018, 0x9541,
+      EVR_SQ, "DetectorPositionSequence", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9542, 0x0018, 0x9542,
+      EVR_SQ, "XRayAcquisitionDoseSequence", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9543, 0x0018, 0x9543,
+      EVR_FD, "XRaySourceIsocenterPrimaryAngle", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9544, 0x0018, 0x9544,
+      EVR_FD, "XRaySourceIsocenterSecondaryAngle", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9545, 0x0018, 0x9545,
+      EVR_FD, "BreastSupportIsocenterPrimaryAngle", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9546, 0x0018, 0x9546,
+      EVR_FD, "BreastSupportIsocenterSecondaryAngle", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9547, 0x0018, 0x9547,
+      EVR_FD, "BreastSupportXPositionToIsocenter", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9548, 0x0018, 0x9548,
+      EVR_FD, "BreastSupportYPositionToIsocenter", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9549, 0x0018, 0x9549,
+      EVR_FD, "BreastSupportZPositionToIsocenter", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9550, 0x0018, 0x9550,
+      EVR_FD, "DetectorIsocenterPrimaryAngle", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9551, 0x0018, 0x9551,
+      EVR_FD, "DetectorIsocenterSecondaryAngle", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9552, 0x0018, 0x9552,
+      EVR_FD, "DetectorXPositionToIsocenter", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9553, 0x0018, 0x9553,
+      EVR_FD, "DetectorYPositionToIsocenter", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9554, 0x0018, 0x9554,
+      EVR_FD, "DetectorZPositionToIsocenter", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9555, 0x0018, 0x9555,
+      EVR_SQ, "XRayGridSequence", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9556, 0x0018, 0x9556,
+      EVR_SQ, "XRayFilterSequence", 1, 1, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9557, 0x0018, 0x9557,
+      EVR_FD, "DetectorActiveAreaTLHCPosition", 3, 3, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9558, 0x0018, 0x9558,
+      EVR_FD, "DetectorActiveAreaOrientation", 6, 6, "Supplement_165",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9559, 0x0018, 0x9559,
+      EVR_CS, "PositionerPrimaryAngleDirection", 1, 1, "Supplement_165",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9601, 0x0018, 0x9601,

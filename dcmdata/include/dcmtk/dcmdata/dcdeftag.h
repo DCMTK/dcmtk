@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-14 11:55:46
+**   Date: 2014-01-14 12:13:30
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-14 11:55:46"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-14 12:13:30"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3683
+** Number of entries: 3702
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1118,6 +1118,25 @@
 #define DCM_XRay3DReconstructionSequence         DcmTagKey(0x0018, 0x9530)
 #define DCM_ReconstructionDescription            DcmTagKey(0x0018, 0x9531)
 #define DCM_PerProjectionAcquisitionSequence     DcmTagKey(0x0018, 0x9538)
+#define DCM_DetectorPositionSequence             DcmTagKey(0x0018, 0x9541)
+#define DCM_XRayAcquisitionDoseSequence          DcmTagKey(0x0018, 0x9542)
+#define DCM_XRaySourceIsocenterPrimaryAngle      DcmTagKey(0x0018, 0x9543)
+#define DCM_XRaySourceIsocenterSecondaryAngle    DcmTagKey(0x0018, 0x9544)
+#define DCM_BreastSupportIsocenterPrimaryAngle   DcmTagKey(0x0018, 0x9545)
+#define DCM_BreastSupportIsocenterSecondaryAngle DcmTagKey(0x0018, 0x9546)
+#define DCM_BreastSupportXPositionToIsocenter    DcmTagKey(0x0018, 0x9547)
+#define DCM_BreastSupportYPositionToIsocenter    DcmTagKey(0x0018, 0x9548)
+#define DCM_BreastSupportZPositionToIsocenter    DcmTagKey(0x0018, 0x9549)
+#define DCM_DetectorIsocenterPrimaryAngle        DcmTagKey(0x0018, 0x9550)
+#define DCM_DetectorIsocenterSecondaryAngle      DcmTagKey(0x0018, 0x9551)
+#define DCM_DetectorXPositionToIsocenter         DcmTagKey(0x0018, 0x9552)
+#define DCM_DetectorYPositionToIsocenter         DcmTagKey(0x0018, 0x9553)
+#define DCM_DetectorZPositionToIsocenter         DcmTagKey(0x0018, 0x9554)
+#define DCM_XRayGridSequence                     DcmTagKey(0x0018, 0x9555)
+#define DCM_XRayFilterSequence                   DcmTagKey(0x0018, 0x9556)
+#define DCM_DetectorActiveAreaTLHCPosition       DcmTagKey(0x0018, 0x9557)
+#define DCM_DetectorActiveAreaOrientation        DcmTagKey(0x0018, 0x9558)
+#define DCM_PositionerPrimaryAngleDirection      DcmTagKey(0x0018, 0x9559)
 #define DCM_DiffusionBMatrixSequence             DcmTagKey(0x0018, 0x9601)
 #define DCM_DiffusionBValueXX                    DcmTagKey(0x0018, 0x9602)
 #define DCM_DiffusionBValueXY                    DcmTagKey(0x0018, 0x9603)

@@ -1,7 +1,14 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2013.01.14 (riesmeier)
+**** Changes from 2014.01.14 (riesmeier)
+
+- Added support for Supplement 165 to data dictionary:
+  Added support for final text version of Supplement 165 (Breast Projection
+  X-Ray Image Storage SOP Class) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
 
 - Added support for recently approved CPs:
   Added support for CP-1287, CP-1294 and CP-1297 to the data dictionary.

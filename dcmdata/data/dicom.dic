@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152, 154, 157, 158, 163, 168.
+# - Supplement 152, 154, 157, 158, 163, 165, 168.
 # - CP 1064, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236, 1246, 1248,
 #      1249, 1258, 1268, 1269, 1287, 1294, 1297.
 #
@@ -3343,6 +3343,30 @@
 #
 (0008,1190)	UT	RetrieveURL	1	Supplement_163
 (0008,1196)	US	WarningReason	1	Supplement_163
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 165 (Breast Projection X-Ray Image Storage SOP Class)
+#
+(0018,9541)	SQ	DetectorPositionSequence	1	Supplement_165
+(0018,9542)	SQ	XRayAcquisitionDoseSequence	1	Supplement_165
+(0018,9543)	FD	XRaySourceIsocenterPrimaryAngle	1	Supplement_165
+(0018,9544)	FD	XRaySourceIsocenterSecondaryAngle	1	Supplement_165
+(0018,9545)	FD	BreastSupportIsocenterPrimaryAngle	1	Supplement_165
+(0018,9546)	FD	BreastSupportIsocenterSecondaryAngle	1	Supplement_165
+(0018,9547)	FD	BreastSupportXPositionToIsocenter	1	Supplement_165
+(0018,9548)	FD	BreastSupportYPositionToIsocenter	1	Supplement_165
+(0018,9549)	FD	BreastSupportZPositionToIsocenter	1	Supplement_165
+(0018,9550)	FD	DetectorIsocenterPrimaryAngle	1	Supplement_165
+(0018,9551)	FD	DetectorIsocenterSecondaryAngle	1	Supplement_165
+(0018,9552)	FD	DetectorXPositionToIsocenter	1	Supplement_165
+(0018,9553)	FD	DetectorYPositionToIsocenter	1	Supplement_165
+(0018,9554)	FD	DetectorZPositionToIsocenter	1	Supplement_165
+(0018,9555)	SQ	XRayGridSequence	1	Supplement_165
+(0018,9556)	SQ	XRayFilterSequence	1	Supplement_165
+(0018,9557)	FD	DetectorActiveAreaTLHCPosition	3	Supplement_165
+(0018,9558)	FD	DetectorActiveAreaOrientation	6	Supplement_165
+(0018,9559)	CS	PositionerPrimaryAngleDirection	1	Supplement_165
 #
 #---------------------------------------------------------------------------
 #
