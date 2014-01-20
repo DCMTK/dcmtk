@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -197,7 +197,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
 
     /** write object to a stream (abstract)
      *  @param outStream DICOM output stream
-     *  @param oxfer output transfer syntax
+     *  @param oxfer output transfer syntax (EXS_Unknown means use original)
      *  @param enctype encoding types (undefined or explicit length)
      *  @param wcache pointer to write cache object, may be NULL
      *  @param glenc group length encoding
@@ -258,7 +258,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param fileName name of the file to save (may contain wide chars if support enabled).
      *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
      *    or "wchar_t *" can also be passed directly to this parameter.
-     *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use current)
+     *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use original)
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param padEncoding flag, specifying how to handle the padding tags

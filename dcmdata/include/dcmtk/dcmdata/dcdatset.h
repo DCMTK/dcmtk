@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -185,7 +185,7 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
 
     /** write dataset to a stream
      *  @param outStream DICOM output stream
-     *  @param oxfer output transfer syntax
+     *  @param oxfer output transfer syntax (EXS_Unknown means use original)
      *  @param enctype encoding types (undefined or explicit length)
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -205,10 +205,11 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  have been written to it, and it will return some other (error)
      *  value if there was an error.
      *  @param outStream      The stream that the information will be written to.
-     *  @param oxfer          The transfer syntax which shall be used.
+     *  @param oxfer          The transfer syntax which shall be used (EXS_Unknown
+     *                        means use original).
      *  @param enctype        Encoding type for sequences; specifies how sequences
      *                        will be handled.
-     *  @param wcache pointer to write cache object, may be NULL
+     *  @param wcache         pointer to write cache object, may be NULL
      *  @param glenc          Encoding type for group length; specifies what will
      *                        be done with group length tags.
      *  @param padenc         Encoding type for padding. Specifies what will be done
@@ -235,7 +236,7 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream
-     *  @param oxfer output transfer syntax
+     *  @param oxfer output transfer syntax (EXS_Unknown means use original)
      *  @param enctype encoding types (undefined or explicit length)
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -278,7 +279,7 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  @param fileName name of the file to save (may contain wide chars if support enabled).
      *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
      *    or "wchar_t *" can also be passed directly to this parameter.
-     *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use current)
+     *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use original)
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param padEncoding flag, specifying how to handle the padding tags

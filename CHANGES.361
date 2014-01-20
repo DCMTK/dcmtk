@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.01.20 (riesmeier)
+
+- Fixed wrong/missing comment on method parameter:
+  Fixed wrong comment on parameter "writeXfer" for the saveFile() method. In
+  case of EXS_Unknown not the currently selected transfer syntax is used but
+  the original one, i.e. the one in which the dataset was originally read or
+  created. Also added missing comment on parameter "oxfer" to write() methods.
+  Thanks to forum user "Shaeto" for pointing this out.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+
 **** Changes from 2014.01.14 (riesmeier)
 
 - Added support for new UIDs from Supplement 165:
