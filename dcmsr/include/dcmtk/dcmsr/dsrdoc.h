@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,7 +41,8 @@
 /** Interface class for 'dcmsr' (DICOM Structured Reporting Documents).
  *  This class supports reading, writing, creation, printing and rendering of DICOM
  *  Structured Reporting (SR) documents.
- *  The list of supported SOP classes is available in file "dsrtypes.h".
+ *  The list of supported SOP classes is available in file "dsrtypes.h". Also see
+ *  DSRTypes::E_DocumentType.
  */
 class DCMTK_DCMSR_EXPORT DSRDocument
   : protected DSRTypes
@@ -105,7 +106,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *                   E.g. RF_readDigitalSignatures indicates whether to read the digital
      *                   signatures from the dataset or not.  If set, the MACParametersSequence
      *                   and the DigitalSignaturesSequence are read for the general document
-     *                   header (equivilent to top-level content item) and each content item
+     *                   header (equivalent to top-level content item) and each content item
      *                   of the document tree.
      *                   If not removed manually (with 'DSRDocumentTree::removeSignatures')
      *                   the signatures are written back to the dataset when the method 'write'
@@ -1093,7 +1094,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /// SR document tree
     DSRDocumentTree DocumentTree;
 
-    /// flag indicating whether is document is finalized or not
+    /// flag indicating whether this document is finalized or not
     OFBool             FinalizedFlag;
     /// enumerated value: preliminary, final
     E_PreliminaryFlag  PreliminaryFlagEnum;
@@ -1133,9 +1134,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmUniqueIdentifier StudyInstanceUID;
     /// Study Date: (DA, 1, 2)
     DcmDate             StudyDate;
-    /// StudyTime: (TM, 1, 2)
+    /// Study Time: (TM, 1, 2)
     DcmTime             StudyTime;
-    /// ReferringPhysicianName: (PN, 1, 2)
+    /// Referring Physician's Name: (PN, 1, 2)
     DcmPersonName       ReferringPhysicianName;
     /// Study ID: (SH, 1, 2)
     DcmShortString      StudyID;
@@ -1168,14 +1169,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     // --- Enhanced General Equipment Module (M - for some IODs) ---
 
-    //  Manufacturer: (LO, 1, 1)
-        //  - see 'General Equipment Module'
-    /// Manufacturer's Model Name: (LO, 1, 1)
-        //  - see 'General Equipment Module'
-    /// Device Serial Number: (LO, 1, 1)
-        //  - see 'General Equipment Module'
-    /// Software Version(s): (LO, 1-n, 1)
-        //  - see 'General Equipment Module'
+    // Manufacturer: (LO, 1, 1)
+    // - see 'General Equipment Module'
+    // Manufacturer's Model Name: (LO, 1, 1)
+    // - see 'General Equipment Module'
+    // Device Serial Number: (LO, 1, 1)
+    // - see 'General Equipment Module'
+    // Software Version(s): (LO, 1-n, 1)
+    // - see 'General Equipment Module'
 
     // --- Frame of Reference (C) ---
 
@@ -1220,8 +1221,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DSRSOPInstanceReferenceList PredecessorDocuments;
     /// Identical Documents Sequence: (SQ, 1, 1C)
     DSRSOPInstanceReferenceList IdenticalDocuments;
-    //  Referenced Request Sequence: (SQ, 1, 1C)
-        // -- not yet supported --
+    // Referenced Request Sequence: (SQ, 1, 1C)
+    // - tbd: conditional attribute not yet supported
     /// Performed Procedure Code Sequence: (SQ, 1, 2)
     DcmSequenceOfItems  PerformedProcedureCode;
     /// Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)

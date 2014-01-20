@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.01.20 (riesmeier)
 
+- Fixed various minor documentation issues.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 - Fixed wrong/missing comment on method parameter:
   Fixed wrong comment on parameter "writeXfer" for the saveFile() method. In
   case of EXS_Unknown not the currently selected transfer syntax is used but
