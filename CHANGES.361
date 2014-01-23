@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.01.23 (riesmeier)
+
+- Added missing module "dcmrt" to include directories.
+  Affects: CMakeLists.txt
+
 **** Changes from 2014.01.20 (riesmeier)
 
 - Fixed various minor documentation issues.

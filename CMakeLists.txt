@@ -35,6 +35,7 @@ SET(DCMTK_INCLUDE_DIR
   ${DCMTK_SOURCE_DIR}/dcmnet/include
   ${DCMTK_SOURCE_DIR}/dcmpstat/include
   ${DCMTK_SOURCE_DIR}/dcmqrdb/include
+  ${DCMTK_SOURCE_DIR}/dcmrt/include
   ${DCMTK_SOURCE_DIR}/dcmsign/include
   ${DCMTK_SOURCE_DIR}/dcmsr/include
   ${DCMTK_SOURCE_DIR}/dcmtls/include
