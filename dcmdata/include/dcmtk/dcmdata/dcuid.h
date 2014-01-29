@@ -467,6 +467,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RTTreatmentSummaryRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.7"
 #define UID_RTIonPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.8"
 #define UID_RTIonBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.9"
+#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 #define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
 #define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
 #define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
@@ -483,10 +484,6 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 // DICONDE Storage
 #define UID_DICONDE_EddyCurrentImageStorage                        "1.2.840.10008.5.1.4.1.1.601.1"
 #define UID_DICONDE_EddyCurrentMultiframeImageStorage              "1.2.840.10008.5.1.4.1.1.601.2"
-
-/* Hanging Protocols Storage is a special case because hanging protocols use a different
-   information model, i.e. there is no patient, study or series in a hanging protocol IOD. */
-#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 
 // Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"

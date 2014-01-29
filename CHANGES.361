@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.01.29 (riesmeier)
+
+- Removed comment on UID_HangingProtocolStorage:
+  Removed comment that the "Hanging Protocol Storage SOP Class" is a special
+  case since this is not true any longer. There are further SOP Classes that
+  do not fit into the typical Patient - Study - Series hierarchy.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 **** Changes from 2014.01.23 (riesmeier)
 
 - Added missing module "dcmrt" to include directories.
