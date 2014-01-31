@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.01.31 (riesmeier)
 
+- Added comments on some ACR/NEMA attributes:
+  Added explanatory comments on ACR/NEMA attributes where the DICOM standard
+  uses the placeholder "x" for certain digits of the element number.
+  Affects: dcmdata/data/dicom.dic
+
 - Added support for approved but still missing CPs:
   Added late support for CP-1120 and CP-1121 to the data dictionary.
   Affects: dcmdata/data/dicom.dic

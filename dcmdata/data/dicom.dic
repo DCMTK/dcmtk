@@ -33,7 +33,7 @@
 # Entries may override existing entries.
 #
 # Each field must be separated by a single tab.  The tag values (gggg,eeee)
-# must be in hexedecimal and must be surrounded by parentheses.  Repeating
+# must be in hexadecimal and must be surrounded by parentheses.  Repeating
 # groups are represented by indicating the range (gggg-gggg,eeee).  By default
 # the repeating notation only represents even numbers.  A range where only
 # odd numbers are valid is represented using the notation (gggg-o-gggg,eeee).
@@ -3585,6 +3585,8 @@
 (0028,0402)	US	ACR_NEMA_2C_NumberOfTransformSteps	1	ACR/NEMA2C
 (0028,0403)	CS	ACR_NEMA_2C_SequenceOfCompressedData	1-n	ACR/NEMA2C
 (0028,0404)	AT	ACR_NEMA_2C_DetailsOfCoefficients	1-n	ACR/NEMA2C
+# according to the DICOM standard, the following 4 attributes
+# should have a tag in the range of (0028,04x1) to (0028,04x3)
 (0028,0410)	US	ACR_NEMA_2C_RowsForNthOrderCoefficients	1	ACR/NEMA2C
 (0028,0411)	US	ACR_NEMA_2C_ColumnsForNthOrderCoefficients	1	ACR/NEMA2C
 (0028,0412)	CS	ACR_NEMA_2C_CoefficientCoding	1-n	ACR/NEMA2C
@@ -3598,12 +3600,16 @@
 (0028,0722)	US	ACR_NEMA_2C_ZonalMapFormat	1	ACR/NEMA2C
 (0028,0730)	US	ACR_NEMA_2C_AdaptiveMapFormat	1	ACR/NEMA2C
 (0028,0740)	US	ACR_NEMA_2C_CodeNumberFormat	1	ACR/NEMA2C
+# according to the DICOM standard, the following 5 attributes
+# should have a tag in the range of (0028,08x0) to (0028,08x8)
 (0028,0800)	CS	ACR_NEMA_2C_CodeLabel	1-n	ACR/NEMA2C
 (0028,0802)	US	ACR_NEMA_2C_NumberOfTables	1	ACR/NEMA2C
 (0028,0803)	AT	ACR_NEMA_2C_CodeTableLocation	1-n	ACR/NEMA2C
 (0028,0804)	US	ACR_NEMA_2C_BitsForCodeWord	1	ACR/NEMA2C
 (0028,0808)	AT	ACR_NEMA_2C_ImageDataLocation	1-n	ACR/NEMA2C
 (1000,0000)	UL	ACR_NEMA_2C_CodeTableGroupLength	1	ACR/NEMA2C
+# according to the DICOM standard, the following 6 attributes
+# should have a tag in the range of (1000,xxx0) to (1000,xxx5)
 (1000,0010)	US	ACR_NEMA_2C_EscapeTriplet	3	ACR/NEMA2C
 (1000,0011)	US	ACR_NEMA_2C_RunLengthTriplet	3	ACR/NEMA2C
 (1000,0012)	US	ACR_NEMA_2C_HuffmanTableSize	1	ACR/NEMA2C
@@ -3611,6 +3617,8 @@
 (1000,0014)	US	ACR_NEMA_2C_ShiftTableSize	1	ACR/NEMA2C
 (1000,0015)	US	ACR_NEMA_2C_ShiftTableTriplet	3	ACR/NEMA2C
 (1010,0000)	UL	ACR_NEMA_2C_ZonalMapGroupLength	1	ACR/NEMA2C
+# according to the DICOM standard, the following attribute
+# should have the tag (1010,xxxx) where "x" is "0" to "f"
 (1010,0004)	US	ACR_NEMA_2C_ZonalMap	1-n	ACR/NEMA2C
 (6000-60ff,0060)	CS	ACR_NEMA_2C_OverlayCompressionCode	1	ACR/NEMA2C
 (6000-60ff,0061)	SH	ACR_NEMA_2C_OverlayCompressionOriginator	1	ACR/NEMA2C
@@ -3784,6 +3792,7 @@
 (0028,0402)	US	RETIRED_NumberOfTransformSteps	1	DICOM/retired
 (0028,0403)	LO	RETIRED_SequenceOfCompressedData	1-n	DICOM/retired
 (0028,0404)	AT	RETIRED_DetailsOfCoefficients	1-n	DICOM/retired
+# see section "ACR/NEMA 2 compression enhancements" above
 #(0028,04X0)	US	RETIRED_RowsForNthOrderCoefficients	1	DICOM/retired
 #(0028,04X1)	US	RETIRED_ColumnsForNthOrderCoefficients	1	DICOM/retired
 #(0028,04X2)	LO	RETIRED_CoefficientCoding	1-n	DICOM/retired
@@ -3797,6 +3806,7 @@
 (0028,0722)	US	RETIRED_ZonalMapFormat	1	DICOM/retired
 (0028,0730)	US	RETIRED_AdaptiveMapFormat	1	DICOM/retired
 (0028,0740)	US	RETIRED_CodeNumberFormat	1	DICOM/retired
+# see section "ACR/NEMA 2 compression enhancements" above
 #(0028,08X0)	CS	RETIRED_CodeLabel	1-n	DICOM/retired
 #(0028,08X2)	US	RETIRED_NumberOfTables	1	DICOM/retired
 #(0028,08X3)	AT	RETIRED_CodeTableLocation	1-n	DICOM/retired
@@ -3943,6 +3953,7 @@
 (0088,0906)	ST	RETIRED_TopicSubject	1	DICOM/retired
 (0088,0910)	LO	RETIRED_TopicAuthor	1	DICOM/retired
 (0088,0912)	LO	RETIRED_TopicKeywords	1-32	DICOM/retired
+# see section "ACR/NEMA 2 compression enhancements" above
 #(1000,XXX0)	US	RETIRED_EscapeTriplet	3	DICOM/retired
 #(1000,XXX0)	US	RETIRED_RunLengthTriplet	3	DICOM/retired
 #(1000,XXX0)	US	RETIRED_HuffmanTableSize	1	DICOM/retired
