@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.01.31 (riesmeier)
+
+- Added support for approved but still missing CPs:
+  Added late support for CP-1120 and CP-1121 to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.01.29 (riesmeier)
 
 - Removed comment on UID_HangingProtocolStorage:

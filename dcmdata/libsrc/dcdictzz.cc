@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-14 12:13:57
+**   Date: 2014-01-31 10:36:00
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-01-14 12:13:57";
+const char* dcmBuiltinDictBuildDate = "2014-01-31 10:36:00";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -24113,6 +24113,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "RETIRED_BeamDosePointSSD", 1, 1, "CP_1138/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x008b, 0x300a, 0x008b,
+      EVR_CS, "BeamDoseMeaning", 1, 1, "CP_1121",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x008c, 0x300a, 0x008c,
       EVR_SQ, "BeamDoseVerificationControlPointSequence", 1, 1, "CP_1138",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -25251,6 +25255,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x0424, 0x300a, 0x0424,
       EVR_IS, "GeneralAccessoryNumber", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0425, 0x300a, 0x0425,
+      EVR_FL, "SourceToGeneralAccessoryDistance", 1, 1, "CP_1120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0431, 0x300a, 0x0431,

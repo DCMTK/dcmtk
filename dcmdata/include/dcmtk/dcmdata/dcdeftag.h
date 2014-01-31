@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-14 12:13:30
+**   Date: 2014-01-31 10:35:56
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-14 12:13:30"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-31 10:35:56"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3702
+** Number of entries: 3704
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -3280,6 +3280,7 @@
 #define DCM_RETIRED_BeamDosePointDepth           DcmTagKey(0x300a, 0x0088)
 #define DCM_RETIRED_BeamDosePointEquivalentDepth DcmTagKey(0x300a, 0x0089)
 #define DCM_RETIRED_BeamDosePointSSD             DcmTagKey(0x300a, 0x008a)
+#define DCM_BeamDoseMeaning                      DcmTagKey(0x300a, 0x008b)
 #define DCM_BeamDoseVerificationControlPointSequence DcmTagKey(0x300a, 0x008c)
 #define DCM_AverageBeamDosePointDepth            DcmTagKey(0x300a, 0x008d)
 #define DCM_AverageBeamDosePointEquivalentDepth  DcmTagKey(0x300a, 0x008e)
@@ -3565,6 +3566,7 @@
 #define DCM_GeneralAccessoryDescription          DcmTagKey(0x300a, 0x0422)
 #define DCM_GeneralAccessoryType                 DcmTagKey(0x300a, 0x0423)
 #define DCM_GeneralAccessoryNumber               DcmTagKey(0x300a, 0x0424)
+#define DCM_SourceToGeneralAccessoryDistance     DcmTagKey(0x300a, 0x0425)
 #define DCM_ApplicatorGeometrySequence           DcmTagKey(0x300a, 0x0431)
 #define DCM_ApplicatorApertureShape              DcmTagKey(0x300a, 0x0432)
 #define DCM_ApplicatorOpening                    DcmTagKey(0x300a, 0x0433)
