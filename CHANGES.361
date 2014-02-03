@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.03 (riesmeier)
+
+- Fixed timeout issue in DIMSE_moveUser():
+  Fixed issue that the timeout parameter was apparently ignored in the
+  DIMSE_moveUser() function when used in non-blocking mode.
+  Thanks to forum user "bibble_235" for the report and Michael Knopke
+  <knopkem@gmail.com> for confirming that the proposed patch really works.
+  Affects: dcmnet/libsrc/dimmove.cc
+
 **** Changes from 2014.01.31 (riesmeier)
 
 - Added comments on some ACR/NEMA attributes:

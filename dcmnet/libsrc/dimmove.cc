@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -85,6 +85,8 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
+
+#include "dcmtk/ofstd/oftimer.h"
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -184,6 +186,7 @@ DIMSE_moveUser(
 
     /* receive responses */
 
+    OFTimer timer;
     while (cond == EC_Normal && status == STATUS_Pending) {
 
         /* if user wants, multiplex between net/subAssoc
@@ -194,11 +197,11 @@ DIMSE_moveUser(
             /* none are readable, timeout */
             if ((blockMode == DIMSE_BLOCKING) || firstLoop) {
                 firstLoop = OFFalse;
-                continue;  /* continue with while loop */
-            } else {
+            } else if ((blockMode == DIMSE_NONBLOCKING) && (timer.getDiff() > timeout)) {
+                DCMNET_DEBUG("timeout of " << timeout << " seconds elapsed while waiting for C-MOVE Responses");
                 return DIMSE_NODATAAVAILABLE;
             }
-            /* break; */   // never reached after continue or return statement
+            continue;    /* continue with main loop */
         case 1:
             /* main association readable */
             firstLoop = OFFalse;
@@ -210,7 +213,6 @@ DIMSE_moveUser(
             }
             firstLoop = OFFalse;
             continue;    /* continue with main loop */
-            /* break; */ // never reached after continue statement
         }
 
         bzero((char*)&rsp, sizeof(rsp));
@@ -278,6 +280,8 @@ DIMSE_moveUser(
             }
             break;
         }
+        /* reset the timeout timer */
+        timer.reset();
     }
 
     /* do remaining sub-association work, we may receive a non-pending
@@ -309,7 +313,7 @@ DIMSE_sendMoveResponse(
     rsp.msg.CMoveRSP = *response;
     /* copy over stuff from request */
     rsp.msg.CMoveRSP.MessageIDBeingRespondedTo = request->MessageID;
-    /* always send afected sop class uid */
+    /* always send affected sop class uid */
     strcpy(rsp.msg.CMoveRSP.AffectedSOPClassUID, request->AffectedSOPClassUID);
     rsp.msg.CMoveRSP.opts = O_MOVE_AFFECTEDSOPCLASSUID;
 
@@ -398,7 +402,7 @@ DIMSE_moveProvider(
                 } else if (cond == DIMSE_NODATAAVAILABLE) {
                     /* timeout */
                 } else {
-                    /* some execption condition occured, bail out */
+                    /* some exception condition occurred, bail out */
                     normal = OFFalse;
                 }
 
@@ -411,8 +415,7 @@ DIMSE_moveProvider(
 
                      if (cancelled) {
                          /* make sure */
-                         rsp.DimseStatus =
-                           STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
+                         rsp.DimseStatus = STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
                          if (rspIds != NULL) {
                              delete reqIds;
                              reqIds = NULL;
