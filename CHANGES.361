@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.04 (riesmeier)
+
+- Fixed typos in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+
 **** Changes from 2014.02.03 (riesmeier)
 
 - Fixed timeout issue in DIMSE_moveUser():

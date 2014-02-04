@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,7 +84,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
         HM_compactAfterSend,
         /// delete the dataset after it has been sent
         HM_deleteAfterSend,
-        /// delete the dataset after it is has been removed from the transfer list
+        /// delete the dataset after it has been removed from the transfer list
         HM_deleteAfterRemove
     };
 
@@ -270,7 +270,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
                              const OFBool checkValues = OFTrue);
 
     /** add a SOP instance from a given DICOM dataset to the list of instances to be
-     *  transferred. Before adding the SOP instance to the list, it is checked for validity
+     *  transferred.  Before adding the SOP instance to the list, it is checked for validity
      *  and conformance to the DICOM standard (see checkSOPInstance() for details).  However,
      *  duplicate instances are not recognized, i.e. they are added to the list and later on
      *  transferred to the storage SCP when calling sendSOPInstances().
@@ -532,7 +532,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
     /** This method is called each time after a SOP instance is sent to a peer.  If the
      *  return value is OFTrue, the SCU will stop the sending process after the current SOP
      *  instance.  This could for example make sense when transferring SOP instances due to
-     *  a C-MOVE request, which is externally cancelled by a C-CANCEL message.  The default
+     *  a C-MOVE request, which is externally canceled by a C-CANCEL message.  The default
      *  implementation always returns OFFalse.  A derived class may change this behavior.
      *  @return OFTrue if sending should stop after current SOP instance, OFFalse otherwise.
      */
