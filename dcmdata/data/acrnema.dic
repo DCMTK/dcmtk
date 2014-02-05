@@ -1,0 +1,200 @@
+#
+#  Copyright (C) 1994-2014, OFFIS e.V.
+#  All rights reserved.  See COPYRIGHT file for details.
+#
+#  This software and supporting documentation were developed by
+#
+#    OFFIS e.V.
+#    R&D Division Health
+#    Escherweg 2
+#    D-26121 Oldenburg, Germany
+#
+#
+#  Module:  dcmdata
+#
+#  Author:  Andrew Hewett, Marco Eichelberg, Joerg Riesmeier
+#
+#  Purpose: ACR/NEMA data dictionary for the DICOM toolkit DCMTK
+#
+# This file contains the complete data dictionary from the DICOM predecessor
+# ACR/NEMA.  Please note that the file "dicom.dic" contains more or less the
+# same tag definitions since they are now officially part of the DICOM standard
+# (introduced with CP-607), so there is usually no need to use this file.  It
+# is mainly provided for backward compatibility with previous versions of the
+# DCMTK.
+#
+# Each line represents an entry in the data dictionary.  Each line has 5 fields
+# (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
+#
+# Entries may override existing entries.
+#
+# Each field must be separated by a single tab.  The tag values (gggg,eeee)
+# must be in hexadecimal and must be surrounded by parentheses.  Repeating
+# groups are represented by indicating the range (gggg-gggg,eeee).  By default
+# the repeating notation only represents even numbers.  A range where only
+# odd numbers are valid is represented using the notation (gggg-o-gggg,eeee).
+# A range can represent both even and odd numbers using the notation
+# (gggg-u-gggg,eeee).  The element part of the tag can also be a range.
+#
+# Comments have a '#' at the beginning of the line.
+#
+# Tag		VR	Name			VM	Version
+#
+#---------------------------------------------------------------------------
+#
+# Retired data elements from ACR/NEMA 2 (1988)
+#
+(0000,0001)	UL	ACR_NEMA_CommandGroupLengthToEnd	1	ACR/NEMA2
+(0000,0010)	CS	ACR_NEMA_CommandRecognitionCode	1	ACR/NEMA2
+(0000,0200)	LO	ACR_NEMA_Initiator	1	ACR/NEMA2
+(0000,0300)	LO	ACR_NEMA_Receiver	1	ACR/NEMA2
+(0000,0400)	LO	ACR_NEMA_FindLocation	1	ACR/NEMA2
+(0000,0850)	US	ACR_NEMA_NumberOfMatches	1	ACR/NEMA2
+(0000,0860)	US	ACR_NEMA_ResponseSequenceNumber	1	ACR/NEMA2
+(0000,4000)	LO	ACR_NEMA_DialogReceiver	1	ACR/NEMA2
+(0000,4010)	LO	ACR_NEMA_TerminalType	1	ACR/NEMA2
+(0000,5010)	LO	ACR_NEMA_MessageSetID	1	ACR/NEMA2
+(0000,5020)	LO	ACR_NEMA_EndMessageSet	1	ACR/NEMA2
+(0000,5110)	LO	ACR_NEMA_DisplayFormat	1	ACR/NEMA2
+(0000,5120)	LO	ACR_NEMA_PagePositionID	1	ACR/NEMA2
+(0000,5130)	LO	ACR_NEMA_TextFormatID	1	ACR/NEMA2
+(0000,5140)	CS	ACR_NEMA_NormalReverse	1	ACR/NEMA2
+(0000,5150)	CS	ACR_NEMA_AddGrayScale	1	ACR/NEMA2
+(0000,5160)	CS	ACR_NEMA_Borders	1	ACR/NEMA2
+(0000,5170)	IS	ACR_NEMA_Copies	1	ACR/NEMA2
+(0000,5180)	LO	ACR_NEMA_MagnificationType	1	ACR/NEMA2
+(0000,5190)	LO	ACR_NEMA_Erase	1-n	ACR/NEMA2
+(0000,51A0)	CS	ACR_NEMA_Print	1	ACR/NEMA2
+(0000,51B0)	US	ACR_NEMA_Overlays	1-n	ACR/NEMA2
+(0008,0001)	UL	ACR_NEMA_IdentifyingGroupLengthToEnd	1	ACR/NEMA2
+(0008,0010)	LO	ACR_NEMA_RecognitionCode	1	ACR/NEMA2
+(0008,0040)	US	ACR_NEMA_OldDataSetType	1	ACR/NEMA2
+(0008,0041)	LO	ACR_NEMA_DataSetSubtype	1	ACR/NEMA2
+(0008,1000)	LO	ACR_NEMA_NetworkID	1	ACR/NEMA2
+(0008,4000)	LT	ACR_NEMA_IdentifyingComments	1-n	ACR/NEMA2
+(0010,1050)	LT	ACR_NEMA_InsurancePlanIdentification	1-n	ACR/NEMA2
+(0018,1240)	IS	ACR_NEMA_UpperLowerPixelValues	1-n	ACR/NEMA2
+(0018,4000)	LT	ACR_NEMA_AcquisitionComments	1-n	ACR/NEMA2
+(0018,5030)	DS	ACR_NEMA_DynamicRange	1	ACR/NEMA2
+(0018,5040)	DS	ACR_NEMA_TotalGain	1	ACR/NEMA2
+(0020,0030)	DS	ACR_NEMA_ImagePosition	3	ACR/NEMA2
+(0020,0035)	DS	ACR_NEMA_ImageOrientation	6	ACR/NEMA2
+(0020,0050)	DS	ACR_NEMA_Location	1	ACR/NEMA2
+(0020,0070)	LO	ACR_NEMA_ImageGeometryType	1	ACR/NEMA2
+(0020,0080)	LO	ACR_NEMA_MaskingImage	1-n	ACR/NEMA2
+(0020,1001)	IS	ACR_NEMA_AcquisitionsInSeries	1	ACR/NEMA2
+(0020,1003)	IS	ACR_NEMA_ImagesInSeries	1	ACR/NEMA2
+(0020,1005)	IS	ACR_NEMA_ImagesInStudy	1	ACR/NEMA2
+(0020,1020)	LO	ACR_NEMA_Reference	1-n	ACR/NEMA2
+(0020,3100-31FF)	LO	ACR_NEMA_SourceImageID	1-n	ACR/NEMA2
+(0020,3401)	LO	ACR_NEMA_ModifyingDeviceID	1	ACR/NEMA2
+(0020,3402)	LO	ACR_NEMA_ModifiedImageID	1	ACR/NEMA2
+(0020,3403)	DA	ACR_NEMA_ModifiedImageDate	1	ACR/NEMA2
+(0020,3404)	LO	ACR_NEMA_ModifyingDeviceManufacturer	1	ACR/NEMA2
+(0020,3405)	TM	ACR_NEMA_ModifiedImageTime	1	ACR/NEMA2
+(0020,3406)	LO	ACR_NEMA_ModifiedImageDescription	1	ACR/NEMA2
+(0020,5000)	AT	ACR_NEMA_OriginalImageIdentification	1-n	ACR/NEMA2
+(0020,5002)	LO	ACR_NEMA_OriginalImageIdentificationNomenclature	1-n	ACR/NEMA2
+(0028,0005)	US	ACR_NEMA_ImageDimensions	1	ACR/NEMA2
+(0028,0040)	CS	ACR_NEMA_ImageFormat	1	ACR/NEMA2
+(0028,0050)	LO	ACR_NEMA_ManipulatedImage	1-n	ACR/NEMA2
+(0028,0060)	CS	ACR_NEMA_CompressionCode	1	ACR/NEMA2
+(0028,0104)	xs	ACR_NEMA_SmallestValidPixelValue	1	ACR/NEMA2
+(0028,0105)	xs	ACR_NEMA_LargestValidPixelValue	1	ACR/NEMA2
+(0028,0200)	US	ACR_NEMA_ImageLocation	1	ACR/NEMA2
+(0028,1080)	CS	ACR_NEMA_GrayScale	1	ACR/NEMA2
+(0028,1100)	xs	ACR_NEMA_GrayLookupTableDescriptor	3	ACR/NEMA2
+(0028,1200)	xs	ACR_NEMA_GrayLookupTableData	1-n	ACR/NEMA2
+(0028,4000)	LT	ACR_NEMA_ImagePresentationComments	1-n	ACR/NEMA2
+(4000,0000)	UL	ACR_NEMA_TextGroupLength	1	ACR/NEMA2
+(4000,0010)	LT	ACR_NEMA_TextArbitrary	1-n	ACR/NEMA2
+(4000,4000)	LT	ACR_NEMA_TextComments	1-n	ACR/NEMA2
+(6000-60ff,0110)	CS	ACR_NEMA_OverlayFormat	1	ACR/NEMA2
+(6000-60ff,0200)	US	ACR_NEMA_OverlayLocation	1	ACR/NEMA2
+(6000-60ff,4000)	LT	ACR_NEMA_OverlayComments	1-n	ACR/NEMA2
+#
+#---------------------------------------------------------------------------
+#
+# Retired data elements from the ACR/NEMA 2 compression enhancements
+#
+(0028,005F)	CS	ACR_NEMA_2C_CompressionRecognitionCode	1	ACR/NEMA2C
+(0028,0061)	SH	ACR_NEMA_2C_CompressionOriginator	1	ACR/NEMA2C
+(0028,0062)	SH	ACR_NEMA_2C_CompressionLabel	1	ACR/NEMA2C
+(0028,0063)	SH	ACR_NEMA_2C_CompressionDescription	1	ACR/NEMA2C
+(0028,0065)	CS	ACR_NEMA_2C_CompressionSequence	1-n	ACR/NEMA2C
+(0028,0066)	AT	ACR_NEMA_2C_CompressionStepPointers	1-n	ACR/NEMA2C
+(0028,0068)	US	ACR_NEMA_2C_RepeatInterval	1	ACR/NEMA2C
+(0028,0069)	US	ACR_NEMA_2C_BitsGrouped	1	ACR/NEMA2C
+(0028,0070)	US	ACR_NEMA_2C_PerimeterTable	1-n	ACR/NEMA2C
+(0028,0071)	xs	ACR_NEMA_2C_PerimeterValue	1	ACR/NEMA2C
+(0028,0080)	US	ACR_NEMA_2C_PredictorRows	1	ACR/NEMA2C
+(0028,0081)	US	ACR_NEMA_2C_PredictorColumns	1	ACR/NEMA2C
+(0028,0082)	US	ACR_NEMA_2C_PredictorConstants	1-n	ACR/NEMA2C
+(0028,0090)	CS	ACR_NEMA_2C_BlockedPixels	1	ACR/NEMA2C
+(0028,0091)	US	ACR_NEMA_2C_BlockRows	1	ACR/NEMA2C
+(0028,0092)	US	ACR_NEMA_2C_BlockColumns	1	ACR/NEMA2C
+(0028,0093)	US	ACR_NEMA_2C_RowOverlap	1	ACR/NEMA2C
+(0028,0094)	US	ACR_NEMA_2C_ColumnOverlap	1	ACR/NEMA2C
+(0028,0400)	CS	ACR_NEMA_2C_TransformLabel	1	ACR/NEMA2C
+(0028,0401)	CS	ACR_NEMA_2C_TransformVersionNumber	1	ACR/NEMA2C
+(0028,0402)	US	ACR_NEMA_2C_NumberOfTransformSteps	1	ACR/NEMA2C
+(0028,0403)	CS	ACR_NEMA_2C_SequenceOfCompressedData	1-n	ACR/NEMA2C
+(0028,0404)	AT	ACR_NEMA_2C_DetailsOfCoefficients	1-n	ACR/NEMA2C
+# according to the DICOM standard, the following 4 attributes
+# should have a tag in the range of (0028,04x1) to (0028,04x3)
+(0028,0410)	US	ACR_NEMA_2C_RowsForNthOrderCoefficients	1	ACR/NEMA2C
+(0028,0411)	US	ACR_NEMA_2C_ColumnsForNthOrderCoefficients	1	ACR/NEMA2C
+(0028,0412)	CS	ACR_NEMA_2C_CoefficientCoding	1-n	ACR/NEMA2C
+(0028,0413)	AT	ACR_NEMA_2C_CoefficientCodingPointers	1-n	ACR/NEMA2C
+(0028,0700)	CS	ACR_NEMA_2C_DCTLabel	1	ACR/NEMA2C
+(0028,0701)	CS	ACR_NEMA_2C_DataBlockDescription	1-n	ACR/NEMA2C
+(0028,0702)	AT	ACR_NEMA_2C_DataBlock	1-n	ACR/NEMA2C
+(0028,0710)	US	ACR_NEMA_2C_NormalizationFactorFormat	1	ACR/NEMA2C
+(0028,0720)	US	ACR_NEMA_2C_ZonalMapNumberFormat	1	ACR/NEMA2C
+(0028,0721)	AT	ACR_NEMA_2C_ZonalMapLocation	1-n	ACR/NEMA2C
+(0028,0722)	US	ACR_NEMA_2C_ZonalMapFormat	1	ACR/NEMA2C
+(0028,0730)	US	ACR_NEMA_2C_AdaptiveMapFormat	1	ACR/NEMA2C
+(0028,0740)	US	ACR_NEMA_2C_CodeNumberFormat	1	ACR/NEMA2C
+# according to the DICOM standard, the following 5 attributes
+# should have a tag in the range of (0028,08x0) to (0028,08x8)
+(0028,0800)	CS	ACR_NEMA_2C_CodeLabel	1-n	ACR/NEMA2C
+(0028,0802)	US	ACR_NEMA_2C_NumberOfTables	1	ACR/NEMA2C
+(0028,0803)	AT	ACR_NEMA_2C_CodeTableLocation	1-n	ACR/NEMA2C
+(0028,0804)	US	ACR_NEMA_2C_BitsForCodeWord	1	ACR/NEMA2C
+(0028,0808)	AT	ACR_NEMA_2C_ImageDataLocation	1-n	ACR/NEMA2C
+(1000,0000)	UL	ACR_NEMA_2C_CodeTableGroupLength	1	ACR/NEMA2C
+# according to the DICOM standard, the following 6 attributes
+# should have a tag in the range of (1000,xxx0) to (1000,xxx5)
+(1000,0010)	US	ACR_NEMA_2C_EscapeTriplet	3	ACR/NEMA2C
+(1000,0011)	US	ACR_NEMA_2C_RunLengthTriplet	3	ACR/NEMA2C
+(1000,0012)	US	ACR_NEMA_2C_HuffmanTableSize	1	ACR/NEMA2C
+(1000,0013)	US	ACR_NEMA_2C_HuffmanTableTriplet	3	ACR/NEMA2C
+(1000,0014)	US	ACR_NEMA_2C_ShiftTableSize	1	ACR/NEMA2C
+(1000,0015)	US	ACR_NEMA_2C_ShiftTableTriplet	3	ACR/NEMA2C
+(1010,0000)	UL	ACR_NEMA_2C_ZonalMapGroupLength	1	ACR/NEMA2C
+# according to the DICOM standard, the following attribute
+# should have the tag (1010,xxxx) where "x" is "0" to "f"
+(1010,0004)	US	ACR_NEMA_2C_ZonalMap	1-n	ACR/NEMA2C
+(6000-60ff,0060)	CS	ACR_NEMA_2C_OverlayCompressionCode	1	ACR/NEMA2C
+(6000-60ff,0061)	SH	ACR_NEMA_2C_OverlayCompressionOriginator	1	ACR/NEMA2C
+(6000-60ff,0062)	SH	ACR_NEMA_2C_OverlayCompressionLabel	1	ACR/NEMA2C
+(6000-60ff,0063)	SH	ACR_NEMA_2C_OverlayCompressionDescription	1	ACR/NEMA2C
+(6000-60ff,0066)	AT	ACR_NEMA_2C_OverlayCompressionStepPointers	1-n	ACR/NEMA2C
+(6000-60ff,0068)	US	ACR_NEMA_2C_OverlayRepeatInterval	1	ACR/NEMA2C
+(6000-60ff,0069)	US	ACR_NEMA_2C_OverlayBitsGrouped	1	ACR/NEMA2C
+(6000-60ff,0800)	CS	ACR_NEMA_2C_OverlayCodeLabel	1-n	ACR/NEMA2C
+(6000-60ff,0802)	US	ACR_NEMA_2C_OverlayNumberOfTables	1	ACR/NEMA2C
+(6000-60ff,0803)	AT	ACR_NEMA_2C_OverlayCodeTableLocation	1-n	ACR/NEMA2C
+(6000-60ff,0804)	US	ACR_NEMA_2C_OverlayBitsForCodeWord	1	ACR/NEMA2C
+(7F00-7fff,0000)	UL	ACR_NEMA_2C_VariablePixelDataGroupLength	1	ACR/NEMA2C
+(7F00-7fff,0010)	ox	ACR_NEMA_2C_VariablePixelData	1	ACR/NEMA2C
+(7F00-7fff,0011)	AT	ACR_NEMA_2C_VariableNextDataGroup	1	ACR/NEMA2C
+(7F00-7fff,0020)	OW	ACR_NEMA_2C_VariableCoefficientsSDVN	1-n	ACR/NEMA2C
+(7F00-7fff,0030)	OW	ACR_NEMA_2C_VariableCoefficientsSDHN	1-n	ACR/NEMA2C
+(7F00-7fff,0040)	OW	ACR_NEMA_2C_VariableCoefficientsSDDN	1-n	ACR/NEMA2C
+(7FE0,0020)	OW	ACR_NEMA_2C_CoefficientsSDVN	1-n	ACR/NEMA2C
+(7FE0,0030)	OW	ACR_NEMA_2C_CoefficientsSDHN	1-n	ACR/NEMA2C
+(7FE0,0040)	OW	ACR_NEMA_2C_CoefficientsSDDN	1-n	ACR/NEMA2C
+#
+# end of acrnema.dic
+#

@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.05 (riesmeier)
+
+- Moved ACR/NEMA data dictionary to a separate file:
+  Moved retired ACR/NEMA attributes to a separate dictionary file since they
+  are officially part of the DICOM standard for many years now (see CP-607).
+  Please note that this commit changes the prefix of some tag constants from
+  "DCM_ACR_NEMA_" to "DCM_RETIRED_". Also a few tag constants disappeared
+  (mainly ACR/NEMA group length attributes, which are retired in the DICOM
+  standard anyway). However, since the old, manually compiled definitions are
+  still available in a separate file, the old behavior can be restored by
+  loading "acrnema.dic".
+  Added:   dcmdata/data/acrnema.dic
+  Affects: dcmdata/data/CMakeLists.txt
+           dcmdata/data/Makefile.in
+           dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.02.04 (riesmeier)
 
 - Fixed typos in comments.

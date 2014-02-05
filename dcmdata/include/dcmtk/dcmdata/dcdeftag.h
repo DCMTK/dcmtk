@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-31 10:35:56
+**   Date: 2014-01-31 18:55:06
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-31 10:35:56"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-01-31 18:55:06"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3704
+** Number of entries: 3701
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1618,10 +1618,10 @@
 #define DCM_RETIRED_NumberOfTransformSteps       DcmTagKey(0x0028, 0x0402)
 #define DCM_RETIRED_SequenceOfCompressedData     DcmTagKey(0x0028, 0x0403)
 #define DCM_RETIRED_DetailsOfCoefficients        DcmTagKey(0x0028, 0x0404)
-#define DCM_ACR_NEMA_2C_RowsForNthOrderCoefficients DcmTagKey(0x0028, 0x0410)
-#define DCM_ACR_NEMA_2C_ColumnsForNthOrderCoefficients DcmTagKey(0x0028, 0x0411)
-#define DCM_ACR_NEMA_2C_CoefficientCoding        DcmTagKey(0x0028, 0x0412)
-#define DCM_ACR_NEMA_2C_CoefficientCodingPointers DcmTagKey(0x0028, 0x0413)
+#define DCM_RETIRED_RowsForNthOrderCoefficients  DcmTagKey(0x0028, 0x0410)
+#define DCM_RETIRED_ColumnsForNthOrderCoefficients DcmTagKey(0x0028, 0x0411)
+#define DCM_RETIRED_CoefficientCoding            DcmTagKey(0x0028, 0x0412)
+#define DCM_RETIRED_CoefficientCodingPointers    DcmTagKey(0x0028, 0x0413)
 #define DCM_RETIRED_DCTLabel                     DcmTagKey(0x0028, 0x0700)
 #define DCM_RETIRED_DataBlockDescription         DcmTagKey(0x0028, 0x0701)
 #define DCM_RETIRED_DataBlock                    DcmTagKey(0x0028, 0x0702)
@@ -1631,11 +1631,11 @@
 #define DCM_RETIRED_ZonalMapFormat               DcmTagKey(0x0028, 0x0722)
 #define DCM_RETIRED_AdaptiveMapFormat            DcmTagKey(0x0028, 0x0730)
 #define DCM_RETIRED_CodeNumberFormat             DcmTagKey(0x0028, 0x0740)
-#define DCM_ACR_NEMA_2C_CodeLabel                DcmTagKey(0x0028, 0x0800)
-#define DCM_ACR_NEMA_2C_NumberOfTables           DcmTagKey(0x0028, 0x0802)
-#define DCM_ACR_NEMA_2C_CodeTableLocation        DcmTagKey(0x0028, 0x0803)
-#define DCM_ACR_NEMA_2C_BitsForCodeWord          DcmTagKey(0x0028, 0x0804)
-#define DCM_ACR_NEMA_2C_ImageDataLocation        DcmTagKey(0x0028, 0x0808)
+#define DCM_RETIRED_CodeLabel                    DcmTagKey(0x0028, 0x0800)
+#define DCM_RETIRED_NumberOfTables               DcmTagKey(0x0028, 0x0802)
+#define DCM_RETIRED_CodeTableLocation            DcmTagKey(0x0028, 0x0803)
+#define DCM_RETIRED_BitsForCodeWord              DcmTagKey(0x0028, 0x0804)
+#define DCM_RETIRED_ImageDataLocation            DcmTagKey(0x0028, 0x0808)
 #define DCM_PixelSpacingCalibrationType          DcmTagKey(0x0028, 0x0a02)
 #define DCM_PixelSpacingCalibrationDescription   DcmTagKey(0x0028, 0x0a04)
 #define DCM_PixelIntensityRelationship           DcmTagKey(0x0028, 0x1040)
@@ -2903,15 +2903,13 @@
 #define DCM_ModifyingSystem                      DcmTagKey(0x0400, 0x0563)
 #define DCM_SourceOfPreviousValues               DcmTagKey(0x0400, 0x0564)
 #define DCM_ReasonForTheAttributeModification    DcmTagKey(0x0400, 0x0565)
-#define DCM_ACR_NEMA_2C_CodeTableGroupLength     DcmTagKey(0x1000, 0x0000)
-#define DCM_ACR_NEMA_2C_EscapeTriplet            DcmTagKey(0x1000, 0x0010)
-#define DCM_ACR_NEMA_2C_RunLengthTriplet         DcmTagKey(0x1000, 0x0011)
-#define DCM_ACR_NEMA_2C_HuffmanTableSize         DcmTagKey(0x1000, 0x0012)
-#define DCM_ACR_NEMA_2C_HuffmanTableTriplet      DcmTagKey(0x1000, 0x0013)
-#define DCM_ACR_NEMA_2C_ShiftTableSize           DcmTagKey(0x1000, 0x0014)
-#define DCM_ACR_NEMA_2C_ShiftTableTriplet        DcmTagKey(0x1000, 0x0015)
-#define DCM_ACR_NEMA_2C_ZonalMapGroupLength      DcmTagKey(0x1010, 0x0000)
-#define DCM_ACR_NEMA_2C_ZonalMap                 DcmTagKey(0x1010, 0x0004)
+#define DCM_RETIRED_EscapeTriplet                DcmTagKey(0x1000, 0x0010)
+#define DCM_RETIRED_RunLengthTriplet             DcmTagKey(0x1000, 0x0011)
+#define DCM_RETIRED_HuffmanTableSize             DcmTagKey(0x1000, 0x0012)
+#define DCM_RETIRED_HuffmanTableTriplet          DcmTagKey(0x1000, 0x0013)
+#define DCM_RETIRED_ShiftTableSize               DcmTagKey(0x1000, 0x0014)
+#define DCM_RETIRED_ShiftTableTriplet            DcmTagKey(0x1000, 0x0015)
+#define DCM_RETIRED_ZonalMap                     DcmTagKey(0x1010, 0x0004)
 #define DCM_NumberOfCopies                       DcmTagKey(0x2000, 0x0010)
 #define DCM_PrinterConfigurationSequence         DcmTagKey(0x2000, 0x001e)
 #define DCM_PrintPriority                        DcmTagKey(0x2000, 0x0020)
@@ -3608,7 +3606,6 @@
 #define DCM_ReviewDate                           DcmTagKey(0x300e, 0x0004)
 #define DCM_ReviewTime                           DcmTagKey(0x300e, 0x0005)
 #define DCM_ReviewerName                         DcmTagKey(0x300e, 0x0008)
-#define DCM_ACR_NEMA_TextGroupLength             DcmTagKey(0x4000, 0x0000)
 #define DCM_RETIRED_Arbitrary                    DcmTagKey(0x4000, 0x0010)
 #define DCM_RETIRED_TextComments                 DcmTagKey(0x4000, 0x4000)
 #define DCM_RETIRED_ResultsID                    DcmTagKey(0x4008, 0x0040)
@@ -3732,7 +3729,7 @@
 
 /*
 ** Tags where the group/element can vary (repeating tags).
-** Number of entries: 78
+** Number of entries: 77
 */
 #define DCM_OverlayRows                          DcmTagKey(0x6000, 0x0010) /* (0x6000-0x60ff,0x0010) */
 #define DCM_OverlayColumns                       DcmTagKey(0x6000, 0x0011) /* (0x6000-0x60ff,0x0011) */
@@ -3750,8 +3747,14 @@
 #define DCM_ROIStandardDeviation                 DcmTagKey(0x6000, 0x1303) /* (0x6000-0x60ff,0x1303) */
 #define DCM_OverlayLabel                         DcmTagKey(0x6000, 0x1500) /* (0x6000-0x60ff,0x1500) */
 #define DCM_OverlayData                          DcmTagKey(0x6000, 0x3000) /* (0x6000-0x60ff,0x3000) */
-#define DCM_ACR_NEMA_2C_VariablePixelDataGroupLength DcmTagKey(0x7f00, 0x0000) /* (0x7f00-0x7fff,0x0000) */
 #define DCM_PrivateGroupLength                   DcmTagKey(0x0009, 0x0000) /* (0x0009-o-0xffff,0x0000) */
+#define DCM_RETIRED_NumberOfPoints               DcmTagKey(0x5000, 0x0010) /* (0x5000-0x50ff,0x0010) */
+#define DCM_RETIRED_TypeOfData                   DcmTagKey(0x5000, 0x0020) /* (0x5000-0x50ff,0x0020) */
+#define DCM_RETIRED_CurveDescription             DcmTagKey(0x5000, 0x0022) /* (0x5000-0x50ff,0x0022) */
+#define DCM_RETIRED_AxisUnits                    DcmTagKey(0x5000, 0x0030) /* (0x5000-0x50ff,0x0030) */
+#define DCM_RETIRED_AxisLabels                   DcmTagKey(0x5000, 0x0040) /* (0x5000-0x50ff,0x0040) */
+#define DCM_RETIRED_OverlayPlanes                DcmTagKey(0x6000, 0x0012) /* (0x6000-0x60ff,0x0012) */
+#define DCM_RETIRED_OverlayPlaneOrigin           DcmTagKey(0x6000, 0x0052) /* (0x6000-0x60ff,0x0052) */
 #define DCM_RETIRED_OverlayCompressionCode       DcmTagKey(0x6000, 0x0060) /* (0x6000-0x60ff,0x0060) */
 #define DCM_RETIRED_OverlayCompressionOriginator DcmTagKey(0x6000, 0x0061) /* (0x6000-0x60ff,0x0061) */
 #define DCM_RETIRED_OverlayCompressionLabel      DcmTagKey(0x6000, 0x0062) /* (0x6000-0x60ff,0x0062) */
@@ -3764,25 +3767,11 @@
 #define DCM_RETIRED_VariableCoefficientsSDVN     DcmTagKey(0x7f00, 0x0020) /* (0x7f00-0x7fff,0x0020) */
 #define DCM_RETIRED_VariableCoefficientsSDHN     DcmTagKey(0x7f00, 0x0030) /* (0x7f00-0x7fff,0x0030) */
 #define DCM_RETIRED_VariableCoefficientsSDDN     DcmTagKey(0x7f00, 0x0040) /* (0x7f00-0x7fff,0x0040) */
-#define DCM_RETIRED_NumberOfPoints               DcmTagKey(0x5000, 0x0010) /* (0x5000-0x50ff,0x0010) */
-#define DCM_RETIRED_TypeOfData                   DcmTagKey(0x5000, 0x0020) /* (0x5000-0x50ff,0x0020) */
-#define DCM_RETIRED_CurveDescription             DcmTagKey(0x5000, 0x0022) /* (0x5000-0x50ff,0x0022) */
-#define DCM_RETIRED_AxisUnits                    DcmTagKey(0x5000, 0x0030) /* (0x5000-0x50ff,0x0030) */
-#define DCM_RETIRED_AxisLabels                   DcmTagKey(0x5000, 0x0040) /* (0x5000-0x50ff,0x0040) */
-#define DCM_RETIRED_OverlayPlanes                DcmTagKey(0x6000, 0x0012) /* (0x6000-0x60ff,0x0012) */
-#define DCM_RETIRED_OverlayPlaneOrigin           DcmTagKey(0x6000, 0x0052) /* (0x6000-0x60ff,0x0052) */
 #define DCM_PrivateCreator                       DcmTagKey(0x0009, 0x0010) /* (0x0009-o-0xffff,0x0010-u-0x00ff) */
 #define DCM_IllegalGroupLength                   DcmTagKey(0x0001, 0x0000) /* (0x0001-o-0x0007,0x0000) */
 #define DCM_IllegalPrivateCreator                DcmTagKey(0x0001, 0x0010) /* (0x0001-o-0x0007,0x0010-u-0x00ff) */
 #define DCM_GenericGroupLength                   DcmTagKey(0x0000, 0x0000) /* (0x0000-u-0xffff,0x0000) */
 #define DCM_RETIRED_SourceImageIDs               DcmTagKey(0x0020, 0x3100) /* (0x0020,0x3100-0x31ff) */
-#define DCM_RETIRED_OverlayFormat                DcmTagKey(0x6000, 0x0110) /* (0x6000-0x60ff,0x0110) */
-#define DCM_RETIRED_OverlayLocation              DcmTagKey(0x6000, 0x0200) /* (0x6000-0x60ff,0x0200) */
-#define DCM_RETIRED_OverlayComments              DcmTagKey(0x6000, 0x4000) /* (0x6000-0x60ff,0x4000) */
-#define DCM_RETIRED_OverlayCodeLabel             DcmTagKey(0x6000, 0x0800) /* (0x6000-0x60ff,0x0800) */
-#define DCM_RETIRED_OverlayNumberOfTables        DcmTagKey(0x6000, 0x0802) /* (0x6000-0x60ff,0x0802) */
-#define DCM_RETIRED_OverlayCodeTableLocation     DcmTagKey(0x6000, 0x0803) /* (0x6000-0x60ff,0x0803) */
-#define DCM_RETIRED_OverlayBitsForCodeWord       DcmTagKey(0x6000, 0x0804) /* (0x6000-0x60ff,0x0804) */
 #define DCM_RETIRED_CurveDimensions              DcmTagKey(0x5000, 0x0005) /* (0x5000-0x50ff,0x0005) */
 #define DCM_RETIRED_DataValueRepresentation      DcmTagKey(0x5000, 0x0103) /* (0x5000-0x50ff,0x0103) */
 #define DCM_RETIRED_MinimumCoordinateValue       DcmTagKey(0x5000, 0x0104) /* (0x5000-0x50ff,0x0104) */
@@ -3804,6 +3793,12 @@
 #define DCM_RETIRED_CurveReferencedOverlaySequence DcmTagKey(0x5000, 0x2600) /* (0x5000-0x50ff,0x2600) */
 #define DCM_RETIRED_CurveReferencedOverlayGroup  DcmTagKey(0x5000, 0x2610) /* (0x5000-0x50ff,0x2610) */
 #define DCM_RETIRED_CurveData                    DcmTagKey(0x5000, 0x3000) /* (0x5000-0x50ff,0x3000) */
+#define DCM_RETIRED_OverlayFormat                DcmTagKey(0x6000, 0x0110) /* (0x6000-0x60ff,0x0110) */
+#define DCM_RETIRED_OverlayLocation              DcmTagKey(0x6000, 0x0200) /* (0x6000-0x60ff,0x0200) */
+#define DCM_RETIRED_OverlayCodeLabel             DcmTagKey(0x6000, 0x0800) /* (0x6000-0x60ff,0x0800) */
+#define DCM_RETIRED_OverlayNumberOfTables        DcmTagKey(0x6000, 0x0802) /* (0x6000-0x60ff,0x0802) */
+#define DCM_RETIRED_OverlayCodeTableLocation     DcmTagKey(0x6000, 0x0803) /* (0x6000-0x60ff,0x0803) */
+#define DCM_RETIRED_OverlayBitsForCodeWord       DcmTagKey(0x6000, 0x0804) /* (0x6000-0x60ff,0x0804) */
 #define DCM_RETIRED_OverlayDescriptorGray        DcmTagKey(0x6000, 0x1100) /* (0x6000-0x60ff,0x1100) */
 #define DCM_RETIRED_OverlayDescriptorRed         DcmTagKey(0x6000, 0x1101) /* (0x6000-0x60ff,0x1101) */
 #define DCM_RETIRED_OverlayDescriptorGreen       DcmTagKey(0x6000, 0x1102) /* (0x6000-0x60ff,0x1102) */
@@ -3812,5 +3807,6 @@
 #define DCM_RETIRED_OverlaysRed                  DcmTagKey(0x6000, 0x1201) /* (0x6000-0x60ff,0x1201) */
 #define DCM_RETIRED_OverlaysGreen                DcmTagKey(0x6000, 0x1202) /* (0x6000-0x60ff,0x1202) */
 #define DCM_RETIRED_OverlaysBlue                 DcmTagKey(0x6000, 0x1203) /* (0x6000-0x60ff,0x1203) */
+#define DCM_RETIRED_OverlayComments              DcmTagKey(0x6000, 0x4000) /* (0x6000-0x60ff,0x4000) */
 
 #endif /* !DCDEFTAG_H */

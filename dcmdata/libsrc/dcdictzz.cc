@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-31 10:36:00
+**   Date: 2014-01-31 18:59:06
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-01-31 10:36:00";
+const char* dcmBuiltinDictBuildDate = "2014-01-31 18:59:06";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -14162,19 +14162,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0410, 0x0028, 0x0410,
-      EVR_US, "ACR_NEMA_2C_RowsForNthOrderCoefficients", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_RowsForNthOrderCoefficients", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0411, 0x0028, 0x0411,
-      EVR_US, "ACR_NEMA_2C_ColumnsForNthOrderCoefficients", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_ColumnsForNthOrderCoefficients", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0412, 0x0028, 0x0412,
-      EVR_CS, "ACR_NEMA_2C_CoefficientCoding", 1, -1, "ACR/NEMA2C",
+      EVR_LO, "RETIRED_CoefficientCoding", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0413, 0x0028, 0x0413,
-      EVR_AT, "ACR_NEMA_2C_CoefficientCodingPointers", 1, -1, "ACR/NEMA2C",
+      EVR_AT, "RETIRED_CoefficientCodingPointers", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0700, 0x0028, 0x0700,
@@ -14214,23 +14214,23 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0800, 0x0028, 0x0800,
-      EVR_CS, "ACR_NEMA_2C_CodeLabel", 1, -1, "ACR/NEMA2C",
+      EVR_CS, "RETIRED_CodeLabel", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0802, 0x0028, 0x0802,
-      EVR_US, "ACR_NEMA_2C_NumberOfTables", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_NumberOfTables", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0803, 0x0028, 0x0803,
-      EVR_AT, "ACR_NEMA_2C_CodeTableLocation", 1, -1, "ACR/NEMA2C",
+      EVR_AT, "RETIRED_CodeTableLocation", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0804, 0x0028, 0x0804,
-      EVR_US, "ACR_NEMA_2C_BitsForCodeWord", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_BitsForCodeWord", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0808, 0x0028, 0x0808,
-      EVR_AT, "ACR_NEMA_2C_ImageDataLocation", 1, -1, "ACR/NEMA2C",
+      EVR_AT, "RETIRED_ImageDataLocation", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0a02, 0x0028, 0x0a02,
@@ -22067,40 +22067,32 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ELSCINT1" }
 #endif
-  , { 0x1000, 0x0000, 0x1000, 0x0000,
-      EVR_UL, "ACR_NEMA_2C_CodeTableGroupLength", 1, 1, "ACR/NEMA2C",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      NULL }
   , { 0x1000, 0x0010, 0x1000, 0x0010,
-      EVR_US, "ACR_NEMA_2C_EscapeTriplet", 3, 3, "ACR/NEMA2C",
+      EVR_US, "RETIRED_EscapeTriplet", 3, 3, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x1000, 0x0011, 0x1000, 0x0011,
-      EVR_US, "ACR_NEMA_2C_RunLengthTriplet", 3, 3, "ACR/NEMA2C",
+      EVR_US, "RETIRED_RunLengthTriplet", 3, 3, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x1000, 0x0012, 0x1000, 0x0012,
-      EVR_US, "ACR_NEMA_2C_HuffmanTableSize", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_HuffmanTableSize", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x1000, 0x0013, 0x1000, 0x0013,
-      EVR_US, "ACR_NEMA_2C_HuffmanTableTriplet", 3, 3, "ACR/NEMA2C",
+      EVR_US, "RETIRED_HuffmanTableTriplet", 3, 3, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x1000, 0x0014, 0x1000, 0x0014,
-      EVR_US, "ACR_NEMA_2C_ShiftTableSize", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_ShiftTableSize", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x1000, 0x0015, 0x1000, 0x0015,
-      EVR_US, "ACR_NEMA_2C_ShiftTableTriplet", 3, 3, "ACR/NEMA2C",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x1010, 0x0000, 0x1010, 0x0000,
-      EVR_UL, "ACR_NEMA_2C_ZonalMapGroupLength", 1, 1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_ShiftTableTriplet", 3, 3, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x1010, 0x0004, 0x1010, 0x0004,
-      EVR_US, "ACR_NEMA_2C_ZonalMap", 1, -1, "ACR/NEMA2C",
+      EVR_US, "RETIRED_ZonalMap", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
@@ -25459,10 +25451,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTELERAD MEDICAL SYSTEMS" }
 #endif
-  , { 0x4000, 0x0000, 0x4000, 0x0000,
-      EVR_UL, "ACR_NEMA_TextGroupLength", 1, 1, "ACR/NEMA2",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      NULL }
   , { 0x4000, 0x0010, 0x4000, 0x0010,
       EVR_LT, "RETIRED_Arbitrary", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -26195,13 +26183,37 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ox, "OverlayData", 1, 1, "DICOM_2011",
       DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
-  , { 0x7f00, 0x0000, 0x7fff, 0x0000,
-      EVR_UL, "ACR_NEMA_2C_VariablePixelDataGroupLength", 1, 1, "ACR/NEMA2C",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
   , { 0x0009, 0x0000, 0xffff, 0x0000,
       EVR_UL, "PrivateGroupLength", 1, 1, "PRIVATE",
       DcmDictRange_Odd, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x5000, 0x0010, 0x50ff, 0x0010,
+      EVR_US, "RETIRED_NumberOfPoints", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x5000, 0x0020, 0x50ff, 0x0020,
+      EVR_CS, "RETIRED_TypeOfData", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x5000, 0x0022, 0x50ff, 0x0022,
+      EVR_LO, "RETIRED_CurveDescription", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x5000, 0x0030, 0x50ff, 0x0030,
+      EVR_SH, "RETIRED_AxisUnits", 1, -1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x5000, 0x0040, 0x50ff, 0x0040,
+      EVR_SH, "RETIRED_AxisLabels", 1, -1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0012, 0x60ff, 0x0012,
+      EVR_US, "RETIRED_OverlayPlanes", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0052, 0x60ff, 0x0052,
+      EVR_US, "RETIRED_OverlayPlaneOrigin", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
   , { 0x6000, 0x0060, 0x60ff, 0x0060,
       EVR_CS, "RETIRED_OverlayCompressionCode", 1, 1, "DICOM/retired",
@@ -26251,34 +26263,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_OW, "RETIRED_VariableCoefficientsSDDN", 1, 1, "DICOM/retired",
       DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
-  , { 0x5000, 0x0010, 0x50ff, 0x0010,
-      EVR_US, "RETIRED_NumberOfPoints", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x5000, 0x0020, 0x50ff, 0x0020,
-      EVR_CS, "RETIRED_TypeOfData", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x5000, 0x0022, 0x50ff, 0x0022,
-      EVR_LO, "RETIRED_CurveDescription", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x5000, 0x0030, 0x50ff, 0x0030,
-      EVR_SH, "RETIRED_AxisUnits", 1, -1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x5000, 0x0040, 0x50ff, 0x0040,
-      EVR_SH, "RETIRED_AxisLabels", 1, -1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0012, 0x60ff, 0x0012,
-      EVR_US, "RETIRED_OverlayPlanes", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0052, 0x60ff, 0x0052,
-      EVR_US, "RETIRED_OverlayPlaneOrigin", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
   , { 0x0009, 0x0010, 0xffff, 0x00ff,
       EVR_LO, "PrivateCreator", 1, 1, "PRIVATE",
       DcmDictRange_Odd, DcmDictRange_Unspecified,
@@ -26298,34 +26282,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0020, 0x3100, 0x0020, 0x31ff,
       EVR_CS, "RETIRED_SourceImageIDs", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Even,
-      NULL }
-  , { 0x6000, 0x0110, 0x60ff, 0x0110,
-      EVR_CS, "RETIRED_OverlayFormat", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0200, 0x60ff, 0x0200,
-      EVR_US, "RETIRED_OverlayLocation", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x4000, 0x60ff, 0x4000,
-      EVR_LT, "RETIRED_OverlayComments", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0800, 0x60ff, 0x0800,
-      EVR_CS, "RETIRED_OverlayCodeLabel", 1, -1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0802, 0x60ff, 0x0802,
-      EVR_US, "RETIRED_OverlayNumberOfTables", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0803, 0x60ff, 0x0803,
-      EVR_AT, "RETIRED_OverlayCodeTableLocation", 1, -1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x6000, 0x0804, 0x60ff, 0x0804,
-      EVR_US, "RETIRED_OverlayBitsForCodeWord", 1, 1, "DICOM/retired",
-      DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
   , { 0x5000, 0x0005, 0x50ff, 0x0005,
       EVR_US, "RETIRED_CurveDimensions", 1, 1, "DICOM/retired",
@@ -26411,6 +26367,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ox, "RETIRED_CurveData", 1, 1, "DICOM/retired",
       DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
+  , { 0x6000, 0x0110, 0x60ff, 0x0110,
+      EVR_CS, "RETIRED_OverlayFormat", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0200, 0x60ff, 0x0200,
+      EVR_US, "RETIRED_OverlayLocation", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0800, 0x60ff, 0x0800,
+      EVR_CS, "RETIRED_OverlayCodeLabel", 1, -1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0802, 0x60ff, 0x0802,
+      EVR_US, "RETIRED_OverlayNumberOfTables", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0803, 0x60ff, 0x0803,
+      EVR_AT, "RETIRED_OverlayCodeTableLocation", 1, -1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x0804, 0x60ff, 0x0804,
+      EVR_US, "RETIRED_OverlayBitsForCodeWord", 1, 1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
   , { 0x6000, 0x1100, 0x60ff, 0x1100,
       EVR_US, "RETIRED_OverlayDescriptorGray", 1, 1, "DICOM/retired",
       DcmDictRange_Even, DcmDictRange_Unspecified,
@@ -26441,6 +26421,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x6000, 0x1203, 0x60ff, 0x1203,
       EVR_US, "RETIRED_OverlaysBlue", 1, -1, "DICOM/retired",
+      DcmDictRange_Even, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x6000, 0x4000, 0x60ff, 0x4000,
+      EVR_LT, "RETIRED_OverlayComments", 1, 1, "DICOM/retired",
       DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
