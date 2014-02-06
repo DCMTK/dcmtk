@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -655,7 +655,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                                     status = EC_UnsupportedEncoding;
                                 }
                             }
-                            else if ((xfer.getStreamCompression() != ESC_unsupported) /* e.g. ZIP compression */ ||
+                            else if ((xfer.getStreamCompression() != ESC_none) /* e.g. ZIP compression */ ||
                                 DcmCodecList::canChangeCoding(xfer.getXfer(), EXS_LittleEndianExplicit))
                             {
                                 DCMNET_DEBUG("also propose the three uncompressed transfer syntaxes, "
@@ -683,7 +683,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                             // check whether we can decompress the lossy compression
                             if (DecompressionMode == DM_lossyAndLossless)
                             {
-                                if ((xfer.getStreamCompression() != ESC_unsupported) /* any lossy stream compression? */ ||
+                                if ((xfer.getStreamCompression() != ESC_none) /* is there any lossy stream compression? */ ||
                                     DcmCodecList::canChangeCoding(xfer.getXfer(), EXS_LittleEndianExplicit))
                                 {
                                     DCMNET_DEBUG("also propose the three uncompressed transfer syntaxes, "
@@ -796,7 +796,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
             {
                 DcmFileFormat fileformat;
                 // check whether SOP instance can be sent on this association
-                // (i.e. whether it has been negotiated fot this association)
+                // (i.e. whether it has been negotiated for this association)
                 if ((*CurrentTransferEntry)->PresentationContextID == 0)
                 {
                     // exit the loop if this is not the case (will be sent in another association)
@@ -831,7 +831,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                 // send SOP instance to the peer using a C-STORE request message
                 if (status.good())
                 {
-                    // check whether UIDs in dataset are consistent with tranfer list
+                    // check whether UIDs in dataset are consistent with transfer list
                     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL) && (dataset != NULL))
                     {
                         DCMNET_DEBUG("checking whether SOP Class UID and SOP Instance UID in dataset are consistent with transfer list");
@@ -1075,7 +1075,7 @@ OFCondition DcmStorageSCU::createReportFile(const OFString &filename) const
             getStatusSummary(summaryText);
             stream << OFendl << summaryText;
         } else {
-            // some error occured while creating the file
+            // some error occurred while creating the file
             DCMNET_ERROR("cannot write detailed report to file '" << filename << "'");
             status = makeOFCondition(OFM_dcmdata, 19 /* file write */, OF_error, "Cannot create report file");
         }

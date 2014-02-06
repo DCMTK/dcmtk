@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.06 (riesmeier)
+
+- Fixed issue with wrong check on stream compression:
+  This wrong check had the result that the three uncompressed transfer syntaxes
+  were proposed in "decompression mode" even if the pixel data could not be
+  decompressed, e.g. in case of JPEG compression without a JPEG decoder.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
 **** Changes from 2014.02.05 (riesmeier)
 
 - Moved ACR/NEMA data dictionary to a separate file:
