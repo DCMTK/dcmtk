@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-01-31 18:59:06
+**   Date: 2014-02-11 10:02:36
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-01-31 18:59:06";
+const char* dcmBuiltinDictBuildDate = "2014-02-11 10:02:36";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -158,11 +158,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x4000, 0x0000, 0x4000,
-      EVR_AT, "RETIRED_DialogReceiver", 1, 1, "DICOM/retired",
+      EVR_LT, "RETIRED_DialogReceiver", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x4010, 0x0000, 0x4010,
-      EVR_AT, "RETIRED_TerminalType", 1, 1, "DICOM/retired",
+      EVR_LT, "RETIRED_TerminalType", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5010, 0x0000, 0x5010,
@@ -174,11 +174,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5110, 0x0000, 0x5110,
-      EVR_AT, "RETIRED_DisplayFormat", 1, 1, "DICOM/retired",
+      EVR_LT, "RETIRED_DisplayFormat", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5120, 0x0000, 0x5120,
-      EVR_AT, "RETIRED_PagePositionID", 1, 1, "DICOM/retired",
+      EVR_LT, "RETIRED_PagePositionID", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5130, 0x0000, 0x5130,

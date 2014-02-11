@@ -3496,12 +3496,12 @@
 (0000,0400)	AE	RETIRED_FindLocation	1	DICOM/retired
 (0000,0850)	US	RETIRED_NumberOfMatches	1	DICOM/retired
 (0000,0860)	US	RETIRED_ResponseSequenceNumber	1	DICOM/retired
-(0000,4000)	AT	RETIRED_DialogReceiver	1	DICOM/retired
-(0000,4010)	AT	RETIRED_TerminalType	1	DICOM/retired
+(0000,4000)	LT	RETIRED_DialogReceiver	1	DICOM/retired
+(0000,4010)	LT	RETIRED_TerminalType	1	DICOM/retired
 (0000,5010)	SH	RETIRED_MessageSetID	1	DICOM/retired
 (0000,5020)	SH	RETIRED_EndMessageID	1	DICOM/retired
-(0000,5110)	AT	RETIRED_DisplayFormat	1	DICOM/retired
-(0000,5120)	AT	RETIRED_PagePositionID	1	DICOM/retired
+(0000,5110)	LT	RETIRED_DisplayFormat	1	DICOM/retired
+(0000,5120)	LT	RETIRED_PagePositionID	1	DICOM/retired
 (0000,5130)	CS	RETIRED_TextFormatID	1	DICOM/retired
 (0000,5140)	CS	RETIRED_NormalReverse	1	DICOM/retired
 (0000,5150)	CS	RETIRED_AddGrayScale	1	DICOM/retired

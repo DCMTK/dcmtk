@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.11 (riesmeier)
+
+- Fixed wrong VR for some retired command fields:
+  Changed VR from "AT" to "LT" for some retired command fields, i.e. attributes
+  in group "0000". Now, the definitions are consistent with DICOM part 7.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.02.06 (riesmeier)
 
 - Fixed issue with wrong check on stream compression:
