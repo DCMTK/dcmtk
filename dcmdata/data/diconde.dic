@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 2010-2012, OFFIS e.V.
+#  Copyright (C) 2010-2014, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -41,7 +41,7 @@
 #
 # Comments have a '#' at the beginning of the line.
 #
-# Tag		VR	Name			VM	Version
+# Tag		VR	Name		VM	Version
 #
 (0008,0080)	LO	CompanyName	1	DICONDE10
 (0008,0081)	ST	CompanyAddress	1	DICONDE10

@@ -3474,16 +3474,16 @@
 #
 # Private Creator Data Elements
 #
-(0009-o-ffff,0000)	UL	PrivateGroupLength	1	PRIVATE
-(0009-o-ffff,0010-u-00ff)	LO	PrivateCreator	1	PRIVATE
+(0009-o-FFFF,0000)	UL	PrivateGroupLength	1	PRIVATE
+(0009-o-FFFF,0010-u-00FF)	LO	PrivateCreator	1	PRIVATE
 (0001-o-0007,0000)	UL	IllegalGroupLength	1	ILLEGAL
-(0001-o-0007,0010-u-00ff)	LO	IllegalPrivateCreator	1	ILLEGAL
+(0001-o-0007,0010-u-00FF)	LO	IllegalPrivateCreator	1	ILLEGAL
 #
 #---------------------------------------------------------------------------
 #
 # A "catch all" for group length elements
 #
-(0000-u-ffff,0000)	UL	GenericGroupLength	1	GENERIC
+(0000-u-FFFF,0000)	UL	GenericGroupLength	1	GENERIC
 #
 #---------------------------------------------------------------------------
 #
@@ -3808,7 +3808,7 @@
 (1000,0014)	US	RETIRED_ShiftTableSize	1	DICOM/retired
 (1000,0015)	US	RETIRED_ShiftTableTriplet	3	DICOM/retired
 # according to the DICOM standard, the following attribute
-# should have the tag (1010,xxxx) where "x" is "0" to "f"
+# should have the tag (1010,xxxx) where "x" is "0" to "F"
 (1010,0004)	US	RETIRED_ZonalMap	1-n	DICOM/retired
 (2000,0062)	CS	RETIRED_ColorImagePrintingFlag	1	DICOM/retired
 (2000,0063)	CS	RETIRED_CollationFlag	1	DICOM/retired

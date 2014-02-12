@@ -38,7 +38,7 @@
 #
 # Comments have a '#' at the beginning of the line.
 #
-# Tag		VR	Name			VM	Version
+# Tag		VR	Name					VM	Version
 #
 #---------------------------------------------------------------------------
 #
@@ -109,9 +109,9 @@
 (4000,0000)	UL	ACR_NEMA_TextGroupLength	1	ACR/NEMA2
 (4000,0010)	LT	ACR_NEMA_TextArbitrary	1-n	ACR/NEMA2
 (4000,4000)	LT	ACR_NEMA_TextComments	1-n	ACR/NEMA2
-(6000-60ff,0110)	CS	ACR_NEMA_OverlayFormat	1	ACR/NEMA2
-(6000-60ff,0200)	US	ACR_NEMA_OverlayLocation	1	ACR/NEMA2
-(6000-60ff,4000)	LT	ACR_NEMA_OverlayComments	1-n	ACR/NEMA2
+(6000-60FF,0110)	CS	ACR_NEMA_OverlayFormat	1	ACR/NEMA2
+(6000-60FF,0200)	US	ACR_NEMA_OverlayLocation	1	ACR/NEMA2
+(6000-60FF,4000)	LT	ACR_NEMA_OverlayComments	1-n	ACR/NEMA2
 #
 #---------------------------------------------------------------------------
 #
@@ -173,25 +173,25 @@
 (1000,0015)	US	ACR_NEMA_2C_ShiftTableTriplet	3	ACR/NEMA2C
 (1010,0000)	UL	ACR_NEMA_2C_ZonalMapGroupLength	1	ACR/NEMA2C
 # according to the DICOM standard, the following attribute
-# should have the tag (1010,xxxx) where "x" is "0" to "f"
+# should have the tag (1010,xxxx) where "x" is "0" to "F"
 (1010,0004)	US	ACR_NEMA_2C_ZonalMap	1-n	ACR/NEMA2C
-(6000-60ff,0060)	CS	ACR_NEMA_2C_OverlayCompressionCode	1	ACR/NEMA2C
-(6000-60ff,0061)	SH	ACR_NEMA_2C_OverlayCompressionOriginator	1	ACR/NEMA2C
-(6000-60ff,0062)	SH	ACR_NEMA_2C_OverlayCompressionLabel	1	ACR/NEMA2C
-(6000-60ff,0063)	SH	ACR_NEMA_2C_OverlayCompressionDescription	1	ACR/NEMA2C
-(6000-60ff,0066)	AT	ACR_NEMA_2C_OverlayCompressionStepPointers	1-n	ACR/NEMA2C
-(6000-60ff,0068)	US	ACR_NEMA_2C_OverlayRepeatInterval	1	ACR/NEMA2C
-(6000-60ff,0069)	US	ACR_NEMA_2C_OverlayBitsGrouped	1	ACR/NEMA2C
-(6000-60ff,0800)	CS	ACR_NEMA_2C_OverlayCodeLabel	1-n	ACR/NEMA2C
-(6000-60ff,0802)	US	ACR_NEMA_2C_OverlayNumberOfTables	1	ACR/NEMA2C
-(6000-60ff,0803)	AT	ACR_NEMA_2C_OverlayCodeTableLocation	1-n	ACR/NEMA2C
-(6000-60ff,0804)	US	ACR_NEMA_2C_OverlayBitsForCodeWord	1	ACR/NEMA2C
-(7F00-7fff,0000)	UL	ACR_NEMA_2C_VariablePixelDataGroupLength	1	ACR/NEMA2C
-(7F00-7fff,0010)	ox	ACR_NEMA_2C_VariablePixelData	1	ACR/NEMA2C
-(7F00-7fff,0011)	AT	ACR_NEMA_2C_VariableNextDataGroup	1	ACR/NEMA2C
-(7F00-7fff,0020)	OW	ACR_NEMA_2C_VariableCoefficientsSDVN	1-n	ACR/NEMA2C
-(7F00-7fff,0030)	OW	ACR_NEMA_2C_VariableCoefficientsSDHN	1-n	ACR/NEMA2C
-(7F00-7fff,0040)	OW	ACR_NEMA_2C_VariableCoefficientsSDDN	1-n	ACR/NEMA2C
+(6000-60FF,0060)	CS	ACR_NEMA_2C_OverlayCompressionCode	1	ACR/NEMA2C
+(6000-60FF,0061)	SH	ACR_NEMA_2C_OverlayCompressionOriginator	1	ACR/NEMA2C
+(6000-60FF,0062)	SH	ACR_NEMA_2C_OverlayCompressionLabel	1	ACR/NEMA2C
+(6000-60FF,0063)	SH	ACR_NEMA_2C_OverlayCompressionDescription	1	ACR/NEMA2C
+(6000-60FF,0066)	AT	ACR_NEMA_2C_OverlayCompressionStepPointers	1-n	ACR/NEMA2C
+(6000-60FF,0068)	US	ACR_NEMA_2C_OverlayRepeatInterval	1	ACR/NEMA2C
+(6000-60FF,0069)	US	ACR_NEMA_2C_OverlayBitsGrouped	1	ACR/NEMA2C
+(6000-60FF,0800)	CS	ACR_NEMA_2C_OverlayCodeLabel	1-n	ACR/NEMA2C
+(6000-60FF,0802)	US	ACR_NEMA_2C_OverlayNumberOfTables	1	ACR/NEMA2C
+(6000-60FF,0803)	AT	ACR_NEMA_2C_OverlayCodeTableLocation	1-n	ACR/NEMA2C
+(6000-60FF,0804)	US	ACR_NEMA_2C_OverlayBitsForCodeWord	1	ACR/NEMA2C
+(7F00-7FFF,0000)	UL	ACR_NEMA_2C_VariablePixelDataGroupLength	1	ACR/NEMA2C
+(7F00-7FFF,0010)	ox	ACR_NEMA_2C_VariablePixelData	1	ACR/NEMA2C
+(7F00-7FFF,0011)	AT	ACR_NEMA_2C_VariableNextDataGroup	1	ACR/NEMA2C
+(7F00-7FFF,0020)	OW	ACR_NEMA_2C_VariableCoefficientsSDVN	1-n	ACR/NEMA2C
+(7F00-7FFF,0030)	OW	ACR_NEMA_2C_VariableCoefficientsSDHN	1-n	ACR/NEMA2C
+(7F00-7FFF,0040)	OW	ACR_NEMA_2C_VariableCoefficientsSDDN	1-n	ACR/NEMA2C
 (7FE0,0020)	OW	ACR_NEMA_2C_CoefficientsSDVN	1-n	ACR/NEMA2C
 (7FE0,0030)	OW	ACR_NEMA_2C_CoefficientsSDHN	1-n	ACR/NEMA2C
 (7FE0,0040)	OW	ACR_NEMA_2C_CoefficientsSDDN	1-n	ACR/NEMA2C

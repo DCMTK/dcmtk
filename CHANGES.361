@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.12 (riesmeier)
+
+- Consistently use upper case letters for DICOM tags.
+  Affects: dcmdata/data/acrnema.dic
+           dcmdata/data/dicom.dic
+           dcmdata/data/diconde.dic
+
 **** Changes from 2014.02.11 (riesmeier)
 
 - Fixed wrong VR for some retired command fields:
