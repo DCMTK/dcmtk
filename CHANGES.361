@@ -19,6 +19,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Changed file mode bits back from "0755" to "0644".
+  Affects: ofstd/tests/tests.cc
+           ofstd/tests/tofstd.cc
+
 - Added new helper function for copying files:
   Added new platform-independent and wide character supporting helper function
   copyFile().
