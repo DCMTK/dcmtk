@@ -476,6 +476,19 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFBool deleteFile(const OFFilename &filename);
 
+    /** change name of a given file
+     *  @param oldFilename current name of the file (including directory) to be renamed.
+     *    This filename may contain wide characters if support enabled. Since there are various
+     *    constructors for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also
+     *    be passed directly to this parameter.
+     *  @param newFilename new name of the file (including directory), i.e.\ after renaming.
+     *    Should contain wide characters if and only if 'oldFilename' contains wide characters.
+     *  @return OFTrue if changing the name was successful, OFFalse otherwise. On most systems,
+     *    the 'errno' variable is also set to a system-specific error code in case of failure.
+     */
+    static OFBool renameFile(const OFFilename &oldFilename,
+                             const OFFilename &newFilename);
+
     /** determine size of given file (in bytes)
      *  @param filename name of the file to be checked. This filename may contain wide
      *    characters if support enabled. Since there are various constructors for the

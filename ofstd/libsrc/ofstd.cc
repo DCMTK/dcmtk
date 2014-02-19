@@ -1145,6 +1145,24 @@ OFBool OFStandard::deleteFile(const OFFilename &filename)
 }
 
 
+OFBool OFStandard::renameFile(const OFFilename &oldFilename,
+                              const OFFilename &newFilename)
+{
+    int err = -1;
+    /* avoid NULL or empty strings passed to rename() */
+    if (!oldFilename.isEmpty() && !newFilename.isEmpty())
+    {
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        if (oldFilename.usesWideChars() && newFilename.usesWideChars())
+            err = _wrename(oldFilename.getWideCharPointer(), newFilename.getWideCharPointer());
+        else
+#endif
+            err = rename(oldFilename.getCharPointer(), newFilename.getCharPointer());
+    }
+    return (err == 0);
+}
+
+
 size_t OFStandard::getFileSize(const OFFilename &filename)
 {
     size_t fileSize = 0;

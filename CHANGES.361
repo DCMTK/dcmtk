@@ -19,6 +19,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Added new helper function for renaming files:
+  Added new platform-independent and wide character supporting helper function
+  renameFile().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Added OFFilename versions to some helper functions:
   Added OFFilename versions to the helper functions getDirNameFromPath(),
   getFilenameFromPath(), normalizeDirName(), combineDirAndFilename(),
