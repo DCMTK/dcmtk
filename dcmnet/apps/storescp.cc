@@ -1071,7 +1071,11 @@ int main(int argc, char *argv[])
    * root, and run by another user.  Running as root user may be
    * potentially disastrous if this program screws up badly.
    */
-  setuid(getuid());
+  if ((setuid(getuid()) == -1) && (errno == EAGAIN))
+  {
+      OFLOG_FATAL(storescpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+      return 1;
+  }
 #endif
 
 #ifdef WITH_OPENSSL

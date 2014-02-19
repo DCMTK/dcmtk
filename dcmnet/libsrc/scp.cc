@@ -117,7 +117,11 @@ OFCondition DcmSCP::listen()
   // things go very wrong. Only works if the program is setuid root,
   // and run by another user. Running as root user may be
   // potentially disastrous if this program screws up badly.
-  setuid( getuid() );
+  if ((setuid(getuid()) == -1) && (errno == EAGAIN))
+  {
+      DCMNET_ERROR("setuid() failed, maximum number of processes/threads for uid already running.");
+      return NET_EC_InsufficientPortPrivileges;
+  }
 #endif
 
   // If we get to this point, the entire initialization process has been completed

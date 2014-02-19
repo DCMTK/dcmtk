@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.19 (onken)
+
+- Make sure to handle setuid() return code properly:
+  In some tools the return value of setuid() is not checked. In the worst
+  case this could lead to privilege escalation since the process does not
+  give up its root privileges and continue as root. Thanks to Hector Marco
+  <hecmargi@upv.es> for the report.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/libsrc/scp.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/tests/msgserv.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2014.02.12 (riesmeier)
 
 - Consistently use upper case letters for DICOM tags.

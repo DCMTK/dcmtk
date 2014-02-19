@@ -1275,7 +1275,11 @@ int main(int argc, char *argv[])
        * and run by another user.  Running as root user may be
        * potentially disasterous if this program screws up badly.
        */
-      setuid(getuid());
+      if ((setuid(getuid()) == -1) && (errno == EAGAIN))
+      {
+          OFLOG_FATAL(dcmpsrcvLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+          return 1;
+      }
 #endif
 
 #ifdef HAVE_FORK
