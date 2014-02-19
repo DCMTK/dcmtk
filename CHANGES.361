@@ -19,6 +19,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Fixed typo in comment.
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Changed file mode bits back from "0755" to "0644".
   Affects: ofstd/tests/tests.cc
            ofstd/tests/tofstd.cc

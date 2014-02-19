@@ -144,7 +144,7 @@ END_EXTERN_C
 #ifndef R_OK /* Windows defines access() but not the constants */
 #define W_OK 02 /* Write permission */
 #define R_OK 04 /* Read permission */
-#define F_OK 00 /* Existance only */
+#define F_OK 00 /* Existence only */
 #endif /* !R_OK */
 
 #endif /* HAVE_WINDOWS_H */
