@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,7 +156,7 @@ void OFFilename::set(const char *filename,
         {
             wchar_t *tmpString = NULL;
             size_t strLen = 0;
-            /* convert UTF-8 representaion to wide character encoding */
+            /* convert UTF-8 representation to wide character encoding */
             OFCharacterEncoding::convertToWideCharString(filename, strlen(filename),
                 tmpString, strLen, OFCharacterEncoding::CPC_UTF8);
             wfilename_ = _wcsdup(tmpString);
@@ -177,7 +177,7 @@ void OFFilename::set(const OFString &filename,
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
 void OFFilename::set(const wchar_t *filename,
-           const OFBool convert)
+                     const OFBool convert)
 {
     clear();
     if (filename != NULL)
@@ -198,8 +198,10 @@ void OFFilename::set(const wchar_t *filename,
 #endif
 
 
-STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFFilename &filename)
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                  const OFFilename &filename)
 {
+    /* always output the 8-bit representation */
     stream << OFSTRING_GUARD(filename.getCharPointer());
     return stream;
 }

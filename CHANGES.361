@@ -19,6 +19,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Fixed typo and added comment.
+  Affects: ofstd/libsrc/offile.cc
+
 - Added new test cases for testing helper functions:
   Added new test cases for testing the helper functions getDirNameFromPath()
   and getFilenameFromPath().
