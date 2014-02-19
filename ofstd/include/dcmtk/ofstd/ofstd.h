@@ -483,13 +483,28 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static OFCondition createDirectory(const OFString &dirName,
                                        const OFString &rootDir = "");
 
+    /** copy an existing file to a new file
+     *  @param sourceFilename name of the existing file (including directory) to be copied.
+     *    This filename may contain wide characters if support enabled. Since there are various
+     *    constructors for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also
+     *    be passed directly to this parameter.
+     *  @param destFilename name of the new file (including directory) to be created as a copy.
+     *    This filename may contain wide characters if support enabled. Since there are various
+     *    constructors for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also
+     *    be passed directly to this parameter.
+     *  @return OFTrue if copying the file was successful, OFFalse otherwise. On most systems,
+     *    the 'errno' variable is also set to a system-specific error code in case of failure.
+     */
+    static OFBool copyFile(const OFFilename &sourceFilename,
+                           const OFFilename &destFilename);
+
     /** delete given file from filesystem
      *  @param filename name of the file (including directory) to delete. This filename may
      *    contain wide characters if support enabled. Since there are various constructors
      *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
      *    directly to this parameter.
-     *  @return OFTrue if deletion was successful, OFFalse otherwise. On most systems, the
-     *    'errno' variable is also set to a system-specific error code in case of failure.
+     *  @return OFTrue if deleting the file was successful, OFFalse otherwise. On most systems,
+     *    the 'errno' variable is also set to a system-specific error code in case of failure.
      */
     static OFBool deleteFile(const OFFilename &filename);
 

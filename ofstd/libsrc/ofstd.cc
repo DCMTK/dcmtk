@@ -1165,6 +1165,40 @@ OFCondition OFStandard::createDirectory(const OFString &dirName,
 }
 
 
+#define COPY_FILE_BUFFER_SIZE 4096
+
+OFBool OFStandard::copyFile(const OFFilename &sourceFilename,
+                            const OFFilename &destFilename)
+{
+    OFBool status = OFFalse;
+    /* avoid NULL or empty string passed to fopen() */
+    if (!sourceFilename.isEmpty() && !destFilename.isEmpty())
+    {
+        /* open input file */
+        OFFile sourceFile;
+        if (sourceFile.fopen(sourceFilename, "rb"))
+        {
+            /* create output file */
+            OFFile destFile;
+            if (destFile.fopen(destFilename, "wb"))
+            {
+                size_t numRead = 0;
+                size_t numWrite = 0;
+                Uint8 buffer[COPY_FILE_BUFFER_SIZE];
+                /* read and write data in chunks */
+                do {
+                    numRead = sourceFile.fread(buffer, 1, COPY_FILE_BUFFER_SIZE);
+                } while ((numRead > 0) && ((numWrite = destFile.fwrite(buffer, 1, numRead)) == numRead));
+                /* check for any errors */
+                if ((sourceFile.error() == 0) && (destFile.error() == 0))
+                    status = OFTrue;
+            }
+        }
+    }
+    return status;
+}
+
+
 OFBool OFStandard::deleteFile(const OFFilename &filename)
 {
     int err = -1;

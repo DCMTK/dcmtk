@@ -19,6 +19,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Added new helper function for copying files:
+  Added new platform-independent and wide character supporting helper function
+  copyFile().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Added wide character support to this tool:
   Added support for the Windows-specific wide character encoding (UTF-16) to
   this command line tool, i.e. support for filenames with such an encoding.
