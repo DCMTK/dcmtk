@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2013, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,6 +91,7 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/offile.h"
@@ -539,16 +540,54 @@ OFString &OFStandard::getDirNameFromPath(OFString &result,
                                          const OFString &pathName,
                                          const OFBool assumeDirName)
 {
-    const size_t pos = pathName.find_last_of(PATH_SEPARATOR);
-    /* path separator found? */
-    if (pos == OFString_npos)
+    OFFilename resultFilename;
+    /* call the real function */
+    getDirNameFromPath(resultFilename, pathName, assumeDirName);
+    /* convert result into a string object */
+    result = OFSTRING_GUARD(resultFilename.getCharPointer());
+    return result;
+}
+
+
+OFFilename &OFStandard::getDirNameFromPath(OFFilename &result,
+                                           const OFFilename &pathName,
+                                           const OFBool assumeDirName)
+{
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    /* check whether to use the wide-char version of the API function */
+    if (pathName.usesWideChars())
     {
-        if (assumeDirName)
-            result = pathName;
-        else
-            result.clear();
+        const wchar_t *strValue = pathName.getWideCharPointer();
+        const wchar_t *strPos = wcsrchr(strValue, L'\\' /* WIDE_PATH_SEPARATOR */);
+        /* path separator found? */
+        if (strPos == NULL)
+        {
+            if (assumeDirName)
+                result = pathName;
+            else
+                result.clear();
+        } else {
+            wchar_t *tmpString = new wchar_t[strPos - strValue + 1];
+            wcsncpy(tmpString, strValue, strPos - strValue);
+            result.set(tmpString, OFTrue /*convert*/);
+            delete[] tmpString;
+        }
     } else
-        result = pathName.substr(0, pos);
+#endif
+    /* otherwise, use the conventional 8-bit characters version */
+    {
+        const char *strValue = pathName.getCharPointer();
+        const char *strPos = strrchr(strValue, PATH_SEPARATOR);
+        /* path separator found? */
+        if (strPos == NULL)
+        {
+            if (assumeDirName)
+                result = pathName;
+            else
+                result.clear();
+        } else
+            result.set(OFString(strValue, strPos - strValue));
+    }
     return result;
 }
 
@@ -557,16 +596,54 @@ OFString &OFStandard::getFilenameFromPath(OFString &result,
                                           const OFString &pathName,
                                           const OFBool assumeFilename)
 {
-    const size_t pos = pathName.find_last_of(PATH_SEPARATOR);
-    /* path separator found? */
-    if (pos == OFString_npos)
+    OFFilename resultFilename;
+    /* call the real function */
+    getFilenameFromPath(resultFilename, pathName, assumeFilename);
+    /* convert result into a string object */
+    result = OFSTRING_GUARD(resultFilename.getCharPointer());
+    return result;
+}
+
+
+OFFilename &OFStandard::getFilenameFromPath(OFFilename &result,
+                                            const OFFilename &pathName,
+                                            const OFBool assumeFilename)
+{
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    /* check whether to use the wide-char version of the API function */
+    if (pathName.usesWideChars())
     {
-        if (assumeFilename)
-            result = pathName;
-        else
-            result.clear();
+        const wchar_t *strValue = pathName.getWideCharPointer();
+        const wchar_t *strPos = wcsrchr(strValue, L'\\' /* WIDE_PATH_SEPARATOR */);
+        /* path separator found? */
+        if (strPos == NULL)
+        {
+            if (assumeFilename)
+                result = pathName;
+            else
+                result.clear();
+        } else {
+            wchar_t *tmpString = new wchar_t[wcslen(strPos)];
+            wcscpy(tmpString, strPos + 1);
+            result.set(tmpString, OFTrue /*convert*/);
+            delete[] tmpString;
+        }
     } else
-        result = pathName.substr(pos + 1);
+#endif
+    /* otherwise, use the conventional 8-bit characters version */
+    {
+        const char *strValue = pathName.getCharPointer();
+        const char *strPos = strrchr(strValue, PATH_SEPARATOR);
+        /* path separator found? */
+        if (strPos == NULL)
+        {
+            if (assumeFilename)
+                result = pathName;
+            else
+                result.clear();
+        } else
+            result.set(OFString(strPos + 1));
+    }
     return result;
 }
 
@@ -575,20 +652,59 @@ OFString &OFStandard::normalizeDirName(OFString &result,
                                        const OFString &dirName,
                                        const OFBool allowEmptyDirName)
 {
-    result = dirName;
+    OFFilename resultFilename;
+    /* call the real function */
+    normalizeDirName(resultFilename, dirName, allowEmptyDirName);
+    /* convert result into a string object */
+    result = OFSTRING_GUARD(resultFilename.getCharPointer());
+    return result;
+}
+
+
+OFFilename &OFStandard::normalizeDirName(OFFilename &result,
+                                         const OFFilename &dirName,
+                                         const OFBool allowEmptyDirName)
+{
     /* remove trailing path separators (keep it if appearing at the beginning of the string) */
     /* TODO: do we need to check for absolute path containing Windows drive name, e.g. "c:\"? */
-    while ((result.length() > 1) && (result.at(result.length() - 1) == PATH_SEPARATOR))
-        result.erase(result.length() - 1, 1);
-    if (allowEmptyDirName)
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    /* check whether to use the wide-char version of the API function */
+    if (dirName.usesWideChars())
     {
+        const wchar_t *strValue = dirName.getWideCharPointer();
+        size_t strLength = (strValue == NULL) ? 0 : wcslen(strValue);
+        while ((strLength > 1) && (strValue[strLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
+            --strLength;
         /* avoid "." as a directory name, use empty string instead */
-        if (result == ".")
+        if (allowEmptyDirName && (strLength == 1) && (strValue[0] == L'.'))
             result.clear();
-    } else {
         /* avoid empty directory name (use "." instead) */
-        if (result.empty())
-            result = ".";
+        else if (!allowEmptyDirName && (strLength == 0))
+            result.set(L".", OFTrue /*convert*/);
+        /* copy resulting string (omit trailing backslashes) */
+        else {
+            wchar_t *tmpString = new wchar_t[strLength + 1];
+            wcsncpy(tmpString, strValue, strLength);
+            result.set(tmpString, OFTrue /*convert*/);
+            delete[] tmpString;
+        }
+    } else
+#endif
+    /* otherwise, use the conventional 8-bit characters version */
+    {
+        const char *strValue = dirName.getCharPointer();
+        size_t strLength = (strValue == NULL) ? 0 : strlen(strValue);
+        while ((strLength > 1) && (strValue[strLength - 1] == PATH_SEPARATOR))
+            --strLength;
+        /* avoid "." as a directory name, use empty string instead */
+        if (allowEmptyDirName && (strLength == 1) && (strValue[0] == '.'))
+            result.clear();
+        /* avoid empty directory name (use "." instead) */
+        else if (!allowEmptyDirName && (strLength == 0))
+            result.set(".");
+        /* copy resulting string (omit trailing backslashes) */
+        else
+            result.set(OFString(strValue, strLength));
     }
     return result;
 }
@@ -599,42 +715,128 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
                                             const OFString &fileName,
                                             const OFBool allowEmptyDirName)
 {
+    OFFilename resultFilename;
+    /* call the real function */
+    combineDirAndFilename(resultFilename, dirName, fileName, allowEmptyDirName);
+    /* convert result into a string object */
+    result = OFSTRING_GUARD(resultFilename.getCharPointer());
+    return result;
+}
+
+
+OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
+                                              const OFFilename &dirName,
+                                              const OFFilename &fileName,
+                                              const OFBool allowEmptyDirName)
+{
     // # might use system function realpath() in the future to resolve paths including ".."
     // # or combinations of absolute paths in both 'dirName' and 'fileName'
-
-    /* check whether 'fileName' contains absolute path */
-    /* (this check also covers UNC syntax, e.g. "\\server\...") */
-    if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    /* check whether to use the wide-char version of the API function */
+    if (dirName.usesWideChars() && fileName.usesWideChars())
     {
-        result = fileName;
-        return result;
-    }
-#ifdef HAVE_WINDOWS_H
-    else if ((fileName.length() >= 3))
-    {
-        /* check for absolute path containing Windows drive name, e.g. "c:\..." */
-        char c = fileName.at(0);
-        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')))
+        const wchar_t *strValue = fileName.getWideCharPointer();
+        size_t strLength = (strValue == NULL) ? 0 : wcslen(strValue);
+        /* check whether 'fileName' contains absolute path */
+        /* (this check also covers UNC syntax, e.g. "\\server\...") */
+        if ((strLength > 0) && (strValue[0] == L'\\' /* WIDE_PATH_SEPARATOR */))
         {
-            if (fileName.substr(1, 2) == ":\\")
+            result.set(strValue, OFTrue /*convert*/);
+            return result;
+        }
+#ifdef HAVE_WINDOWS_H
+        else if (strLength >= 3)
+        {
+            /* check for absolute path containing Windows drive name, e.g. "c:\..." */
+            const wchar_t c = strValue[0];
+            if (((c >= L'A') && (c <= L'Z')) || ((c >= L'a') && (c <= L'z')))
             {
-                result = fileName;
-                return result;
+                if ((strValue[1] == L':') && (strValue[2] == L'\\' /* WIDE_PATH_SEPARATOR */))
+                {
+                    result.set(strValue, OFTrue /*convert*/);
+                    return result;
+                }
             }
         }
-    }
 #endif
-    /* we only get here, if we don't have an absolute directory in "fileName" */
-    /* now normalize the directory name */
-    normalizeDirName(result, dirName, allowEmptyDirName);
-    /* check file name */
-    if (!fileName.empty() && (fileName != "."))
+        /* we only get here, if we don't have an absolute directory in "fileName" */
+        /* now normalize the directory name */
+        normalizeDirName(result, dirName, allowEmptyDirName);
+        /* check file name */
+        if ((strLength > 0) && (strValue[0] != L'.'))
+        {
+            if (result.isEmpty())
+                result.set(strValue, OFTrue /*convert*/);
+            else {
+                const wchar_t *resValue = result.getWideCharPointer();
+                const size_t resLength = wcslen(resValue); /* should never be 0 */
+                wchar_t *tmpString = new wchar_t[strLength + resLength + 1 + 1];
+                wcscpy(tmpString, resValue);
+                /* add path separator (if required) ... */
+                if (resValue[resLength - 1] != L'\\' /* WIDE_PATH_SEPARATOR */)
+                {
+                    tmpString[resLength] = L'\\' /* WIDE_PATH_SEPARATOR */;
+                    tmpString[resLength + 1] = L'\0';
+                }
+                /* ...and file name */
+                wcscat(tmpString, strValue);
+                result.set(tmpString, OFTrue /*convert*/);
+                delete[] tmpString;
+            }
+        }
+    } else
+#endif
+    /* otherwise, use the conventional 8-bit characters version */
     {
-        /* add path separator (if required) ... */
-        if (!result.empty() && (result.at(result.length() - 1) != PATH_SEPARATOR))
-            result += PATH_SEPARATOR;
-        /* ...and file name */
-        result += fileName;
+        const char *strValue = fileName.getCharPointer();
+        size_t strLength = (strValue == NULL) ? 0 : strlen(strValue);
+        /* check whether 'fileName' contains absolute path */
+        /* (this check also covers UNC syntax, e.g. "\\server\...") */
+        if ((strLength > 0) && (strValue[0] == PATH_SEPARATOR))
+        {
+            result.set(strValue);
+            return result;
+        }
+#ifdef HAVE_WINDOWS_H
+        else if (strLength >= 3)
+        {
+            /* check for absolute path containing Windows drive name, e.g. "c:\..." */
+            const char c = strValue[0];
+            if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')))
+            {
+                if ((strValue[1] == ':') && (strValue[2] == '\\'))
+                {
+                    result.set(strValue);
+                    return result;
+                }
+            }
+        }
+#endif
+        /* we only get here, if we don't have an absolute directory in "fileName" */
+        /* now normalize the directory name */
+        normalizeDirName(result, dirName, allowEmptyDirName);
+        /* check file name */
+        if ((strLength > 0) && (strValue[0] != '.'))
+        {
+            if (result.isEmpty())
+                result.set(strValue);
+            else {
+                const char *resValue = result.getCharPointer();
+                const size_t resLength = strlen(resValue); /* should never be 0 */
+                char *tmpString = new char[strLength + resLength + 1 + 1];
+                strcpy(tmpString, resValue);
+                /* add path separator (if required) ... */
+                if (resValue[resLength - 1] != PATH_SEPARATOR)
+                {
+                    tmpString[resLength] = PATH_SEPARATOR;
+                    tmpString[resLength + 1] = '\0';
+                }
+                /* ...and file name */
+                strcat(tmpString, strValue);
+                result.set(tmpString);
+                delete[] tmpString;
+            }
+        }
     }
     return result;
 }
@@ -677,67 +879,147 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                                               const OFString &dirPrefix,
                                               const OFBool recurse)
 {
+    OFList<OFFilename> filenameList;
+    /* call the real function */
+    const size_t result = searchDirectoryRecursively(directory, filenameList, pattern, dirPrefix, recurse);
+    /* copy all list entries to reference parameter */
+    OFListIterator(OFFilename) iter = filenameList.begin();
+    OFListIterator(OFFilename) last = filenameList.end();
+    while (iter != last)
+    {
+        fileList.push_back(OFSTRING_GUARD((*iter).getCharPointer()));
+        ++iter;
+    }
+    return result;
+}
+
+
+size_t OFStandard::searchDirectoryRecursively(const OFFilename &directory,
+                                              OFList<OFFilename> &fileList,
+                                              const OFFilename &pattern,
+                                              const OFFilename &dirPrefix,
+                                              const OFBool recurse)
+{
     const size_t initialSize = fileList.size();
-    OFString dirname, pathname, tmpString;
-    combineDirAndFilename(dirname, dirPrefix, directory);
+    OFFilename dirName, pathName, tmpString;
+    combineDirAndFilename(dirName, dirPrefix, directory);
 #ifdef HAVE_WINDOWS_H
     /* check whether given directory exists */
-    if (dirExists(dirname))
+    if (dirExists(dirName))
     {
-        HANDLE handle;
-        WIN32_FIND_DATA data;
-        /* check whether file pattern is given */
-        if (!pattern.empty())
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (dirName.usesWideChars())
         {
-            /* first, search for matching files on this directory level */
-            handle = FindFirstFile(combineDirAndFilename(tmpString, dirname, pattern, OFTrue /*allowEmptyDirName*/).c_str(), &data);
+            HANDLE handle;
+            WIN32_FIND_DATAW data;
+            /* check whether file pattern is given */
+            if (!pattern.isEmpty())
+            {
+                /* first, search for matching files on this directory level */
+                handle = FindFirstFileW(combineDirAndFilename(tmpString, dirName, pattern, OFTrue /*allowEmptyDirName*/).getWideCharPointer(), &data);
+                if (handle != INVALID_HANDLE_VALUE)
+                {
+                    do {
+                        /* avoid leading "." */
+                        if (wcscmp(dirName.getWideCharPointer(), L".") == 0)
+                            pathName.set(data.cFileName, OFTrue /*convert*/);
+                        else
+                            combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
+                        /* ignore directories and the like */
+                        if (fileExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
+                            fileList.push_back(pathName);
+                    } while (FindNextFileW(handle, &data));
+                    FindClose(handle);
+                }
+            }
+            /* then search for _any_ file/directory entry */
+            handle = FindFirstFileW(combineDirAndFilename(tmpString, dirName, L"*.*", OFTrue /*allowEmptyDirName*/).getWideCharPointer(), &data);
             if (handle != INVALID_HANDLE_VALUE)
             {
                 do {
-                    /* avoid leading "." */
-                    if (dirname == ".")
-                        pathname = data.cFileName;
-                    else
-                        combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                    /* ignore directories and the like */
-                    if (fileExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                        fileList.push_back(pathname);
-                } while (FindNextFile(handle, &data));
+                    /* filter out current and parent directory */
+                    if ((wcscmp(data.cFileName, L".") != 0) && (wcscmp(data.cFileName, L"..") != 0))
+                    {
+                        /* avoid leading "." */
+                        if (wcscmp(dirName.getWideCharPointer(), L".") == 0)
+                            pathName.set(data.cFileName, OFTrue /*convert*/);
+                        else
+                            combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
+                        if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
+                        {
+                            /* recursively search sub directories */
+                            if (recurse)
+                                searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
+                        }
+                        else if (pattern.isEmpty())
+                        {
+                            /* add filename to the list (if no pattern is given) */
+                            fileList.push_back(pathName);
+                        }
+                    }
+                } while (FindNextFileW(handle, &data));
                 FindClose(handle);
             }
-        }
-        /* then search for _any_ file/directory entry */
-        handle = FindFirstFile(combineDirAndFilename(tmpString, dirname, "*.*", OFTrue /*allowEmptyDirName*/).c_str(), &data);
-        if (handle != INVALID_HANDLE_VALUE)
+        } else
+#endif
+        /* otherwise, use the conventional 8-bit characters version */
         {
-            do {
-                /* filter out current and parent directory */
-                if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
+            HANDLE handle;
+            WIN32_FIND_DATAA data;
+            /* check whether file pattern is given */
+            if (!pattern.isEmpty())
+            {
+                /* first, search for matching files on this directory level */
+                handle = FindFirstFileA(combineDirAndFilename(tmpString, dirName, pattern, OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
+                if (handle != INVALID_HANDLE_VALUE)
                 {
-                    /* avoid leading "." */
-                    if (dirname == ".")
-                        pathname = data.cFileName;
-                    else
-                        combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                    if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                    {
-                        /* recursively search sub directories */
-                        if (recurse)
-                            searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
-                    }
-                    else if (pattern.empty())
-                    {
-                        /* add filename to the list (if no pattern is given) */
-                        fileList.push_back(pathname);
-                    }
+                    do {
+                        /* avoid leading "." */
+                        if (strcmp(dirName.getCharPointer(), ".") == 0)
+                            pathName.set(data.cFileName);
+                        else
+                            combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
+                        /* ignore directories and the like */
+                        if (fileExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
+                            fileList.push_back(pathName);
+                    } while (FindNextFileA(handle, &data));
+                    FindClose(handle);
                 }
-            } while (FindNextFile(handle, &data));
-            FindClose(handle);
+            }
+            /* then search for _any_ file/directory entry */
+            handle = FindFirstFileA(combineDirAndFilename(tmpString, dirName, "*.*", OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
+            if (handle != INVALID_HANDLE_VALUE)
+            {
+                do {
+                    /* filter out current and parent directory */
+                    if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
+                    {
+                        /* avoid leading "." */
+                        if (strcmp(dirName.getCharPointer(), ".") == 0)
+                            pathName.set(data.cFileName);
+                        else
+                            combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
+                        if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
+                        {
+                            /* recursively search sub directories */
+                            if (recurse)
+                                searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
+                        }
+                        else if (pattern.isEmpty())
+                        {
+                            /* add filename to the list (if no pattern is given) */
+                            fileList.push_back(pathName);
+                        }
+                    }
+                } while (FindNextFileA(handle, &data));
+                FindClose(handle);
+            }
         }
     }
 #else
     /* try to open the directory */
-    DIR *dirPtr = opendir(dirname.c_str());
+    DIR *dirPtr = opendir(dirName.getCharPointer());
     if (dirPtr != NULL)
     {
         struct dirent *entry = NULL;
@@ -752,23 +1034,23 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
             if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
             {
                 /* avoid leading "." */
-                if (dirname == ".")
-                    pathname = entry->d_name;
+                if (strcmp(dirName.getCharPointer(), ".") == 0)
+                    pathName = entry->d_name;
                 else
-                    combineDirAndFilename(pathname, directory, entry->d_name, OFTrue /*allowEmptyDirName*/);
-                if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                    combineDirAndFilename(pathName, directory, entry->d_name, OFTrue /*allowEmptyDirName*/);
+                if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
                 {
                     /* recursively search sub directories */
                     if (recurse)
-                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
+                        searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
                 } else {
 #ifdef HAVE_FNMATCH_H
                     /* check whether filename matches pattern */
-                    if ((pattern.empty()) || (fnmatch(pattern.c_str(), entry->d_name, FNM_PATHNAME) == 0))
+                    if ((pattern.isEmpty()) || (fnmatch(pattern.getCharPointer(), entry->d_name, FNM_PATHNAME) == 0))
 #else
                         /* no pattern matching, sorry :-/ */
 #endif
-                        fileList.push_back(pathname);
+                        fileList.push_back(pathName);
                 }
             }
         }
@@ -863,12 +1145,26 @@ OFBool OFStandard::deleteFile(const OFFilename &filename)
 }
 
 
-size_t OFStandard::getFileSize(const OFString &filename)
+size_t OFStandard::getFileSize(const OFFilename &filename)
 {
     size_t fileSize = 0;
-    struct stat fileStat;
-    if (stat(filename.c_str(), &fileStat) == 0)
-        fileSize = OFstatic_cast(size_t, fileStat.st_size);
+    /* avoid NULL or empty strings passed to stat() */
+    if (!filename.isEmpty())
+    {
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        if (filename.usesWideChars())
+        {
+            struct _stat64i32 fileStat;
+            if (_wstat(filename.getWideCharPointer(), &fileStat) == 0)
+                fileSize = OFstatic_cast(size_t, fileStat.st_size);
+        } else
+#endif
+        {
+            struct stat fileStat;
+            if (stat(filename.getCharPointer(), &fileStat) == 0)
+                fileSize = OFstatic_cast(size_t, fileStat.st_size);
+        }
+    }
     return fileSize;
 }
 

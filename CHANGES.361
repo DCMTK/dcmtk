@@ -19,6 +19,16 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Added OFFilename versions to some helper functions:
+  Added OFFilename versions to the helper functions getDirNameFromPath(),
+  getFilenameFromPath(), normalizeDirName(), combineDirAndFilename(),
+  searchDirectoryRecursively() and getFileSize() in order to enhance the
+  support for the Windows-specific wide character encoding (UTF-16).
+  Internally, the same code is used for both the OFString and OFFilename
+  version of the helper functions, which should facilitate finding any bugs.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Fixed typo and added comment.
   Affects: ofstd/libsrc/offile.cc
 

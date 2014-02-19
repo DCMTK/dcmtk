@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #define OFSTD_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/ofstd/oflist.h"     /* for class OFList */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
@@ -236,6 +237,8 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  default; if 'assumeDirName' is OFFalse, an empty string is returned.
      *  NB: This function neither checks whether the given 'pathName' exists nor
      *      whether the resulting name points to a valid or existing directory.
+     *  @note This method is provided for reasons of backward compatibility. Internally,
+     *    the following method (OFFilename version) is used.
      *  @param result string variable in which the resulting directory name is stored
      *  @param pathName path name from which the directory name should be extracted
      *  @param assumeDirName assume that there always is a directory name in 'pathName'
@@ -245,12 +248,35 @@ class DCMTK_OFSTD_EXPORT OFStandard
                                         const OFString &pathName,
                                         const OFBool assumeDirName = OFTrue);
 
+    /** get directory name component from given path name.
+     *  Extracts the substring before the last path separator. If there is no path
+     *  separator in the given path name, the value of 'pathName' is returned by
+     *  default; if 'assumeDirName' is OFFalse, an empty string is returned.
+     *  NB: This function neither checks whether the given 'pathName' exists nor
+     *      whether the resulting name points to a valid or existing directory.
+     *  @param result string variable in which the resulting directory name is stored.
+     *    This name may contain wide characters if support is enabled and 'pathName'
+     *    contains wide characters. In any case, the resulting string is stored with
+     *    UTF-8 encoding (8-bit) as an alternative representation.
+     *  @param pathName path name from which the directory name should be extracted.
+     *    This name may contain wide characters if support is enabled. Since there are
+     *    various constructors for the OFFilename class, a "char *", "OFString" or
+     *    "wchar_t *" can also be passed directly to this parameter.
+     *  @param assumeDirName assume that there always is a directory name in 'pathName'
+     *  @return reference to the resulting directory name (same as 'result')
+     */
+    static OFFilename &getDirNameFromPath(OFFilename &result,
+                                          const OFFilename &pathName,
+                                          const OFBool assumeDirName = OFTrue);
+
     /** get file name component from given path name.
      *  Extracts the substring after the last path separator. If there is no path
      *  separator in the given path name, the value of 'pathName' is returned by
      *  default; if 'assumeFilename' is OFFalse, an empty string is returned.
      *  NB: This function neither checks whether the given 'pathName' exists nor
      *      whether the resulting name points to a valid or existing file.
+     *  @note This method is provided for reasons of backward compatibility.
+     *    Internally, the following method (OFFilename version) is used.
      *  @param result string variable in which the resulting file name is stored
      *  @param pathName path name from which the file name should be extracted
      *  @param assumeFilename assume that there always is a file name in 'pathName'
@@ -260,12 +286,35 @@ class DCMTK_OFSTD_EXPORT OFStandard
                                          const OFString &pathName,
                                          const OFBool assumeFilename = OFTrue);
 
+    /** get file name component from given path name.
+     *  Extracts the substring after the last path separator. If there is no path
+     *  separator in the given path name, the value of 'pathName' is returned by
+     *  default; if 'assumeFilename' is OFFalse, an empty string is returned.
+     *  NB: This function neither checks whether the given 'pathName' exists nor
+     *      whether the resulting name points to a valid or existing file.
+     *  @param result string variable in which the resulting file name is stored.
+     *    This name may contain wide characters if support is enabled and 'pathName'
+     *    contains wide characters. In any case, the resulting string is stored with
+     *    UTF-8 encoding (8-bit) as an alternative representation.
+     *  @param pathName path name from which the file name should be extracted.
+     *    This name may contain wide characters if support is enabled. Since there
+     *    are various constructors for the OFFilename class, a "char *", "OFString"
+     *    or "wchar_t *" can also be passed directly to this parameter.
+     *  @param assumeFilename assume that there always is a file name in 'pathName'
+     *  @return reference to the resulting file name (same as 'result')
+     */
+    static OFFilename &getFilenameFromPath(OFFilename &result,
+                                           const OFFilename &pathName,
+                                           const OFBool assumeFilename = OFTrue);
+
     /** normalize the given directory name.
      *  Removes trailing path separators from the directory name. If the resulting
      *  directory name is an empty string and the flag 'allowEmptyDirName' is OFFalse
      *  the directory name is set to "." (current directory). If the resulting directory
      *  name is "." and the flag 'allowEmptyDirName' is OFTrue the directory name is set
      *  to an empty string.
+     *  @note This method is provided for reasons of backward compatibility. Internally,
+     *    the following method (OFFilename version) is used.
      *  @param result string variable in which the resulting directory name is stored
      *  @param dirName directory name to be normalized
      *  @param allowEmptyDirName flag indicating whether an empty directory name is allowed
@@ -274,6 +323,27 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static OFString &normalizeDirName(OFString &result,
                                       const OFString &dirName,
                                       const OFBool allowEmptyDirName = OFFalse);
+
+    /** normalize the given directory name.
+     *  Removes trailing path separators from the directory name. If the resulting
+     *  directory name is an empty string and the flag 'allowEmptyDirName' is OFFalse
+     *  the directory name is set to "." (current directory). If the resulting directory
+     *  name is "." and the flag 'allowEmptyDirName' is OFTrue the directory name is set
+     *  to an empty string.
+     *  @param result string variable in which the resulting directory name is stored.
+     *    This name may contain wide characters if support is enabled and 'dirName'
+     *    contains wide characters. In any case, the resulting string is stored with UTF-8
+     *    encoding (8-bit) as an alternative representation.
+     *  @param dirName directory name to be normalized. This name may contain wide
+     *    characters if support is enabled. Since there are various constructors for the
+     *    OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
+     *    directly to this parameter.
+     *  @param allowEmptyDirName flag indicating whether an empty directory name is allowed
+     *  @return reference to the resulting directory name (same as 'result')
+     */
+    static OFFilename &normalizeDirName(OFFilename &result,
+                                        const OFFilename &dirName,
+                                        const OFBool allowEmptyDirName = OFFalse);
 
     /** combine the given directory and file name.
      *  Normalizes the directory name and appends the file name (with a path separator)
@@ -284,6 +354,8 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  NB: This function neither checks whether the given 'dirName' exists nor whether
      *      the resulting path name points to a valid or existing file name. Furthermore,
      *      the value of 'dirName' is ignored if 'fileName' starts with a path separator.
+     *  @note This method is provided for reasons of backward compatibility. Internally,
+     *    the following method (OFFilename version) is used.
      *  @param result string variable in which the resulting path name is stored
      *  @param dirName directory name to be combined with the file name
      *  @param fileName file name to be combined with the directory name
@@ -294,6 +366,33 @@ class DCMTK_OFSTD_EXPORT OFStandard
                                            const OFString &dirName,
                                            const OFString &fileName,
                                            const OFBool allowEmptyDirName = OFFalse);
+
+    /** combine the given directory and file name.
+     *  Normalizes the directory name and appends the file name (with a path separator)
+     *  if not empty. If both 'dirName' and 'fileName' are empty strings and the flag
+     *  'allowEmptyDirName' is OFFalse the resulting path name is set to "." (current
+     *  directory). If 'dirName' is "." and the flag 'allowEmptyDirName' is OFTrue an
+     *  empty directory name is used.
+     *  NB: This function neither checks whether the given 'dirName' exists nor whether
+     *      the resulting path name points to a valid or existing file name. Furthermore,
+     *      the value of 'dirName' is ignored if 'fileName' starts with a path separator.
+     *  @param result string variable in which the resulting path name is stored. This
+     *    name may contain wide characters if support is enabled and 'dirName' as well as
+     *    'fileName' contain wide characters. In any case, the resulting string is stored
+     *    with UTF-8 encoding (8-bit) as an alternative representation.
+     *  @param dirName directory name to be combined with the file name. This name may
+     *    contain wide characters if support is enabled. Since there are various
+     *    constructors for the OFFilename class, a "char *", "OFString" or "wchar_t *" can
+     *    also be passed directly to this parameter.
+     *  @param fileName file name to be combined with the directory name. Should contain
+     *    wide characters if and only if 'dirName' contains wide characters.
+     *  @param allowEmptyDirName flag indicating whether an empty directory name is allowed
+     *  @return reference to the resulting path name (same as 'result')
+     */
+    static OFFilename &combineDirAndFilename(OFFilename &result,
+                                             const OFFilename &dirName,
+                                             const OFFilename &fileName,
+                                             const OFBool allowEmptyDirName = OFFalse);
 
     /** remove root directory prefix from given path name.
      *  In case 'pathName' starts with 'rootDir', the common prefix is removed.
@@ -311,9 +410,11 @@ class DCMTK_OFSTD_EXPORT OFStandard
                                                  const OFBool allowLeadingPathSeparator = OFTrue);
 
     /** scan a given directory (recursively) and add all filenames found to a list
+     *  @note This method is provided for reasons of backward compatibility. Internally,
+     *    the following method (OFFilename version) is used.
      *  @param directory name of the directory to be scanned
-     *  @param fileList list to which the filenames are added.
-     *    Please note that the list is not not cleared automatically.
+     *  @param fileList list to which the filenames are added. Please note that the list
+     *    is not not cleared automatically before new entries are added.
      *  @param pattern optional wildcard pattern used to match the filenames against.
      *    By default all files match. In order to work under Unix the system function
      *    fnmatch() is required.
@@ -326,6 +427,32 @@ class DCMTK_OFSTD_EXPORT OFStandard
                                              OFList<OFString> &fileList,
                                              const OFString &pattern = "",
                                              const OFString &dirPrefix = "",
+                                             const OFBool recurse = OFTrue);
+
+    /** scan a given directory (recursively) and add all filenames found to a list
+     *  @param directory name of the directory to be scanned. This name may contain
+     *    wide characters if support is enabled. Since there are various constructors
+     *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also be
+     *    passed directly to this parameter.
+     *  @param fileList list to which the filenames are added. These names may contain
+     *    wide characters if support is enabled and 'directory' contains wide characters.
+     *    In any case, the resulting string is stored with UTF-8 encoding (8-bit) as an
+     *    alternative representation. Please note that the list is not not cleared
+     *    automatically before new entries are added.
+     *  @param pattern wildcard pattern used to match the filenames against. Should
+     *    contain wide characters if and only if 'directory' contains wide characters.
+     *    An empty pattern matches all files. In order to work under Unix the system
+     *    function fnmatch() is required.
+     *  @param dirPrefix prefix added to the directory name. Should contain wide
+     *    characters if and only if 'directory' contains wide characters.
+     *    This prefix will, however, not be part of the filenames added to the list.
+     *  @param recurse flag indicating whether to search recursively (default) or not
+     *  @return number of new files added to the list
+     */
+    static size_t searchDirectoryRecursively(const OFFilename &directory,
+                                             OFList<OFFilename> &fileList,
+                                             const OFFilename &pattern,
+                                             const OFFilename &dirPrefix,
                                              const OFBool recurse = OFTrue);
 
     /** create a directory (including sub-directories) if it does not yet exist.  In other
@@ -344,15 +471,19 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *    contain wide characters if support enabled. Since there are various constructors
      *    for the OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
      *    directly to this parameter.
-     *  @return OFTrue if deletion was successful, OFFalse otherwise
+     *  @return OFTrue if deletion was successful, OFFalse otherwise. On most systems, the
+     *    'errno' variable is also set to a system-specific error code in case of failure.
      */
     static OFBool deleteFile(const OFFilename &filename);
 
     /** determine size of given file (in bytes)
-     *  @param filename name of the file to be checked
+     *  @param filename name of the file to be checked. This filename may contain wide
+     *    characters if support enabled. Since there are various constructors for the
+     *    OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
+     *    directly to this parameter.
      *  @return size of the file in bytes (0 in case of error)
      */
-    static size_t getFileSize(const OFString &filename);
+    static size_t getFileSize(const OFFilename &filename);
 
     // --- other functions ---
 
