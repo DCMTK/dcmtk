@@ -19,6 +19,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Added wide character support to this tool:
+  Added support for the Windows-specific wide character encoding (UTF-16) to
+  this command line tool, i.e. support for filenames with such an encoding.
+  For this purpose, the toolkit has to be compiled with WIDE_CHAR_MAIN_FUNCTION
+  and WIDE_CHAR_FILE_IO_FUNCTIONS being defined.
+  Affects: dcmdata/apps/dcmdump.cc
+
 - Added function for appending filename extension:
   Added wide character supporting helper function appendFilenameExtension().
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h

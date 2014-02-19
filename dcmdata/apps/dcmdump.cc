@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #endif
 
 static int dumpFile(STD_NAMESPACE ostream &out,
-                    const char *ifname,
+                    const OFFilename &ifname,
                     const E_FileReadMode readMode,
                     const E_TransferSyntax xfer,
                     const size_t printFlags,
@@ -144,10 +144,13 @@ static OFBool addPrintTagName(const char *tagName)
 }
 
 
+/* main program */
+
 #define SHORTCOL 3
 #define LONGCOL 21
 
-int main(int argc, char *argv[])
+// this macro either expands to main() or wmain()
+DCMTK_MAIN_FUNCTION
 {
     OFBool loadIntoMemory = OFTrue;
     size_t printFlags = DCMTypes::PF_shortenLongTagValues;
@@ -635,22 +638,22 @@ int main(int argc, char *argv[])
     int errorCount = 0;
 
     /* create list of input files */
-    const char *paramString = NULL;
+    OFFilename paramValue;
+    OFList<OFFilename> inputFiles;
     const int paramCount = cmd.getParamCount();
-    OFList<OFString> inputFiles;
     /* iterate over all input filenames */
     for (int i = 1; i <= paramCount; i++)
     {
-      cmd.getParam(i, paramString);
+      cmd.getParam(i, paramValue);
       /* search directory recursively (if required) */
-      if (OFStandard::dirExists(paramString))
+      if (OFStandard::dirExists(paramValue))
       {
         if (scanDir)
-          OFStandard::searchDirectoryRecursively(paramString, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
+          OFStandard::searchDirectoryRecursively(paramValue, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
         else
-          OFLOG_WARN(dcmdumpLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
+          OFLOG_WARN(dcmdumpLogger, "ignoring directory because option --scan-directories is not set: " << paramValue);
       } else
-        inputFiles.push_back(paramString);
+        inputFiles.push_back(paramValue);
     }
     /* check whether there are any input files at all */
     if (inputFiles.empty())
@@ -660,13 +663,13 @@ int main(int argc, char *argv[])
     }
 
     const size_t count = inputFiles.size();
-    const char *current = NULL;
-    OFListIterator(OFString) if_iter = inputFiles.begin();
-    OFListIterator(OFString) if_last = inputFiles.end();
+    OFFilename current;
+    OFListIterator(OFFilename) if_iter = inputFiles.begin();
+    OFListIterator(OFFilename) if_last = inputFiles.end();
     /* iterate over all input filenames */
     while (if_iter != if_last)
     {
-      current = (*if_iter++).c_str();
+      current = (*if_iter++);
       if (printFilename)
       {
         /* a newline separates two consecutive "dumps" */
@@ -713,7 +716,7 @@ static void printResult(STD_NAMESPACE ostream &out,
 }
 
 static int dumpFile(STD_NAMESPACE ostream &out,
-                    const char *ifname,
+                    const OFFilename &ifname,
                     const E_FileReadMode readMode,
                     const E_TransferSyntax xfer,
                     const size_t printFlags,
@@ -724,7 +727,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 {
     int result = 0;
 
-    if ((ifname == NULL) || (strlen(ifname) == 0))
+    if (ifname.isEmpty())
     {
         OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
         return 1;
@@ -760,14 +763,14 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
     size_t pixelCounter = 0;
     const char *pixelFileName = NULL;
-    OFString pixelFilenameStr;
+    OFFilename pixelFilenameStr;
     if (pixelDirectory != NULL)
     {
         /* create filename for pixel data */
-        OFString fileName;
+        OFFilename fileName;
         OFStandard::getFilenameFromPath(fileName, ifname);
         OFStandard::combineDirAndFilename(pixelFilenameStr, pixelDirectory, fileName);
-        pixelFileName = pixelFilenameStr.c_str();
+        pixelFileName = pixelFilenameStr.getCharPointer();
     }
 
     /* dump complete file content */
