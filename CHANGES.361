@@ -19,6 +19,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.19 (riesmeier)
 
+- Added function for appending filename extension:
+  Added wide character supporting helper function appendFilenameExtension().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Added new helper function for renaming files:
   Added new platform-independent and wide character supporting helper function
   renameFile().

@@ -873,6 +873,43 @@ OFCondition OFStandard::removeRootDirFromPathname(OFString &result,
 }
 
 
+OFFilename &OFStandard::appendFilenameExtension(OFFilename &result,
+                                                const OFFilename &fileName,
+                                                const OFFilename &fileExtension)
+{
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    /* check whether to use the wide-char version of the API function */
+    if (fileName.usesWideChars() && fileExtension.usesWideChars())
+    {
+        const wchar_t *namValue = fileName.getWideCharPointer();
+        const wchar_t *extValue = fileExtension.getWideCharPointer();
+        size_t namLength = (namValue == NULL) ? 0 : wcslen(namValue);
+        size_t extLength = (extValue == NULL) ? 0 : wcslen(extValue);
+        /* create temporary buffer for destination string */
+        wchar_t *tmpString = new wchar_t[namLength + extLength + 1];
+        wcscpy(tmpString, namValue);
+        wcscat(tmpString, extValue);
+        result.set(tmpString, OFTrue /*convert*/);
+        delete[] tmpString;
+    } else
+#endif
+    /* otherwise, use the conventional 8-bit characters version */
+    {
+        const char *namValue = fileName.getCharPointer();
+        const char *extValue = fileExtension.getCharPointer();
+        size_t namLength = (namValue == NULL) ? 0 : strlen(namValue);
+        size_t extLength = (extValue == NULL) ? 0 : strlen(extValue);
+        /* create temporary buffer for destination string */
+        char *tmpString = new char[namLength + extLength + 1];
+        strcpy(tmpString, namValue);
+        strcat(tmpString, extValue);
+        result.set(tmpString);
+        delete[] tmpString;
+    }
+    return result;
+}
+
+
 size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                                               OFList<OFString> &fileList,
                                               const OFString &pattern,
