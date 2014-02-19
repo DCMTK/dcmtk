@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,24 +45,24 @@ static void checkExists(const OFString& input, OFBool pathExists,
 static void checkPathHandling(const OFString& input, const OFString& normalized,
         const OFString& combined, const OFString& file = "file")
 {
-    OFString tmpString;
+    OFString result;
     OFString slashFile;
     slashFile = PATH_SEPARATOR;
     slashFile += "file";
 
-    OFStandard::normalizeDirName(tmpString, input);
-    OFCHECK_EQUAL(tmpString, normalized);
+    OFStandard::normalizeDirName(result, input);
+    OFCHECK_EQUAL(result, normalized);
 
-    OFStandard::combineDirAndFilename(tmpString, input, file);
-    OFCHECK_EQUAL(tmpString, combined);
+    OFStandard::combineDirAndFilename(result, input, file);
+    OFCHECK_EQUAL(result, combined);
 
-    OFStandard::combineDirAndFilename(tmpString, input, PATH_SEPARATOR + file);
-    OFCHECK_EQUAL(tmpString, slashFile);
+    OFStandard::combineDirAndFilename(result, input, PATH_SEPARATOR + file);
+    OFCHECK_EQUAL(result, slashFile);
 }
 
-OFTEST(ofstd_testPaths)
+OFTEST(ofstd_testPaths_1)
 {
-    OFString tmpString;
+    OFString result;
     OFString sourceRoot;
     OFString input;
     OFString normalized;
@@ -137,29 +137,59 @@ OFTEST(ofstd_testPaths)
 
     // Now come some special tests for combineDirAndFilename
     input = pathSeparator + pathSeparator + "caesar" + pathSeparator + "share";
-    OFStandard::combineDirAndFilename(tmpString, input, "file");
-    OFCHECK_EQUAL(tmpString, input + pathSeparator + "file");
+    OFStandard::combineDirAndFilename(result, input, "file");
+    OFCHECK_EQUAL(result, input + pathSeparator + "file");
 
-    OFStandard::combineDirAndFilename(tmpString, input, pathSeparator + "file");
-    OFCHECK_EQUAL(tmpString, pathSeparator + "file");
+    OFStandard::combineDirAndFilename(result, input, pathSeparator + "file");
+    OFCHECK_EQUAL(result, pathSeparator + "file");
 
-    OFStandard::combineDirAndFilename(tmpString, "", "file");
-    OFCHECK_EQUAL(tmpString, "." + pathSeparator + "file");
+    OFStandard::combineDirAndFilename(result, "", "file");
+    OFCHECK_EQUAL(result, "." + pathSeparator + "file");
 
-    OFStandard::combineDirAndFilename(tmpString, "", "file", OFTrue);
-    OFCHECK_EQUAL(tmpString, "file");
+    OFStandard::combineDirAndFilename(result, "", "file", OFTrue /*allowEmptyDirName*/);
+    OFCHECK_EQUAL(result, "file");
 
-    OFStandard::combineDirAndFilename(tmpString, "", ".");
-    OFCHECK_EQUAL(tmpString, ".");
+    OFStandard::combineDirAndFilename(result, "", ".");
+    OFCHECK_EQUAL(result, ".");
 
-    OFStandard::combineDirAndFilename(tmpString, "..", ".");
-    OFCHECK_EQUAL(tmpString, "..");
+    OFStandard::combineDirAndFilename(result, "..", ".");
+    OFCHECK_EQUAL(result, "..");
 
-    OFStandard::combineDirAndFilename(tmpString, "", "");
-    OFCHECK_EQUAL(tmpString, ".");
+    OFStandard::combineDirAndFilename(result, "", "");
+    OFCHECK_EQUAL(result, ".");
 
-    OFStandard::combineDirAndFilename(tmpString, "", "", OFTrue);
-    OFCHECK_EQUAL(tmpString, "");
+    OFStandard::combineDirAndFilename(result, "", "", OFTrue /*allowEmptyDirName*/);
+    OFCHECK_EQUAL(result, "");
+}
+
+OFTEST(ofstd_testPaths_2)
+{
+    OFString result;
+    OFString pathSeparator;
+
+    pathSeparator += PATH_SEPARATOR;
+
+    // Check getDirNameFromPath()
+    OFStandard::getDirNameFromPath(result, "dirname" + pathSeparator + "filename");
+    OFCHECK_EQUAL(result, "dirname");
+    OFStandard::getDirNameFromPath(result, pathSeparator + "dirname" + pathSeparator);
+    OFCHECK_EQUAL(result, pathSeparator + "dirname");
+    OFStandard::getDirNameFromPath(result, "dirname");
+    OFCHECK_EQUAL(result, "dirname");
+    OFStandard::getDirNameFromPath(result, "dirname", OFFalse /*assumeDirName*/);
+    OFCHECK_EQUAL(result, "");
+
+    // Check getFilenameFromPath()
+    OFStandard::getFilenameFromPath(result, "dirname" + pathSeparator + "filename");
+    OFCHECK_EQUAL(result, "filename");
+    OFStandard::getFilenameFromPath(result, pathSeparator + "dirname" + pathSeparator);
+    OFCHECK_EQUAL(result, "");
+    OFStandard::getFilenameFromPath(result, pathSeparator + "filename");
+    OFCHECK_EQUAL(result, "filename");
+    OFStandard::getFilenameFromPath(result, "filename");
+    OFCHECK_EQUAL(result, "filename");
+    OFStandard::getFilenameFromPath(result, "filename", OFFalse /*assumeFilename*/);
+    OFCHECK_EQUAL(result, "");
 }
 
 OFTEST(ofstd_OFStandard_isReadWriteable)

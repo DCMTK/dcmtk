@@ -17,6 +17,14 @@ Changes between releases are documented here.
            dcmqrdb/apps/dcmqrscp.cc
            dcmwlm/libsrc/wlmactmg.cc
 
+**** Changes from 2014.02.19 (riesmeier)
+
+- Added new test cases for testing helper functions:
+  Added new test cases for testing the helper functions getDirNameFromPath()
+  and getFilenameFromPath().
+  Affects: ofstd/tests/tests.cc
+           ofstd/tests/tofstd.cc
+
 **** Changes from 2014.02.12 (riesmeier)
 
 - Consistently use upper case letters for DICOM tags.
