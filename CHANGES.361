@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.20 (riesmeier)
 
+- Avoid passing invalid values to rename():
+  In case wide character support is enabled, there was a chance that a NULL
+  pointer could be passed to one of the two parameters of the rename() function.
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Added new command line option --create-backup:
   Added new command line option --create-backup to explicitly show what the
   default behavior is.

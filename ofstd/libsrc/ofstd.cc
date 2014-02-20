@@ -1226,9 +1226,16 @@ OFBool OFStandard::renameFile(const OFFilename &oldFilename,
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         if (oldFilename.usesWideChars() && newFilename.usesWideChars())
             err = _wrename(oldFilename.getWideCharPointer(), newFilename.getWideCharPointer());
-        else
+        else {
+            const char *oldName = oldFilename.getCharPointer();
+            const char *newName = newFilename.getCharPointer();
+            /* avoid passing invalid values to rename() */
+            if ((oldName != NULL) && (newName != NULL))
+                err = rename(oldName, newName);
+        }
+#else
+        err = rename(oldFilename.getCharPointer(), newFilename.getCharPointer());
 #endif
-            err = rename(oldFilename.getCharPointer(), newFilename.getCharPointer());
     }
     return (err == 0);
 }
