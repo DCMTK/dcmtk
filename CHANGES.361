@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.20 (riesmeier)
+
+- Added new command line option --create-backup:
+  Added new command line option --create-backup to explicitly show what the
+  default behavior is.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+           dcmjpeg/docs/dcmmkdir.man
+
 **** Changes from 2014.02.19 (onken)
 
 - Make sure to handle setuid() return code properly:

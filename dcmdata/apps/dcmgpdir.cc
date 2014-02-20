@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -220,6 +220,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--append",                "+A",     "append to existing DICOMDIR");
         cmd.addOption("--update",                "+U",     "update existing DICOMDIR");
         cmd.addOption("--discard",               "-w",     "do not write out DICOMDIR");
+      cmd.addSubGroup("backup:");
+        cmd.addOption("--create-backup",                   "create a backup of existing DICOMDIR (default)");
         cmd.addOption("--no-backup",             "-nb",    "do not create a backup of existing DICOMDIR");
       cmd.addSubGroup("post-1993 value representations:");
         cmd.addOption("--enable-new-vr",         "+u",     "enable support for new VRs (UN/UT) (default)");
@@ -440,8 +442,13 @@ int main(int argc, char *argv[])
             opt_update = OFFalse;
         }
         cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--create-backup"))
+            ddir.disableBackupMode(OFTrue);
         if (cmd.findOption("--no-backup"))
-            ddir.disableBackupMode();
+            ddir.disableBackupMode(OFFalse);
+        cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--enable-new-vr"))
