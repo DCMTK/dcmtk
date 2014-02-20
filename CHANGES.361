@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.20 (riesmeier)
 
+- Avoid passing NULL to OFString, which is deprecated:
+  Avoid passing NULL to OFString in certain cases within normalizeDirName()
+  since this is deprecated (and results in an annoying message in DEBUG mode).
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Avoid passing invalid values to rename():
   In case wide character support is enabled, there was a chance that a NULL
   pointer could be passed to one of the two parameters of the rename() function.

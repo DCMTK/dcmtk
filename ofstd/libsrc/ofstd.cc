@@ -676,7 +676,7 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
         while ((strLength > 1) && (strValue[strLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
             --strLength;
         /* avoid "." as a directory name, use empty string instead */
-        if (allowEmptyDirName && (strLength == 1) && (strValue[0] == L'.'))
+        if (allowEmptyDirName && ((strLength == 0) || ((strLength == 1) && (strValue[0] == L'.'))))
             result.clear();
         /* avoid empty directory name (use "." instead) */
         else if (!allowEmptyDirName && (strLength == 0))
@@ -697,7 +697,7 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
         while ((strLength > 1) && (strValue[strLength - 1] == PATH_SEPARATOR))
             --strLength;
         /* avoid "." as a directory name, use empty string instead */
-        if (allowEmptyDirName && (strLength == 1) && (strValue[0] == '.'))
+        if (allowEmptyDirName && ((strLength == 0) || ((strLength == 1) && (strValue[0] == '.'))))
             result.clear();
         /* avoid empty directory name (use "." instead) */
         else if (!allowEmptyDirName && (strLength == 0))
