@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -143,10 +143,10 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
 
 DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
                                        const char *referencedFileID,
-                                       const char *sourceFilename,
+                                       const OFFilename &sourceFilename,
                                        DcmFileFormat *fileFormat)
   : DcmItem(ItemTag),
-    recordsOriginFile(NULL),
+    recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(recordType),
     referencedMRDR(NULL),
@@ -165,10 +165,10 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
 
 DcmDirectoryRecord::DcmDirectoryRecord(const char *recordTypeName,
                                        const char *referencedFileID,
-                                       const char *sourceFilename,
+                                       const OFFilename &sourceFilename,
                                        DcmFileFormat *fileFormat)
   : DcmItem(ItemTag),
-    recordsOriginFile(NULL),
+    recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
     referencedMRDR(NULL),
@@ -191,7 +191,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
     recordsOriginFile(old.recordsOriginFile),
     lowerLevelList(new DcmSequenceOfItems(*old.lowerLevelList)),
     DirRecordType(old.DirRecordType),
-    referencedMRDR(old.referencedMRDR),
+    referencedMRDR(old.referencedMRDR),  // copies a pointer!
     numberOfReferences(old.numberOfReferences),
     offsetInFile(old.offsetInFile)
 {
@@ -203,19 +203,19 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
 
 DcmDirectoryRecord& DcmDirectoryRecord::operator=(const DcmDirectoryRecord& obj)
 {
-  if (this != &obj)
-  {
-    // copy parent's member variables
-    DcmItem::operator=(obj);
-    // copy DcmDirectoryRecords' member variables
-    recordsOriginFile = obj.recordsOriginFile;
-    lowerLevelList = new DcmSequenceOfItems(*obj.lowerLevelList);
-    DirRecordType = obj.DirRecordType;
-    referencedMRDR = obj.referencedMRDR;
-    numberOfReferences = obj.numberOfReferences;
-    offsetInFile = obj.offsetInFile;
-  }
-  return *this;
+    if (this != &obj)
+    {
+        // copy parent's member variables
+        DcmItem::operator=(obj);
+        // copy DcmDirectoryRecords' member variables
+        recordsOriginFile = obj.recordsOriginFile;
+        lowerLevelList = new DcmSequenceOfItems(*obj.lowerLevelList);
+        DirRecordType = obj.DirRecordType;
+        referencedMRDR = obj.referencedMRDR;  // copies a pointer!
+        numberOfReferences = obj.numberOfReferences;
+        offsetInFile = obj.offsetInFile;
+    }
+    return *this;
 }
 
 
@@ -224,12 +224,12 @@ DcmDirectoryRecord& DcmDirectoryRecord::operator=(const DcmDirectoryRecord& obj)
 
 OFCondition DcmDirectoryRecord::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmDirectoryRecord &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmDirectoryRecord &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -239,7 +239,6 @@ OFCondition DcmDirectoryRecord::copyFrom(const DcmObject& rhs)
 DcmDirectoryRecord::~DcmDirectoryRecord()
 {
     delete lowerLevelList;
-    delete[] recordsOriginFile;
 }
 
 
@@ -258,7 +257,7 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char *recordTypeName)
         if (i < DIM_OF_DRTypeNames && strcmp(DRTypeNames[i], recordTypeName) == 0)
             recType = OFstatic_cast(E_DirRecType, i);
         else if (strcmp(recordTypeName,"STRUCT REPORT") == 0)
-            recType = ERT_SRDocument; // we recognise the old name as well
+            recType = ERT_SRDocument; // we recognize the old name as well
         DCMDATA_TRACE("DcmDirectoryRecord::recordNameToType() input char*=\"" << recordTypeName
             << "\" output enum=" << recType);
     }
@@ -306,7 +305,7 @@ char *DcmDirectoryRecord::buildFileName(const char *origName,
             fclose(f);
             strcpy(destName, newname);
         } else {
-            /* we cannot find the file.  let the caller deal with this */
+            /* we cannot find the file. let the caller deal with this */
         }
         delete[] newname;
     }
@@ -595,7 +594,7 @@ static void hostToDicomFilename(char *fname)
 {
     /*
     ** Massage filename into dicom format.
-    ** Elmiminate any invalid characters.
+    ** Eliminate any invalid characters.
     ** Most commonly there is a '.' at the end of a filename.
     */
     int len = strlen(fname);
@@ -735,7 +734,7 @@ OFCondition DcmDirectoryRecord::setRecordInUseFlag(const Uint16 newFlag)
 
 Uint16 DcmDirectoryRecord::lookForRecordInUseFlag()
 {
-    Uint16 localFlag = Uint16(0xffff);     // default value: Record is in use
+    Uint16 localFlag = Uint16(0xffff);     // default value: record is in use
     if (!elementList->empty())
     {
         DcmStack stack;
@@ -877,16 +876,16 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
 //
 
 OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFileID,
-                                                       const char *sourceFileName,
+                                                       const OFFilename &sourceFileName,
                                                        DcmFileFormat *fileFormat)
 {
     OFCondition l_error = EC_Normal;
-    char *fileName = NULL;
+    OFFilename fileName;
     DcmFileFormat *refFile = NULL;
     /* This variable is only set if we created our own DcmFileFormat instance */
     DcmFileFormat *ownFile = NULL;
 
-    if (fileFormat != NULL && sourceFileName == NULL)
+    if (fileFormat != NULL && sourceFileName.isEmpty())
         return EC_IllegalCall;
 
     OFBool directFromFile = OFFalse;
@@ -901,13 +900,16 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
 
     if (referencedFileID != NULL && *referencedFileID != '\0')
     {
-        if (!sourceFileName)
+        if (sourceFileName.isEmpty())
         {
-            fileName = new char[strlen(referencedFileID) + 2];
-            buildFileName(referencedFileID, fileName);
+            /* create a new source filename */
+            char *newname = new char[strlen(referencedFileID) + 2];
+            buildFileName(referencedFileID, newname);
+            fileName.set(newname);
+            delete[] newname;
         } else {
-            fileName = new char[strlen(sourceFileName)+1];
-            strcpy(fileName, sourceFileName);
+            /* just copy the source filename */
+            fileName = sourceFileName;
         }
 
         if (DirRecordType != ERT_Mrdr)
@@ -1041,7 +1043,6 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
     }
 
     delete ownFile;
-    delete[] fileName;
 
     return l_error;
 }
@@ -1336,7 +1337,7 @@ OFCondition DcmDirectoryRecord::verify(const OFBool autocorrect)
     OFCondition err2 = EC_Normal;
     errorFlag = EC_Normal;
     if (autocorrect == OFTrue && DirRecordType != ERT_root)
-        errorFlag = fillElementsAndReadSOP(getReferencedFileName(), NULL);
+        errorFlag = fillElementsAndReadSOP(getReferencedFileName(), "");
 
     err1 = DcmItem::verify(autocorrect);
     err2 = lowerLevelList->verify(autocorrect);
@@ -1389,7 +1390,7 @@ DcmDirectoryRecord* DcmDirectoryRecord::getReferencedMRDR()
 
 
 OFCondition DcmDirectoryRecord::assignToSOPFile(const char *referencedFileID,
-                                                const char *sourceFileName)
+                                                const OFFilename &sourceFileName)
 {
     errorFlag = EC_Normal;
 
@@ -1435,7 +1436,7 @@ OFCondition DcmDirectoryRecord::assignToMRDR(DcmDirectoryRecord *mrdr)
         referencedMRDR->increaseRefNum();
 
         // set length of Referenced File ID to zero and fill data elements
-        errorFlag = fillElementsAndReadSOP(NULL, NULL);
+        errorFlag = fillElementsAndReadSOP(NULL, "");
     } else
         errorFlag = EC_IllegalCall;
 
@@ -1601,19 +1602,12 @@ OFCondition DcmDirectoryRecord::clearSub()
 }
 
 
-void DcmDirectoryRecord::setRecordsOriginFile(const char *fname)
+void DcmDirectoryRecord::setRecordsOriginFile(const OFFilename &fname)
 {
-    if (recordsOriginFile != NULL)
-        delete[] recordsOriginFile;
-    if (fname != NULL)
-    {
-        recordsOriginFile = new char[strlen(fname) + 1];
-        strcpy(recordsOriginFile, fname);
-    } else
-        recordsOriginFile = NULL;
+    recordsOriginFile = fname;
 }
 
-const char* DcmDirectoryRecord::getRecordsOriginFile()
+const OFFilename &DcmDirectoryRecord::getRecordsOriginFile()
 {
     return recordsOriginFile;
 }

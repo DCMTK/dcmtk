@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.20 (riesmeier)
 
+- Added support for wide chars to DICOMDIR code:
+  Added support for the Windows-specific wide character encoding (UTF-16) to
+  the classes and the command line tool that generate a DICOMDIR file.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+
 - Avoid passing NULL to OFString, which is deprecated:
   Avoid passing NULL to OFString in certain cases within normalizeDirName()
   since this is deprecated (and results in an annoying message in DEBUG mode).

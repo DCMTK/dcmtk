@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,11 +56,11 @@ public:
     DcmDicomDir();
 
     /** constructor
-     *  @param fileName filename to read a DICOMDIR from. If NULL, an attempt is
-     *  made to read file DEFAULT_DICOMDIR_NAME ("DICOMDIR").
+     *  @param fileName filename to read a DICOMDIR from. If empty, an attempt is
+     *    made to read file DEFAULT_DICOMDIR_NAME ("DICOMDIR").
      *  @param fileSetID file set ID of this file set, used only for new DICOMDIRs
      */
-    DcmDicomDir( const char *fileName,
+    DcmDicomDir( const OFFilename &fileName,
                  const char *fileSetID = NULL );  // only used for new DICOMDIR
 
     /// destructor. If DICOMDIR was modified, writes new file.
@@ -91,7 +91,7 @@ public:
     /** returns file name from which DICOMDIR was read.
      *  @return filename of DICOMDIR
      */
-    virtual const char* getDirFileName();
+    virtual const OFFilename &getDirFileName();
 
     /// returns root directory record
     virtual DcmDirectoryRecord& getRootRecord();
@@ -196,7 +196,7 @@ public:
     OFCondition errorFlag;
 
     /// file name the DICOMDIR was read from, or DEFAULT_DICOMDIR_NAME
-    char * dicomDirFileName;
+    OFFilename dicomDirFileName;
 
     /** flag indicating whether or not this DICOMDIR has been modified after being read from file.
      *  If true, the destructor of this class will write the modified DICOMDIR back to file

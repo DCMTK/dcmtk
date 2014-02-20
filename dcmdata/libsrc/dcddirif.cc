@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2013, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,9 +45,9 @@
 #include "dcmtk/ofstd/ofcast.h"
 
 
-/*------------------------*
- *  contant declarations  *
- *------------------------*/
+/*-------------------------*
+ *  constant declarations  *
+ *-------------------------*/
 
 // an ISO 9660 format only allows 8 characters in file name
 #define MAX_FNAME_COMPONENT_SIZE 8
@@ -139,7 +139,7 @@ static OFBool locateInvalidFilenameChars(const OFString &filename,
     /* disregard trailing point */
     if (mapFilenames && (length > 0) && (filename.at(length - 1) == '.'))
         length--;
-    /* iterate over all charaters */
+    /* iterate over all characters */
     for (i = 0; i < length; i++)
     {
         c = filename.at(i);
@@ -257,7 +257,7 @@ static OFBool compare(const OFString &string1,
 }
 
 
-// contruct tag name from given object
+// construct tag name from given object
 static OFString &constructTagName(DcmObject *object,
                                   OFString &tagName)
 {
@@ -278,7 +278,7 @@ static OFString &constructTagName(DcmObject *object,
 }
 
 
-// contruct tag name from given object and sequence
+// construct tag name from given object and sequence
 static OFString &constructTagNameWithSQ(DcmObject *object,
                                         DcmSequenceOfItems *fromSequence,
                                         const unsigned long itemNumber,
@@ -1115,18 +1115,18 @@ OFBool DicomDirInterface::isDicomDirValid() const
 
 
 // create a backup of the specified file
-void DicomDirInterface::createDicomDirBackup(const char *filename)
+void DicomDirInterface::createDicomDirBackup(const OFFilename &filename)
 {
     /* check whether DICOMDIR already exists */
     if (OFStandard::fileExists(filename))
     {
         /* rename existing DICOMDIR */
-        BackupFilename = OFString(filename) + FNAME_BACKUP_EXTENSION;
+        OFStandard::appendFilenameExtension(BackupFilename, filename, FNAME_BACKUP_EXTENSION);
         /* delete old backup file (if any) */
         deleteDicomDirBackup();
         DCMDATA_INFO("creating DICOMDIR backup: " << BackupFilename);
         /* create backup file */
-        if (copyFile(filename, BackupFilename.c_str()))
+        if (copyFile(filename, BackupFilename))
             BackupCreated = OFTrue;
         else
             DCMDATA_ERROR("cannot create backup of: " << filename);
@@ -1145,7 +1145,7 @@ void DicomDirInterface::deleteDicomDirBackup()
         else
             DCMDATA_INFO("deleting old DICOMDIR backup: " << BackupFilename);
         /* delete the backup file */
-        unlink(BackupFilename.c_str());
+        OFStandard::deleteFile(BackupFilename);
     }
     /* reset status variable */
     BackupCreated = OFFalse;
@@ -1154,11 +1154,11 @@ void DicomDirInterface::deleteDicomDirBackup()
 
 // create a new DICOMDIR object, i.e. replace any previously existing 'filename'
 OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile profile,
-                                                 const char *filename,
-                                                 const char *filesetID)
+                                                 const OFFilename &filename,
+                                                 const OFString &filesetID)
 {
     OFCondition result = EC_IllegalParameter;
-    if ((filename != NULL) && checkFilesetID(filesetID))
+    if (!filename.isEmpty() && checkFilesetID(filesetID))
     {
         FilesetUpdateMode = OFFalse;
         /* first remove any existing DICOMDIR from memory */
@@ -1170,7 +1170,7 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
                 createDicomDirBackup(filename);
             /* and delete it because otherwise DcmDicomDir will parse it
                and try to append to existing records */
-            unlink(filename);
+            OFStandard::deleteFile(filename);
         }
         /* select new application profile */
         result = selectApplicationProfile(profile);
@@ -1179,7 +1179,7 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
             DCMDATA_INFO("creating DICOMDIR file using " << getProfileName(ApplicationProfile)
                 << " profile: " << filename);
             /* finally, create a new DICOMDIR object */
-            DicomDir = new DcmDicomDir(filename, filesetID);
+            DicomDir = new DcmDicomDir(filename, filesetID.c_str());
             if (DicomDir != NULL)
                 result = DicomDir->error();
             else
@@ -1192,10 +1192,10 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
 
 // create a DICOMDIR based on an existing one, i.e. append the new entries
 OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profile,
-                                                const char *filename)
+                                                const OFFilename &filename)
 {
     OFCondition result = EC_IllegalParameter;
-    if (filename != NULL)
+    if (!filename.isEmpty())
     {
         FilesetUpdateMode = OFFalse;
         /* first remove any existing DICOMDIR from memory */
@@ -1223,7 +1223,7 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
             /* create error message "No such file or directory" from error code */
             char buffer[255];
             const char *text = OFStandard::strerror(ENOENT, buffer, 255);
-            if ((text == NULL) || (strlen(text) == 0))
+            if ((text == NULL) || (text[0] == '\0'))
                 text = "(unknown error code)";
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
@@ -1237,10 +1237,10 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
 
 // create a DICOMDIR based on an existing one, i.e. append new and update existing entries
 OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile,
-                                              const char *filename)
+                                              const OFFilename &filename)
 {
     OFCondition result = EC_IllegalParameter;
-    if (filename != NULL)
+    if (!filename.isEmpty())
     {
         FilesetUpdateMode = OFTrue;
         /* first remove any existing DICOMDIR from memory */
@@ -1268,7 +1268,7 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
             /* create error message "No such file or directory" from error code */
             char buffer[255];
             const char *text = OFStandard::strerror(ENOENT, buffer, 255);
-            if ((text == NULL) || (strlen(text) == 0))
+            if ((text == NULL) || (text[0] == '\0'))
                 text = "(unknown error code)";
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
@@ -1304,12 +1304,14 @@ OFCondition DicomDirInterface::writeDicomDir(const E_EncodingType encodingType,
 
 
 // check whether the specified filename conforms to the DICOM standard requirements
-OFBool DicomDirInterface::isFilenameValid(const char *filename,
+OFBool DicomDirInterface::isFilenameValid(const OFFilename &filename,
                                           const OFBool allowEmpty)
 {
     OFBool result = OFTrue;
+    /* get 8-bit version of the stored string */
+    const char *fname = filename.getCharPointer();
     /* check for empty filename */
-    if ((filename == NULL) || (strlen(filename) == 0))
+    if ((fname == NULL) || (fname[0] == '\0'))
     {
         if (!allowEmpty)
         {
@@ -1319,26 +1321,26 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
     } else {
         size_t invalidChar = 0;
         /* check whether the file name path is ok and in local format */
-        if ((filename[0] == PATH_SEPARATOR) /* absolute path? */ ||
-            locateInvalidFilenameChars(filename, invalidChar, MapFilenamesMode))
+        if ((fname[0] == PATH_SEPARATOR) /* absolute path? */ ||
+            locateInvalidFilenameChars(fname, invalidChar, MapFilenamesMode))
         {
-            DCMDATA_ERROR("invalid character(s) in filename: " << filename << OFendl
+            DCMDATA_ERROR("invalid character(s) in filename: " << fname << OFendl
                 << OFString(34 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
         /* ensure that the maximum number of components is not being exceeded */
-        if (componentCount(filename) > MAX_FNAME_COMPONENTS)
+        if (componentCount(fname) > MAX_FNAME_COMPONENTS)
         {
             DCMDATA_ERROR("too many path components (max " << MAX_FNAME_COMPONENTS
-                << ") in filename: " << filename);
+                << ") in filename: " << fname);
             result = OFFalse;
         }
         /* ensure that each component is not too large */
-        if (isComponentTooLarge(filename, MAX_FNAME_COMPONENT_SIZE, MapFilenamesMode))
+        if (isComponentTooLarge(fname, MAX_FNAME_COMPONENT_SIZE, MapFilenamesMode))
         {
             /* create error message */
             DCMDATA_ERROR("component too large (max " << MAX_FNAME_COMPONENT_SIZE
-                << " characters) in filename: " << filename);
+                << " characters) in filename: " << fname);
             result = OFFalse;
         }
     }
@@ -1351,7 +1353,7 @@ OFBool DicomDirInterface::isCharsetValid(const char *charset)
 {
     OFBool result = OFTrue;
     /* empty charset is also valid */
-    if ((charset != NULL) && (strlen(charset) > 0))
+    if ((charset != NULL) && (charset[0] != '\0'))
     {
         /* check for valid charset */
         result = (strcmp(charset, "ISO_IR 100") == 0) ||
@@ -1376,10 +1378,10 @@ OFBool DicomDirInterface::isCharsetValid(const char *charset)
 // check the given file (dataset) regarding SOP class and transfer syntax
 OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                                     DcmItem *dataset,
-                                                    const char *filename)
+                                                    const OFFilename &filename)
 {
     OFCondition result = EC_IllegalParameter;
-    if ((filename != NULL) && (metainfo != NULL) && (dataset != NULL))
+    if ((metainfo != NULL) && (dataset != NULL) && !filename.isEmpty())
     {
         /* is sop class ok? */
         OFString mediaSOPClassUID;
@@ -1641,7 +1643,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 /* is transfer syntax supported */
                 if (result.good())
                 {
-                    /* RLE comporession */
+                    /* RLE compression */
                     if (compare(transferSyntax, UID_RLELosslessTransferSyntax))
                     {
                         if (!RLESupport && IconImageMode)
@@ -1915,7 +1917,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
 
 // check whether dataset conforms to basic cardiac application profile
 OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
-                                                           const char *filename)
+                                                           const OFFilename &filename)
 {
     OFCondition result = EC_Normal;
     if (!checkExistsWithStringValue(dataset, DCM_Modality, "XA", filename))
@@ -1950,7 +1952,7 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
 // check whether dataset conforms to xray angiographic application profile
 OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
                                                                const OFString &sopClass,
-                                                               const char *filename)
+                                                               const OFFilename &filename)
 {
     OFCondition result = EC_Normal;
     /* requirements depend on SOP class */
@@ -2020,7 +2022,7 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
 
 // check whether dataset conforms to dental radiograph application profile
 OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
-                                                               const char *filename)
+                                                               const OFFilename &filename)
 {
     OFCondition result = EC_Normal;
     /* check presence of type 2 elements */
@@ -2064,7 +2066,7 @@ OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
 // check whether dataset conforms to ct and mr application profile
 OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
                                                       const OFString &sopClass,
-                                                      const char *filename)
+                                                      const OFFilename &filename)
 {
     OFCondition result = EC_Normal;
     /* check presence of type 1 elements */
@@ -2183,7 +2185,7 @@ OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
 // check whether dataset conforms to one of the ultrasound application profiles
 OFCondition DicomDirInterface::checkUltrasoundAttributes(DcmItem *dataset,
                                                          const OFString &transferSyntax,
-                                                         const char *filename)
+                                                         const OFFilename &filename)
 {
     OFCondition result = EC_Normal;
     /* a US image */
@@ -2283,7 +2285,7 @@ OFCondition DicomDirInterface::checkUltrasoundAttributes(DcmItem *dataset,
                 result = EC_ApplicationProfileViolated;
             }
         } else {
-            /* report any error within the 'while' loop as an violoation of the application profile */
+            /* report any error within the 'while' loop as an violation of the application profile */
             result = EC_ApplicationProfileViolated;
         }
     }
@@ -2294,10 +2296,10 @@ OFCondition DicomDirInterface::checkUltrasoundAttributes(DcmItem *dataset,
 // check the given file (dataset) for mandatory attributes
 OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                                                         DcmItem *dataset,
-                                                        const char *filename)
+                                                        const OFFilename &filename)
 {
     OFCondition result = EC_IllegalParameter;
-    if ((filename != NULL) && (dataset != NULL))
+    if ((metainfo != NULL) && (dataset != NULL))
     {
         /* are mandatory attributes for DICOMDIR available and valued? */
         result = EC_Normal;
@@ -2663,8 +2665,8 @@ OFCondition DicomDirInterface::selectApplicationProfile(const E_ApplicationProfi
 
 
 // check whether DICOM file is suitable for a DICOMDIR of the specified application profile
-OFCondition DicomDirInterface::checkDicomFile(const char *filename,
-                                              const char *directory)
+OFCondition DicomDirInterface::checkDicomFile(const OFFilename &filename,
+                                              const OFFilename &directory)
 {
     /* define fileformat object for the DICOM file to be loaded */
     DcmFileFormat fileformat;
@@ -2674,14 +2676,14 @@ OFCondition DicomDirInterface::checkDicomFile(const char *filename,
 
 
 // load DICOM file and check whether it is suitable for a DICOMDIR of the specified application profile
-OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
-                                                     const char *directory,
+OFCondition DicomDirInterface::loadAndCheckDicomFile(const OFFilename &filename,
+                                                     const OFFilename &directory,
                                                      DcmFileFormat &fileformat)
 {
     OFCondition result = EC_IllegalParameter;
     /* create fully qualified pathname of the DICOM file to be added */
-    OFString pathname;
-    OFStandard::combineDirAndFilename(pathname, OFSTRING_GUARD(directory), OFSTRING_GUARD(filename), OFTrue /*allowEmptyDirName*/);
+    OFFilename pathname;
+    OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
     DCMDATA_INFO("checking file: " << pathname);
     /* check filename */
     if (isFilenameValid(filename))
@@ -2773,7 +2775,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
                         OFString hostFilename;
                         if (locateDicomFile(refFilename, hostFilename))
                         {
-                            result = compare(getStringFromFile(hostFilename.c_str(), DCM_StudyInstanceUID, recordString),
+                            result = compare(getStringFromFile(hostFilename, DCM_StudyInstanceUID, recordString),
                                              getStringFromDataset(dataset, DCM_StudyInstanceUID, datasetString));
                         } else
                             DCMDATA_ERROR("cannot locate referenced file: " << refFilename);
@@ -2852,11 +2854,11 @@ DcmDirectoryRecord *DicomDirInterface::findExistingRecord(DcmDirectoryRecord *pa
 // create or update patient record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *record,
                                                           DcmFileFormat *fileformat,
-                                                          const OFString &sourceFilename)
+                                                          const OFFilename &sourceFilename)
 {
     /* create new patient record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Patient, NULL, sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Patient, NULL, sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -2899,11 +2901,11 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
 // create or update study record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *record,
                                                         DcmFileFormat *fileformat,
-                                                        const OFString &sourceFilename)
+                                                        const OFFilename &sourceFilename)
 {
     /* create new study record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Study, NULL, sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Study, NULL, sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -2934,11 +2936,11 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *reco
 // create or update series record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *record,
                                                          DcmFileFormat *fileformat,
-                                                         const OFString &sourceFilename)
+                                                         const OFFilename &sourceFilename)
 {
     /* create new series record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Series, NULL, sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Series, NULL, sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -2986,11 +2988,11 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
 DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *record,
                                                           DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
-                                                          const OFString &sourceFilename)
+                                                          const OFFilename &sourceFilename)
 {
     /* create new overlay record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Overlay, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Overlay, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3015,11 +3017,11 @@ DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *re
 DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord *record,
                                                               DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
-                                                              const OFString &sourceFilename)
+                                                              const OFFilename &sourceFilename)
 {
     /* create new modality lut record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ModalityLut, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_ModalityLut, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3044,11 +3046,11 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord
 DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *record,
                                                          DcmFileFormat *fileformat,
                                                          const OFString &referencedFileID,
-                                                         const OFString &sourceFilename)
+                                                         const OFFilename &sourceFilename)
 {
     /* create new voi lut record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_VoiLut, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_VoiLut, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3073,11 +3075,11 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *rec
 DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *record,
                                                         DcmFileFormat *fileformat,
                                                         const OFString &referencedFileID,
-                                                        const OFString &sourceFilename)
+                                                        const OFFilename &sourceFilename)
 {
     /* create new curve record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Curve, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Curve, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3102,11 +3104,11 @@ DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *reco
 DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new struct report record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3149,11 +3151,11 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new presentation record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Presentation, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Presentation, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3185,11 +3187,11 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmDirectoryRecord *record,
                                                            DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
-                                                           const OFString &sourceFilename)
+                                                           const OFFilename &sourceFilename)
 {
     /* create new waveform record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Waveform, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Waveform, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3216,11 +3218,11 @@ DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmDirectoryRecord *r
 DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *record,
                                                          DcmFileFormat *fileformat,
                                                          const OFString &referencedFileID,
-                                                         const OFString &sourceFilename)
+                                                         const OFFilename &sourceFilename)
 {
     /* create new rt dose record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTDose, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_RTDose, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3249,11 +3251,11 @@ DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *rec
 DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmDirectoryRecord *record,
                                                                  DcmFileFormat *fileformat,
                                                                  const OFString &referencedFileID,
-                                                                 const OFString &sourceFilename)
+                                                                 const OFFilename &sourceFilename)
 {
     /* create new rt structure set record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTStructureSet, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_RTStructureSet, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3281,11 +3283,11 @@ DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmDirectoryRec
 DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmDirectoryRecord *record,
                                                          DcmFileFormat *fileformat,
                                                          const OFString &referencedFileID,
-                                                         const OFString &sourceFilename)
+                                                         const OFFilename &sourceFilename)
 {
     /* create new rt plan record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTPlan, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_RTPlan, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3313,11 +3315,11 @@ DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmDirectoryRecord *rec
 DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmDirectoryRecord *record,
                                                               DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
-                                                              const OFString &sourceFilename)
+                                                              const OFFilename &sourceFilename)
 {
     /* create new rt treatment record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTTreatRecord, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_RTTreatRecord, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3344,11 +3346,11 @@ DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmDirectoryRecord
 DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord *record,
                                                               DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
-                                                              const OFString &sourceFilename)
+                                                              const OFFilename &sourceFilename)
 {
     /* create new stored print record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_StoredPrint, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_StoredPrint, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3374,11 +3376,11 @@ DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord
 DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new key object doc record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_KeyObjectDoc, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_KeyObjectDoc, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3407,11 +3409,11 @@ DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new registration record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3441,11 +3443,11 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *record,
                                                            DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
-                                                           const OFString &sourceFilename)
+                                                           const OFFilename &sourceFilename)
 {
     /* create new fiducial record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3475,11 +3477,11 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *r
 DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *record,
                                                           DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
-                                                          const OFString &sourceFilename)
+                                                          const OFFilename &sourceFilename)
 {
     /* create new raw data record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3507,11 +3509,11 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *re
 DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new spectroscopy record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3565,11 +3567,11 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *record,
                                                            DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
-                                                           const OFString &sourceFilename)
+                                                           const OFFilename &sourceFilename)
 {
     /* create new encap doc record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3602,11 +3604,11 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *r
 DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *record,
                                                            DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
-                                                           const OFString &sourceFilename)
+                                                           const OFFilename &sourceFilename)
 {
     /* create new value map record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3636,11 +3638,11 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *r
 DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRecord *record,
                                                                   DcmFileFormat *fileformat,
                                                                   const OFString &referencedFileID,
-                                                                  const OFString &sourceFilename)
+                                                                  const OFFilename &sourceFilename)
 {
     /* create new hanging protocol record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3672,11 +3674,11 @@ DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRe
 DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new value map record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3699,11 +3701,11 @@ DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildPaletteRecord(DcmDirectoryRecord *record,
                                                           DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
-                                                          const OFString &sourceFilename)
+                                                          const OFFilename &sourceFilename)
 {
     /* create new palette record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Palette, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Palette, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3729,11 +3731,11 @@ DcmDirectoryRecord *DicomDirInterface::buildPaletteRecord(DcmDirectoryRecord *re
 DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *record,
                                                           DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
-                                                          const OFString &sourceFilename)
+                                                          const OFFilename &sourceFilename)
 {
     /* create new surface record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Surface, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Surface, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3763,11 +3765,11 @@ DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *re
 DcmDirectoryRecord *DicomDirInterface::buildMeasurementRecord(DcmDirectoryRecord *record,
                                                               DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
-                                                              const OFString &sourceFilename)
+                                                              const OFFilename &sourceFilename)
 {
     /* create new measurement record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Measurement, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Measurement, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3797,11 +3799,11 @@ DcmDirectoryRecord *DicomDirInterface::buildMeasurementRecord(DcmDirectoryRecord
 DcmDirectoryRecord *DicomDirInterface::buildImplantRecord(DcmDirectoryRecord *record,
                                                           DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
-                                                          const OFString &sourceFilename)
+                                                          const OFFilename &sourceFilename)
 {
     /* create new implant record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Implant, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Implant, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3829,11 +3831,11 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantRecord(DcmDirectoryRecord *re
 DcmDirectoryRecord *DicomDirInterface::buildImplantGroupRecord(DcmDirectoryRecord *record,
                                                                DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
-                                                               const OFString &sourceFilename)
+                                                               const OFFilename &sourceFilename)
 {
     /* create new implant group record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ImplantGroup, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_ImplantGroup, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3860,11 +3862,11 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantGroupRecord(DcmDirectoryRecor
 DcmDirectoryRecord *DicomDirInterface::buildImplantAssyRecord(DcmDirectoryRecord *record,
                                                               DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
-                                                              const OFString &sourceFilename)
+                                                              const OFFilename &sourceFilename)
 {
     /* create new implant assy record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ImplantAssy, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_ImplantAssy, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3891,11 +3893,11 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantAssyRecord(DcmDirectoryRecord
 DcmDirectoryRecord *DicomDirInterface::buildPlanRecord(DcmDirectoryRecord *record,
                                                        DcmFileFormat *fileformat,
                                                        const OFString &referencedFileID,
-                                                       const OFString &sourceFilename)
+                                                       const OFFilename &sourceFilename)
 {
     /* create new plan record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Plan, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Plan, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3918,11 +3920,11 @@ DcmDirectoryRecord *DicomDirInterface::buildPlanRecord(DcmDirectoryRecord *recor
 DcmDirectoryRecord *DicomDirInterface::buildSurfaceScanRecord(DcmDirectoryRecord *record,
                                                               DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
-                                                              const OFString &sourceFilename)
+                                                              const OFFilename &sourceFilename)
 {
     /* create new surface scan record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_SurfaceScan, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_SurfaceScan, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3948,11 +3950,11 @@ DcmDirectoryRecord *DicomDirInterface::buildSurfaceScanRecord(DcmDirectoryRecord
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
                                                         DcmFileFormat *fileformat,
                                                         const OFString &referencedFileID,
-                                                        const OFString &sourceFilename)
+                                                        const OFFilename &sourceFilename)
 {
     /* create new image record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
+        record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -4070,7 +4072,7 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
 
 
 // create icon image from PGM file
-OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
+OFBool DicomDirInterface::getIconFromFile(const OFFilename &filename,
                                           Uint8 *pixel,
                                           const unsigned long count,
                                           const unsigned int width,
@@ -4078,36 +4080,36 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
 {
     OFBool result = OFFalse;
     /* check buffer and size */
-    if ((pixel != NULL) && (count >= width * height))
+    if (!filename.isEmpty() && (pixel != NULL) && (count >= width * height))
     {
         /* open specified file */
-        FILE *file = fopen(filename.c_str(), "rb");
-        if (file != NULL)
+        OFFile file;
+        if (file.fopen(filename, "rb"))
         {
             /* according to the pgm format no line should be longer than 70 characters */
             const int maxline = 256;
             char line[maxline];
             /* read magic number */
-            if ((fgets(line, maxline, file) != NULL) && (strcmp(line, "P5\n") == 0))
+            if ((file.fgets(line, maxline) != NULL) && (strcmp(line, "P5\n") == 0))
             {
                 OFBool corrupt = OFTrue;
-                if ((fgets(line, maxline, file) != NULL) && (line[0] != '\0'))
+                if ((file.fgets(line, maxline) != NULL) && (line[0] != '\0'))
                 {
                     unsigned int pgmWidth, pgmHeight = 0;
                     /* skip optional comment line and get width and height */
-                    if (((*line != '#') || (fgets(line, maxline, file) != NULL)) &&
+                    if (((*line != '#') || (file.fgets(line, maxline) != NULL)) &&
                         (sscanf(line, "%u %u", &pgmWidth, &pgmHeight) > 0) && (pgmWidth > 0) && (pgmHeight > 0))
                     {
                         unsigned int pgmMax = 0;
                         /* get maximum gray value */
-                        if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%u", &pgmMax) > 0) && (pgmMax == 255))
+                        if ((file.fgets(line, maxline) != NULL) && (sscanf(line, "%u", &pgmMax) > 0) && (pgmMax == 255))
                         {
                             const unsigned long pgmSize = pgmWidth * pgmHeight;
                             Uint8 *pgmData = new Uint8[pgmSize];
                             if (pgmData != NULL)
                             {
                                 /* get pgm image data */
-                                if (fread(pgmData, sizeof(Uint8), OFstatic_cast(size_t, pgmSize), file) == pgmSize)
+                                if (file.fread(pgmData, sizeof(Uint8), OFstatic_cast(size_t, pgmSize)) == pgmSize)
                                 {
                                     /* if already scaled, just copy the bitmap */
                                     if ((width == pgmWidth) && (height == pgmHeight) && (count == pgmSize))
@@ -4138,7 +4140,6 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                     DCMDATA_ERROR("corrupt file format for external icon (not pgm binary)");
             } else
                 DCMDATA_ERROR("wrong file format for external icon (pgm required)");
-            fclose(file);
         } else
             DCMDATA_ERROR("cannot open file for external icon: " << filename);
     }
@@ -4157,7 +4158,7 @@ OFBool DicomDirInterface::getIconFromDataset(DcmItem *dataset,
     /* check parameters (incl. availability of image plugin) */
     if ((ImagePlugin != NULL) && (dataset != NULL) && (pixel != NULL) && (count >= width * height))
     {
-        /* choose representitive frame */
+        /* choose representative frame */
         long fCount, frame;
         dataset->findAndGetLongInt(DCM_NumberOfFrames, fCount);
         dataset->findAndGetLongInt(DCM_RepresentativeFrameNumber, frame);
@@ -4183,7 +4184,7 @@ OFBool DicomDirInterface::getIconFromDataset(DcmItem *dataset,
 OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
                                             DcmItem *dataset,
                                             const unsigned int size,
-                                            const OFString &sourceFilename)
+                                            const OFFilename &sourceFilename)
 {
     OFCondition result = EC_IllegalParameter;
     /* check parameters first */
@@ -4212,10 +4213,12 @@ OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
             {
                 OFBool iconOk = OFFalse;
                 /* prefix for external icons specified? */
-                if (!IconPrefix.empty())
+                if (!IconPrefix.isEmpty())
                 {
                     /* try to load external pgm icon */
-                    iconOk = getIconFromFile(IconPrefix + sourceFilename, pixel, count, width, height);
+                    OFFilename filename;
+                    OFStandard::appendFilenameExtension(filename, IconPrefix, sourceFilename);
+                    iconOk = getIconFromFile(filename, pixel, count, width, height);
                 } else {
                     /* try to create icon from dataset */
                     iconOk = getIconFromDataset(dataset, pixel, count, width, height);
@@ -4223,7 +4226,7 @@ OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
                         DCMDATA_WARN("cannot create monochrome icon from image file, using default");
                 }
                 /* could not create icon so far: use default icon (if specified) */
-                if (!iconOk && !DefaultIcon.empty())
+                if (!iconOk && !DefaultIcon.isEmpty())
                     iconOk = getIconFromFile(DefaultIcon, pixel, count, width, height);
                 /* default not available: use black image */
                 if (!iconOk)
@@ -4248,7 +4251,7 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                                                  const E_DirRecType recordType,
                                                  DcmFileFormat *fileformat,
                                                  const OFString &referencedFileID,
-                                                 const OFString &sourceFilename)
+                                                 const OFFilename &sourceFilename)
 {
     DcmDirectoryRecord *record = NULL;
     DcmDataset *dataset = fileformat->getDataset();
@@ -4400,7 +4403,7 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
             /* perform consistency check */
             if (ConsistencyCheck)
             {
-                /* abort on any inconsistancy */
+                /* abort on any inconsistency */
                 if (warnAboutInconsistentAttributes(record, dataset, sourceFilename, AbortMode) && AbortMode)
                     return NULL;
             }
@@ -4408,8 +4411,8 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
         if (record != NULL)
         {
             /* check whether instance is already listed */
-            if (record->getRecordsOriginFile() == NULL)
-                record->setRecordsOriginFile(sourceFilename.c_str());
+            if (record->getRecordsOriginFile().isEmpty())
+                record->setRecordsOriginFile(sourceFilename);
         }
     }
     return record;
@@ -4420,7 +4423,7 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
 OFBool DicomDirInterface::checkReferencedSOPInstance(DcmDirectoryRecord *record,
                                                      DcmItem *dataset,
                                                      const OFString &referencedFileID,
-                                                     const OFString &sourceFilename)
+                                                     const OFFilename &sourceFilename)
 {
     OFBool result = OFTrue;
     if ((record != NULL) && (dataset != NULL))
@@ -4560,16 +4563,16 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
 
 
 // add DICOM file to the current DICOMDIR object
-OFCondition DicomDirInterface::addDicomFile(const char *filename,
-                                            const char *directory)
+OFCondition DicomDirInterface::addDicomFile(const OFFilename &filename,
+                                            const OFFilename &directory)
 {
     OFCondition result = EC_IllegalParameter;
     /* first, make sure that a DICOMDIR object exists */
     if (DicomDir != NULL)
     {
         /* create fully qualified pathname of the DICOM file to be added */
-        OFString pathname;
-        OFStandard::combineDirAndFilename(pathname, OFSTRING_GUARD(directory), OFSTRING_GUARD(filename), OFTrue /*allowEmptyDirName*/);
+        OFFilename pathname;
+        OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
         /* then check the file name, load the file and check the content */
         DcmFileFormat fileformat;
         result = loadAndCheckDicomFile(filename, directory, fileformat);
@@ -4581,7 +4584,7 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
             /* massage filename into DICOM format (DOS conventions for path separators, uppercase) */
             OFString fileID;
-            hostToDicomFilename(filename, fileID);
+            hostToDicomFilename(OFSTRING_GUARD(filename.getCharPointer()), fileID);
             /* what kind of object (SOP Class) is stored in the file */
             OFString sopClass;
             metainfo->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass);
@@ -4623,7 +4626,7 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
                     /* if patient management file then attach it to patient record and stop */
                     if (compare(sopClass, UID_RETIRED_DetachedPatientManagementMetaSOPClass))
                     {
-                        result = patientRecord->assignToSOPFile(fileID.c_str(), pathname.c_str());
+                        result = patientRecord->assignToSOPFile(fileID.c_str(), pathname);
                         DCMDATA_ERROR(result.text() << ": cannot assign patient record to file: " << pathname);
                     } else {
                         /* add a study record below the current patient record */
@@ -4671,7 +4674,7 @@ OFCondition DicomDirInterface::setFilesetDescriptor(const char *filename,
             if (dataset != NULL)
             {
                 /* set FileSetDescriptorFileID */
-                if ((filename == NULL) || (strlen(filename) == 0))
+                if ((filename == NULL) || (filename[0] == '\0'))
                 {
                     /* remove attribute from the dataset */
                     dataset->findAndDeleteElement(DCM_FileSetDescriptorFileID);
@@ -4686,7 +4689,7 @@ OFCondition DicomDirInterface::setFilesetDescriptor(const char *filename,
                     if (result.good())
                     {
                         /* set SpecificCharacterSetOfFileSetDescriptorFile */
-                        if ((charset == NULL) || (strlen(charset) == 0))
+                        if ((charset == NULL) || (charset[0] == '\0'))
                         {
                             /* remove attribute from the dataset */
                             dataset->findAndDeleteElement(DCM_SpecificCharacterSetOfFileSetDescriptorFile);
@@ -4721,7 +4724,7 @@ OFCondition DicomDirInterface::setIconSize(const unsigned int size)
 
 
 // set filename prefix for icon images (if not retrieved from DICOM image)
-OFCondition DicomDirInterface::setIconPrefix(const char *prefix)
+OFCondition DicomDirInterface::setIconPrefix(const OFFilename &prefix)
 {
     IconPrefix = prefix;
     return EC_Normal;
@@ -4729,7 +4732,7 @@ OFCondition DicomDirInterface::setIconPrefix(const char *prefix)
 
 
 // set filename for default image icon which is used in case of error
-OFCondition DicomDirInterface::setDefaultIcon(const char *filename)
+OFCondition DicomDirInterface::setDefaultIcon(const OFFilename &filename)
 {
     DefaultIcon = filename;
     return EC_Normal;
@@ -4883,14 +4886,14 @@ OFBool DicomDirInterface::addImageSupport(DicomDirImagePlugin *plugin)
 
 // print an error message to the console (stderr) that the value of the given tag is unexpected
 void DicomDirInterface::printUnexpectedValueMessage(const DcmTagKey &key,
-                                                    const char *filename,
+                                                    const OFFilename &filename,
                                                     const OFBool errorMsg)
 {
     OFString str;
-    if (filename != NULL)
+    if (!filename.isEmpty())
     {
         str = " in file: ";
-        str += filename;
+        str += OFSTRING_GUARD(filename.getCharPointer());
     }
     if (errorMsg)
     {
@@ -4905,14 +4908,14 @@ void DicomDirInterface::printUnexpectedValueMessage(const DcmTagKey &key,
 
 // print an error message to the console (stderr) that a required attribute is missing/empty
 void DicomDirInterface::printRequiredAttributeMessage(const DcmTagKey &key,
-                                                      const char *filename,
+                                                      const OFFilename &filename,
                                                       const OFBool emptyMsg)
 {
     OFString str;
-    if (filename != NULL)
+    if (!filename.isEmpty())
     {
         str = " in file: ";
-        str += filename;
+        str += OFSTRING_GUARD(filename.getCharPointer());
     }
     DCMDATA_ERROR("required attribute " << DcmTag(key).getTagName() << " " << key << " "
         << (emptyMsg ? "empty" : "missing") << str);
@@ -5047,44 +5050,17 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
 
 
 // copy contents of specified file
-OFBool DicomDirInterface::copyFile(const char *fromFilename,
-                                   const char *toFilename)
+OFBool DicomDirInterface::copyFile(const OFFilename &fromFilename,
+                                   const OFFilename &toFilename)
 {
-    OFBool result = OFFalse;
-    /* check filenames first */
-    if ((fromFilename != NULL) && (toFilename != NULL))
+    OFBool result = OFStandard::copyFile(fromFilename, toFilename);
+    /* check for errors */
+    if (!result)
     {
-        /* open input file */
-        FILE *fromFile = fopen(fromFilename, "rb");
-        if (fromFile != NULL)
-        {
-            /* create output file */
-            FILE *toFile = fopen(toFilename, "wb");
-            if (toFile != NULL)
-            {
-                result = OFTrue;
-                int c = 0;
-                /* for all input file characters */
-                while (result && ((c = getc(fromFile)) != EOF))
-                {
-                    /* copy character to the output file */
-                    if (putc(c, toFile) == EOF)
-                    {
-                        /* create error message */
-                        OFOStringStream oss;
-                        DCMDATA_ERROR("copying files: " << fromFilename << " to " << toFilename);
-                        /* abort loop */
-                        result = OFFalse;
-                    }
-                }
-                /* close output file */
-                fclose(toFile);
-            } else
-                DCMDATA_ERROR("copying files, cannot create: " << toFilename);
-            /* close input file */
-            fclose(fromFile);
-        } else
-            DCMDATA_ERROR("copying files, cannot open: " << fromFilename);
+        /* create error message from error code */
+        char buffer[255];
+        DCMDATA_ERROR("copying files: " << fromFilename << " to " << toFilename
+            << ": " << OFStandard::strerror(errno, buffer, 255));
     }
     return result;
 }
@@ -5093,7 +5069,7 @@ OFBool DicomDirInterface::copyFile(const char *fromFilename,
 // see if all the attributes in record match the values in dataset
 OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *record,
                                                           DcmItem *dataset,
-                                                          const OFString &sourceFilename,
+                                                          const OFFilename &sourceFilename,
                                                           const OFBool abortCheck)
 {
     OFBool result = OFFalse;
@@ -5166,14 +5142,14 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
 // check whether specified tag exists in the dataset
 OFBool DicomDirInterface::checkExists(DcmItem *dataset,
                                       const DcmTagKey &key,
-                                      const char *filename)
+                                      const OFFilename &filename)
 {
     /* check whether tag exists */
     OFBool result = OFFalse;
     if (dataset != NULL)
     {
         result = dataset->tagExists(key);
-        if (!result && (filename != NULL))
+        if (!result && !filename.isEmpty())
         {
             /* report an error */
             printRequiredAttributeMessage(key, filename);
@@ -5186,7 +5162,7 @@ OFBool DicomDirInterface::checkExists(DcmItem *dataset,
 // check whether specified tag exists with a value in the dataset
 OFBool DicomDirInterface::checkExistsWithValue(DcmItem *dataset,
                                                const DcmTagKey &key,
-                                               const char *filename)
+                                               const OFFilename &filename)
 {
     /* first, check whether tag exists, and report an error if not */
     OFBool result = checkExists(dataset, key, filename);
@@ -5194,7 +5170,7 @@ OFBool DicomDirInterface::checkExistsWithValue(DcmItem *dataset,
     {
         /* then check whether tag has a value (is non-empty) */
         result = dataset->tagExistsWithValue(key);
-        if (!result && (filename != NULL))
+        if (!result && !filename.isEmpty())
         {
             /* report an error */
             printRequiredAttributeMessage(key, filename, OFTrue /*emptyMsg*/);
@@ -5208,7 +5184,7 @@ OFBool DicomDirInterface::checkExistsWithValue(DcmItem *dataset,
 OFBool DicomDirInterface::checkExistsWithStringValue(DcmItem *dataset,
                                                      const DcmTagKey &key,
                                                      const OFString &value,
-                                                     const char *filename)
+                                                     const OFFilename &filename)
 {
     /* first, check whether tag exists, and report an error if not */
     OFBool result = checkExists(dataset, key, filename);
@@ -5219,7 +5195,7 @@ OFBool DicomDirInterface::checkExistsWithStringValue(DcmItem *dataset,
         dataset->findAndGetOFStringArray(key, str);
         /* compare with expected value */
         result = compare(str, value);
-        if (!result && (filename != NULL))
+        if (!result && !filename.isEmpty())
         {
             /* report an error */
             printUnexpectedValueMessage(key, filename);
@@ -5233,7 +5209,7 @@ OFBool DicomDirInterface::checkExistsWithStringValue(DcmItem *dataset,
 OFBool DicomDirInterface::checkExistsWithIntegerValue(DcmItem *dataset,
                                                       const DcmTagKey &key,
                                                       const long value,
-                                                      const char *filename,
+                                                      const OFFilename &filename,
                                                       const OFBool reject)
 {
     /* first, check whether tag exists, and report an error if not */
@@ -5247,7 +5223,7 @@ OFBool DicomDirInterface::checkExistsWithIntegerValue(DcmItem *dataset,
         result = (i == value);
         if (!result)
         {
-            if (filename != NULL)
+            if (!filename.isEmpty())
             {
                 /* report an error or a warning */
                 printUnexpectedValueMessage(key, filename, reject /*errorMsg*/);
@@ -5266,7 +5242,7 @@ OFBool DicomDirInterface::checkExistsWithMinMaxValue(DcmItem *dataset,
                                                      const DcmTagKey &key,
                                                      const long min,
                                                      const long max,
-                                                     const char *filename,
+                                                     const OFFilename &filename,
                                                      const OFBool reject)
 {
     /* first, check whether tag exists, and report an error if not */
@@ -5280,7 +5256,7 @@ OFBool DicomDirInterface::checkExistsWithMinMaxValue(DcmItem *dataset,
         result = (i >= min) && (i <= max);
         if (!result)
         {
-            if (filename != NULL)
+            if (!filename.isEmpty())
             {
                 /* report an error or a warning */
                 printUnexpectedValueMessage(key, filename, reject /*errorMsg*/);
@@ -5334,13 +5310,13 @@ OFString &DicomDirInterface::getStringComponentFromDataset(DcmItem *dataset,
 
 
 // get string value from file and report an error (if any)
-OFString &DicomDirInterface::getStringFromFile(const char *filename,
+OFString &DicomDirInterface::getStringFromFile(const OFFilename &filename,
                                                const DcmTagKey &key,
                                                OFString &result,
                                                OFBool searchIntoSub)
 {
     result.clear();
-    if (filename != NULL)
+    if (!filename.isEmpty())
     {
         DcmFileFormat fileformat;
         DCMDATA_INFO("investigating file: " << filename);
@@ -5360,7 +5336,7 @@ OFString &DicomDirInterface::getStringFromFile(const char *filename,
 void DicomDirInterface::copyElement(DcmItem *dataset,
                                     const DcmTagKey &key,
                                     DcmDirectoryRecord *record,
-                                    const OFString &sourceFilename,
+                                    const OFFilename &sourceFilename,
                                     const OFBool optional,
                                     const OFBool copyEmpty)
 {
@@ -5402,7 +5378,7 @@ void DicomDirInterface::copyElement(DcmItem *dataset,
 void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
                                               const DcmTagKey &key,
                                               DcmDirectoryRecord *record,
-                                              const OFString &sourceFilename,
+                                              const OFFilename &sourceFilename,
                                               const char *defaultValue,
                                               const OFBool printWarning)
 {
@@ -5434,7 +5410,7 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
                                                   const DcmTagKey &datKey,
                                                   DcmDirectoryRecord *record,
                                                   const DcmTagKey &recKey,
-                                                  const OFString &sourceFilename,
+                                                  const OFFilename &sourceFilename,
                                                   const OFBool errorMsg)
 {
     OFBool result = OFFalse;
@@ -5448,10 +5424,10 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
         if (!result)
         {
             OFString uniqueString;
-            OFString originFilename = OFSTRING_GUARD(record->getRecordsOriginFile());
+            OFFilename originFilename = record->getRecordsOriginFile();
             const DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
             getStringFromDataset(record, uniqueKey, uniqueString);
-            if (originFilename.empty())
+            if (originFilename.isEmpty())
                 originFilename = "<unknown>";
             /* create warning message */
             OFOStringStream oss;
@@ -5479,7 +5455,7 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
 OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
                                                     DcmTagKey &key,
                                                     DcmDirectoryRecord *record,
-                                                    const OFString &sourceFilename)
+                                                    const OFFilename &sourceFilename)
 {
     OFBool result = OFFalse;
     /* check parameters first */
@@ -5495,10 +5471,10 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
             if (!result)
             {
                 OFString uniqueString;
-                OFString originFilename = OFSTRING_GUARD(record->getRecordsOriginFile());
+                OFFilename originFilename = record->getRecordsOriginFile();
                 const DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
                 getStringFromDataset(record, uniqueKey, uniqueString);
-                if (originFilename.empty())
+                if (originFilename.isEmpty())
                     originFilename = "<unknown>";
                 /* create warning message */
                 DCMDATA_WARN("file inconsistent with existing DICOMDIR record" << OFendl
@@ -5538,7 +5514,7 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
         record->putAndInsertString(key, buffer);
         /* create warning message */
         DCMDATA_WARN(recordTypeToName(record->getRecordType()) << " Record (origin: "
-            << OFSTRING_GUARD(record->getRecordsOriginFile()) << ") inventing " << DcmTag(key).getTagName()
+            << record->getRecordsOriginFile() << ") inventing " << DcmTag(key).getTagName()
             << ": " << buffer);
     }
 }

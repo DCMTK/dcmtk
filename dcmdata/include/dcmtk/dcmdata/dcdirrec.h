@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,8 +153,8 @@ public:
      *  @param fileFormat fileFormat for sourceFileName, can be NULL
      */
     DcmDirectoryRecord(const E_DirRecType recordType,
-                       const char *referencedFileID,   // DICOM format with '\\'
-                       const char *sourceFileName,     // OS Format
+                       const char *referencedFileID,     // DICOM format with '\\'
+                       const OFFilename &sourceFileName, // OS format
                        DcmFileFormat* fileFormat = NULL);
 
     /** constructor
@@ -164,8 +164,8 @@ public:
      *  @param fileFormat fileFormat for sourceFileName, can be NULL
      */
     DcmDirectoryRecord(const char *recordTypeName,
-                       const char *referencedFileID,   // DICOM Format with '\\'
-                       const char *sourceFileName,     // OS Format
+                       const char *referencedFileID,     // DICOM format with '\\'
+                       const OFFilename &sourceFileName, // OS format
                        DcmFileFormat* fileFormat = NULL);
 
     /** copy constructor
@@ -381,15 +381,17 @@ public:
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition assignToSOPFile(const char *referencedFileID,
-                                        const char *sourceFileName);
+                                        const OFFilename &sourceFileName);
 
     /// return number of directory records that are child record of this one
     virtual unsigned long cardSub() const;
 
     /** insert a child directory record
-     *  @param dirRec directory record to be inserted. Must be allocated on heap, ownership is transferred to this object
+     *  @param dirRec directory record to be inserted. Must be allocated on heap, ownership is
+     *    transferred to this object
      *  @param where index where to insert object
-     *  @param before flag indicating whether to insert the record before or after the element identified by where
+     *  @param before flag indicating whether to insert the record before or after the element
+     *    identified by where
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition insertSub(DcmDirectoryRecord* dirRec,
@@ -451,12 +453,12 @@ public:
     virtual OFCondition clearSub();
 
     /** store the filename from which this directory record was read from
-     *  @param fname filename, must not be NULL
+     *  @param fname filename, must not be empty
      */
-    virtual void setRecordsOriginFile(const char *fname);
+    virtual void setRecordsOriginFile(const OFFilename &fname);
 
-    /// get the filename from which this directory record was read from, NULL if not set
-    virtual const char* getRecordsOriginFile();
+    /// get the filename from which this directory record was read from, empty if not set
+    virtual const OFFilename &getRecordsOriginFile();
 
     /// get the offset in file of this directory record
     Uint32 getFileOffset() const;
@@ -480,7 +482,6 @@ protected:
     Uint16              lookForRecordInUseFlag();
     Uint32              setFileOffset(Uint32 position);
 
-
     // access to MRDR data element:
     OFCondition         setNumberOfReferences(Uint32 newRefNum);
     Uint32              lookForNumberOfReferences();
@@ -490,12 +491,12 @@ protected:
     // misc:
     /** Load all necessary info for this directory record.
      *  @param referencedFileID file ID that is being referenced, may be NULL
-     *  @param sourceFileName filename for the DICOM file, may be NULL
+     *  @param sourceFileName filename for the DICOM file, may be empty (unspecified)
      *  @param fileFormat If not NULL, then this should be the result of loading
-     *         sourceFileName. May only be non-NULL if sourceFileName isn't NULL.
+     *         sourceFileName. May only be non-NULL if sourceFileName isn't empty.
      */
     OFCondition         fillElementsAndReadSOP(const char *referencedFileID,
-                                               const char *sourceFileName,
+                                               const OFFilename &sourceFileName,
                                                DcmFileFormat *fileFormat = NULL);
     OFCondition         masterInsertSub(DcmDirectoryRecord *dirRec,
                                         const unsigned long where = DCM_EndOfListIndex);
@@ -503,8 +504,8 @@ protected:
 
 private:
 
-    /// string in which the filename (path) of the file from which this directory record was read is kept
-    char *recordsOriginFile;
+    /// filename (path) of the file from which this directory record was read
+    OFFilename recordsOriginFile;
 
     /// list of child directory records, kept in a sequence of items
     DcmSequenceOfItems *lowerLevelList;

@@ -96,7 +96,8 @@ static OFLogger dcmgpdirLogger = OFLog::getLogger("dcmtk.dcmdata." OFFIS_CONSOLE
 
 // ********************************************
 
-int main(int argc, char *argv[])
+// this macro either expands to main() or wmain()
+DCMTK_MAIN_FUNCTION
 {
     OFBool opt_write = OFTrue;
     OFBool opt_append = OFFalse;
@@ -104,12 +105,12 @@ int main(int argc, char *argv[])
     OFBool opt_recurse = OFFalse;
     E_EncodingType opt_enctype = EET_ExplicitLength;
     E_GrpLenEncoding opt_glenc = EGL_withoutGL;
-    const char *opt_output = DEFAULT_DICOMDIR_NAME;
+    OFFilename opt_output(DEFAULT_DICOMDIR_NAME);
     const char *opt_fileset = DEFAULT_FILESETID;
     const char *opt_descriptor = NULL;
     const char *opt_charset = DEFAULT_DESCRIPTOR_CHARSET;
-    const char *opt_directory = "";
-    const char *opt_pattern = "";
+    OFFilename opt_directory;
+    OFFilename opt_pattern;
     DicomDirInterface::E_ApplicationProfile opt_profile = DicomDirInterface::AP_GeneralPurpose;
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
@@ -290,8 +291,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--recurse"))
         {
             opt_recurse = OFTrue;
-            if ((opt_directory == NULL) || (strlen(opt_directory) == 0))
-                opt_directory = ".";
+            if (opt_directory.isEmpty())
+                opt_directory.set(".", OFTrue /*convert*/);
         }
         cmd.endOptionBlock();
 
@@ -343,13 +344,13 @@ int main(int argc, char *argv[])
         }
         if (cmd.findOption("--icon-file-prefix"))
         {
-            const char *iconPrefix = NULL;
+            OFFilename iconPrefix;
             app.checkValue(cmd.getValue(iconPrefix));
             ddir.setIconPrefix(iconPrefix);
         }
         if (cmd.findOption("--default-icon"))
         {
-            const char *defaultIcon = NULL;
+            OFFilename defaultIcon;
             app.checkValue(cmd.getValue(defaultIcon));
             ddir.setDefaultIcon(defaultIcon);
         }
@@ -502,7 +503,7 @@ int main(int argc, char *argv[])
     }
 
     /* make sure input directory exists (if specified) */
-    if ((opt_directory != NULL) && (strlen(opt_directory) > 0))
+    if (!opt_directory.isEmpty())
     {
         if (!OFStandard::dirExists(opt_directory))
         {
@@ -512,9 +513,9 @@ int main(int argc, char *argv[])
     }
 
     /* create list of input files */
-    OFList<OFString> fileNames;
-    OFString pathname;
-    const char *param = NULL;
+    OFFilename paramValue;
+    OFFilename pathName;
+    OFList<OFFilename> fileNames;
     const int count = cmd.getParamCount();
     if (opt_recurse)
         OFLOG_INFO(dcmgpdirLogger, "determining input files ...");
@@ -531,18 +532,18 @@ int main(int argc, char *argv[])
         /* iterate over all input filenames */
         for (int i = 1; i <= count; i++)
         {
-            cmd.getParam(i, param);
+            cmd.getParam(i, paramValue);
             /* add input directory */
-            OFStandard::combineDirAndFilename(pathname, opt_directory, param, OFTrue /*allowEmptyDirName*/);
+            OFStandard::combineDirAndFilename(pathName, opt_directory, paramValue, OFTrue /*allowEmptyDirName*/);
             /* search directory recursively (if required) */
-            if (OFStandard::dirExists(pathname))
+            if (OFStandard::dirExists(pathName))
             {
                 if (opt_recurse)
-                    OFStandard::searchDirectoryRecursively(param, fileNames, opt_pattern, opt_directory);
+                    OFStandard::searchDirectoryRecursively(paramValue, fileNames, opt_pattern, opt_directory);
                 else
-                    OFLOG_WARN(dcmgpdirLogger, "ignoring directory because option --recurse is not set: " << param);
+                    OFLOG_WARN(dcmgpdirLogger, "ignoring directory because option --recurse is not set: " << paramValue);
             } else
-                fileNames.push_back(param);
+                fileNames.push_back(paramValue);
         }
     }
     /* check whether there are any input files */
@@ -573,15 +574,15 @@ int main(int argc, char *argv[])
         if (result.good())
         {
             /* collect 'bad' files */
-            OFList<OFString> badFiles;
+            OFList<OFFilename> badFiles;
             unsigned int goodFiles = 0;
-            OFListIterator(OFString) iter = fileNames.begin();
-            OFListIterator(OFString) last = fileNames.end();
+            OFListIterator(OFFilename) iter = fileNames.begin();
+            OFListIterator(OFFilename) last = fileNames.end();
             /* iterate over all input filenames */
             while ((iter != last) && result.good())
             {
                 /* add files to the DICOMDIR */
-                result = ddir.addDicomFile((*iter).c_str(), opt_directory);
+                result = ddir.addDicomFile((*iter), opt_directory);
                 if (result.bad())
                 {
                     badFiles.push_back(*iter);

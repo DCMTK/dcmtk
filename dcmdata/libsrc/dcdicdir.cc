@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,15 +66,14 @@
 
 DcmDicomDir::DcmDicomDir()
   : errorFlag(EC_Normal),
-    dicomDirFileName(NULL),
+    dicomDirFileName(),
     modified(OFFalse),
     mustCreateNewDir(OFFalse),
     DirFile(new DcmFileFormat()),
     RootRec(NULL),
     MRDRSeq(NULL)
 {
-    dicomDirFileName = new char[ strlen( DEFAULT_DICOMDIR_NAME ) + 1 ];
-    strcpy( dicomDirFileName, DEFAULT_DICOMDIR_NAME );
+    dicomDirFileName.set(DEFAULT_DICOMDIR_NAME);
 
     OFCondition cond = DirFile->loadFile(dicomDirFileName);
     if (cond.bad())
@@ -96,19 +95,19 @@ DcmDicomDir::DcmDicomDir()
 // ********************************
 
 
-DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
+DcmDicomDir::DcmDicomDir(const OFFilename &fileName, const char *fileSetID)
   : errorFlag(EC_Normal),
-    dicomDirFileName(NULL),
+    dicomDirFileName(),
     modified(OFFalse),
     mustCreateNewDir(OFFalse),
     DirFile(new DcmFileFormat()),
     RootRec(NULL),
     MRDRSeq(NULL)
 {
-    if ( fileName == NULL || *fileName == '\0' )
-        fileName = DEFAULT_DICOMDIR_NAME;
-    dicomDirFileName = new char[ strlen( fileName ) + 1 ];
-    strcpy( dicomDirFileName, fileName );
+    if ( fileName.isEmpty() )
+        dicomDirFileName.set(DEFAULT_DICOMDIR_NAME);
+    else
+        dicomDirFileName = fileName;
 
     OFCondition cond = DirFile->loadFile(dicomDirFileName);
     if (cond.bad())
@@ -134,15 +133,13 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
  */
 DcmDicomDir::DcmDicomDir( const DcmDicomDir & old )
   : errorFlag(old.errorFlag),
-    dicomDirFileName(NULL),
+    dicomDirFileName(old.dicomDirFileName),
     modified(old.modified),
     mustCreateNewDir(old.mustCreateNewDir),
     DirFile(new DcmFileFormat(*old.DirFile)),
     RootRec(new DcmDirectoryRecord(*old.RootRec)),
     MRDRSeq(new DcmSequenceOfItems(*old.MRDRSeq))
 {
-    dicomDirFileName = new char[ strlen( old.dicomDirFileName ) + 1 ];
-    strcpy( dicomDirFileName, old.dicomDirFileName );
 }
 
 
@@ -155,7 +152,6 @@ DcmDicomDir::~DcmDicomDir()
         write();
 
     delete DirFile;
-    delete[] dicomDirFileName;
     delete RootRec;
     delete MRDRSeq;
 }
@@ -834,7 +830,7 @@ DcmFileFormat& DcmDicomDir::getDirFileFormat()
 // ********************************
 
 
-const char* DcmDicomDir::getDirFileName()
+const OFFilename &DcmDicomDir::getDirFileName()
 {
     return dicomDirFileName;
 }
@@ -993,7 +989,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
                                const E_EncodingType enctype,
                                const E_GrpLenEncoding glenc)
 {
-    if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
+    if (oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX)
     {
         DCMDATA_ERROR("DcmDicomDir::write() Wrong TransferSyntax used, only LittleEndianExplicit allowed");
     }
@@ -1001,18 +997,19 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
 
     /* find the path of the dicomdir to be created */
-    OFString tempfiledir;
+    OFFilename tempfiledir;
     OFStandard::getDirNameFromPath(tempfiledir, dicomDirFileName, OFFalse);
-    if (tempfiledir.empty())
+    if (tempfiledir.isEmpty())
     {
         /* use current directory to avoid file creation in "temp" */
-        tempfiledir = ".";
+        tempfiledir.set(".", OFTrue /*convert*/);
     }
 
     OFString tempfile;
     int tempfilefd;
+    /* tbd: unfortunately, we cannot pass an OFFilename parameter :( */
     OFCondition status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR | O_BINARY,
-            tempfiledir, TEMPNAME_TEMPLATE_PREFIX, "");
+        tempfiledir.getCharPointer(), TEMPNAME_TEMPLATE_PREFIX, "");
     if (status.bad())
         return status;
 
@@ -1038,14 +1035,14 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     DcmDataset &dset = getDataset(); // guaranteed to exist
     DcmMetaInfo &metainfo = *(getDirFileFormat().getMetaInfo());
-    DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
-    DcmTag unresSeqTag( DCM_DirectoryRecordSequence );
-    DcmSequenceOfItems localUnresRecs( unresSeqTag );
+    DcmSequenceOfItems &localDirRecSeq = getDirRecSeq(dset);
+    DcmTag unresSeqTag(DCM_DirectoryRecordSequence);
+    DcmSequenceOfItems localUnresRecs(unresSeqTag);
 
     // insert Media Stored SOP Class UID
-    insertMediaSOPUID( metainfo );
+    insertMediaSOPUID(metainfo);
 
-    getDirFileFormat().validateMetaInfo( outxfer );
+    getDirFileFormat().validateMetaInfo(outxfer);
 
     {
         // it is important that the cache object is destroyed before the file is renamed!
@@ -1070,68 +1067,58 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     // outStream is closed here
     delete outStream;
 
-    char* backupname = NULL;
-    if ( !mustCreateNewDir )
+    OFFilename backupname;
+    if (!mustCreateNewDir)
     {
 #ifndef DICOMDIR_WITHOUT_BACKUP
-        backupname = new char[ 1 + strlen( dicomDirFileName ) + strlen( DICOMDIR_BACKUP_SUFFIX ) ];
-        strcpy( backupname, dicomDirFileName );
-
-#ifndef HAVE_LONG_FILE_NAMES
-        char *suffix = strrchr( backupname, '.' );
-        if ( suffix )
-            *suffix = '\0';
-#endif
-
-        strcat( backupname, DICOMDIR_BACKUP_SUFFIX );
-        unlink( backupname );
+        OFStandard::appendFilenameExtension(backupname, dicomDirFileName, DICOMDIR_BACKUP_SUFFIX);
+        OFStandard::deleteFile(backupname);
         if (errorFlag == EC_Normal)
         {
-            if (rename(dicomDirFileName, backupname) != 0)
+            if (!OFStandard::renameFile(dicomDirFileName, backupname))
             {
-              char buf[256];
-              const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-              if (text == NULL) text = "(unknown error code)";
-              errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+                char buf[256];
+                const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
+                if (text == NULL) text = "(unknown error code)";
+                errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
             }
         }
 #else
-        if ( unlink( dicomDirFileName ) != 0 )
+        if (!OFStandard::deleteFile(dicomDirFileName))
         {
-          char buf[256];
-          const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-          if (text == NULL) text = "(unknown error code)";
-          errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+            char buf[256];
+            const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
+            if (text == NULL) text = "(unknown error code)";
+            errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
         }
 #endif
     }
 
-    if (errorFlag == EC_Normal && rename( tempfile.c_str(), dicomDirFileName ) != 0)
+    if (errorFlag == EC_Normal && !OFStandard::renameFile(tempfile, dicomDirFileName))
     {
-      char buf[256];
-      const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-      if (text == NULL) text = "(unknown error code)";
-      errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+        char buf[256];
+        const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
+        if (text == NULL) text = "(unknown error code)";
+        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
     }
 
     modified = OFFalse;
 
-    if (errorFlag == EC_Normal && backupname != NULL) {
+    if (errorFlag == EC_Normal) {
         /* remove backup */
-        unlink(backupname);
-        delete[] backupname;
+        OFStandard::deleteFile(backupname);
     }
 
     // remove all records from sequence localDirRecSeq
-    while ( localDirRecSeq.card() > 0 )
+    while (localDirRecSeq.card() > 0)
         localDirRecSeq.remove(OFstatic_cast(unsigned long, 0));
 
     // move records to which no pointer exists back
-    while ( localUnresRecs.card() > 0 )
+    while (localUnresRecs.card() > 0)
     {
         DcmItem *unresRecord =
             localUnresRecs.remove(OFstatic_cast(unsigned long, 0));
-        localDirRecSeq.insert( unresRecord );
+        localDirRecSeq.insert(unresRecord);
     }
     return errorFlag;
 }
