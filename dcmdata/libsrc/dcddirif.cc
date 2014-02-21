@@ -1108,8 +1108,7 @@ void DicomDirInterface::cleanup()
 // check whether the current DICOMDIR object is valid
 OFBool DicomDirInterface::isDicomDirValid() const
 {
-    /* tbd: might add more sophisticated checks later on,
-       e.g. require at least one referenced DICOM file */
+    /* tbd: might add more sophisticated checks later on */
     return (DicomDir != NULL);
 }
 
@@ -1284,7 +1283,7 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
 OFCondition DicomDirInterface::writeDicomDir(const E_EncodingType encodingType,
                                              const E_GrpLenEncoding groupLength)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_InvalidDICOMDIR;
     /* check whether DICOMDIR object is valid */
     if (isDicomDirValid())
     {

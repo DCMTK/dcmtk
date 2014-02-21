@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.21 (riesmeier)
 
+- Added new condition constant and fixed typo:
+  Added new condition constant for DICOMDIR files: EC_InvalidDICOMDIR. Also
+  fixed a typo in the textual description of EC_PrematureSequDelimitationItem.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcerror.cc
+
 - Fixed issue when compiled with wide char support:
   The initialization of an OFFilename instance with NULL is ambiguous when
   compiled with WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION defined.

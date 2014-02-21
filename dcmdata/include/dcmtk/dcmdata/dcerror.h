@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -103,7 +103,7 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ApplicationProfileViolated
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidOffset;
 /// Too many bytes requested
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_TooManyBytesRequested;
-// Invalid basic offset table
+/// Invalid basic offset table
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidBasicOffsetTable;
 /// Element length is larger than (explicit) length of surrounding item
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthLargerThanItem;
@@ -125,6 +125,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SequDelimitationItemMissin
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemDelimitationItemMissing;
 /// Sequence delimiter occurs before explicit item length is completely read
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PrematureSequDelimitationItem;
+/// Invalid DICOMDIR, e.g. corrupted data structures
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidDICOMDIR;
 
 // status code constants
 

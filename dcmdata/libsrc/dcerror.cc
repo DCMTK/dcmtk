@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,8 +61,8 @@ makeOFConditionConst(EC_SequDelimitationItemMissing,     OFM_dcmdata, 34, OF_err
 // error codes 35..36 are reserved for specific character set error messages (see below)
 // error code 37 is reserved for XML conversion error messages (see below)
 makeOFConditionConst(EC_ItemDelimitationItemMissing,     OFM_dcmdata, 38, OF_error, "Item Delimitation Item missing"                 );
-makeOFConditionConst(EC_PrematureSequDelimitationItem,   OFM_dcmdata, 39, OF_error, "Sequence Delimitation Item occured before Item was completely read");
-
+makeOFConditionConst(EC_PrematureSequDelimitationItem,   OFM_dcmdata, 39, OF_error, "Sequence Delimitation Item occurred before Item was completely read");
+makeOFConditionConst(EC_InvalidDICOMDIR,                 OFM_dcmdata, 40, OF_error, "Invalid DICOMDIR");
 
 const unsigned short EC_CODE_CannotSelectCharacterSet  = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet = 36;
