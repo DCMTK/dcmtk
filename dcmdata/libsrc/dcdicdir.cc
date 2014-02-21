@@ -84,7 +84,7 @@ DcmDicomDir::DcmDicomDir()
     }
 
     createNewElements( "" );      // create missing data elements
-    RootRec = new DcmDirectoryRecord( ERT_root, NULL, NULL);
+    RootRec = new DcmDirectoryRecord( ERT_root, NULL, OFFilename());
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
@@ -118,7 +118,7 @@ DcmDicomDir::DcmDicomDir(const OFFilename &fileName, const char *fileSetID)
     }
 
     createNewElements( fileSetID );   // create missing data elements
-    RootRec = new DcmDirectoryRecord( ERT_root, NULL, NULL);
+    RootRec = new DcmDirectoryRecord( ERT_root, NULL, OFFilename());
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
@@ -956,7 +956,7 @@ DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( const char *filename )
             newMRDR = matchRec;
         else if ( matchRec->getRecordType() != ERT_root )
         {
-            newMRDR = new DcmDirectoryRecord( ERT_Mrdr, filename, NULL);
+            newMRDR = new DcmDirectoryRecord( ERT_Mrdr, filename, OFFilename());
             if ( matchRec->assignToMRDR( newMRDR ) != EC_IllegalCall )
                 getMRDRSequence().insert( newMRDR );
             else

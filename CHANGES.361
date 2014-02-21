@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.21 (riesmeier)
+
+- Fixed issue when compiled with wide char support:
+  The initialization of an OFFilename instance with NULL is ambiguous when
+  compiled with WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION defined.
+  This issue was introduced with commit d084ebf, i.e. the previous one.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2014.02.20 (riesmeier)
 
 - Added support for wide chars to DICOMDIR code:

@@ -112,7 +112,7 @@ static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeName
 
 DcmDirectoryRecord::DcmDirectoryRecord()
   : DcmItem(ItemTag),
-    recordsOriginFile(NULL),
+    recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
     referencedMRDR(NULL),
@@ -128,7 +128,7 @@ DcmDirectoryRecord::DcmDirectoryRecord()
 DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
                                        const Uint32 len)
   : DcmItem(tag, len),
-    recordsOriginFile(NULL),
+    recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
     referencedMRDR(NULL),
