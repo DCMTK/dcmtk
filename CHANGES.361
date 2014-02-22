@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.22 (onken)
+
+- Add libjpeg dependency for libtiff and minor changes:
+  It is possible to build libtiff with libjpeg-based JPEG coding support.
+  Thus CMake is told on Unix to add libjpeg includes and libraries so that
+  tiff-based tools will be linked to libjpeg, too. This mirrors the
+  ./configure behaviour under Unix. It is not tested whether libtiff
+  actually was compiled with JPEG enabled. Additionally, the "QUIET" option
+  was added to avoid CMake's FindModule scripts printing messages about
+  external libraries that are already covered by explicit DCMTK messages.
+  Re-ordered code for some external libraries. Thanks to Jean-Christophe
+  Fillion-Robin <jchris.fillionr@kitware.com> for the original patch.
+  Affects: CMake/3rdparty.cmake
+
 **** Changes from 2014.02.21 (riesmeier)
 
 - Added new condition constant and fixed typo:
