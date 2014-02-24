@@ -275,7 +275,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition checkDicomFile(const OFFilename &filename,
-                               const OFFilename &directory = "");
+                               const OFFilename &directory = OFFilename());
 
     /** add specified DICOM file to the current DICOMDIR.
      *  This method loads the given file, checks whether it conforms to the current
@@ -287,7 +287,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition addDicomFile(const OFFilename &filename,
-                             const OFFilename &directory = "");
+                             const OFFilename &directory = OFFilename());
 
     /** set the fileset descriptor file ID and character set.
      *  Prior to any internal modification both 'filename' and 'charset' are checked
@@ -1167,7 +1167,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @param errorMsg print error message if OFTrue, a warning message otherwise
      */
     void printUnexpectedValueMessage(const DcmTagKey &key,
-                                     const OFFilename &filename = "",
+                                     const OFFilename &filename = OFFilename(),
                                      const OFBool errorMsg = OFTrue);
 
     /** print an error message that a required attribute is missing/empty.
@@ -1178,7 +1178,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @param emptyMsg print "empty" if OFTrue, "missing" otherwise
      */
     void printRequiredAttributeMessage(const DcmTagKey &key,
-                                       const OFFilename &filename = "",
+                                       const OFFilename &filename = OFFilename(),
                                        const OFBool emptyMsg = OFFalse);
 
     /** print an error message that something went wrong with an attribute.
@@ -1237,7 +1237,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      */
     OFBool checkExists(DcmItem *dataset,
                        const DcmTagKey &key,
-                       const OFFilename &filename = "");
+                       const OFFilename &filename = OFFilename());
 
     /** check whether given tag exists with a value in the DICOM dataset
      *  @param dataset DICOM dataset to be checked
@@ -1247,7 +1247,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      */
     OFBool checkExistsWithValue(DcmItem *dataset,
                                 const DcmTagKey &key,
-                                const OFFilename &filename = "");
+                                const OFFilename &filename = OFFilename());
 
     /** check whether given tag exists in the DICOM dataset and has the expected string value
      *  @param dataset DICOM dataset to be checked
@@ -1259,7 +1259,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool checkExistsWithStringValue(DcmItem *dataset,
                                       const DcmTagKey &key,
                                       const OFString &value,
-                                      const OFFilename &filename = "");
+                                      const OFFilename &filename = OFFilename());
 
     /** check whether given tag exists in the DICOM dataset and has the expected integer value
      *  @param dataset DICOM dataset to be checked
@@ -1272,7 +1272,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool checkExistsWithIntegerValue(DcmItem *dataset,
                                        const DcmTagKey &key,
                                        const long value,
-                                       const OFFilename &filename = "",
+                                       const OFFilename &filename = OFFilename(),
                                        const OFBool reject = OFTrue);
 
     /** check whether given tag exists in the DICOM dataset and has an integer value in the
@@ -1289,7 +1289,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                       const DcmTagKey &key,
                                       const long min,
                                       const long max,
-                                      const OFFilename &filename = "",
+                                      const OFFilename &filename = OFFilename(),
                                       const OFBool reject = OFTrue);
 
     /** get string value from dataset and report an error (if any)

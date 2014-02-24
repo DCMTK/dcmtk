@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.24 (riesmeier)
 
+- Always use OFFilename() instead of "" as a default:
+  Always use OFFilename instead of "" (empty 8-bit character string) as a
+  default value in order to make sure that wide character support under Windows
+  really works. This is because "" only initializes the char* member variable
+  of OFFilename and not the wchar_t*.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+
 - Fixed issue with missing terminating NULL byte:
   Fixed issue with possibly missing NULL byte at the end of wide character
   strings in getDirNameFromPath() and normalizeDirName().

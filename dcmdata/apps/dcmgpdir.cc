@@ -523,7 +523,7 @@ DCMTK_MAIN_FUNCTION
     if (count == 0)
     {
         if (opt_recurse)
-            OFStandard::searchDirectoryRecursively("", fileNames, opt_pattern, opt_directory);
+            OFStandard::searchDirectoryRecursively(OFFilename(), fileNames, opt_pattern, opt_directory);
         else {
             OFLOG_FATAL(dcmgpdirLogger, "missing parameter dcmfile-in");
             return 1;
