@@ -524,10 +524,8 @@ DCMTK_MAIN_FUNCTION
     {
         if (opt_recurse)
             OFStandard::searchDirectoryRecursively(OFFilename(), fileNames, opt_pattern, opt_directory);
-        else {
-            OFLOG_FATAL(dcmgpdirLogger, "missing parameter dcmfile-in");
-            return 1;
-        }
+        else
+            app.printError("Missing parameter dcmfile-in");
     } else {
         /* iterate over all input filenames */
         for (int i = 1; i <= count; i++)

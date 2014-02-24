@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.24 (riesmeier)
 
+- Use printError() instead of OFLOG_FATAL():
+  Use OFConsoleApplication::printError() instead of OFLOG_FATAL() in case of a
+  missing command line parameter.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
 - Always use OFFilename() instead of "" as a default:
   Always use OFFilename instead of "" (empty 8-bit character string) as a
   default value in order to make sure that wide character support under Windows
