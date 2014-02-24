@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.24 (onken)
+
+- Fixed shared library build under Unix (configure):
+  dcmimgle and related external libraries have not been linked to dcmrt
+  applications in case shared library option was enabled and a configure/make
+  build was performed under Unix.
+  Affects: dcmrt/apps/Makefile.in
+           dcmrt/tests/Makefile.in
+
 **** Changes from 2014.02.24 (riesmeier)
 
 - Fixed further issues with wide char support.
