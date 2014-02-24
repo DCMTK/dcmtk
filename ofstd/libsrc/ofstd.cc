@@ -569,6 +569,7 @@ OFFilename &OFStandard::getDirNameFromPath(OFFilename &result,
         } else {
             wchar_t *tmpString = new wchar_t[strPos - strValue + 1];
             wcsncpy(tmpString, strValue, strPos - strValue);
+            tmpString[strPos - strValue + 1] = L'\0';
             result.set(tmpString, OFTrue /*convert*/);
             delete[] tmpString;
         }
@@ -684,7 +685,7 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
         /* copy resulting string (omit trailing backslashes) */
         else {
             wchar_t *tmpString = new wchar_t[strLength + 1];
-            wcsncpy(tmpString, strValue, strLength);
+            wcsncpy(tmpString, strValue, strLength + 1);
             result.set(tmpString, OFTrue /*convert*/);
             delete[] tmpString;
         }

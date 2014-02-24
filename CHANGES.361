@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.24 (riesmeier)
+
+- Fixed issue with missing terminating NULL byte:
+  Fixed issue with possibly missing NULL byte at the end of wide character
+  strings in getDirNameFromPath() and normalizeDirName().
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2014.02.22 (onken)
 
 - Add libjpeg dependency for libtiff and minor changes:
