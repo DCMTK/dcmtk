@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.02.24 (riesmeier)
 
+- Fixed further issues with wide char support.
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Use printError() instead of OFLOG_FATAL():
   Use OFConsoleApplication::printError() instead of OFLOG_FATAL() in case of a
   missing command line parameter.

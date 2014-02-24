@@ -569,7 +569,7 @@ OFFilename &OFStandard::getDirNameFromPath(OFFilename &result,
         } else {
             wchar_t *tmpString = new wchar_t[strPos - strValue + 1];
             wcsncpy(tmpString, strValue, strPos - strValue);
-            tmpString[strPos - strValue + 1] = L'\0';
+            tmpString[strPos - strValue] = L'\0';
             result.set(tmpString, OFTrue /*convert*/);
             delete[] tmpString;
         }
@@ -685,7 +685,8 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
         /* copy resulting string (omit trailing backslashes) */
         else {
             wchar_t *tmpString = new wchar_t[strLength + 1];
-            wcsncpy(tmpString, strValue, strLength + 1);
+            wcsncpy(tmpString, strValue, strLength);
+            tmpString[strLength] = L'\0';
             result.set(tmpString, OFTrue /*convert*/);
             delete[] tmpString;
         }
@@ -734,7 +735,7 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
     // # or combinations of absolute paths in both 'dirName' and 'fileName'
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
     /* check whether to use the wide-char version of the API function */
-    if (dirName.usesWideChars() && fileName.usesWideChars())
+    if (dirName.usesWideChars() || fileName.usesWideChars())
     {
         const wchar_t *strValue = fileName.getWideCharPointer();
         size_t strLength = (strValue == NULL) ? 0 : wcslen(strValue);
@@ -880,7 +881,7 @@ OFFilename &OFStandard::appendFilenameExtension(OFFilename &result,
 {
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
     /* check whether to use the wide-char version of the API function */
-    if (fileName.usesWideChars() && fileExtension.usesWideChars())
+    if (fileName.usesWideChars() || fileExtension.usesWideChars())
     {
         const wchar_t *namValue = fileName.getWideCharPointer();
         const wchar_t *extValue = fileExtension.getWideCharPointer();
