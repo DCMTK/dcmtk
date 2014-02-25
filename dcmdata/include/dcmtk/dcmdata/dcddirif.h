@@ -199,7 +199,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @param profile media storage application profile to be used for the DICOMDIR
      *  @param filename name of the DICOMDIR file to be created (default: 'DICOMDIR').
      *    The filename may include a fully qualified pathname.
-     *  @param filesetID value of the attribute FileSetID (default: 'DCMTK_MEDIA_DEMO')
+     *  @param filesetID value of the attribute FileSetID (default: 'DCMTK_MEDIA_DEMO',
+     *    might be empty)
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition createNewDicomDir(const E_ApplicationProfile profile = AP_GeneralPurpose,

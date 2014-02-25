@@ -97,11 +97,12 @@ dcmfile-in  referenced DICOM file (or directory to be scanned)
 \verbatim
 DICOMDIR identifiers:
 
-  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
-          use specific file set ID
+  +F    --fileset-id  [i]d: string
+          use specific file-set ID
+          (default: DCMTK_MEDIA_DEMO, "" for none)
 
   +R    --descriptor  [f]ilename: string
-          add a file set descriptor file ID
+          add a file-set descriptor file ID
           (e.g. README, default: no descriptor)
 
   +C    --char-set  [c]harset: string

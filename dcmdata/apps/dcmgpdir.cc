@@ -133,7 +133,7 @@ DCMTK_MAIN_FUNCTION
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "referenced DICOM file (or directory to be scanned)", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("dcmfile-in", "ref. DICOM file (or directory to be scanned)", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -142,10 +142,10 @@ DCMTK_MAIN_FUNCTION
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("DICOMDIR identifiers:");
-        cmd.addOption("--fileset-id",            "+F",  1, "[i]d: string (default: " DEFAULT_FILESETID ")",
-                                                           "use specific file set ID");
+        cmd.addOption("--fileset-id",            "+F",  1, "[i]d: string",
+                                                           "use specific file-set ID\n(default: " DEFAULT_FILESETID ", \"\" for none)");
         cmd.addOption("--descriptor",            "+R",  1, "[f]ilename: string",
-                                                           "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
+                                                           "add a file-set descriptor file ID\n(e.g. README, default: no descriptor)");
         cmd.addOption("--char-set",              "+C",  1, "[c]harset: string",
                                                            "add a specific character set for descriptor\n(default: \"" DEFAULT_DESCRIPTOR_CHARSET "\" if descriptor present)");
       cmd.addSubGroup("reading:");
@@ -222,7 +222,7 @@ DCMTK_MAIN_FUNCTION
         cmd.addOption("--update",                "+U",     "update existing DICOMDIR");
         cmd.addOption("--discard",               "-w",     "do not write out DICOMDIR");
       cmd.addSubGroup("backup:");
-        cmd.addOption("--create-backup",                   "create a backup of existing DICOMDIR (default)");
+        cmd.addOption("--create-backup",                   "create a backup of existing DICOMDIR (def.)");
         cmd.addOption("--no-backup",             "-nb",    "do not create a backup of existing DICOMDIR");
       cmd.addSubGroup("post-1993 value representations:");
         cmd.addOption("--enable-new-vr",         "+u",     "enable support for new VRs (UN/UT) (default)");

@@ -1368,7 +1368,7 @@ OFBool DicomDirInterface::isCharsetValid(const char *charset)
                  (strcmp(charset, "ISO_IR 13")  == 0) ||
                  (strcmp(charset, "ISO_IR 192") == 0);
         if (!result)
-            DCMDATA_ERROR("unknown character set for fileset descriptor: " << charset);
+            DCMDATA_ERROR("unknown character set for file-set descriptor: " << charset);
     }
     return result;
 }
@@ -5122,18 +5122,17 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
         if (!DcmCodeString::checkVR(filesetID, &invalidChar, OFFalse /*checkLength*/))
         {
             /* create error message */
-            DCMDATA_ERROR("invalid character(s) in fileset ID: " << filesetID << OFendl
-                << OFString(7 /*Error: */ + 36 /*message*/ + invalidChar, ' ') << "^");
+            DCMDATA_ERROR("invalid character(s) in file-set ID: " << filesetID << OFendl
+                << OFString(37 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
         /* ensure that fileset ID is not too large */
         if (isComponentTooLarge(filesetID, OFstatic_cast(size_t, DcmVR(EVR_CS).getMaxValueLength()), MapFilenamesMode))
         {
-            DCMDATA_ERROR("fileset ID too large: " << filesetID);
+            DCMDATA_ERROR("file-set ID too large: " << filesetID);
             result = OFFalse;
         }
-    } else
-        result = OFFalse;
+    }
     return result;
 }
 

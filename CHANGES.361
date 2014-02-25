@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.25 (riesmeier)
+
+- Allow empty file-set ID in DICOMDIR (type 2):
+  Allow file-set ID to be empty in a DICOMDIR since it is type 2. Also fixed
+  spelling ("file-set ID" instead of "file set ID" or "fileset ID") where
+  relevant, i.e. in log output and syntax usage.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmjpeg/docs/dcmmkdir.man
+
 **** Changes from 2014.02.24 (onken)
 
 - Fixed shared library build under Unix (configure):
