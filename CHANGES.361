@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.27 (schlamelcher)
+
+- Fixed dll build on windows:
+  Created a workaround for Visual Studio that disables dll storage specifiers
+  when linking directly into the executable. This is needed since the
+  built-in dictionary code is created by the tools mkdeftag and mkdictbi and
+  thus those tools statically link the few required dcmdata source files
+  instead of linking to dcmdata as a whole.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdefine.h
+           dcmdata/libsrc/CMakeLists.txt
+
 **** Changes from 2014.02.25 (riesmeier)
 
 - Allow empty file-set ID in DICOMDIR (type 2):

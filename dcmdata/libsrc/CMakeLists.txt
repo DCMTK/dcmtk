@@ -13,6 +13,10 @@ IF(BUILD_APPS)
   # don't use DCMTK_ADD_EXECUTABLE() since we don't want to install the files
   ADD_EXECUTABLE(mkdictbi EXCLUDE_FROM_ALL mkdictbi dctagkey dcdicent dcdict dcdictbi dcvr dchashdi cmdlnarg dctypes)
   ADD_EXECUTABLE(mkdeftag EXCLUDE_FROM_ALL mkdeftag dctagkey dcdicent dcdict dcdictbi dcvr dchashdi cmdlnarg dctypes)
+  # workaround for Visual Studio to disable dll storage specifiers when linking directly into the executable.
+  # this is needed since the built-in dictionary code is created by the tools below and thus those tools
+  # statically link the few required dcmdata source files instead of linking to dcmdata as a whole.
+  SET_TARGET_PROPERTIES(mkdictbi mkdeftag PROPERTIES COMPILE_DEFINITIONS "DCMDATA_BUILD_DICTIONARY")
 ENDIF(BUILD_APPS)
 DCMTK_TARGET_LINK_MODULES(mkdictbi ofstd oflog)
 DCMTK_TARGET_LINK_MODULES(mkdeftag ofstd oflog)
