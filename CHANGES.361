@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.02.28 (schlamelcher)
+
+- Correction of inconsistent previous commit.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdefine.h
+
 **** Changes from 2014.02.27 (schlamelcher)
 
 - Fixed dll build on windows:

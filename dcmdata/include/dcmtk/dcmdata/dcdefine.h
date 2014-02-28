@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 // Workaround for Visual Studio to disable dll storage specifiers when linking directly into the executable.
 // This is needed since the built-in dictionary code is created by the tools mkdeftag and mkdictbi and thus
 // those tools statically link the few required dcmdata source files instead of linking to dcmdata as a whole.
-#ifndef DCMDATA_STATIC
+#ifndef DCMDATA_BUILD_DICTIONARY
 #ifdef dcmdata_EXPORTS
 #define DCMTK_DCMDATA_EXPORT DCMTK_DECL_EXPORT
 #else
