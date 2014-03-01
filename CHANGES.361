@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.01 (riesmeier)
+
+- Fixed some comments.
+  Affects: dcmdata/libsrc/dcxfer.cc
+
 **** Changes from 2014.02.28 (schlamelcher)
 
 - Correction of inconsistent previous commit.

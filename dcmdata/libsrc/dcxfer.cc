@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,7 +78,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
-    { UID_BigEndianExplicitTransferSyntax,  // defined in dctypes.h
+    { UID_BigEndianExplicitTransferSyntax,
       "Big Endian Explicit",
       EXS_BigEndianExplicit,
       EBO_BigEndian,
@@ -86,7 +86,7 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
       OFFalse,
-      OFTrue,
+      OFTrue, // retired with Supplement 98
       ESC_none },
     { UID_JPEGProcess1TransferSyntax,
       "JPEG Baseline",
@@ -619,13 +619,13 @@ Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr) const
         // some VRs have an extended format
         DcmVR vr(evr);
         if (vr.usesExtendedLengthEncoding()) {
-            len = 12;  // for Tag, Length, VR und reserved
+            len = 12;  // for Tag, Length, VR and reserved
         } else {
-            len = 8;   // for Tag, Length und VR
+            len = 8;   // for Tag, Length and VR
         }
     } else {
         // all implicit VRs have the same format
-        len = 8;       // for Tag und Length
+        len = 8;       // for Tag and Length
     }
     return len;
 }
