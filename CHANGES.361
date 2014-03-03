@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.03 (schlamelcher)
 
+- Enabled shutdown functionality of DcmSCPPool:
+  Finished implementation of DcmSCPPool::stopAfterCurrentAssociations().
+  Some basic tests have been run to ensure this method works as expected.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+           dcmnet/libsrc/scppool.cc
+           dcmnet/tests/tpool.cc
+
 - Fixed DcmSCPPool test case failing on older systems.
   Affects: dcmnet/tests/tpool.cc
 

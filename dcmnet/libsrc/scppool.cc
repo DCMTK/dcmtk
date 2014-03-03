@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,21 +98,23 @@ OFCondition DcmBaseSCPPool::listen()
     /* If error occurred while receiving association, clean up */
     else
     {
-      /* Stop listening, if timeout occurred, otherwise keep listening */
+      /* Handle timeout and errors differently */
       if ( cond == DUL_NOASSOCIATIONREQUEST )
       {
         ASC_destroyAssociation( &assoc );
-        break;
       }
-      dropAndDestroyAssociation(assoc);
-      DCMNET_ERROR("DcmBaseSCPPool: Error receiving association: " << cond.text());
+      else
+      {
+        dropAndDestroyAssociation(assoc);
+        DCMNET_ERROR("DcmBaseSCPPool: Error receiving association: " << cond.text());
+      }
       // ... and keep listening ...
       cond = EC_Normal;
     }
   }
 
-  m_runMode = SHUTDOWN;
   m_criticalSection.lock();
+  m_runMode = SHUTDOWN;
 
   // iterate over all busy workers, join their threads and delete them.
   for
@@ -122,8 +124,10 @@ OFCondition DcmBaseSCPPool::listen()
     ++it
   )
   {
+    m_criticalSection.unlock();
     (*it)->join();
     delete *it;
+    m_criticalSection.lock();
   }
 
   m_workersBusy.clear();
@@ -133,6 +137,14 @@ OFCondition DcmBaseSCPPool::listen()
   ASC_dropNetwork(&network);
 
   return EC_Normal;
+}
+
+void DcmBaseSCPPool::stopAfterCurrentAssociations()
+{
+  m_criticalSection.lock();
+  if (m_runMode == LISTEN )
+    m_runMode = STOP;
+  m_criticalSection.unlock();
 }
 
 // ----------------------------------------------------------------------------

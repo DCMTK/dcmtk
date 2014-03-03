@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -166,10 +166,8 @@ public:
   /* If enabled, the pool will return from listening for incoming requests
    *  as soon as the last worker is idle, i.e.\ no worker is handling a DICOM
    *  association any more.
-   *  TODO: This functionality is not completely tested so far and thus
-   *  commented out.
    */
-  // virtual void stopAfterCurrentAssociations();
+  virtual void stopAfterCurrentAssociations();
 
 protected:
 

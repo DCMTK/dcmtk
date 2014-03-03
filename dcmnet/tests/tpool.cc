@@ -54,9 +54,7 @@ protected:
 /* Test starts pool with a maximum of 20 SCP workers. All workers are
  * configured to respond to C-ECHO (Verification SOP Class). 20 SCU
  * threads are created and connect simultaneously to the pool, send
- * C-ECHO messages and release the association. Currently the pool
- * ends itself after 20 seconds without connection request. This can
- * be changed to a shutDown() call on the pool once it is implemented.
+ * C-ECHO messages and release the association.
  */
 OFTEST(dcmnet_scp_pool)
 {
@@ -67,13 +65,9 @@ OFTEST(dcmnet_scp_pool)
     config.setPort(11112);
     config.setConnectionBlockingMode(DUL_NOBLOCK);
 
-    /* Stop listening after 20 seconds. This makes sure the server pool
-     * exits 20 seconds after the last connection request of the SCUs.
-     * As soon as it is possible to shut down the pool via API
-     * (currently under test), this should be done instead of exiting
-     * via connection timeout.
-     */
-    config.setConnectionTimeout(20);
+    // Dead time during which the pool is unable to respond to
+    // stopAfterCurrentAssociations().
+    config.setConnectionTimeout(1);
 
     pool.setMaxThreads(20);
     OFList<OFString> xfers;
@@ -109,8 +103,8 @@ OFTEST(dcmnet_scp_pool)
         delete *it3;
     }
 
-    // enable as soon as available (currently being tested)
-    // pool.stopAfterCurrentAssociations();
+    // Request shutdown.
+    pool.stopAfterCurrentAssociations();
     pool.join();
 
     OFCHECK(pool.result.good());
