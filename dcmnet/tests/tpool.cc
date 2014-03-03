@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013, OFFIS e.V.
+ *  Copyright (C) 2013-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,7 +55,7 @@ protected:
  * configured to respond to C-ECHO (Verification SOP Class). 20 SCU
  * threads are created and connect simultaneously to the pool, send
  * C-ECHO messages and release the association. Currently the pool
- * ends itself after 3 seconds without connection request. This can
+ * ends itself after 20 seconds without connection request. This can
  * be changed to a shutDown() call on the pool once it is implemented.
  */
 OFTEST(dcmnet_scp_pool)
@@ -67,19 +67,21 @@ OFTEST(dcmnet_scp_pool)
     config.setPort(11112);
     config.setConnectionBlockingMode(DUL_NOBLOCK);
 
-    /* Stop listening after 3 seconds. This makes sure the server pool
-     * exits 3 seconds after the last connection request of the SCUs.
+    /* Stop listening after 20 seconds. This makes sure the server pool
+     * exits 20 seconds after the last connection request of the SCUs.
      * As soon as it is possible to shut down the pool via API
      * (currently under test), this should be done instead of exiting
      * via connection timeout.
      */
-    config.setConnectionTimeout(3);
+    config.setConnectionTimeout(20);
 
     pool.setMaxThreads(20);
     OFList<OFString> xfers;
     xfers.push_back(UID_LittleEndianExplicitTransferSyntax);
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
     config.addPresentationContext(UID_VerificationSOPClass, xfers);
+
+    pool.start();
 
     OFVector<TestSCU*> scus(20);
     for (OFVector<TestSCU*>::iterator it1 = scus.begin(); it1 != scus.end(); ++it1)
@@ -93,7 +95,9 @@ OFTEST(dcmnet_scp_pool)
         (*it1)->initNetwork();
     }
 
-    pool.start();
+    // "ensure" the pool is initialized before any SCU starts connecting to it. The initialization
+    // can take a couple of seconds on older systems, e.g. debian i368.
+    OFStandard::sleep(5);
 
     for (OFVector<TestSCU*>::const_iterator it2 = scus.begin(); it2 != scus.end(); ++it2)
         (*it2)->start();

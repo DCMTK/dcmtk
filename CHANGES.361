@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.03 (schlamelcher)
+
+- Fixed DcmSCPPool test case failing on older systems.
+  Affects: dcmnet/tests/tpool.cc
+
 **** Changes from 2014.03.01 (riesmeier)
 
 - Fixed some comments.
