@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.03 (riesmeier)
+
+- Fixed wrong tag in CodingSchemeIdentificationSequence:
+  Fixed wrong tag being used in CodingSchemeIdentificationSequence (0008,0110).
+  Instead of Responsible Organization (0010,2299) it should be Coding Scheme
+  Responsible Organization (0008,0116). This inconsistency was introduced back
+  in the year 2003 with CP-324. This commit also changes the name of the
+  corresponding get/set methods in class DSRCodingSchemeIdentificationList.
+  Thanks to David Clunie <dclunie@dclunie.com> for pointing this out.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/tests/mkreport.cc
+
 **** Changes from 2014.03.03 (schlamelcher)
 
 - Enabled shutdown functionality of DcmSCPPool:

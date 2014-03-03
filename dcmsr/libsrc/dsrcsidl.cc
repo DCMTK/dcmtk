@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2013, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,7 +98,7 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
                     getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "1", "2C", "CodingSchemeIdentificationSequence");
                     getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3", "CodingSchemeIdentificationSequence");
                     getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3", "CodingSchemeIdentificationSequence");
-                    getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3", "CodingSchemeIdentificationSequence");
+                    getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeResponsibleOrganization, item->CodingSchemeResponsibleOrganization, "1", "3", "CodingSchemeIdentificationSequence");
                 }
             }
         }
@@ -137,7 +137,7 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset) const
                 }
                 putStringValueToDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, OFFalse /*allowEmpty*/);
                 putStringValueToDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, OFFalse /*allowEmpty*/);
-                putStringValueToDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, OFFalse /*allowEmpty*/);
+                putStringValueToDataset(*ditem, DCM_CodingSchemeResponsibleOrganization, item->CodingSchemeResponsibleOrganization, OFFalse /*allowEmpty*/);
             }
         }
         ++iter;
@@ -176,7 +176,7 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeExternalID, "id", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeName, "name", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeVersion, "version", OFTrue /*encoding*/, OFFalse /*clearString*/);
-                        doc.getStringFromNodeContent(childCursor, item->ResponsibleOrganization, "organization", OFTrue /*encoding*/, OFFalse /*clearString*/);
+                        doc.getStringFromNodeContent(childCursor, item->CodingSchemeResponsibleOrganization, "organization", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         /* proceed with next node */
                         childCursor.gotoNext();
                     }
@@ -209,7 +209,7 @@ OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream &s
             writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeExternalID, tmpString), "identifier", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeName, tmpString), "name", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeVersion, tmpString), "version", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-            writeStringValueToXML(stream, convertToXMLString(item->ResponsibleOrganization, tmpString), "organization", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+            writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeResponsibleOrganization, tmpString), "organization", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             stream << "</scheme>" << OFendl;
         }
         ++iter;
@@ -231,7 +231,7 @@ OFCondition DSRCodingSchemeIdentificationList::addPrivateDcmtkCodingScheme()
         item->CodingSchemeExternalID.clear();
         item->CodingSchemeName = OFFIS_CODING_SCHEME_NAME;
         item->CodingSchemeVersion.clear();  // there are currently no different versions
-        item->ResponsibleOrganization = OFFIS_RESPONSIBLE_ORGANIZATION;
+        item->CodingSchemeResponsibleOrganization = OFFIS_CODING_SCHEME_RESPONSIBLE_ORGANIZATION;
     }
     return result;
 }
@@ -464,13 +464,13 @@ const OFString &DSRCodingSchemeIdentificationList::getCodingSchemeVersion(OFStri
 }
 
 
-const OFString &DSRCodingSchemeIdentificationList::getResponsibleOrganization(OFString &stringValue) const
+const OFString &DSRCodingSchemeIdentificationList::getCodingSchemeResponsibleOrganization(OFString &stringValue) const
 {
     /* check whether current item is valid */
     ItemStruct *item = getCurrentItem();
     /* get requested value or clear string if invalid */
     if (item != NULL)
-        stringValue = item->ResponsibleOrganization;
+        stringValue = item->CodingSchemeResponsibleOrganization;
     else
         stringValue.clear();
     return stringValue;
@@ -562,8 +562,8 @@ OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeVersion(const OFSt
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const OFString &value,
-                                                                          const OFBool check)
+OFCondition DSRCodingSchemeIdentificationList::setCodingSchemeResponsibleOrganization(const OFString &value,
+                                                                                      const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* check whether current item is valid */
@@ -573,7 +573,7 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
         /* set the value (if valid) */
         result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
         if (result.good())
-            item->ResponsibleOrganization = value;
+            item->CodingSchemeResponsibleOrganization = value;
     }
     return result;
 }

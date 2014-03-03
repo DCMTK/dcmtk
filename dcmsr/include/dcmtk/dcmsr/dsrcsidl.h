@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2012, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -189,11 +189,11 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
      */
     const OFString &getCodingSchemeVersion(OFString &stringValue) const;
 
-    /** get the responsible organization of the currently selected item
+    /** get the coding scheme responsible organization of the currently selected item
      ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getResponsibleOrganization(OFString &stringValue) const;
+    const OFString &getCodingSchemeResponsibleOrganization(OFString &stringValue) const;
 
     /** set the coding scheme registry of the currently selected entry
      ** @param  value  string value to be set (single value only) or "" for no value
@@ -235,13 +235,13 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
     OFCondition setCodingSchemeVersion(const OFString &value,
                                        const OFBool check = OFTrue);
 
-    /** set the responsible organization of the currently selected entry
+    /** set the coding scheme responsible organization of the currently selected entry
      ** @param  value  string value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setResponsibleOrganization(const OFString &value,
-                                           const OFBool check = OFTrue);
+    OFCondition setCodingSchemeResponsibleOrganization(const OFString &value,
+                                                       const OFBool check = OFTrue);
 
 
   protected:
@@ -260,7 +260,7 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
             CodingSchemeExternalID(),
             CodingSchemeName(),
             CodingSchemeVersion(),
-            ResponsibleOrganization()
+            CodingSchemeResponsibleOrganization()
         {}
 
         /** clear additional information
@@ -272,7 +272,7 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
             CodingSchemeExternalID.clear();
             CodingSchemeName.clear();
             CodingSchemeVersion.clear();
-            ResponsibleOrganization.clear();
+            CodingSchemeResponsibleOrganization.clear();
         }
 
         /// Coding Scheme Designator (VR=SH, type 1)
@@ -287,8 +287,8 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
         OFString CodingSchemeName;
         /// Coding Scheme Version (VR=SH, type 3)
         OFString CodingSchemeVersion;
-        /// Responsible Organization (VR=ST, type 3)
-        OFString ResponsibleOrganization;
+        /// Coding Scheme Responsible Organization (VR=ST, type 3)
+        OFString CodingSchemeResponsibleOrganization;
     };
 
     /** add the specified coding scheme to the list (if not existent)

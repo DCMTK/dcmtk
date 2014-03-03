@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -536,7 +536,7 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
     doc->getCodingSchemeIdentification().setCodingSchemeUID("2.16.840.1.113883.6.8");
     doc->getCodingSchemeIdentification().setCodingSchemeName("Unified Code for Units of Measure");
     doc->getCodingSchemeIdentification().setCodingSchemeVersion("1.4");
-    doc->getCodingSchemeIdentification().setResponsibleOrganization("Regenstrief Institute for Health Care, Indianapolis");
+    doc->getCodingSchemeIdentification().setCodingSchemeResponsibleOrganization("Regenstrief Institute for Health Care, Indianapolis");
 }
 
 

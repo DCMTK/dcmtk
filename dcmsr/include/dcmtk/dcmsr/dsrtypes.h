@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,7 +54,7 @@ extern DCMTK_DCMSR_EXPORT OFLogger DCM_dcmsrLogger;
 // name of the private coding scheme
 #define OFFIS_CODING_SCHEME_NAME "OFFIS DCMTK Coding Scheme"
 // organization responsible for the private coding scheme
-#define OFFIS_RESPONSIBLE_ORGANIZATION "OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany"
+#define OFFIS_CODING_SCHEME_RESPONSIBLE_ORGANIZATION "OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany"
 
 // protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
 #define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
