@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -90,9 +90,9 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
 
   for (unsigned long col = 0; col < columns + 2; ++col)
   {
-      thisrerr[col] = OFStandard::rand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
-      thisgerr[col] = OFStandard::rand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
-      thisberr[col] = OFStandard::rand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisrerr[col] = OFrand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisgerr[col] = OFrand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisberr[col] = OFrand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
       /* (random errors in [-1 .. 1]) */
   }
   fs_direction = 1;

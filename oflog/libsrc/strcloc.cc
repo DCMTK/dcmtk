@@ -47,7 +47,7 @@ void clear_mbstate (mbstate_t & mbs);
 
 static
 void
-tostring_internal (STD_NAMESPACE string & result, wchar_t const * src, size_t size)
+tostring_internal (OFString & result, wchar_t const * src, size_t size)
 {
     OFVector<char> result_buf (MB_CUR_MAX);
 
@@ -65,33 +65,33 @@ tostring_internal (STD_NAMESPACE string & result, wchar_t const * src, size_t si
         size_t ret = STD_NAMESPACE wcrtomb (&result_buf[0], *src_it, &mbs);
         if (ret == OFstatic_cast(size_t, -1))
         {
-            result.push_back ('?');
+            result += '?';
             clear_mbstate (mbs);
             ++src_it;
         }
         else
         {
-            result.append (result_buf.begin (), result_buf.begin () + ret);
+            result.append (&result_buf.front (), ret);
             ++src_it;
         }
     }
 }
 
 
-STD_NAMESPACE string 
+OFString
 tostring (const STD_NAMESPACE wstring & src)
 {
-    STD_NAMESPACE string ret;
+    OFString ret;
     tostring_internal (ret, src.c_str (), src.size ());
     return ret;
 }
 
 
-STD_NAMESPACE string 
+OFString 
 tostring (wchar_t const * src)
 {
     assert (src);
-    STD_NAMESPACE string ret;
+    OFString ret;
     tostring_internal (ret, src, wcslen (src));
     return ret;
 }

@@ -825,18 +825,6 @@ class DCMTK_OFSTD_EXPORT OFStandard
       return (0xffffffff - summand1 < summand2);
     }
 
-    /** simple but thread safe random number generator. The interface is derived
-     *  from the Posix rand_r function. Uses a multiplicative congruential
-     *  random-number generator with period 2**32 that returns successive
-     *  pseudo-random numbers in the range of 0 to randr_max (0x7fffffff).
-     *  @param seed pointer to seed of random number generator, must not be NULL.
-     *  @return pseudo-random number in the range of 0 to myrandr_max.
-     */
-    static int rand_r(unsigned int &seed);
-
-    /// maximum value that can be returned by rand_r()
-    static const unsigned int rand_max;
-
     /** Thread-safe version of gethostbyname.
      *  @param name the host name.
      *  @return a OFStandard::OFHostent object.
@@ -892,5 +880,17 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static unsigned int my_sleep(unsigned int seconds);
 };
+
+/** simple but thread safe random number generator. The interface is derived
+ *  from the Posix rand_r function. Uses a multiplicative congruential
+ *  random-number generator with period 2**32 that returns successive
+ *  pseudo-random numbers in the range of 0 to OFrandr_max (0x7fffffff).
+ *  @param seed pointer to seed of random number generator, must not be NULL.
+ *  @return pseudo-random number in the range of 0 to OFrandr_max.
+ */
+int DCMTK_OFSTD_EXPORT OFrand_r(unsigned int &seed);
+
+/// maximum value that can be returned by OFrand_r()
+extern DCMTK_OFSTD_EXPORT const unsigned int OFrandr_max;
 
 #endif

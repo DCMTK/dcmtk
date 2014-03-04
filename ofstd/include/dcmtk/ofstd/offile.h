@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2013, OFFIS e.V.
+ *  Copyright (C) 2006-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,7 +76,7 @@ END_EXTERN_C
   typedef __int64 offile_off_t;
   typedef fpos_t offile_fpos_t;
 #else
-  #ifdef EXPLICIT_LFS_64
+  #if defined(EXPLICIT_LFS_64) && !defined(__MINGW64__)
     // Explicit LFS (LFS64)
     typedef fpos64_t offile_fpos_t;
     typedef off64_t offile_off_t;

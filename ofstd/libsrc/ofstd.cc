@@ -2490,9 +2490,9 @@ long OFStandard::getProcessID()
 #endif
 }
 
-const unsigned int OFStandard::rand_max = 0x7fffffff;
+const unsigned int OFrandr_max = 0x7fffffff;
 
-int OFStandard::rand_r(unsigned int &seed)
+int OFrand_r(unsigned int &seed)
 {
   unsigned long val = OFstatic_cast(unsigned long, seed);
   val = val * 1103515245 + 12345;

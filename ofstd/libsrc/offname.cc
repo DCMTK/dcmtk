@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2013, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,7 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
     }
     if (prefix) filename += prefix;
     addLongToString(creation_time, filename);
-    addLongToString(((OFStandard::rand_r(seed) << 16) | OFStandard::rand_r(seed)), filename);
+    addLongToString(((OFrand_r(seed) << 16) | OFrand_r(seed)), filename);
     if (postfix) filename += postfix;
 
     // check if filename exists

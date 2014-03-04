@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,53 +43,53 @@ public:
 
     /** default constructor
      */
-    DcmTagKey();
+    inline DcmTagKey();
 
     /** copy constructor
      *  @param key [in] The tag key to initialize from
      */
-    DcmTagKey(const DcmTagKey& key);
+    inline DcmTagKey(const DcmTagKey& key);
 
     /** constructor
      *  @param g group
      *  @param e element
      */
-    DcmTagKey(Uint16 g, Uint16 e);
+    inline DcmTagKey(Uint16 g, Uint16 e);
 
     /** destructor
      */
-    virtual ~DcmTagKey();
+    virtual inline ~DcmTagKey();
 
     /** set value to given tag key
      *  @param key attribute tag to copy
      */
-    void set(const DcmTagKey& key);
+    inline void set(const DcmTagKey& key);
 
     /** set value to given group and element
      *  @param g group
      *  @param e element
      */
-    void set(Uint16 g, Uint16 e);
+    inline void set(Uint16 g, Uint16 e);
 
     /** set group to given number
      *  @param g group
      */
-    void setGroup(Uint16 g);
+    inline void setGroup(Uint16 g);
 
     /** set element to given number
      *  @param e element
      */
-    void setElement(Uint16 e);
+    inline void setElement(Uint16 e);
 
     /** returns group number
      *  @return returns the group number of the tag key
      */
-    Uint16 getGroup() const;
+    inline Uint16 getGroup() const;
 
     /** returns element number
      *  @return returns the element number of the tag key
      */
-    Uint16 getElement() const;
+    inline Uint16 getElement() const;
 
     /** returns base tag, i.e. in case of a repeating group tag always the base
      *  group number 0x5000 (curve) or 0x6000 (overlay) is used. For non-repeating
@@ -102,79 +102,79 @@ public:
      *  Also calls hasValidGroup().
      *  @return returns OFTrue if tag key is a valid group length element
      */
-    OFBool isGroupLength() const;
+    inline OFBool isGroupLength() const;
 
     /** returns true if the tag key is private, i.e. whether it has an odd group
      *  number. Also hasValidGroup() is called.
      *  @return returns OFTrue if group is private and valid.
      */
-    OFBool isPrivate() const;
+    inline OFBool isPrivate() const;
 
     /** returns true, if tag is a private reservation tag of the form (gggg,00xx)
      *  with "gggg" being odd and "xx" in the range of 10 and FF.
      *  @return returns OFTrue if tag key is a private reservation key
      */
-    OFBool isPrivateReservation() const;
+    inline OFBool isPrivateReservation() const;
 
     /** returns true, if group is valid (permitted in DICOM command or data sets).
      *  Referring to the standard, groups 1, 3, 5, 7 and 0xFFFF are illegal.
      *  @return returns OFTrue if tag key has a valid group number.
      */
-    OFBool hasValidGroup() const;
+    inline OFBool hasValidGroup() const;
 
     /** generate a simple hash code for this attribute tag.
      *  Used for fast look-up in the DICOM dictionary.
      *  @return hash code for this tag
      */
-    Uint32 hash() const;
+    inline Uint32 hash() const;
 
     /** assignment operator for initializing this tag key from an existing one
      *  @param key [in] The key to copy from
      *  @return "this" initialization
      */
-    DcmTagKey& operator = (const DcmTagKey& key);
+    inline DcmTagKey& operator = (const DcmTagKey& key);
 
     /** Comparison operator. Returns true if both group and element number
      *  are the same.
      *  @param key key to compare with
      *  @return true if tag keys are the same
      */
-    int operator == (const DcmTagKey& key) const;
+    inline int operator == (const DcmTagKey& key) const;
 
     /** negation operator. Returns true if either group or element number
      *  are not the same.
      *  @param key key to compare with
      *  @return true if tag keys are not the same
      */
-    int operator != (const DcmTagKey& key) const;
+    inline int operator != (const DcmTagKey& key) const;
 
     /** 'less than' operator. Returns true if the given tag key is greater
      *  than "this".
      *  @param key key to compare with
      *  @return true if given key is greater than "this"
      */
-    int operator < (const DcmTagKey& key) const;
+    inline int operator < (const DcmTagKey& key) const;
 
     /** 'greater than' operator. Returns true if the given tag key is smaller
      *  than "this".
      *  @param key key to compare with
      *  @return true if "this" key is smaller than given one.
      */
-    int operator > (const DcmTagKey& key) const;
+    inline int operator > (const DcmTagKey& key) const;
 
     /** 'less or equal' operator. Returns true if the given tag key is greater
      *  or the same as "this".
      *  @param key key to compare with
      *  @return true if given key is greater or the same as "this"
      */
-    int operator <= (const DcmTagKey& key) const;
+    inline int operator <= (const DcmTagKey& key) const;
 
     /** 'greater or equal' operator. Returns true if the given tag key is
      *  smaller or equal as "this".
      *  @param key key to compare with
      *  @return true if "this" key is smaller or equal to given one.
      */
-    int operator >= (const DcmTagKey& key) const;
+    inline int operator >= (const DcmTagKey& key) const;
 
     friend DCMTK_DCMDATA_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
