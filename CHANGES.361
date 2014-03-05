@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.05 (riesmeier)
+
+- Made installation of tag file optional:
+  Made installation of Doxygen tag file optional in order to avoid an error
+  message if it has not been generated, e.g. because "make html" was not called
+  before "make install".
+  Affects: doxygen/CMakeLists.txt
+
 **** Changes from 2014.03.05 (onken)
 
 - Enhanced DCMTK CMake exports for external projects:
