@@ -14,8 +14,12 @@ IF(BUILD_SINGLE_SHARED_LIBRARY)
   TARGET_LINK_LIBRARIES(dcmtk ${DCMTK_LIBRARY_DEPENDENCIES})
   SET_TARGET_PROPERTIES(dcmtk PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
 
-  # Declare installation files
+  # Export target for build tree
+  SET_PROPERTY(GLOBAL APPEND PROPERTY DCMTK_LIBRARY_TARGETS dcmtk)
+
+  # Declare installation files. Also export libs and executables to DCMTKTargets.cmake.
   INSTALL(TARGETS dcmtk
+          EXPORT DCMTKTargets
           COMPONENT lib
           RUNTIME DESTINATION ${DCMTK_INSTALL_BINDIR}
           LIBRARY DESTINATION ${DCMTK_INSTALL_LIBDIR}

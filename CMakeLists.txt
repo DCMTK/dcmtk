@@ -12,35 +12,22 @@ INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
 #-----------------------------------------------------------------------------
 
 # Modules to be built
-SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt doxygen
-    CACHE STRING "List of modules that should be built.")
+
+SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
+  dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr
+  dcmsign dcmwlm dcmqrdb dcmpstat dcmrt
+  CACHE STRING "List of modules that should be built.")
 MARK_AS_ADVANCED(DCMTK_MODULES)
 
 #-----------------------------------------------------------------------------
 # Include directories
 #-----------------------------------------------------------------------------
 
-SET(DCMTK_INCLUDE_DIR
-  ${DCMTK_BINARY_DIR}/config/include
-  ${DCMTK_SOURCE_DIR}/ofstd/include
-  ${DCMTK_SOURCE_DIR}/oflog/include
-  ${DCMTK_SOURCE_DIR}/dcmdata/include
-  ${DCMTK_SOURCE_DIR}/dcmimgle/include
-  ${DCMTK_SOURCE_DIR}/dcmimage/include
-  ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg8
-  ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg12
-  ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg16
-  ${DCMTK_SOURCE_DIR}/dcmjpeg/include
-  ${DCMTK_SOURCE_DIR}/dcmjpls/include
-  ${DCMTK_SOURCE_DIR}/dcmnet/include
-  ${DCMTK_SOURCE_DIR}/dcmpstat/include
-  ${DCMTK_SOURCE_DIR}/dcmqrdb/include
-  ${DCMTK_SOURCE_DIR}/dcmrt/include
-  ${DCMTK_SOURCE_DIR}/dcmsign/include
-  ${DCMTK_SOURCE_DIR}/dcmsr/include
-  ${DCMTK_SOURCE_DIR}/dcmtls/include
-  ${DCMTK_SOURCE_DIR}/dcmwlm/include
-)
+SET(DCMTK_INCLUDE_DIR ${DCMTK_BINARY_DIR}/config/include)
+FOREACH(inc ${DCMTK_MODULES})
+  LIST(APPEND DCMTK_INCLUDE_DIR ${DCMTK_SOURCE_DIR}/${inc}/include)
+ENDFOREACH(inc)
+
 INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 
 #-----------------------------------------------------------------------------
@@ -52,18 +39,11 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
                ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h)
 
 #-----------------------------------------------------------------------------
-# Write current configuration to file (for external projects)
-#-----------------------------------------------------------------------------
-
-CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake.in
-               ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake @ONLY)
-
-#-----------------------------------------------------------------------------
 # Start actual compilation tasks
 #-----------------------------------------------------------------------------
 
 # Recurse into subdirectories
-FOREACH(module ${DCMTK_MODULES})
+FOREACH(module config doxygen ${DCMTK_MODULES})
   ADD_SUBDIRECTORY(${module})
 ENDFOREACH(module)
 INCLUDE(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
@@ -82,7 +62,37 @@ INSTALL(FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_V
         DESTINATION ${DCMTK_INSTALL_DOCDIR}
         COMPONENT doc)
 
-# Install DCMTK's CMake configuration file
-INSTALL(FILES ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake
-        DESTINATION ${DCMTK_INSTALL_DATDIR}
-        COMPONENT data)
+#-----------------------------------------------------------------------------
+# Create an install configuration files for external projects
+#-----------------------------------------------------------------------------
+#
+# DCMTKTargets.cmake will contain list of executables and libraries produced
+# DCMTKConfigVersion.cmake will contain DCMTK version information
+# DCMTKConfig.cmake will contain options used to build DCMTK
+#
+# All three files are created within the build tree's main directory (handled in
+# CMake/GenerateCMakeExports.cmake, and are installed to locations (OS-specific
+# under the main install dir (handled directly below).
+
+# Only create if the required scripts are available
+INCLUDE(CMake/CheckCMakeCommandExists.cmake)
+INCLUDE(CMakePackageConfigHelpers OPTIONAL)
+check_cmake_command_exists("configure_package_config_file")
+check_cmake_command_exists("write_basic_package_version_file")
+
+IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+
+  # Create and configure CMake export files
+  INCLUDE(CMake/GenerateCMakeExports.cmake)
+
+  # ${DCMTK_INSTALL_CMKDIR}, ${dcmtk_install_config} and ${dcmtk_config_version} are
+  # defined within CMake/GenerateCMakeExports.cmake.
+  # Install DCMTKTargets.cmake to install tree
+  INSTALL(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
+          DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
+
+  # Install DCMTKConfigVersion.cmake
+  INSTALL(FILES ${dcmtk_install_config} ${dcmtk_config_version}
+          DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
+
+ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)

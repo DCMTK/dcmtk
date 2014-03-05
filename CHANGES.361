@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.05 (onken)
+
+- Enhanced DCMTK CMake exports for external projects:
+  The files DCMTKConfig.cmake, DCMTKConfigVersion.cmake and
+  DCMTKTargets.cmake are exported by CMake to the DCMTK build tree as
+  as well as to the DCMTK installation directory. The files can be found
+  and evaluated by other CMake-based projects using CMake's find_package
+  command (in "Config" mode). The files describe DCMTK executables and
+  libraries as well as DCMTK version information, which then can be
+  facilitated in an automatic way by external projects to configure and
+  perform their own build process. Thanks to Jean-Christophe Fillion-Robin
+  <jchris.fillionr@kitware.com> for the original patch.
+  Added:   CMake/CheckCMakeCommandExists.cmake
+           CMake/GenerateCMakeExports.cmake
+  Affects: CMake/DCMTKConfig.cmake.in
+           CMake/dcmtkAfterModules.cmake
+           CMake/dcmtkMacros.cmake
+           CMake/dcmtkPrepare.cmake
+           CMakeLists.txt
+
 **** Changes from 2014.03.04 (schlamelcher)
 
 - Fixed building with mingw-w64:
