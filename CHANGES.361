@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.06 (onken)
 
+- Ensure CMake v2.6 still writes DCMTKConfig.cmake:
+  The enhanced DCMTKConfig.cmake that was recently introduced relies on CMake
+  version 2.8.8 or higher and uses the new CONFIGURE_PACKAGE_CONFIG_FILE
+  command. This commit makes sure that older versions as the minimum CMake
+  version 2.6 required by DCMTK produce a DCMTKConfig.cmake that has at
+  least all the information it contained before the switch to
+  CONFIGURE_PACKAGE_CONFIG_FILE.
+  Added:   CMake/CMake/DCMTKConfig.cmake26.in
+  Affects: CMakeLists.txt
+
 - Capitalized all CMake key words for consistency.
   Affects: CMake/CheckCMakeCommandExists.cmake
            CMake/DCMTKConfig.cmake.in

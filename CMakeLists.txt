@@ -74,7 +74,7 @@ INSTALL(FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_V
 # CMake/GenerateCMakeExports.cmake, and are installed to locations (OS-specific
 # under the main install dir (handled directly below).
 
-# Only create if the required scripts are available
+# Only create fully-fledged CMake export files if we have the related commands
 INCLUDE(CMake/CheckCMakeCommandExists.cmake)
 INCLUDE(CMakePackageConfigHelpers OPTIONAL)
 CHECK_CMAKE_COMMAND_EXISTS("CONFIGURE_PACKAGE_CONFIG_FILE")
@@ -85,7 +85,7 @@ IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
   # Create and configure CMake export files
   INCLUDE(CMake/GenerateCMakeExports.cmake)
 
-  # ${DCMTK_INSTALL_CMKDIR}, ${dcmtk_install_config} and ${dcmtk_config_version} are
+  # ${dcmtk_install_config} and ${dcmtk_config_version} are
   # defined within CMake/GenerateCMakeExports.cmake.
   # Install DCMTKTargets.cmake to install tree
   INSTALL(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
@@ -94,5 +94,19 @@ IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
   # Install DCMTKConfigVersion.cmake
   INSTALL(FILES ${dcmtk_install_config} ${dcmtk_config_version}
           DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
+
+ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+
+  # Warning that we use old "configure_file" command
+  MESSAGE(STATUS "Warning: Using old CONFIGURE_FILE() mechanism to produce DCMTKConfig.cmake")
+
+  # Actually configure file
+  CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake26.in
+                 ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake @ONLY)
+
+  # Install DCMTK's CMake configuration file
+  INSTALL(FILES ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake
+          DESTINATION ${DCMTK_INSTALL_CMKDIR}
+          COMPONENT cmake)
 
 ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
