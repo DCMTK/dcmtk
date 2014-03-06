@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.06 (onken)
+
+- Capitalized all CMake key words for consistency.
+  Affects: CMake/CheckCMakeCommandExists.cmake
+           CMake/DCMTKConfig.cmake.in
+           CMake/GenerateCMakeExports.cmake
+           CMake/dcmtkPrepare.cmake
+           CMakeLists.txt
+
 **** Changes from 2014.03.06 (riesmeier)
 
 - Added another addContentItem() method:

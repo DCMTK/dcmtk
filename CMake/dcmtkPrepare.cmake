@@ -134,7 +134,7 @@ SET(DCMTK_BUILD_CMKDIR ${CMAKE_BINARY_DIR})
 #-----------------------------------------------------------------------------
 # Start with clean DCMTKTargets.cmake, filled in GenerateCMakeExports.cmake
 #-----------------------------------------------------------------------------
-file(WRITE ${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake "")
+FILE(WRITE ${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake "")
 
 #-----------------------------------------------------------------------------
 # Platform-independent settings

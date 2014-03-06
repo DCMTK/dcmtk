@@ -23,9 +23,9 @@ GET_PROPERTY(DCMTK_LIBRARY_TARGETS GLOBAL PROPERTY DCMTK_LIBRARY_TARGETS)
 EXPORT(TARGETS ${DCMTK_LIBRARY_TARGETS} APPEND FILE ${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake)
 
 # Create DCMTConfigVersion.cmake with basic DCMTK version information (build tree)
-SET(dcmtk_config_version ${DCMTK_BUILD_CMKDIR}/DCMTKConfigVersion.cmake)
-write_basic_package_version_file(
-    ${dcmtk_config_version}
+SET(DCMTK_CONFIG_VERSION ${DCMTK_BUILD_CMKDIR}/DCMTKConfigVersion.cmake)
+WRITE_BASIC_PACKAGE_VERSION_FILE(
+    ${DCMTK_CONFIG_VERSION}
     VERSION ${DCMTK_MAJOR_VERSION}.${DCMTK_MINOR_VERSION}.${DCMTK_BUILD_VERSION}
     COMPATIBILITY SameMajorVersion)
 
@@ -52,7 +52,7 @@ ENDFOREACH(module)
 SET(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}##################################################")
 SET(dcmtk_config ${DCMTK_BUILD_CMKDIR}/DCMTKConfig.cmake)
 # Actually configure file and write it to build's main directory
-configure_package_config_file(
+CONFIGURE_PACKAGE_CONFIG_FILE(
     CMake/DCMTKConfig.cmake.in
     ${dcmtk_config}
     INSTALL_DESTINATION ${CMAKE_BINARY_DIR}
@@ -73,7 +73,7 @@ SET(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}list(APPEND DCMTK_INCLUDE_DIRS \"\${P
 SET(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}##################################################")
 SET(dcmtk_install_config ${CMAKE_BINARY_DIR}/CMakeFiles/DCMTKConfig.cmake)
 # Actually configure file and set rule to install it to installation subdir
-configure_package_config_file(
+CONFIGURE_PACKAGE_CONFIG_FILE(
     CMake/DCMTKConfig.cmake.in
     ${dcmtk_install_config}
     INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX}/${DCMTK_INSTALL_CMKDIR}

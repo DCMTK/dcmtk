@@ -77,8 +77,8 @@ INSTALL(FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_V
 # Only create if the required scripts are available
 INCLUDE(CMake/CheckCMakeCommandExists.cmake)
 INCLUDE(CMakePackageConfigHelpers OPTIONAL)
-check_cmake_command_exists("configure_package_config_file")
-check_cmake_command_exists("write_basic_package_version_file")
+CHECK_CMAKE_COMMAND_EXISTS("CONFIGURE_PACKAGE_CONFIG_FILE")
+CHECK_CMAKE_COMMAND_EXISTS("WRITE_BASIC_PACKAGE_VERSION_FILE")
 
 IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
 
