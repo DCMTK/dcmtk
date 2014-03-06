@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.06 (riesmeier)
+
+- Added another addContentItem() method:
+  Added new addContentItem() method that expects a pointer to a newly created
+  document tree node. This provides another approach of creating the document
+  tree of an SR document, and avoids making the detour using getCurrentItem().
+  Added:   dcmsr/tests/tsrdoctr.cc
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/Makefile.in
+           dcmsr/tests/tests.cc
+
 **** Changes from 2014.03.05 (riesmeier)
 
 - Made installation of tag file optional:

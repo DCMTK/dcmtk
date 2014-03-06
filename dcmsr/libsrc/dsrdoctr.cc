@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -395,6 +395,31 @@ size_t DSRDocumentTree::addContentItem(const E_RelationshipType relationshipType
         }
     }
     return nodeID;
+}
+
+
+DSRDocumentTreeNode *DSRDocumentTree::addContentItem(DSRDocumentTreeNode *node,
+                                                     const E_AddMode addMode,
+                                                     const OFBool deleteIfFail)
+{
+    if (node != NULL)
+    {
+        /* check whether new node can be added */
+        if (canAddContentItem(node->getRelationshipType(), node->getValueType(), addMode))
+        {
+            /* check whether adding the node actually works */
+            if (addNode(node, addMode) == 0)
+            {
+                /* if not, delete node (if needed) */
+                if (deleteIfFail)
+                    delete node;
+                node = NULL;
+            }
+        } else
+            node = NULL;
+    }
+    /* either returns given pointer or NULL (in case of error) */
+    return node;
 }
 
 

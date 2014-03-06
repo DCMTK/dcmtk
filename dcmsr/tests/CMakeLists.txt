@@ -1,6 +1,6 @@
 # declare executables
 DCMTK_ADD_EXECUTABLE(mkreport mkreport)
-DCMTK_ADD_EXECUTABLE(dcmsr_tests tests tsrtree)
+DCMTK_ADD_EXECUTABLE(dcmsr_tests tests tsrtree tsrdoctr)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM mkreport dcmsr_tests)

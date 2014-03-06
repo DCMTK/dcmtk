@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,7 +68,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
 
     /** check whether the current internal state is valid.
      *  The SR document is valid if the document type is supported, the tree is not
-     *  empty the root item is a container and has the internal relationship type
+     *  empty, the root item is a container and has the internal relationship type
      *  RT_isRoot.
      ** @return OFTrue if valid, OFFalse otherwise
      */
@@ -179,6 +179,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     /** add specified content item to the current one.
      *  If possible this method creates a new node as specified and adds it to the current
      *  one.  The method canAddContentItem() is called internally to check parameters first.
+     *  If the node could be added successfully, the cursor is set to it automatically.
      ** @param  relationshipType  relationship type of node to be added with regard
      *                            to the current one
      *  @param  valueType         value type of node to be added
@@ -189,6 +190,25 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     size_t addContentItem(const E_RelationshipType relationshipType,
                           const E_ValueType valueType,
                           const E_AddMode addMode = AM_afterCurrent);
+
+    /** add specified content item to the current one.
+     *  If possible this method adds a given new node to the current one.  The method
+     *  canAddContentItem() is called internally to check parameters first.  If the
+     *  node could be added successfully, the cursor is set to it automatically.
+     *  Please note that no copy of the given node is created.  Therefore, the node
+     *  has to be created with new() or with DSRTypes::createDocumentTreeNode() - do
+     *  not use a reference to a local variable and do not delete it a second time.
+     ** @param  node          pointer to the new node to be added
+     *  @param  addMode       flag specifying at which position to add the new node.
+     *                        (AM_afterCurrent, AM_beforeCurrent, AM_belowCurrent)
+     *  @param  deleteIfFail  flag specifying whether to delete the given 'node' if
+     *                        adding fails.  By default the item is not deleted, i.e.
+     *                        in case of error it has to be deleted by the caller.
+     ** @return pointer to new node if successful, NULL otherwise
+     */
+    DSRDocumentTreeNode *addContentItem(DSRDocumentTreeNode *node,
+                                        const E_AddMode addMode = AM_afterCurrent,
+                                        const OFBool deleteIfFail = OFFalse);
 
     /** add specified by-reference relationship to the current content item.
      *  If possible this method creates a new pseudo-node (relationship) and adds it to the
@@ -260,8 +280,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
 
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node
-     *  should be created with new() - do not use a reference to a local variable.
-     *  If the node could be added successfully the cursor is set to it automatically.
+     *  has to be created with new() - do not use a reference to a local variable.
+     *  If the node could be added successfully, the cursor is set to it automatically.
      ** @param  node     pointer to the new node to be added
      *  @param  addMode  flag specifying at which position to add the new node.
      *                   (AM_afterCurrent, AM_beforeCurrent, AM_belowCurrent)
