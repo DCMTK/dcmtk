@@ -689,6 +689,30 @@ controlled manually (e.g. as defined in environment variables like CXXFLAGS)
 and no CMake defaults related to the selected configuration type kick in.
 
 
+DCMTKConfig.cmake AND DCMTKTargets.cmake
+---------------------------------------
+
+CMake permits to write files that describe the DCMTK build configuration
+(DCMTConfig.cmake) as well as all targets (executables and libraries) that have
+been produced (DCMTKTargets.cmake).  Those files can be utilized by external
+projects by using CMake' find_package() mechanism in "CONFIG" mode in order to
+adapt their own build configuration, and directly make use of all available
+target libraries and executables.
+
+On systems using CMake versions equal or greater than 2.8.8, these files are
+written during installation to the installation directory's subfolder 
+/cmake on Windows systems, and /lib/cmake/dcmtk on Unix-like systems.
+Additionally, these files are already written to the main directory of CMake's
+build tree during the build, with all content (e.g. the include paths within
+DCMTConfig.cmake) pointing to the correct values for the build tree.  Thus even
+a DCMTK build tree can be used by external projects that process these two
+files.
+
+On systems using CMake versions lower than 2.8.8, only a simplified
+DCMTKConfig.cmake is created which is only available in the install tree.
+DCMTKTargets.cmake is not created at all.
+
+
 HTML DOCUMENTATION AND MAN PAGES
 ================================
 
@@ -754,7 +778,7 @@ For more information, call this program with the --help option.
 
 Have fun.
 
-Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
+Marco Eichelberg, Joerg Riesmeier, Michael Onken, Jan Schlamelcher
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2013-12-05 (Onken)
+Last revised: 2014-03-07 (Onken)

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.07 (onken)
+
+- Added DCMTK.cmake and DCMTKTargets.cmake documentation.
+  Affects: INSTALL
+
 **** Changes from 2014.03.07 (riesmeier)
 
 - Replaced tabs by spaces and fixed indention.
