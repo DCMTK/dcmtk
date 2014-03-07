@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,9 +125,9 @@ class DiYBRPixelTemplate
                         register const T1 *cr = cb + this->InputCount;
                         for (i = count; i != 0; --i, ++y, ++cb, ++cr)
                         {
-                         	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
-                        	sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
-                        	sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
+                            sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
+                            sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
+                            sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
                             *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                             *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                             *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
@@ -142,9 +142,9 @@ class DiYBRPixelTemplate
                             /* convert a single frame */
                             for (l = planeSize; (l != 0) && (i != 0); --l, --i, ++y, ++cb, ++cr)
                             {
-                             	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, *cr)]);
-                            	sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, *cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, *cr)]);
-                            	sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, *cb)]);
+                                sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, *cr)]);
+                                sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, *cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, *cr)]);
+                                sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, *cb)]);
                                 *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                                 *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                                 *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
@@ -167,9 +167,9 @@ class DiYBRPixelTemplate
                             y  = *(p++);
                             cb = *(p++);
                             cr = *(p++);
-                        	sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, cr)]);
-                        	sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, cr)]);
-                        	sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, cb)]);
+                            sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, cr)]);
+                            sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, cr)]);
+                            sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, cb)]);
                             *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                             *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                             *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);

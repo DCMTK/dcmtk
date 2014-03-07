@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,11 +24,11 @@
 #define DIQTCTAB_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
-#include "dcmtk/ofstd/ofcond.h"    /* for OFCondition */
+#include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
+#include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 #include "dcmtk/dcmimage/diqtpix.h"   /* for DcmQuantPixel */
 #include "dcmtk/dcmimage/diqthash.h"  /* for DcmQuantHistogramItem */
-#include "dcmtk/ofstd/ofstring.h"  /* for class OFString */
+#include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
 
 
 class DicomImage;
@@ -162,7 +162,7 @@ public:
    */
   inline int computeIndex(const DcmQuantPixel& px) const
   {
-	int result = -1;
+    int result = -1;
     register int r2, g2, b2;
     register long newdist;
     register int r1 = OFstatic_cast(int, px.getRed());

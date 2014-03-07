@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,7 @@
 
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
+#include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
 #include "dcmtk/dcmimage/diqttype.h"  /* for DcmQuantHashSize, DcmQuantComponent */
 #include "dcmtk/dcmimage/diqtstab.h"  /* for DcmScaleTable */
 

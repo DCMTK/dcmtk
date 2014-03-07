@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,7 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmimage/diqtpix.h"   /* for DcmQuantPixel */
-#include "dcmtk/ofstd/ofcond.h"    /* for OFCondition */
+#include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 
 
 /** Floyd-Steinberg error vectors are stored internally as integer numbers
@@ -48,13 +48,13 @@ public:
   /// destructor
   ~DcmQuantFloydSteinberg();
 
-  /** initializes the Floyd-Steinberg error vectors for an image with the 
+  /** initializes the Floyd-Steinberg error vectors for an image with the
    *  given number of columns.
    *  @param cols number of columns in image
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition initialize(unsigned long cols);
-  
+
   /** uses the Floyd-Steinberg error vectors to adjust the color of the current image pixel.
    *  @param px the original image pixel is passed in this parameter. Upon return, the pixel
    *    value contains the new value after error diffusion.
@@ -127,14 +127,14 @@ public:
    *  The error vectors for the next image row are initialized to zero.
    *  The initial and last column of the current row are determined
    *  @param col initial column for the current row returned in this parameter
-   *  @param limitcol limit column (one past the last valid column) for the 
+   *  @param limitcol limit column (one past the last valid column) for the
    *    current row returned in this parameter. May become negative.
    */
   inline void startRow(long& col, long& limitcol)
   {
     for (unsigned long c = 0; c < columns + 2; ++c)
       nextrerr[c] = nextgerr[c] = nextberr[c] = 0;
-  
+
     if (fs_direction)
     {
         col = 0;
@@ -146,8 +146,8 @@ public:
         limitcol = -1;
     }
   }
-  
-  /** finishes error diffusion for one image row.  The direction flag is 
+
+  /** finishes error diffusion for one image row.  The direction flag is
    *  inverted and the error vectors for the "current" and "next" image row
    *  are swapped.
    */
@@ -190,7 +190,7 @@ private:
 
   /// red error vector for next row. Points to an array of (columns + 2) entries.
   long *nextrerr;
-  
+
   /// current green error vector. Points to an array of (columns + 2) entries.
   long *thisgerr;
 
@@ -206,7 +206,7 @@ private:
   /// temporary pointer used for swapping error vectors
   long *temperr;
 
-  /** boolean flag indicating in which direction (left to right/right to left) 
+  /** boolean flag indicating in which direction (left to right/right to left)
    *  the FS distribution should be done. Flag is inverted after each row.
    */
   int fs_direction;

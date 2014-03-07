@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -99,10 +99,10 @@ public:
         fs.startRow(col, limitcol);
         do
         {
-        	currentpixel = cp + col + col + col;
-        	cr = *currentpixel++;
-        	cg = *currentpixel++;
-        	cb = *currentpixel;
+            currentpixel = cp + col + col + col;
+            cr = *currentpixel++;
+            cg = *currentpixel++;
+            cb = *currentpixel;
             px.scale(cr, cg, cb, scaletable);
 
             fs.adjust(px, col, maxval_l);

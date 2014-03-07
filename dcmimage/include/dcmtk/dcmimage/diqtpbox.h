@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,9 +85,9 @@ public:
   inline DcmQuantPixelBox& operator[](size_t idx)
   {
 #ifdef DEBUG
-  	assert(idx < length);
+    assert(idx < length);
 #endif
-  	return *(array[idx]);
+    return *(array[idx]);
   }
 
   /** sorts the given number of pixel boxes in the array,

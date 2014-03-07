@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,7 +79,7 @@ void DcmQuantColorTable::clear()
 {
   if (array)
   {
-  	for (unsigned long i=0; i < numColors; i++) delete array[i];
+    for (unsigned long i=0; i < numColors; i++) delete array[i];
     delete[] array;
     array = NULL;
   }
@@ -384,7 +384,7 @@ OFCondition DcmQuantColorTable::write(
   if (array)
   {
     // create palette color LUT descriptor
-  	Uint16 descriptor[3];
+    Uint16 descriptor[3];
     descriptor[0] = (numColors > 65535) ? 0 : OFstatic_cast(Uint16, numColors); // number of entries
     descriptor[1] = 0; // first pixel value mapped
     descriptor[2] = write16BitEntries ? 16 : 8; // bits per entry, must be 8 or 16.
@@ -437,7 +437,7 @@ OFCondition DcmQuantColorTable::write(
       double factor = 1.0;
       if (write16BitEntries)
       {
-      	numWords = numColors;
+        numWords = numColors;
         rLUT = new Uint16[numWords];
         gLUT = new Uint16[numWords];
         bLUT = new Uint16[numWords];
@@ -463,7 +463,7 @@ OFCondition DcmQuantColorTable::write(
       else
       {
         // number of Uint16 words needed to store numColors Uint8 values plus padding
-      	numWords = (numColors+1)/2;
+        numWords = (numColors+1)/2;
         rLUT = new Uint16[numWords];
         gLUT = new Uint16[numWords];
         bLUT = new Uint16[numWords];
@@ -492,7 +492,7 @@ OFCondition DcmQuantColorTable::write(
       // the LUT data is prepared, now create the corresponding DICOM elements
       if (result.good())
       {
-      	if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_RedPaletteColorLookupTableData, EVR_OW));
+        if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_RedPaletteColorLookupTableData, EVR_OW));
         else elem = new DcmUnsignedShort(DcmTag(DCM_RedPaletteColorLookupTableData, EVR_US));
         if (elem)
         {
@@ -504,7 +504,7 @@ OFCondition DcmQuantColorTable::write(
 
       if (result.good())
       {
-      	if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_GreenPaletteColorLookupTableData, EVR_OW));
+        if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_GreenPaletteColorLookupTableData, EVR_OW));
         else elem = new DcmUnsignedShort(DcmTag(DCM_GreenPaletteColorLookupTableData, EVR_US));
         if (elem)
         {
@@ -516,7 +516,7 @@ OFCondition DcmQuantColorTable::write(
 
       if (result.good())
       {
-      	if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_BluePaletteColorLookupTableData, EVR_OW));
+        if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_BluePaletteColorLookupTableData, EVR_OW));
         else elem = new DcmUnsignedShort(DcmTag(DCM_BluePaletteColorLookupTableData, EVR_US));
         if (elem)
         {

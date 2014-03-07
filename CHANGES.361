@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.07 (riesmeier)
+
+- Replaced tabs by spaces and fixed indention.
+  Affects: dcmimage/include/dcmtk/dcmimage/diqtcmap.h
+           dcmimage/include/dcmtk/dcmimage/diqtctab.h
+           dcmimage/include/dcmtk/dcmimage/diqtfs.h
+           dcmimage/include/dcmtk/dcmimage/diqthitl.h
+           dcmimage/include/dcmtk/dcmimage/diqthitm.h
+           dcmimage/include/dcmtk/dcmimage/diqtpbox.h
+           dcmimage/include/dcmtk/dcmimage/diqtpix.h
+           dcmimage/include/dcmtk/dcmimage/diqtstab.h
+           dcmimage/include/dcmtk/dcmimage/diybrpxt.h
+           dcmimage/libsrc/diqtctab.cc
+
 **** Changes from 2014.03.06 (onken)
 
 - Ensure CMake v2.6 still writes DCMTKConfig.cmake:

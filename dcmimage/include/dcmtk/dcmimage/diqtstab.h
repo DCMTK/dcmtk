@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,9 +64,9 @@ public:
   inline DcmQuantComponent operator[](unsigned int idx) const
   {
 #ifdef DEBUG
-  	assert(idx < numEntries);
+    assert(idx < numEntries);
 #endif
-  	return table[idx];
+    return table[idx];
   }
 
   /** initializes the look-up table.
