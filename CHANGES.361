@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.12 (onken)
 
+- Added further module helpers and fixed small issues:
+  Added copy helpers for Clinical Trial Study/Series Modules, added missing
+  attribute in General Image Module and made code more consistent.
+  Affects: dcmdata/include/dcmtk/dcmdata/modhelp.h
+           dcmdata/libsrc/modhelp.cc
+
 - Switched windows line endings to unix line endings.
   Affects: dcmdata/libsrc/Makefile.dep
 

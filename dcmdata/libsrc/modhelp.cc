@@ -26,7 +26,8 @@
 
 
 // List of tags within the Patient Module as in DICOM 2011 + CP 1123
-const DcmTagKey DcmModuleHelpers::patientModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::patientModuleTags[] =
+{
   DCM_PatientName,
   DCM_PatientID,
   // Macro IssuerOfPatientIDMacro
@@ -57,20 +58,22 @@ const DcmTagKey DcmModuleHelpers::patientModuleTags[] = {
 };
 
 // List of tags within the Clinical Trial Subject Module  as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::clinicalTrialSubjectModuleTags[] = {
-  DCM_ClinicalTrialSubjectID,
+const DcmTagKey DcmModuleHelpers::clinicalTrialSubjectModuleTags[] =
+{
   DCM_ClinicalTrialSponsorName,
   DCM_ClinicalTrialProtocolID,
   DCM_ClinicalTrialProtocolName,
   DCM_ClinicalTrialSiteID,
   DCM_ClinicalTrialSiteName,
+  DCM_ClinicalTrialSubjectID,
   DCM_ClinicalTrialSubjectReadingID,
   DCM_ClinicalTrialProtocolEthicsCommitteeName,
   DCM_ClinicalTrialProtocolEthicsCommitteeApprovalNumber
 };
 
 // List of tags within the General Study Module as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::generalStudyModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::generalStudyModuleTags[] =
+{
   DCM_StudyInstanceUID,
   DCM_StudyDate,
   DCM_StudyTime,
@@ -91,7 +94,8 @@ const DcmTagKey DcmModuleHelpers::generalStudyModuleTags[] = {
 };
 
 // List of tags within the Patient Study Module as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::patientStudyModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::patientStudyModuleTags[] =
+{
   DCM_AdmittingDiagnosesDescription,
   DCM_AdmittingDiagnosesCodeSequence,
   DCM_PatientAge,
@@ -108,8 +112,17 @@ const DcmTagKey DcmModuleHelpers::patientStudyModuleTags[] = {
   DCM_PatientSexNeutered
 };
 
+// List of tags within the Patient Study Module as in DICOM 2011
+const DcmTagKey DcmModuleHelpers::clinicalTrialStudyModuleTags[] =
+{
+  DCM_ClinicalTrialTimePointID,
+  DCM_ClinicalTrialTimePointDescription,
+  DCM_ConsentForClinicalTrialUseSequence
+};
+
 // List of tags within the General Series Module as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] =
+{
   DCM_Modality,
   DCM_SeriesInstanceUID,
   DCM_SeriesNumber,
@@ -141,8 +154,17 @@ const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] = {
   DCM_AnatomicalOrientationType
 };
 
+// List of tags within the Patient Study Module as in DICOM 2011
+const DcmTagKey DcmModuleHelpers::clinicalTrialSeriesModuleTags[] =
+{
+  DCM_ClinicalTrialCoordinatingCenterName,
+  DCM_ClinicalTrialSeriesID,
+  DCM_ClinicalTrialSeriesDescription
+};
+
 // List of tags within the General Equipment Module as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::generalEquipmentModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::generalEquipmentModuleTags[] =
+{
   DCM_Manufacturer,
   DCM_InstitutionName,
   DCM_InstitutionAddress,
@@ -159,13 +181,15 @@ const DcmTagKey DcmModuleHelpers::generalEquipmentModuleTags[] = {
 };
 
 // List of tags within the Frame of Reference Module as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::frameOfReferenceModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::frameOfReferenceModuleTags[] =
+{
   DCM_FrameOfReferenceUID,
   DCM_PositionReferenceIndicator
 };
 
 // List of tags within the SOP Common Module as in DICOM 2011, excluding Digital Signatures Macro
-const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] =
+{
   DCM_SOPClassUID,
   DCM_SOPInstanceUID,
   DCM_SpecificCharacterSet,
@@ -193,7 +217,8 @@ const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] = {
 };
 
 // List of tags within the General Image Module as in DICOM 2011
-const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] = {
+const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] =
+{
   DCM_InstanceNumber,
   DCM_PatientOrientation,
   DCM_ContentDate,
@@ -214,6 +239,7 @@ const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] = {
   DCM_BurnedInAnnotation,
   DCM_RecognizableVisualFeatures,
   DCM_LossyImageCompression,
+  DCM_LossyImageCompressionRatio,
   DCM_LossyImageCompressionMethod,
   DCM_IconImageSequence,
   DCM_PresentationLUTShape,
@@ -221,7 +247,7 @@ const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] = {
 };
 
 
-void DcmModuleHelpers::copyElement(const DcmTagKey tag, DcmItem& src, DcmItem& dest)
+void DcmModuleHelpers::copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& dest)
 {
   DcmElement *e;
   OFCondition cond;
@@ -234,10 +260,10 @@ void DcmModuleHelpers::copyElement(const DcmTagKey tag, DcmItem& src, DcmItem& d
     if (cond.bad())
     {
       // we do not expect any errors here, so report it
-      DCMDATA_ERROR("Could not inset element with tag " << tag.toString() << " into items, error: " << cond.text() );
+      DCMDATA_ERROR("Could not insert element with tag " << tag << " into items: " << cond.text() );
     }
   }
-};
+}
 
 
 void DcmModuleHelpers::copyPatientModule(DcmItem& src, DcmItem& dest)
@@ -267,6 +293,11 @@ void DcmModuleHelpers::copyPatientStudyModule(DcmItem& src, DcmItem& dest)
     DcmModuleHelpers::copyElement(patientStudyModuleTags[i], src, dest);
 }
 
+void DcmModuleHelpers::copyClinicalTrialStudyModule(DcmItem& src, DcmItem& dest)
+{
+  for(int i=0; i < sizeof(clinicalTrialStudyModuleTags) / sizeof(DcmTagKey); i++)
+    DcmModuleHelpers::copyElement(clinicalTrialStudyModuleTags[i], src, dest);
+}
 
 void DcmModuleHelpers::copyGeneralSeriesModule(DcmItem& src, DcmItem& dest)
 {
@@ -274,6 +305,12 @@ void DcmModuleHelpers::copyGeneralSeriesModule(DcmItem& src, DcmItem& dest)
     DcmModuleHelpers::copyElement(generalSeriesModuleTags[i], src, dest);
 }
 
+
+void DcmModuleHelpers::copyClinicalTrialSeriesModule(DcmItem& src, DcmItem& dest)
+{
+  for(int i=0; i < sizeof(clinicalTrialSeriesModuleTags) / sizeof(DcmTagKey); i++)
+    DcmModuleHelpers::copyElement(clinicalTrialSeriesModuleTags[i], src, dest);
+}
 
 void DcmModuleHelpers::copyGeneralEquipmentModule(DcmItem& src, DcmItem& dest)
 {

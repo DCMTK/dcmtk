@@ -46,8 +46,14 @@ class DcmModuleHelpers {
     /// List of tags within the Patient Study Module
     static const DcmTagKey patientStudyModuleTags[];
 
+    /// List of tags within the Clinical Trial Study Module
+    static const DcmTagKey clinicalTrialStudyModuleTags[];
+
     /// List of tags within the General Series Module
     static const DcmTagKey generalSeriesModuleTags[];
+
+    /// List of tags within the Clinical Trial Series Module
+    static const DcmTagKey clinicalTrialSeriesModuleTags[];
 
     /// List of tags within the General Equipment Module
     static const DcmTagKey generalEquipmentModuleTags[];
@@ -68,17 +74,17 @@ class DcmModuleHelpers {
      *  No in-depth search is performed but only the main level is searched
      *  for the given tag. If the tag is not found, the destination item
      *  is not touched at all.
-     *  @param DcmTagKey  Tag key of the element to be copied
-     *  @param src  Item that serves as a a source for copying the element.
-     *              In typical image objects, this will be the main dataset.
+     *  @param tag   Tag key of the element to be copied
+     *  @param src   Item that serves as a a source for copying the element.
+     *               In typical image objects, this will be the main dataset.
      *  @param dest  Item that serves as a destination for inserting the
      *               copied element, if found.
      */
-    static void copyElement(const DcmTagKey, DcmItem& src, DcmItem& dest);
+    static void copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& dest);
 
     /** Copy Patient Module attributes. Includes attributes from CP 1123.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -87,8 +93,8 @@ class DcmModuleHelpers {
     static void copyPatientModule(DcmItem& src, DcmItem& dest);
 
     /** Copy Clinical Trial Subject Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -97,8 +103,8 @@ class DcmModuleHelpers {
     static void copyClinicalTrialSubjectModule(DcmItem& src, DcmItem& dest);
 
     /** Copy General Study Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -107,8 +113,8 @@ class DcmModuleHelpers {
     static void copyGeneralStudyModule(DcmItem& src, DcmItem& dest);
 
     /** Copy Patient Study Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -116,9 +122,19 @@ class DcmModuleHelpers {
      */
     static void copyPatientStudyModule(DcmItem& src, DcmItem& dest);
 
+    /** Copy Clinical Trial Study Module attributes.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
+     *  @param dest  Item to copy module to. An element not found within
+     *               the source item will neither be created in the destination
+     *               item, nor will any existing value be touched in the
+     *               destination item.
+     */
+    static void copyClinicalTrialStudyModule(DcmItem& src, DcmItem& dest);
+
     /** Copy General Series Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -126,9 +142,19 @@ class DcmModuleHelpers {
      */
     static void copyGeneralSeriesModule(DcmItem& src, DcmItem& dest);
 
+    /** Copy Clinical Trial Series Module attributes.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
+     *  @param dest  Item to copy module to. An element not found within
+     *               the source item will neither be created in the destination
+     *               item, nor will any existing value be touched in the
+     *               destination item.
+     */
+    static void copyClinicalTrialSeriesModule(DcmItem& src, DcmItem& dest);
+
     /** Copy General Equipment Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -137,8 +163,8 @@ class DcmModuleHelpers {
     static void copyGeneralEquipmentModule(DcmItem& src, DcmItem& dest);
 
     /** Copy Frame of Reference Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -149,8 +175,8 @@ class DcmModuleHelpers {
     /** Copy SOP Common Module attributes.
      *  Excludes: Digital Signatures Macro, i.e. MAC Parameters Sequence and
      *  Digital Signatures Sequence.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -159,8 +185,8 @@ class DcmModuleHelpers {
     static void copySOPCommonModule(DcmItem& src, DcmItem& dest);
 
     /*  Copy General Image Module attributes.
-     *  @param src  Item to copy module from. Only the main level is searched,
-     *              i.e. no in-depth search is performed on the various tags.
+     *  @param src   Item to copy module from. Only the main level is searched,
+     *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
