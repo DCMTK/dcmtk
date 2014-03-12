@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.12 (onken)
 
+- Fixed comments and error message.
+  Affects: dcmdata/libsrc/modhelp.cc
+
 - Added further module helpers and fixed small issues:
   Added copy helpers for Clinical Trial Study/Series Modules, added missing
   attribute in General Image Module and made code more consistent.

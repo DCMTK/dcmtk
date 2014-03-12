@@ -112,7 +112,7 @@ const DcmTagKey DcmModuleHelpers::patientStudyModuleTags[] =
   DCM_PatientSexNeutered
 };
 
-// List of tags within the Patient Study Module as in DICOM 2011
+// List of tags within the Clinical Trial Study Module as in DICOM 2011
 const DcmTagKey DcmModuleHelpers::clinicalTrialStudyModuleTags[] =
 {
   DCM_ClinicalTrialTimePointID,
@@ -154,7 +154,7 @@ const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] =
   DCM_AnatomicalOrientationType
 };
 
-// List of tags within the Patient Study Module as in DICOM 2011
+// List of tags within the Clinical Trial Series Module as in DICOM 2011
 const DcmTagKey DcmModuleHelpers::clinicalTrialSeriesModuleTags[] =
 {
   DCM_ClinicalTrialCoordinatingCenterName,
@@ -260,7 +260,7 @@ void DcmModuleHelpers::copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& 
     if (cond.bad())
     {
       // we do not expect any errors here, so report it
-      DCMDATA_ERROR("Could not insert element with tag " << tag << " into items: " << cond.text() );
+      DCMDATA_ERROR("Could not insert element with tag " << tag << " into item: " << cond.text() );
     }
   }
 }
