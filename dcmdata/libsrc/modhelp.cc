@@ -20,9 +20,11 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/modhelp.h"
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 
 // List of tags within the Patient Module
@@ -36,7 +38,7 @@ const DcmTagKey DcmModuleHelpers::patientModuleTags[] =
   // EndMacro IssuerOfPatientIDMacro
   DCM_PatientBirthDate,
   DCM_PatientSex,
-  DCM_QualityControlSubject, // CP_1123
+  DCM_QualityControlSubject,
   DCM_ReferencedPatientSequence,
   DCM_PatientBirthTime,
   DCM_OtherPatientIDs,
@@ -197,6 +199,7 @@ const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] =
   DCM_SpecificCharacterSet,
   DCM_InstanceCreationDate,
   DCM_InstanceCreationTime,
+  DCM_InstanceCoercionDateTime,
   DCM_InstanceCreatorUID,
   DCM_RelatedGeneralSOPClassUID,
   DCM_OriginalSpecializedSOPClassUID,
@@ -216,7 +219,6 @@ const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] =
   DCM_OriginalAttributesSequence,
   DCM_HL7StructuredDocumentReferenceSequence,
   DCM_LongitudinalTemporalInformationModified,
-  DCM_InstanceCoercionDateTime,
   DCM_QueryRetrieveView,
   DCM_ConversionSourceAttributesSequence
 };
@@ -255,18 +257,18 @@ const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] =
 
 void DcmModuleHelpers::copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& dest)
 {
-  DcmElement *e;
+  DcmElement *delem;
   OFCondition cond;
   // get (deep) copy of element
-  cond = src.findAndGetElement(tag, e, OFFalse, OFTrue);
-  if( cond.good() )
+  cond = src.findAndGetElement(tag, delem, OFFalse /*searchIntoSub*/, OFTrue /*createCopy*/);
+  if (cond.good())
   {
-   // and insert into destination item
-    cond = dest.insert(e, OFTrue);
+    // and insert into destination item
+    cond = dest.insert(delem, OFTrue);
     if (cond.bad())
     {
       // we do not expect any errors here, so report it
-      DCMDATA_ERROR("Could not insert element with tag " << tag << " into item: " << cond.text() );
+      DCMDATA_ERROR("Could not insert element with tag " << tag << " into item: " << cond.text());
     }
   }
 }
@@ -274,73 +276,76 @@ void DcmModuleHelpers::copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& 
 
 void DcmModuleHelpers::copyPatientModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(patientModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(patientModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(patientModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copyClinicalTrialSubjectModule(DcmItem& src, DcmItem& dest)
 {
-  for( int i=0; i < sizeof(clinicalTrialSubjectModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(clinicalTrialSubjectModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(clinicalTrialSubjectModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copyGeneralStudyModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(generalStudyModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(generalStudyModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(generalStudyModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copyPatientStudyModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(patientStudyModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(patientStudyModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(patientStudyModuleTags[i], src, dest);
 }
 
+
 void DcmModuleHelpers::copyClinicalTrialStudyModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(clinicalTrialStudyModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(clinicalTrialStudyModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(clinicalTrialStudyModuleTags[i], src, dest);
 }
 
+
 void DcmModuleHelpers::copyGeneralSeriesModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(generalSeriesModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(generalSeriesModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(generalSeriesModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copyClinicalTrialSeriesModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(clinicalTrialSeriesModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(clinicalTrialSeriesModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(clinicalTrialSeriesModuleTags[i], src, dest);
 }
 
+
 void DcmModuleHelpers::copyGeneralEquipmentModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof( generalEquipmentModuleTags) / sizeof(DcmTagKey); i++)
+  for(int i = 0; i < sizeof(generalEquipmentModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(generalEquipmentModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copyFrameOfReferenceModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(frameOfReferenceModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(frameOfReferenceModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(frameOfReferenceModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copySOPCommonModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(sopCommonModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(sopCommonModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(sopCommonModuleTags[i], src, dest);
 }
 
 
 void DcmModuleHelpers::copyGeneralImageModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i=0; i < sizeof(generalImageModuleTags) / sizeof(DcmTagKey); i++)
+  for (int i = 0; i < sizeof(generalImageModuleTags) / sizeof(DcmTagKey); i++)
     DcmModuleHelpers::copyElement(generalImageModuleTags[i], src, dest);
 }

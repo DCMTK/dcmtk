@@ -22,12 +22,16 @@
 #ifndef MODHELP_H
 #define MODHELP_H
 
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+// forward declarations
 class DcmTagKey;
 class DcmItem;
 
+
 /** This class contains helper functions to permit copying common modules from
  *  DICOM standard part 3 between DICOM datasets. The attribute lists per
- *  module are taken from the the draft version of DICOM 2013 as of 2014-03-12.
+ *  module are taken from the draft version of DICOM 2013 (as of 2014-03-10).
  */
 class DcmModuleHelpers {
 
@@ -61,7 +65,7 @@ class DcmModuleHelpers {
     static const DcmTagKey frameOfReferenceModuleTags[];
 
     /// List of tags within the SOP Common Module, excluding Digital Signatures
-    /// Macro, i.e.  MAC Parameters Sequence and Digital Signatures Sequence
+    /// Macro, i.e.\ MAC Parameters Sequence and Digital Signatures Sequence
     static const DcmTagKey sopCommonModuleTags[];
 
     /// List of tags within the General Image Module
@@ -74,14 +78,14 @@ class DcmModuleHelpers {
      *  for the given tag. If the tag is not found, the destination item
      *  is not touched at all.
      *  @param tag   Tag key of the element to be copied
-     *  @param src   Item that serves as a a source for copying the element.
+     *  @param src   Item that serves as a source for copying the element.
      *               In typical image objects, this will be the main dataset.
      *  @param dest  Item that serves as a destination for inserting the
      *               copied element, if found.
      */
     static void copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& dest);
 
-    /** Copy Patient Module attributes. Includes attributes from CP 1123.
+    /** Copy Patient Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
      *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
@@ -183,7 +187,7 @@ class DcmModuleHelpers {
      */
     static void copySOPCommonModule(DcmItem& src, DcmItem& dest);
 
-    /*  Copy General Image Module attributes.
+    /** Copy General Image Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
      *               i.e. no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
@@ -192,7 +196,6 @@ class DcmModuleHelpers {
      *               destination item.
      */
     static void copyGeneralImageModule(DcmItem& src, DcmItem& dest);
-
 };
 
 #endif // MODHELP_H

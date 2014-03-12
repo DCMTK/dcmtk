@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.12 (riesmeier)
 
+- Fixed various minor issues in new helper class.
+  Affects: dcmdata/include/dcmtk/dcmdata/modhelp.h
+           dcmdata/libsrc/modhelp.cc
+
 - Fixed various issues in Doxygen comments.
   Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
 
