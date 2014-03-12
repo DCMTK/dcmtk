@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.12 (onken)
 
+- Fixed Makefile.dep for new files from last commit.
+  Affects: dcmdata/libsrc/Makefile.dep
+
 - Added helpers to copy common modules between items:
   Thanks to Andriy Fedorov <fedorov@bwh.harvard.edu> for the original patch.
   Added:   dcmdata/include/dcmtk/dcmdata/modhelp.h
