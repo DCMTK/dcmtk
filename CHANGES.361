@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.12 (riesmeier)
+
+- Fixed various issues in Doxygen comments.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+
 **** Changes from 2014.03.12 (onken)
 
 - Updated module helpers to latest DICOM 2013 draft.

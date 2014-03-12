@@ -170,8 +170,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     };
 
     /** constructor (default).
-     *  No DICOMDIR object is created by default (see methods createNewDicomDir,
-     *  appendToDicomDir and updateDicomDir).
+     *  No DICOMDIR object is created by default (see methods createNewDicomDir(),
+     *  appendToDicomDir() and updateDicomDir()).
      */
     DicomDirInterface();
 
@@ -193,7 +193,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
 
     /** create a new DICOMDIR object.
      *  This function replaces any previously existing DICOMDIR file with the specified
-     *  'filename'.  If the backup mode (see 'disableBackupMode') is enabled, a backup
+     *  'filename'.  If the backup mode (see disableBackupMode()) is enabled, a backup
      *  copy ('filename' + ".BAK") is created from the existing file and automatically
      *  deleted after the new file has been written without any errors.
      *  @param profile media storage application profile to be used for the DICOMDIR
@@ -209,7 +209,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
 
     /** create a DICOMDIR object based on an existing DICOMDIR file (append).
      *  This function can be used to append new entries to an existing DICOMDIR file.
-     *  If the backup mode (see 'disableBackupMode') is enabled, a backup copy ('filename'
+     *  If the backup mode (see disableBackupMode()) is enabled, a backup copy ('filename'
      *  + ".BAK") is created from the existing file and automatically deleted after the
      *  new file has been written without any errors.
      *  @param profile media storage application profile to be used for the DICOMDIR.
@@ -224,11 +224,11 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     /** create a DICOMDIR object based on an existing DICOMDIR file (update).
      *  This function can be used to append new entries to and update existing entries
      *  in an existing DICOMDIR file.
-     *  If the backup mode (see 'disableBackupMode') is enabled, a backup copy ('filename'
+     *  If the backup mode (see disableBackupMode()) is enabled, a backup copy ('filename'
      *  + ".BAK") is created from the existing file and automatically deleted after the
      *  new file has been written without any errors.
      *  @param profile media storage application profile to be used for the DICOMDIR
-     *  @param filename name of the DICOMDIR file to be appended.  The filename may
+     *  @param filename name of the DICOMDIR file to be updated.  The filename may
      *    include a fully qualified pathname.
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -293,7 +293,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     /** set the fileset descriptor file ID and character set.
      *  Prior to any internal modification both 'filename' and 'charset' are checked
      *  using the above checking routines.  Existence of 'filename' is not checked.
-     *  NB: Requires a DICOMDIR to exist (see createNewDicomDir and appendToDicomDir).
+     *  Requires a DICOMDIR object to exist (see createNewDicomDir(), appendToDicomDir()
+     *  or updateDicomDir()).
      *  @param filename name of the fileset descriptor file to be set
      *  @param charset character set of the fileset descriptor file to be set.
      *    default: ISO Latin 1 ("ISO_IR 100"), use NULL or empty string to omit value.
@@ -530,7 +531,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
 
     /** disable/enable the "consistency check".
      *  If this mode is disabled the consistency of newly added records with
-     *  already existing ones is not checked (see 'warnAboutInconsistentAttributes'
+     *  already existing ones is not checked (see warnAboutInconsistentAttributes()
      *  for details).
      *  Default: on, perform consistency check
      *  @param newMode disable check if OFFalse, enable if OFTrue
@@ -634,7 +635,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                           const OFString &transferSyntax,
                                           const OFFilename &filename);
 
-    /** check attributes for comliance with current application profile
+    /** check attributes for compliance with current application profile
      *  @param metainfo object where the DICOM file meta information is stored
      *  @param dataset object where the DICOM dataset is stored
      *  @param filename name of the DICOM file to be checked
@@ -1161,8 +1162,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     void deleteDicomDirBackup();
 
     /** print a message that the value of a given tag is unexpected.
-     *  The output format is: "{Error|Warning}: attribute \<key.tagName()\> \<key\>
-     *  has other value than expected[ in file: \<filename\>]"
+     *  The output format is: "{Error|Warning}: attribute <key.tagName()> <key>
+     *  has other value than expected[ in file: <filename>]"
      *  @param key affected tag
      *  @param filename name of the file (optional, might be empty)
      *  @param errorMsg print error message if OFTrue, a warning message otherwise
@@ -1172,8 +1173,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                      const OFBool errorMsg = OFTrue);
 
     /** print an error message that a required attribute is missing/empty.
-     *  The output format is: "Error: <error.text()>: required attribute \<key.tagName()\>
-     *  \<key>\ {empty|missing}[ in file: \<filename\>]"
+     *  The output format is: "Error: <error.text()>: required attribute <key.tagName()>
+     *  <key> {empty|missing}[ in file: <filename>]"
      *  @param key affected tag
      *  @param filename name of the file (optional, might be empty)
      *  @param emptyMsg print "empty" if OFTrue, "missing" otherwise
@@ -1183,8 +1184,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                        const OFBool emptyMsg = OFFalse);
 
     /** print an error message that something went wrong with an attribute.
-     *  The output format is: "Error: \<error.text()\>: [cannot \<operation\> ]\<key.tagName()\>
-     *  \<key\>"
+     *  The output format is: "Error: <error.text()>: [cannot <operation> ]<key.tagName()>
+     *  <key>"
      *  @param key affected tag
      *  @param error status to be reported (only if ".bad()")
      *  @param operation name of the operation that failed (optional, might be NULL)
@@ -1194,7 +1195,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                     const char *operation);
 
     /** print an error message that something went wrong with a given record.
-     *  The output format is: "Error: \<error.text()\>: [cannot \<operation\> ]\<recordType\>
+     *  The output format is: "Error: <error.text()>: [cannot <operation> ]<recordType>
      *  directory record"
      *  @param error status to be reported (only if ".bad()")
      *  @param recordType type of directory record which caused the error
@@ -1212,7 +1213,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool copyFile(const OFFilename &fromFilename,
                     const OFFilename &toFilename);
 
-    /** see if all the attributes in record match the values in dataset and warn if not
+    /** check if all the attributes in record match the values in dataset and warn if not
      *  @param record directory record to be checked
      *  @param dataset DICOM dataset to be compared with the directory record
      *  @param sourceFilename name of the source DICOM file
