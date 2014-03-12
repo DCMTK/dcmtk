@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.12 (onken)
+
+- Added helpers to copy common modules between items:
+  Thanks to Andriy Fedorov <fedorov@bwh.harvard.edu> for the original patch.
+  Added:   dcmdata/include/dcmtk/dcmdata/modhelp.h
+           dcmdata/libsrc/modhelp.cc
+  Affects: dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.in
+
 **** Changes from 2014.03.07 (onken)
 
 - Added DCMTK.cmake and DCMTKTargets.cmake documentation.
