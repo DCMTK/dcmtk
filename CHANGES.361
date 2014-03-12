@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.12 (onken)
 
+- Updated module helpers to latest DICOM 2013 draft.
+  Affects: dcmdata/include/dcmtk/dcmdata/modhelp.h
+           dcmdata/libsrc/modhelp.cc
+
 - Fixed comments and error message.
   Affects: dcmdata/libsrc/modhelp.cc
 

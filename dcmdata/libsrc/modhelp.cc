@@ -25,7 +25,7 @@
 #include "dcmtk/dcmdata/dctk.h"
 
 
-// List of tags within the Patient Module as in DICOM 2011 + CP 1123
+// List of tags within the Patient Module
 const DcmTagKey DcmModuleHelpers::patientModuleTags[] =
 {
   DCM_PatientName,
@@ -57,7 +57,7 @@ const DcmTagKey DcmModuleHelpers::patientModuleTags[] =
   DCM_DeidentificationMethodCodeSequence
 };
 
-// List of tags within the Clinical Trial Subject Module  as in DICOM 2011
+// List of tags within the Clinical Trial Subject Module
 const DcmTagKey DcmModuleHelpers::clinicalTrialSubjectModuleTags[] =
 {
   DCM_ClinicalTrialSponsorName,
@@ -71,7 +71,7 @@ const DcmTagKey DcmModuleHelpers::clinicalTrialSubjectModuleTags[] =
   DCM_ClinicalTrialProtocolEthicsCommitteeApprovalNumber
 };
 
-// List of tags within the General Study Module as in DICOM 2011
+// List of tags within the General Study Module
 const DcmTagKey DcmModuleHelpers::generalStudyModuleTags[] =
 {
   DCM_StudyInstanceUID,
@@ -93,7 +93,7 @@ const DcmTagKey DcmModuleHelpers::generalStudyModuleTags[] =
   DCM_ReasonForPerformedProcedureCodeSequence
 };
 
-// List of tags within the Patient Study Module as in DICOM 2011
+// List of tags within the Patient Study Module
 const DcmTagKey DcmModuleHelpers::patientStudyModuleTags[] =
 {
   DCM_AdmittingDiagnosesDescription,
@@ -112,7 +112,7 @@ const DcmTagKey DcmModuleHelpers::patientStudyModuleTags[] =
   DCM_PatientSexNeutered
 };
 
-// List of tags within the Clinical Trial Study Module as in DICOM 2011
+// List of tags within the Clinical Trial Study Module
 const DcmTagKey DcmModuleHelpers::clinicalTrialStudyModuleTags[] =
 {
   DCM_ClinicalTrialTimePointID,
@@ -120,7 +120,7 @@ const DcmTagKey DcmModuleHelpers::clinicalTrialStudyModuleTags[] =
   DCM_ConsentForClinicalTrialUseSequence
 };
 
-// List of tags within the General Series Module as in DICOM 2011
+// List of tags within the General Series Module
 const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] =
 {
   DCM_Modality,
@@ -147,6 +147,8 @@ const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] =
   DCM_PerformedProcedureStepID,
   DCM_PerformedProcedureStepStartDate,
   DCM_PerformedProcedureStepStartTime,
+  DCM_PerformedProcedureStepEndDate,
+  DCM_PerformedProcedureStepEndTime,
   DCM_PerformedProcedureStepDescription,
   DCM_PerformedProtocolCodeSequence,
   DCM_CommentsOnThePerformedProcedureStep,
@@ -154,7 +156,7 @@ const DcmTagKey DcmModuleHelpers::generalSeriesModuleTags[] =
   DCM_AnatomicalOrientationType
 };
 
-// List of tags within the Clinical Trial Series Module as in DICOM 2011
+// List of tags within the Clinical Trial Series Module
 const DcmTagKey DcmModuleHelpers::clinicalTrialSeriesModuleTags[] =
 {
   DCM_ClinicalTrialCoordinatingCenterName,
@@ -162,7 +164,7 @@ const DcmTagKey DcmModuleHelpers::clinicalTrialSeriesModuleTags[] =
   DCM_ClinicalTrialSeriesDescription
 };
 
-// List of tags within the General Equipment Module as in DICOM 2011
+// List of tags within the General Equipment Module
 const DcmTagKey DcmModuleHelpers::generalEquipmentModuleTags[] =
 {
   DCM_Manufacturer,
@@ -180,14 +182,14 @@ const DcmTagKey DcmModuleHelpers::generalEquipmentModuleTags[] =
   DCM_PixelPaddingValue
 };
 
-// List of tags within the Frame of Reference Module as in DICOM 2011
+// List of tags within the Frame of Reference Module
 const DcmTagKey DcmModuleHelpers::frameOfReferenceModuleTags[] =
 {
   DCM_FrameOfReferenceUID,
   DCM_PositionReferenceIndicator
 };
 
-// List of tags within the SOP Common Module as in DICOM 2011, excluding Digital Signatures Macro
+// List of tags within the SOP Common Module, excluding Digital Signatures Macro
 const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] =
 {
   DCM_SOPClassUID,
@@ -213,10 +215,13 @@ const DcmTagKey DcmModuleHelpers::sopCommonModuleTags[] =
   DCM_EncryptedAttributesSequence,
   DCM_OriginalAttributesSequence,
   DCM_HL7StructuredDocumentReferenceSequence,
-  DCM_LongitudinalTemporalInformationModified
+  DCM_LongitudinalTemporalInformationModified,
+  DCM_InstanceCoercionDateTime,
+  DCM_QueryRetrieveView,
+  DCM_ConversionSourceAttributesSequence
 };
 
-// List of tags within the General Image Module as in DICOM 2011
+// List of tags within the General Image Module
 const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] =
 {
   DCM_InstanceNumber,
@@ -243,7 +248,8 @@ const DcmTagKey DcmModuleHelpers::generalImageModuleTags[] =
   DCM_LossyImageCompressionMethod,
   DCM_IconImageSequence,
   DCM_PresentationLUTShape,
-  DCM_IrradiationEventUID
+  DCM_IrradiationEventUID,
+  DCM_RealWorldValueMappingSequence
 };
 
 

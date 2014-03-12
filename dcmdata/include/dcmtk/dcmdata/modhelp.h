@@ -27,14 +27,13 @@ class DcmItem;
 
 /** This class contains helper functions to permit copying common modules from
  *  DICOM standard part 3 between DICOM datasets. The attribute lists per
- *  module are taken over from the DICOM 2011 version of the standard if not
- *  noted otherwise.
+ *  module are taken from the the draft version of DICOM 2013 as of 2014-03-12.
  */
 class DcmModuleHelpers {
 
   protected:
 
-    /// List of tags within the Patient Module (as in DICOM 2011 + CP 1123)
+    /// List of tags within the Patient Module
     static const DcmTagKey patientModuleTags[];
 
     /// List of tags within the Clinical Trial Subject Module
@@ -65,7 +64,7 @@ class DcmModuleHelpers {
     /// Macro, i.e.  MAC Parameters Sequence and Digital Signatures Sequence
     static const DcmTagKey sopCommonModuleTags[];
 
-    /// List of tags within the General Image Module (as in DICOM 2011)
+    /// List of tags within the General Image Module
     static const DcmTagKey generalImageModuleTags[];
 
   public:
