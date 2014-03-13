@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.13 (riesmeier)
 
+- Pass OFString to DIMSE_createFilestream():
+  Pass an OFString filename to DIMSE_createFilestream() instead of char* since
+  this function now accepts an OFFilename instance.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
 - Fixed various typo.
   Affects: dcmnet/libsrc/dimse.cc
 

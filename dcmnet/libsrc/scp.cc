@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2013, OFFIS e.V.
+ *  Copyright (C) 2009-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1476,7 +1476,7 @@ OFCondition DcmSCP::receiveSTORERequestDataset(T_ASC_PresentationContextID *pres
   OFString tempStr;
   DcmOutputFileStream *filestream = NULL;
   // Receive dataset over the network and write it directly to a file
-  OFCondition cond = DIMSE_createFilestream(filename.c_str(), &reqMessage, m_assoc, *presID,
+  OFCondition cond = DIMSE_createFilestream(filename, &reqMessage, m_assoc, *presID,
                                             OFTrue /*writeMetaheader*/, &filestream);
   if (cond.good())
   {

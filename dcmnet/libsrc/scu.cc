@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2013, OFFIS e.V.
+ *  Copyright (C) 2008-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1399,7 +1399,7 @@ OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID *presID,
   /* set will be received and written to the file through the call to DIMSE_receiveDataSetInFile(...).*/
   /* create filestream */
   DcmOutputFileStream *filestream = NULL;
-  OFCondition cond = DIMSE_createFilestream(filename.c_str(), request, m_assoc, *presID, OFTrue, &filestream);
+  OFCondition cond = DIMSE_createFilestream(filename, request, m_assoc, *presID, OFTrue, &filestream);
   if (cond.good())
   {
     if (m_progressNotificationMode)
