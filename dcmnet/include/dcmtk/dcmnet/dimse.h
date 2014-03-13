@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -980,7 +980,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_createFilestream(
                      /* in */
-                     const char *filename,
+                     const OFFilename &filename,
                      const T_DIMSE_C_StoreRQ *request,
                      const T_ASC_Association *assoc,
                      T_ASC_PresentationContextID presIdCmd,

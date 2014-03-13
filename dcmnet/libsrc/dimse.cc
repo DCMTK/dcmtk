@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1321,7 +1321,7 @@ DIMSE_receiveCommand(
 }
 
 OFCondition DIMSE_createFilestream(
-        const char *filename,
+        const OFFilename &filename,
         const T_DIMSE_C_StoreRQ *request,
         const T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
@@ -1341,7 +1341,7 @@ OFCondition DIMSE_createFilestream(
   DcmTag sourceApplicationEntityTitle(DCM_SourceApplicationEntityTitle);
   T_ASC_PresentationContext presentationContext;
 
-  if ((filename == NULL) || (request==NULL) || (assoc==NULL) ||
+  if (filename.isEmpty() || (request==NULL) || (assoc==NULL) ||
       (assoc->params==NULL) || (filestream==NULL))
   {
     return DIMSE_NULLKEY;
@@ -1423,9 +1423,10 @@ OFCondition DIMSE_createFilestream(
        delete *filestream;
        *filestream = NULL;
      }
-     char buf[4096]; // file names could be long!
-     sprintf(buf, "DIMSE createFilestream: cannot create file '%s'", filename);
-     return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf);
+     OFOStringStream stream;
+     stream << "DIMSE createFilestream: cannot create file '" << filename << "'" << OFStringStream_ends;
+     OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+     return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, msg.c_str());
   }
 
   if (metainfo)
@@ -1433,9 +1434,10 @@ OFCondition DIMSE_createFilestream(
     metainfo->transferInit();
     if (EC_Normal != metainfo->write(**filestream, META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_ExplicitLength, NULL))
     {
-      char buf2[4096]; // file names could be long!
-      sprintf(buf2, "DIMSE createFilestream: cannot write metaheader to file '%s'", filename);
-      cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf2);
+      OFOStringStream stream;
+      stream << "DIMSE createFilestream: cannot write metaheader to file '" << filename << "'" << OFStringStream_ends;
+      OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+      cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, msg.c_str());
     }
     metainfo->transferEnd();
     delete metainfo;

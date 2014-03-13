@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.13 (riesmeier)
 
+- DIMSE_createFilestream() now uses an OFFilename:
+  The low-level network function DIMSE_createFilestream() now uses an OFFilename
+  parameter instead of a char*. This allows for passing a wide character string
+  to this function on Windows. The API remains stable since the OFFilename
+  constructor also accepts a char*.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the suggestion.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimse.cc
+
 - Added check for Shared Functional Groups Sequence:
   Certain key attributes like Pixel Spacing (0028,0030) can also be nested
   within a functional group sequence of the Shared Functional Groups Sequence
