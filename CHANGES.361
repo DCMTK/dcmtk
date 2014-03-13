@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.13 (riesmeier)
+
+- Added missing data elements to BD profiles:
+  Added missing data elements from PS3.11 Table H.3-2 to the various Blu-ray
+  Disc (BD) media storage application profiles. Basically, the requirements for
+  PATIENT, IMAGE and SPECTROSCOPY directory records are identical to those for
+  the DVD profiles. Only the reference in Section M.3.3.1 was missed.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2014.03.12 (riesmeier)
 
 - Rebuilt Makefile dependencies.

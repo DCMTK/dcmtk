@@ -2604,6 +2604,12 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         /* check profile specific requirements */
                         if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
                             (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDJPEG) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDJPEG2000) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatML) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
                             (ApplicationProfile == AP_USBandFlashJPEG) ||
                             (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                             (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -2869,6 +2875,12 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
             copyElementType2(dataset, DCM_PatientName, record, sourceFilename);
             if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
                 (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                (ApplicationProfile == AP_GeneralPurposeBDJPEG) ||
+                (ApplicationProfile == AP_GeneralPurposeBDJPEG2000) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatML) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
                 (ApplicationProfile == AP_USBandFlashJPEG) ||
                 (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -2953,6 +2965,12 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
             copyElementType1C(dataset, DCM_SeriesNumber, record, sourceFilename);
             if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
                 (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                (ApplicationProfile == AP_GeneralPurposeBDJPEG) ||
+                (ApplicationProfile == AP_GeneralPurposeBDJPEG2000) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatML) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
                 (ApplicationProfile == AP_USBandFlashJPEG) ||
                 (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -3534,6 +3552,12 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
             /* application profile specific attributes */
             if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
                 (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                (ApplicationProfile == AP_GeneralPurposeBDJPEG) ||
+                (ApplicationProfile == AP_GeneralPurposeBDJPEG2000) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatML) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
                 (ApplicationProfile == AP_USBandFlashJPEG) ||
                 (ApplicationProfile == AP_USBandFlashJPEG2000))
             {
@@ -3970,17 +3994,17 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
             switch (ApplicationProfile)
             {
                 case AP_GeneralPurpose:
+                    copyElementType1C(dataset, DCM_ImageType, record, sourceFilename);
+                    copyElementType1C(dataset, DCM_ReferencedImageSequence, record, sourceFilename);
+                    break;
+                case AP_GeneralPurposeDVDJPEG:
+                case AP_GeneralPurposeDVDJPEG2000:
                 case AP_GeneralPurposeBDJPEG:
                 case AP_GeneralPurposeBDJPEG2000:
                 case AP_GeneralPurposeBDMPEG2MPatML:
                 case AP_GeneralPurposeBDMPEG2MPatHL:
                 case AP_GeneralPurposeBDMPEG4HPatLV41:
                 case AP_GeneralPurposeBDMPEG4HPatLV41BD:
-                    copyElementType1C(dataset, DCM_ImageType, record, sourceFilename);
-                    copyElementType1C(dataset, DCM_ReferencedImageSequence, record, sourceFilename);
-                    break;
-                case AP_GeneralPurposeDVDJPEG:
-                case AP_GeneralPurposeDVDJPEG2000:
                 case AP_USBandFlashJPEG:
                 case AP_USBandFlashJPEG2000:
                     copyElementType1(dataset, DCM_Rows, record, sourceFilename);
