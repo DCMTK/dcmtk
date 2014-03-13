@@ -1332,7 +1332,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                 OFString &result,
                                 OFBool searchIntoSub = OFFalse);
 
-    /** copy element from dataset to directory record
+    /** copy element from given dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
@@ -1347,7 +1347,23 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                      const OFBool optional = OFFalse,
                      const OFBool copyEmpty = OFTrue);
 
-    /** copy type 1 element from dataset to directory record
+    /** copy type 1C element from given dataset or first item of the given sequence
+     *  to directory record.  Typically, the SharedFunctionalGroupsSequence is used
+     *  with this method.
+     *  @param dataset DICOM dataset containing the original data
+     *  @param elementKey tag of the element to be copied
+     *  @param sequenceKey tag of the sequence element to be used in case the element
+     *    cannot be found on the main dataset level
+     *  @param record directory record to which the element is to be copied
+     *  @param sourceFilename name of the source DICOM file
+     */
+    void copyElementType1CFromDatasetOrSequenceItem(DcmItem *dataset,
+                                                    const DcmTagKey &elementKey,
+                                                    const DcmTagKey &sequenceKey,
+                                                    DcmDirectoryRecord *record,
+                                                    const OFFilename &sourceFilename);
+
+    /** copy type 1 element from given dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
@@ -1361,7 +1377,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
         copyElement(dataset, key, record, sourceFilename, OFFalse /*optional*/, OFFalse /*copyEmpty*/);
     }
 
-    /** copy type 1C element from dataset to directory record
+    /** copy type 1C element from given dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
@@ -1375,7 +1391,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
         copyElement(dataset, key, record, sourceFilename, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
     }
 
-    /** copy type 2 element from dataset to directory record
+    /** copy type 2 element from given dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
@@ -1389,7 +1405,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
         copyElement(dataset, key, record, sourceFilename, OFFalse /*optional*/, OFTrue /*copyEmpty*/);
     }
 
-    /** copy type 3 element from dataset to directory record
+    /** copy type 3 element from given dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
@@ -1403,7 +1419,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
         copyElement(dataset, key, record, sourceFilename, OFTrue /*optional*/, OFTrue /*copyEmpty*/);
     }
 
-    /** copy optional string value from dataset to directory record
+    /** copy optional string value from given dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element value to be copied
      *  @param record directory record to which the element value is to be copied

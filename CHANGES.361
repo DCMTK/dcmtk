@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.13 (riesmeier)
 
+- Added check for Shared Functional Groups Sequence:
+  Certain key attributes like Pixel Spacing (0028,0030) can also be nested
+  within a functional group sequence of the Shared Functional Groups Sequence
+  (5200,9229). Therefore, these attributes also have to be checked on this level
+  and not only in the main dataset.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
 - Added missing data elements to BD profiles:
   Added missing data elements from PS3.11 Table H.3-2 to the various Blu-ray
   Disc (BD) media storage application profiles. Basically, the requirements for

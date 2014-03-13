@@ -1108,7 +1108,9 @@ void DicomDirInterface::cleanup()
 // check whether the current DICOMDIR object is valid
 OFBool DicomDirInterface::isDicomDirValid() const
 {
-    /* tbd: might add more sophisticated checks later on */
+    /* tbd: might add more sophisticated checks later on, e.g. some application
+     * profiles do not not allow for DICOMDIRs with no directory information.
+     */
     return (DicomDir != NULL);
 }
 
@@ -3568,11 +3570,11 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
                 copyElementType1C(dataset, DCM_NumberOfFrames, record, sourceFilename);
                 copyElementType1C(dataset, DCM_AcquisitionTimeSynchronized, record, sourceFilename);
                 copyElementType1C(dataset, DCM_AcquisitionDateTime, record, sourceFilename);
-                // tbd: need to examine functional groups for the following attributes
-                copyElementType1C(dataset, DCM_ReferencedImageSequence, record, sourceFilename);
-                copyElementType1C(dataset, DCM_ImagePositionPatient, record, sourceFilename);
-                copyElementType1C(dataset, DCM_ImageOrientationPatient, record, sourceFilename);
-                copyElementType1C(dataset, DCM_PixelSpacing, record, sourceFilename);
+                // also need to examine functional groups for the following attributes
+                copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_ReferencedImageSequence, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
+                copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_ImagePositionPatient, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
+                copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_ImageOrientationPatient, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
+                copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_PixelSpacing, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
             }
         } else {
             printRecordErrorMessage(record->error(), ERT_Spectroscopy, "create");
@@ -4017,11 +4019,11 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                     copyElementType1C(dataset, DCM_NumberOfFrames, record, sourceFilename);
                     copyElementType1C(dataset, DCM_AcquisitionTimeSynchronized, record, sourceFilename);
                     copyElementType1C(dataset, DCM_AcquisitionDateTime, record, sourceFilename);
-                    // tbd: need to examine functional groups for the following attributes
-                    copyElementType1C(dataset, DCM_ReferencedImageSequence, record, sourceFilename);
-                    copyElementType1C(dataset, DCM_ImagePositionPatient, record, sourceFilename);
-                    copyElementType1C(dataset, DCM_ImageOrientationPatient, record, sourceFilename);
-                    copyElementType1C(dataset, DCM_PixelSpacing, record, sourceFilename);
+                    // also need to examine functional groups for the following attributes
+                    copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_ReferencedImageSequence, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
+                    copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_ImagePositionPatient, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
+                    copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_ImageOrientationPatient, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
+                    copyElementType1CFromDatasetOrSequenceItem(dataset, DCM_PixelSpacing, DCM_SharedFunctionalGroupsSequence, record, sourceFilename);
                     break;
                 case AP_MPEG2MPatMLDVD:
                     copyElementType1(dataset, DCM_Rows, record, sourceFilename);
@@ -5354,7 +5356,7 @@ OFString &DicomDirInterface::getStringFromFile(const OFFilename &filename,
 }
 
 
-// copy element from dataset to directory record
+// copy element from given dataset to directory record
 void DicomDirInterface::copyElement(DcmItem *dataset,
                                     const DcmTagKey &key,
                                     DcmDirectoryRecord *record,
@@ -5391,6 +5393,60 @@ void DicomDirInterface::copyElement(DcmItem *dataset,
             } else if (status == EC_TagNotFound)
                 status = record->insertEmptyElement(key);
             printAttributeErrorMessage(key, status, "insert");
+        }
+    }
+}
+
+
+// copy element from given dataset or first item of the given sequence to directory record
+void DicomDirInterface::copyElementType1CFromDatasetOrSequenceItem(DcmItem *dataset,
+                                                                   const DcmTagKey &elementKey,
+                                                                   const DcmTagKey &sequenceKey,
+                                                                   DcmDirectoryRecord *record,
+                                                                   const OFFilename &sourceFilename)
+{
+    if ((dataset != NULL) && (record != NULL))
+    {
+        DcmElement *delem = NULL;
+        OFCondition status = EC_IllegalCall;
+        /* check whether tag exists in given dataset */
+        if (dataset->tagExistsWithValue(elementKey))
+        {
+            /* get copy of element from given dataset */
+            status = dataset->findAndGetElement(elementKey, delem, OFFalse /*searchIntoSub*/, OFTrue /*createCopy*/);
+        } else {
+            /* alternatively, check whether tag exists in first item of the given sequence element */
+            DcmItem *ditem = NULL;
+            if (dataset->findAndGetSequenceItem(sequenceKey, ditem, 0).good())
+            {
+                /* get copy of element from sequence item (on arbitrary nesting level) */
+                status = ditem->findAndGetElement(elementKey, delem, OFTrue /*searchIntoSub*/, OFTrue /*createCopy*/);
+            }
+        }
+        /* check whether element could be found */
+        if (delem != NULL)
+        {
+            if (status.good() && !delem->isEmpty())
+            {
+                /* ... and insert it into the destination dataset (record) */
+                status = record->insert(delem, OFTrue /*replaceOld*/);
+                if (status.good())
+                {
+                    DcmTag tag(elementKey);
+                    /* check for correct VR in the dataset */
+                    if (delem->getVR() != tag.getEVR())
+                    {
+                        /* create warning message */
+                        DCMDATA_WARN("file " << sourceFilename << ": possibly wrong VR: "
+                            << tag.getTagName() << " " << elementKey << " with "
+                            << DcmVR(delem->getVR()).getVRName() << " found, expected "
+                            << tag.getVRName() << " instead");
+                    }
+                } else
+                    delete delem;
+            } else
+                delete delem;
+            printAttributeErrorMessage(elementKey, status, "insert");
         }
     }
 }
