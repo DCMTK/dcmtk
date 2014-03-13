@@ -265,7 +265,7 @@ DIMSE_readNextPDV(
         /* try to receive new PDVs on the incoming socket stream (in detail, try to receive one PDU) */
         cond = DUL_ReadPDVs(&assoc->DULassociation, NULL, blk, timeout);
 
-        /* check return value, if it is different from DUL_PDATAPDUARRIVED, an error occured */
+        /* check return value, if it is different from DUL_PDATAPDUARRIVED, an error occurred */
         if (cond != DUL_PDATAPDUARRIVED)
         {
             if (cond == DUL_NULLKEY || cond == DUL_ILLEGALKEY) return DIMSE_ILLEGALASSOCIATION;
@@ -304,7 +304,7 @@ getTransferSyntax(
      * Parameters:
      *   assoc      - [in] The association (network connection to another DICOM application).
      *   pid        - [in] The id of the presentation context which shall be checked regarding validity.
-     *   xferSyntax - [out] If pid refers to a valuid presentation context, this variable contains in the
+     *   xferSyntax - [out] If pid refers to a valid presentation context, this variable contains in the
      *                     end the transfer syntax which is specified in the presentation context.
      */
 {
@@ -1107,7 +1107,7 @@ DIMSE_receiveCommand(
         DcmDataset **statusDetail,
         DcmDataset **commandSet)
     /*
-     * This function revceives a DIMSE command via network from another DICOM application.
+     * This function receives a DIMSE command via network from another DICOM application.
      *
      * Parameters:
      *   assoc        - [in] The association (network connection to another DICOM application).
@@ -1237,7 +1237,7 @@ DIMSE_receiveCommand(
         }
 
         /* update the counter that counts how many bytes were read from the incoming socket */
-        /* stream. This variable will only be used for dumpimg general information. */
+        /* stream. This variable will only be used for dumping general information. */
         bytesRead += pdv.fragmentLength;
 
         /* update the following variables which will be evaluated at the beginning of each loop iteration. */
@@ -1246,7 +1246,7 @@ DIMSE_receiveCommand(
 
         /* update the counter that counts how many PDVs were received on the incoming */
         /* socket stream. This variable will be used for determining the first */
-        /* loop iteration and dumpimg general information. */
+        /* loop iteration and dumping general information. */
         pdvCount++;
     }
 
@@ -1309,7 +1309,7 @@ DIMSE_receiveCommand(
             delete cmdSet;
         }
     }
-    /* if some error occured before, delete cmdSet */
+    /* if some error occurred before, delete cmdSet */
     else
         delete cmdSet;
 
@@ -1319,6 +1319,7 @@ DIMSE_receiveCommand(
     /* return result value */
     return cond;
 }
+
 
 OFCondition DIMSE_createFilestream(
         const OFFilename &filename,
@@ -1363,7 +1364,7 @@ OFCondition DIMSE_createFilestream(
     {
       metainfo->insert(elem, OFTrue);
       Uint8 version[2] = {0,1};
-      ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
+      ((DcmOtherByteOtherWord*)elem)->putUint8Array(version, 2);
     } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPClassUID)))
     {
@@ -1444,8 +1445,8 @@ OFCondition DIMSE_createFilestream(
   }
 
   return cond;
-
 }
+
 
 OFCondition
 DIMSE_receiveDataSetInFile(
@@ -1715,12 +1716,12 @@ DIMSE_receiveDataSetInMemory(
         if (!last)
         {
             /* update the counter that counts how many bytes were read from the incoming socket */
-            /* stream. This variable will only be used for dumpimg general information. */
+            /* stream. This variable will only be used for dumping general information. */
             bytesRead += pdv.fragmentLength;
 
             /* update the counter that counts how many PDVs were received on the incoming */
             /* socket stream. This variable will be used for determining the first */
-            /* loop iteration and dumpimg general information. */
+            /* loop iteration and dumping general information. */
             pdvCount++;
 
             /* update the variable which will be evaluated at the beginning of each loop iteration. */

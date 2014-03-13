@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.13 (riesmeier)
 
+- Fixed various typo.
+  Affects: dcmnet/libsrc/dimse.cc
+
 - DIMSE_createFilestream() now uses an OFFilename:
   The low-level network function DIMSE_createFilestream() now uses an OFFilename
   parameter instead of a char*. This allows for passing a wide character string
