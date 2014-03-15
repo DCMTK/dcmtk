@@ -24,8 +24,8 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 152, 154, 157, 158, 163, 165, 168.
-# - CP 1064, 1120, 1121, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216, 1236,
-#      1246, 1248, 1249, 1258, 1268, 1269, 1287, 1294, 1297.
+# - CP 1064, 1090, 1120, 1121, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216,
+#      1236, 1246, 1248, 1249, 1258, 1268, 1269, 1287, 1294, 1297.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3405,13 +3405,15 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1064, 1120, 1121, 1123, 1137, 1138, 1147, 1188, 1200,
-#                  1204, 1216, 1236, 1246, 1248, 1249, 1258, 1268, 1269,
-#                  1287, 1294, 1297
+# Correction Items 1064, 1090, 1120, 1121, 1123, 1137, 1138, 1147, 1188,
+#                  1200, 1204, 1216, 1236, 1246, 1248, 1249, 1258, 1268,
+#                  1269, 1287, 1294, 1297
 #
 (0040,A161)	FD	FloatingPointValue	1-n	CP_1064
 (0040,A162)	SL	RationalNumeratorValue	1-n	CP_1064
 (0040,A163)	UL	RationalDenominatorValue	1-n	CP_1064
+#
+(0008,3010)	UI	IrradiationEventUID	1-n	CP_1090
 #
 (300A,0425)	FL	SourceToGeneralAccessoryDistance	1	CP_1120
 #

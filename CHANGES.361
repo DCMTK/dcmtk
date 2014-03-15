@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.15 (riesmeier)
+
+- Added support for CP-1090 to the data dictionary:
+  This document changes the VM for Irradiation Event UID (0008,3010) from "1"
+  to "1-n".
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.03.13 (riesmeier)
 
 - Pass OFString to DIMSE_createFilestream():
