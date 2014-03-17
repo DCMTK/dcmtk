@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTReferencedBeamSequenceInRTDoseModule
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -21,7 +22,6 @@
 DRTReferencedBeamSequenceInRTDoseModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     ReferencedBeamNumber(DCM_ReferencedBeamNumber),
-    ReferencedBrachyApplicationSetupNumber(DCM_ReferencedBrachyApplicationSetupNumber),
     ReferencedControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
 }
@@ -30,7 +30,6 @@ DRTReferencedBeamSequenceInRTDoseModule::Item::Item(const OFBool emptyDefaultIte
 DRTReferencedBeamSequenceInRTDoseModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     ReferencedBeamNumber(copy.ReferencedBeamNumber),
-    ReferencedBrachyApplicationSetupNumber(copy.ReferencedBrachyApplicationSetupNumber),
     ReferencedControlPointSequence(copy.ReferencedControlPointSequence)
 {
 }
@@ -47,7 +46,6 @@ DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDose
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
         ReferencedBeamNumber = copy.ReferencedBeamNumber;
-        ReferencedBrachyApplicationSetupNumber = copy.ReferencedBrachyApplicationSetupNumber;
         ReferencedControlPointSequence = copy.ReferencedControlPointSequence;
     }
     return *this;
@@ -61,7 +59,6 @@ void DRTReferencedBeamSequenceInRTDoseModule::Item::clear()
         /* clear all DICOM attributes */
         ReferencedBeamNumber.clear();
         ReferencedControlPointSequence.clear();
-        ReferencedBrachyApplicationSetupNumber.clear();
     }
 }
 
@@ -69,8 +66,7 @@ void DRTReferencedBeamSequenceInRTDoseModule::Item::clear()
 OFBool DRTReferencedBeamSequenceInRTDoseModule::Item::isEmpty()
 {
     return ReferencedBeamNumber.isEmpty() &&
-           ReferencedControlPointSequence.isEmpty() &&
-           ReferencedBrachyApplicationSetupNumber.isEmpty();
+           ReferencedControlPointSequence.isEmpty();
 }
 
 
@@ -89,7 +85,6 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1C", "ReferencedBeamSequence");
         ReferencedControlPointSequence.read(item, "1-n", "1C", "ReferencedBeamSequence");
-        getAndCheckElementFromDataset(item, ReferencedBrachyApplicationSetupNumber, "1", "1C", "ReferencedBeamSequence");
         result = EC_Normal;
     }
     return result;
@@ -104,7 +99,6 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1C", "ReferencedBeamSequence");
         if (result.good()) result = ReferencedControlPointSequence.write(item, "1-n", "1C", "ReferencedBeamSequence");
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedBrachyApplicationSetupNumber), "1", "1C", "ReferencedBeamSequence");
     }
     return result;
 }
@@ -128,24 +122,6 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBeamNumb
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBrachyApplicationSetupNumber(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ReferencedBrachyApplicationSetupNumber, value, pos);
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmIntegerString &, ReferencedBrachyApplicationSetupNumber).getSint32(value, pos);
-}
-
-
 OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::setReferencedBeamNumber(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -154,19 +130,6 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::setReferencedBeamNumb
         result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ReferencedBeamNumber.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedBrachyApplicationSetupNumber.putOFStringArray(value);
     }
     return result;
 }

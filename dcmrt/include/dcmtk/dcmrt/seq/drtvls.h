@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTVOILUTSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-03-27 17:57:09 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -138,9 +139,9 @@ class DCMTK_DCMRT_EXPORT DRTVOILUTSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// LUTData (0028,3006) vr=US_SS_OW, vm=1-n, type=1
+        /// LUTData (0028,3006) vr=US/OW, vm=1-n, type=1
         DcmOtherByteOtherWord LUTData;
-        /// LUTDescriptor (0028,3002) vr=US_SS, vm=3, type=1
+        /// LUTDescriptor (0028,3002) vr=US/SS, vm=3, type=1
         DcmUnsignedShort LUTDescriptor;
         /// LUTExplanation (0028,3003) vr=LO, vm=1, type=3
         DcmLongString LUTExplanation;

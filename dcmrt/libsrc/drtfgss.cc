@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTFractionGroupSummarySequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -20,13 +21,10 @@
 
 DRTFractionGroupSummarySequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    CumulativeDoseToDoseReference(DCM_CumulativeDoseToDoseReference),
-    DoseReferenceDescription(DCM_DoseReferenceDescription),
     FractionGroupType(DCM_FractionGroupType),
     FractionStatusSummarySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumberOfFractionsDelivered(DCM_NumberOfFractionsDelivered),
     NumberOfFractionsPlanned(DCM_NumberOfFractionsPlanned),
-    ReferencedDoseReferenceNumber(DCM_ReferencedDoseReferenceNumber),
     ReferencedFractionGroupNumber(DCM_ReferencedFractionGroupNumber)
 {
 }
@@ -34,13 +32,10 @@ DRTFractionGroupSummarySequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTFractionGroupSummarySequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    CumulativeDoseToDoseReference(copy.CumulativeDoseToDoseReference),
-    DoseReferenceDescription(copy.DoseReferenceDescription),
     FractionGroupType(copy.FractionGroupType),
     FractionStatusSummarySequence(copy.FractionStatusSummarySequence),
     NumberOfFractionsDelivered(copy.NumberOfFractionsDelivered),
     NumberOfFractionsPlanned(copy.NumberOfFractionsPlanned),
-    ReferencedDoseReferenceNumber(copy.ReferencedDoseReferenceNumber),
     ReferencedFractionGroupNumber(copy.ReferencedFractionGroupNumber)
 {
 }
@@ -56,13 +51,10 @@ DRTFractionGroupSummarySequence::Item &DRTFractionGroupSummarySequence::Item::op
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        CumulativeDoseToDoseReference = copy.CumulativeDoseToDoseReference;
-        DoseReferenceDescription = copy.DoseReferenceDescription;
         FractionGroupType = copy.FractionGroupType;
         FractionStatusSummarySequence = copy.FractionStatusSummarySequence;
         NumberOfFractionsDelivered = copy.NumberOfFractionsDelivered;
         NumberOfFractionsPlanned = copy.NumberOfFractionsPlanned;
-        ReferencedDoseReferenceNumber = copy.ReferencedDoseReferenceNumber;
         ReferencedFractionGroupNumber = copy.ReferencedFractionGroupNumber;
     }
     return *this;
@@ -79,9 +71,6 @@ void DRTFractionGroupSummarySequence::Item::clear()
         NumberOfFractionsPlanned.clear();
         NumberOfFractionsDelivered.clear();
         FractionStatusSummarySequence.clear();
-        ReferencedDoseReferenceNumber.clear();
-        DoseReferenceDescription.clear();
-        CumulativeDoseToDoseReference.clear();
     }
 }
 
@@ -92,10 +81,7 @@ OFBool DRTFractionGroupSummarySequence::Item::isEmpty()
            FractionGroupType.isEmpty() &&
            NumberOfFractionsPlanned.isEmpty() &&
            NumberOfFractionsDelivered.isEmpty() &&
-           FractionStatusSummarySequence.isEmpty() &&
-           ReferencedDoseReferenceNumber.isEmpty() &&
-           DoseReferenceDescription.isEmpty() &&
-           CumulativeDoseToDoseReference.isEmpty();
+           FractionStatusSummarySequence.isEmpty();
 }
 
 
@@ -117,9 +103,6 @@ OFCondition DRTFractionGroupSummarySequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, NumberOfFractionsPlanned, "1", "2C", "FractionGroupSummarySequence");
         getAndCheckElementFromDataset(item, NumberOfFractionsDelivered, "1", "2C", "FractionGroupSummarySequence");
         FractionStatusSummarySequence.read(item, "1-n", "3", "FractionGroupSummarySequence");
-        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "3", "FractionGroupSummarySequence");
-        getAndCheckElementFromDataset(item, DoseReferenceDescription, "1", "3", "FractionGroupSummarySequence");
-        getAndCheckElementFromDataset(item, CumulativeDoseToDoseReference, "1", "1C", "FractionGroupSummarySequence");
         result = EC_Normal;
     }
     return result;
@@ -137,38 +120,8 @@ OFCondition DRTFractionGroupSummarySequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsPlanned), "1", "2C", "FractionGroupSummarySequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsDelivered), "1", "2C", "FractionGroupSummarySequence");
         if (result.good()) result = FractionStatusSummarySequence.write(item, "1-n", "3", "FractionGroupSummarySequence");
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "3", "FractionGroupSummarySequence");
-        addElementToDataset(result, item, new DcmLongString(DoseReferenceDescription), "1", "3", "FractionGroupSummarySequence");
-        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseToDoseReference), "1", "1C", "FractionGroupSummarySequence");
     }
     return result;
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::getCumulativeDoseToDoseReference(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CumulativeDoseToDoseReference, value, pos);
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::getCumulativeDoseToDoseReference(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, CumulativeDoseToDoseReference).getFloat64(value, pos);
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::getDoseReferenceDescription(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(DoseReferenceDescription, value, pos);
 }
 
 
@@ -217,24 +170,6 @@ OFCondition DRTFractionGroupSummarySequence::Item::getNumberOfFractionsPlanned(S
 }
 
 
-OFCondition DRTFractionGroupSummarySequence::Item::getReferencedDoseReferenceNumber(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ReferencedDoseReferenceNumber, value, pos);
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::getReferencedDoseReferenceNumber(Sint32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmIntegerString &, ReferencedDoseReferenceNumber).getSint32(value, pos);
-}
-
-
 OFCondition DRTFractionGroupSummarySequence::Item::getReferencedFractionGroupNumber(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
@@ -250,32 +185,6 @@ OFCondition DRTFractionGroupSummarySequence::Item::getReferencedFractionGroupNum
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmIntegerString &, ReferencedFractionGroupNumber).getSint32(value, pos);
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::setCumulativeDoseToDoseReference(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CumulativeDoseToDoseReference.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::setDoseReferenceDescription(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = DoseReferenceDescription.putOFStringArray(value);
-    }
-    return result;
 }
 
 
@@ -313,19 +222,6 @@ OFCondition DRTFractionGroupSummarySequence::Item::setNumberOfFractionsPlanned(c
         result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = NumberOfFractionsPlanned.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTFractionGroupSummarySequence::Item::setReferencedDoseReferenceNumber(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedDoseReferenceNumber.putOFStringArray(value);
     }
     return result;
 }

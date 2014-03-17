@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTExposureSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -25,8 +26,6 @@ DRTExposureSequence::Item::Item(const OFBool emptyDefaultItem)
     BlockSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     DiaphragmPosition(DCM_DiaphragmPosition),
     ExposureTime(DCM_ExposureTime),
-    FluenceDataScale(DCM_FluenceDataScale),
-    FluenceDataSource(DCM_FluenceDataSource),
     KVP(DCM_KVP),
     MetersetExposure(DCM_MetersetExposure),
     NumberOfBlocks(DCM_NumberOfBlocks),
@@ -43,8 +42,6 @@ DRTExposureSequence::Item::Item(const Item &copy)
     BlockSequence(copy.BlockSequence),
     DiaphragmPosition(copy.DiaphragmPosition),
     ExposureTime(copy.ExposureTime),
-    FluenceDataScale(copy.FluenceDataScale),
-    FluenceDataSource(copy.FluenceDataSource),
     KVP(copy.KVP),
     MetersetExposure(copy.MetersetExposure),
     NumberOfBlocks(copy.NumberOfBlocks),
@@ -69,8 +66,6 @@ DRTExposureSequence::Item &DRTExposureSequence::Item::operator=(const Item &copy
         BlockSequence = copy.BlockSequence;
         DiaphragmPosition = copy.DiaphragmPosition;
         ExposureTime = copy.ExposureTime;
-        FluenceDataScale = copy.FluenceDataScale;
-        FluenceDataSource = copy.FluenceDataSource;
         KVP = copy.KVP;
         MetersetExposure = copy.MetersetExposure;
         NumberOfBlocks = copy.NumberOfBlocks;
@@ -96,8 +91,6 @@ void DRTExposureSequence::Item::clear()
         ApplicatorSequence.clear();
         NumberOfBlocks.clear();
         BlockSequence.clear();
-        FluenceDataSource.clear();
-        FluenceDataScale.clear();
     }
 }
 
@@ -113,9 +106,7 @@ OFBool DRTExposureSequence::Item::isEmpty()
            BeamLimitingDeviceSequence.isEmpty() &&
            ApplicatorSequence.isEmpty() &&
            NumberOfBlocks.isEmpty() &&
-           BlockSequence.isEmpty() &&
-           FluenceDataSource.isEmpty() &&
-           FluenceDataScale.isEmpty();
+           BlockSequence.isEmpty();
 }
 
 
@@ -142,8 +133,6 @@ OFCondition DRTExposureSequence::Item::read(DcmItem &item)
         ApplicatorSequence.read(item, "1-n", "3", "ExposureSequence");
         getAndCheckElementFromDataset(item, NumberOfBlocks, "1", "1C", "ExposureSequence");
         BlockSequence.read(item, "1-n", "2C", "ExposureSequence");
-        getAndCheckElementFromDataset(item, FluenceDataSource, "1", "1", "ExposureSequence");
-        getAndCheckElementFromDataset(item, FluenceDataScale, "1", "3", "ExposureSequence");
         result = EC_Normal;
     }
     return result;
@@ -166,8 +155,6 @@ OFCondition DRTExposureSequence::Item::write(DcmItem &item)
         if (result.good()) result = ApplicatorSequence.write(item, "1-n", "3", "ExposureSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfBlocks), "1", "1C", "ExposureSequence");
         if (result.good()) result = BlockSequence.write(item, "1-n", "2C", "ExposureSequence");
-        addElementToDataset(result, item, new DcmCodeString(FluenceDataSource), "1", "1", "ExposureSequence");
-        addElementToDataset(result, item, new DcmDecimalString(FluenceDataScale), "1", "3", "ExposureSequence");
     }
     return result;
 }
@@ -215,33 +202,6 @@ OFCondition DRTExposureSequence::Item::getExposureTime(Sint32 &value, const unsi
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmIntegerString &, ExposureTime).getSint32(value, pos);
-}
-
-
-OFCondition DRTExposureSequence::Item::getFluenceDataScale(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(FluenceDataScale, value, pos);
-}
-
-
-OFCondition DRTExposureSequence::Item::getFluenceDataScale(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, FluenceDataScale).getFloat64(value, pos);
-}
-
-
-OFCondition DRTExposureSequence::Item::getFluenceDataSource(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(FluenceDataSource, value, pos);
 }
 
 
@@ -356,32 +316,6 @@ OFCondition DRTExposureSequence::Item::setExposureTime(const OFString &value, co
         result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ExposureTime.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTExposureSequence::Item::setFluenceDataScale(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = FluenceDataScale.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTExposureSequence::Item::setFluenceDataSource(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = FluenceDataSource.putOFStringArray(value);
     }
     return result;
 }

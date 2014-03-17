@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBreedRegistrationSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -21,17 +22,7 @@
 DRTBreedRegistrationSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     BreedRegistrationNumber(DCM_BreedRegistrationNumber),
-    BreedRegistryCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
-    CodeMeaning(DCM_CodeMeaning),
-    CodeValue(DCM_CodeValue),
-    CodingSchemeDesignator(DCM_CodingSchemeDesignator),
-    CodingSchemeVersion(DCM_CodingSchemeVersion),
-    ContextGroupExtensionCreatorUID(DCM_ContextGroupExtensionCreatorUID),
-    ContextGroupExtensionFlag(DCM_ContextGroupExtensionFlag),
-    ContextGroupLocalVersion(DCM_ContextGroupLocalVersion),
-    ContextGroupVersion(DCM_ContextGroupVersion),
-    ContextIdentifier(DCM_ContextIdentifier),
-    MappingResource(DCM_MappingResource)
+    BreedRegistryCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
 }
 
@@ -39,17 +30,7 @@ DRTBreedRegistrationSequence::Item::Item(const OFBool emptyDefaultItem)
 DRTBreedRegistrationSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     BreedRegistrationNumber(copy.BreedRegistrationNumber),
-    BreedRegistryCodeSequence(copy.BreedRegistryCodeSequence),
-    CodeMeaning(copy.CodeMeaning),
-    CodeValue(copy.CodeValue),
-    CodingSchemeDesignator(copy.CodingSchemeDesignator),
-    CodingSchemeVersion(copy.CodingSchemeVersion),
-    ContextGroupExtensionCreatorUID(copy.ContextGroupExtensionCreatorUID),
-    ContextGroupExtensionFlag(copy.ContextGroupExtensionFlag),
-    ContextGroupLocalVersion(copy.ContextGroupLocalVersion),
-    ContextGroupVersion(copy.ContextGroupVersion),
-    ContextIdentifier(copy.ContextIdentifier),
-    MappingResource(copy.MappingResource)
+    BreedRegistryCodeSequence(copy.BreedRegistryCodeSequence)
 {
 }
 
@@ -66,16 +47,6 @@ DRTBreedRegistrationSequence::Item &DRTBreedRegistrationSequence::Item::operator
         EmptyDefaultItem = copy.EmptyDefaultItem;
         BreedRegistrationNumber = copy.BreedRegistrationNumber;
         BreedRegistryCodeSequence = copy.BreedRegistryCodeSequence;
-        CodeMeaning = copy.CodeMeaning;
-        CodeValue = copy.CodeValue;
-        CodingSchemeDesignator = copy.CodingSchemeDesignator;
-        CodingSchemeVersion = copy.CodingSchemeVersion;
-        ContextGroupExtensionCreatorUID = copy.ContextGroupExtensionCreatorUID;
-        ContextGroupExtensionFlag = copy.ContextGroupExtensionFlag;
-        ContextGroupLocalVersion = copy.ContextGroupLocalVersion;
-        ContextGroupVersion = copy.ContextGroupVersion;
-        ContextIdentifier = copy.ContextIdentifier;
-        MappingResource = copy.MappingResource;
     }
     return *this;
 }
@@ -88,16 +59,6 @@ void DRTBreedRegistrationSequence::Item::clear()
         /* clear all DICOM attributes */
         BreedRegistrationNumber.clear();
         BreedRegistryCodeSequence.clear();
-        CodeValue.clear();
-        CodingSchemeDesignator.clear();
-        CodingSchemeVersion.clear();
-        CodeMeaning.clear();
-        ContextIdentifier.clear();
-        MappingResource.clear();
-        ContextGroupVersion.clear();
-        ContextGroupExtensionFlag.clear();
-        ContextGroupLocalVersion.clear();
-        ContextGroupExtensionCreatorUID.clear();
     }
 }
 
@@ -105,17 +66,7 @@ void DRTBreedRegistrationSequence::Item::clear()
 OFBool DRTBreedRegistrationSequence::Item::isEmpty()
 {
     return BreedRegistrationNumber.isEmpty() &&
-           BreedRegistryCodeSequence.isEmpty() &&
-           CodeValue.isEmpty() &&
-           CodingSchemeDesignator.isEmpty() &&
-           CodingSchemeVersion.isEmpty() &&
-           CodeMeaning.isEmpty() &&
-           ContextIdentifier.isEmpty() &&
-           MappingResource.isEmpty() &&
-           ContextGroupVersion.isEmpty() &&
-           ContextGroupExtensionFlag.isEmpty() &&
-           ContextGroupLocalVersion.isEmpty() &&
-           ContextGroupExtensionCreatorUID.isEmpty();
+           BreedRegistryCodeSequence.isEmpty();
 }
 
 
@@ -134,16 +85,6 @@ OFCondition DRTBreedRegistrationSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, BreedRegistrationNumber, "1", "1", "BreedRegistrationSequence");
         BreedRegistryCodeSequence.read(item, "1-n", "1", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, CodeValue, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "BreedRegistrationSequence");
-        getAndCheckElementFromDataset(item, ContextGroupExtensionCreatorUID, "1", "1C", "BreedRegistrationSequence");
         result = EC_Normal;
     }
     return result;
@@ -158,16 +99,6 @@ OFCondition DRTBreedRegistrationSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmLongString(BreedRegistrationNumber), "1", "1", "BreedRegistrationSequence");
         if (result.good()) result = BreedRegistryCodeSequence.write(item, "1-n", "1", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "BreedRegistrationSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextGroupExtensionCreatorUID), "1", "1C", "BreedRegistrationSequence");
     }
     return result;
 }
@@ -182,96 +113,6 @@ OFCondition DRTBreedRegistrationSequence::Item::getBreedRegistrationNumber(OFStr
 }
 
 
-OFCondition DRTBreedRegistrationSequence::Item::getCodeMeaning(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodeMeaning, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getCodeValue(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodeValue, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getCodingSchemeDesignator(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodingSchemeDesignator, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getCodingSchemeVersion(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodingSchemeVersion, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getContextGroupExtensionCreatorUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupExtensionCreatorUID, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getContextGroupExtensionFlag(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupExtensionFlag, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getContextGroupLocalVersion(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupLocalVersion, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getContextGroupVersion(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupVersion, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getContextIdentifier(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextIdentifier, value, pos);
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::getMappingResource(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(MappingResource, value, pos);
-}
-
-
 OFCondition DRTBreedRegistrationSequence::Item::setBreedRegistrationNumber(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -280,136 +121,6 @@ OFCondition DRTBreedRegistrationSequence::Item::setBreedRegistrationNumber(const
         result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = BreedRegistrationNumber.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setCodeMeaning(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodeMeaning.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setCodeValue(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodeValue.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setCodingSchemeDesignator(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodingSchemeDesignator.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setCodingSchemeVersion(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodingSchemeVersion.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setContextGroupExtensionCreatorUID(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupExtensionCreatorUID.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setContextGroupExtensionFlag(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupExtensionFlag.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setContextGroupLocalVersion(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupLocalVersion.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setContextGroupVersion(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupVersion.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setContextIdentifier(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextIdentifier.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBreedRegistrationSequence::Item::setMappingResource(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = MappingResource.putOFStringArray(value);
     }
     return result;
 }

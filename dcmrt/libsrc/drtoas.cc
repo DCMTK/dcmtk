@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTOriginalAttributesSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -21,13 +22,9 @@
 DRTOriginalAttributesSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     AttributeModificationDateTime(DCM_AttributeModificationDateTime),
-    HL7InstanceIdentifier(DCM_HL7InstanceIdentifier),
     ModifiedAttributesSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ModifyingSystem(DCM_ModifyingSystem),
     ReasonForTheAttributeModification(DCM_ReasonForTheAttributeModification),
-    ReferencedSOPClassUID(DCM_ReferencedSOPClassUID),
-    ReferencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID),
-    RetrieveURI(DCM_RetrieveURI),
     SourceOfPreviousValues(DCM_SourceOfPreviousValues)
 {
 }
@@ -36,13 +33,9 @@ DRTOriginalAttributesSequence::Item::Item(const OFBool emptyDefaultItem)
 DRTOriginalAttributesSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     AttributeModificationDateTime(copy.AttributeModificationDateTime),
-    HL7InstanceIdentifier(copy.HL7InstanceIdentifier),
     ModifiedAttributesSequence(copy.ModifiedAttributesSequence),
     ModifyingSystem(copy.ModifyingSystem),
     ReasonForTheAttributeModification(copy.ReasonForTheAttributeModification),
-    ReferencedSOPClassUID(copy.ReferencedSOPClassUID),
-    ReferencedSOPInstanceUID(copy.ReferencedSOPInstanceUID),
-    RetrieveURI(copy.RetrieveURI),
     SourceOfPreviousValues(copy.SourceOfPreviousValues)
 {
 }
@@ -59,13 +52,9 @@ DRTOriginalAttributesSequence::Item &DRTOriginalAttributesSequence::Item::operat
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
         AttributeModificationDateTime = copy.AttributeModificationDateTime;
-        HL7InstanceIdentifier = copy.HL7InstanceIdentifier;
         ModifiedAttributesSequence = copy.ModifiedAttributesSequence;
         ModifyingSystem = copy.ModifyingSystem;
         ReasonForTheAttributeModification = copy.ReasonForTheAttributeModification;
-        ReferencedSOPClassUID = copy.ReferencedSOPClassUID;
-        ReferencedSOPInstanceUID = copy.ReferencedSOPInstanceUID;
-        RetrieveURI = copy.RetrieveURI;
         SourceOfPreviousValues = copy.SourceOfPreviousValues;
     }
     return *this;
@@ -82,10 +71,6 @@ void DRTOriginalAttributesSequence::Item::clear()
         ModifyingSystem.clear();
         ReasonForTheAttributeModification.clear();
         ModifiedAttributesSequence.clear();
-        ReferencedSOPClassUID.clear();
-        ReferencedSOPInstanceUID.clear();
-        HL7InstanceIdentifier.clear();
-        RetrieveURI.clear();
     }
 }
 
@@ -96,11 +81,7 @@ OFBool DRTOriginalAttributesSequence::Item::isEmpty()
            AttributeModificationDateTime.isEmpty() &&
            ModifyingSystem.isEmpty() &&
            ReasonForTheAttributeModification.isEmpty() &&
-           ModifiedAttributesSequence.isEmpty() &&
-           ReferencedSOPClassUID.isEmpty() &&
-           ReferencedSOPInstanceUID.isEmpty() &&
-           HL7InstanceIdentifier.isEmpty() &&
-           RetrieveURI.isEmpty();
+           ModifiedAttributesSequence.isEmpty();
 }
 
 
@@ -122,10 +103,6 @@ OFCondition DRTOriginalAttributesSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ModifyingSystem, "1", "1", "OriginalAttributesSequence");
         getAndCheckElementFromDataset(item, ReasonForTheAttributeModification, "1", "1", "OriginalAttributesSequence");
         ModifiedAttributesSequence.read(item, "1-n", "1", "OriginalAttributesSequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "OriginalAttributesSequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "OriginalAttributesSequence");
-        getAndCheckElementFromDataset(item, HL7InstanceIdentifier, "1", "1", "OriginalAttributesSequence");
-        getAndCheckElementFromDataset(item, RetrieveURI, "1", "3", "OriginalAttributesSequence");
         result = EC_Normal;
     }
     return result;
@@ -143,10 +120,6 @@ OFCondition DRTOriginalAttributesSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(ModifyingSystem), "1", "1", "OriginalAttributesSequence");
         addElementToDataset(result, item, new DcmCodeString(ReasonForTheAttributeModification), "1", "1", "OriginalAttributesSequence");
         if (result.good()) result = ModifiedAttributesSequence.write(item, "1-n", "1", "OriginalAttributesSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "OriginalAttributesSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "OriginalAttributesSequence");
-        addElementToDataset(result, item, new DcmShortText(HL7InstanceIdentifier), "1", "1", "OriginalAttributesSequence");
-        addElementToDataset(result, item, new DcmUnlimitedText(RetrieveURI), "1", "3", "OriginalAttributesSequence");
     }
     return result;
 }
@@ -158,15 +131,6 @@ OFCondition DRTOriginalAttributesSequence::Item::getAttributeModificationDateTim
         return EC_IllegalCall;
     else
         return getStringValueFromElement(AttributeModificationDateTime, value, pos);
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::getHL7InstanceIdentifier(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(HL7InstanceIdentifier, value, pos);
 }
 
 
@@ -188,33 +152,6 @@ OFCondition DRTOriginalAttributesSequence::Item::getReasonForTheAttributeModific
 }
 
 
-OFCondition DRTOriginalAttributesSequence::Item::getReferencedSOPClassUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ReferencedSOPClassUID, value, pos);
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::getReferencedSOPInstanceUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ReferencedSOPInstanceUID, value, pos);
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::getRetrieveURI(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(RetrieveURI, value, pos);
-}
-
-
 OFCondition DRTOriginalAttributesSequence::Item::getSourceOfPreviousValues(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
@@ -232,19 +169,6 @@ OFCondition DRTOriginalAttributesSequence::Item::setAttributeModificationDateTim
         result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = AttributeModificationDateTime.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::setHL7InstanceIdentifier(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
-        if (result.good())
-            result = HL7InstanceIdentifier.putOFStringArray(value);
     }
     return result;
 }
@@ -271,45 +195,6 @@ OFCondition DRTOriginalAttributesSequence::Item::setReasonForTheAttributeModific
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ReasonForTheAttributeModification.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::setReferencedSOPClassUID(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedSOPClassUID.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::setReferencedSOPInstanceUID(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedSOPInstanceUID.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTOriginalAttributesSequence::Item::setRetrieveURI(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUnlimitedText::checkStringValue(value) : EC_Normal;
-        if (result.good())
-            result = RetrieveURI.putOFStringArray(value);
     }
     return result;
 }

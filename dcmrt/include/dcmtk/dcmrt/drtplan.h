@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTPlanIOD
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-03-27 17:57:09 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -2254,7 +2255,7 @@ class DCMTK_DCMRT_EXPORT DRTPlanIOD
     DcmDate DateOfLastCalibration;
     /// TimeOfLastCalibration (0018,1201) vr=TM, vm=1-n, type=3
     DcmTime TimeOfLastCalibration;
-    /// PixelPaddingValue (0028,0120) vr=US_SS, vm=1, type=3
+    /// PixelPaddingValue (0028,0120) vr=US/SS, vm=1, type=3
     DcmUnsignedShort PixelPaddingValue;
 
     // --- RTGeneralPlanModule (M) ---

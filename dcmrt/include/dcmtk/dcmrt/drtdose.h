@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTDoseIOD
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-03-28 11:08:43 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -2445,8 +2446,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     virtual OFCondition setInstitutionalDepartmentName(const OFString &value, const OFBool check = OFTrue);
 
     /** set IrradiationEventUID (0008,3010)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+     *  @param  value  value to be set (possibly multi-valued) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1-n) if enabled
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setIrradiationEventUID(const OFString &value, const OFBool check = OFTrue);
@@ -3351,7 +3352,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmDate DateOfLastCalibration;
     /// TimeOfLastCalibration (0018,1201) vr=TM, vm=1-n, type=3
     DcmTime TimeOfLastCalibration;
-    /// PixelPaddingValue (0028,0120) vr=US_SS, vm=1, type=3
+    /// PixelPaddingValue (0028,0120) vr=US/SS, vm=1, type=3
     DcmUnsignedShort PixelPaddingValue;
 
     // --- GeneralImageModule (C) ---
@@ -3403,7 +3404,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DRTIconImageSequence IconImageSequence;
     /// PresentationLUTShape (2050,0020) vr=CS, vm=1, type=3
     DcmCodeString PresentationLUTShape;
-    /// IrradiationEventUID (0008,3010) vr=UI, vm=1, type=3
+    /// IrradiationEventUID (0008,3010) vr=UI, vm=1-n, type=3
     DcmUniqueIdentifier IrradiationEventUID;
 
     // --- ImagePlaneModule (C) ---
@@ -3443,21 +3444,21 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     // PixelRepresentation (0028,0103) vr=US, vm=1, type=1
     // - also defined in: RTDoseModule
     // DcmUnsignedShort PixelRepresentation;
-    /// PixelData (7fe0,0010) vr=OB_OW, vm=1, type=1C
+    /// PixelData (7fe0,0010) vr=OB/OW, vm=1, type=1C
     DcmPixelData PixelData;
     /// PlanarConfiguration (0028,0006) vr=US, vm=1, type=1C
     DcmUnsignedShort PlanarConfiguration;
     /// PixelAspectRatio (0028,0034) vr=IS, vm=2, type=1C
     DcmIntegerString PixelAspectRatio;
-    /// SmallestImagePixelValue (0028,0106) vr=US_SS, vm=1, type=3
+    /// SmallestImagePixelValue (0028,0106) vr=US/SS, vm=1, type=3
     DcmUnsignedShort SmallestImagePixelValue;
-    /// LargestImagePixelValue (0028,0107) vr=US_SS, vm=1, type=3
+    /// LargestImagePixelValue (0028,0107) vr=US/SS, vm=1, type=3
     DcmUnsignedShort LargestImagePixelValue;
-    /// RedPaletteColorLookupTableDescriptor (0028,1101) vr=US_SS, vm=3, type=1C
+    /// RedPaletteColorLookupTableDescriptor (0028,1101) vr=US/SS, vm=3, type=1C
     DcmUnsignedShort RedPaletteColorLookupTableDescriptor;
-    /// GreenPaletteColorLookupTableDescriptor (0028,1102) vr=US_SS, vm=3, type=1C
+    /// GreenPaletteColorLookupTableDescriptor (0028,1102) vr=US/SS, vm=3, type=1C
     DcmUnsignedShort GreenPaletteColorLookupTableDescriptor;
-    /// BluePaletteColorLookupTableDescriptor (0028,1103) vr=US_SS, vm=3, type=1C
+    /// BluePaletteColorLookupTableDescriptor (0028,1103) vr=US/SS, vm=3, type=1C
     DcmUnsignedShort BluePaletteColorLookupTableDescriptor;
     /// RedPaletteColorLookupTableData (0028,1201) vr=OW, vm=1, type=1C
     DcmOtherByteOtherWord RedPaletteColorLookupTableData;
@@ -3491,7 +3492,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmUnsignedShort OverlayBitsAllocated;
     /// OverlayBitPosition (60xx,0102) vr=US, vm=1, type=1
     DcmUnsignedShort OverlayBitPosition;
-    /// OverlayData (60xx,3000) vr=OB_OW, vm=1, type=1
+    /// OverlayData (60xx,3000) vr=OB/OW, vm=1, type=1
     DcmOtherByteOtherWord OverlayData;
     /// OverlayDescription (60xx,0022) vr=LO, vm=1, type=3
     DcmLongString OverlayDescription;

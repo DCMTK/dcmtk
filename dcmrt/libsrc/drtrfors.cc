@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTReferencedFrameOfReferenceSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -22,14 +23,7 @@ DRTReferencedFrameOfReferenceSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     FrameOfReferenceRelationshipSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     FrameOfReferenceUID(DCM_FrameOfReferenceUID),
-    ROIDescription(DCM_ROIDescription),
-    ROIGenerationAlgorithm(DCM_ROIGenerationAlgorithm),
-    ROIGenerationDescription(DCM_ROIGenerationDescription),
-    ROIName(DCM_ROIName),
-    ROINumber(DCM_ROINumber),
-    ROIVolume(DCM_ROIVolume),
-    RTReferencedStudySequence(emptyDefaultItem /*emptyDefaultSequence*/),
-    ReferencedFrameOfReferenceUID(DCM_ReferencedFrameOfReferenceUID)
+    RTReferencedStudySequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
 }
 
@@ -38,14 +32,7 @@ DRTReferencedFrameOfReferenceSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     FrameOfReferenceRelationshipSequence(copy.FrameOfReferenceRelationshipSequence),
     FrameOfReferenceUID(copy.FrameOfReferenceUID),
-    ROIDescription(copy.ROIDescription),
-    ROIGenerationAlgorithm(copy.ROIGenerationAlgorithm),
-    ROIGenerationDescription(copy.ROIGenerationDescription),
-    ROIName(copy.ROIName),
-    ROINumber(copy.ROINumber),
-    ROIVolume(copy.ROIVolume),
-    RTReferencedStudySequence(copy.RTReferencedStudySequence),
-    ReferencedFrameOfReferenceUID(copy.ReferencedFrameOfReferenceUID)
+    RTReferencedStudySequence(copy.RTReferencedStudySequence)
 {
 }
 
@@ -62,14 +49,7 @@ DRTReferencedFrameOfReferenceSequence::Item &DRTReferencedFrameOfReferenceSequen
         EmptyDefaultItem = copy.EmptyDefaultItem;
         FrameOfReferenceRelationshipSequence = copy.FrameOfReferenceRelationshipSequence;
         FrameOfReferenceUID = copy.FrameOfReferenceUID;
-        ROIDescription = copy.ROIDescription;
-        ROIGenerationAlgorithm = copy.ROIGenerationAlgorithm;
-        ROIGenerationDescription = copy.ROIGenerationDescription;
-        ROIName = copy.ROIName;
-        ROINumber = copy.ROINumber;
-        ROIVolume = copy.ROIVolume;
         RTReferencedStudySequence = copy.RTReferencedStudySequence;
-        ReferencedFrameOfReferenceUID = copy.ReferencedFrameOfReferenceUID;
     }
     return *this;
 }
@@ -83,13 +63,6 @@ void DRTReferencedFrameOfReferenceSequence::Item::clear()
         FrameOfReferenceUID.clear();
         FrameOfReferenceRelationshipSequence.clear();
         RTReferencedStudySequence.clear();
-        ROINumber.clear();
-        ReferencedFrameOfReferenceUID.clear();
-        ROIName.clear();
-        ROIDescription.clear();
-        ROIVolume.clear();
-        ROIGenerationAlgorithm.clear();
-        ROIGenerationDescription.clear();
     }
 }
 
@@ -98,14 +71,7 @@ OFBool DRTReferencedFrameOfReferenceSequence::Item::isEmpty()
 {
     return FrameOfReferenceUID.isEmpty() &&
            FrameOfReferenceRelationshipSequence.isEmpty() &&
-           RTReferencedStudySequence.isEmpty() &&
-           ROINumber.isEmpty() &&
-           ReferencedFrameOfReferenceUID.isEmpty() &&
-           ROIName.isEmpty() &&
-           ROIDescription.isEmpty() &&
-           ROIVolume.isEmpty() &&
-           ROIGenerationAlgorithm.isEmpty() &&
-           ROIGenerationDescription.isEmpty();
+           RTReferencedStudySequence.isEmpty();
 }
 
 
@@ -125,13 +91,6 @@ OFCondition DRTReferencedFrameOfReferenceSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, FrameOfReferenceUID, "1", "1C", "ReferencedFrameOfReferenceSequence");
         FrameOfReferenceRelationshipSequence.read(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
         RTReferencedStudySequence.read(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ROINumber, "1", "1C", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ReferencedFrameOfReferenceUID, "1", "1C", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ROIName, "1", "2C", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ROIDescription, "1", "3", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ROIVolume, "1", "3", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ROIGenerationAlgorithm, "1", "2C", "ReferencedFrameOfReferenceSequence");
-        getAndCheckElementFromDataset(item, ROIGenerationDescription, "1", "3", "ReferencedFrameOfReferenceSequence");
         result = EC_Normal;
     }
     return result;
@@ -147,13 +106,6 @@ OFCondition DRTReferencedFrameOfReferenceSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUniqueIdentifier(FrameOfReferenceUID), "1", "1C", "ReferencedFrameOfReferenceSequence");
         if (result.good()) result = FrameOfReferenceRelationshipSequence.write(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
         if (result.good()) result = RTReferencedStudySequence.write(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmIntegerString(ROINumber), "1", "1C", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedFrameOfReferenceUID), "1", "1C", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmLongString(ROIName), "1", "2C", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmShortText(ROIDescription), "1", "3", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(ROIVolume), "1", "3", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmCodeString(ROIGenerationAlgorithm), "1", "2C", "ReferencedFrameOfReferenceSequence");
-        addElementToDataset(result, item, new DcmLongString(ROIGenerationDescription), "1", "3", "ReferencedFrameOfReferenceSequence");
     }
     return result;
 }
@@ -168,87 +120,6 @@ OFCondition DRTReferencedFrameOfReferenceSequence::Item::getFrameOfReferenceUID(
 }
 
 
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROIDescription(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIDescription, value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROIGenerationAlgorithm(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIGenerationAlgorithm, value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROIGenerationDescription(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIGenerationDescription, value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROIName(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIName, value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROINumber(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROINumber, value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROINumber(Sint32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmIntegerString &, ROINumber).getSint32(value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROIVolume(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIVolume, value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getROIVolume(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, ROIVolume).getFloat64(value, pos);
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::getReferencedFrameOfReferenceUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ReferencedFrameOfReferenceUID, value, pos);
-}
-
-
 OFCondition DRTReferencedFrameOfReferenceSequence::Item::setFrameOfReferenceUID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -257,97 +128,6 @@ OFCondition DRTReferencedFrameOfReferenceSequence::Item::setFrameOfReferenceUID(
         result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = FrameOfReferenceUID.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setROIDescription(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
-        if (result.good())
-            result = ROIDescription.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setROIGenerationAlgorithm(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ROIGenerationAlgorithm.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setROIGenerationDescription(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ROIGenerationDescription.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setROIName(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ROIName.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setROINumber(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ROINumber.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setROIVolume(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ROIVolume.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedFrameOfReferenceSequence::Item::setReferencedFrameOfReferenceUID(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedFrameOfReferenceUID.putOFStringArray(value);
     }
     return result;
 }

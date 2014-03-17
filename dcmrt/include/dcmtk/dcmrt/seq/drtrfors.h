@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTReferencedFrameOfReferenceSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -98,69 +99,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedFrameOfReferenceSequence
          */
         OFCondition getFrameOfReferenceUID(OFString &value, const signed long pos = 0) const;
 
-        /** get ROIDescription (3006,0028)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIDescription(OFString &value, const signed long pos = 0) const;
-
-        /** get ROIGenerationAlgorithm (3006,0036)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIGenerationAlgorithm(OFString &value, const signed long pos = 0) const;
-
-        /** get ROIGenerationDescription (3006,0038)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIGenerationDescription(OFString &value, const signed long pos = 0) const;
-
-        /** get ROIName (3006,0026)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIName(OFString &value, const signed long pos = 0) const;
-
-        /** get ROINumber (3006,0022)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROINumber(OFString &value, const signed long pos = 0) const;
-
-        /** get ROINumber (3006,0022)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROINumber(Sint32 &value, const unsigned long pos = 0) const;
-
-        /** get ROIVolume (3006,002c)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIVolume(OFString &value, const signed long pos = 0) const;
-
-        /** get ROIVolume (3006,002c)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIVolume(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get ReferencedFrameOfReferenceUID (3006,0024)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedFrameOfReferenceUID(OFString &value, const signed long pos = 0) const;
-
       // --- get DICOM sequence attributes ---
 
         /** get FrameOfReferenceRelationshipSequence (3006,00c0)
@@ -196,55 +134,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedFrameOfReferenceSequence
          */
         OFCondition setFrameOfReferenceUID(const OFString &value, const OFBool check = OFTrue);
 
-        /** set ROIDescription (3006,0028)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIDescription(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ROIGenerationAlgorithm (3006,0036)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIGenerationAlgorithm(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ROIGenerationDescription (3006,0038)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIGenerationDescription(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ROIName (3006,0026)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIName(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ROINumber (3006,0022)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROINumber(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ROIVolume (3006,002c)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIVolume(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ReferencedFrameOfReferenceUID (3006,0024)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setReferencedFrameOfReferenceUID(const OFString &value, const OFBool check = OFTrue);
-
       private:
 
         /// internal flag used to mark the empty default item
@@ -254,22 +143,8 @@ class DCMTK_DCMRT_EXPORT DRTReferencedFrameOfReferenceSequence
         DRTFrameOfReferenceRelationshipSequence FrameOfReferenceRelationshipSequence;
         /// FrameOfReferenceUID (0020,0052) vr=UI, vm=1, type=1C
         DcmUniqueIdentifier FrameOfReferenceUID;
-        /// ROIDescription (3006,0028) vr=ST, vm=1, type=3
-        DcmShortText ROIDescription;
-        /// ROIGenerationAlgorithm (3006,0036) vr=CS, vm=1, type=2C
-        DcmCodeString ROIGenerationAlgorithm;
-        /// ROIGenerationDescription (3006,0038) vr=LO, vm=1, type=3
-        DcmLongString ROIGenerationDescription;
-        /// ROIName (3006,0026) vr=LO, vm=1, type=2C
-        DcmLongString ROIName;
-        /// ROINumber (3006,0022) vr=IS, vm=1, type=1C
-        DcmIntegerString ROINumber;
-        /// ROIVolume (3006,002c) vr=DS, vm=1, type=3
-        DcmDecimalString ROIVolume;
         /// RTReferencedStudySequence (3006,0012) vr=SQ, vm=1, type=3
         DRTRTReferencedStudySequence RTReferencedStudySequence;
-        /// ReferencedFrameOfReferenceUID (3006,0024) vr=UI, vm=1, type=1C
-        DcmUniqueIdentifier ReferencedFrameOfReferenceUID;
 
     };
 

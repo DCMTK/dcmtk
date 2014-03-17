@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTOriginalAttributesSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -97,13 +98,6 @@ class DCMTK_DCMRT_EXPORT DRTOriginalAttributesSequence
          */
         OFCondition getAttributeModificationDateTime(OFString &value, const signed long pos = 0) const;
 
-        /** get HL7InstanceIdentifier (0040,e001)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getHL7InstanceIdentifier(OFString &value, const signed long pos = 0) const;
-
         /** get ModifyingSystem (0400,0563)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -117,27 +111,6 @@ class DCMTK_DCMRT_EXPORT DRTOriginalAttributesSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getReasonForTheAttributeModification(OFString &value, const signed long pos = 0) const;
-
-        /** get ReferencedSOPClassUID (0008,1150)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedSOPClassUID(OFString &value, const signed long pos = 0) const;
-
-        /** get ReferencedSOPInstanceUID (0008,1155)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedSOPInstanceUID(OFString &value, const signed long pos = 0) const;
-
-        /** get RetrieveURI (0040,e010)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getRetrieveURI(OFString &value, const signed long pos = 0) const;
 
         /** get SourceOfPreviousValues (0400,0564)
          *  @param  value  reference to variable in which the value should be stored
@@ -169,13 +142,6 @@ class DCMTK_DCMRT_EXPORT DRTOriginalAttributesSequence
          */
         OFCondition setAttributeModificationDateTime(const OFString &value, const OFBool check = OFTrue);
 
-        /** set HL7InstanceIdentifier (0040,e001)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setHL7InstanceIdentifier(const OFString &value, const OFBool check = OFTrue);
-
         /** set ModifyingSystem (0400,0563)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -189,27 +155,6 @@ class DCMTK_DCMRT_EXPORT DRTOriginalAttributesSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setReasonForTheAttributeModification(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ReferencedSOPClassUID (0008,1150)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setReferencedSOPClassUID(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ReferencedSOPInstanceUID (0008,1155)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setReferencedSOPInstanceUID(const OFString &value, const OFBool check = OFTrue);
-
-        /** set RetrieveURI (0040,e010)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setRetrieveURI(const OFString &value, const OFBool check = OFTrue);
 
         /** set SourceOfPreviousValues (0400,0564)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -225,20 +170,12 @@ class DCMTK_DCMRT_EXPORT DRTOriginalAttributesSequence
 
         /// AttributeModificationDateTime (0400,0562) vr=DT, vm=1, type=1
         DcmDateTime AttributeModificationDateTime;
-        /// HL7InstanceIdentifier (0040,e001) vr=ST, vm=1, type=1
-        DcmShortText HL7InstanceIdentifier;
         /// ModifiedAttributesSequence (0400,0550) vr=SQ, vm=1, type=1
         DRTModifiedAttributesSequence ModifiedAttributesSequence;
         /// ModifyingSystem (0400,0563) vr=LO, vm=1, type=1
         DcmLongString ModifyingSystem;
         /// ReasonForTheAttributeModification (0400,0565) vr=CS, vm=1, type=1
         DcmCodeString ReasonForTheAttributeModification;
-        /// ReferencedSOPClassUID (0008,1150) vr=UI, vm=1, type=1
-        DcmUniqueIdentifier ReferencedSOPClassUID;
-        /// ReferencedSOPInstanceUID (0008,1155) vr=UI, vm=1, type=1
-        DcmUniqueIdentifier ReferencedSOPInstanceUID;
-        /// RetrieveURI (0040,e010) vr=UT, vm=1, type=3
-        DcmUnlimitedText RetrieveURI;
         /// SourceOfPreviousValues (0400,0564) vr=LO, vm=1, type=2
         DcmLongString SourceOfPreviousValues;
 

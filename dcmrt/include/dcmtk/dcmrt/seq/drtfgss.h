@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTFractionGroupSummarySequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -90,27 +91,6 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
 
       // --- get DICOM attribute values ---
 
-        /** get CumulativeDoseToDoseReference (3008,0052)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getCumulativeDoseToDoseReference(OFString &value, const signed long pos = 0) const;
-
-        /** get CumulativeDoseToDoseReference (3008,0052)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getCumulativeDoseToDoseReference(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get DoseReferenceDescription (300a,0016)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getDoseReferenceDescription(OFString &value, const signed long pos = 0) const;
-
         /** get FractionGroupType (3008,0224)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -146,20 +126,6 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
          */
         OFCondition getNumberOfFractionsPlanned(Sint32 &value, const unsigned long pos = 0) const;
 
-        /** get ReferencedDoseReferenceNumber (300c,0051)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedDoseReferenceNumber(OFString &value, const signed long pos = 0) const;
-
-        /** get ReferencedDoseReferenceNumber (300c,0051)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedDoseReferenceNumber(Sint32 &value, const unsigned long pos = 0) const;
-
         /** get ReferencedFractionGroupNumber (300c,0022)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -190,20 +156,6 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
 
       // --- set DICOM attribute values ---
 
-        /** set CumulativeDoseToDoseReference (3008,0052)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setCumulativeDoseToDoseReference(const OFString &value, const OFBool check = OFTrue);
-
-        /** set DoseReferenceDescription (300a,0016)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setDoseReferenceDescription(const OFString &value, const OFBool check = OFTrue);
-
         /** set FractionGroupType (3008,0224)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
@@ -225,13 +177,6 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
          */
         OFCondition setNumberOfFractionsPlanned(const OFString &value, const OFBool check = OFTrue);
 
-        /** set ReferencedDoseReferenceNumber (300c,0051)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setReferencedDoseReferenceNumber(const OFString &value, const OFBool check = OFTrue);
-
         /** set ReferencedFractionGroupNumber (300c,0022)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
@@ -244,10 +189,6 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// CumulativeDoseToDoseReference (3008,0052) vr=DS, vm=1, type=1C
-        DcmDecimalString CumulativeDoseToDoseReference;
-        /// DoseReferenceDescription (300a,0016) vr=LO, vm=1, type=3
-        DcmLongString DoseReferenceDescription;
         /// FractionGroupType (3008,0224) vr=CS, vm=1, type=2C
         DcmCodeString FractionGroupType;
         /// FractionStatusSummarySequence (3008,0240) vr=SQ, vm=1, type=3
@@ -256,8 +197,6 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
         DcmIntegerString NumberOfFractionsDelivered;
         /// NumberOfFractionsPlanned (300a,0078) vr=IS, vm=1, type=2C
         DcmIntegerString NumberOfFractionsPlanned;
-        /// ReferencedDoseReferenceNumber (300c,0051) vr=IS, vm=1, type=3
-        DcmIntegerString ReferencedDoseReferenceNumber;
         /// ReferencedFractionGroupNumber (300c,0022) vr=IS, vm=1, type=3
         DcmIntegerString ReferencedFractionGroupNumber;
 

@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTImageIOD
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -1047,7 +1048,7 @@ OFCondition DRTImageIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, LossyImageCompressionMethod, "1-n", "3", "GeneralImageModule");
         IconImageSequence.read(dataset, "1-n", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, PresentationLUTShape, "1", "3", "GeneralImageModule");
-        getAndCheckElementFromDataset(dataset, IrradiationEventUID, "1", "3", "GeneralImageModule");
+        getAndCheckElementFromDataset(dataset, IrradiationEventUID, "1-n", "3", "GeneralImageModule");
 
         // --- ImagePixelModule (M) ---
         // getAndCheckElementFromDataset(dataset, SamplesPerPixel, "1", "1", "ImagePixelModule");
@@ -1482,7 +1483,7 @@ OFCondition DRTImageIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(LossyImageCompressionMethod), "1-n", "3", "GeneralImageModule");
         if (result.good()) result = IconImageSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
         addElementToDataset(result, dataset, new DcmCodeString(PresentationLUTShape), "1", "3", "GeneralImageModule");
-        addElementToDataset(result, dataset, new DcmUniqueIdentifier(IrradiationEventUID), "1", "3", "GeneralImageModule");
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(IrradiationEventUID), "1-n", "3", "GeneralImageModule");
 
         // --- ImagePixelModule (M) ---
         // addElementToDataset(result, dataset, new DcmUnsignedShort(SamplesPerPixel), "1", "1", "ImagePixelModule");
@@ -4010,7 +4011,7 @@ OFCondition DRTImageIOD::setInstitutionalDepartmentName(const OFString &value, c
 
 OFCondition DRTImageIOD::setIrradiationEventUID(const OFString &value, const OFBool check)
 {
-    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1-n") : EC_Normal;
     if (result.good())
         result = IrradiationEventUID.putOFStringArray(value);
     return result;

@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTReferencedImageSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -20,16 +21,6 @@
 
 DRTReferencedImageSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    CodeMeaning(DCM_CodeMeaning),
-    CodeValue(DCM_CodeValue),
-    CodingSchemeDesignator(DCM_CodingSchemeDesignator),
-    CodingSchemeVersion(DCM_CodingSchemeVersion),
-    ContextGroupExtensionCreatorUID(DCM_ContextGroupExtensionCreatorUID),
-    ContextGroupExtensionFlag(DCM_ContextGroupExtensionFlag),
-    ContextGroupLocalVersion(DCM_ContextGroupLocalVersion),
-    ContextGroupVersion(DCM_ContextGroupVersion),
-    ContextIdentifier(DCM_ContextIdentifier),
-    MappingResource(DCM_MappingResource),
     PurposeOfReferenceCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedFrameNumber(DCM_ReferencedFrameNumber),
     ReferencedSOPClassUID(DCM_ReferencedSOPClassUID),
@@ -41,16 +32,6 @@ DRTReferencedImageSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTReferencedImageSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    CodeMeaning(copy.CodeMeaning),
-    CodeValue(copy.CodeValue),
-    CodingSchemeDesignator(copy.CodingSchemeDesignator),
-    CodingSchemeVersion(copy.CodingSchemeVersion),
-    ContextGroupExtensionCreatorUID(copy.ContextGroupExtensionCreatorUID),
-    ContextGroupExtensionFlag(copy.ContextGroupExtensionFlag),
-    ContextGroupLocalVersion(copy.ContextGroupLocalVersion),
-    ContextGroupVersion(copy.ContextGroupVersion),
-    ContextIdentifier(copy.ContextIdentifier),
-    MappingResource(copy.MappingResource),
     PurposeOfReferenceCodeSequence(copy.PurposeOfReferenceCodeSequence),
     ReferencedFrameNumber(copy.ReferencedFrameNumber),
     ReferencedSOPClassUID(copy.ReferencedSOPClassUID),
@@ -70,16 +51,6 @@ DRTReferencedImageSequence::Item &DRTReferencedImageSequence::Item::operator=(co
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        CodeMeaning = copy.CodeMeaning;
-        CodeValue = copy.CodeValue;
-        CodingSchemeDesignator = copy.CodingSchemeDesignator;
-        CodingSchemeVersion = copy.CodingSchemeVersion;
-        ContextGroupExtensionCreatorUID = copy.ContextGroupExtensionCreatorUID;
-        ContextGroupExtensionFlag = copy.ContextGroupExtensionFlag;
-        ContextGroupLocalVersion = copy.ContextGroupLocalVersion;
-        ContextGroupVersion = copy.ContextGroupVersion;
-        ContextIdentifier = copy.ContextIdentifier;
-        MappingResource = copy.MappingResource;
         PurposeOfReferenceCodeSequence = copy.PurposeOfReferenceCodeSequence;
         ReferencedFrameNumber = copy.ReferencedFrameNumber;
         ReferencedSOPClassUID = copy.ReferencedSOPClassUID;
@@ -100,16 +71,6 @@ void DRTReferencedImageSequence::Item::clear()
         ReferencedFrameNumber.clear();
         ReferencedSegmentNumber.clear();
         PurposeOfReferenceCodeSequence.clear();
-        CodeValue.clear();
-        CodingSchemeDesignator.clear();
-        CodingSchemeVersion.clear();
-        CodeMeaning.clear();
-        ContextIdentifier.clear();
-        MappingResource.clear();
-        ContextGroupVersion.clear();
-        ContextGroupExtensionFlag.clear();
-        ContextGroupLocalVersion.clear();
-        ContextGroupExtensionCreatorUID.clear();
     }
 }
 
@@ -120,17 +81,7 @@ OFBool DRTReferencedImageSequence::Item::isEmpty()
            ReferencedSOPInstanceUID.isEmpty() &&
            ReferencedFrameNumber.isEmpty() &&
            ReferencedSegmentNumber.isEmpty() &&
-           PurposeOfReferenceCodeSequence.isEmpty() &&
-           CodeValue.isEmpty() &&
-           CodingSchemeDesignator.isEmpty() &&
-           CodingSchemeVersion.isEmpty() &&
-           CodeMeaning.isEmpty() &&
-           ContextIdentifier.isEmpty() &&
-           MappingResource.isEmpty() &&
-           ContextGroupVersion.isEmpty() &&
-           ContextGroupExtensionFlag.isEmpty() &&
-           ContextGroupLocalVersion.isEmpty() &&
-           ContextGroupExtensionCreatorUID.isEmpty();
+           PurposeOfReferenceCodeSequence.isEmpty();
 }
 
 
@@ -152,16 +103,6 @@ OFCondition DRTReferencedImageSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ReferencedFrameNumber, "1-n", "1C", "ReferencedImageSequence");
         getAndCheckElementFromDataset(item, ReferencedSegmentNumber, "1-n", "1C", "ReferencedImageSequence");
         PurposeOfReferenceCodeSequence.read(item, "1-n", "3", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, CodeValue, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "ReferencedImageSequence");
-        getAndCheckElementFromDataset(item, ContextGroupExtensionCreatorUID, "1", "1C", "ReferencedImageSequence");
         result = EC_Normal;
     }
     return result;
@@ -179,108 +120,8 @@ OFCondition DRTReferencedImageSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(ReferencedFrameNumber), "1-n", "1C", "ReferencedImageSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(ReferencedSegmentNumber), "1-n", "1C", "ReferencedImageSequence");
         if (result.good()) result = PurposeOfReferenceCodeSequence.write(item, "1-n", "3", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "ReferencedImageSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextGroupExtensionCreatorUID), "1", "1C", "ReferencedImageSequence");
     }
     return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getCodeMeaning(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodeMeaning, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getCodeValue(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodeValue, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getCodingSchemeDesignator(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodingSchemeDesignator, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getCodingSchemeVersion(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(CodingSchemeVersion, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getContextGroupExtensionCreatorUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupExtensionCreatorUID, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getContextGroupExtensionFlag(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupExtensionFlag, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getContextGroupLocalVersion(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupLocalVersion, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getContextGroupVersion(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextGroupVersion, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getContextIdentifier(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContextIdentifier, value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::getMappingResource(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(MappingResource, value, pos);
 }
 
 
@@ -326,136 +167,6 @@ OFCondition DRTReferencedImageSequence::Item::getReferencedSegmentNumber(Uint16 
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmUnsignedShort &, ReferencedSegmentNumber).getUint16(value, pos);
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setCodeMeaning(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodeMeaning.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setCodeValue(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodeValue.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setCodingSchemeDesignator(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodingSchemeDesignator.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setCodingSchemeVersion(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = CodingSchemeVersion.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setContextGroupExtensionCreatorUID(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupExtensionCreatorUID.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setContextGroupExtensionFlag(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupExtensionFlag.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setContextGroupLocalVersion(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupLocalVersion.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setContextGroupVersion(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextGroupVersion.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setContextIdentifier(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContextIdentifier.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedImageSequence::Item::setMappingResource(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = MappingResource.putOFStringArray(value);
-    }
-    return result;
 }
 
 

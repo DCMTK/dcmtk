@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTReferencedBeamSequenceInRTDoseModule
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -104,20 +105,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTDoseModule
          */
         OFCondition getReferencedBeamNumber(Sint32 &value, const unsigned long pos = 0) const;
 
-        /** get ReferencedBrachyApplicationSetupNumber (300c,000c)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedBrachyApplicationSetupNumber(OFString &value, const signed long pos = 0) const;
-
-        /** get ReferencedBrachyApplicationSetupNumber (300c,000c)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos = 0) const;
-
       // --- get DICOM sequence attributes ---
 
         /** get ReferencedControlPointSequence (300c,00f2)
@@ -141,13 +128,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTDoseModule
          */
         OFCondition setReferencedBeamNumber(const OFString &value, const OFBool check = OFTrue);
 
-        /** set ReferencedBrachyApplicationSetupNumber (300c,000c)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check = OFTrue);
-
       private:
 
         /// internal flag used to mark the empty default item
@@ -155,8 +135,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTDoseModule
 
         /// ReferencedBeamNumber (300c,0006) vr=IS, vm=1, type=1C
         DcmIntegerString ReferencedBeamNumber;
-        /// ReferencedBrachyApplicationSetupNumber (300c,000c) vr=IS, vm=1, type=1C
-        DcmIntegerString ReferencedBrachyApplicationSetupNumber;
         /// ReferencedControlPointSequence (300c,00f2) vr=SQ, vm=1, type=1C
         DRTReferencedControlPointSequence ReferencedControlPointSequence;
 

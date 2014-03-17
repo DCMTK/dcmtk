@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.17 (riesmeier)
+
+- Fixed issue with automatically generated classes:
+  Fixed issue with the detection of attributes nested in a sequence class (in
+  the automatically generated source code). Sometimes, there were additional
+  attributes associated with a sequence element, which actually belong to the
+  surrounding nesting level or to some other sequence element in the module.
+  Also changed VM for Irradiation Event UID (0008,3010) from "1" to "1-n".
+  Thanks to Grzegorz Chlebus <grzegorz.chlebus@mevis.fraunhofer.de> for the
+  original report.
+  Affects: dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+
 **** Changes from 2014.03.15 (riesmeier)
 
 - Added support for CP-1090 to the data dictionary:

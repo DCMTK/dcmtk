@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTExposureSequence
  *
  *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2012-02-01 16:51:15 
+ *  File created on 2014-03-15 16:58:36
  *
  */
 
@@ -125,27 +126,6 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getExposureTime(Sint32 &value, const unsigned long pos = 0) const;
-
-        /** get FluenceDataScale (3002,0042)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getFluenceDataScale(OFString &value, const signed long pos = 0) const;
-
-        /** get FluenceDataScale (3002,0042)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getFluenceDataScale(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get FluenceDataSource (3002,0041)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getFluenceDataSource(OFString &value, const signed long pos = 0) const;
 
         /** get KVP (0018,0060)
          *  @param  value  reference to variable in which the value should be stored
@@ -271,20 +251,6 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
          */
         OFCondition setExposureTime(const OFString &value, const OFBool check = OFTrue);
 
-        /** set FluenceDataScale (3002,0042)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setFluenceDataScale(const OFString &value, const OFBool check = OFTrue);
-
-        /** set FluenceDataSource (3002,0041)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setFluenceDataSource(const OFString &value, const OFBool check = OFTrue);
-
         /** set KVP (0018,0060)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -335,10 +301,6 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
         DcmDecimalString DiaphragmPosition;
         /// ExposureTime (0018,1150) vr=IS, vm=1, type=2C
         DcmIntegerString ExposureTime;
-        /// FluenceDataScale (3002,0042) vr=DS, vm=1, type=3
-        DcmDecimalString FluenceDataScale;
-        /// FluenceDataSource (3002,0041) vr=CS, vm=1, type=1
-        DcmCodeString FluenceDataSource;
         /// KVP (0018,0060) vr=DS, vm=1, type=2C
         DcmDecimalString KVP;
         /// MetersetExposure (3002,0032) vr=DS, vm=1, type=2C
