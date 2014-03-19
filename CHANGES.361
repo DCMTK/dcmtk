@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.19 (riesmeier)
+
+- Removed superfluous quotations marks:
+  Removed superfluous quotations marks from CMake command ADD_DEFINITIONS()
+  since they cause problems with Xcode 5.1 on Mac OS X.
+  Thanks to forum user "oblivion81" for the report and suggested fix.
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2014.03.17 (riesmeier)
 
 - Fixed issue with automatically generated classes:
