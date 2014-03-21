@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.21 (schlamelcher)
 
+- Marked SCPPool-Test (dcmnet_scp_pool) as exhaustive:
+  The current pool-testcase takes about 6 seconds, which is rather long
+  compared to the other tests. It was therefore flagged as exhaustive test
+  and is not run unless explicitly enabled.
+
 - Fixed potential bug in dcmjpeg 12 and 16 bit variants:
   Applied a fix that was already present in the 8 bit variant to the other
   variants of the jpeg library.

@@ -56,7 +56,7 @@ protected:
  * threads are created and connect simultaneously to the pool, send
  * C-ECHO messages and release the association.
  */
-OFTEST(dcmnet_scp_pool)
+OFTEST_FLAGS(dcmnet_scp_pool, EF_Slow)
 {
     TestPool pool;
     DcmSCPConfig& config = pool.getConfig();
