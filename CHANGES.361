@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.03.21 (schlamelcher)
 
+- Fixed potential bug in dcmjpeg 12 and 16 bit variants:
+  Applied a fix that was already present in the 8 bit variant to the other
+  variants of the jpeg library.
+  Affects: dcmjpeg/libijg12/jchuff.c
+           dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg16/jchuff.c
+           dcmjpeg/libijg16/jdhuff.c
+
 - Fixed most of the warnings in dcmjpeg:
   Compiled with extensive warning options except -Wtraditional and corrected
   most of the problems. Tested with mingw-w64-4.8.1, gcc-4.7.2 (static and shared),
@@ -135,7 +143,7 @@ Changes between releases are documented here.
            dcmjpeg/libsrc/djrplol.cc
            dcmjpeg/libsrc/djrploss.cc
            dcmjpeg/libsrc/djutils.cc
-           
+
 **** Changes from 2014.03.20 (riesmeier)
 
 - Fixed small typos in comments.
