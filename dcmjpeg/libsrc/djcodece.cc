@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2013, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,7 +128,7 @@ OFCondition DJCodecEncoder::encode(
 {
   OFCondition result = EC_Normal;
   // assume we can cast the codec parameter to what we need
-  const DJCodecParameter *djcp = (const DJCodecParameter *)cp;
+  const DJCodecParameter *djcp = OFreinterpret_cast(const DJCodecParameter*, cp);
 
   // if true lossless mode is enabled, and we're supposed to do lossless compression,
   // call the "true lossless encoding"-engine
@@ -143,13 +143,13 @@ OFCondition DJCodecEncoder::encode(
   else
   {
     double compressionRatio = 0.0;
-    EP_Interpretation photometricInterpretation = DcmJpegHelper::getPhotometricInterpretation((DcmItem *)dataset);
+    EP_Interpretation photometricInterpretation = DcmJpegHelper::getPhotometricInterpretation(OFreinterpret_cast(DcmItem*, dataset));
     switch (photometricInterpretation)
     {
       case EPI_Monochrome1:
       case EPI_Monochrome2:
         // monochrome image
-        result = encodeMonochromeImage((DcmItem *)dataset, toRepParam, pixSeq, djcp, compressionRatio);
+        result = encodeMonochromeImage(OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_PaletteColor:
       case EPI_RGB:
@@ -158,12 +158,12 @@ OFCondition DJCodecEncoder::encode(
       case EPI_CMYK:
       case EPI_YBR_Partial_422:
         // color image except YCbCr which receives special treatment
-        result = encodeColorImage(OFFalse, (DcmItem *)dataset, toRepParam, pixSeq, djcp, compressionRatio);
+        result = encodeColorImage(OFFalse, OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_YBR_Full:
       case EPI_YBR_Full_422:
         // YCbCr color image
-        result = encodeColorImage(OFTrue, (DcmItem *)dataset, toRepParam, pixSeq, djcp, compressionRatio);
+        result = encodeColorImage(OFTrue, OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_Unknown:
       case EPI_Missing:
@@ -180,37 +180,37 @@ OFCondition DJCodecEncoder::encode(
     {
 
       // update image type
-      if (result.good()) result = DcmCodec::updateImageType((DcmItem *)dataset);
+      if (result.good()) result = DcmCodec::updateImageType(OFreinterpret_cast(DcmItem*, dataset));
 
       // determine compressed bit depth passed to JPEG codec
-      Uint16 compressedBits = djcp->getForcedBitDepth();
+      Uint16 compressedBits = OFstatic_cast(Uint16, djcp->getForcedBitDepth());
       if (result.good())
       {
         if (compressedBits == 0)
         {
-          result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
+          result = OFreinterpret_cast(DcmItem*, dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
         }
       }
 
       // update derivation description
-      if (result.good()) result = updateDerivationDescription((DcmItem *)dataset, toRepParam,
-        djcp, (Uint8)compressedBits, compressionRatio);
+      if (result.good()) result = updateDerivationDescription(OFreinterpret_cast(DcmItem*, dataset), toRepParam,
+        djcp, OFstatic_cast(Uint8, compressedBits), compressionRatio);
 
       if (result.good())
       {
         // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
         // (pseudo-lossless mode may also result in lossy compression, so treat it the same way)
         if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never))
-          result = DcmCodec::newInstance((DcmItem *)dataset, "DCM", "121320", "Uncompressed predecessor");
+          result = DcmCodec::newInstance(OFreinterpret_cast(DcmItem*, dataset), "DCM", "121320", "Uncompressed predecessor");
 
         // update lossy compression ratio
-        if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
+        if (result.good()) result = updateLossyCompressionRatio(OFreinterpret_cast(DcmItem*, dataset), compressionRatio);
       }
 
       // convert to Secondary Capture if requested by user.
       // This method creates a new SOP class UID, so it should be executed
       // after the call to newInstance() which creates a Source Image Sequence.
-      if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture((DcmItem *)dataset);
+      if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture(OFreinterpret_cast(DcmItem*, dataset));
     }
   }
   return result;
@@ -242,13 +242,13 @@ OFCondition DJCodecEncoder::encodeColorImage(
   DcmPixelItem *offsetTable = NULL;
   unsigned short bitsPerSample = 0;
   compressionRatio = 0.0; // initialize if something goes wrong
-  unsigned long compressedSize = 0;
+  size_t compressedSize = 0;
   double uncompressedSize = 0.0;
-  Uint16 compressedBits = cp->getForcedBitDepth();
+  Uint16 compressedBits = OFstatic_cast(Uint16, cp->getForcedBitDepth());
 
   // initialize settings with defaults for RGB mode
   OFBool monochromeMode = OFFalse;
-  unsigned long flags = 0; // flags for initialization of DicomImage
+  size_t flags = 0; // flags for initialization of DicomImage
   EP_Interpretation interpr = EPI_RGB;
   Uint16 samplesPerPixel = 3;
   const char *photometricInterpretation = "RGB";
@@ -324,29 +324,29 @@ OFCondition DJCodecEncoder::encodeColorImage(
   {
     if (compressedBits == 0)
     {
-      result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
+      result = OFreinterpret_cast(DcmItem*, dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
     }
   }
 
   // create codec instance
   if (result.good())
   {
-    DJEncoder *jpeg = createEncoderInstance(toRepParam, cp, (Uint8) compressedBits);
+    DJEncoder *jpeg = createEncoderInstance(toRepParam, cp, OFstatic_cast(Uint8, compressedBits));
     if (jpeg)
     {
       // render and compress each frame
       bitsPerSample = jpeg->bitsPerSample();
-      unsigned long frameCount = dimage->getFrameCount();
+      size_t frameCount = dimage->getFrameCount();
       unsigned short bytesPerSample = jpeg->bytesPerSample();
-      unsigned short columns = (unsigned short) dimage->getWidth();
-      unsigned short rows = (unsigned short) dimage->getHeight();
+      unsigned short columns = OFstatic_cast(unsigned short, dimage->getWidth());
+      unsigned short rows = OFstatic_cast(unsigned short, dimage->getHeight());
       Uint8 *jpegData = NULL;
       Uint32 jpegLen  = 0;
       const void *frame = NULL;
 
       // compute original image size in bytes, ignoring any padding bits.
-      uncompressedSize = columns * rows * dimage->getDepth() * frameCount * samplesPerPixel / 8.0;
-      for (unsigned long i=0; (i<frameCount) && (result.good()); i++)
+      uncompressedSize = OFstatic_cast(double, columns * rows * dimage->getDepth() * frameCount * samplesPerPixel) / 8.0;
+      for (size_t i=0; (i<frameCount) && (result.good()); i++)
       {
         frame = dimage->getOutputData(bitsPerSample, i, 0);
         if (frame == NULL) result = EC_MemoryExhausted;
@@ -356,9 +356,9 @@ OFCondition DJCodecEncoder::encodeColorImage(
           jpegData = NULL;
           if (bytesPerSample == 1)
           {
-            result = jpeg->encode(columns, rows, interpr, samplesPerPixel, (Uint8 *)frame, jpegData, jpegLen);
+            result = jpeg->encode(columns, rows, interpr, samplesPerPixel, OFreinterpret_cast(Uint8*, OFconst_cast(void*, frame)), jpegData, jpegLen);
           } else {
-            result = jpeg->encode(columns, rows, interpr, samplesPerPixel, (Uint16 *)frame, jpegData, jpegLen);
+            result = jpeg->encode(columns, rows, interpr, samplesPerPixel, OFreinterpret_cast(Uint16*, OFconst_cast(void*, frame)), jpegData, jpegLen);
           }
 
           // store frame
@@ -403,7 +403,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
         result = dataset->putAndInsertUint16(DCM_BitsAllocated, 8);
     }
     if (result.good()) result = dataset->putAndInsertUint16(DCM_BitsStored, bitsPerSample);
-    if (result.good()) result = dataset->putAndInsertUint16(DCM_HighBit, bitsPerSample-1);
+    if (result.good()) result = dataset->putAndInsertUint16(DCM_HighBit, OFstatic_cast(Uint16, bitsPerSample-1));
     if (result.good()) result = dataset->putAndInsertUint16(DCM_PixelRepresentation, 0);
     if (result.good())
     {
@@ -427,7 +427,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
     delete dataset->remove(DCM_SegmentedGreenPaletteColorLookupTableData);
     delete dataset->remove(DCM_SegmentedBluePaletteColorLookupTableData);
   }
-  if (compressedSize > 0) compressionRatio = uncompressedSize / compressedSize;
+  if (compressedSize > 0) compressionRatio = OFstatic_cast(double, uncompressedSize) / OFstatic_cast(double, compressedSize);
 
   delete dimage;
   return result;
@@ -442,7 +442,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
 {
   OFCondition result = EC_Normal;
   // assume we can cast the codec parameter to what we need
-  DJCodecParameter *djcp = (DJCodecParameter *)cp;
+  DJCodecParameter *djcp = OFreinterpret_cast(DJCodecParameter*, OFconst_cast(DcmCodecParameter*, cp));
   // get dataset from stack
   DcmStack localStack(objStack);
   (void)localStack.pop();
@@ -453,10 +453,10 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     return EC_InvalidTag;
   else
   {
-    DcmItem *datsetItem = (DcmItem*)dataset;
+    DcmItem *datsetItem = OFreinterpret_cast(DcmItem*, dataset);
     double compressionRatio = 0.0;
     const Uint16* pixelData;
-    unsigned long length = 0;
+    size_t length = 0;
     Uint16 bitsAllocated = 0;
     Uint16 bitsStored = 0;
     Uint16 bytesAllocated = 0;
@@ -544,9 +544,9 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       if ( result.good() && (planarConfiguration == 1) )
       {
         if (bytesAllocated == 1)
-          result = togglePlanarConfiguration8((Uint8*)pixelData, length, samplesPerPixel, (Uint16)1 /* switch to "by pixel"*/);
+          result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
         else
-          result = togglePlanarConfiguration16((Uint16*)pixelData, length/2 /*16 bit*/, samplesPerPixel, (Uint16)1 /* switch to "by pixel"*/);
+          result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
         planConfSwitched = OFTrue;
       }
     }
@@ -557,7 +557,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
 
     // check whether enough raw data is available for encoding
-    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned long,numberOfFrames) > length)
+    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(size_t,numberOfFrames) > length)
     {
       DCMJPEG_ERROR("True lossless encoder: Cannot change representation, not enough data");
       return EC_CannotChangeRepresentation;
@@ -566,7 +566,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     // byte swap pixel data to little endian if bits allocated is 8
     if ((gLocalByteOrder == EBO_BigEndian) && (bitsAllocated == 8))
     {
-      result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
+      result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFconst_cast(Uint16*, pixelData), OFstatic_cast(Uint32, length), sizeof(Uint16));
       if ( result.bad() )
       {
         DCMJPEG_ERROR("True lossless encoder: Unable to swap bytes to respect local byte ordering");
@@ -592,10 +592,10 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
 
     // prepare some variables for encoding
-    unsigned long frameCount = OFstatic_cast(unsigned long, numberOfFrames);
-    unsigned long frameSize = columns * rows * samplesPerPixel * bytesAllocated;
+    size_t frameCount = OFstatic_cast(size_t, numberOfFrames);
+    size_t frameSize = columns * rows * samplesPerPixel * bytesAllocated;
     const Uint8 *framePointer = OFreinterpret_cast(const Uint8 *, pixelData);
-    unsigned long compressedSize = 0;
+    size_t compressedSize = 0;
 
     // create encoder corresponding to bit depth (8 or 16 bit)
     DJEncoder *jpeg = createEncoderInstance(toRepParam, djcp, OFstatic_cast(Uint8, bitsAllocated));
@@ -606,11 +606,11 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       {
         if (bitsAllocated == 8)
         {
-          jpeg->encode(columns, rows, interpr, samplesPerPixel, (Uint8*)framePointer, jpegData, jpegLen);
+          jpeg->encode(columns, rows, interpr, samplesPerPixel, OFconst_cast(Uint8*, framePointer), jpegData, jpegLen);
         }
         else if (bitsAllocated == 16)
         {
-          jpeg->encode(columns, rows, interpr, samplesPerPixel, (Uint16*)framePointer, jpegData, jpegLen);
+          jpeg->encode(columns, rows, interpr, samplesPerPixel, OFreinterpret_cast(Uint16*, OFconst_cast(Uint8*, framePointer)), jpegData, jpegLen);
         }
         // update variables
         compressedSize+=jpegLen;
@@ -635,7 +635,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.good())
     {
-      compressionRatio = ((double)bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned long,numberOfFrames)) / compressedSize;
+      compressionRatio = OFstatic_cast(double, bytesAllocated * samplesPerPixel * columns * rows * numberOfFrames) / OFstatic_cast(double, compressedSize);
       pixSeq = pixelSequence;
     }
     else
@@ -671,16 +671,16 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         if (result.good())
           result = DcmCodec::updateImageType(datsetItem);
         if (result.good())
-          result = DcmCodec::newInstance((DcmItem *)datsetItem, "DCM", "121320", "Uncompressed predecessor");
+          result = DcmCodec::newInstance(OFreinterpret_cast(DcmItem*, datsetItem), "DCM", "121320", "Uncompressed predecessor");
       }
     }
     // switch _original_ pixel data back to "color by plane", if required
     if (planConfSwitched)
     {
       if (bytesAllocated == 1)
-        result = togglePlanarConfiguration8((Uint8*)pixelData, length, samplesPerPixel, (Uint16)0 /*switch to "by plane"*/);
+        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
       else
-        result = togglePlanarConfiguration16((Uint16*)pixelData, length/2, samplesPerPixel, (Uint16)0 /*switch to "by plane"*/);
+        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
       if (result.good())
       {
         // update Planar Configuration in dataset
@@ -694,7 +694,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     // byte swap pixel data back to local endian if necessary
     if (byteSwapped)
-      swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
+      swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, OFconst_cast(Uint16*, pixelData), OFstatic_cast(Uint32, length), sizeof(Uint16));
   }
   return result;
 }
@@ -794,7 +794,7 @@ OFCondition DJCodecEncoder::updateDerivationDescription(
   if (result.good())
   {
     // assume we can cast the codec parameter to what we need
-    DJCodecParameter *djcp = (DJCodecParameter *)cp;
+    DJCodecParameter *djcp = OFconst_cast(DJCodecParameter*, cp);
 
     if (djcp->getTrueLosslessMode())
       result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "121327", "Full fidelity image");
@@ -816,11 +816,11 @@ OFCondition DJCodecEncoder::adjustOverlays(
   {
     Uint16 group = 0;
     DcmStack stack;
-    unsigned long bytesAllocated = 0;
+    size_t bytesAllocated = 0;
     Uint8 *buffer = NULL;
     unsigned int width = 0;
     unsigned int height = 0;
-    unsigned long frames = 0;
+    long unsigned int frames = 0;
     DcmElement *elem = NULL;
     OFCondition result = EC_Normal;
 
@@ -828,7 +828,7 @@ OFCondition DJCodecEncoder::adjustOverlays(
     for (unsigned int i=0; i < overlayCount; i++)
     {
       // check if current overlay is embedded in pixel data
-      group = (Uint16) image.getOverlayGroupNumber(i);
+      group = OFstatic_cast(Uint16, image.getOverlayGroupNumber(i));
       stack.clear();
       if ((dataset->search(DcmTagKey(group, 0x3000), stack, ESM_fromHere, OFFalse)).bad())
       {
@@ -839,7 +839,7 @@ OFCondition DJCodecEncoder::adjustOverlays(
           elem = new DcmOverlayData(DcmTagKey(group, 0x3000)); // DCM_OverlayData
           if (elem)
           {
-            result = elem->putUint8Array(buffer, bytesAllocated);
+            result = elem->putUint8Array(buffer, OFstatic_cast(Uint32, bytesAllocated));
             delete[] buffer;
             if (result.good())
             {
@@ -882,9 +882,9 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   DcmPixelItem *offsetTable = NULL;
   unsigned short bitsPerSample = 0;
   compressionRatio = 0.0; // initialize if something goes wrong
-  unsigned long compressedSize = 0;
+  size_t compressedSize = 0;
   double uncompressedSize = 0.0;
-  unsigned long flags = 0; // flags for initialization of DicomImage
+  size_t flags = 0; // flags for initialization of DicomImage
 
   // variables needed if VOI mode is 0
   double minRange = 0.0;
@@ -931,7 +931,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   // VOI transformations should only be applied on the dataset level, not
   // in nested items such as the Icon Image Sequence where we don't exect
   // a VOI window or LUT to be present
-  unsigned long windowType = 0;
+  size_t windowType = 0;
   if (dataset->ident() == EVR_dataset)
   {
     windowType = cp->getWindowType();
@@ -997,14 +997,14 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         break;
       case 1: // use the n-th VOI window from the image file
         {
-          unsigned long windowParameter = cp->getWindowParameter();
+          size_t windowParameter = cp->getWindowParameter();
           if ((windowParameter < 1) || (windowParameter > dimage.getWindowCount())) result = EC_IllegalCall;
           if (!dimage.setWindow(windowParameter - 1)) result = EC_IllegalCall;
         }
         break;
       case 2: // use the n-th VOI look up table from the image file
         {
-          unsigned long windowParameter = cp->getWindowParameter();
+          size_t windowParameter = cp->getWindowParameter();
           if ((windowParameter < 1) || (windowParameter > dimage.getVoiLutCount())) result = EC_IllegalCall;
           if (!dimage.setVoiLut(windowParameter - 1)) result = EC_IllegalCall;
         }
@@ -1014,8 +1014,8 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         break;
       case 4: // Compute VOI window using Histogram algorithm, ignoring n percent
         {
-          unsigned long windowParameter = cp->getWindowParameter();
-          if (!dimage.setHistogramWindow(((double)windowParameter)/100.0)) result = EC_IllegalCall;
+          size_t windowParameter = cp->getWindowParameter();
+          if (!dimage.setHistogramWindow(OFstatic_cast(double, windowParameter)/100.0)) result = EC_IllegalCall;
         }
         break;
       case 5: // Compute VOI window using center r and width s
@@ -1030,7 +1030,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         break;
       case 7: // Compute region of interest VOI window
         {
-         unsigned long left_pos=0, top_pos=0, width=0, height=0;
+         size_t left_pos=0, top_pos=0, width=0, height=0;
          cp->getROI(left_pos, top_pos, width, height);
           if (!dimage.setRoiWindow(left_pos, top_pos, width, height)) result = EC_IllegalCall;
         }
@@ -1056,19 +1056,19 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   }
 
   // select bit depth
-  Uint16 compressedBits = cp->getForcedBitDepth();
+  Uint16 compressedBits = OFstatic_cast(Uint16, cp->getForcedBitDepth());
   if (result.good())
   {
     if (compressedBits == 0)
     {
-      result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
+      result = OFreinterpret_cast(DcmItem*, dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
     }
   }
 
   // create codec instance
   if (result.good())
   {
-    DJEncoder *jpeg = createEncoderInstance(toRepParam, cp, (Uint8) compressedBits);
+    DJEncoder *jpeg = createEncoderInstance(toRepParam, cp, OFstatic_cast(Uint8, compressedBits));
     if (jpeg)
     {
       bitsPerSample = jpeg->bitsPerSample();
@@ -1083,7 +1083,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           double rangeUsed = maxUsed - minUsed + 1; // range that must be covered by window
 
           // compute optimum window width
-          if ((unsigned long)pixelDepth < (unsigned long)bitsPerSample) windowWidth  = 1 << pixelDepth;
+          if (pixelDepth < bitsPerSample) windowWidth  = 1 << pixelDepth;
              else windowWidth  = 1 << bitsPerSample;
           while (windowWidth < rangeUsed) windowWidth *= 2;
 
@@ -1127,10 +1127,10 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       }
 
       // render and compress each frame
-      unsigned long frameCount = dimage.getFrameCount();
+      size_t frameCount = dimage.getFrameCount();
       unsigned short bytesPerSample = jpeg->bytesPerSample();
-      unsigned short columns = (unsigned short) dimage.getWidth();
-      unsigned short rows = (unsigned short) dimage.getHeight();
+      unsigned short columns = OFstatic_cast(unsigned short, dimage.getWidth());
+      unsigned short rows = OFstatic_cast(unsigned short, dimage.getHeight());
       Uint8 *jpegData = NULL;
       Uint32 jpegLen  = 0;
       const void *frame = NULL;
@@ -1138,8 +1138,8 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       // compute original image size in bytes, ignoring any padding bits.
       Uint16 samplesPerPixel = 0;
       if ((dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel)).bad()) samplesPerPixel = 1;
-      uncompressedSize = columns * rows * pixelDepth * frameCount * samplesPerPixel / 8.0;
-      for (unsigned long i=0; (i<frameCount) && (result.good()); i++)
+      uncompressedSize = OFstatic_cast(double, columns * rows * pixelDepth * frameCount * samplesPerPixel) / 8.0;
+      for (size_t i=0; (i<frameCount) && (result.good()); i++)
       {
         frame = dimage.getOutputData(bitsPerSample, i, 0);
         if (frame == NULL) result = EC_MemoryExhausted;
@@ -1149,9 +1149,9 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           jpegData = NULL;
           if (bytesPerSample == 1)
           {
-            result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, (Uint8 *)frame, jpegData, jpegLen);
+            result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, OFreinterpret_cast(Uint8*, OFconst_cast(void*, frame)), jpegData, jpegLen);
           } else {
-            result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, (Uint16 *)frame, jpegData, jpegLen);
+            result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, OFreinterpret_cast(Uint16*, OFconst_cast(void*, frame)), jpegData, jpegLen);
           }
 
           // store frame
@@ -1196,7 +1196,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         result = dataset->putAndInsertUint16(DCM_BitsAllocated, 8);
     }
     if (result.good()) result = dataset->putAndInsertUint16(DCM_BitsStored, bitsPerSample);
-    if (result.good()) result = dataset->putAndInsertUint16(DCM_HighBit, bitsPerSample-1);
+    if (result.good()) result = dataset->putAndInsertUint16(DCM_HighBit, OFstatic_cast(Uint16, bitsPerSample-1));
     if (result.good()) result = dataset->putAndInsertUint16(DCM_PixelRepresentation, 0);
     delete dataset->remove(DCM_PlanarConfiguration);
     delete dataset->remove(DCM_SmallestImagePixelValue);
@@ -1314,7 +1314,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   }
 
   // determine compression ratio
-  if (compressedSize > 0) compressionRatio = uncompressedSize / compressedSize;
+  if (compressedSize > 0) compressionRatio = OFstatic_cast(double, uncompressedSize) / OFstatic_cast(double, compressedSize);
   return result;
 }
 
@@ -1334,17 +1334,17 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   DcmStack stack;
   if ((dataset->search(DCM_WindowCenter, stack, ESM_fromHere, OFFalse)).good())
   {
-    center = (DcmElement *)stack.top();
+    center = OFreinterpret_cast(DcmElement*, stack.top());
   }
   stack.clear();
   if ((dataset->search(DCM_WindowWidth, stack, ESM_fromHere, OFFalse)).good())
   {
-    width = (DcmElement *)stack.top();
+    width = OFreinterpret_cast(DcmElement*, stack.top());
   }
   stack.clear();
   if ((dataset->search(DCM_WindowCenterWidthExplanation, stack, ESM_fromHere, OFFalse)).good())
   {
-    explanation = (DcmElement *)stack.top();
+    explanation = OFreinterpret_cast(DcmElement*, stack.top());
   }
 
   OFString newCenter;
@@ -1359,11 +1359,11 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 
   if (center && width)
   {
-    unsigned long numWindows = center->getVM();
+    size_t numWindows = center->getVM();
     // iterate over all defined VOI windows
-    for (unsigned long i=0; i<numWindows; i++)
+    for (size_t i=0; i<numWindows; i++)
     {
-      if (((center->getFloat64(currentCenter,i)).good()) && ((width->getFloat64(currentWidth,i)).good()))
+      if (((center->getFloat64(currentCenter,OFstatic_cast(Uint32, i))).good()) && ((width->getFloat64(currentWidth,OFstatic_cast(Uint32, i))).good()))
       {
         // found one pair of values, adapt them to value range shifted pixel data
         tempCenter = (currentCenter+voiOffset)*voiFactor;
@@ -1377,7 +1377,7 @@ OFCondition DJCodecEncoder::correctVOIWindows(
         newWidth += buf;
 
         if (!newExplanation.empty()) newExplanation += "\\";
-        if (explanation && ((explanation->getOFString(currentExplanation,i)).good()))
+        if (explanation && ((explanation->getOFString(currentExplanation,OFstatic_cast(Uint32, i))).good()))
           newExplanation += currentExplanation;
           else
           {
@@ -1411,7 +1411,7 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 
 OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   Uint8 *pixelData,
-  const unsigned long numValues,
+  const size_t numValues,
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
@@ -1421,10 +1421,10 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   Uint8* px8 = new Uint8[numValues];
   if (!px8)
     return EC_MemoryExhausted;
-  unsigned long numPixels = numValues / samplesPerPixel;
+  size_t numPixels = numValues / samplesPerPixel;
   if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
   {
-    for (unsigned long n=0; n < numPixels; n++)
+    for (size_t n=0; n < numPixels; n++)
     {
         for (Uint16 s=0; s < samplesPerPixel; s++)
           px8[n*samplesPerPixel+s]   = pixelData[n+numPixels*s];
@@ -1432,7 +1432,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   }
   else  //change from "by pixel" to "by plane"
   {
-    for (unsigned long n=0; n < numPixels; n++)
+    for (size_t n=0; n < numPixels; n++)
     {
         for (Uint16 s=0; s < samplesPerPixel; s++)
           px8[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
@@ -1447,7 +1447,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
 
 OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   Uint16 *pixelData,
-  const unsigned long numValues, //number of 16-bit components
+  const size_t numValues, //number of 16-bit components
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
@@ -1457,10 +1457,10 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   Uint16* px16 = new Uint16[numValues];
   if (!px16)
     return EC_MemoryExhausted;
-  unsigned long numPixels = numValues / samplesPerPixel;
+  size_t numPixels = numValues / samplesPerPixel;
   if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
   {
-    for (unsigned long n=0; n < numPixels; n++)
+    for (size_t n=0; n < numPixels; n++)
     {
         for (Uint16 s=0; s < samplesPerPixel; s++)
           px16[n*samplesPerPixel+s]   = pixelData[n+numPixels*s];
@@ -1468,7 +1468,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   }
   else  //change from "by pixel" to "by plane"
   {
-    for (unsigned long n=0; n < numPixels; n++)
+    for (size_t n=0; n < numPixels; n++)
     {
         for (Uint16 s=0; s < samplesPerPixel; s++)
           px16[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];

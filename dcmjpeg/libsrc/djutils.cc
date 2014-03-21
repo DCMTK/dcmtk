@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2013, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -50,7 +50,7 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
       while (*c && (i<16))
       {
         cur = OFstatic_cast(unsigned char, *c);
-        if (isalpha(cur)) cp[i++] = toupper(cur);
+        if (isalpha(cur)) cp[i++] = OFstatic_cast(char, toupper(cur));
         else if (isdigit(cur)) cp[i++] = cur;
         c++;
       }

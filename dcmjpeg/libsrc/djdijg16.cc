@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -93,20 +93,26 @@ ijg_boolean DJDIJG16fillInputBuffer(j_decompress_ptr);
 void DJDIJG16skipInputData(j_decompress_ptr, long);
 void DJDIJG16termSource(j_decompress_ptr);
 
+// helper method to fix old-style casts warnings
+static void OFjpeg_create_decompress(j_decompress_ptr cinfo)
+{
+  jpeg_create_decompress(cinfo);
+}
+
 END_EXTERN_C
 
 
 // error handler, executes longjmp
 void DJDIJG16ErrorExit(j_common_ptr cinfo)
 {
-  DJDIJG16ErrorStruct *myerr = (DJDIJG16ErrorStruct *)cinfo->err;
+  DJDIJG16ErrorStruct *myerr = OFreinterpret_cast(DJDIJG16ErrorStruct*, cinfo->err);
   longjmp(myerr->setjmp_buffer, 1);
 }
 
 // message handler for warning messages and the like
 void DJDIJG16EmitMessage(j_common_ptr cinfo, int msg_level)
 {
-  DJDIJG16ErrorStruct *myerr = (DJDIJG16ErrorStruct *)cinfo->err;
+  DJDIJG16ErrorStruct *myerr = OFreinterpret_cast(DJDIJG16ErrorStruct*, cinfo->err);
   myerr->instance->emitMessage(msg_level);
 }
 
@@ -119,13 +125,13 @@ void DJDIJG16initSource(j_decompress_ptr /* cinfo */)
 
 ijg_boolean DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
 {
-  DJDIJG16SourceManagerStruct *src = (DJDIJG16SourceManagerStruct *)(cinfo->src);
+  DJDIJG16SourceManagerStruct *src = OFreinterpret_cast(DJDIJG16SourceManagerStruct*, cinfo->src);
 
   // if we already have the next buffer, switch buffers
   if (src->next_buffer)
   {
     src->pub.next_input_byte    = src->next_buffer;
-    src->pub.bytes_in_buffer    = (unsigned int) src->next_buffer_size;
+    src->pub.bytes_in_buffer    = OFstatic_cast(unsigned int, src->next_buffer_size);
     src->next_buffer            = NULL;
     src->next_buffer_size       = 0;
 
@@ -133,9 +139,9 @@ ijg_boolean DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
     // In this case we must skip the remaining number of bytes here.
     if (src->skip_bytes > 0)
     {
-      if (src->pub.bytes_in_buffer < (unsigned long) src->skip_bytes)
+      if (src->pub.bytes_in_buffer < OFstatic_cast(unsigned long, src->skip_bytes))
       {
-        src->skip_bytes            -= src->pub.bytes_in_buffer;
+        src->skip_bytes            -= OFstatic_cast(Uint32, src->pub.bytes_in_buffer);
         src->pub.next_input_byte   += src->pub.bytes_in_buffer;
         src->pub.bytes_in_buffer    = 0;
         // cause a suspension return
@@ -143,7 +149,7 @@ ijg_boolean DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
       }
       else
       {
-        src->pub.bytes_in_buffer   -= (unsigned int) src->skip_bytes;
+        src->pub.bytes_in_buffer   -= OFstatic_cast(unsigned int, src->skip_bytes);
         src->pub.next_input_byte   += src->skip_bytes;
         src->skip_bytes             = 0;
       }
@@ -159,17 +165,17 @@ void DJDIJG16skipInputData(
   j_decompress_ptr cinfo,
   long num_bytes)
 {
-  DJDIJG16SourceManagerStruct *src = (DJDIJG16SourceManagerStruct *)(cinfo->src);
+  DJDIJG16SourceManagerStruct *src = OFreinterpret_cast(DJDIJG16SourceManagerStruct*, cinfo->src);
 
-  if (src->pub.bytes_in_buffer < (size_t)num_bytes)
+  if (src->pub.bytes_in_buffer < OFstatic_cast(size_t, num_bytes))
   {
-    src->skip_bytes             = num_bytes - src->pub.bytes_in_buffer;
+    src->skip_bytes             = num_bytes - OFstatic_cast(Uint32, src->pub.bytes_in_buffer);
     src->pub.next_input_byte   += src->pub.bytes_in_buffer;
     src->pub.bytes_in_buffer    = 0; // causes a suspension return
   }
   else
   {
-    src->pub.bytes_in_buffer   -= (unsigned int) num_bytes;
+    src->pub.bytes_in_buffer   -= OFstatic_cast(unsigned int, num_bytes);
     src->pub.next_input_byte   += num_bytes;
     src->skip_bytes             = 0;
   }
@@ -240,7 +246,7 @@ OFCondition DJDecompressIJG16Bit::init()
       {
         // the IJG error handler will cause the following code to be executed
         char buffer[JMSG_LENGTH_MAX];
-        (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
+        (*cinfo->err->format_message)(OFreinterpret_cast(jpeg_common_struct*, cinfo), buffer); /* Create the message */
         cleanup();
         delete OFconst_cast(DJDIJG16SourceManagerStruct *, src);
         return makeOFCondition(OFM_dcmjpeg, EJCode_IJG16_Decompression, OF_error, buffer);
@@ -252,8 +258,8 @@ OFCondition DJDecompressIJG16Bit::init()
       cinfo = NULL;
       return EC_MemoryExhausted;
     }
-    jpeg_create_decompress(cinfo);
-    cinfo->src = &OFconst_cast(DJDIJG16SourceManagerStruct *, src)->pub;
+    OFjpeg_create_decompress(cinfo);
+    cinfo->src = &OFconst_cast(DJDIJG16SourceManagerStruct*, src)->pub;
     cinfo->workaround_options = 0;
     if (cparam->predictor6WorkaroundEnabled()) cinfo->workaround_options |= WORKAROUND_PREDICTOR6OVERFLOW;
   } else return EC_MemoryExhausted;
@@ -268,8 +274,8 @@ void DJDecompressIJG16Bit::cleanup()
   if (cinfo)
   {
     jpeg_destroy_decompress(cinfo);
-    delete (DJDIJG16ErrorStruct *)(cinfo->err);
-    delete (DJDIJG16SourceManagerStruct *)(cinfo->src);
+    delete OFreinterpret_cast(DJDIJG16ErrorStruct*, cinfo->err);
+    delete OFreinterpret_cast(DJDIJG16SourceManagerStruct*, cinfo->src);
     delete cinfo;
     cinfo = NULL;
   }
@@ -286,18 +292,18 @@ OFCondition DJDecompressIJG16Bit::decode(
 
   if (cinfo==NULL || compressedFrameBuffer==NULL || uncompressedFrameBuffer==NULL) return EC_IllegalCall;
 
-  if (setjmp(((DJDIJG16ErrorStruct *)(cinfo->err))->setjmp_buffer))
+  if (setjmp(OFreinterpret_cast(DJDIJG16ErrorStruct*, cinfo->err)->setjmp_buffer))
   {
     // the IJG error handler will cause the following code to be executed
     char buffer[JMSG_LENGTH_MAX];
-    (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
+    (*cinfo->err->format_message)(OFreinterpret_cast(jpeg_common_struct*, cinfo), buffer); /* Create the message */
     cleanup();
     return makeOFCondition(OFM_dcmjpeg, EJCode_IJG16_Decompression, OF_error, buffer);
   }
 
   // feed compressed buffer into cinfo structure.
   // The buffer will be activated by the next call to DJDIJG16fillInputBuffer.
-  DJDIJG16SourceManagerStruct *src = (DJDIJG16SourceManagerStruct *)(cinfo->src);
+  DJDIJG16SourceManagerStruct *src = OFreinterpret_cast(DJDIJG16SourceManagerStruct*, cinfo->src);
   src->next_buffer = compressedFrameBuffer;
   src->next_buffer_size = compressedFrameBufferSize;
 
@@ -413,7 +419,7 @@ OFCondition DJDecompressIJG16Bit::decode(
     }
     bufsize = cinfo->output_width * cinfo->output_components; // number of JSAMPLEs per row
     rowsize = bufsize * sizeof(JSAMPLE); // number of bytes per row
-    buffer = (*cinfo->mem->alloc_sarray)((j_common_ptr)cinfo, JPOOL_IMAGE, bufsize, 1);
+    buffer = (*cinfo->mem->alloc_sarray)(OFreinterpret_cast(j_common_ptr, cinfo), JPOOL_IMAGE, bufsize, 1);
     if (buffer == NULL) return EC_MemoryExhausted;
     jsampBuffer = buffer;
   }
@@ -421,7 +427,7 @@ OFCondition DJDecompressIJG16Bit::decode(
   {
     bufsize = cinfo->output_width * cinfo->output_components;
     rowsize = bufsize * sizeof(JSAMPLE);
-    buffer = (JSAMPARRAY)jsampBuffer;
+    buffer = OFreinterpret_cast(JSAMPARRAY, jsampBuffer);
   }
 
   if (uncompressedFrameBufferSize < rowsize * cinfo->output_height) return EJ_IJG16_FrameBufferTooSmall;
@@ -470,7 +476,7 @@ void DJDecompressIJG16Bit::emitMessage(int msg_level) const
   if (cinfo && DCM_dcmjpegLogger.isEnabledFor(level))
   {
     char buffer[JMSG_LENGTH_MAX];
-    (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
+    (*cinfo->err->format_message)(OFreinterpret_cast(jpeg_common_struct*, cinfo), buffer); /* Create the message */
     DCM_dcmjpegLogger.forcedLog(level, buffer, __FILE__, __LINE__);
   }
 }

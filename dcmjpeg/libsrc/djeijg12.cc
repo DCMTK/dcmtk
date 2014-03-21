@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,6 +80,17 @@ void DJEIJG12initDestination(j_compress_ptr cinfo);
 ijg_boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG12termDestination(j_compress_ptr cinfo);
 
+// helper methods to fix old-style casts warnings
+static void OFjpeg_create_compress(j_compress_ptr cinfo)
+{
+  jpeg_create_compress(cinfo);
+}
+
+static void OF_ERREXIT1(j_compress_ptr cinfo, int code, int p1)
+{
+  ERREXIT1(cinfo, code, p1);
+}
+
 END_EXTERN_C
 
 
@@ -87,14 +98,14 @@ END_EXTERN_C
 
 void DJEIJG12ErrorExit(j_common_ptr cinfo)
 {
-  DJEIJG12ErrorStruct *myerr = (DJEIJG12ErrorStruct *)cinfo->err;
+  DJEIJG12ErrorStruct *myerr = OFreinterpret_cast(DJEIJG12ErrorStruct*, cinfo->err);
   longjmp(myerr->setjmp_buffer, 1);
 }
 
 // message handler for warning messages and the like
 void DJEIJG12EmitMessage(j_common_ptr cinfo, int msg_level)
 {
-  DJEIJG12ErrorStruct *myerr = (DJEIJG12ErrorStruct *)cinfo->err;
+  DJEIJG12ErrorStruct *myerr = OFreinterpret_cast(DJEIJG12ErrorStruct*, cinfo->err);
   myerr->instance->emitMessage(cinfo, msg_level);
 }
 
@@ -102,19 +113,19 @@ void DJEIJG12EmitMessage(j_common_ptr cinfo, int msg_level)
 
 void DJEIJG12initDestination(j_compress_ptr cinfo)
 {
-  DJCompressIJG12Bit *encoder = (DJCompressIJG12Bit *)cinfo->client_data;
+  DJCompressIJG12Bit *encoder = OFreinterpret_cast(DJCompressIJG12Bit*, cinfo->client_data);
   encoder->initDestination(cinfo);
 }
 
 ijg_boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo)
 {
-  DJCompressIJG12Bit *encoder = (DJCompressIJG12Bit *)cinfo->client_data;
+  DJCompressIJG12Bit *encoder = OFreinterpret_cast(DJCompressIJG12Bit*, cinfo->client_data);
   return encoder->emptyOutputBuffer(cinfo);
 }
 
 void DJEIJG12termDestination(j_compress_ptr cinfo)
 {
-  DJCompressIJG12Bit *encoder = (DJCompressIJG12Bit *)cinfo->client_data;
+  DJCompressIJG12Bit *encoder = OFreinterpret_cast(DJCompressIJG12Bit*, cinfo->client_data);
   encoder->termDestination(cinfo);
 }
 
@@ -132,7 +143,10 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
   int nscans = 0;
 
   /* Safety check to ensure start_compress not called yet. */
-  if (cinfo->global_state != CSTATE_START) ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
+  if (cinfo->global_state != CSTATE_START)
+  {
+    OF_ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
+  }
 
   if (ncomps == 3 && cinfo->jpeg_color_space == JCS_YCbCr) nscans = 7;
   else nscans = 1 + 2 * ncomps;	/* 1 DC scan; 2 AC scans per component */
@@ -147,9 +161,9 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
   if (cinfo->script_space == NULL || cinfo->script_space_size < nscans)
   {
     cinfo->script_space_size = nscans > 7 ? nscans : 7;
-    cinfo->script_space = (jpeg_scan_info *)
-      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, 
-      JPOOL_PERMANENT, cinfo->script_space_size * sizeof(jpeg_scan_info));
+    cinfo->script_space = OFreinterpret_cast(jpeg_scan_info*,
+      (*cinfo->mem->alloc_small) (OFreinterpret_cast(j_common_ptr, cinfo),
+      JPOOL_PERMANENT, cinfo->script_space_size * sizeof(jpeg_scan_info)));
   }
   scanptr = cinfo->script_space;
   cinfo->scan_info = scanptr;
@@ -342,14 +356,14 @@ OFCondition DJCompressIJG12Bit::encode(
   {
     // the IJG error handler will cause the following code to be executed
     char buffer[JMSG_LENGTH_MAX];    
-    (*cinfo.err->format_message)((jpeg_common_struct *)(&cinfo), buffer); /* Create the message */
+    (*cinfo.err->format_message)(OFreinterpret_cast(jpeg_common_struct*, &cinfo), buffer); /* Create the message */
     jpeg_destroy_compress(&cinfo);
     return makeOFCondition(OFM_dcmjpeg, EJCode_IJG12_Compression, OF_error, buffer);
   }
-  jpeg_create_compress(&cinfo);
+  OFjpeg_create_compress(&cinfo);
 
   // initialize client_data
-  cinfo.client_data = (void *)this;
+  cinfo.client_data = this;
 
   // Specify destination manager
   jpeg_destination_mgr dest;
@@ -434,14 +448,14 @@ OFCondition DJCompressIJG12Bit::encode(
   while (cinfo.next_scanline < cinfo.image_height) 
   {
     // JSAMPLE is signed, typecast to avoid a warning
-    row_pointer[0] = (JSAMPLE *)(& image_buffer[cinfo.next_scanline * row_stride]);
+    row_pointer[0] = OFreinterpret_cast(JSAMPLE*, image_buffer + (cinfo.next_scanline * row_stride));
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
   }
   jpeg_finish_compress(&cinfo);
   jpeg_destroy_compress(&cinfo);
 
-  length = bytesInLastBlock;
-  if (pixelDataList.size() > 1) length += (pixelDataList.size() - 1)*IJGE12_BLOCKSIZE;
+  length = OFstatic_cast(Uint32, bytesInLastBlock);
+  if (pixelDataList.size() > 1) length += OFstatic_cast(Uint32, (pixelDataList.size() - 1)*IJGE12_BLOCKSIZE);
   if (length % 2) length++; // ensure even length    
 
   to = new Uint8[length];
@@ -503,8 +517,8 @@ int DJCompressIJG12Bit::emptyOutputBuffer(jpeg_compress_struct *cinfo)
   else
   {
     cinfo->dest->next_output_byte = NULL;
-    cinfo->dest->free_in_buffer = 0;    
-    ERREXIT1(cinfo, JERR_OUT_OF_MEMORY, 0xFF);
+    cinfo->dest->free_in_buffer = 0;
+    OF_ERREXIT1(cinfo, JERR_OUT_OF_MEMORY, 0xFF);
   }
   return TRUE;
 }
@@ -529,7 +543,7 @@ void DJCompressIJG12Bit::cleanup()
 
 void DJCompressIJG12Bit::emitMessage(void *arg, int msg_level) const
 {
-  jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
+  jpeg_common_struct *cinfo = OFreinterpret_cast(jpeg_common_struct*, arg);
 
   // This is how we map the message levels:
   // -1 - 0: Warning (could also be errors, but no way to find out)

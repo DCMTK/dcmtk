@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,7 +77,7 @@ public:
    */
   virtual Uint16 bytesPerSample() const
   {
-    return sizeof(Uint16);
+    return OFstatic_cast(Uint16, sizeof(Uint16));
   }
 
   /** after successful compression,

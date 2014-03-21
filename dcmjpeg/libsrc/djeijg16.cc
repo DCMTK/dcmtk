@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,6 +80,17 @@ void DJEIJG16initDestination(j_compress_ptr cinfo);
 ijg_boolean DJEIJG16emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG16termDestination(j_compress_ptr cinfo);
 
+// helper methods to fix old-style casts warnings
+static void OFjpeg_create_compress(j_compress_ptr cinfo)
+{
+  jpeg_create_compress(cinfo);
+}
+
+static void OF_ERREXIT1(j_compress_ptr cinfo, int code, int p1)
+{
+  ERREXIT1(cinfo, code, p1);
+}
+
 END_EXTERN_C
 
 
@@ -87,14 +98,14 @@ END_EXTERN_C
 
 void DJEIJG16ErrorExit(j_common_ptr cinfo)
 {
-  DJEIJG16ErrorStruct *myerr = (DJEIJG16ErrorStruct *)cinfo->err;
+  DJEIJG16ErrorStruct *myerr = OFreinterpret_cast(DJEIJG16ErrorStruct*, cinfo->err);
   longjmp(myerr->setjmp_buffer, 1);
 }
 
 // message handler for warning messages and the like
 void DJEIJG16EmitMessage(j_common_ptr cinfo, int msg_level)
 {
-  DJEIJG16ErrorStruct *myerr = (DJEIJG16ErrorStruct *)cinfo->err;
+  DJEIJG16ErrorStruct *myerr = OFreinterpret_cast(DJEIJG16ErrorStruct*, cinfo->err);
   myerr->instance->emitMessage(cinfo, msg_level);
 }
 
@@ -103,19 +114,19 @@ void DJEIJG16EmitMessage(j_common_ptr cinfo, int msg_level)
 
 void DJEIJG16initDestination(j_compress_ptr cinfo)
 {
-  DJCompressIJG16Bit *encoder = (DJCompressIJG16Bit *)cinfo->client_data;
+  DJCompressIJG16Bit *encoder = OFreinterpret_cast(DJCompressIJG16Bit*, cinfo->client_data);
   encoder->initDestination(cinfo);
 }
 
 ijg_boolean DJEIJG16emptyOutputBuffer(j_compress_ptr cinfo)
 {
-  DJCompressIJG16Bit *encoder = (DJCompressIJG16Bit *)cinfo->client_data;
+  DJCompressIJG16Bit *encoder = OFreinterpret_cast(DJCompressIJG16Bit*, cinfo->client_data);
   return encoder->emptyOutputBuffer(cinfo);
 }
 
 void DJEIJG16termDestination(j_compress_ptr cinfo)
 {
-  DJCompressIJG16Bit *encoder = (DJCompressIJG16Bit *)cinfo->client_data;
+  DJCompressIJG16Bit *encoder = OFreinterpret_cast(DJCompressIJG16Bit*, cinfo->client_data);
   encoder->termDestination(cinfo);
 }
 
@@ -190,14 +201,14 @@ OFCondition DJCompressIJG16Bit::encode(
   {
     // the IJG error handler will cause the following code to be executed
     char buffer[JMSG_LENGTH_MAX];    
-    (*cinfo.err->format_message)((jpeg_common_struct *)(&cinfo), buffer); /* Create the message */
+    (*cinfo.err->format_message)(OFreinterpret_cast(jpeg_common_struct*, &cinfo), buffer); /* Create the message */
     jpeg_destroy_compress(&cinfo);
     return makeOFCondition(OFM_dcmjpeg, EJCode_IJG16_Compression, OF_error, buffer);
   }
-  jpeg_create_compress(&cinfo);
+  OFjpeg_create_compress(&cinfo);
 
   // initialize client_data
-  cinfo.client_data = (void *)this;
+  cinfo.client_data = this;
 
   // Specify destination manager
   jpeg_destination_mgr dest;
@@ -273,14 +284,14 @@ OFCondition DJCompressIJG16Bit::encode(
   while (cinfo.next_scanline < cinfo.image_height) 
   {
     // JSAMPLE might be signed, typecast to avoid a warning
-    row_pointer[0] = (JSAMPLE *)(& image_buffer[cinfo.next_scanline * row_stride]);
+    row_pointer[0] = OFreinterpret_cast(JSAMPLE*, image_buffer + (cinfo.next_scanline * row_stride));
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
   }
   jpeg_finish_compress(&cinfo);
   jpeg_destroy_compress(&cinfo);
 
-  length = bytesInLastBlock;
-  if (pixelDataList.size() > 1) length += (pixelDataList.size() - 1)*IJGE16_BLOCKSIZE;
+  length = OFstatic_cast(Uint32, bytesInLastBlock);
+  if (pixelDataList.size() > 1) length += OFstatic_cast(Uint32, (pixelDataList.size() - 1)*IJGE16_BLOCKSIZE);
   if (length % 2) length++; // ensure even length    
 
   to = new Uint8[length];
@@ -343,7 +354,7 @@ int DJCompressIJG16Bit::emptyOutputBuffer(jpeg_compress_struct *cinfo)
   {
     cinfo->dest->next_output_byte = NULL;
     cinfo->dest->free_in_buffer = 0;    
-    ERREXIT1(cinfo, JERR_OUT_OF_MEMORY, 0xFF);
+    OF_ERREXIT1(cinfo, JERR_OUT_OF_MEMORY, 0xFF);
   }
   return TRUE;
 }
@@ -368,7 +379,7 @@ void DJCompressIJG16Bit::cleanup()
 
 void DJCompressIJG16Bit::emitMessage(void *arg, int msg_level) const
 {
-  jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
+  jpeg_common_struct *cinfo = OFreinterpret_cast(jpeg_common_struct*, arg);
 
   // This is how we map the message levels:
   // -1 - 0: Warning (could also be errors, but no way to find out)

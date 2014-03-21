@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,6 +63,12 @@ struct DIEIJG8ErrorStruct
 void DIEIJG8ErrorExit(j_common_ptr);
 void DIEIJG8OutputMessage(j_common_ptr cinfo);
 
+// helper method to fix old-style casts warnings
+static void OFjpeg_create_compress(j_compress_ptr cinfo)
+{
+    jpeg_create_compress(cinfo);
+}
+
 END_EXTERN_C
 
 
@@ -73,14 +79,14 @@ END_EXTERN_C
 // error handler, executes longjmp
 void DIEIJG8ErrorExit(j_common_ptr cinfo)
 {
-  DIEIJG8ErrorStruct *myerr = (DIEIJG8ErrorStruct *)cinfo->err;
+  DIEIJG8ErrorStruct *myerr = OFreinterpret_cast(DIEIJG8ErrorStruct*, cinfo->err);
   longjmp(myerr->setjmp_buffer, 1);
 }
 
 // message handler for warning messages and the like
 void DIEIJG8OutputMessage(j_common_ptr cinfo)
 {
-  DIEIJG8ErrorStruct *myerr = (DIEIJG8ErrorStruct *)cinfo->err;
+  DIEIJG8ErrorStruct *myerr = OFreinterpret_cast(DIEIJG8ErrorStruct*, cinfo->err);
   myerr->instance->outputMessage(cinfo);
 }
 
@@ -122,7 +128,7 @@ void DiJPEGPlugin::setSampling(const E_SubSampling sampling)
 
 void DiJPEGPlugin::outputMessage(void *arg) const
 {
-    jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
+    jpeg_common_struct *cinfo = OFreinterpret_cast(jpeg_common_struct*, arg);
     if (cinfo && DCM_dcmjpegLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
     {
         char buffer[JMSG_LENGTH_MAX];
@@ -148,7 +154,7 @@ int DiJPEGPlugin::write(DiImage *image,
 
             /* code derived from "cjpeg.c" (IJG) and "djeijg8.cc" (DCMJPEG) */
             struct jpeg_compress_struct cinfo;
-            jpeg_create_compress(&cinfo);
+            OFjpeg_create_compress(&cinfo);
             /* Initialize JPEG parameters. */
             cinfo.image_width = image->getColumns();
             cinfo.image_height = image->getRows();
@@ -168,7 +174,7 @@ int DiJPEGPlugin::write(DiImage *image,
                 // the IJG error handler will cause the following code to be executed
                 char buffer[JMSG_LENGTH_MAX];
                 /* Create the message */
-                (*cinfo.err->format_message)((jpeg_common_struct *)(&cinfo), buffer);
+                (*cinfo.err->format_message)(OFreinterpret_cast(jpeg_common_struct*, &cinfo), buffer);
                 /* Release memory */
                 jpeg_destroy_compress(&cinfo);
                 image->deleteOutputData();
@@ -214,8 +220,8 @@ int DiJPEGPlugin::write(DiImage *image,
             jpeg_start_compress(&cinfo, TRUE);
             /* Process data */
             JSAMPROW row_pointer[1];
-            Uint8 *image_buffer = (Uint8 *)data;
-            const unsigned long row_stride = cinfo.image_width * cinfo.input_components;
+            Uint8 *image_buffer = OFreinterpret_cast(Uint8*, OFconst_cast(void*, data));
+            const size_t row_stride = cinfo.image_width * cinfo.input_components;
             while (cinfo.next_scanline < cinfo.image_height)
             {
                 row_pointer[0] = &image_buffer[cinfo.next_scanline * row_stride];

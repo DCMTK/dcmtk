@@ -1,6 +1,141 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.21 (schlamelcher)
+
+- Fixed most of the warnings in dcmjpeg:
+  Compiled with extensive warning options except -Wtraditional and corrected
+  most of the problems. Tested with mingw-w64-4.8.1, gcc-4.7.2 (static and shared),
+  Visual Studio 2013 Express, Visual Studio 2012 64 bit and clang-w64-3.5.0.
+  Tested compression / decompression with various different settings for different
+  compilers on appropriate DICOM images ("cabinet" and "car97_cd").
+  Most of the remaining warnings in dcmjpeg are caused by files included from
+  dcmimage and will be resolved in a different commit.
+  Affects: CMake/osconfig.h.in
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodece.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djdijg12.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djdijg16.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djdijg8.h
+           dcmjpeg/libijg12/jcapistd.c
+           dcmjpeg/libijg12/jcarith.c
+           dcmjpeg/libijg12/jccoefct.c
+           dcmjpeg/libijg12/jcdiffct.c
+           dcmjpeg/libijg12/jchuff.c
+           dcmjpeg/libijg12/jclhuff.c
+           dcmjpeg/libijg12/jcmainct.c
+           dcmjpeg/libijg12/jcmaster.c
+           dcmjpeg/libijg12/jcparam.c
+           dcmjpeg/libijg12/jcphuff.c
+           dcmjpeg/libijg12/jcpred.c
+           dcmjpeg/libijg12/jcprepct.c
+           dcmjpeg/libijg12/jcsample.c
+           dcmjpeg/libijg12/jctrans.c
+           dcmjpeg/libijg12/jdapistd.c
+           dcmjpeg/libijg12/jdarith.c
+           dcmjpeg/libijg12/jdcoefct.c
+           dcmjpeg/libijg12/jddiffct.c
+           dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg12/jdinput.c
+           dcmjpeg/libijg12/jdlhuff.c
+           dcmjpeg/libijg12/jdmainct.c
+           dcmjpeg/libijg12/jdmarker.c
+           dcmjpeg/libijg12/jdmerge.c
+           dcmjpeg/libijg12/jdphuff.c
+           dcmjpeg/libijg12/jdpostct.c
+           dcmjpeg/libijg12/jdpred.c
+           dcmjpeg/libijg12/jdsample.c
+           dcmjpeg/libijg12/jdshuff.c
+           dcmjpeg/libijg12/jmemmgr.c
+           dcmjpeg/libijg12/jquant1.c
+           dcmjpeg/libijg12/jquant2.c
+           dcmjpeg/libijg16/jcapistd.c
+           dcmjpeg/libijg16/jcarith.c
+           dcmjpeg/libijg16/jccoefct.c
+           dcmjpeg/libijg16/jcdiffct.c
+           dcmjpeg/libijg16/jchuff.c
+           dcmjpeg/libijg16/jclhuff.c
+           dcmjpeg/libijg16/jcmainct.c
+           dcmjpeg/libijg16/jcmaster.c
+           dcmjpeg/libijg16/jcparam.c
+           dcmjpeg/libijg16/jcphuff.c
+           dcmjpeg/libijg16/jcpred.c
+           dcmjpeg/libijg16/jcprepct.c
+           dcmjpeg/libijg16/jcsample.c
+           dcmjpeg/libijg16/jctrans.c
+           dcmjpeg/libijg16/jdapistd.c
+           dcmjpeg/libijg16/jdarith.c
+           dcmjpeg/libijg16/jdcoefct.c
+           dcmjpeg/libijg16/jddiffct.c
+           dcmjpeg/libijg16/jdhuff.c
+           dcmjpeg/libijg16/jdinput.c
+           dcmjpeg/libijg16/jdlhuff.c
+           dcmjpeg/libijg16/jdmainct.c
+           dcmjpeg/libijg16/jdmarker.c
+           dcmjpeg/libijg16/jdmerge.c
+           dcmjpeg/libijg16/jdphuff.c
+           dcmjpeg/libijg16/jdpostct.c
+           dcmjpeg/libijg16/jdpred.c
+           dcmjpeg/libijg16/jdsample.c
+           dcmjpeg/libijg16/jdshuff.c
+           dcmjpeg/libijg16/jmemmgr.c
+           dcmjpeg/libijg16/jquant1.c
+           dcmjpeg/libijg16/jquant2.c
+           dcmjpeg/libijg8/jcapistd.c
+           dcmjpeg/libijg8/jcarith.c
+           dcmjpeg/libijg8/jccoefct.c
+           dcmjpeg/libijg8/jcdiffct.c
+           dcmjpeg/libijg8/jchuff.c
+           dcmjpeg/libijg8/jclhuff.c
+           dcmjpeg/libijg8/jcmainct.c
+           dcmjpeg/libijg8/jcmaster.c
+           dcmjpeg/libijg8/jcparam.c
+           dcmjpeg/libijg8/jcphuff.c
+           dcmjpeg/libijg8/jcpred.c
+           dcmjpeg/libijg8/jcprepct.c
+           dcmjpeg/libijg8/jcsample.c
+           dcmjpeg/libijg8/jctrans.c
+           dcmjpeg/libijg8/jdapistd.c
+           dcmjpeg/libijg8/jdarith.c
+           dcmjpeg/libijg8/jdcoefct.c
+           dcmjpeg/libijg8/jddiffct.c
+           dcmjpeg/libijg8/jdhuff.c
+           dcmjpeg/libijg8/jdinput.c
+           dcmjpeg/libijg8/jdlhuff.c
+           dcmjpeg/libijg8/jdmainct.c
+           dcmjpeg/libijg8/jdmarker.c
+           dcmjpeg/libijg8/jdmerge.c
+           dcmjpeg/libijg8/jdphuff.c
+           dcmjpeg/libijg8/jdpostct.c
+           dcmjpeg/libijg8/jdpred.c
+           dcmjpeg/libijg8/jdsample.c
+           dcmjpeg/libijg8/jdshuff.c
+           dcmjpeg/libijg8/jmemmgr.c
+           dcmjpeg/libijg8/jquant1.c
+           dcmjpeg/libijg8/jquant2.c
+           dcmjpeg/libsrc/ddpiimpl.cc
+           dcmjpeg/libsrc/dipijpeg.cc
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpeg/libsrc/djcparam.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+           dcmjpeg/libsrc/djencbas.cc
+           dcmjpeg/libsrc/djencext.cc
+           dcmjpeg/libsrc/djenclol.cc
+           dcmjpeg/libsrc/djencpro.cc
+           dcmjpeg/libsrc/djencsps.cc
+           dcmjpeg/libsrc/djencsv1.cc
+           dcmjpeg/libsrc/djrplol.cc
+           dcmjpeg/libsrc/djrploss.cc
+           dcmjpeg/libsrc/djutils.cc
+           
 **** Changes from 2014.03.20 (riesmeier)
 
 - Fixed small typos in comments.

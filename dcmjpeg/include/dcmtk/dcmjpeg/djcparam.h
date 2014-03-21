@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,14 +79,14 @@ public:
     E_SubSampling pSampleFactors = ESS_444,
     OFBool pWriteYBR422 = OFFalse,
     OFBool pConvertToSC = OFFalse,
-    unsigned long pWindowType = 0,
-    unsigned long pWindowParameter = 0,
+    size_t pWindowType = 0,
+    size_t pWindowParameter = 0,
     double pVoiCenter = 0.0,
     double pVoiWidth = 0.0,
-    unsigned long pRoiLeft = 0,
-    unsigned long pRoiTop = 0,
-    unsigned long pRoiWidth = 0,
-    unsigned long pRoiHeight = 0,
+    size_t pRoiLeft = 0,
+    size_t pRoiTop = 0,
+    size_t pRoiWidth = 0,
+    size_t pRoiHeight = 0,
     OFBool pUsePixelValues = OFTrue,
     OFBool pUseModalityRescale = OFFalse,
     OFBool pAcceptWrongPaletteTags = OFFalse,
@@ -186,7 +186,7 @@ public:
   /** returns mode for VOI transformation of monochrome images.
    *  @return mode for VOI transformation of monochrome images
    */
-  unsigned long getWindowType() const
+  size_t getWindowType() const
   {
     return windowType;
   }
@@ -194,7 +194,7 @@ public:
   /** returns parameter for VOI transform of monochrome images, used in VOI modes 1, 2, 4, 6
    *  @return parameter for VOI transform of monochrome images, used in VOI modes 1, 2, 4, 6
    */
-  unsigned long getWindowParameter() const
+  size_t getWindowParameter() const
   {
     return windowParameter;
   }
@@ -216,10 +216,10 @@ public:
    *  @param height ROI height returned in this parameter
    */
   void getROI(
-    unsigned long& left_pos,
-    unsigned long& top_pos,
-    unsigned long& width,
-    unsigned long& height) const
+    size_t& left_pos,
+    size_t& top_pos,
+    size_t& width,
+    size_t& height) const
   {
     left_pos = roiLeft;
     top_pos = roiTop;
@@ -356,10 +356,10 @@ private:
       6: compute VOI window using min-max algorithm ignoring extremes
       7: compute region of interest VOI window
    */
-  unsigned long windowType;
+  size_t windowType;
 
   /// parameter for VOI transform of monochrome images, used in modes 1, 2, 4, 6
-  unsigned long windowParameter;
+  size_t windowParameter;
 
   /// VOI window center for mode 5
   double voiCenter;
@@ -368,16 +368,16 @@ private:
   double voiWidth;
 
   /// Region of Interest left corner for for VOI transform of monochrome images, mode 7
-  unsigned long roiLeft;
+  size_t roiLeft;
 
   /// Region of Interest upper corner for for VOI transform of monochrome images, mode 7
-  unsigned long roiTop;
+  size_t roiTop;
 
   /// Region of Interest width for for VOI transform of monochrome images, mode 7
-  unsigned long roiWidth;
+  size_t roiWidth;
 
   /// Region of Interest height for for VOI transform of monochrome images, mode 7
-  unsigned long roiHeight;
+  size_t roiHeight;
 
   /// Check smallest and largest pixel value and optimize compression, mode 0 only
   OFBool usePixelValues;

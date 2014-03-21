@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,7 +59,7 @@ OFBool DJ_RPLossless::operator==(const DcmRepresentationParameter &arg) const
     OFString argstring(argname);
     if (argstring == className())
     {
-      const DJ_RPLossless& argll = (const DJ_RPLossless &)arg;
+      const DJ_RPLossless& argll = OFstatic_cast(const DJ_RPLossless&, arg);
       if ((prediction == argll.prediction) && (pt == argll.pt)) return OFTrue;
     }
   }

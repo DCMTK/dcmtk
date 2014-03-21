@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,7 +59,7 @@ void DJEncoderLossless::createDerivationDescription(
   OFString& derivationDescription) const
 {
   DJ_RPLossless defaultRP;
-  const DJ_RPLossless *rp = toRepParam ? (const DJ_RPLossless *)toRepParam : &defaultRP ;
+  const DJ_RPLossless *rp = toRepParam ? OFreinterpret_cast(const DJ_RPLossless*, toRepParam) : &defaultRP ;
   char buf[64];
 
   if (cp->getTrueLosslessMode())
@@ -82,7 +82,7 @@ DJEncoder *DJEncoderLossless::createEncoderInstance(
   Uint8 bitsPerSample) const
 {
   DJ_RPLossless defaultRP;
-  const DJ_RPLossless *rp = toRepParam ? (const DJ_RPLossless *)toRepParam : &defaultRP ;
+  const DJ_RPLossless *rp = toRepParam ? OFreinterpret_cast(const DJ_RPLossless*, toRepParam) : &defaultRP ;
   DJEncoder *result = NULL;
   if (bitsPerSample > 12)
     result = new DJCompressIJG16Bit(*cp, EJM_lossless, rp->getPrediction(), rp->getPointTransformation());

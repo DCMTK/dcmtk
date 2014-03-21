@@ -29,9 +29,9 @@
 
 #ifdef _WIN32
   /* Define if you have the <windows.h> header file. */
-  #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@
+#cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@
   /* Define if you have the <winsock.h> header file. */
-  #cmakedefine HAVE_WINSOCK_H @HAVE_WINSOCK_H@
+#cmakedefine HAVE_WINSOCK_H @HAVE_WINSOCK_H@
 #endif
 
 /* Define the canonical host system type as a string constant */
@@ -292,9 +292,9 @@
 #cmakedefine HAVE_LIBNSL @HAVE_LIBNSL@
 
 /* Define to 1 if you have the <libpng/png.h> header file. */
-// Comment this out so inside dipipng.cxx we can include <png.h>
-// instead of <libpng/png.h> KW 20060622
-//#cmakedefine HAVE_LIBPNG_PNG_H @HAVE_LIBPNG_PNG_H@
+/* Comment this out so inside dipipng.cxx we can include <png.h> */
+/* instead of <libpng/png.h> KW 20060622 */
+/* #cmakedefine HAVE_LIBPNG_PNG_H @HAVE_LIBPNG_PNG_H@ */
 
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #cmakedefine HAVE_LIBSOCKET @HAVE_LIBSOCKET@
@@ -812,10 +812,10 @@
 
 /* Explicitly request large file support, assuming it exists if fseeko() exists */
 #if defined(HAVE_FSEEKO) && !defined(_LARGEFILE_SOURCE)
-  #define _LARGEFILE_SOURCE 1
+#define _LARGEFILE_SOURCE 1
 #endif
 #if defined(_LARGEFILE_SOURCE) && !defined(_FILE_OFFSET_BITS)
-  #define _FILE_OFFSET_BITS 64
+#define _FILE_OFFSET_BITS 64
 #endif
 
 /* The size of a `char', as computed by sizeof. */
@@ -941,19 +941,19 @@ typedef unsigned long ulong;
 
  /* Additional settings for Borland C++ Builder */
 #ifdef __BORLANDC__
-#define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++
-#define _strnicmp strnicmp  // _strnicmp in MSVC is strnicmp in Borland C++
-#pragma warn -8027          // disable Warning W8027 "functions containing while are not expanded inline"
-#pragma warn -8004          // disable Warning W8004 "variable is assigned a value that is never used"
-#pragma warn -8012          // disable Warning W8012 "comparing signed and unsigned values"
+#define _stricmp stricmp    /* _stricmp in MSVC is stricmp in Borland C++ */
+#define _strnicmp strnicmp  /* _strnicmp in MSVC is strnicmp in Borland C++ */
+    #pragma warn -8027      /* disable Warning W8027 "functions containing while are not expanded inline" */
+    #pragma warn -8004      /* disable Warning W8004 "variable is assigned a value that is never used" */
+    #pragma warn -8012      /* disable Warning W8012 "comparing signed and unsigned values" */
 #ifdef WITH_THREADS
-#define __MT__              // required for _beginthreadex() API in <process.h>
-#define _MT                 // required for _errno on BCB6
+#define __MT__              /* required for _beginthreadex() API in <process.h> */
+#define _MT                 /* required for _errno on BCB6 */
 #endif
 #define HAVE_PROTOTYPE_MKTEMP 1
 #undef HAVE_SYS_UTIME_H
 #define NO_IOS_BASE_ASSIGN 1
-#define _MSC_VER 1200       // Treat Borland C++ 5.5 as MSVC6.
+#define _MSC_VER 1200       /* Treat Borland C++ 5.5 as MSVC6. */
 #endif /* __BORLANDC__ */
 
 /* Platform specific settings for Visual C++
@@ -968,18 +968,18 @@ typedef unsigned long ulong;
 #ifdef _MSC_VER
 #if _MSC_VER <= 1200 /* Additional settings for VC6 and older */
 /* disable warning that return type for 'identifier::operator ->' is not a UDT or reference to a UDT */
-#pragma warning( disable : 4284 )
+    #pragma warning( disable : 4284 )
 #define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE 1
 #else
 #define HAVE_VSNPRINTF 1
 #endif /* _MSC_VER <= 1200 */
 
-#pragma warning( disable : 4251 )  // disable warnings about needed dll-interface
-               // http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html
+    #pragma warning( disable : 4251 )  /* disable warnings about needed dll-interface */
+                                       /* http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html */
 
-#if _MSC_VER >= 1400  /* Additional settings for Visual Studio 2005 and newer */
-#pragma warning( disable : 4996 )  // disable warnings about "deprecated" C runtime functions
-#pragma warning( disable : 4351 )  // disable warnings about "new behavior" when initializing the elements of an array
+#if _MSC_VER >= 1400                   /* Additional settings for Visual Studio 2005 and newer */
+    #pragma warning( disable : 4996 )  /* disable warnings about "deprecated" C runtime functions */
+    #pragma warning( disable : 4351 )  /* disable warnings about "new behavior" when initializing the elements of an array */
 #endif /* _MSC_VER >= 1400 */
 #endif /* _MSC_VER */
 
@@ -1029,7 +1029,7 @@ typedef unsigned long ulong;
 
 #endif /* USE_STD_CXX_INCLUDES */
 
-// Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't.
+/* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
 #define STDIO_NAMESPACE ::
 
 #endif /* !OSCONFIG_H*/

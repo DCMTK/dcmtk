@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -213,7 +213,7 @@ protected:
    */
   static OFCondition togglePlanarConfiguration8(
     Uint8 *pixelData,
-    const unsigned long numValues,
+    const size_t numValues,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 
@@ -230,7 +230,7 @@ protected:
    */
   static OFCondition togglePlanarConfiguration16(
     Uint16 *pixelData,
-    const unsigned long numValues,
+    const size_t numValues,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 

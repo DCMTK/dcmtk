@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2013, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -618,14 +618,14 @@ int main(int argc, char *argv[])
       opt_sampleFactors,
       opt_useYBR422,
       opt_secondarycapture,
-      opt_windowType,
-      opt_windowParameter,
+      OFstatic_cast(Uint32, opt_windowType),
+      OFstatic_cast(Uint32, opt_windowParameter),
       opt_windowCenter,
       opt_windowWidth,
-      opt_roiLeft,
-      opt_roiTop,
-      opt_roiWidth,
-      opt_roiHeight,
+      OFstatic_cast(Uint32, opt_roiLeft),
+      OFstatic_cast(Uint32, opt_roiTop),
+      OFstatic_cast(Uint32, opt_roiWidth),
+      OFstatic_cast(Uint32, opt_roiHeight),
       opt_usePixelValues,
       opt_useModalityRescale,
       opt_acceptWrongPaletteTags,

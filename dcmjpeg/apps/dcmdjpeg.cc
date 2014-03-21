@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2013, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-        opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_writeMode);
+        opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
     if (error != EC_Normal)
     {
         OFLOG_FATAL(dcmdjpegLogger, error.text() << ": writing file: " <<  opt_ofname);

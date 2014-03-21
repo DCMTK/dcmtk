@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,14 +36,14 @@ DJCodecParameter::DJCodecParameter(
     E_SubSampling pSampleFactors,
     OFBool pWriteYBR422,
     OFBool pConvertToSC,
-    unsigned long pWindowType,
-    unsigned long pWindowParameter,
+    size_t pWindowType,
+    size_t pWindowParameter,
     double pVoiCenter,
     double pVoiWidth,
-    unsigned long pRoiLeft,
-    unsigned long pRoiTop,
-    unsigned long pRoiWidth,
-    unsigned long pRoiHeight,
+    size_t pRoiLeft,
+    size_t pRoiTop,
+    size_t pRoiWidth,
+    size_t pRoiHeight,
     OFBool pUsePixelValues,
     OFBool pUseModalityRescale,
     OFBool pAcceptWrongPaletteTags,

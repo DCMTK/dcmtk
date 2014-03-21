@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,7 +58,7 @@ void DJEncoderSpectralSelection::createDerivationDescription(
   OFString& derivationDescription) const
 {
   DJ_RPLossy defaultRP;
-  const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
+  const DJ_RPLossy *rp = toRepParam ? OFreinterpret_cast(const DJ_RPLossy*, toRepParam) : &defaultRP ;
   char buf[64];
  
   derivationDescription =  "Lossy compression with JPEG spectral selection ";
@@ -77,11 +77,11 @@ DJEncoder *DJEncoderSpectralSelection::createEncoderInstance(
     Uint8 bitsPerSample) const
 {
   DJ_RPLossy defaultRP;
-  const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
+  const DJ_RPLossy *rp = toRepParam ? OFreinterpret_cast(const DJ_RPLossy*, toRepParam) : &defaultRP ;
   DJEncoder *result = NULL;
 
   if (bitsPerSample > 8)
-    result = new DJCompressIJG12Bit(*cp, EJM_spectralSelection, rp->getQuality());
-    else result = new DJCompressIJG8Bit(*cp, EJM_spectralSelection, rp->getQuality());
+    result = new DJCompressIJG12Bit(*cp, EJM_spectralSelection, OFstatic_cast(Uint8, rp->getQuality()));
+    else result = new DJCompressIJG8Bit(*cp, EJM_spectralSelection, OFstatic_cast(Uint8, rp->getQuality()));
   return result;
 }
