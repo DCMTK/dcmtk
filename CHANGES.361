@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.20 (riesmeier)
+
+- Fixed small typos in comments.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 **** Changes from 2014.03.19 (riesmeier)
 
 - Removed superfluous quotations marks:

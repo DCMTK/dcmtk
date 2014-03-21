@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,7 +121,7 @@ class DiInputPixelTemplate
      ** @param  document   pointer to DICOM image object
      *  @param  alloc      number of bits allocated for each pixel
      *  @param  stored     number of bits stored for each pixel
-     *  @param  high       position of bigh bit within bits allocated
+     *  @param  high       position of high bit within bits allocated
      *  @param  first      first frame to be processed
      *  @param  number     number of frames to be processed
      *  @param  fsize      number of pixels per frame (frame size)
@@ -349,7 +349,7 @@ class DiInputPixelTemplate
      ** @param  document       pointer to DICOM image object
      *  @param  bitsAllocated  number of bits allocated for each pixel
      *  @param  bitsStored     number of bits stored for each pixel
-     *  @param  highBit        position of bigh bit within bits allocated
+     *  @param  highBit        position of high bit within bits allocated
      *  @param  fileCache      pointer to file cache object used for partial read
      *  @param  fragment       current pixel item fragment (for encapsulated pixel data)
      */
@@ -549,7 +549,7 @@ class DiInputPixelTemplate
                         }
                     }
                 }
-                else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
+                else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicand of 8/16
                     && (bitsStored == bitsAllocated))
                 {
                     DCMIMGLE_DEBUG("convert input pixel data: case 3 (multi copy)");
