@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
 
     // register RLE compression codec
     DcmRLEEncoderRegistration::registerCodecs(opt_uidcreation,
-      opt_fragmentSize, opt_createOffsetTable, opt_secondarycapture);
+      OFstatic_cast(Uint32, opt_fragmentSize), opt_createOffsetTable, opt_secondarycapture);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())

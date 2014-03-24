@@ -94,7 +94,7 @@ OFListIterator(DcmPathNode*) DcmPath::end()
 // Returns number of path nodes in the path
 Uint32 DcmPath::size() const
 {
-  return m_path.size();
+  return OFstatic_cast(Uint32, m_path.size());
 }
 
 
@@ -449,7 +449,7 @@ Uint32 DcmPathProcessor::getResults(OFList<DcmPath*>& searchResults)
       it++;
     }
   }
-  return m_results.size();
+  return OFstatic_cast(Uint32, m_results.size());
 }
 
 // applies a string path (optionally with value) to a dataset
@@ -739,7 +739,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
   if (isWildcard)
   {
     // if there are no items -> no results are found
-    Uint32 numItems = seq->card();
+    Uint32 numItems = OFstatic_cast(Uint32, seq->card());
     if (numItems == 0)
     {
       if (!m_createIfNecessary)
@@ -875,7 +875,7 @@ DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKe
   // Calculate corresponding private creator element
   Uint16 elemNo = privateKey.getElement();
   // Get yz from given element number wxyz, groups stays the same
-  elemNo >>= 8;
+  elemNo = OFstatic_cast(Uint16, elemNo >> 8);
   reservationTag.setGroup(privateKey.getGroup());
   reservationTag.setElement(elemNo);
   return reservationTag;

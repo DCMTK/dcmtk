@@ -474,7 +474,7 @@ int main(int argc, char *argv[])
     {
         /* read DICOM file or data set */
         DcmFileFormat dfile;
-        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, opt_maxReadLength, opt_readMode);
+        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, OFstatic_cast(Uint32, opt_maxReadLength), opt_readMode);
         if (status.good())
         {
             // map "old" charset names to DICOM defined terms

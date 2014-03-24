@@ -168,7 +168,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
 {
     OFCondition result = EC_Normal;
 
-    unsigned long numEntries = offsetList.size();
+    size_t numEntries = offsetList.size();
     if (numEntries > 0)
     {
         Uint32 current = 0;
@@ -197,7 +197,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
             {
                 result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, array, OFstatic_cast(Uint32, numEntries * sizeof(Uint32)), sizeof(Uint32));
                 if (result.good())
-                    result = putUint8Array(OFreinterpret_cast(Uint8 *, array), numEntries * sizeof(Uint32));
+                    result = putUint8Array(OFreinterpret_cast(Uint8 *, array), OFstatic_cast(unsigned long, numEntries * sizeof(Uint32)));
             }
             delete[] array;
         } else

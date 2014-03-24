@@ -297,7 +297,7 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
         /* print tag name */
         out << tag->getTagName() << ' ';
         /* add padding spaces if required */
-        const signed long padLength = DCM_OptPrintAttributeNameLength - strlen(tag->getTagName()) - 2 * level;
+        const STD_NAMESPACE ptrdiff_t padLength = DCM_OptPrintAttributeNameLength - strlen(tag->getTagName()) - 2 * level;
         if (padLength > 0)
             out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {
@@ -376,7 +376,7 @@ void DcmObject::printInfoLine(STD_NAMESPACE ostream &out,
     /* print tag and VR */
     printInfoLineStart(out, flags, level, tag);
     /* check whether info text fits into the limit */
-    unsigned long printedLength = 0;
+    size_t printedLength = 0;
     /* check for valid info text */
     if (info != NULL)
     {
@@ -401,7 +401,7 @@ void DcmObject::printInfoLine(STD_NAMESPACE ostream &out,
             out << info;
     }
     /* print length, VM and tag name */
-    printInfoLineEnd(out, flags, printedLength, tag);
+    printInfoLineEnd(out, flags, OFstatic_cast(unsigned long, printedLength), tag);
 }
 
 

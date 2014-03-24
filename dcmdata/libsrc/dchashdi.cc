@@ -112,7 +112,7 @@ DcmDictEntry *DcmDictEntryList::find(const DcmTagKey& key, const char *privCreat
 unsigned int
 DcmDictEntryList::size() const
 {
-    return list_.size();
+    return OFstatic_cast(unsigned int, list_.size());
 }
 
 OFBool

@@ -200,7 +200,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   samplesPerPixel = spp;
   bitsAlloc = bps;
   bitsStored = bitsAlloc;
-  highBit = bitsStored - 1;
+  highBit = OFstatic_cast(Uint16, bitsStored - 1);
   if (samplesPerPixel == 1)
     photoMetrInt = "MONOCHROME2";
   else if (samplesPerPixel == 3)
@@ -552,8 +552,8 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
     }
     // read block
     offile_off_t blockSize = endOfBlock - jpegFile.ftell();
-    int result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, blockSize));
-    if (result != blockSize)
+    size_t result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, blockSize));
+    if (result != OFstatic_cast(size_t, blockSize))
       return EC_IllegalCall;
     // prepare for reading next block
     if (!finished)
@@ -563,7 +563,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
     }
   }
   // update result variable
-  pixLength = OFstatic_cast(size_t, rawStreamSize);
+  pixLength = OFstatic_cast(Uint32, rawStreamSize);
 
   return cond;
 }
@@ -580,7 +580,7 @@ OFCondition I2DJpegSource::createJPEGFileMap()
   OFCondition cond;
 
   /* Expect SOI at start of file */
-  E_JPGMARKER first;
+  E_JPGMARKER first = E_JPGMARKER();
   cond = firstMarker(first);
   if (cond.bad())
     return cond;
@@ -708,7 +708,7 @@ int I2DJpegSource::read2Bytes(Uint16& result)
   c2 = jpegFile.fgetc();
   if (c2 == EOF)
     return EOF;
-  result = ((OFstatic_cast(Uint16, c1)) << 8) + OFstatic_cast(Uint16, c2);
+  result = OFstatic_cast(Uint16, ((OFstatic_cast(Uint16, c1)) << 8) + OFstatic_cast(Uint16, c2));
   return 0;
 }
 
@@ -801,7 +801,7 @@ OFCondition I2DJpegSource::skipVariable()
   /* Length includes itself, so must be at least 2 */
   if (length < 2)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Erroneous JPEG marker length");
-  length -= 2;
+  length = OFstatic_cast(Uint16, length - 2);
   /* Skip over the remaining bytes */
   jpegFile.fseek(length, SEEK_CUR);
   return EC_Normal;

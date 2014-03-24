@@ -1,12 +1,69 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.24 (schlamelcher)
+
+- Fixed most of the warnings in dcmdata:
+  Compiled with extensive warning options except -Wtraditional and corrected
+  most of the problems. Most of the remaining warnings in dcmdata are caused by
+  files included from ofstd and will be resolved in a different commit.
+  Affects: CHANGES.361
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/modhelp.h
+           dcmdata/libi2d/i2dbmps.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcistrmz.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcostrmz.cc
+           dcmdata/libsrc/dcpath.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrod.cc
+           dcmdata/libsrc/dcvrof.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/modhelp.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/tests/ti2dbmp.cc
+           dcmdata/tests/tpread.cc
+           oflog/include/dcmtk/oflog/logmacro.h
+
 **** Changes from 2014.03.21 (schlamelcher)
 
 - Marked SCPPool-Test (dcmnet_scp_pool) as exhaustive:
   The current pool-testcase takes about 6 seconds, which is rather long
   compared to the other tests. It was therefore flagged as exhaustive test
   and is not run unless explicitly enabled.
+  Affects: dcmnet/tests/tpool.c
 
 - Fixed potential bug in dcmjpeg 12 and 16 bit variants:
   Applied a fix that was already present in the 8 bit variant to the other

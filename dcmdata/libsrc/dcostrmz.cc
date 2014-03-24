@@ -37,6 +37,23 @@
 
 OFGlobal<int> dcmZlibCompressionLevel(Z_DEFAULT_COMPRESSION);
 
+// helper method to fix old-style casts warnings
+BEGIN_EXTERN_C
+static int OFdeflateInit(z_stream* const stream, int level)
+{
+#ifdef ZLIB_ENCODE_RFC1950_HEADER
+  /* create deflated ZLIB format instead of deflated bitstream format
+   * (i.e. RFC 1950 instead of RFC 1951).
+   * THE RESULTING BITSTREAM IS NOT DICOM COMPLIANT!
+   * Use only for testing, and use with care.
+   */
+  return deflateInit(stream, level);
+#else
+  /* windowBits is passed < 0 to suppress zlib header */
+  return deflateInit2(stream, level, Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+#endif
+}
+END_EXTERN_C
 
 DcmZLibOutputFilter::DcmZLibOutputFilter()
 : DcmOutputFilter()
@@ -56,21 +73,8 @@ DcmZLibOutputFilter::DcmZLibOutputFilter()
     zstream_->zalloc = Z_NULL;
     zstream_->zfree = Z_NULL;
     zstream_->opaque = Z_NULL;
-#ifdef ZLIB_ENCODE_RFC1950_HEADER
-    /* create deflated ZLIB format instead of deflated bitstream format
-     * (i.e. RFC 1950 instead of RFC 1951).
-     * THE RESULTING BITSTREAM IS NOT DICOM COMPLIANT!
-     * Use only for testing, and use with care.
-     */
-    if (Z_OK == deflateInit(zstream_, dcmZlibCompressionLevel.get()))
-#else
-    /* windowBits is passed < 0 to suppress zlib header */
-    if (Z_OK == deflateInit2(zstream_, dcmZlibCompressionLevel.get(),
-        Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY))
-#endif
-    {
-        status_ = EC_Normal;
-    }
+    if (Z_OK == OFdeflateInit(zstream_, dcmZlibCompressionLevel.get()))
+      status_ = EC_Normal;
     else
     {
       OFString etext = "ZLib Error: ";

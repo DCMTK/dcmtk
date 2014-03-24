@@ -1932,7 +1932,7 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
     if (!checkExistsWithIntegerValue(dataset, DCM_BitsStored, 8, filename, EncodingCheck))
         result = EC_ApplicationProfileViolated;
     /* overlay data, if present, shall be encoded in OverlayData (60XX,3000) */
-    for (unsigned int grp = 0x6000; grp < 0x601f; grp += 2)
+    for (Uint16 grp = 0x6000; grp < 0x601f; grp = OFstatic_cast(Uint16, grp + 2))
     {
         /* check minimum number of attributes required for an overlay plane to be displayed */
         if (dataset->tagExistsWithValue(DcmTagKey(grp, DCM_OverlayRows.getElement())) &&
@@ -2001,7 +2001,7 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
         if (!checkExistsWithIntegerValue(dataset, DCM_PixelRepresentation, 0, filename))
             result = EC_ApplicationProfileViolated;
         /* check whether any overlay is present */
-        for (unsigned int grp = 0x6000; grp < 0x601f; grp += 2)
+        for (Uint16 grp = 0x6000; grp < 0x601f; grp = OFstatic_cast(Uint16, grp + 2))
         {
             /* check minimum number of attributes required for an overlay plane to be displayed */
             if (dataset->tagExistsWithValue(DcmTagKey(grp, DCM_OverlayRows.getElement())) &&
@@ -4226,8 +4226,8 @@ OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
             /* Image Pixel Module */
             ditem->putAndInsertUint16(DCM_SamplesPerPixel, 1);
             ditem->putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
-            ditem->putAndInsertUint16(DCM_Rows, height);
-            ditem->putAndInsertUint16(DCM_Columns, width);
+            ditem->putAndInsertUint16(DCM_Rows, OFstatic_cast(Uint16, height));
+            ditem->putAndInsertUint16(DCM_Columns, OFstatic_cast(Uint16, width));
             ditem->putAndInsertUint16(DCM_BitsAllocated, 8);
             ditem->putAndInsertUint16(DCM_BitsStored, 8);
             ditem->putAndInsertUint16(DCM_HighBit, 7);

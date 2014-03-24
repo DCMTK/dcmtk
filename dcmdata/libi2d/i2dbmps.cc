@@ -468,13 +468,13 @@ OFCondition I2DBmpSource::parse16BppRow(const Uint8 *row,
   {
     // Assemble one pixel value from the input data
     Uint16 pixel = 0;
-    pixel |= OFstatic_cast(Uint16, row[2*x + 1]) << 8;
-    pixel |= OFstatic_cast(Uint16, row[2*x + 0]);
+    pixel = OFstatic_cast(Uint16, pixel | (row[2*x + 1] << 8));
+    pixel = OFstatic_cast(Uint16, pixel | row[2*x + 0]);
 
     // Each colors has 5 bit, we convert that into 8 bit
-    Uint8 r = (pixel >> 10) << 3;
-    Uint8 g = (pixel >>  5) << 3;
-    Uint8 b = (pixel >>  0) << 3;
+    Uint8 r = OFstatic_cast(Uint8, (pixel >> 10) << 3);
+    Uint8 g = OFstatic_cast(Uint8, (pixel >>  5) << 3);
+    Uint8 b = OFstatic_cast(Uint8, (pixel >>  0) << 3);
 
     pixData[pos]     = r;
     pixData[pos + 1] = g;
@@ -510,13 +510,13 @@ OFCondition I2DBmpSource::parseIndexedColorRow(const Uint8 *row,
     }
 
     // Get the left-most bpp bits from data
-    Uint8 index = (data >> (bitsLeft - bpp));
+    Uint8 index = OFstatic_cast(Uint8, data >> (bitsLeft - bpp));
     // The right-most bpp bits in "index" now contain the data we want,
     // clear all the higher bits.
     // (1 << bpp) gives us in binary: 00001000 (with bpp zero bits) if we
     // substract 1, only the right-most bpp bits will be 1.
-    index &= (1 << bpp) - 1;
-    bitsLeft -= bpp;
+    index = OFstatic_cast(Uint8, index & ((1 << bpp) - 1));
+    bitsLeft = OFstatic_cast(Uint8, bitsLeft - bpp);
 
     // Check if we are still in the color palette
     if (index >= colors)
@@ -548,7 +548,7 @@ int I2DBmpSource::readWord(Uint16& result)
   c2 = bmpFile.fgetc();
   if (c2 == EOF)
     return EOF;
-  result = (OFstatic_cast(Uint16, c2) << 8) + OFstatic_cast(Uint16, c1);
+  result = OFstatic_cast(Uint16, (OFstatic_cast(Uint16, c2) << 8) + OFstatic_cast(Uint16, c1));
   return 0;
 }
 

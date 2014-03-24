@@ -281,7 +281,7 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 *byteValue,
         /* check for valid 8 bit data */
         if ((byteValue != NULL) && (getTag().getEVR() != EVR_OW && getTag().getEVR() != EVR_lt))
         {
-            errorFlag = putValue(byteValue, sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
+            errorFlag = putValue(byteValue, OFstatic_cast(Uint32, sizeof(Uint8) * OFstatic_cast(size_t, numBytes)));
             alignValue();
         } else
             errorFlag = EC_CorruptedData;
@@ -299,7 +299,7 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
     {
         /* check for valid 16 bit data */
         if ((wordValue != NULL) && (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt))
-            errorFlag = putValue(wordValue, sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
+            errorFlag = putValue(wordValue, OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -316,7 +316,7 @@ OFCondition DcmOtherByteOtherWord::createUint8Array(const Uint32 numBytes,
 {
     /* check value representation */
     if ((getTag().getEVR() != EVR_OW) && (getTag().getEVR() != EVR_lt))
-        errorFlag = createEmptyValue(sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
+        errorFlag = createEmptyValue(OFstatic_cast(Uint32, sizeof(Uint8) * OFstatic_cast(size_t, numBytes)));
     else
         errorFlag = EC_CorruptedData;
     if (errorFlag.good())
@@ -332,7 +332,7 @@ OFCondition DcmOtherByteOtherWord::createUint16Array(const Uint32 numWords,
 {
     /* check value representation */
     if ((getTag().getEVR() == EVR_OW) || (getTag().getEVR() == EVR_lt))
-        errorFlag = createEmptyValue(sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
+        errorFlag = createEmptyValue(OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
     else
         errorFlag = EC_CorruptedData;
     if (errorFlag.good())
@@ -349,9 +349,9 @@ OFCondition DcmOtherByteOtherWord::createUint16Array(const Uint32 numWords,
 OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -733,7 +733,7 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                     Uint16 *wordValues = NULL;
                     if (getUint16Array(wordValues).good() && (wordValues != NULL))
                     {
-                        const unsigned long count = getLengthField() / sizeof(Uint16);
+                        const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Uint16));
                         out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
                         /* print word values in hex mode */
                         out << STD_NAMESPACE setw(4) << (*(wordValues++));

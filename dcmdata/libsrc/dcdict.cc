@@ -149,7 +149,7 @@ stripWhitespace(char* s)
 static char*
 stripTrailingWhitespace(char* s)
 {
-    int i, n;
+    size_t i, n;
 
     if (s == NULL) return s;
 
@@ -228,7 +228,7 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
 {
     const char *p;
     int foundFields = 0;
-    int len;
+    size_t len;
 
     do {
 #ifdef __BORLANDC__
@@ -307,7 +307,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
     char gs[64];
     char es[64];
     char pc[64];
-    int slen = strlen(s);
+    size_t slen = strlen(s);
 
     if (s[0] != '(') return OFFalse;
     if (s[slen - 1] != ')') return OFFalse;
@@ -373,10 +373,10 @@ parseWholeTagField(char* s, DcmTagKey& key,
 static OFBool
 onlyWhitespace(const char* s)
 {
-    int len = strlen(s);
+    size_t len = strlen(s);
     int charsFound = OFFalse;
 
-    for (int i = 0; (!charsFound) && (i < len); i++) {
+    for (size_t i = 0; (!charsFound) && (i < len); ++i) {
         charsFound = !isspace(OFstatic_cast(unsigned char, s[i]));
     }
     return (!charsFound)? (OFTrue) : (OFFalse);
@@ -399,9 +399,9 @@ static OFBool
 isaCommentLine(const char* s)
 {
     OFBool isComment = OFFalse; /* assumption */
-    int len = strlen(s);
-    int i = 0;
-    for (i = 0; i < len && isspace(OFstatic_cast(unsigned char, s[i])); i++) /*loop*/;
+    size_t len = strlen(s);
+    size_t i = 0;
+    for (i = 0; i < len && isspace(OFstatic_cast(unsigned char, s[i])); ++i) /*loop*/;
     isComment = (s[i] == DCM_DICT_COMMENT_CHAR);
     return isComment;
 }
@@ -588,7 +588,7 @@ OFBool
 DcmDataDictionary::loadExternalDictionaries()
 {
     const char* env = NULL;
-    int len;
+    size_t len;
     int sepCnt = 0;
     OFBool msgIfDictAbsent = OFTrue;
     OFBool loadFailed = OFFalse;
@@ -601,7 +601,7 @@ DcmDataDictionary::loadExternalDictionaries()
 
     if ((env != NULL) && (strlen(env) != 0)) {
         len = strlen(env);
-        for (int i = 0; i < len; i++) {
+        for (size_t i = 0; i < len; ++i) {
             if (env[i] == ENVIRONMENT_PATH_SEPARATOR) {
                 sepCnt++;
             }

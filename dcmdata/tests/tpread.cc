@@ -53,16 +53,16 @@ static void createTestDataset(DcmDataset *dset, unsigned char *buffer)
   dset->putAndInsertUint8Array(DCM_EncapsulatedDocument, buffer, BUFSIZE);
 
   // short array, VR=US
-  dset->putAndInsertUint16Array(DCM_RWavePointer, OFreinterpret_cast(Uint16 *, buffer), BUFSIZE/sizeof(Uint16));
+  dset->putAndInsertUint16Array(DCM_RWavePointer, OFreinterpret_cast(Uint16 *, buffer), BUFSIZE/OFstatic_cast(Uint32, sizeof(Uint16)));
 
   // long array, VR=UL
   DcmElement *elem = new DcmUnsignedLong(DCM_TableOfPixelValues);
-  elem->putUint32Array(OFreinterpret_cast(Uint32 *, buffer), BUFSIZE/sizeof(Uint32));
+  elem->putUint32Array(OFreinterpret_cast(Uint32 *, buffer), BUFSIZE/OFstatic_cast(Uint32, sizeof(Uint32)));
   dset->insert(elem);
 
   // double array, VR=FD
   elem = new DcmFloatingPointDouble(DCM_TableOfYBreakPoints);
-  elem->putFloat64Array(OFreinterpret_cast(Float64 *, buffer), BUFSIZE/sizeof(Float64));
+  elem->putFloat64Array(OFreinterpret_cast(Float64 *, buffer), BUFSIZE/OFstatic_cast(Uint32, sizeof(Float64)));
   dset->insert(elem);
 }
 

@@ -105,7 +105,7 @@ static DcmTagKey parseTagKey(const char *tagName)
         return tagKey;
     } else     /* tag name has format "gggg,eeee" */
     {
-        return DcmTagKey(group,elem);
+        return DcmTagKey(OFstatic_cast(Uint16, group),OFstatic_cast(Uint16, elem));
     }
 }
 
@@ -736,7 +736,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     DcmFileFormat dfile;
     DcmObject *dset = &dfile;
     if (readMode == ERM_dataset) dset = dfile.getDataset();
-    OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
+    OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, OFstatic_cast(Uint32, maxReadLength), readMode);
     if (cond.bad())
     {
         OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text()
@@ -789,7 +789,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             if (printTagKeys[i])
                 searchKey = *printTagKeys[i];
             else if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
-                searchKey.set(group, elem);
+                searchKey.set(OFstatic_cast(Uint16, group), OFstatic_cast(Uint16, elem));
             else {
                 OFLOG_FATAL(dcmdumpLogger, "Internal ERROR in File " << __FILE__ << ", Line "
                     << __LINE__ << OFendl << " -- Named tag inconsistency");

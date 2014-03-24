@@ -279,14 +279,14 @@ OFCondition DcmRLECodecEncoder::encode(
           // compute size of compressed frame including RLE header
           // and populate RLE header
           for (i=0; i<16; i++) rleHeader[i] = 0;
-          rleHeader[0] = rleEncoderList.size();
+          rleHeader[0] = OFstatic_cast(Uint32, rleEncoderList.size());
           rleSize = 64;
           i = 1;
           first = rleEncoderList.begin();
           while (first != last)
           {
             rleHeader[i++] = rleSize;
-            rleSize += (*first)->size();
+            rleSize += OFstatic_cast(Uint32, (*first)->size());
             ++first;
           }
 
@@ -296,7 +296,7 @@ OFCondition DcmRLECodecEncoder::encode(
           if (rleData)
           {
             // copy RLE header to compressed frame buffer
-            swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rleHeader, 16*sizeof(Uint32), sizeof(Uint32));
+            swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rleHeader, OFstatic_cast(Uint32, 16*sizeof(Uint32)), sizeof(Uint32));
             memcpy(rleData, rleHeader, 64);
 
             // store RLE stripe sets in compressed frame buffer

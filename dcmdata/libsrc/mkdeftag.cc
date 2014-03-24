@@ -56,8 +56,8 @@ convertToIdentifier(char* s)
     if (s == NULL) {
         return s;
     }
-    int len = strlen(s);
-    int i=0;
+    size_t len = strlen(s);
+    size_t i=0;
     unsigned char c;
 
     for (i=0; i<len; i++) {
@@ -102,7 +102,7 @@ printDefined(FILE* fout, const DcmDictEntry* e)
     fputs(tagPrefix, fout); /* write out prefix */
     fputs(buf, fout); /* write out rest of name */
 
-    int n = 48 - (strlen(tagPrefix) + strlen(buf));
+    intptr_t n = 48 - (strlen(tagPrefix) + strlen(buf));
     for (i=0; i<n; i++) {
             putc(' ', fout);
     }

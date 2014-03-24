@@ -126,7 +126,7 @@ DcmPolymorphOBOW::createUint8Array(
 {
     currentVR = EVR_OB;
     setTagVR(EVR_OB);
-    errorFlag = createEmptyValue(sizeof(Uint8) * Uint32(numBytes));
+    errorFlag = createEmptyValue(OFstatic_cast(Uint32, sizeof(Uint8) * OFstatic_cast(size_t, numBytes)));
     setByteOrder(gLocalByteOrder);
     if (EC_Normal == errorFlag)
         bytes = OFstatic_cast(Uint8 *, this->getValue());
@@ -143,7 +143,7 @@ DcmPolymorphOBOW::createUint16Array(
 {
     currentVR = EVR_OW;
     setTagVR(EVR_OW);
-    errorFlag = createEmptyValue(sizeof(Uint16) * Uint32(numWords));
+    errorFlag = createEmptyValue(OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
     setByteOrder(gLocalByteOrder);
     if (EC_Normal == errorFlag)
         words = OFstatic_cast(Uint16 *, this->getValue());
@@ -164,7 +164,7 @@ DcmPolymorphOBOW::putUint8Array(
     {
         if (byteValue)
         {
-            errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
+            errorFlag = putValue(byteValue, OFstatic_cast(Uint32, sizeof(Uint8) * OFstatic_cast(size_t, numBytes)));
             if (errorFlag == EC_Normal)
             {
                 if (getTag().getEVR() == EVR_OW && getByteOrder() == EBO_BigEndian)
@@ -194,7 +194,7 @@ DcmPolymorphOBOW::putUint16Array(
     {
         if (wordValue)
         {
-            errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
+            errorFlag = putValue(wordValue, OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
             if (errorFlag == EC_Normal &&
                 getTag().getEVR() == EVR_OB && getByteOrder() == EBO_BigEndian)
             {

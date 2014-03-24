@@ -129,7 +129,7 @@ static const DcmVREntry DcmVRDict[] = {
 
 };
 
-static const int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
+static const int DcmVRDict_DIM = OFstatic_cast(int, sizeof(DcmVRDict) / sizeof(DcmVREntry));
 
 
 /*

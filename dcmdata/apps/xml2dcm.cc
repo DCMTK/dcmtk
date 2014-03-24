@@ -60,7 +60,10 @@ static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
 // This function is also used in dcmsr, try to stay in sync!
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
 {
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
+    // Classic C requires us to declare variables at the beginning of the function.
     OFString &buffer = *OFstatic_cast(OFString*, ctx);
+#endif
 
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         return;
@@ -109,12 +112,6 @@ extern "C" void errorFunction(void * ctx, const char *msg, ...)
 #else
     // We can only show the most basic part of the message, this will look bad :(
     printf("%s", msg);
-#endif
-
-#ifndef HAVE_VSNPRINTF
-    // Only the vsnprintf() branch above uses 'buffer' which means the compiler
-    // would warn about an unused variable if HAVE_VSNPRINTF is undefined.
-    buffer += "";
 #endif
 }
 
@@ -178,7 +175,7 @@ static OFCondition createNewElement(xmlNodePtr current,
         unsigned int elem = 0xffff;
         if (sscanf(OFreinterpret_cast(char *, elemTag), "%x,%x", &group, &elem ) == 2)
         {
-            dcmTagKey.set(group, elem);
+            dcmTagKey.set(OFstatic_cast(Uint16, group), OFstatic_cast(Uint16, elem));
             DcmTag dcmTag(dcmTagKey);
             /* convert vr string */
             DcmVR dcmVR(OFreinterpret_cast(char *, elemVR));
@@ -244,7 +241,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                 if (dcmEVR == EVR_OW)
                 {
                     /* Base64 decoder produces big endian output data, convert to local byte order */
-                    swapIfNecessary(gLocalByteOrder, EBO_BigEndian, data, length, sizeof(Uint16));
+                    swapIfNecessary(gLocalByteOrder, EBO_BigEndian, data, OFstatic_cast(Uint32, length), sizeof(Uint16));
                 }
                 result = element->putUint8Array(data, length);
                 /* delete buffer since data is copied into the element */
@@ -272,10 +269,10 @@ static OFCondition putElementContent(xmlNodePtr current,
                     if (dcmEVR == EVR_OW)
                     {
                         Uint16 *buf16 = NULL;
-                        result = element->createUint16Array(buflen / 2, buf16);
+                        result = element->createUint16Array(OFstatic_cast(Uint32, buflen / 2), buf16);
                         buf = OFreinterpret_cast(Uint8 *, buf16);
                     } else
-                        result = element->createUint8Array(buflen, buf);
+                        result = element->createUint8Array(OFstatic_cast(Uint32, buflen), buf);
                     if (result.good())
                     {
                         /* read binary file into the buffer */
@@ -290,7 +287,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                         else if (dcmEVR == EVR_OW)
                         {
                             /* swap 16 bit OW data (if necessary) */
-                            swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
+                            swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, OFstatic_cast(Uint32, buflen), sizeof(Uint16));
                         }
                     }
                     fclose(f);

@@ -31,6 +31,18 @@
 
 OFGlobal<OFBool> dcmZlibExpectRFC1950Encoding(OFFalse);
 
+// helper methods to fix old-style casts warnings
+BEGIN_EXTERN_C
+static int OFinflateInit(z_stream* const stream)
+{
+  return inflateInit(stream);
+}
+
+static int OFinflateInit2(z_stream* const stream)
+{
+  return inflateInit2(stream, -MAX_WBITS);
+}
+END_EXTERN_C
 
 DcmZLibInputFilter::DcmZLibInputFilter()
 : DcmInputFilter()
@@ -60,7 +72,8 @@ DcmZLibInputFilter::DcmZLibInputFilter()
       /* expect non-standard bitstream *with* zlib header
        * This is easy because it is the normal zlib format anyway.
        */
-      if (Z_OK == inflateInit(zstream_)) status_ = EC_Normal;
+      if (Z_OK == OFinflateInit(zstream_))
+        status_ = EC_Normal;
       else
       {
         OFString etext = "ZLib Error: ";
@@ -75,7 +88,8 @@ DcmZLibInputFilter::DcmZLibInputFilter()
        * after the compressed stream in order to complete decompression and
        * return Z_STREAM_END.
        */
-      if (Z_OK == inflateInit2(zstream_, -MAX_WBITS)) status_ = EC_Normal;
+      if (Z_OK == OFinflateInit2(zstream_))
+        status_ = EC_Normal;
       else
       {
         OFString etext = "ZLib Error: ";

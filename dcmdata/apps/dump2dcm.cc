@@ -157,12 +157,8 @@ stripWhitespace(char *s)
 static char *
 stripTrailingWhitespace(char *s)
 {
-    int i, n;
     if (s == NULL) return s;
-
-    n = strlen(s);
-    for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
-        s[i] = '\0';
+    for (size_t i = strlen(s); i > 0 && isspace(TO_UCHAR(s[--i])); s[i] = '\0');
     return s;
 }
 
@@ -182,13 +178,9 @@ stripPrecedingWhitespace(char *s)
 static OFBool
 onlyWhitespace(const char *s)
 {
-    int len = strlen(s);
-    int charsFound = OFFalse;
-
-    for (int i = 0; (!charsFound) && (i < len); i++) {
-        charsFound = !isspace(TO_UCHAR(s[i]));
-    }
-    return (!charsFound) ? OFTrue : OFFalse;
+    while(*s) if (!isspace(TO_UCHAR(*s++)))
+        return OFFalse;
+    return OFTrue;
 }
 
 static char *
@@ -216,14 +208,9 @@ getLine(char *line, int maxLineLen, FILE *f, const unsigned long lineNumber)
 static OFBool
 isaCommentLine(const char *s)
 {
-    OFBool isComment = OFFalse; /* assumption */
-    int len = strlen(s);
-    int i = 0;
     // skip leading spaces
-    for (i = 0; i < len && isspace(TO_UCHAR(s[i])); i++) /* loop with empty body */;
-    // check for comment character
-    isComment = (s[i] == DCM_DumpCommentChar);
-    return isComment;
+    while(isspace(TO_UCHAR(*s))) ++s;
+    return *s == DCM_DumpCommentChar;
 }
 
 static OFBool
@@ -238,14 +225,14 @@ parseTag(char *&s, DcmTagKey &key)
     if (p)
     {
         // string all white spaces and read tag
-        int len = p - s + 1;
+        size_t len = p - s + 1;
         p = new char[len + 1];
         OFStandard::strlcpy(p, s, len + 1);
         stripWhitespace(p);
         s += len;
 
         if (sscanf(p, "(%x,%x)", &g, &e) == 2)
-            key.set(g, e);
+            key.set(OFstatic_cast(Uint16, g), OFstatic_cast(Uint16, e));
         else
             ok = OFFalse;
         delete[] p;
@@ -294,7 +281,7 @@ parseVR(char *&s, DcmEVR &vr)
 #undef TO_UCHAR
 
 
-static int
+static size_t
 searchLastClose(char *s, const char closeChar)
 {
     // search last close bracket in a line
@@ -320,7 +307,7 @@ searchLastClose(char *s, const char closeChar)
 }
 
 
-static int
+static size_t
 searchCommentOrEol(char *s)
 {
     char *comment = strchr(s, DCM_DumpCommentChar);
@@ -337,19 +324,11 @@ static char *
 convertNewlineCharacters(char *s)
 {
     // convert the string "\n" into the \r\n combination required by DICOM
-    if (s == NULL || s[0] == '\0') return s;
-    int len = strlen(s);
-    int i = 0;
-    for (i = 0; i < (len - 1); i++)
+    if (s) for (; *s; ++s) if (*s == '\\' && *(s+1) == 'n')
     {
-        if (s[i] == '\\' && s[i + 1] == 'n')
-        {
-            s[i] = '\r';
-            s[i + 1] = '\n';
-            i++;
-        }
+        *s = '\r';
+        *++s = '\n';
     }
-
     return s;
 }
 
@@ -357,7 +336,7 @@ static OFBool
 parseValue(char *&s, char *&value, DcmEVR &vr, const DcmTagKey &tagkey)
 {
     OFBool ok = OFTrue;
-    int len;
+    size_t len;
     value = NULL;
 
     s = stripPrecedingWhitespace(s);
@@ -456,7 +435,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
     }
 
     const size_t len = OFStandard::getFileSize(filename);
-    unsigned long buflen = len;
+    size_t buflen = len;
     if (buflen & 1)
         buflen++; /* if odd then make even (DICOM requires even length values) */
 
@@ -464,18 +443,18 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
     const DcmEVR evr = elem->getVR();
     /* create buffer of OB or OW data */
     if (evr == EVR_OB || evr == EVR_pixelItem)
-        ec = elem->createUint8Array(buflen, buf);
+        ec = elem->createUint8Array(OFstatic_cast(Uint32, buflen), buf);
     else if (evr == EVR_OW)
     {
         Uint16 *buf16 = NULL;
-        ec = elem->createUint16Array(buflen / 2, buf16);
+        ec = elem->createUint16Array(OFstatic_cast(Uint32, buflen / 2), buf16);
         buf = OFreinterpret_cast(Uint8 *, buf16);
     } else
         ec = EC_IllegalCall;
     if (ec.good())
     {
         /* read binary file into the buffer */
-        if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len)
+        if (fread(buf, 1, len, f) != len)
         {
             char errBuf[256];
             OFLOG_ERROR(dump2dcmLogger, "error reading binary data file: " << filename
@@ -485,7 +464,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         else if (evr == EVR_OW)
         {
             /* swap 16 bit OW data (if necessary) */
-            swapIfNecessary(gLocalByteOrder, opt_fileContentsByteOrdering, buf, buflen, sizeof(Uint16));
+            swapIfNecessary(gLocalByteOrder, opt_fileContentsByteOrdering, buf, OFstatic_cast(Uint32, buflen), sizeof(Uint16));
         }
     }
     else if (ec == EC_MemoryExhausted)

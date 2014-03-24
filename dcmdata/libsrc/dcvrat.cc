@@ -254,7 +254,7 @@ OFCondition DcmAttributeTag::putTagVal(const DcmTagKey &tagVal,
     uintVals[0] = tagVal.getGroup();
     uintVals[1] = tagVal.getElement();
     /* change element value */
-    errorFlag = changeValue(uintVals, 2 * sizeof(Uint16) * OFstatic_cast(Uint32, pos), 2 * sizeof(Uint16));
+    errorFlag = changeValue(uintVals, OFstatic_cast(Uint32, 2 * sizeof(Uint16) * OFstatic_cast(size_t, pos)), 2 * OFstatic_cast(Uint32, sizeof(Uint16)));
     return errorFlag;
 }
 
@@ -267,7 +267,7 @@ OFCondition DcmAttributeTag::putUint16Array(const Uint16 *uintVals,
     {
         /* check for valid data */
         if (uintVals != NULL)
-            errorFlag = putValue(uintVals, 2 * sizeof(Uint16) * Uint32(numUints));
+            errorFlag = putValue(uintVals, OFstatic_cast(Uint32, 2 * sizeof(Uint16) * OFstatic_cast(size_t, numUints)));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -282,9 +282,9 @@ OFCondition DcmAttributeTag::putUint16Array(const Uint16 *uintVals,
 OFCondition DcmAttributeTag::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -330,7 +330,7 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
         if (autocorrect)
         {
             /* strip to valid length */
-            setLengthField(getLengthField() - (getLengthField() % (2* sizeof(Uint16))));
+            setLengthField(getLengthField() - (getLengthField() % (2* OFstatic_cast(Uint32, sizeof(Uint16)))));
         }
     } else
         errorFlag = EC_Normal;

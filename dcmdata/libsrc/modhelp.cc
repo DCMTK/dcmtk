@@ -273,79 +273,75 @@ void DcmModuleHelpers::copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& 
   }
 }
 
+template<size_t N>
+inline void DcmModuleHelpers::copyModule( const DcmTagKey (&tags)[N], DcmItem& src, DcmItem& dest )
+{
+  for (const DcmTagKey* it = tags, * const end = tags + N; it != end; ++it)
+    DcmModuleHelpers::copyElement(*it, src, dest);
+}
+
 
 void DcmModuleHelpers::copyPatientModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(patientModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(patientModuleTags[i], src, dest);
+  copyModule(patientModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyClinicalTrialSubjectModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(clinicalTrialSubjectModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(clinicalTrialSubjectModuleTags[i], src, dest);
+  copyModule(clinicalTrialSubjectModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyGeneralStudyModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(generalStudyModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(generalStudyModuleTags[i], src, dest);
+  copyModule(generalStudyModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyPatientStudyModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(patientStudyModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(patientStudyModuleTags[i], src, dest);
+  copyModule(patientStudyModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyClinicalTrialStudyModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(clinicalTrialStudyModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(clinicalTrialStudyModuleTags[i], src, dest);
+  copyModule(clinicalTrialStudyModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyGeneralSeriesModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(generalSeriesModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(generalSeriesModuleTags[i], src, dest);
+  copyModule(generalSeriesModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyClinicalTrialSeriesModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(clinicalTrialSeriesModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(clinicalTrialSeriesModuleTags[i], src, dest);
+  copyModule(clinicalTrialSeriesModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyGeneralEquipmentModule(DcmItem& src, DcmItem& dest)
 {
-  for(int i = 0; i < sizeof(generalEquipmentModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(generalEquipmentModuleTags[i], src, dest);
+  copyModule(generalEquipmentModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyFrameOfReferenceModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(frameOfReferenceModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(frameOfReferenceModuleTags[i], src, dest);
+  copyModule(frameOfReferenceModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copySOPCommonModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(sopCommonModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(sopCommonModuleTags[i], src, dest);
+  copyModule(sopCommonModuleTags, src, dest);
 }
 
 
 void DcmModuleHelpers::copyGeneralImageModule(DcmItem& src, DcmItem& dest)
 {
-  for (int i = 0; i < sizeof(generalImageModuleTags) / sizeof(DcmTagKey); i++)
-    DcmModuleHelpers::copyElement(generalImageModuleTags[i], src, dest);
+  copyModule(generalImageModuleTags, src, dest);
 }

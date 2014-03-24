@@ -230,7 +230,7 @@ OFCondition DcmCodec::determineStartFragment(
   DcmPixelSequence * fromPixSeq,
   Uint32& currentItem)
 {
-  Uint32 numberOfFragments = fromPixSeq->card();
+  Uint32 numberOfFragments = OFstatic_cast(Uint32, fromPixSeq->card());
   if (numberOfFrames < 1 || numberOfFragments <= OFstatic_cast(Uint32, numberOfFrames) || frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
 
   if (frameNo == 0)

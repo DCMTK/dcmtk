@@ -386,7 +386,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   {
     OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Saving output DICOM to file " << outputFile);
     DcmFileFormat dcmff(resultObject);
-    cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeMode);
+    cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc,  grpLengthEnc, padEnc, OFstatic_cast(Uint32, filepad), OFstatic_cast(Uint32, itempad), writeMode);
   }
 
   // Cleanup and return

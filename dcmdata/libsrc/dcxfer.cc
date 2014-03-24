@@ -422,7 +422,7 @@ const S_XferNames XferNames[] =
     // enter further transfer syntaxes here ...
 };
 
-const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
+const int DIM_OF_XferNames = OFstatic_cast(int, sizeof(XferNames) / sizeof(S_XferNames));
 
 
 // ********************************

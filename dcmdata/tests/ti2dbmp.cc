@@ -240,80 +240,80 @@ OFTEST(dcmdata_i2d_bmp)
 #undef RED
 #undef WHITE
 
-    setDWord(BMP_IMAGE_OFFSET, sizeof(bmpHeader));
+    setDWord(BMP_IMAGE_OFFSET, OFstatic_cast(int, sizeof(bmpHeader)));
 
     TEST("Trying to read a 0x0 image");
     setDWord(BMP_WIDTH, 0);
     setDWord(BMP_HEIGHT, 0);
-    EXPECT_FAIL(canHandleImage(pixelData1, sizeof(pixelData1)));
+    EXPECT_FAIL(canHandleImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1))));
     setDWord(BMP_WIDTH, 1);
     setDWord(BMP_HEIGHT, 2);
 
     TEST("Checking large bpp values");
     bmpHeader[BMP_BPP    ] = 0;
     bmpHeader[BMP_BPP + 1] = 0xef;
-    EXPECT_FAIL(canHandleImage(pixelData1, sizeof(pixelData1)));
+    EXPECT_FAIL(canHandleImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1))));
     bmpHeader[BMP_BPP    ] = 32;
     bmpHeader[BMP_BPP + 1] = 0;
 
     TEST("Checking large number of colors");
     setDWord(BMP_COLORS, 1 << 31);
-    EXPECT_FAIL(canHandleImage(pixelData1, sizeof(pixelData1)));
+    EXPECT_FAIL(canHandleImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1))));
     setDWord(BMP_COLORS, 5);
 
     TEST("Checking premature end of file");
-    EXPECT_FAIL(canHandleImage(pixelData1, sizeof(pixelData1) - 1));
+    EXPECT_FAIL(canHandleImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1)) - 1));
 
     TEST("Decoding a 32bpp image");
-    EXPECT_SUCCESS(compareImage(pixelData1, sizeof(pixelData1), expected1a, sizeof(expected1a), 1, 2));
+    EXPECT_SUCCESS(compareImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1)), expected1a, OFstatic_cast(Uint32, sizeof(expected1a)), 1, 2));
 
     TEST("Decoding a 24bpp image");
     // Because rows are aligned to 4-bytes boundaries, this can use the
     // same pixel data as the 32bpp image
     bmpHeader[BMP_BPP] = 24;
-    EXPECT_SUCCESS(compareImage(pixelData1, sizeof(pixelData1), expected1a, sizeof(expected1a), 1, 2));
+    EXPECT_SUCCESS(compareImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1)), expected1a, OFstatic_cast(Uint32, sizeof(expected1a)), 1, 2));
 
     TEST("Decoding a 24bpp top-down image");
     setDWord(BMP_HEIGHT, -2);
-    EXPECT_SUCCESS(compareImage(pixelData1, sizeof(pixelData1), expected1b, sizeof(expected1b), 1, 2));
+    EXPECT_SUCCESS(compareImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1)), expected1b, OFstatic_cast(Uint32, sizeof(expected1b)), 1, 2));
 
     TEST("Checking correct handling of row alignment");
     setDWord(BMP_WIDTH, 2);
     setDWord(BMP_HEIGHT, 1);
-    EXPECT_SUCCESS(compareImage(pixelData1, sizeof(pixelData1), expected1c, sizeof(expected1c), 2, 1));
+    EXPECT_SUCCESS(compareImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1)), expected1c, OFstatic_cast(Uint32, sizeof(expected1c)), 2, 1));
 
     TEST("Decoding a 16bpp image");
     bmpHeader[BMP_BPP] = 16;
     setDWord(BMP_WIDTH, 2);
     setDWord(BMP_HEIGHT, 2);
-    EXPECT_SUCCESS(compareImage(pixelData1, sizeof(pixelData1), expected1d, sizeof(expected1d), 2, 2));
+    EXPECT_SUCCESS(compareImage(pixelData1, OFstatic_cast(Uint32, sizeof(pixelData1)), expected1d, OFstatic_cast(Uint32, sizeof(expected1d)), 2, 2));
 
     // Everything starting from 8bpp uses color tables!
     TEST("Decoding a 8bpp top-down image");
     setDWord(BMP_WIDTH, 3);
     setDWord(BMP_HEIGHT, -2);
     bmpHeader[BMP_BPP] = 8;
-    EXPECT_SUCCESS(compareImage(pixelData2, sizeof(pixelData2), expected2, sizeof(expected2), 3, 2));
+    EXPECT_SUCCESS(compareImage(pixelData2, OFstatic_cast(Uint32, sizeof(pixelData2)), expected2, OFstatic_cast(Uint32, sizeof(expected2)), 3, 2));
 
     TEST("Decoding a 4bpp image");
     bmpHeader[BMP_BPP] = 4;
     setDWord(BMP_WIDTH, 2);
     setDWord(BMP_HEIGHT, 2);
-    EXPECT_SUCCESS(compareImage(pixelData3, sizeof(pixelData3), expected3, sizeof(expected3), 2, 2));
+    EXPECT_SUCCESS(compareImage(pixelData3, OFstatic_cast(Uint32, sizeof(pixelData3)), expected3, OFstatic_cast(Uint32, sizeof(expected3)), 2, 2));
 
     TEST("Decoding a 1bpp image");
     bmpHeader[BMP_BPP] = 1;
     setDWord(BMP_WIDTH, 3);
     setDWord(BMP_HEIGHT, 2);
-    EXPECT_SUCCESS(compareImage(pixelData4, sizeof(pixelData4), expected4, sizeof(expected4), 3, 2));
+    EXPECT_SUCCESS(compareImage(pixelData4, OFstatic_cast(Uint32, sizeof(pixelData4)), expected4, OFstatic_cast(Uint32, sizeof(expected4)), 3, 2));
 
     TEST("Decoding an image with too large color table");
     setDWord(BMP_COLORS, -1);
-    EXPECT_FAIL(canHandleImage(pixelData4, sizeof(pixelData4)));
+    EXPECT_FAIL(canHandleImage(pixelData4, OFstatic_cast(Uint32, sizeof(pixelData4))));
 
     TEST("Decoding an image with too small color table");
     setDWord(BMP_COLORS, 1);
-    EXPECT_FAIL(canHandleImage(pixelData4, sizeof(pixelData4)));
+    EXPECT_FAIL(canHandleImage(pixelData4, OFstatic_cast(Uint32, sizeof(pixelData4))));
 
     /* Remove our temporary file */
     unlink(temporaryFile);

@@ -142,7 +142,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     unsigned int group=0;
     unsigned int elem=0;
     if (2 != sscanf(c+spos,"%x,%x", &group, &elem)) return 0; // parse error
-    key = DcmTagKey(group,elem);
+    key = DcmTagKey(OFstatic_cast(Uint16, group),OFstatic_cast(Uint16, elem));
     pos = ++lpos;
     return 1; // tag key
   }
@@ -253,7 +253,7 @@ static OFCondition splitTagPath(OFString &tag_path,
 {
     OFString target_tag;
     unsigned int group,elem;
-    int lpos,rpos;
+    size_t lpos,rpos;
     rpos=tag_path.size()-1;
     lpos=rpos;
     if (tag_path[rpos]==')')
@@ -273,7 +273,7 @@ static OFCondition splitTagPath(OFString &tag_path,
         // parse target_tag into DcmTagKey
         if (2 != sscanf(target_tag.c_str(),"(%x,%x)", &group, &elem))
             return makeOFCondition(OFM_dcmdata,22,OF_error,"Invalid target tag!");
-        key = DcmTagKey(group,elem);
+        key = DcmTagKey(OFstatic_cast(Uint16, group),OFstatic_cast(Uint16, elem));
     }
     else
     // otherwise we could have a dictionary name
@@ -442,7 +442,7 @@ OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
           if (fileLen & 1)
               return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify value with odd length from file!");
           // read element value from binary file (requires even length)
-          result = elem->createValueFromTempFile(fileStream.newFactory(), fileLen, EBO_LittleEndian);
+          result = elem->createValueFromTempFile(fileStream.newFactory(), OFstatic_cast(Uint32, fileLen), EBO_LittleEndian);
       }
       if (result.bad()) return result;
       if (update_metaheader)

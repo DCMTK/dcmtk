@@ -87,7 +87,7 @@ OFCondition DcmUnsignedLong::checkValue(const OFString &vm,
 
 unsigned long DcmUnsignedLong::getVM()
 {
-    return getLengthField() / sizeof(Uint32);
+    return OFstatic_cast(unsigned long, getLengthField() / sizeof(Uint32));
 }
 
 
@@ -130,7 +130,7 @@ void DcmUnsignedLong::print(STD_NAMESPACE ostream&out,
                     sprintf(buffer, "\\%lu", *uintVals);
 #endif
                 /* check whether current value sticks to the length limit */
-                newLength = printedLength + strlen(buffer);
+                newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
                 if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
                 {
                     out << buffer;
@@ -216,7 +216,7 @@ OFCondition DcmUnsignedLong::putUint32(const Uint32 uintVal,
                                        const unsigned long pos)
 {
     Uint32 val = uintVal;
-    errorFlag = changeValue(&val, sizeof(Uint32) * pos, sizeof(Uint32));
+    errorFlag = changeValue(&val, OFstatic_cast(Uint32, sizeof(Uint32) * pos), OFstatic_cast(Uint32, sizeof(Uint32)));
     return errorFlag;
 }
 
@@ -229,7 +229,7 @@ OFCondition DcmUnsignedLong::putUint32Array(const Uint32 *uintVals,
     {
         /* check for valid data */
         if (uintVals != NULL)
-            errorFlag = putValue(uintVals, sizeof(Uint32) * OFstatic_cast(Uint32, numUints));
+            errorFlag = putValue(uintVals, OFstatic_cast(Uint32, sizeof(Uint32) * OFstatic_cast(size_t, numUints)));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -244,9 +244,9 @@ OFCondition DcmUnsignedLong::putUint32Array(const Uint32 *uintVals,
 OFCondition DcmUnsignedLong::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -300,7 +300,7 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
         if (autocorrect)
         {
             /* strip to valid length */
-            setLengthField(getLengthField() - (getLengthField() % (sizeof(Uint32))));
+            setLengthField(getLengthField() - (getLengthField() % OFstatic_cast(Uint32, sizeof(Uint32))));
         }
     } else
         errorFlag = EC_Normal;

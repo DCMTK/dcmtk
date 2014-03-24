@@ -135,7 +135,7 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
             if (getFloat64Array(floatValues).good() && (floatValues != NULL))
             {
                 /* increase default precision - see DcmFloatingPointDouble::print() */
-                const int oldPrecision = out.precision(17);
+                const STD_NAMESPACE streamsize oldPrecision = out.precision(17);
                 /* we cannot use getVM() since it always returns 1 */
                 const size_t count = getLengthField() / sizeof(Float64);
                 /* print float values with separators */

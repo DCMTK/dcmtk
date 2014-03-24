@@ -2567,7 +2567,7 @@ OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Uint8);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Uint8));
         else
             *count = 0;
     }
@@ -2617,7 +2617,7 @@ OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Uint16);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Uint16));
         else
             *count = 0;
     }
@@ -2667,7 +2667,7 @@ OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Sint16);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Sint16));
         else
             *count = 0;
     }
@@ -2717,7 +2717,7 @@ OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Uint32);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Uint32));
         else
             *count = 0;
     }
@@ -2767,7 +2767,7 @@ OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Sint32);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Sint32));
         else
             *count = 0;
     }
@@ -2866,7 +2866,7 @@ OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Float32);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Float32));
         else
             *count = 0;
     }
@@ -2916,7 +2916,7 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / sizeof(Float64);
+            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Float64));
         else
             *count = 0;
     }

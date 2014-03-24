@@ -110,7 +110,7 @@ OFCondition DcmRLECodecDecoder::decode(
     }
 
     if (imageFrames >= OFstatic_cast(Sint32, pixSeq->card()))
-      imageFrames = pixSeq->card() - 1; // limit number of frames to number of pixel items - 1
+      imageFrames = OFstatic_cast(Sint32, pixSeq->card()) - 1; // limit number of frames to number of pixel items - 1
     if (imageFrames < 1)
       imageFrames = 1; // default in case the number of frames attribute is absent or contains garbage
 
@@ -124,8 +124,8 @@ OFCondition DcmRLECodecDecoder::decode(
       if (rledecoder.fail()) result = EC_MemoryExhausted;  // RLE decoder failed to initialize
       else
       {
-        Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
-        Uint32 totalSize = frameSize * imageFrames;
+        size_t frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+        size_t totalSize = frameSize * imageFrames;
         if (totalSize & 1) totalSize++; // align on 16-bit word boundary
         Uint16 *imageData16 = NULL;
         Sint32 currentFrame = 0;
@@ -134,7 +134,7 @@ OFCondition DcmRLECodecDecoder::decode(
         Uint32 fragmentLength = 0;
         Uint32 i;
 
-        result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), imageData16);
+        result = uncompressedPixelData.createUint16Array(OFstatic_cast(Uint32, totalSize/sizeof(Uint16)), imageData16);
         if (result.good())
         {
           Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, imageData16);
@@ -161,7 +161,7 @@ OFCondition DcmRLECodecDecoder::decode(
             {
               // copy RLE header to buffer and adjust byte order
               memcpy(rleHeader, rleData, 64);
-              swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rleHeader, 16*sizeof(Uint32), sizeof(Uint32));
+              swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rleHeader, 16*OFstatic_cast(Uint32, sizeof(Uint32)), sizeof(Uint32));
 
               // determine number of stripes.
               numberOfStripes = rleHeader[0];
@@ -369,7 +369,7 @@ OFCondition DcmRLECodecDecoder::decode(
           } /* while still frames to process */
 
           // adjust byte order for uncompressed image to little endian
-          swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, totalSize, sizeof(Uint16));
+          swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, OFstatic_cast(Uint32, totalSize), sizeof(Uint16));
 
           // Number of Frames might have changed in case the previous value was wrong
           if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
@@ -490,7 +490,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
     // copy RLE header to buffer and adjust byte order
     memcpy(rleHeader, rleData, 64);
-    swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rleHeader, 16*sizeof(Uint32), sizeof(Uint32));
+    swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rleHeader, OFstatic_cast(Uint32, 16*sizeof(Uint32)), sizeof(Uint32));
 
     // determine number of stripes.
     numberOfStripes = rleHeader[0];
@@ -624,7 +624,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
         }
         // and fill the remainder of the image with copies of the last decoded pixel
         const Uint8 lastPixelValue = *(outputBuffer - 1);
-        for (pixel = decoderSize; pixel < bytesPerStripe; ++pixel)
+        for (pixel = OFstatic_cast(Uint32, decoderSize); pixel < bytesPerStripe; ++pixel)
         {
             *pixelPointer = lastPixelValue;
             pixelPointer += offsetBetweenSamples;

@@ -87,7 +87,7 @@ OFCondition DcmSignedShort::checkValue(const OFString &vm,
 
 unsigned long DcmSignedShort::getVM()
 {
-    return getLengthField() / sizeof(Sint16);
+    return getLengthField() / OFstatic_cast(unsigned long, sizeof(Sint16));
 }
 
 
@@ -124,7 +124,7 @@ void DcmSignedShort::print(STD_NAMESPACE ostream&out,
                 else
                     sprintf(buffer, "\\%hd", *sintVals);
                 /* check whether current value sticks to the length limit */
-                newLength = printedLength + strlen(buffer);
+                newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
                 if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
                 {
                     out << buffer;
@@ -210,7 +210,7 @@ OFCondition DcmSignedShort::putSint16(const Sint16 sintVal,
                                       const unsigned long pos)
 {
     Sint16 val = sintVal;
-    errorFlag = changeValue(&val, sizeof(Sint16) * pos, sizeof(Sint16));
+    errorFlag = changeValue(&val, OFstatic_cast(Uint32, sizeof(Sint16) * pos), OFstatic_cast(Uint32, sizeof(Sint16)));
     return errorFlag;
 }
 
@@ -223,7 +223,7 @@ OFCondition DcmSignedShort::putSint16Array(const Sint16 *sintVals,
     {
         /* check for valid data */
         if (sintVals != NULL)
-            errorFlag = putValue(sintVals, sizeof(Sint16) * OFstatic_cast(Uint32, numSints));
+            errorFlag = putValue(sintVals, OFstatic_cast(Uint32, sizeof(Sint16) * OFstatic_cast(size_t, numSints)));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -238,9 +238,9 @@ OFCondition DcmSignedShort::putSint16Array(const Sint16 *sintVals,
 OFCondition DcmSignedShort::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -286,7 +286,7 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
         if (autocorrect)
         {
             /* strip to valid length */
-            setLengthField(getLengthField() - (getLengthField() % (sizeof(Sint16))));
+            setLengthField(getLengthField() - (getLengthField() % OFstatic_cast(Uint32, sizeof(Sint16))));
         }
     } else
         errorFlag = EC_Normal;

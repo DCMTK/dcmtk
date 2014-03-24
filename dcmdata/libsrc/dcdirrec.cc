@@ -104,7 +104,7 @@ static const char *DRTypeNames[] =
     "SURFACE SCAN"
 };
 
-static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
+static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames) / sizeof(DRTypeNames[0])));
 
 
 // ********************************
@@ -597,10 +597,10 @@ static void hostToDicomFilename(char *fname)
     ** Eliminate any invalid characters.
     ** Most commonly there is a '.' at the end of a filename.
     */
-    int len = strlen(fname);
+    size_t len = strlen(fname);
     int k = 0;
     unsigned char c = '\0';
-    for (int i = 0; i < len; i++)
+    for (size_t i = 0; i < len; ++i)
     {
         c = OFstatic_cast(unsigned char, fname[i]);
         /* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */

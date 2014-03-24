@@ -89,7 +89,7 @@ OFCondition DcmFloatingPointDouble::checkValue(const OFString &vm,
 
 unsigned long DcmFloatingPointDouble::getVM()
 {
-    return getLengthField() / sizeof(Float64);
+    return getLengthField() / OFstatic_cast(unsigned long, sizeof(Float64));
 }
 
 
@@ -129,7 +129,7 @@ void DcmFloatingPointDouble::print(STD_NAMESPACE ostream&out,
                     OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *doubleVals, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
                 }
                 /* check whether current value sticks to the length limit */
-                newLength = printedLength + strlen(buffer);
+                newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
                 if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
                 {
                     out << buffer;
@@ -215,7 +215,7 @@ OFCondition DcmFloatingPointDouble::putFloat64(const Float64 doubleVal,
                                                const unsigned long pos)
 {
     Float64 val = doubleVal;
-    errorFlag = changeValue(&val, sizeof(Float64) * pos, sizeof(Float64));
+    errorFlag = changeValue(&val, OFstatic_cast(Uint32, sizeof(Float64) * pos), OFstatic_cast(Uint32, sizeof(Float64)));
     return errorFlag;
 }
 
@@ -228,7 +228,7 @@ OFCondition DcmFloatingPointDouble::putFloat64Array(const Float64 *doubleVals,
     {
         /* check for valid data */
         if (doubleVals != NULL)
-            errorFlag = putValue(doubleVals, sizeof(Float64) * OFstatic_cast(Uint32, numDoubles));
+            errorFlag = putValue(doubleVals, OFstatic_cast(Uint32, sizeof(Float64) * OFstatic_cast(size_t, numDoubles)));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -244,9 +244,9 @@ OFCondition DcmFloatingPointDouble::putFloat64Array(const Float64 *doubleVals,
 OFCondition DcmFloatingPointDouble::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -298,7 +298,7 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
         if (autocorrect)
         {
             /* strip to valid length */
-            setLengthField(getLengthField() - (getLengthField() % (sizeof(Float64))));
+            setLengthField(getLengthField() - (getLengthField() % OFstatic_cast(Uint32, sizeof(Float64))));
         }
     } else
         errorFlag = EC_Normal;

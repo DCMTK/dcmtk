@@ -234,7 +234,7 @@ void DcmByteString::print(STD_NAMESPACE ostream& out,
                     outString.assign(stringVal, outStrLen);
             }
 
-            unsigned long printedLength = outString.length() + 2 /* for enclosing brackets */;
+            size_t printedLength = outString.length() + 2 /* for enclosing brackets */;
 
             /* check whether full value text should be printed */
             if ((flags & DCMTypes::PF_shortenLongTagValues) && (printedLength > DCM_OptPrintLineLength))
@@ -247,7 +247,7 @@ void DcmByteString::print(STD_NAMESPACE ostream& out,
                 out << outString << ']';
 
             /* print line end with length, VM and tag name */
-            printInfoLineEnd(out, flags, printedLength);
+            printInfoLineEnd(out, flags, OFstatic_cast(unsigned long, printedLength));
         } else
             printInfoLine(out, flags, level, "(no value available)");
     } else
@@ -384,9 +384,9 @@ OFCondition DcmByteString::getString(char *&stringVal,
 OFCondition DcmByteString::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 

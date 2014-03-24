@@ -166,9 +166,9 @@ OFCondition DcmUniqueIdentifier::getOFString(OFString &stringVal,
 OFCondition DcmUniqueIdentifier::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -181,7 +181,7 @@ OFCondition DcmUniqueIdentifier::putString(const char *stringVal,
     if ((stringVal != NULL) && (stringVal[0] == '='))
     {
         uid = dcmFindUIDFromName(stringVal + 1);
-        uidLen = (uid != NULL) ? strlen(uid) : 0;
+        uidLen = (uid != NULL) ? OFstatic_cast(Uint32, strlen(uid)) : 0;
     }
     /* call inherited method to set the UID string */
     return DcmByteString::putString(uid, uidLen);
@@ -223,7 +223,7 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
                     DCMDATA_WARN("DcmUniqueIdentifier: Element " << getTagName() << " " << getTag()
                         << " contains one or more space characters, which were removed");
                     /* remember new length */
-                    const Uint32 newLen = curPos;
+                    const Uint32 newLen = OFstatic_cast(Uint32, curPos);
                     /* blank out all trailing characters */
                     while (curPos < len)
                         value[curPos++] = '\0';
@@ -234,7 +234,7 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
         }
     }
     /* call inherited method: re-computes the string length, etc. */
-    return DcmByteString::makeMachineByteString(len);
+    return DcmByteString::makeMachineByteString(OFstatic_cast(Uint32, len));
 }
 
 

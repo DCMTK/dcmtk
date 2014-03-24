@@ -89,7 +89,7 @@ OFCondition DcmFloatingPointSingle::checkValue(const OFString &vm,
 
 unsigned long DcmFloatingPointSingle::getVM()
 {
-    return getLengthField() / sizeof(Float32);
+    return getLengthField() / OFstatic_cast(unsigned long, sizeof(Float32));
 }
 
 
@@ -109,7 +109,7 @@ void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
         errorFlag = getFloat32Array(floatVals);
         if (floatVals != NULL)
         {
-            const unsigned long count = getLengthField() / sizeof(Float32) /* do not use getVM()! */;
+            const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Float32)) /* do not use getVM()! */;
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
                 DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1);
             unsigned long printedLength = 0;
@@ -129,7 +129,7 @@ void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
                     OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
                 }
                 /* check whether current value sticks to the length limit */
-                newLength = printedLength + strlen(buffer);
+                newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
                 if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
                 {
                     out << buffer;
@@ -215,7 +215,7 @@ OFCondition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
                                                const unsigned long pos)
 {
     Float32 val = floatVal;
-    errorFlag = changeValue(&val, sizeof(Float32) * pos, sizeof(Float32));
+    errorFlag = changeValue(&val, OFstatic_cast(Uint32, sizeof(Float32) * pos), OFstatic_cast(Uint32, sizeof(Float32)));
     return errorFlag;
 }
 
@@ -228,7 +228,7 @@ OFCondition DcmFloatingPointSingle::putFloat32Array(const Float32 *floatVals,
     {
         /* check for valid float data */
         if (floatVals != NULL)
-            errorFlag = putValue(floatVals, sizeof(Float32) * OFstatic_cast(Uint32, numFloats));
+            errorFlag = putValue(floatVals, OFstatic_cast(Uint32, sizeof(Float32) * OFstatic_cast(size_t, numFloats)));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -244,9 +244,9 @@ OFCondition DcmFloatingPointSingle::putFloat32Array(const Float32 *floatVals,
 OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
 {
     /* determine length of the string value */
-    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    const size_t stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
     /* call the real function */
-    return putString(stringVal, stringLen);
+    return putString(stringVal, OFstatic_cast(Uint32, stringLen));
 }
 
 
@@ -298,7 +298,7 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
         if (autocorrect)
         {
             /* strip to valid length */
-            setLengthField(getLengthField() - (getLengthField() % (sizeof(Float32))));
+            setLengthField(getLengthField() - (getLengthField() % OFstatic_cast(Uint32, sizeof(Float32))));
         }
     } else
         errorFlag = EC_Normal;

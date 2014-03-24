@@ -78,7 +78,7 @@ static DcmTagKey parseTagKey(const char *tagName)
     return tagKey;
   } else     /* tag name has format "gggg,eeee" */
   {
-    return DcmTagKey(group,elem);
+    return DcmTagKey(OFstatic_cast(Uint16, group),OFstatic_cast(Uint16, elem));
   }
 }
 

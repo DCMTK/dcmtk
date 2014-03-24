@@ -215,10 +215,10 @@ static OFCondition insertPDFFile(
     DcmPolymorphOBOW *elem = new DcmPolymorphOBOW(DCM_EncapsulatedDocument);
     if (elem)
     {
-      Uint32 numBytes = fileSize;
+      size_t numBytes = fileSize;
       if (numBytes & 1) ++numBytes;
       Uint8 *bytes = NULL;
-      result = elem->createUint8Array(numBytes, bytes);
+      result = elem->createUint8Array(OFstatic_cast(Uint32, numBytes), bytes);
       if (result.good())
       {
         // blank pad byte

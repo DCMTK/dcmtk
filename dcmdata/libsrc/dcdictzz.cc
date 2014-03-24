@@ -26541,7 +26541,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
 };
 
 static const int simpleBuiltinDict_count = 
-    sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry);
+    OFstatic_cast(int, sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry));
 
 
 void

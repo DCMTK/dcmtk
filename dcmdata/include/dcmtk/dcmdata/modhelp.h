@@ -23,6 +23,7 @@
 #define MODHELP_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/oftypes.h"
 
 // forward declarations
 class DcmTagKey;
@@ -36,6 +37,10 @@ class DcmItem;
 class DcmModuleHelpers {
 
   protected:
+    /// Generic copy module helper method.
+    template<size_t N>
+    static inline void copyModule(const DcmTagKey (&tags)[N],
+                                  DcmItem& src, DcmItem& dest);
 
     /// List of tags within the Patient Module
     static const DcmTagKey patientModuleTags[];

@@ -500,7 +500,7 @@ static const UIDNameMap uidNameMap[] = {
     { NULL, NULL }
 };
 
-static const int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
+static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeof(UIDNameMap));
 
 
 /** an array of const strings containing all known Storage SOP Classes
@@ -659,7 +659,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfAllDcmStorageSOPClassUIDs = (sizeof(dcmAllStorageSOPClassUIDs) / sizeof(const char*)) - 1;
+const int numberOfAllDcmStorageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmAllStorageSOPClassUIDs) / sizeof(const char*) - 1);
 
 
 /*  an array of const strings containing all storage SOP classes that
@@ -816,7 +816,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfDcmLongSCUStorageSOPClassUIDs = (sizeof(dcmLongSCUStorageSOPClassUIDs) / sizeof(const char*)) - 1;
+const int numberOfDcmLongSCUStorageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmLongSCUStorageSOPClassUIDs) / sizeof(const char*) - 1);
 
 
 /** an array of const strings containing all storage SOP classes that
@@ -902,7 +902,7 @@ const char* dcmShortSCUStorageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfDcmShortSCUStorageSOPClassUIDs = (sizeof(dcmShortSCUStorageSOPClassUIDs) / sizeof(const char*)) - 1;
+const int numberOfDcmShortSCUStorageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmShortSCUStorageSOPClassUIDs) / sizeof(const char*) - 1);
 
 
 /*
@@ -989,7 +989,7 @@ const char* dcmImageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfDcmImageSOPClassUIDs = (sizeof(dcmImageSOPClassUIDs) / sizeof(const char*)) - 1;
+const int numberOfDcmImageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmImageSOPClassUIDs) / sizeof(const char*) - 1);
 
 
 typedef struct {
@@ -1151,7 +1151,7 @@ static const DcmModalityTable modalities[] = {
     { UID_DICONDE_EddyCurrentMultiframeImageStorage,               "ECm", 512 * 512 }
 };
 
-static const int numberOfDcmModalityTableEntries = (sizeof(modalities) / sizeof(DcmModalityTable));
+static const int numberOfDcmModalityTableEntries = OFstatic_cast(int, sizeof(modalities) / sizeof(DcmModalityTable));
 
 
 /*
@@ -1545,7 +1545,7 @@ static long gethostid(void)
     /* get volume information of the system drive */
     char systemDrive[MAX_PATH];
     DWORD serialNumber = 0;
-    if (GetSystemDirectory(systemDrive, sizeof(systemDrive)) >= 0)
+    if (GetSystemDirectory(systemDrive, OFstatic_cast(UINT, sizeof(systemDrive))) >= 0)
     {
         /* check for proper pathname */
         if ((strlen(systemDrive) >= 3) && (systemDrive[1] == ':') && (systemDrive[2] == '\\'))
@@ -1557,17 +1557,17 @@ static long gethostid(void)
         }
     }
     /* concatenate the host specific elements and compute a 32-bit checksum */
-    crc.addBlock(&result /*ip address*/, sizeof(result));
+    crc.addBlock(&result /*ip address*/, OFstatic_cast(unsigned long, sizeof(result)));
 #ifndef __MINGW32__
     /* on MinGW, getMacAddress() is not yet available. */
     unsigned char buffer[6];
     crc.addBlock(getMACAddress(buffer), sizeof(buffer));
 #endif
-    crc.addBlock(&serialNumber, sizeof(serialNumber));
-    crc.addBlock(&systemInfo.wProcessorLevel, sizeof(systemInfo.wProcessorLevel));
-    crc.addBlock(&systemInfo.wProcessorRevision, sizeof(systemInfo.wProcessorRevision));
-    crc.addBlock(&systemInfo.dwProcessorType, sizeof(systemInfo.dwProcessorType));
-    result = (long)crc.getCRC32();
+    crc.addBlock(&serialNumber, OFstatic_cast(unsigned long, sizeof(serialNumber)));
+    crc.addBlock(&systemInfo.wProcessorLevel, OFstatic_cast(unsigned long, sizeof(systemInfo.wProcessorLevel)));
+    crc.addBlock(&systemInfo.wProcessorRevision, OFstatic_cast(unsigned long, sizeof(systemInfo.wProcessorRevision)));
+    crc.addBlock(&systemInfo.dwProcessorType, OFstatic_cast(unsigned long, sizeof(systemInfo.dwProcessorType)));
+    result = OFstatic_cast(long, crc.getCRC32());
 #endif
     /* 'artificial' hostid: on Windows system a CRC32 checksum over some host specific
        information (e.g. MAC address), the 4 bytes TCP/IP address otherwise.
@@ -1635,7 +1635,7 @@ initCounterOfCurrentUID()
 #else /* Unix */
     struct timeval tv;
     if (gettimeofday(&tv, NULL) == 0)
-        counterOfCurrentUID = tv.tv_usec; /* This is in the range 0 - 999999 */
+        counterOfCurrentUID = OFstatic_cast(Uint32, tv.tv_usec); /* This is in the range 0 - 999999 */
 #endif
     /* Do not ever use "0" for the counter */
     counterOfCurrentUID++;
@@ -1645,7 +1645,7 @@ initCounterOfCurrentUID()
 static char*
 stripTrailing(char* s, char c)
 {
-    int i, n;
+    size_t i, n;
 
     if (s == NULL) return s;
 
