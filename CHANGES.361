@@ -7,8 +7,7 @@ Changes between releases are documented here.
   Compiled with extensive warning options except -Wtraditional and corrected
   most of the problems. Most of the remaining warnings in dcmdata are caused by
   files included from ofstd and will be resolved in a different commit.
-  Affects: CHANGES.361
-           dcmdata/apps/dcm2xml.cc
+  Affects: dcmdata/apps/dcm2xml.cc
            dcmdata/apps/dcmconv.cc
            dcmdata/apps/dcmcrle.cc
            dcmdata/apps/dcmdump.cc
