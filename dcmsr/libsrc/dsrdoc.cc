@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -443,20 +443,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
         CodingSchemeIdentification.read(dataset);
 
-        // --- General Study Module ---
-        getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", "GeneralStudyModule");
-        getAndCheckElementFromDataset(dataset, StudyDate, "1", "2", "GeneralStudyModule");
-        getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
-        getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
-        getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
-        getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
-        getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
-
-        // --- Patient Module ---
-        getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
-        getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
-        getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
-        getAndCheckElementFromDataset(dataset, PatientSex, "1", "2", "PatientModule");
+        // --- General Study and Patient Module ---
+        readStudyData(dataset);
 
         if (requiresEnhancedEquipmentModule(documentType))
         {
@@ -562,6 +550,33 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             result = DocumentTree.read(dataset, documentType, flags);
     }
     return result;
+}
+
+
+OFCondition DSRDocument::readPatientData(DcmItem &dataset)
+{
+    // --- Patient Module ---
+    getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
+    getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
+    getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
+    getAndCheckElementFromDataset(dataset, PatientSex, "1", "2", "PatientModule");
+    /* always return success */
+    return EC_Normal;
+}
+
+
+OFCondition DSRDocument::readStudyData(DcmItem &dataset)
+{
+    // --- General Study Module ---
+    getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", "GeneralStudyModule");
+    getAndCheckElementFromDataset(dataset, StudyDate, "1", "2", "GeneralStudyModule");
+    getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
+    getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
+    getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
+    getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
+    getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
+    /* also read data from Patient Module */
+    return readPatientData(dataset);
 }
 
 

@@ -118,6 +118,24 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition read(DcmItem &dataset,
                              const size_t flags = 0);
 
+    /** read patient data from DICOM dataset.
+     *  The list of data elements that are read can be found under "Patient Module" in the
+     *  member variable section of this class.  Other data is not changed, so be careful
+     *  when using this method.
+     *  @param  dataset  reference to DICOM dataset from which the data should be read
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readPatientData(DcmItem &dataset);
+
+    /** read study data from DICOM dataset. Also reads patient data.
+     *  The list of data elements that are read can be found under "Patient Module" and
+     *  "General Study Module" in the member variable section of this class.  Other data
+     *  is not changed, so be careful when using this method.
+     *  @param  dataset  reference to DICOM dataset from which the data should be read
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readStudyData(DcmItem &dataset);
+
     /** write current SR document to DICOM dataset.
      *  Please note that the ContentTemplateSequence for the root content item is not written
      *  automatically for particular SOP Classes (e.g. Key Object Selection Document).
@@ -814,7 +832,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** create a new series.
      *  After generating a new series instance UID the method createNewSOPInstance() is
-     *  called, i.e. also a SOP series-related attributes are cleared.
+     *  called, i.e. also a new SOP instance UID is generated.  This is a requirement of
+     *  the DICOM standard.  All other series-related attributes are cleared.
      */
     virtual void createNewSeries();
 
@@ -823,7 +842,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  createNewSOPInstance() is called, i.e. also a SOP instance UID is generated.
      *  This is a requirement of the DICOM standard.
      *  NB: There is no mechanism that makes sure that the study-related attributes are
-     *      consistent for all series of a study.  This has to be done manually.
+     *      consistent for all series of a study.  This either has to be done manually
+     *      or readStudyData() should be used in combination with createNewSeries().
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      *  @param  check     check 'studyUID' for conformance with VR and VM if enabled
      ** @return status, EC_Normal if successful, an error code otherwise

@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.03.28 (riesmeier)
+
+- Added readPatientData() and readStudyData():
+  Added methods for reading data from Patient Module and General Study Module.
+  This facilitates associating SR documents with an existing patient or study.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2014.03.24 (schlamelcher)
 
 - Fixed most of the warnings in dcmdata:
