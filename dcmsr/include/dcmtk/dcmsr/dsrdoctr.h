@@ -84,8 +84,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
 
     /** read SR document tree from DICOM dataset.
      *  Please note that the current document tree is also deleted if the reading fails.
-     *  If the log stream is set and valid the reason for any error might be obtained
-     *  from the error/warning output.
+     *  If logging is enabled, the reason for any error might be obtained from the
+     *  error/warning output.
      ** @param  dataset       reference to DICOM dataset where the tree should be read from
      *  @param  documentType  document type of the SR document from which the tree is read
      *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)

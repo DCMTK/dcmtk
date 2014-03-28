@@ -99,8 +99,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** read SR document from DICOM dataset.
      *  Please note that the current document is also deleted if the reading process fails.
-     *  If the log stream is set and valid the reason for any error might be obtained
-     *  from the error/warning output.
+     *  If logging is enabled, the reason for any error might be obtained from the error/warning
+     *  output.
      ** @param  dataset  reference to DICOM dataset from which the document should be read
      *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx).
      *                   E.g. RF_readDigitalSignatures indicates whether to read the digital
@@ -1092,8 +1092,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
-     *  and modality.  Any incorrectness regarding these two attributes is reported to the log stream
-     *  (if valid).  Currently, unsupported SOP classes are also reported as an error.
+     *  and modality.  Any incorrectness regarding these two attributes is reported to the logger.
+     *  Currently unsupported SOP classes are also reported as an error.
      ** @param  dataset       DICOM dataset to be checked
      *  @param  documentType  SR document type retrieved from the SOP class UID
      ** @return status, EC_Normal if successful, an error code otherwise
