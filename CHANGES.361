@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.01 (riesmeier)
 
+- Made sure that "Files" section is available:
+  Made sure that "Files" section is available in Doxygen generated HTML output.
+  Also disabled undocumented members in order to hide unwanted macros.
+  Affects: doxygen/htmldocs.cfg
+
 - Made sure that header file is parsed by Doxygen:
   Added Doxygen command that makes sure that the file is actually parsed for
   global functions, typedefs, enums, macros, etc. These are only the obvious
