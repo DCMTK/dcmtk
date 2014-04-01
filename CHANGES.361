@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.01 (riesmeier)
 
+- Added further header files to Doxygen documentation:
+  Added further header files with global functions, typedefs, enums, macros,
+  etc. to Doxygen generated HTML output.
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+
 - Made sure that "Files" section is available:
   Made sure that "Files" section is available in Doxygen generated HTML output.
   Also disabled undocumented members in order to hide unwanted macros.

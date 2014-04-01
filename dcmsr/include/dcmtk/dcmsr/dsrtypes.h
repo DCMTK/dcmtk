@@ -45,6 +45,13 @@ extern DCMTK_DCMSR_EXPORT OFLogger DCM_dcmsrLogger;
 #define DCMSR_FATAL(msg) OFLOG_FATAL(DCM_dcmsrLogger, msg)
 
 
+// include this file in doxygen documentation
+
+/** @file dsrtypes.h
+ *  @brief type definitions, constants and helper functions for the dcmsr module
+ */
+
+
 /*---------------------*
  *  macro definitions  *
  *---------------------*/

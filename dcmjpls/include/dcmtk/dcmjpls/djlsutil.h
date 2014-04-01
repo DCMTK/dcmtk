@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2012, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Martin Willkomm, Uli Schlachter
  *
- *  Purpose: enumerations, error constants and helper functions for dcmjp2k
+ *  Purpose: enumerations, error constants and helper functions for dcmjpls
  *
  */
 
@@ -41,6 +41,13 @@ extern DCMTK_DCMJPLS_EXPORT OFLogger DCM_dcmjplsLogger;
 #define DCMJPLS_WARN(msg)  OFLOG_WARN(DCM_dcmjplsLogger, msg)
 #define DCMJPLS_ERROR(msg) OFLOG_ERROR(DCM_dcmjplsLogger, msg)
 #define DCMJPLS_FATAL(msg) OFLOG_FATAL(DCM_dcmjplsLogger, msg)
+
+
+// include this file in doxygen documentation
+
+/** @file djlsutil.h
+ *  @brief enumerations, error constants and helper functions for the dcmjpls module
+ */
 
 
 /** describes the condition under which a compressed or decompressed image

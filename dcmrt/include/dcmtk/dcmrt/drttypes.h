@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (c) 2008-2014, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTTypes
@@ -32,6 +32,13 @@
 #else
 #define DCMTK_DCMRT_EXPORT DCMTK_DECL_IMPORT
 #endif
+
+
+// include this file in doxygen documentation
+
+/** @file drttypes.h
+ *  @brief type definitions, constants and helper functions for the dcmrt module
+ */
 
 
 /*-----------------------*

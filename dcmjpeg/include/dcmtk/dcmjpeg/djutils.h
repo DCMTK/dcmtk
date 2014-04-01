@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2012, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,7 +41,17 @@ extern DCMTK_DCMJPEG_EXPORT OFLogger DCM_dcmjpegLogger;
 #define DCMJPEG_FATAL(msg) OFLOG_FATAL(DCM_dcmjpegLogger, msg)
 
 
+// include this file in doxygen documentation
+
+/** @file djutils.h
+ *  @brief enumerations, error constants and helper functions for the dcmjpeg module
+ */
+
+
+// forward declarations
+
 class DcmItem;
+
 
 /** describes the different modes of operation of a JPEG codec
  */
@@ -127,7 +137,7 @@ enum E_CompressionColorSpaceConversion
    */
   ECC_lossyRGB,
 
-  /** convert color images to monochrom before compressing
+  /** convert color images to monochrome before compressing
    */
   ECC_monochrome
 };
