@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2013, OFFIS e.V.
+ *  Copyright (C) 2009-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,6 +34,13 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
 #endif
+
+
+// include this file in doxygen documentation
+
+/** @file scp.h
+ *  @brief general Service Class Provider (SCP) class
+ */
 
 
 /** Structure representing single process in multi-process mode

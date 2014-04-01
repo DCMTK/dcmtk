@@ -33,6 +33,12 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
+// include this file in doxygen documentation
+
+/** @file dcuid.h
+ *  @brief global definitions and functions for UID handling
+ */
+
 /** return the name of a UID.
  *  Performs a table lookup and returns a pointer to a read-only string.
  *  @param uid UID string for which the name is to be looked up

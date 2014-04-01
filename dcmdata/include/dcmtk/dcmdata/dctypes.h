@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,6 +74,13 @@ extern DCMTK_DCMDATA_EXPORT OFLogger DCM_dcmdataLogger;
 #define DCMDATA_ANSI_ESCAPE_CODE_ITEM       "\033[1m\033[30m"
 #define DCMDATA_ANSI_ESCAPE_CODE_LINE       "\033[1m\033[30m"
 #define DCMDATA_ANSI_ESCAPE_CODE_COMMENT    "\033[1m\033[30m"
+
+
+// include this file in doxygen documentation
+
+/** @file dctypes.h
+ *  @brief type definitions for the dcmdata module
+ */
 
 
 /*

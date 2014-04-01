@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2013, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,6 +33,13 @@
 #define INCLUDE_CSTRING             /* for strdup() */
 #define INCLUDE_CSTDLIB             /* for free() */
 #include "dcmtk/ofstd/ofstdinc.h"
+
+
+// include this file in doxygen documentation
+
+/** @file ofcond.h
+ *  @brief error handling, codes and strings for all modules
+ */
 
 
 /** this enumeration describes the return status of an operation.

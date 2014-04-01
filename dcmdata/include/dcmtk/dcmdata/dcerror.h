@@ -27,6 +27,12 @@
 #include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 #include "dcmtk/dcmdata/dcdefine.h"
 
+// include this file in doxygen documentation
+
+/** @file dcerror.h
+ *  @brief error handling, codes and strings for the dcmdata module
+ */
+
 /*
  *  DCMTK module numbers for modules which create their own error codes.
  *  Module numbers > 1023 are reserved for user code.

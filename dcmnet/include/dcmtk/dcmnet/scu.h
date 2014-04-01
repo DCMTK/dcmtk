@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2013, OFFIS e.V.
+ *  Copyright (C) 2008-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,13 @@
 #include "dcmtk/dcmnet/dcasccff.h"  /* for reading a association config file */
 #include "dcmtk/dcmnet/dcasccfg.h"  /* for holding association config file infos */
 #include "dcmtk/ofstd/oflist.h"
+
+
+// include this file in doxygen documentation
+
+/** @file scu.h
+ *  @brief general Service Class User (SCU) class
+ */
 
 
 /** Different types of closing an association

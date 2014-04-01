@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,6 +40,13 @@ extern DCMTK_DCMIMGLE_EXPORT OFLogger DCM_dcmimgleLogger;
 #define DCMIMGLE_WARN(msg)  OFLOG_WARN(DCM_dcmimgleLogger, msg)
 #define DCMIMGLE_ERROR(msg) OFLOG_ERROR(DCM_dcmimgleLogger, msg)
 #define DCMIMGLE_FATAL(msg) OFLOG_FATAL(DCM_dcmimgleLogger, msg)
+
+
+// include this file in doxygen documentation
+
+/** @file diutils.h
+ *  @brief utilities for the dcmimgle/dcmimage module
+ */
 
 
 /*---------------------*
@@ -108,7 +115,7 @@ enum EP_Interpretation
 {
     /// unknown, undefined, invalid
     EPI_Unknown,
-    // no element value available
+    /// no element value available
     EPI_Missing,
     /// monochrome 1
     EPI_Monochrome1,

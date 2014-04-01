@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.01 (riesmeier)
+
+- Made sure that header file is parsed by Doxygen:
+  Added Doxygen command that makes sure that the file is actually parsed for
+  global functions, typedefs, enums, macros, etc. These are only the obvious
+  header files, i.e. others are to be extended in the same way.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           ofstd/include/dcmtk/ofstd/ofcond.h
+
 **** Changes from 2014.03.28 (riesmeier)
 
 - Updated outdated comments on "log stream".
