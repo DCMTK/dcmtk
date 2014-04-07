@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-03-15 17:45:58
+**   Date: 2014-04-07 17:19:15
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-03-15 17:45:58";
+const char* dcmBuiltinDictBuildDate = "2014-04-07 17:19:15";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1007,6 +1007,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x3010, 0x0008, 0x3010,
       EVR_UI, "IrradiationEventUID", 1, -1, "CP_1090",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x3011, 0x0008, 0x3011,
+      EVR_SQ, "SourceIrradiationEventSequence", 1, 1, "CP_1285",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x4000, 0x0008, 0x4000,
@@ -3255,6 +3259,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x0012, 0x0018, 0x0012,
       EVR_SQ, "ContrastBolusAgentSequence", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x0013, 0x0018, 0x0013,
+      EVR_FL, "ContrastBolusT1Relaxivity", 1, 1, "CP_1325",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x0014, 0x0018, 0x0014,
@@ -5791,6 +5799,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9517, 0x0018, 0x9517,
       EVR_DT, "EndAcquisitionDateTime", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9518, 0x0018, 0x9518,
+      EVR_SS, "PrimaryPositionerIncrementSign", 1, 1, "CP_1282",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9519, 0x0018, 0x9519,
+      EVR_SS, "SecondaryPositionerIncrementSign", 1, 1, "CP_1282",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9524, 0x0018, 0x9524,
@@ -10841,6 +10857,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0020, 0x930a, 0x0020, 0x930a,
       EVR_FD, "VolumeToTableMappingMatrix", 16, 16, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x930b, 0x0020, 0x930b,
+      EVR_CS, "VolumeToTransducerRelationship", 1, 1, "CP_1326",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x930c, 0x0020, 0x930c,
@@ -26541,7 +26561,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
 };
 
 static const int simpleBuiltinDict_count = 
-    OFstatic_cast(int, sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry));
+    sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry);
 
 
 void

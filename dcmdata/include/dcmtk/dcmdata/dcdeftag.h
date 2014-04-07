@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-03-15 17:45:53
+**   Date: 2014-04-07 17:19:11
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-03-15 17:45:53"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-04-07 17:19:11"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3701
+** Number of entries: 3706
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -258,6 +258,7 @@
 #define DCM_RETIRED_OnAxisBackgroundAnatomicStructureCodeSequenceTrial DcmTagKey(0x0008, 0x225c)
 #define DCM_AlternateRepresentationSequence      DcmTagKey(0x0008, 0x3001)
 #define DCM_IrradiationEventUID                  DcmTagKey(0x0008, 0x3010)
+#define DCM_SourceIrradiationEventSequence       DcmTagKey(0x0008, 0x3011)
 #define DCM_RETIRED_IdentifyingComments          DcmTagKey(0x0008, 0x4000)
 #define DCM_FrameType                            DcmTagKey(0x0008, 0x9007)
 #define DCM_ReferencedImageEvidenceSequence      DcmTagKey(0x0008, 0x9092)
@@ -476,6 +477,7 @@
 #define DCM_LINACOutput                          DcmTagKey(0x0014, 0x5004)
 #define DCM_ContrastBolusAgent                   DcmTagKey(0x0018, 0x0010)
 #define DCM_ContrastBolusAgentSequence           DcmTagKey(0x0018, 0x0012)
+#define DCM_ContrastBolusT1Relaxivity            DcmTagKey(0x0018, 0x0013)
 #define DCM_ContrastBolusAdministrationRouteSequence DcmTagKey(0x0018, 0x0014)
 #define DCM_BodyPartExamined                     DcmTagKey(0x0018, 0x0015)
 #define DCM_ScanningSequence                     DcmTagKey(0x0018, 0x0020)
@@ -1110,6 +1112,8 @@
 #define DCM_SecondaryPositionerIncrement         DcmTagKey(0x0018, 0x9515)
 #define DCM_StartAcquisitionDateTime             DcmTagKey(0x0018, 0x9516)
 #define DCM_EndAcquisitionDateTime               DcmTagKey(0x0018, 0x9517)
+#define DCM_PrimaryPositionerIncrementSign       DcmTagKey(0x0018, 0x9518)
+#define DCM_SecondaryPositionerIncrementSign     DcmTagKey(0x0018, 0x9519)
 #define DCM_ApplicationName                      DcmTagKey(0x0018, 0x9524)
 #define DCM_ApplicationVersion                   DcmTagKey(0x0018, 0x9525)
 #define DCM_ApplicationManufacturer              DcmTagKey(0x0018, 0x9526)
@@ -1309,6 +1313,7 @@
 #define DCM_ApexPosition                         DcmTagKey(0x0020, 0x9308)
 #define DCM_VolumeToTransducerMappingMatrix      DcmTagKey(0x0020, 0x9309)
 #define DCM_VolumeToTableMappingMatrix           DcmTagKey(0x0020, 0x930a)
+#define DCM_VolumeToTransducerRelationship       DcmTagKey(0x0020, 0x930b)
 #define DCM_PatientFrameOfReferenceSource        DcmTagKey(0x0020, 0x930c)
 #define DCM_TemporalPositionTimeOffset           DcmTagKey(0x0020, 0x930d)
 #define DCM_PlanePositionVolumeSequence          DcmTagKey(0x0020, 0x930e)
