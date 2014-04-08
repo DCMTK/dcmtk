@@ -411,15 +411,15 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** append a filename extension to the given filename
      *  @param result string variable in which the resulting filename is stored.
-     *    This name may contain wide characters if support is enabled and 'fileName' as
-     *    well as 'fileExtension' contain wide characters. In any case, the resulting
-     *    string is stored with UTF-8 encoding (8-bit) as an alternative representation.
+     *    This name may contain wide characters if support is enabled and 'fileName'
+     *    contains wide characters. In any case, the resulting string is stored with
+     *    UTF-8 encoding (8-bit) as an alternative representation.
      *  @param fileName filename to which the extension should be appended. This name
      *    may contain wide characters if support is enabled. Since there are various
      *    constructors for the OFFilename class, a "char *", "OFString" or "wchar_t *"
      *    can also be passed directly to this parameter.
-     *  @param fileExtension filename extension to be appended (e.g.\ ".bak"). Should
-     *    contain wide characters if and only if 'fileName' contains wide characters.
+     *  @param fileExtension filename extension to be appended (e.g.\ ".bak"). It is
+     *    converted to wide characters if 'fileName' contains wide characters.
      *  @return reference to the resulting path name (same as 'result')
      */
     static OFFilename &appendFilenameExtension(OFFilename &result,

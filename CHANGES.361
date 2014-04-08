@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.08 (riesmeier)
+
+- Fixed some issues with wide character support:
+  In combineDirAndFilename(), there was an issue with empty directory names
+  being converted to "." if parameter "allowEmptyDirName" = OFFalse. And in
+  appendFilenameExtension(), support for 8-bit character file extensions was
+  missing, e.g. append ".bak" to a wide or 8-bit character string.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2014.04.08 (schlamelcher)
 
 - Minor fixes in dcmdata:

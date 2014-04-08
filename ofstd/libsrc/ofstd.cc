@@ -764,6 +764,13 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
         /* we only get here, if we don't have an absolute directory in "fileName" */
         /* now normalize the directory name */
         normalizeDirName(result, dirName, allowEmptyDirName);
+        /* do some extra checks on a special case */
+        if (!result.isEmpty() && !result.usesWideChars())
+        {
+            /* make sure that wide-char version exists */
+            OFFilename tmpDirName(result);
+            result.set(tmpDirName.getCharPointer(), OFTrue /*convert*/);
+        }
         /* check file name */
         if ((strLength > 0) && (strValue[0] != L'.'))
         {
@@ -881,16 +888,21 @@ OFFilename &OFStandard::appendFilenameExtension(OFFilename &result,
 {
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
     /* check whether to use the wide-char version of the API function */
-    if (fileName.usesWideChars() || fileExtension.usesWideChars())
+    if (fileName.usesWideChars())
     {
+        OFFilename fileExt(fileExtension);
+        /* convert file extension to wide chars (if needed) */
+        if (!fileExt.isEmpty() && !fileExt.usesWideChars())
+            fileExt.set(fileExtension.getCharPointer(), OFTrue /*convert*/);
         const wchar_t *namValue = fileName.getWideCharPointer();
-        const wchar_t *extValue = fileExtension.getWideCharPointer();
+        const wchar_t *extValue = fileExt.getWideCharPointer();
         size_t namLength = (namValue == NULL) ? 0 : wcslen(namValue);
         size_t extLength = (extValue == NULL) ? 0 : wcslen(extValue);
         /* create temporary buffer for destination string */
         wchar_t *tmpString = new wchar_t[namLength + extLength + 1];
         wcscpy(tmpString, namValue);
-        wcscat(tmpString, extValue);
+        if (extValue != NULL)
+            wcscat(tmpString, extValue);
         result.set(tmpString, OFTrue /*convert*/);
         delete[] tmpString;
     } else
@@ -903,8 +915,9 @@ OFFilename &OFStandard::appendFilenameExtension(OFFilename &result,
         size_t extLength = (extValue == NULL) ? 0 : strlen(extValue);
         /* create temporary buffer for destination string */
         char *tmpString = new char[namLength + extLength + 1];
-        strcpy(tmpString, namValue);
-        strcat(tmpString, extValue);
+        strcpy(tmpString, (namValue == NULL) ? "" : namValue);
+        if (extValue != NULL)
+            strcat(tmpString, extValue);
         result.set(tmpString);
         delete[] tmpString;
     }
