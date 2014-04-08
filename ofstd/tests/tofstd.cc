@@ -27,6 +27,9 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 
+#define OFFILENAME_TO_OFSTRING(filename) \
+    OFString(OFSTRING_GUARD(filename.getCharPointer()))
+
 static void checkExists(const OFString& input, OFBool pathExists,
         OFBool fileExists, OFBool dirExists)
 {
@@ -190,6 +193,18 @@ OFTEST(ofstd_testPaths_2)
     OFCHECK_EQUAL(result, "filename");
     OFStandard::getFilenameFromPath(result, "filename", OFFalse /*assumeFilename*/);
     OFCHECK_EQUAL(result, "");
+}
+
+OFTEST(ofstd_OFStandard_appendFilenameExtension)
+{
+    OFFilename result;
+
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", ".ext")), "file.ext");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "", ".ext")), ".ext");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", "")), "file");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", NULL)), "file");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, NULL, "")), "");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, NULL, NULL)), "");
 }
 
 OFTEST(ofstd_OFStandard_isReadWriteable)

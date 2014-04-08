@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.08 (riesmeier)
 
+- Added test for OFStandard::appendFilenameExtension().
+  Affects: ofstd/tests/tests.cc
+           ofstd/tests/tofstd.cc
+
 - Fixed some issues with wide character support:
   In combineDirAndFilename(), there was an issue with empty directory names
   being converted to "." if parameter "allowEmptyDirName" = OFFalse. And in
