@@ -38,12 +38,6 @@
 #include <sstream>
 #include <utility>
 
-// Mingw emits warnings if this was enabled.
-#ifdef __MINGW32__
-#undef DCMTK_LOG4CPLUS_HAVE_C99_VARIADIC_MACROS
-#undef DCMTK_LOG4CPLUS_HAVE_GNU_VARIADIC_MACROS
-#endif
-
 #if defined(DCMTK_LOG4CPLUS_DISABLE_FATAL) && !defined(DCMTK_LOG4CPLUS_DISABLE_ERROR)
 #define DCMTK_LOG4CPLUS_DISABLE_ERROR
 #endif

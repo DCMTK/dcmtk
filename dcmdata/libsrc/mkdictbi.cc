@@ -121,7 +121,7 @@ getUserName(char* userString, int /* maxLen */)
 {
     return cuserid(userString); // thread safe, maxLen >= L_cuserid ?
 }
-#elif HAVE_GETLOGIN
+#elif HAVE_GETLOGIN && !defined(__MINGW32__)
 static char*
 getUserName(char* userString, int maxLen)
 {
@@ -145,10 +145,10 @@ static char*
 getUserName(char* userString, int maxLen)
 {
     WKSTA_USER_INFO_0 *userinfo;
-    if (NetWkstaUserGetInfo(NULL, 0, (LPBYTE*)&userinfo) == NERR_Success)
+    if (NetWkstaUserGetInfo(NULL, 0, OFreinterpret_cast(LPBYTE*, &userinfo)) == NERR_Success)
     {
         // Convert the Unicode full name to ANSI.
-        WideCharToMultiByte( CP_ACP, 0, (WCHAR*)userinfo->wkui0_username, -1,
+        WideCharToMultiByte( CP_ACP, 0, OFreinterpret_cast(WCHAR*, userinfo->wkui0_username), -1,
             userString, maxLen, NULL, NULL );
     } else {
         strncpy(userString, "<no-user-information-available>", maxLen);
@@ -332,7 +332,7 @@ main(int argc, char* argv[])
 
     fprintf(fout, "\n};\n");
     fprintf(fout, "\n");
-    fprintf(fout, "static const int simpleBuiltinDict_count = \n");
+    fprintf(fout, "static const size_t simpleBuiltinDict_count =\n");
     fprintf(fout, "    sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry);\n");
     fprintf(fout, "\n");
 
@@ -342,7 +342,7 @@ main(int argc, char* argv[])
     fprintf(fout, "{\n");
     fprintf(fout, "    DcmDictEntry* e = NULL;\n");
     fprintf(fout, "    const DBI_SimpleEntry *b = simpleBuiltinDict;\n");
-    fprintf(fout, "    for (int i=0; i<simpleBuiltinDict_count; i++) {\n");
+    fprintf(fout, "    for (size_t i=0; i<simpleBuiltinDict_count; ++i) {\n");
     fprintf(fout, "        b = simpleBuiltinDict + i;\n");
     fprintf(fout, "        e = new DcmDictEntry(b->group, b->element,\n");
     fprintf(fout, "            b->upperGroup, b->upperElement, b->evr,\n");
