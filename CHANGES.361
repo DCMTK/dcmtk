@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.09 (riesmeier)
+
+- Fixed issue with untyped NULL reported by MSVC++.
+  Affects: ofstd/tests/tofstd.cc
+
 **** Changes from 2014.04.08 (riesmeier)
 
 - Added test for OFStandard::appendFilenameExtension().

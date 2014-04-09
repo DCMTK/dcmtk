@@ -198,13 +198,14 @@ OFTEST(ofstd_testPaths_2)
 OFTEST(ofstd_OFStandard_appendFilenameExtension)
 {
     OFFilename result;
+    const char *nullPtr = NULL;
 
     OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", ".ext")), "file.ext");
     OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "", ".ext")), ".ext");
     OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", "")), "file");
-    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", NULL)), "file");
-    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, NULL, "")), "");
-    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, NULL, NULL)), "");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, "file", nullPtr)), "file");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, nullPtr, "")), "");
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, nullPtr, nullPtr)), "");
 }
 
 OFTEST(ofstd_OFStandard_isReadWriteable)
