@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.11 (riesmeier)
 
+- Enhanced createDirectory() function:
+  Added support for Windows-specific wide character encoding (UTF-16) to the
+  createDirectory() helper function. The second parameter "rootDir" is still
+  optional, but has no default value any more (due to the fact that OFFilename
+  is not completely specified in the header file; forward declaration only).
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Enhanced removeRootDirFromPathname() function:
   Added support for Windows-specific wide character encoding (UTF-16) to the
   removeRootDirFromPathname() helper function. Also added a new test case.

@@ -48,6 +48,7 @@ END_EXTERN_C
 
 class OFFilename;
 
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -481,14 +482,18 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** create a directory (including sub-directories) if it does not yet exist.  In other
      *  words, this function creates directories recursively, i.e. with all sub-components.
-     *  @param dirName name of the directory to be created
+     *  @param dirName name of the directory to be created. This name may contain wide
+     *    characters if support is enabled. Since there are various constructors for the
+     *    OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
+     *    directly to this parameter.
      *  @param rootDir optional name of a root directory (prefix of 'dirName') that already
      *    exists and that can, therefore, be skipped during the creation of sub-directories.
+     *    Should contain wide characters if and only if 'dirName' contains wide characters.
      *  @return status, EC_Normal if successful (directory created or already exists), an
      *    error code otherwise
      */
-    static OFCondition createDirectory(const OFString &dirName,
-                                       const OFString &rootDir = "");
+    static OFCondition createDirectory(const OFFilename &dirName,
+                                       const OFFilename &rootDir);
 
     /** copy an existing file to a new file
      *  @param sourceFilename name of the existing file (including directory) to be copied.

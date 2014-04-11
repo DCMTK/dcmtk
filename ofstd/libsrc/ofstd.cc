@@ -1163,67 +1163,139 @@ size_t OFStandard::searchDirectoryRecursively(const OFFilename &directory,
 }
 
 
-OFCondition OFStandard::createDirectory(const OFString &dirName,
-                                        const OFString &rootDir)
+OFCondition OFStandard::createDirectory(const OFFilename &dirName,
+                                        const OFFilename &rootDir)
 {
     OFCondition status = EC_Normal;
     /* first, check whether the directory already exists */
     if (!dirExists(dirName))
     {
-        /* then, check whether the given prefix can be skipped */
-        size_t pos = 0;
-        size_t dirLength = dirName.length();
-        /* check for absolute path containing Windows drive name, e. g. "c:\",
-         * is not required since the root directory should always exist */
-        if ((dirLength > 1) && (dirName.at(dirLength - 1) == PATH_SEPARATOR))
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+        /* check whether to use the wide-char version of the API function */
+        if (dirName.usesWideChars())
         {
-            /* ignore trailing path separator */
-            --dirLength;
-        }
-        size_t rootLength = rootDir.length();
-        if ((rootLength > 1) && (rootDir.at(rootLength - 1) == PATH_SEPARATOR))
-        {
-            /* ignore trailing path separator */
-            --rootLength;
-        }
-        /* check for "compatible" length */
-        if ((rootLength > 0) && (rootLength < dirLength))
-        {
-            /* check for common prefix */
-            if (dirName.compare(0, rootLength, rootDir) == 0)
+            /* then, check whether the given prefix can be skipped */
+            size_t pos = 0;
+            const wchar_t *dirValue = dirName.getWideCharPointer();
+            const wchar_t *rootValue = rootDir.getWideCharPointer();
+            size_t dirLength = (dirValue == NULL) ? 0 : wcslen(dirValue);
+            size_t rootLength = (rootValue == NULL) ? 0 : wcslen(rootValue);
+            /* check for absolute path containing Windows drive name, e. g. "c:\",
+             * is not required since the root directory should always exist */
+            if ((dirLength > 1) && (dirValue[dirLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
             {
-                /* check whether root directory really exists */
-                if (dirExists(rootDir.substr(0, rootLength)))
+                /* ignore trailing path separator */
+                --dirLength;
+            }
+            if ((rootLength > 1) && (rootValue[rootLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
+            {
+                /* ignore trailing path separator */
+                --rootLength;
+            }
+            /* check for "compatible" length */
+            if ((rootLength > 0) && (rootLength < dirLength))
+            {
+                /* check for common prefix */
+                if (wcsncmp(dirValue, rootValue, rootLength) == 0)
                 {
-                    /* start searching after the common prefix */
-                    pos = rootLength;
+                    /* check whether root directory really exists */
+                    if (dirExists(rootDir))
+                    {
+                        /* start searching after the common prefix */
+                        pos = rootLength;
+                    }
                 }
             }
-        }
-        /* and finally, iterate over all subsequent subdirectories */
-        do {
-            /* search for next path separator */
-            pos = dirName.find(PATH_SEPARATOR, pos + 1);
-            /* get name of current directory component */
-            const OFString subDir = dirName.substr(0, pos);
-            if (!dirExists(subDir))
-            {
-                /* and create the directory component (if not already existing) */
-#ifdef HAVE_WINDOWS_H
-                if (_mkdir(subDir.c_str()) == -1)
-#else
-                if (mkdir(subDir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+            /* and finally, iterate over all subsequent subdirectories */
+            do {
+                /* search for next path separator */
+                do {
+                    ++pos;
+                } while ((dirValue[pos] != L'\\' /* WIDE_PATH_SEPARATOR */) && (dirValue[pos] != L'\0'));
+                /* get name of current directory component */
+                wchar_t *subDir = new wchar_t[pos + 1];
+                wcsncpy(subDir, dirValue, pos /*num*/);
+                subDir[pos] = L'\0';
+                if (!dirExists(subDir))
+                {
+                    /* and create the directory component (if not already existing) */
+                    if (_wmkdir(subDir) == -1)
+                    {
+                        char errBuf[256];
+                        OFString message("Cannot create directory: ");
+                        message.append(strerror(errno, errBuf, sizeof(errBuf)));
+                        status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, message.c_str());
+                        /* exit the loop */
+                        break;
+                    }
+                }
+                delete[] subDir;
+            } while (pos < dirLength);
+        } else
 #endif
+        /* otherwise, use the conventional 8-bit characters version */
+        {
+            /* then, check whether the given prefix can be skipped */
+            size_t pos = 0;
+            const char *dirValue = dirName.getCharPointer();
+            const char *rootValue = rootDir.getCharPointer();
+            size_t dirLength = (dirValue == NULL) ? 0 : strlen(dirValue);
+            size_t rootLength = (rootValue == NULL) ? 0 : strlen(rootValue);
+            /* check for absolute path containing Windows drive name, e. g. "c:\",
+             * is not required since the root directory should always exist */
+            if ((dirLength > 1) && (dirValue[dirLength - 1] == PATH_SEPARATOR))
+            {
+                /* ignore trailing path separator */
+                --dirLength;
+            }
+            if ((rootLength > 1) && (rootValue[rootLength - 1] == PATH_SEPARATOR))
+            {
+                /* ignore trailing path separator */
+                --rootLength;
+            }
+            /* check for "compatible" length */
+            if ((rootLength > 0) && (rootLength < dirLength))
+            {
+                /* check for common prefix */
+                if (strncmp(dirValue, rootValue, rootLength) == 0)
                 {
-                    char errBuf[256];
-                    OFString message("Cannot create directory: ");
-                    message.append(strerror(errno, errBuf, sizeof(errBuf)));
-                    status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, message.c_str());
-                    /* exit the loop */
-                    break;
+                    /* check whether root directory really exists */
+                    if (dirExists(rootDir))
+                    {
+                        /* start searching after the common prefix */
+                        pos = rootLength;
+                    }
                 }
             }
-        } while (pos < dirLength);
+            /* and finally, iterate over all subsequent subdirectories */
+            do {
+                /* search for next path separator */
+                do {
+                    ++pos;
+                } while ((dirValue[pos] != PATH_SEPARATOR) && (dirValue[pos] != '\0'));
+                /* get name of current directory component */
+                char *subDir = new char[pos + 1];
+                strlcpy(subDir, dirValue, pos + 1 /*size*/);
+                if (!dirExists(subDir))
+                {
+                    /* and create the directory component (if not already existing) */
+#ifdef HAVE_WINDOWS_H
+                    if (_mkdir(subDir) == -1)
+#else
+                    if (mkdir(subDir, S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
+                    {
+                        char errBuf[256];
+                        OFString message("Cannot create directory: ");
+                        message.append(strerror(errno, errBuf, sizeof(errBuf)));
+                        status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, message.c_str());
+                        /* exit the loop */
+                        break;
+                    }
+                }
+                delete[] subDir;
+            } while (pos < dirLength);
+        }
     }
     return status;
 }
