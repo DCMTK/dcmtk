@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -956,7 +956,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      ** @param  group        group number (0x60nn) of overlay plane
      *  @param  width        width of overlay plane (in pixels)
      *  @param  height       height of overlay plane (in pixels)
-     *  @param  left_pos     x coordinate of plane orgin (referring to image origin)
+     *  @param  left_pos     x coordinate of plane origin (referring to image origin)
      *  @param  top_pos      y coordinate of plane origin
      *  @param  data         overlay plane data (dcmdata element)
      *  @param  label        overlay plane label
@@ -1004,7 +1004,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
     }
 
     /** check whether specified overlay plane is visible/activated.
-     *  see show/hideOverlay() to modifiy the visibility status.
+     *  see show/hideOverlay() to modify the visibility status.
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -1038,7 +1038,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  mode    display mode (see 'diutils.h')
      *  @param  fore    plane's foreground color (in percent, default: 1.0)
-     *  @param  thresh  treshhold value (in percent, default: 0.5), only for EMO_TreshholdReplace
+     *  @param  thresh  threshold value (in percent, default: 0.5), only for EMO_ThresholdReplace
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return false (0) if an error occurred, true otherwise
@@ -1084,7 +1084,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *
      ** @param  mode    display mode (see 'diutils.h')
      *  @param  fore    plane's foreground color (in percent, default: 1.0)
-     *  @param  thresh  treshhold value (in percent, default: 0.5), only for EMO_TreshholdReplace
+     *  @param  thresh  threshold value (in percent, default: 0.5), only for EMO_ThresholdReplace
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return false (0) if an error occurred, true otherwise (1 = planes have been successfully activated,
@@ -1205,7 +1205,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return mode of overlay plane if succesful, EMO_Default otherwise
+     ** @return mode of overlay plane if successful, EMO_Default otherwise
      */
     inline EM_Overlay getOverlayMode(const unsigned int plane,
                                      const unsigned int idx = 0) const
@@ -1417,7 +1417,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  NB: Clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
      ** @param  left_pos     x coordinate of top left corner of area to be scaled
-     *                       (referring to image orgin, negative values create a border around the image)
+     *                       (referring to image origin, negative values create a border around the image)
      *  @param  top_pos      y coordinate of top left corner of area to be scaled
      *  @param  width        width of area to be scaled
      *  @param  height       height of area to be scaled
@@ -1448,7 +1448,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  memory is not handled internally - must be deleted from calling program.
      *
      ** @param  left_pos  x coordinate of top left corner of area to be copied
-     *                    (referring to image orgin, negative values create a border around the image)
+     *                    (referring to image origin, negative values create a border around the image)
      *  @param  top_pos   y coordinate of top left corner of area to be copied
      *  @param  width     width of area to be copied/clipped
      *  @param  height    height of area to be copied/clipped
@@ -1527,7 +1527,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  use the lower 24 bits (-RGB).
      *  The memory buffer can be allocated both externally (from the calling program) and internally
      *  (inside this class/module).  If the 'data' parameter is not NULL and the 'size' parameter, which
-     *  describes the size (in bytes) of the allocated buffer, is suffiently large, the bitmap is stored
+     *  describes the size (in bytes) of the allocated buffer, is sufficiently large, the bitmap is stored
      *  in this buffer.  Otherwise (i.e. 'data' is NULL) the memory is allocated internally.  Please note
      *  that in both cases the memory is not handled internally after this method has finished and,
      *  therefore, must be deleted from the calling program.
@@ -1541,7 +1541,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *                      the bottom-most of the source image (as required by the BMP file format)
      *  @param  padding     align each line to a 32-bit address if true (default)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createWindowsDIB(void *&data,
                                    const unsigned long size,
@@ -1564,7 +1564,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  @param  frame  index of frame to be converted (default: 0 = first frame)
      *  @param  bits   number of bits per pixel used for the output bitmap (8 or 32, default: 32)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createJavaAWTBitmap(void *&data,
                                       const unsigned long frame = 0,
@@ -1793,7 +1793,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
                  const int bits = 0,
                  const unsigned long frame = 0);
 
-    /** write pixel data to plugable image format file (specified by open C stream).
+    /** write pixel data to pluggable image format file (specified by open C stream).
      *  Format specific parameters may be set directly in the instantiated 'plugin' class.
      *
      ** @param  plugin  pointer to image format plugin (derived from abstract class DiPluginFormat)
@@ -1806,7 +1806,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
                           FILE *stream,
                           const unsigned long frame = 0);
 
-    /** write pixel data to plugable image format file (specified by filename).
+    /** write pixel data to pluggable image format file (specified by filename).
      *  Format specific parameters may be set directly in the instantiated 'plugin' class.
      *
      ** @param  plugin    pointer to image format plugin (derived from abstract class DiPluginFormat)

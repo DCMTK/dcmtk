@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.11 (riesmeier)
+
+- Fixed various typos in comments.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
 **** Changes from 2014.04.09 (riesmeier)
 
 - Fixed issue with untyped NULL reported by MSVC++.
