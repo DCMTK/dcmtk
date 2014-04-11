@@ -41,6 +41,7 @@ OFTEST_REGISTER(ofstd_OFMap);
 OFTEST_REGISTER(ofstd_OFStack);
 OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
 OFTEST_REGISTER(ofstd_OFStandard_appendFilenameExtension);
+OFTEST_REGISTER(ofstd_OFStandard_removeRootDirFromPathname);
 OFTEST_REGISTER(ofstd_OFFile);
 OFTEST_REGISTER(ofstd_OFString_compare);
 OFTEST_REGISTER(ofstd_OFString_concatenate);

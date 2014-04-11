@@ -195,6 +195,19 @@ OFTEST(ofstd_testPaths_2)
     OFCHECK_EQUAL(result, "");
 }
 
+OFTEST(ofstd_OFStandard_isReadWriteable)
+{
+    // TODO FIXME
+    // Same as above, this assumes that it's called from the source dir which
+    // isn't necessarily true with cmake.
+#if 0
+    OFCHECK_EQUAL(OFStandard::isReadable("tofstd.cc"), OFTrue);
+    OFCHECK_EQUAL(OFStandard::isWriteable("tofstd.cc"), OFTrue);
+#endif
+    OFCHECK_EQUAL(OFStandard::isReadable("does_not_exist"), OFFalse);
+    OFCHECK_EQUAL(OFStandard::isWriteable("does_not_exist"), OFFalse);
+}
+
 OFTEST(ofstd_OFStandard_appendFilenameExtension)
 {
     OFFilename result;
@@ -208,15 +221,34 @@ OFTEST(ofstd_OFStandard_appendFilenameExtension)
     OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(OFStandard::appendFilenameExtension(result, nullPtr, nullPtr)), "");
 }
 
-OFTEST(ofstd_OFStandard_isReadWriteable)
+OFTEST(ofstd_OFStandard_removeRootDirFromPathname)
 {
-    // TODO FIXME
-    // Same as above, this assumes that it's called from the source dir which
-    // isn't necessarily true with cmake.
-#if 0
-    OFCHECK_EQUAL(OFStandard::isReadable("tofstd.cc"), OFTrue);
-    OFCHECK_EQUAL(OFStandard::isWriteable("tofstd.cc"), OFTrue);
-#endif
-    OFCHECK_EQUAL(OFStandard::isReadable("does_not_exist"), OFFalse);
-    OFCHECK_EQUAL(OFStandard::isWriteable("does_not_exist"), OFFalse);
+    OFFilename result;
+    const char *nullPtr = NULL;
+
+    OFString testPath = "/root";
+    testPath += PATH_SEPARATOR;
+    testPath += "path";
+    OFString resultPath;
+    resultPath += PATH_SEPARATOR;
+    resultPath += "path";
+
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "/root", testPath, OFTrue /*allowLeadingPathSeparator*/).good());
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(result), resultPath);
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "/root", testPath, OFFalse /*allowLeadingPathSeparator*/).good());
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(result), "path");
+
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "/root", "/no_root/path").bad());
+    OFCHECK(result.isEmpty());
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "", "/root/path").good());
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(result), "/root/path");
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "/root", "").bad());
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(result), "");
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "", "").good());
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(result), "");
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, nullPtr, "/path").good());
+    OFCHECK_EQUAL(OFFILENAME_TO_OFSTRING(result), "/path");
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, "/root", nullPtr).bad());
+    OFCHECK_EQUAL(result.getCharPointer(), nullPtr);
+    OFCHECK(OFStandard::removeRootDirFromPathname(result, nullPtr, nullPtr).good());
 }

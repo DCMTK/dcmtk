@@ -851,33 +851,82 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
 }
 
 
-OFCondition OFStandard::removeRootDirFromPathname(OFString &result,
-                                                  const OFString &rootDir,
-                                                  const OFString &pathName,
+OFCondition OFStandard::removeRootDirFromPathname(OFFilename &result,
+                                                  const OFFilename &rootDir,
+                                                  const OFFilename &pathName,
                                                   const OFBool allowLeadingPathSeparator)
 {
     OFCondition status = EC_IllegalParameter;
-    const size_t rootLength = rootDir.length();
-    /* check for "compatible" length */
-    if (rootLength <= pathName.length())
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+    /* check whether to use the wide-char version of the API function */
+    if (rootDir.usesWideChars() || pathName.usesWideChars())
     {
-        /* check for same prefix */
-        if (pathName.compare(0, rootLength, rootDir) == 0)
+        const wchar_t *rootValue = rootDir.getWideCharPointer();
+        const wchar_t *pathValue = pathName.getWideCharPointer();
+        const size_t rootLength = (rootValue == NULL) ? 0 : wcslen(rootValue);
+        const size_t pathLength = (pathValue == NULL) ? 0 : wcslen(pathValue);
+        /* check for empty strings */
+        if ((rootLength == 0) && (pathLength == 0))
         {
-            /* remove root dir prefix from path name */
-            result = pathName.substr(rootLength);
-            if (!allowLeadingPathSeparator)
-            {
-                /* remove leading path separator (if present) */
-                if (!result.empty() && (result.at(0) == PATH_SEPARATOR))
-                    result.erase(0, 1);
-            }
+            result.set("", OFTrue /*convert*/);
             status = EC_Normal;
+        }
+        /* check for "compatible" length */
+        else if (rootLength <= pathLength)
+        {
+            /* check for same prefix */
+            if (wcsncmp(rootValue, pathValue, rootLength) == 0)
+            {
+                /* create temporary buffer for destination string */
+                wchar_t *tmpString = new wchar_t[pathLength - rootLength + 1];
+                /* remove root dir prefix from path name */
+                wcscpy(tmpString, pathValue + rootLength);
+                /* remove leading path separator (if present) */
+                if (!allowLeadingPathSeparator && (tmpString[0] == PATH_SEPARATOR))
+                    result.set(tmpString + 1, OFTrue /*convert*/);
+                else
+                    result.set(tmpString, OFTrue /*convert*/);
+                delete[] tmpString;
+                status = EC_Normal;
+            }
+        }
+    } else
+#endif
+    /* otherwise, use the conventional 8-bit characters version */
+    {
+        const char *rootValue = rootDir.getCharPointer();
+        const char *pathValue = pathName.getCharPointer();
+        const size_t rootLength = (rootValue == NULL) ? 0 : strlen(rootValue);
+        const size_t pathLength = (pathValue == NULL) ? 0 : strlen(pathValue);
+        /* check for empty strings */
+        if ((rootLength == 0) && (pathLength == 0))
+        {
+            result.set("");
+            status = EC_Normal;
+        }
+        /* check for "compatible" length */
+        else if (rootLength <= pathLength)
+        {
+            /* check for same prefix */
+            if (strncmp(rootValue, pathValue, rootLength) == 0)
+            {
+                /* create temporary buffer for destination string */
+                char *tmpString = new char[pathLength - rootLength + 1];
+                /* remove root dir prefix from path name */
+                strcpy(tmpString, pathValue + rootLength);
+                /* remove leading path separator (if present) */
+                if (!allowLeadingPathSeparator && (tmpString[0] == PATH_SEPARATOR))
+                    result.set(tmpString + 1);
+                else
+                    result.set(tmpString);
+                delete[] tmpString;
+                status = EC_Normal;
+            }
         }
     }
     /* return empty string in case of error */
     if (status.bad())
-        result = "";
+        result.clear();
     return status;
 }
 

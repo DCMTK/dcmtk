@@ -396,17 +396,24 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** remove root directory prefix from given path name.
      *  In case 'pathName' starts with 'rootDir', the common prefix is removed.
-     *  Otherwise, an empty string is returned.
-     *  @param result string variable in which the resulting path name is stored
-     *  @param rootDir name of the root directory to be removed
-     *  @param pathName path name from which the root directory (prefix) is removed
+     *  Otherwise, an empty string is returned (or a cleared OFFilename in case of error).
+     *  @param result string variable in which the resulting path name is stored.
+     *    This name may contain wide characters if support is enabled and 'rootDir' as
+     *    well as 'pathName' contain wide characters. In any case, the resulting string
+     *    is stored with UTF-8 encoding (8-bit) as an alternative representation.
+     *  @param rootDir name of the root directory to be removed. This name may contain
+     *    wide characters if support is enabled. Since there are various constructors for
+     *    the OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
+     *    directly to this parameter.
+     *  @param pathName path name from which the root directory (prefix) is removed.
+     *    Should contain wide characters if and only if 'rootDir' contains wide characters.
      *  @param allowLeadingPathSeparator flag indicating whether a leading path separator
      *    is allowed for the resulting path name (automatically removed otherwise)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    static OFCondition removeRootDirFromPathname(OFString &result,
-                                                 const OFString &rootDir,
-                                                 const OFString &pathName,
+    static OFCondition removeRootDirFromPathname(OFFilename &result,
+                                                 const OFFilename &rootDir,
+                                                 const OFFilename &pathName,
                                                  const OFBool allowLeadingPathSeparator = OFTrue);
 
     /** append a filename extension to the given filename
