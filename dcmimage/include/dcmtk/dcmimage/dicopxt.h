@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,9 +125,16 @@ class DiColorPixelTemplate
      */
     virtual ~DiColorPixelTemplate()
     {
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
+        /* use a non-throwing delete (if available) */
+        operator delete[] (Data[0], std::nothrow);
+        operator delete[] (Data[1], std::nothrow);
+        operator delete[] (Data[2], std::nothrow);
+#else
         delete[] Data[0];
         delete[] Data[1];
         delete[] Data[2];
+#endif
     }
 
     /** get integer representation
@@ -239,7 +246,7 @@ class DiColorPixelTemplate
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
      *  @param  padding     align each line to a 32-bit address if true
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createDIB(void *&data,
                             const unsigned long size,
@@ -440,7 +447,7 @@ class DiColorPixelTemplate
      *  @param  fromBits  number of bits per sample used for internal representation of the image
      *  @param  toBits    number of bits per sample used for the output bitmap (<= 8)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createAWTBitmap(void *&data,
                                   const Uint16 width,
@@ -549,14 +556,21 @@ class DiColorPixelTemplate
             /* allocate data buffer for the 3 planes */
             for (int j = 0; j < 3; j++)
             {
+#ifdef HAVE_STD__NOTHROW
+                /* use a non-throwing new here (if available) because the allocated buffer can be huge */
+                Data[j] = new (std::nothrow) T[Count];
+#else
                 Data[j] = new T[Count];
+#endif
                 if (Data[j] != NULL)
                 {
                     /* erase empty part of the buffer (=blacken the background) */
                     if (InputCount < Count)
                         OFBitmanipTemplate<T>::zeroMem(Data[j] + InputCount, Count - InputCount);
-                } else
+                } else {
+                    DCMIMAGE_DEBUG("cannot allocate memory buffer for 'Data[" << j << "]' in DiColorPixelTemplate::Init()");
                     result = 0;     // at least one buffer could not be allocated!
+                }
             }
         }
         return result;

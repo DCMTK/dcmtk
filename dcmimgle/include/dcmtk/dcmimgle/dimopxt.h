@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,7 +60,14 @@ class DiMonoPixelTemplate
         MaxValue[0] = 0;
         MaxValue[1] = 0;
         // allocate buffer of given size
+#ifdef HAVE_STD__NOTHROW
+        /* use a non-throwing new here (if available) because the allocated buffer can be huge */
+        Data = new (std::nothrow) T[Count];
+#else
         Data = new T[Count];
+#endif
+        if (Data == NULL)
+            DCMIMGLE_DEBUG("cannot allocate memory buffer for 'Data' in DiMonoPixelTemplate constructor");
     }
 
     /** constructor
@@ -99,7 +106,12 @@ class DiMonoPixelTemplate
      */
     virtual ~DiMonoPixelTemplate()
     {
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
+        /* use a non-throwing delete (if available) */
+        operator delete[] (Data, std::nothrow);
+#else
         delete[] Data;
+#endif
     }
 
     /** get integer representation

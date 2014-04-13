@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.13 (riesmeier)
+
+- Use non-throwing new and delete operator:
+  Use non-throwing new and delete operator for large memory buffers in order to
+  avoid exceptions. Output to debug logger if memory allocation fails.
+  Affects: dcmimage/include/dcmtk/dcmimage/dicopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+
 **** Changes from 2014.04.11 (riesmeier)
 
 - Enhanced createDirectory() function:
