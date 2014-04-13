@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -197,7 +197,7 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoPixel
     DiMonoModality *addReferenceToModality();
 
     /** check whether pixel data is 'potentially' signed.
-     *  This check is necessary to interpret possibly folowing LUT descriptors correctly
+     *  This check is necessary to interpret possibly following LUT descriptors correctly
      *  (see supplement 33)
      *
      ** @return true if pixel data is potentially signed, false otherwise
