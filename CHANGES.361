@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.13 (riesmeier)
 
+- Output to debug logger if memory allocation fails.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 - Fixed typo in comment.
   Affects: dcmimgle/include/dcmtk/dcmimgle/dimopx.h
 

@@ -431,7 +431,8 @@ class DiInputPixelTemplate
                     }
                 }
                 deletePixel = OFTrue;
-            }
+            } else
+                DCMIMGLE_DEBUG("cannot allocate memory buffer for 'pixel' in DiInputPixelTemplate::convert()");
         } else {
             DCMIMGLE_DEBUG("reading uncompressed pixel data completely into memory");
             /* always access complete pixel data */
@@ -620,7 +621,8 @@ class DiInputPixelTemplate
                         }
                     }
                 }
-            }
+            } else
+                DCMIMGLE_DEBUG("cannot allocate memory buffer for 'Data' in DiInputPixelTemplate::convert()");
         } else {
             /* in case of error, reset pixel count variable */
             Count = 0;
