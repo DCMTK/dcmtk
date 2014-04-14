@@ -40,7 +40,6 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofdefine.h"
-#include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/dcmdata/dcdicdir.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdirrec.h"
@@ -996,38 +995,14 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
 
-    /* find the path of the dicomdir to be created */
-    OFFilename tempfiledir;
-    OFStandard::getDirNameFromPath(tempfiledir, dicomDirFileName, OFFalse);
-    if (tempfiledir.isEmpty())
-    {
-        /* use current directory to avoid file creation in "temp" */
-        tempfiledir.set(".", OFTrue /*convert*/);
-    }
+    // create a temporary file based on the DICOMDIR filename
+    OFFilename tempFilename;
+    OFStandard::appendFilenameExtension(tempFilename, dicomDirFileName, DICOMDIR_TEMP_SUFFIX);
 
-    OFString tempfile;
-    int tempfilefd;
-    /* tbd: unfortunately, we cannot pass an OFFilename parameter :( */
-    OFCondition status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR | O_BINARY,
-        tempfiledir.getCharPointer(), TEMPNAME_TEMPLATE_PREFIX, "");
-    if (status.bad())
-        return status;
-
-    FILE *f = fdopen(tempfilefd, "wb");
-    if (f == NULL)
-    {
-        char buf[256];
-        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
-        const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-        if (text == NULL) text = "(unknown error code)";
-        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
-        return errorFlag;
-    }
-
-    DcmOutputFileStream *outStream = new DcmOutputFileStream(f);
+    DcmOutputFileStream *outStream = new DcmOutputFileStream(tempFilename);
     if (! outStream->good())
     {
-        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
+        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempFilename);
         errorFlag = outStream->status();
         delete outStream;
         return errorFlag;
@@ -1067,15 +1042,16 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     // outStream is closed here
     delete outStream;
 
-    OFFilename backupname;
+    OFFilename backupFilename;
     if (!mustCreateNewDir)
     {
 #ifndef DICOMDIR_WITHOUT_BACKUP
-        OFStandard::appendFilenameExtension(backupname, dicomDirFileName, DICOMDIR_BACKUP_SUFFIX);
-        OFStandard::deleteFile(backupname);
+        // create a temporary backup of the existing DICOMDIR
+        OFStandard::appendFilenameExtension(backupFilename, dicomDirFileName, DICOMDIR_BACKUP_SUFFIX);
+        OFStandard::deleteFile(backupFilename);
         if (errorFlag == EC_Normal)
         {
-            if (!OFStandard::renameFile(dicomDirFileName, backupname))
+            if (!OFStandard::renameFile(dicomDirFileName, backupFilename))
             {
                 char buf[256];
                 const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
@@ -1094,7 +1070,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 #endif
     }
 
-    if (errorFlag == EC_Normal && !OFStandard::renameFile(tempfile, dicomDirFileName))
+    if (errorFlag == EC_Normal && !OFStandard::renameFile(tempFilename, dicomDirFileName))
     {
         char buf[256];
         const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
@@ -1105,8 +1081,8 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     modified = OFFalse;
 
     if (errorFlag == EC_Normal) {
-        /* remove backup */
-        OFStandard::deleteFile(backupname);
+        // remove temporary backup (if any)
+        OFStandard::deleteFile(backupFilename);
     }
 
     // remove all records from sequence localDirRecSeq

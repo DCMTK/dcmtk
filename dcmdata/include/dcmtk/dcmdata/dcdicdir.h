@@ -29,9 +29,9 @@
 #include "dcmtk/dcmdata/dcvrulup.h"
 
 
-#define DEFAULT_DICOMDIR_NAME    "DICOMDIR"
-#define TEMPNAME_TEMPLATE_PREFIX "DD"
-#define DICOMDIR_BACKUP_SUFFIX   ".$$$"
+#define DEFAULT_DICOMDIR_NAME   "DICOMDIR"
+#define DICOMDIR_BACKUP_SUFFIX  ".$$$"
+#define DICOMDIR_TEMP_SUFFIX    ".tmp"
 #define DICOMDIR_DEFAULT_TRANSFERSYNTAX  EXS_LittleEndianExplicit
 
 /** helper structure for item offsets

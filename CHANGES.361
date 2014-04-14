@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.14 (riesmeier)
+
+- Simplified creation of temporary DICOMDIR file:
+  Replaced creation of a temporary DICOMDIR file by a simpler approach: Just
+  append ".tmp" to the DICOMDIR filename (in the specified output directory).
+  This also makes sure that on Windows systems directory names with special
+  characters (in UTF-16 encoding) are supported.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2014.04.13 (riesmeier)
 
 - Output to debug logger if memory allocation fails.
