@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -264,12 +264,23 @@ END_EXTERN_C
 
 // define INCLUDE_CSTDDEF to include <cstddef> or <stddef.h> if available
 #ifdef INCLUDE_CSTDDEF
-#ifdef USE_STD_CXX_INCLUDES
+#ifdef HAVE_CSTDDEF
 #include <cstddef>
 #elif defined(HAVE_STDDEF_H)
 BEGIN_EXTERN_C
 #include <stddef.h>
 END_EXTERN_C
+#endif
+#endif
+
+// define INCLUDE_CSTDDINT to include <cstdint>, <stdint.h> or <sys/types.h> if available
+#ifdef INCLUDE_CSTDINT
+#ifdef HAVE_CSTDINT
+#include <cstdint>
+#elif defined(HAVE_STDINT_H)
+#include <stdint.h>
+#elif defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
 #endif
 #endif
 

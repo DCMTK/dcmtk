@@ -305,6 +305,9 @@
 /* Define to 1 if you have the <limits.h> header file. */
 #cmakedefine HAVE_LIMITS_H @HAVE_LIMITS_H@
 
+/* Define to 1 if you have the <climits> header file. */
+#cmakedefine HAVE_CLIMITS @HAVE_CLIMITS@
+
 /* Define to 1 if you have the `listen' function. */
 #cmakedefine HAVE_LISTEN @HAVE_LISTEN@
 
@@ -563,6 +566,9 @@
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
+
+/* Define to 1 if you have the <cstdint> header file. */
+#cmakedefine HAVE_CSTDINT @HAVE_CSTDINT@
 
 /* Define to 1 if you have the <stdio.h> header file. */
 #cmakedefine HAVE_STDIO_H @HAVE_STDIO_H@
@@ -934,6 +940,9 @@ typedef unsigned int uint;
 #ifndef HAVE_ULONG_TYPEDEF
 typedef unsigned long ulong;
 #endif
+
+#cmakedefine HAVE_LONG_LONG
+#cmakedefine HAVE_UNSIGNED_LONG_LONG
 
 /* evaluated by JasPer */
 #cmakedefine HAVE_LONGLONG

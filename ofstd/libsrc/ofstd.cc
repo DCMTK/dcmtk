@@ -209,7 +209,9 @@ extern "C"
 
 static int my_isinf(double x)
 {
-#ifdef HAVE_WINDOWS_H
+#if __cplusplus >= 201103L
+  return STD_NAMESPACE isinf(x);
+#elif defined(HAVE_WINDOWS_H)
   return (! _finite(x)) && (! _isnan(x));
 #else
   // Solaris 2.5.1 has finite() and isnan() but not isinf().
@@ -2384,7 +2386,7 @@ eformat:
          * count it as precision.
          */
         --prec;
-        fmtch -= 2;             /* G->E, g->e */
+        fmtch = OFstatic_cast(char, fmtch - 2);             /* G->E, g->e */
         gformat = 1;
         goto eformat;
       }
@@ -2439,7 +2441,7 @@ eformat:
       }
   } /* end switch */
 
-  return (t - startp);
+  return OFstatic_cast(int, t - startp);
 }
 
 void OFStandard::ftoa(
@@ -2454,7 +2456,9 @@ void OFStandard::ftoa(
   if (!dst || !siz) return;
 
   // check if val is NAN
-#ifdef HAVE_WINDOWS_H
+#if __cplusplus >= 201103L
+  if (STD_NAMESPACE isnan(val))
+#elif defined(HAVE_WINDOWS_H)
   if (_isnan(val))
 #else
   if (isnan(val))
@@ -2604,7 +2608,7 @@ void OFStandard::milliSleep(unsigned int millisecs)
     Sleep(millisecs);
 #elif defined(HAVE_USLEEP)
     // usleep() expects microseconds
-    (void) usleep(OFstatic_cast(unsigned long, millisecs)*1000UL);
+    (void) usleep(OFstatic_cast(useconds_t, millisecs * 1000UL));
 #else
     struct timeval t;
     t.tv_sec = millisecs / 1000;
@@ -2840,3 +2844,7 @@ OFBool OFStandard::OFPasswd::operator!() const { return !ok; }
 OFStandard::OFPasswd::operator OFBool() const { return ok; }
 
 #endif // HAVE_PWD_H
+
+#if __cplusplus < 201103L
+DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
+#endif

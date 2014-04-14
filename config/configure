@@ -5503,6 +5503,26 @@ _ACEOF
 
 fi
 
+ac_fn_c_check_type "$LINENO" "long long" "ac_cv_type_long_long" "$ac_includes_default"
+if test "x$ac_cv_type_long_long" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LONG_LONG 1
+_ACEOF
+
+
+fi
+
+ac_fn_c_check_type "$LINENO" "unsigned long long" "ac_cv_type_unsigned_long_long" "$ac_includes_default"
+if test "x$ac_cv_type_unsigned_long_long" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_UNSIGNED_LONG_LONG 1
+_ACEOF
+
+
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether variable-length arrays are supported" >&5
 $as_echo_n "checking whether variable-length arrays are supported... " >&6; }
 
@@ -5561,6 +5581,18 @@ do :
 if test "x$ac_cv_header_stdint_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_STDINT_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in cstdint
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "cstdint" "ac_cv_header_cstdint" "$ac_includes_default"
+if test "x$ac_cv_header_cstdint" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CSTDINT 1
 _ACEOF
 
 fi
@@ -7847,6 +7879,18 @@ fi
 
 done
 
+for ac_header in climits
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "climits" "ac_cv_header_climits" "$ac_includes_default"
+if test "x$ac_cv_header_climits" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CLIMITS 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in locale.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "locale.h" "ac_cv_header_locale_h" "$ac_includes_default"
@@ -8045,6 +8089,18 @@ do :
 if test "x$ac_cv_header_stddef_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_STDDEF_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in cstddef
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "cstddef" "ac_cv_header_cstddef" "$ac_includes_default"
+if test "x$ac_cv_header_cstddef" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CSTDDEF 1
 _ACEOF
 
 fi
@@ -12305,7 +12361,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12308 "configure"
+#line 12364 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12777,7 +12833,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12780 "configure"
+#line 12836 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12849,7 +12905,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12852 "configure"
+#line 12908 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12921,7 +12977,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12924 "configure"
+#line 12980 "configure"
 #include "confdefs.h"
 
 template <class T>

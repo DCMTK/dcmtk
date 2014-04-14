@@ -88,6 +88,9 @@
 /* Define if your C++ compiler can work with class templates */
 #undef HAVE_CLASS_TEMPLATE
 
+/* Define to 1 if you have the <climits> header file. */
+#undef HAVE_CLIMITS
+
 /* Define to 1 if you have the `connect' function. */
 #undef HAVE_CONNECT
 
@@ -96,6 +99,12 @@
 
 /* Define to 1 if you have the <cstdarg> header file. */
 #undef HAVE_CSTDARG
+
+/* Define to 1 if you have the <cstddef> header file. */
+#undef HAVE_CSTDDEF
+
+/* Define to 1 if you have the <cstdint> header file. */
+#undef HAVE_CSTDINT
 
 /* Define to 1 if you have the <cstdio> header file. */
 #undef HAVE_CSTDIO
@@ -344,6 +353,9 @@
 
 /* Define to 1 if you support file names longer than 14 characters. */
 #undef HAVE_LONG_FILE_NAMES
+
+/* Define to 1 if the system has the type `long long'. */
+#undef HAVE_LONG_LONG
 
 /* Define to 1 if you have the `lstat' function. */
 #undef HAVE_LSTAT
@@ -798,6 +810,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <unix.h> header file. */
 #undef HAVE_UNIX_H
+
+/* Define to 1 if the system has the type `unsigned long long'. */
+#undef HAVE_UNSIGNED_LONG_LONG
 
 /* Define to 1 if you have the `usleep' function. */
 #undef HAVE_USLEEP
