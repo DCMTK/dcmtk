@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.14 (schlamelcher)
 
+- Added documentation for the new macro "DOXYGEN":
+  The macro DOXYGEN is defined when generating the documentation with doxygen
+  and should NEVER be defined when compiling with a C/C++ compiler.
+  See config/docs/macros.txt for details.
+  Affects: config/docs/macros.txt
+
 - Added support for some C++11 types, literals and traits:
   Updated implementation of fixed-width integer types to better conform the
   C++11 standard. This includes OFintptr_t and OFuintptr_t as integer types

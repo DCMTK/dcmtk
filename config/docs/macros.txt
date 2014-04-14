@@ -143,6 +143,18 @@ DONT_LOAD_EXTERNAL_DICTIONARIES
     Even if this flag is defined, the reloadDictionaries() method can be
     used to load the external dictionaries after application start.
 
+DOXYGEN
+  Affected: everything
+  Type of modification: Hides complexity from doxygen
+  Explanation: Doxygen is unable to parse some complex statements correctly
+    and it is sometimes sufficient to provide documentation for the basic
+    functionality instead of documenting every detail.
+    This macro is defined when creating the documentation with doxygen and
+    should NEVER be defined when compiling DCMTK with a C/C++ compiler.
+    NOTE: Doxygen is still unable to expand some macros correctly
+    (e.g. HAVE_WINDOWS_H). Using this macro at the appropriate locations
+    could be a solution for this problem.
+
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
   Type of modification: Activates experimental or rarely used feature
