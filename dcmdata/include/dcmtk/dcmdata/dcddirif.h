@@ -273,10 +273,15 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @param directory directory where the DICOM file is stored (optional).
      *    This parameter might be useful in cases where the DICOM file is not (yet)
      *    stored in the final directory (i.e. "relative" to the DICOMDIR location).
+     *  @param checkFilename flag indicating whether to check the filename with
+     *    isFilenameValid() or not. In case where the DICOM file is copied or
+     *    renamed after this method is called, it might be useful to disable
+     *    this check.
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition checkDicomFile(const OFFilename &filename,
-                               const OFFilename &directory = OFFilename());
+                               const OFFilename &directory = OFFilename(),
+                               const OFBool checkFilename = OFTrue);
 
     /** add specified DICOM file to the current DICOMDIR.
      *  This method loads the given file, checks whether it conforms to the current
@@ -573,11 +578,14 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @param filename name of the DICOM file to be checked
      *  @param directory directory where the DICOM file is stored (optional)
      *  @param fileformat object in which the loaded data is stored
+     *  @param checkFilename flag indicating whether to check the filename with
+     *    isFilenameValid() or not
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition loadAndCheckDicomFile(const OFFilename &filename,
                                       const OFFilename &directory,
-                                      DcmFileFormat &fileformat);
+                                      DcmFileFormat &fileformat,
+                                      const OFBool checkFilename = OFTrue);
 
     /** check SOP class and transfer syntax for compliance with current profile
      *  @param metainfo object where the DICOM file meta information is stored

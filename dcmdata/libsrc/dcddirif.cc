@@ -2673,27 +2673,29 @@ OFCondition DicomDirInterface::selectApplicationProfile(const E_ApplicationProfi
 
 // check whether DICOM file is suitable for a DICOMDIR of the specified application profile
 OFCondition DicomDirInterface::checkDicomFile(const OFFilename &filename,
-                                              const OFFilename &directory)
+                                              const OFFilename &directory,
+                                              const OFBool checkFilename)
 {
     /* define fileformat object for the DICOM file to be loaded */
     DcmFileFormat fileformat;
     /* call the "real" function */
-    return loadAndCheckDicomFile(filename, directory, fileformat);
+    return loadAndCheckDicomFile(filename, directory, fileformat, checkFilename);
 }
 
 
 // load DICOM file and check whether it is suitable for a DICOMDIR of the specified application profile
 OFCondition DicomDirInterface::loadAndCheckDicomFile(const OFFilename &filename,
                                                      const OFFilename &directory,
-                                                     DcmFileFormat &fileformat)
+                                                     DcmFileFormat &fileformat,
+                                                     const OFBool checkFilename)
 {
     OFCondition result = EC_IllegalParameter;
     /* create fully qualified pathname of the DICOM file to be added */
     OFFilename pathname;
     OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
     DCMDATA_INFO("checking file: " << pathname);
-    /* check filename */
-    if (isFilenameValid(filename))
+    /* check filename (if not disabled) */
+    if (!checkFilename || isFilenameValid(filename))
     {
         /* load DICOM file */
         result = fileformat.loadFile(pathname);
@@ -4600,7 +4602,7 @@ OFCondition DicomDirInterface::addDicomFile(const OFFilename &filename,
         OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
         /* then check the file name, load the file and check the content */
         DcmFileFormat fileformat;
-        result = loadAndCheckDicomFile(filename, directory, fileformat);
+        result = loadAndCheckDicomFile(filename, directory, fileformat, OFTrue /*checkFilename*/);
         if (result.good())
         {
             DCMDATA_INFO("adding file: " << pathname);

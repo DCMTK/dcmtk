@@ -26,6 +26,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.14 (riesmeier)
 
+- Optionally disable isFilenameValid() check:
+  Added optional parameter to checkDicomFile() and loadAndCheckDicomFile()
+  that allows one to disable the check for a valid DICOM filename (used as the
+  value for ReferencedFileID within the DICOMDIR). This is because the file
+  might be renamed after one of these methods is called.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
 - Simplified creation of temporary DICOMDIR file:
   Replaced creation of a temporary DICOMDIR file by a simpler approach: Just
   append ".tmp" to the DICOMDIR filename (in the specified output directory).
