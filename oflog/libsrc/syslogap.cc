@@ -84,17 +84,6 @@ namespace log4cplus
 namespace
 {
 
-static
-const char*
-useIdent (const tstring& string)
-{
-    if (string.empty ())
-        return 0;
-    else
-        return string.c_str ();
-}
-
-
 #ifdef LOG_USER
 int const fallback_facility = LOG_USER;
 
@@ -222,6 +211,12 @@ parseFacility (const tstring& text)
 ///////////////////////////////////////////////////////////////////////////////
 
 #if defined (DCMTK_LOG4CPLUS_HAVE_SYSLOG_H)
+static const char*
+useIdent (const tstring& string)
+{
+    return string.empty() ? 0 : string.c_str();
+}
+
 SysLogAppender::SysLogAppender(const tstring& id)
     : ident(id)
     , facility (0)
@@ -278,7 +273,7 @@ SysLogAppender::SysLogAppender(const helpers::Properties & properties)
             port = 514;
 
         appendFunc = &SysLogAppender::appendRemote;
-        syslogSocket = helpers::Socket (host, port, true);
+        syslogSocket = helpers::Socket (host, OFstatic_cast(unsigned short, port), true);
     }
 }
 
@@ -290,7 +285,7 @@ SysLogAppender::SysLogAppender(const tstring& id, const tstring & h,
     , appendFunc (&SysLogAppender::appendRemote)
     , host (h)
     , port (p)
-    , syslogSocket (host, port, true)
+    , syslogSocket (host, OFstatic_cast(unsigned short, port), true)
     // Store STD_NAMESPACE string form of ident as member of SysLogAppender so
     // the address of the c_str() result remains stable for openlog &
     // co to use even if we use wstrings.
@@ -426,7 +421,7 @@ SysLogAppender::appendRemote(const spi::InternalLoggingEvent& event)
         helpers::getLogLog ().warn (
             DCMTK_LOG4CPLUS_TEXT ("SysLogAppender::appendRemote")
             DCMTK_LOG4CPLUS_TEXT ("- socket write failed"));
-        syslogSocket = helpers::Socket (host, port, true);
+        syslogSocket = helpers::Socket (host, OFstatic_cast(unsigned short, port), true);
     }
 }
 

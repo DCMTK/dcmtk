@@ -64,6 +64,11 @@
 #include <unistd.h>
 #endif
 
+// helper methods to fix old-style casts warnings
+BEGIN_EXTERN_C
+static unsigned short OFhtons(unsigned short us) { return htons(us); }
+static in_addr_t OFinaddr_any() { return INADDR_ANY; }
+END_EXTERN_C
 
 namespace dcmtk {
 namespace log4cplus { namespace helpers {
@@ -158,8 +163,8 @@ openSocket(unsigned short port, SocketState& state)
 
     struct sockaddr_in server = sockaddr_in ();
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(port);
+    server.sin_addr.s_addr = OFinaddr_any();
+    server.sin_port = OFhtons(port);
 
     int optval = 1;
     socklen_t optlen = sizeof (optval);
@@ -200,7 +205,7 @@ connectSocket(const tstring& hostn, unsigned short port, bool udp, SocketState& 
     if (retval != 0)
         return INVALID_SOCKET_VALUE;
 
-    server.sin_port = htons(port);
+    server.sin_port = OFhtons(port);
     server.sin_family = AF_INET;
 
     sock = ::socket(AF_INET, (udp ? SOCK_DGRAM : SOCK_STREAM), 0);
@@ -259,7 +264,7 @@ accept_wrap (
     socklen_var_type l = OFstatic_cast(socklen_var_type, *len);
     SOCKET_TYPE result
         = OFstatic_cast(SOCKET_TYPE,
-            accept_func (sock, sa,
+            accept_func (to_os_socket(sock), sa,
                 OFreinterpret_cast(accept_socklen_type *, &l)));
     *len = OFstatic_cast(socklen_t, l);
     return result;
@@ -277,8 +282,8 @@ acceptSocket(SOCKET_TYPE sock, SocketState& state)
     int clientSock;
 
     while(
-        (clientSock = accept_wrap (accept, to_os_socket (sock),
-            OFreinterpret_cast(struct sockaddr*, &net_client), &len))
+        (clientSock = OFstatic_cast(int, accept_wrap (accept, sock,
+            OFreinterpret_cast(struct sockaddr*, &net_client), &len)))
         == -1
         && (errno == EINTR))
         ;
@@ -396,7 +401,7 @@ setTCPNoDelay (SOCKET_TYPE sock, bool val)
 
     int result;
     int enabled = OFstatic_cast(int, val);
-    if ((result = setsockopt(sock, level, TCP_NODELAY, &enabled,
+    if ((result = setsockopt(to_os_socket(sock), level, TCP_NODELAY, &enabled,
                 sizeof(enabled))) != 0)
         set_last_socket_error (errno);
     

@@ -274,7 +274,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     gft_sp.reset ();
 
     gft_sp.fmt.assign (fmt_orig);
-    gft_sp.ret.reserve (OFstatic_cast(size_t, gft_sp.fmt.size () * 1.35));
+    gft_sp.ret.reserve (OFstatic_cast(size_t, OFstatic_cast(double, gft_sp.fmt.size ()) * 1.35));
     State state = TEXT;
 
     // Walk the format string and process all occurences of %q and %Q.

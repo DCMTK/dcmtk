@@ -1,6 +1,39 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.16 (schlamelcher)
+
+- Fixed most of the warnings in ofstd and oflog:
+  Compiled with extensive warning options except -Wtraditional and corrected
+  most of the problems.
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           oflog/include/dcmtk/oflog/helpers/strhelp.h
+           oflog/include/dcmtk/oflog/thread/impl/syncwin.h
+           oflog/libsrc/log4judp.cc
+           oflog/libsrc/ntelogap.cc
+           oflog/libsrc/sockbuff.cc
+           oflog/libsrc/striconv.cc
+           oflog/libsrc/syslogap.cc
+           oflog/libsrc/threads.cc
+           oflog/libsrc/timehelp.cc
+           oflog/libsrc/unixsock.cc
+           oflog/libsrc/winsock.cc
+           ofstd/include/dcmtk/ofstd/ofbmanip.h
+           ofstd/include/dcmtk/ofstd/ofexport.h
+           ofstd/include/dcmtk/ofstd/ofmap.h
+           ofstd/include/dcmtk/ofstd/ofmem.h
+           ofstd/include/dcmtk/ofstd/ofthread.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/libsrc/ofconfig.cc
+           ofstd/libsrc/ofstring.cc
+           ofstd/libsrc/oftempf.cc
+           ofstd/libsrc/ofthread.cc
+           ofstd/libsrc/ofuuid.cc
+           ofstd/libsrc/ofxml.cc
+           ofstd/tests/tatof.cc
+           ofstd/tests/tftoa.cc
+           ofstd/tests/tlist.cc
+
 **** Changes from 2014.04.14 (schlamelcher)
 
 - Added documentation for the new macro "DOXYGEN":

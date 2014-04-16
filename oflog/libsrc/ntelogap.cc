@@ -50,7 +50,7 @@ namespace {
     {
         DWORD dwLength = ::GetLengthSid(pSrcSid);
 
-        SID * pDstSid = (SID *) calloc (1, dwLength);
+        SID * pDstSid = OFreinterpret_cast(SID*, calloc(1, dwLength));
         if (! pDstSid)
             return false;
 
@@ -84,12 +84,12 @@ namespace {
         if (! GetTokenInformation(hToken, TokenUser, NULL, 0, &tusize))
             goto finish;
 
-        ptu = (TOKEN_USER*) calloc (1, tusize);
+        ptu = OFreinterpret_cast(TOKEN_USER*, calloc(1, tusize));
         if (! ptu)
             goto finish;
 
-        if (GetTokenInformation(hToken, TokenUser, (LPVOID)ptu, tusize, &tusize))
-            bSuccess = copySID (ppSid, (SID *)ptu->User.Sid);
+        if (GetTokenInformation(hToken, TokenUser, OFreinterpret_cast(LPVOID, ptu), tusize, &tusize))
+            bSuccess = copySID (ppSid, OFreinterpret_cast(SID*, ptu->User.Sid));
 
     finish:;
         if (hToken)
@@ -141,7 +141,7 @@ namespace {
                       0, 
                       REG_DWORD, 
                       OFreinterpret_cast(LPBYTE, &value),
-                      sizeof(DWORD));
+                      OFstatic_cast(DWORD, sizeof(DWORD)));
     }
 
 }
@@ -168,13 +168,12 @@ NTEventLogAppender::NTEventLogAppender(const tstring& server,
 
 NTEventLogAppender::NTEventLogAppender(const helpers::Properties & properties)
 : Appender(properties),
+  server(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("server") )),
+  log(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("log") )),
+  source(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("source") )),
   hEventLog(NULL), 
   pCurrentUserSID(NULL)
 {
-    server = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("server") );
-    log = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("log") );
-    source = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("source") );
-
     init();
 }
 
@@ -336,8 +335,8 @@ NTEventLogAppender::addRegistryInfo()
         regSetString(hkey, 
                      DCMTK_LOG4CPLUS_TEXT("CategoryMessageFile"), 
                      DCMTK_LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
-        regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("TypesSupported"), (DWORD)7);
-        regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("CategoryCount"), (DWORD)5);
+        regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("TypesSupported"), OFstatic_cast(DWORD, 7));
+        regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("CategoryCount"), OFstatic_cast(DWORD, 5));
     }
     
     RegCloseKey(hkey);

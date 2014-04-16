@@ -46,12 +46,12 @@ extern "C"
 
     //! SUSv3 iconv() type.
     typedef size_t (& iconv_func_type_1) (iconv_t cd, char * * inbuf,
-	size_t * inbytesleft, char * * outbuf, size_t * outbytesleft); 
+    size_t * inbytesleft, char * * outbuf, size_t * outbytesleft); 
 
 
     //! GNU iconv() type.
     typedef size_t (& iconv_func_type_2) (iconv_t cd, const char * * inbuf,
-	size_t * inbytesleft, char * * outbuf, size_t * outbytesleft);
+    size_t * inbytesleft, char * * outbuf, size_t * outbytesleft);
 
 } // extern "C"
 
@@ -115,6 +115,11 @@ struct iconv_handle
     }
 
     iconv_t handle;
+    
+// to silence warnings
+private:
+    iconv_handle(const iconv_handle&);
+    iconv_handle& operator=(const iconv_handle&);
 };
 
 

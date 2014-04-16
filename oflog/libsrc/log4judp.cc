@@ -195,7 +195,7 @@ void
 Log4jUdpAppender::openSocket()
 {
     if(!socket.isOpen()) {
-        socket = helpers::Socket(host, port, true);
+        socket = helpers::Socket(host, OFstatic_cast(unsigned short, port), true);
     }
 }
 

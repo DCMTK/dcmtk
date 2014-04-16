@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,11 +81,11 @@ const ValuePair vp[] =
 
 OFTEST(ofstd_atof)
 {
-  unsigned long numVp = sizeof(vp)/sizeof(ValuePair);
+  size_t numVp = sizeof(vp)/sizeof(ValuePair);
   double d1, d2, delta;
   OFBool r = OFFalse;
 
-  for (unsigned long i=0; i<numVp; i++)
+  for (size_t i=0; i<numVp; i++)
   {
     d1 = vp[i].d;
     d2 = OFStandard::atof(vp[i].s, &r);

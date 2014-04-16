@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -475,8 +475,7 @@ char OFConfigFile::read_keywordchar(FILE *infile)
     c = read_char(infile);
     if ((c != ' ') && (c != 9) && (c != 10)) done = 1;
   }
-  if ((c > 96) && (c < 123)) c -= 32;
-  return c;
+  return (c > 96) && (c < 123) ? OFstatic_cast(char, c - 32) : c;
 }
 
 void OFConfigFile::read_entry(FILE *infile)

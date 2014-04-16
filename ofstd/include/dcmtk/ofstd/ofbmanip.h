@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,12 +53,12 @@ class OFBitmanipTemplate
      */
     static void copyMem(const T *src,
                         T *dest,
-                        const unsigned long count)
+                        const size_t count)
     {
 #ifdef HAVE_MEMCPY
-        memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
+        memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
 #else
-        register unsigned long i;
+        register size_t i;
         register const T *p = src;
         register T *q = dest;
         for (i = count; i != 0; --i)
@@ -78,7 +78,7 @@ class OFBitmanipTemplate
      */
     static void moveMem(const T *src,
                         T *dest,
-                        unsigned long count)
+                        const size_t count)
     {
 #ifdef HAVE_MEMMOVE
         memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
@@ -86,7 +86,7 @@ class OFBitmanipTemplate
         if (src == dest)
             return;
 
-        register unsigned long i;
+        register size_t i;
         register const T *p = src;
         register T *q = dest;
         if (src > dest)
@@ -115,7 +115,7 @@ class OFBitmanipTemplate
      */
     static void setMem(T *dest,
                        const T value,
-                       const unsigned long count)
+                       const size_t count)
     {
 #ifdef HAVE_MEMSET
         if ((value == 0) || (sizeof(T) == sizeof(unsigned char)))
@@ -123,7 +123,7 @@ class OFBitmanipTemplate
         else
 #endif
         {
-            register unsigned long i;
+            register size_t i;
             register T *q = dest;
             for (i = count; i != 0; --i)
                 *q++ = value;
@@ -137,12 +137,12 @@ class OFBitmanipTemplate
      *  @param  count  number of elements to be set to zero
      */
     static void zeroMem(T *dest,
-                        const unsigned long count)
+                        const size_t count)
     {
 #ifdef HAVE_MEMZERO
         memzero(dest, OFstatic_cast(size_t, count) * sizeof(T));
 #else
-        register unsigned long i;
+        register size_t i;
         register T *q = dest;
         for (i = count; i != 0; --i)
             *q++ = 0;

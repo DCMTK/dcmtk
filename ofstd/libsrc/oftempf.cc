@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,8 +126,9 @@ void OFTempFile::getTempPath(OFString& sPath)
 {
     // We could also try getenv("TMPDIR"), if getenv() is available.
 #ifdef _WIN32
-    char buffer[1024];
-    GetTempPath(sizeof(buffer), buffer);
+#define BUFFER_SIZE 1024
+    char buffer[BUFFER_SIZE];
+    GetTempPath(BUFFER_SIZE, buffer);
     sPath = buffer;
 #else
     sPath = "/tmp";

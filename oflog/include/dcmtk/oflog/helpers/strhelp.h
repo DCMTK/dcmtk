@@ -126,7 +126,7 @@ namespace log4cplus {
                     intType const mod = 0-(a + value);
                     value = 0-r;
 
-                    *(it - 1) = DCMTK_LOG4CPLUS_TEXT('0') + OFstatic_cast(tchar, mod);
+                    *(it - 1) = OFstatic_cast(tchar, DCMTK_LOG4CPLUS_TEXT('0') + mod);
                     --it;
                 }
                 else
@@ -170,7 +170,7 @@ namespace log4cplus {
             {
                 intType mod = value % 10;
                 value = value / 10;
-                *(it - 1) = DCMTK_LOG4CPLUS_TEXT('0') + OFstatic_cast(tchar, mod);
+                *(it - 1) = OFstatic_cast(tchar, DCMTK_LOG4CPLUS_TEXT('0') + mod);
             }
 
             if (negative)

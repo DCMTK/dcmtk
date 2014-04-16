@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,6 +69,11 @@ public:
      */
     template<class OK, class OV>
     OFPair(const OFPair<OK, OV>& p) : first(p.first), second(p.second) { }
+
+    /** copy constructor
+     *  @param p Other OFPair to copy from.
+     */
+    OFPair(const OFPair& p) : first(p.first), second(p.second) { }
 
     /** assignment operator */
     OFPair<K, V>& operator=(const OFPair<K, V>& other)

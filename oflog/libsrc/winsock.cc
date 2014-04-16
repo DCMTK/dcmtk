@@ -189,7 +189,7 @@ openSocket(unsigned short port, SocketState& state)
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_port = htons(port);
 
-    if (bind(sock, OFreinterpret_cast(struct sockaddr*, &server), sizeof(server))
+    if (bind(sock, OFreinterpret_cast(struct sockaddr*, &server), OFstatic_cast(int, sizeof(server)))
         != 0)
         goto error;
 
@@ -234,7 +234,7 @@ connectSocket(const tstring& hostn, unsigned short port, bool udp, SocketState& 
     if (hp == 0 || hp->h_addrtype != AF_INET)
     {
         insock.sin_family = AF_INET;
-        INT insock_size = sizeof (insock);
+        INT insock_size = OFstatic_cast(int, sizeof (insock));
         INT ret = WSAStringToAddress (OFconst_cast(LPTSTR, hostn.c_str ()),
             AF_INET, 0, OFreinterpret_cast(struct sockaddr *, &insock),
             &insock_size);
@@ -251,7 +251,7 @@ connectSocket(const tstring& hostn, unsigned short port, bool udp, SocketState& 
     insock.sin_port = htons(port);
     insock.sin_family = AF_INET;
 
-    while(   (retval = ::connect(sock, (struct sockaddr*)&insock, sizeof(insock))) == -1
+    while(   (retval = ::connect(sock, OFreinterpret_cast(struct sockaddr*, &insock), OFstatic_cast(int, sizeof(insock)))) == -1
           && (WSAGetLastError() == WSAEINTR))
         ;
     if (retval == SOCKET_ERROR)
@@ -380,7 +380,7 @@ setTCPNoDelay (SOCKET_TYPE sock, bool val)
     int result;
     int enabled = OFstatic_cast(int, val);
     if ((result = setsockopt(sock, IPPROTO_TCP, TCP_NODELAY,
-            OFreinterpret_cast(char*, &enabled),sizeof(enabled))) != 0)
+            OFreinterpret_cast(char*, &enabled),OFstatic_cast(int, sizeof(enabled)))) != 0)
     {
         int eno = WSAGetLastError ();
         set_last_socket_error (eno);

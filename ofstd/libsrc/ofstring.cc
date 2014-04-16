@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,6 +35,7 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofbmanip.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -478,7 +479,7 @@ OFString::compare (const OFString& str) const
     // Our string could contain null bytes and thus we can't use strncmp()
     int result = memcmp(this->theCString, str.theCString, rlen);
     if (result == 0) {
-        result = (this_size - str_size);
+        result = this_size < str_size ? -1 : this_size > str_size ? 1 : 0;
     }
     return result;
 }
@@ -577,16 +578,16 @@ OFString::rfind (const OFString& pattern, size_t pos) const
     if ((this_size == 0) || (pattern_size == 0) || (this_size < pattern_size)) {
         return OFString_npos;
     }
-    int above = ((this_size - pattern_size) < pos) ? (this_size - pattern_size) : pos;
-    for (int i = above; i >= 0; i--) {
+    OFintptr_t above = ((this_size - pattern_size) < pos) ? (this_size - pattern_size) : pos;
+    for (OFintptr_t i = above; i >= 0; --i) {
         int match = 1; /* assume there is a match */
-        for (size_t j = 0; (j < pattern_size) && match; j++) {
+        for (size_t j = 0; (j < pattern_size) && match; ++j) {
             if (this->at(i + j) != pattern[j]) {
                 match = 0;
             }
         }
         if (match) {
-            return i;
+            return OFstatic_cast(size_t, i); // if i were < 0, the for-loop would've been already left.
         }
     }
     return OFString_npos;

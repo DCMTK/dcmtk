@@ -131,7 +131,7 @@ get_current_thread_name_alt (log4cplus::tostream * s)
 
 #if defined (DCMTK_LOG4CPLUS_USE_PTHREADS) && defined (__linux__) \
     && defined (DCMTK_LOG4CPLUS_HAVE_GETTID)
-    pid_t tid = syscall (SYS_gettid);
+    pid_t tid = OFstatic_cast(pid_t, syscall (SYS_gettid));
     os << tid;
 
 #elif defined (__CYGWIN__)

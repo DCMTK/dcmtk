@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,7 +118,7 @@ OFThread::OFThread()
 OFThread::~OFThread()
 {
 #ifdef WINDOWS_INTERFACE
-  CloseHandle((HANDLE)theThreadHandle);
+  CloseHandle(OFreinterpret_cast(HANDLE, theThreadHandle));
 #endif
 }
 
@@ -158,8 +158,8 @@ int OFThread::start()
 int OFThread::join()
 {
 #ifdef WINDOWS_INTERFACE
-  if (WaitForSingleObject((HANDLE)theThreadHandle, INFINITE) == WAIT_OBJECT_0) return 0;
-  else return (int)GetLastError();
+  if (WaitForSingleObject(OFreinterpret_cast(HANDLE, theThreadHandle), INFINITE) == WAIT_OBJECT_0) return 0;
+  else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   void *retcode=NULL;
   return pthread_join(OFstatic_cast(pthread_t, theThread), &retcode);
@@ -250,9 +250,9 @@ void OFThread::errorstr(OFString& description, int /* code */ )
     LPVOID buf;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-      NULL, (DWORD)code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPTSTR) &buf, 0, NULL);
-    if (buf) description = (const char *)buf;
+      NULL, OFstatic_cast(DWORD, code), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      OFreinterpret_cast(LPTSTR, &buf), 0, NULL);
+    if (buf) description = OFstatic_cast(const char *, buf);
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
@@ -276,7 +276,7 @@ OFThreadSpecificData::OFThreadSpecificData()
   if (key)
   {
     *key = TlsAlloc();
-    if (*key == (DWORD) -1) delete key;
+    if (*key == OFstatic_cast(DWORD, -1)) delete key;
     else theKey=key;
   }
 #elif defined(POSIX_INTERFACE)
@@ -328,7 +328,7 @@ int OFThreadSpecificData::set(void * /* value */ )
 #ifdef WINDOWS_INTERFACE
   if (theKey)
   {
-    if (0 == TlsSetValue(*((DWORD *)theKey), value)) return (int)GetLastError(); else return 0;
+    if (0 == TlsSetValue(*(OFthread_cast(DWORD *, theKey)), value)) return OFstatic_cast(int, GetLastError()); else return 0;
   } else return ERROR_INVALID_HANDLE;
 #elif defined(POSIX_INTERFACE)
   if (theKey) return pthread_setspecific(* OFthread_cast(pthread_key_t *, theKey), value); else return EINVAL;
@@ -344,7 +344,7 @@ int OFThreadSpecificData::get(void *&value)
 #ifdef WINDOWS_INTERFACE
   if (theKey)
   {
-    value = TlsGetValue(*((DWORD *)theKey));
+    value = TlsGetValue(*(OFthread_cast(DWORD *, theKey)));
     return 0;
   } else {
     value = NULL;
@@ -378,9 +378,9 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
   LPVOID buf;
   FormatMessage(
     FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-    NULL, (DWORD)code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-    (LPTSTR) &buf, 0, NULL);
-  if (buf) description = (const char *)buf;
+    NULL, OFstatic_cast(DWORD, code), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+    OFreinterpret_cast(LPTSTR, &buf), 0, NULL);
+  if (buf) description = OFstatic_cast(const char *, buf);
   LocalFree(buf);
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
   char buf[256];
@@ -442,7 +442,7 @@ OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 OFSemaphore::~OFSemaphore()
 {
 #ifdef WINDOWS_INTERFACE
-  CloseHandle((HANDLE)theSemaphore);
+  CloseHandle(OFthread_cast(HANDLE, theSemaphore));
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore) sem_destroy(OFthread_cast(sem_t *, theSemaphore));
   delete OFthread_cast(sem_t *, theSemaphore);
@@ -466,8 +466,8 @@ OFBool OFSemaphore::initialized() const
 int OFSemaphore::wait()
 {
 #ifdef WINDOWS_INTERFACE
-  if (WaitForSingleObject((HANDLE)theSemaphore, INFINITE) == WAIT_OBJECT_0) return 0;
-  else return (int)GetLastError();
+  if (WaitForSingleObject(OFthread_cast(HANDLE, theSemaphore), INFINITE) == WAIT_OBJECT_0) return 0;
+  else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
@@ -483,10 +483,10 @@ int OFSemaphore::wait()
 int OFSemaphore::trywait()
 {
 #ifdef WINDOWS_INTERFACE
-  DWORD result = WaitForSingleObject((HANDLE)theSemaphore, 0);
+  DWORD result = WaitForSingleObject(OFthread_cast(HANDLE, theSemaphore), 0);
   if (result == WAIT_OBJECT_0) return 0;
   else if (result == WAIT_TIMEOUT) return OFSemaphore::busy;
-  else return (int)GetLastError();
+  else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
@@ -502,7 +502,7 @@ int OFSemaphore::trywait()
 int OFSemaphore::post()
 {
 #ifdef WINDOWS_INTERFACE
-  if (ReleaseSemaphore((HANDLE)theSemaphore, 1, NULL)) return 0; else return (int)GetLastError();
+  if (ReleaseSemaphore(OFthread_cast(HANDLE, theSemaphore), 1, NULL)) return 0; else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
@@ -527,9 +527,9 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
     LPVOID buf;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-      NULL, (DWORD)code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPTSTR) &buf, 0, NULL);
-    if (buf) description = (const char *)buf;
+      NULL, OFstatic_cast(DWORD, code), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      OFreinterpret_cast(LPTSTR, &buf), 0, NULL);
+    if (buf) description = OFreinterpret_cast(const char *, buf);
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
@@ -582,7 +582,7 @@ OFMutex::OFMutex()
 OFMutex::~OFMutex()
 {
 #ifdef WINDOWS_INTERFACE
-  CloseHandle((HANDLE)theMutex);
+  CloseHandle(OFthread_cast(HANDLE, theMutex));
 #elif defined(POSIX_INTERFACE)
   if (theMutex) pthread_mutex_destroy(OFthread_cast(pthread_mutex_t *, theMutex));
   delete OFthread_cast(pthread_mutex_t *, theMutex);
@@ -608,8 +608,8 @@ OFBool OFMutex::initialized() const
 int OFMutex::lock()
 {
 #ifdef WINDOWS_INTERFACE
-  if (WaitForSingleObject((HANDLE)theMutex, INFINITE) == WAIT_OBJECT_0) return 0;
-  else return (int)GetLastError();
+  if (WaitForSingleObject(OFthread_cast(HANDLE, theMutex), INFINITE) == WAIT_OBJECT_0) return 0;
+  else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_lock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
@@ -622,10 +622,10 @@ int OFMutex::lock()
 int OFMutex::trylock()
 {
 #ifdef WINDOWS_INTERFACE
-  DWORD result = WaitForSingleObject((HANDLE)theMutex, 0);
+  DWORD result = WaitForSingleObject(OFthread_cast(HANDLE, theMutex), 0);
   if (result == WAIT_OBJECT_0) return 0;
   else if (result == WAIT_TIMEOUT) return OFMutex::busy;
-  else return (int)GetLastError();
+  else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_trylock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL; // may return EBUSY.
 #elif defined(SOLARIS_INTERFACE)
@@ -638,7 +638,7 @@ int OFMutex::trylock()
 int OFMutex::unlock()
 {
 #ifdef WINDOWS_INTERFACE
-  if (ReleaseMutex((HANDLE)theMutex)) return 0; else return (int)GetLastError();
+  if (ReleaseMutex(OFthread_cast(HANDLE, theMutex))) return 0; else return OFstatic_cast(int, GetLastError());
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_unlock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
@@ -660,9 +660,9 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
     LPVOID buf;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-      NULL, (DWORD)code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPTSTR) &buf, 0, NULL);
-    if (buf) description = (const char *)buf;
+      NULL, OFstatic_cast(DWORD, code), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      OFreinterpret_cast(LPTSTR, &buf), 0, NULL);
+    if (buf) description = OFreinterpret_cast(const char *, buf);
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
@@ -761,7 +761,7 @@ int OFReadWriteLock::rdlock()
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
-    OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
+    OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
     int result =0;
     while (1)
     {
@@ -799,7 +799,7 @@ int OFReadWriteLock::wrlock()
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
-    OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
+    OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
     int result =0;
     while (1)
     {
@@ -836,7 +836,7 @@ int OFReadWriteLock::tryrdlock()
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
-    OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
+    OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
     int result =0;
     if (0 != (result = rwl->accessMutex.lock())) return result; // lock mutex
     if (rwl->numReaders >= 0) // we can grant the read lock
@@ -869,7 +869,7 @@ int OFReadWriteLock::trywrlock()
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
-    OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
+    OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
     int result =0;
     if (0 != (result = rwl->accessMutex.lock())) return result; // lock mutex
     if (rwl->numReaders == 0) // we can grant the write lock
@@ -900,7 +900,7 @@ int OFReadWriteLock::unlock()
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
-    OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
+    OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
     int result =0;
     if (0 != (result = rwl->accessMutex.lock())) return result; // lock mutex
     if (rwl->numReaders == -1) rwl->numReaders = 0; else (rwl->numReaders)--;
@@ -932,9 +932,9 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
     LPVOID buf;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-      NULL, (DWORD)code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPTSTR) &buf, 0, NULL);
-    if (buf) description = (const char *)buf;
+      NULL, OFstatic_cast(DWORD, code), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      OFreinterpret_cast(LPTSTR, &buf), 0, NULL);
+    if (buf) description = OFreinterpret_cast(const char *, buf);
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)

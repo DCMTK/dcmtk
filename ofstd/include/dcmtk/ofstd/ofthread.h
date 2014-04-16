@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2012, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -162,7 +162,7 @@ private:
 
 #ifdef HAVE_WINDOWS_H
   /** thread handle (Win32 only) */
-  unsigned long theThreadHandle;
+  OFuintptr_t theThreadHandle;
 #endif
 
   /** thread identifier */

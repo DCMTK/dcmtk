@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,7 +56,7 @@ static void get_random(void *dest, size_t num)
      */
     Uint8* ptr = OFreinterpret_cast(Uint8*, dest);
     while (num > 0) {
-        *ptr = rand();
+        *ptr = OFstatic_cast(Uint8, rand());
         num--;
         ptr++;
     }
@@ -102,13 +102,13 @@ static void get_system_time(Uint32 *out)
     out[1] = 0x01B21DD2;
     out[0] = 0x13814000;
 
-    add = tp.tv_usec * 10;
+    add = OFstatic_cast(Uint32, tp.tv_usec * 10);
     if (OFStandard::check32BitAddOverflow(out[0], add))
         out[1]++;
     out[0] += add;
 
     // We have to add tp.tv_sec * sec_factor, but that doesn't fit into 32 bits.
-    ah = tp.tv_sec >> 16;
+    ah = OFstatic_cast(Uint32, tp.tv_sec >> 16);
     al = tp.tv_sec & 0xffff;
     bh = sec_factor >> 16;
     bl = sec_factor & 0xffff;
@@ -186,9 +186,9 @@ void OFUUID::generate()
     /* Version number, bits 15 to 12 of version_and_time_high */
     version_and_time_high |= 0x100;
     /* Sequence, lowest 8 bits of clock_sequence */
-    clock_seq_low = clock_sequence & 0xff;
+    clock_seq_low = OFstatic_cast(Uint8, clock_sequence & 0xff);
     /* Bits 8-13 of clock_sequence */
-    variant_and_clock_seq_high = (clock_sequence >> 8) & 0xcf;
+    variant_and_clock_seq_high = OFstatic_cast(Uint8, (clock_sequence >> 8) & 0xcf);
     /* Version */
     variant_and_clock_seq_high |= 0x80;
     /* And the node value */
@@ -219,9 +219,9 @@ OFUUID::OFUUID(const struct BinaryRepresentation& rep)
     time_low = time_low << 8 | rep.value[2];
     time_low = time_low << 8 | rep.value[3];
     time_mid = rep.value[4];
-    time_mid = time_mid << 8 | rep.value[5];
+    time_mid = OFstatic_cast(Uint16, time_mid << 8 | rep.value[5]);
     version_and_time_high = rep.value[6];
-    version_and_time_high = version_and_time_high << 8 | rep.value[7];
+    version_and_time_high = OFstatic_cast(Uint16, version_and_time_high << 8 | rep.value[7]);
     variant_and_clock_seq_high = rep.value[8];
     clock_seq_low = rep.value[9];
     memcpy(&node[0], &rep.value[10], sizeof(node));
@@ -233,10 +233,10 @@ void OFUUID::getBinaryRepresentation(struct BinaryRepresentation& rep) const
     rep.value[1] = OFstatic_cast(Uint8, (time_low >> 16) & 0xff);
     rep.value[2] = OFstatic_cast(Uint8, (time_low >>  8) & 0xff);
     rep.value[3] = OFstatic_cast(Uint8, (time_low >>  0) & 0xff);
-    rep.value[4] = (time_mid >>  8) & 0xff;
-    rep.value[5] = (time_mid >>  0) & 0xff;
-    rep.value[6] = (version_and_time_high >> 8) & 0xff;
-    rep.value[7] = (version_and_time_high >> 0) & 0xff;
+    rep.value[4] = OFstatic_cast(Uint8, (time_mid >>  8) & 0xff);
+    rep.value[5] = OFstatic_cast(Uint8, (time_mid >>  0) & 0xff);
+    rep.value[6] = OFstatic_cast(Uint8, (version_and_time_high >> 8) & 0xff);
+    rep.value[7] = OFstatic_cast(Uint8, (version_and_time_high >> 0) & 0xff);
     rep.value[8] = variant_and_clock_seq_high;
     rep.value[9] = clock_seq_low;
     memcpy(&rep.value[10], &node[0], sizeof(node));
@@ -319,7 +319,7 @@ void OFUUID::printInteger(STD_NAMESPACE ostream& stream) const
     struct BinaryRepresentation representation;
     /* Current buffer index (we are generating the last character of the output
      * first, so we have write it into buffer in reverse order) */
-    int idx = sizeof(buffer) - 1;
+    int idx = OFstatic_cast(int, sizeof(buffer) - 1);
 
     // First we convert the 128-bit integer into four 32-bit integers
     getBinaryRepresentation(representation);

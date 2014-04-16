@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -236,6 +236,10 @@ private:
         }
 
     private:
+        // Just to silence some warnings.
+        Data(const Data&);
+        Data& operator=(const Data&);
+
         /// The counter.
         OF_SHARED_PTR_COUNTER_TYPE m_Count;
         /// The pointer to the managed object.

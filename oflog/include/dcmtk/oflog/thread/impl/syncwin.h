@@ -75,6 +75,7 @@ InitializeCriticalSection_wrap (LPCRITICAL_SECTION cs)
 
 inline
 Mutex::Mutex (log4cplus::thread::Mutex::Type)
+: cs()
 {
     InitializeCriticalSection_wrap (&cs);
 }
@@ -109,8 +110,8 @@ Mutex::unlock () const
 
 inline
 Semaphore::Semaphore (unsigned max, unsigned initial)
+: sem(CreateSemaphore (0, initial, max, 0))
 {
-    sem = CreateSemaphore (0, initial, max, 0);
     if (! sem)
         DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::Semaphore");
 }
@@ -156,8 +157,8 @@ Semaphore::lock () const
 
 inline
 FairMutex::FairMutex ()
+: mtx(CreateMutex (0, false, 0))
 {
-    mtx = CreateMutex (0, false, 0);
     if (! mtx)
         DCMTK_LOG4CPLUS_THROW_RTE ("FairMutex::FairMutex");
 }
@@ -201,8 +202,8 @@ FairMutex::unlock () const
 
 inline
 ManualResetEvent::ManualResetEvent (bool sig)
+: ev(CreateEvent (0, true, sig, 0))
 {
-    ev = CreateEvent (0, true, sig, 0);
     if (! ev)
         DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::ManualResetEvent");
 }

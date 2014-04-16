@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,7 +87,6 @@ rangeRestriction2char(DcmDictRangeRestriction r)
 static void
 printDefined(FILE* fout, const DcmDictEntry* e)
 {
-    int i;
     char buf[DCM_MAXDICTLINESIZE+1];
     const char* tagPrefix;
 
@@ -102,10 +101,9 @@ printDefined(FILE* fout, const DcmDictEntry* e)
     fputs(tagPrefix, fout); /* write out prefix */
     fputs(buf, fout); /* write out rest of name */
 
-    intptr_t n = 48 - (strlen(tagPrefix) + strlen(buf));
-    for (i=0; i<n; i++) {
-            putc(' ', fout);
-    }
+    const OFintptr_t n = 48 - (strlen(tagPrefix) + strlen(buf));
+    for (OFintptr_t i=0; i<n; i++)
+        putc(' ', fout);
 
     fprintf(fout, " DcmTagKey(0x%04x, 0x%04x)",
             e->getGroup(), e->getElement());

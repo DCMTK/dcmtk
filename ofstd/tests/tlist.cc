@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,8 +30,8 @@
 /* This is a macro so that we get better line numbers in error msgs */
 #define CHECK(list, expected) do { \
     OFListIterator(int) iter_((list).begin()); \
-    const unsigned int max_idx_ = sizeof(expected)/sizeof((expected)[0]); \
-    for (unsigned int idx_ = 0; idx_ < max_idx_; idx_++) { \
+    const size_t max_idx_ = sizeof(expected)/sizeof((expected)[0]); \
+    for (size_t idx_ = 0; idx_ < max_idx_; idx_++) { \
         if (iter_ == (list).end()) { \
             OFCHECK_FAIL("List already ended at index " << idx_); \
             break; \

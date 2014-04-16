@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,11 +38,13 @@
  */
 #define DCMTK_DECL_IMPORT __declspec(dllexport)
 #endif
-#elif defined(HAVE_HIDDEN_VISIBILITY)
+#else
+#ifdef(HAVE_HIDDEN_VISIBILITY)
 /* GCC hides everything when given -fvisibility=hidden. The symbols which
  * should be visible have to get a default visibility again.
  */
 #define DCMTK_DECL_EXPORT __attribute__ ((visibility("default")))
+#endif
 #endif
 #endif
 

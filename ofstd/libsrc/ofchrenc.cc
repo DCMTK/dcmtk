@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -274,7 +274,7 @@ OFCondition OFCharacterEncoding::convertFromWideCharString(const wchar_t *fromSt
     if ((fromString != NULL) && (fromLength > 0))
     {
         // determine required size for output buffer
-        const int sizeNeeded = WideCharToMultiByte(codePage, 0, fromString, fromLength, NULL, 0, NULL, NULL);
+        const int sizeNeeded = WideCharToMultiByte(codePage, 0, fromString, OFstatic_cast(int, fromLength), NULL, 0, NULL, NULL);
         if (sizeNeeded > 0)
         {
             // allocate temporary buffer
@@ -282,7 +282,7 @@ OFCondition OFCharacterEncoding::convertFromWideCharString(const wchar_t *fromSt
             if (toBuffer != NULL)
             {
                 // convert characters (without trailing NULL byte)
-                const int charsConverted = WideCharToMultiByte(codePage, 0, fromString, fromLength, toBuffer, sizeNeeded, NULL, NULL);
+                const int charsConverted = WideCharToMultiByte(codePage, 0, fromString, OFstatic_cast(int, fromLength), toBuffer, sizeNeeded, NULL, NULL);
                 if (charsConverted > 0)
                 {
                     // append the converted character string to the result variable
@@ -325,13 +325,13 @@ OFCondition OFCharacterEncoding::convertToWideCharString(const char *fromString,
     if ((fromString != NULL) && (fromLength > 0))
     {
         // determine required size for output buffer
-        const int sizeNeeded = MultiByteToWideChar(codePage, 0, fromString, fromLength, NULL, 0);
+        const int sizeNeeded = MultiByteToWideChar(codePage, 0, fromString, OFstatic_cast(int, fromLength), NULL, 0);
         // allocate output buffer (one extra byte for the terminating NULL)
         toString = new wchar_t[sizeNeeded + 1];
         if (toString != NULL)
         {
             // convert characters (without trailing NULL byte)
-            toLength = MultiByteToWideChar(codePage, 0, fromString, fromLength, toString, sizeNeeded);
+            toLength = MultiByteToWideChar(codePage, 0, fromString, OFstatic_cast(int, fromLength), toString, sizeNeeded);
             // append NULL byte to mark "end of string"
             toString[toLength] = L'\0';
             if (toLength == 0)
@@ -441,7 +441,7 @@ void OFCharacterEncoding::createGetLastErrorCondition(OFCondition &status,
     LPVOID errBuf = NULL;
     // obtain an error string from system error code
     if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &errBuf, 0, NULL) > 0)
+        NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), OFreinterpret_cast(LPTSTR, &errBuf), 0, NULL) > 0)
     {
         message.append(OFstatic_cast(const char *, errBuf));
     } else

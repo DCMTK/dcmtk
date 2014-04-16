@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -139,10 +139,10 @@ static const tuple values[] =
 OFTEST(ofstd_ftoa)
 {
   char buf[50];
-  unsigned long numTuples = sizeof(values)/sizeof(tuple);
+  size_t numTuples = sizeof(values)/sizeof(tuple);
   OFString s;
 
-  for (unsigned long i=0; i<numTuples; i++)
+  for (size_t i=0; i<numTuples; i++)
   {
     OFStandard::ftoa(buf, 50, values[i].val, values[i].flags, values[i].width, values[i].prec);
     s = values[i].output;

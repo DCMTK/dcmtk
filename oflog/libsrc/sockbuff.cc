@@ -33,6 +33,12 @@
 #include <netinet/in.h>
 #endif
 
+// helper methods to fix old-style casts warnings
+BEGIN_EXTERN_C
+static unsigned short OFntohs(unsigned short us) { return ntohs(us); }
+static unsigned short OFhtons(unsigned short us) { return htons(us); }
+END_EXTERN_C
+
 
 namespace dcmtk {
 namespace log4cplus { namespace helpers {
@@ -95,7 +101,7 @@ SocketBuffer::readShort()
 
     unsigned short ret;
     memcpy(&ret, buffer + pos, sizeof(ret));
-    ret = ntohs(ret);
+    ret = OFntohs(ret);
     pos += sizeof(unsigned short);
 
     return ret;
@@ -208,7 +214,7 @@ SocketBuffer::appendShort(unsigned short val)
         return;
     }
 
-    unsigned short s = htons(val);
+    unsigned short s = OFhtons(val);
     memcpy(buffer + pos, &s, sizeof (s));
     pos += sizeof(s);
     size = pos;
