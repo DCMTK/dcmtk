@@ -23,7 +23,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 152, 154, 157, 158, 163, 165, 168.
+# - Supplement 124, 152, 154, 157, 158, 163, 165, 168.
 # - CP 1064, 1090, 1120, 1121, 1123, 1137, 1138, 1147, 1188, 1200, 1204, 1216,
 #      1236, 1246, 1248, 1249, 1258, 1268, 1269, 1282, 1285, 1287, 1294, 1297,
 #      1325, 1326.
@@ -3271,6 +3271,59 @@
 (FFFE,E000)	na	Item	1	DICOM_2011
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM_2011
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM_2011
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 124 (Communication of Display Parameters)
+#
+(0018,1202)	DT	DateTimeOfLastCalibration	1	Supplement_124
+(0028,7000)	SQ	EquipmentAdministratorSequence	1	Supplement_124
+(0028,7001)	US	NumberOfDisplaySubsystems	1	Supplement_124
+(0028,7002)	US	CurrentConfigurationID	1	Supplement_124
+(0028,7003)	US	DisplaySubsystemID	1	Supplement_124
+(0028,7004)	SH	DisplaySubsystemName	1	Supplement_124
+(0028,7005)	LO	DisplaySubsystemDescription	1	Supplement_124
+(0028,7006)	CS	SystemStatus	1	Supplement_124
+(0028,7007)	LO	SystemStatusComment	1	Supplement_124
+(0028,7008)	SQ	TargetLuminanceCharacteristicsSequence	1	Supplement_124
+(0028,7009)	US	LuminanceCharacteristicsID	1	Supplement_124
+(0028,700A)	SQ	DisplaySubsystemConfigurationSequence	1	Supplement_124
+(0028,700B)	US	ConfigurationID	1	Supplement_124
+(0028,700C)	SH	ConfigurationName	1	Supplement_124
+(0028,700D)	LO	ConfigurationDescription	1	Supplement_124
+(0028,700E)	US	ReferencedTargetLuminanceCharacteristicsID	1	Supplement_124
+(0028,700F)	SQ	QAResultsSequence	1	Supplement_124
+(0028,7010)	SQ	DisplaySubsystemQAResultsSequence	1	Supplement_124
+(0028,7011)	SQ	ConfigurationQAResultsSequence	1	Supplement_124
+(0028,7012)	SQ	MeasurementEquipmentSequence	1	Supplement_124
+(0028,7013)	CS	MeasurementFunctions	1-n	Supplement_124
+(0028,7014)	CS	MeasurementEquipmentType	1	Supplement_124
+(0028,7015)	SQ	VisualEvaluationResultSequence	1	Supplement_124
+(0028,7016)	SQ	DisplayCalibrationResultSequence	1	Supplement_124
+(0028,7017)	US	DDLValue	1	Supplement_124
+(0028,7018)	FL	CIExyWhitePoint	2	Supplement_124
+(0028,7019)	CS	DisplayFunctionType	1	Supplement_124
+(0028,701A)	FL	GammaValue	1	Supplement_124
+(0028,701B)	US	NumberOfLuminancePoints	1	Supplement_124
+(0028,701C)	SQ	LuminanceResponseSequence	1	Supplement_124
+(0028,701D)	FL	TargetMinimumLuminance	1	Supplement_124
+(0028,701E)	FL	TargetMaximumLuminance	1	Supplement_124
+(0028,701F)	FL	LuminanceValue	1	Supplement_124
+(0028,7020)	LO	LuminanceResponseDescription	1	Supplement_124
+(0028,7021)	CS	WhitePointFlag	1	Supplement_124
+(0028,7022)	SQ	DisplayDeviceTypeCodeSequence	1	Supplement_124
+(0028,7023)	SQ	DisplaySubsystemSequence	1	Supplement_124
+(0028,7024)	SQ	LuminanceResultSequence	1	Supplement_124
+(0028,7025)	CS	AmbientLightValueSource	1	Supplement_124
+(0028,7026)	CS	MeasuredCharacteristics	1-n	Supplement_124
+(0028,7027)	SQ	LuminanceUniformityResultSequence	1	Supplement_124
+(0028,7028)	SQ	VisualEvaluationTestSequence	1	Supplement_124
+(0028,7029)	CS	TestResult	1	Supplement_124
+(0028,702A)	LO	TestResultComment	1	Supplement_124
+(0028,702B)	CS	TestImageValidation	1	Supplement_124
+(0028,702C)	SQ	TestPatternCodeSequence	1	Supplement_124
+(0028,702D)	SQ	MeasurementPatternCodeSequence	1	Supplement_124
+(0028,702E)	SQ	VisualEvaluationMethodCodeSequence	1	Supplement_124
 #
 #---------------------------------------------------------------------------
 #

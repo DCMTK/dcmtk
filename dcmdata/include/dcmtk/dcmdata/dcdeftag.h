@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-04-07 17:19:11
+**   Date: 2014-04-23 11:52:01
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-04-07 17:19:11"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-04-23 11:52:01"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3706
+** Number of entries: 3754
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -642,6 +642,7 @@
 #define DCM_CompressionForce                     DcmTagKey(0x0018, 0x11a2)
 #define DCM_DateOfLastCalibration                DcmTagKey(0x0018, 0x1200)
 #define DCM_TimeOfLastCalibration                DcmTagKey(0x0018, 0x1201)
+#define DCM_DateTimeOfLastCalibration            DcmTagKey(0x0018, 0x1202)
 #define DCM_ConvolutionKernel                    DcmTagKey(0x0018, 0x1210)
 #define DCM_RETIRED_UpperLowerPixelValues        DcmTagKey(0x0018, 0x1240)
 #define DCM_ActualFrameDuration                  DcmTagKey(0x0018, 0x1242)
@@ -1721,6 +1722,53 @@
 #define DCM_MaskSubPixelShift                    DcmTagKey(0x0028, 0x6114)
 #define DCM_TIDOffset                            DcmTagKey(0x0028, 0x6120)
 #define DCM_MaskOperationExplanation             DcmTagKey(0x0028, 0x6190)
+#define DCM_EquipmentAdministratorSequence       DcmTagKey(0x0028, 0x7000)
+#define DCM_NumberOfDisplaySubsystems            DcmTagKey(0x0028, 0x7001)
+#define DCM_CurrentConfigurationID               DcmTagKey(0x0028, 0x7002)
+#define DCM_DisplaySubsystemID                   DcmTagKey(0x0028, 0x7003)
+#define DCM_DisplaySubsystemName                 DcmTagKey(0x0028, 0x7004)
+#define DCM_DisplaySubsystemDescription          DcmTagKey(0x0028, 0x7005)
+#define DCM_SystemStatus                         DcmTagKey(0x0028, 0x7006)
+#define DCM_SystemStatusComment                  DcmTagKey(0x0028, 0x7007)
+#define DCM_TargetLuminanceCharacteristicsSequence DcmTagKey(0x0028, 0x7008)
+#define DCM_LuminanceCharacteristicsID           DcmTagKey(0x0028, 0x7009)
+#define DCM_DisplaySubsystemConfigurationSequence DcmTagKey(0x0028, 0x700a)
+#define DCM_ConfigurationID                      DcmTagKey(0x0028, 0x700b)
+#define DCM_ConfigurationName                    DcmTagKey(0x0028, 0x700c)
+#define DCM_ConfigurationDescription             DcmTagKey(0x0028, 0x700d)
+#define DCM_ReferencedTargetLuminanceCharacteristicsID DcmTagKey(0x0028, 0x700e)
+#define DCM_QAResultsSequence                    DcmTagKey(0x0028, 0x700f)
+#define DCM_DisplaySubsystemQAResultsSequence    DcmTagKey(0x0028, 0x7010)
+#define DCM_ConfigurationQAResultsSequence       DcmTagKey(0x0028, 0x7011)
+#define DCM_MeasurementEquipmentSequence         DcmTagKey(0x0028, 0x7012)
+#define DCM_MeasurementFunctions                 DcmTagKey(0x0028, 0x7013)
+#define DCM_MeasurementEquipmentType             DcmTagKey(0x0028, 0x7014)
+#define DCM_VisualEvaluationResultSequence       DcmTagKey(0x0028, 0x7015)
+#define DCM_DisplayCalibrationResultSequence     DcmTagKey(0x0028, 0x7016)
+#define DCM_DDLValue                             DcmTagKey(0x0028, 0x7017)
+#define DCM_CIExyWhitePoint                      DcmTagKey(0x0028, 0x7018)
+#define DCM_DisplayFunctionType                  DcmTagKey(0x0028, 0x7019)
+#define DCM_GammaValue                           DcmTagKey(0x0028, 0x701a)
+#define DCM_NumberOfLuminancePoints              DcmTagKey(0x0028, 0x701b)
+#define DCM_LuminanceResponseSequence            DcmTagKey(0x0028, 0x701c)
+#define DCM_TargetMinimumLuminance               DcmTagKey(0x0028, 0x701d)
+#define DCM_TargetMaximumLuminance               DcmTagKey(0x0028, 0x701e)
+#define DCM_LuminanceValue                       DcmTagKey(0x0028, 0x701f)
+#define DCM_LuminanceResponseDescription         DcmTagKey(0x0028, 0x7020)
+#define DCM_WhitePointFlag                       DcmTagKey(0x0028, 0x7021)
+#define DCM_DisplayDeviceTypeCodeSequence        DcmTagKey(0x0028, 0x7022)
+#define DCM_DisplaySubsystemSequence             DcmTagKey(0x0028, 0x7023)
+#define DCM_LuminanceResultSequence              DcmTagKey(0x0028, 0x7024)
+#define DCM_AmbientLightValueSource              DcmTagKey(0x0028, 0x7025)
+#define DCM_MeasuredCharacteristics              DcmTagKey(0x0028, 0x7026)
+#define DCM_LuminanceUniformityResultSequence    DcmTagKey(0x0028, 0x7027)
+#define DCM_VisualEvaluationTestSequence         DcmTagKey(0x0028, 0x7028)
+#define DCM_TestResult                           DcmTagKey(0x0028, 0x7029)
+#define DCM_TestResultComment                    DcmTagKey(0x0028, 0x702a)
+#define DCM_TestImageValidation                  DcmTagKey(0x0028, 0x702b)
+#define DCM_TestPatternCodeSequence              DcmTagKey(0x0028, 0x702c)
+#define DCM_MeasurementPatternCodeSequence       DcmTagKey(0x0028, 0x702d)
+#define DCM_VisualEvaluationMethodCodeSequence   DcmTagKey(0x0028, 0x702e)
 #define DCM_PixelDataProviderURL                 DcmTagKey(0x0028, 0x7fe0)
 #define DCM_DataPointRows                        DcmTagKey(0x0028, 0x9001)
 #define DCM_DataPointColumns                     DcmTagKey(0x0028, 0x9002)

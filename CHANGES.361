@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.23 (riesmeier)
 
+- Added support for Supplement 124 to data dictionary:
+  Added support for the final text version of Supplement 124 (Communication of
+  Display Parameters) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for new UIDs from Supplement 124:
   Added support for new SOP Class and Well-known SOP Instance UID from
   Supplement 124 (Communication of Display Parameters).
