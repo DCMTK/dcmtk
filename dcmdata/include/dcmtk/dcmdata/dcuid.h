@@ -622,6 +622,10 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_NativeDICOMModel                                       "1.2.840.10008.7.1.1"
 #define UID_AbstractMultiDimensionalImageModel                     "1.2.840.10008.7.1.2"
 
+// Communication of Display Parameters
+#define UID_DisplaySystemSOPClass                                  "1.2.840.10008.5.1.1.40"
+#define UID_DisplaySystemSOPInstance                               "1.2.840.10008.5.1.1.40.1"
+
 // Other
 #define UID_VerificationSOPClass                                   "1.2.840.10008.1.1"
 #define UID_RETIRED_BasicStudyContentNotificationSOPClass          "1.2.840.10008.1.9"

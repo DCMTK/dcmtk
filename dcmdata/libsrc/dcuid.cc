@@ -401,6 +401,10 @@ static const UIDNameMap uidNameMap[] = {
     { UID_NativeDICOMModel,                                    "NativeDICOMModel" },
     { UID_AbstractMultiDimensionalImageModel,                  "AbstractMultiDimensionalImageModel" },
 
+    // Communication of Display Parameters
+    { UID_DisplaySystemSOPClass,                               "DisplaySystemSOPClass" },
+    { UID_DisplaySystemSOPInstance,                            "DisplaySystemSOPInstance" },
+
     // Other
     { UID_RETIRED_BasicStudyContentNotificationSOPClass,       "RETIRED_BasicStudyContentNotificationSOPClass" },
     { UID_RETIRED_StudyComponentManagementSOPClass,            "RETIRED_StudyComponentManagementSOPClass" },
@@ -1676,7 +1680,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 {
     char buf[128]; /* be very safe */
 
-    uid[0] = '\0'; /* initialise */
+    uid[0] = '\0'; /* initialize */
 
 #ifdef WITH_THREADS
     uidCounterMutex.lock();

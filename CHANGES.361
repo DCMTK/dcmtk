@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.23 (riesmeier)
+
+- Added support for new UIDs from Supplement 124:
+  Added support for new SOP Class and Well-known SOP Instance UID from
+  Supplement 124 (Communication of Display Parameters).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
 **** Changes from 2014.04.16 (schlamelcher)
 
 - Fixed most of the warnings in ofstd and oflog:
