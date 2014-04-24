@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,10 +47,10 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
                                        const OFString &codingSchemeDesignator,
                                        const OFString &codeMeaning,
                                        const OFBool check)
-  : CodeValue(codeValue),
-    CodingSchemeDesignator(codingSchemeDesignator),
+  : CodeValue(),
+    CodingSchemeDesignator(),
     CodingSchemeVersion(),
-    CodeMeaning(codeMeaning),
+    CodeMeaning(),
     ContextIdentifier(),
     ContextUID(),
     MappingResource(),

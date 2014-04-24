@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.24 (riesmeier)
+
+- Removed superfluous member initialization:
+  Removed initialization of member variables that are set by setCode() anyway.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+
 **** Changes from 2014.04.23 (riesmeier)
 
 - Added support for Supplement 124 to data dictionary:
