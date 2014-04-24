@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -218,7 +218,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  tag          tag to search for
      *  @param  returnVal    reference to the storage area for the resulting value
-     *  @param  pos          position in muti-valued elements (starting with 0)
+     *  @param  pos          position in multi-valued elements (starting with 0)
      *  @param  item         pointer to item in dataset where to start (default: main dataset)
      *  @param  allowSigned  also allow signed value (Sint16) if true
      *
@@ -234,7 +234,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  pos        position in multi-valued elements (starting with 0)
      *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
@@ -248,7 +248,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  pos        position in multi-valued elements (starting with 0)
      *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
@@ -262,7 +262,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  pos        position in multi-valued elements (starting with 0)
      *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
@@ -276,7 +276,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  pos        position in multi-valued elements (starting with 0)
      *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
@@ -314,7 +314,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  pos        position in multi-valued elements (starting with 0)
      *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
@@ -342,7 +342,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  elem         element where the value is stored
      *  @param  returnVal    reference to the storage area for the resulting value
-     *  @param  pos          position in muti-valued elements (starting with 0)
+     *  @param  pos          position in multi-valued elements (starting with 0)
      *  @param  allowSigned  also allow signed value (Sint16) if true
      *
      ** @return VM if successful, 0 otherwise
@@ -376,7 +376,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      *
      ** @param  elem       element where the value is stored
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  pos        position in multi-valued elements (starting with 0)
      *
      ** @return VM if successful, 0 otherwise
      */

@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.24 (riesmeier)
 
+- Fixed typo in comments.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/didocu.h
+
 - Removed superfluous member initialization:
   Removed initialization of member variables that are set by setCode() anyway.
   Affects: dcmsr/libsrc/dsrcodvl.cc
