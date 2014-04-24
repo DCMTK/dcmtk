@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.24 (riesmeier)
 
+- Added support for determining the FrameTime:
+  Added support for determining the value of Frame Time (0018,1063), i.e. the
+  nominal time between individual frames, from the DICOM dataset (if present).
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+           dcmimgle/libsrc/diimage.cc
+
 - Fixed typo in comments.
   Affects: dcmimgle/include/dcmtk/dcmimgle/didocu.h
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1025,6 +1025,8 @@ int main(int argc, char *argv[])
             << "  color model         : " << colorModel << OFendl
             << "  pixel aspect ratio  : " << aspectRatio << OFendl
             << "  number of frames    : " << di->getFrameCount());
+        if (di->getFrameTime() > 0)
+            OFLOG_INFO(dcm2pnmLogger, "  frame time (in ms)  : " << di->getFrameTime());
 
         /* dump VOI windows */
         unsigned long count;

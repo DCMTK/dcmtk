@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,6 +49,7 @@ DiImage::DiImage(const DiDocument *docu,
     NumberOfFrames(0),
     TotalNumberOfFrames(0),
     RepresentativeFrame(0),
+    FrameTime(0),
     Rows(0),
     Columns(0),
     PixelWidth(1),
@@ -97,6 +98,14 @@ DiImage::DiImage(const DiDocument *docu,
             }
             else
                 RepresentativeFrame = us - 1;
+        }
+        double ds = 0.0;
+        if (Document->getValue(DCM_FrameTime, ds))
+        {
+            if (ds <= 0)
+                DCMIMGLE_WARN("invalid value for 'FrameTime' (" << ds << ") ... ignoring");
+            else
+                FrameTime = ds;
         }
         FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
         /* store total number of frames in the dataset */
@@ -194,6 +203,7 @@ DiImage::DiImage(const DiDocument *docu,
     NumberOfFrames(0),
     TotalNumberOfFrames(0),
     RepresentativeFrame(0),
+    FrameTime(0),
     Rows(0),
     Columns(0),
     PixelWidth(1),
@@ -226,6 +236,7 @@ DiImage::DiImage(const DiImage *image,
     NumberOfFrames(fcount),
     TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
+    FrameTime(image->FrameTime),
     Rows(image->Rows),
     Columns(image->Columns),
     PixelWidth(image->PixelWidth),
@@ -261,6 +272,7 @@ DiImage::DiImage(const DiImage *image,
     NumberOfFrames(image->NumberOfFrames),
     TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
+    FrameTime(image->FrameTime),
     Rows(rows),
     Columns(columns),
     PixelWidth(1),
@@ -327,6 +339,7 @@ DiImage::DiImage(const DiImage *image,
     NumberOfFrames(image->NumberOfFrames),
     TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
+    FrameTime(image->FrameTime),
     Rows(((degree == 90) ||(degree == 270)) ? image->Columns : image->Rows),
     Columns(((degree == 90) ||(degree == 270)) ? image->Rows : image->Columns),
     PixelWidth(((degree == 90) ||(degree == 270)) ? image->PixelHeight : image->PixelWidth),
@@ -360,6 +373,7 @@ DiImage::DiImage(const DiImage *image,
     NumberOfFrames(1),
     TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(0),
+    FrameTime(0),
     Rows(image->Rows),
     Columns(image->Columns),
     PixelWidth(image->PixelWidth),

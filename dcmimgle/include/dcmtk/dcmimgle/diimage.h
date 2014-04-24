@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,6 +126,15 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
     inline Uint32 getRepresentativeFrame() const
     {
         return RepresentativeFrame;
+    }
+
+    /** get frame time
+     *
+     ** @return frame time
+     */
+    inline double getFrameTime() const
+    {
+        return FrameTime;
     }
 
     /** get number of rows
@@ -414,7 +423,7 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
      *  @param  padding     align each line to a 32-bit address if true (default)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     virtual unsigned long createDIB(void *&data,
                                     const unsigned long size,
@@ -429,7 +438,7 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
      *  @param  frame  index of frame to be converted
      *  @param  bits   number of bits per pixel used for the output bitmap (8 or 32)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     virtual unsigned long createAWTBitmap(void *&data,
                                           const unsigned long frame,
@@ -592,7 +601,7 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
 
     /// copy of status variable declared in class 'DicomImage'
     EI_Status ImageStatus;
-    /// points to special object, which capsulates the dcmdata module
+    /// points to special object, which encapsulates the dcmdata module
     const DiDocument *Document;
 
     /// first frame to be processed
@@ -603,6 +612,8 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
     Uint32 TotalNumberOfFrames;
     /// number of representative frame, type 3 attribute (default '0')
     Uint32 RepresentativeFrame;
+    /// nominal time between individual frames (0 if absent)
+    double FrameTime;
     /// number of rows (in pixel)
     Uint16 Rows;
     /// number of columns (in pixel)

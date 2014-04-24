@@ -241,6 +241,17 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
             Image->getRepresentativeFrame() : 0;
     }
 
+    /** get nominal time (in milliseconds) between individual frames.
+     *  This attribute might not always be stored in the DICOM dataset.
+     *
+     ** @return nominal time between individual frames, 0 if absent
+     */
+    inline double getFrameTime() const
+    {
+        return (Image != NULL) ?
+            Image->getFrameTime() : 0;
+    }
+
     /** get image width in pixels
      *
      ** @return number of pixels in one row
