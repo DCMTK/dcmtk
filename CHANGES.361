@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.25 (schlamelcher)
+
+- Added support for some additional C++11 traits:
+  Added aliases / fallback implementations for the C++11 <type-traits>
+  std::conditional, std::is_same, std::is_array, std::is_function,
+  std::remove_reference, std::remove_const, std::remove_volatile,
+  std::remove_cv, std::remove_extent, std::add_pointer and std::decay.
+  Note: Due to the lack of variadic-templates in pre C++11 compilers,
+  the fallback implementation of OFis_function has reduced functionality,
+  currently only detecting functions with up to three arguments!
+  Affects: ofstd/include/dcmtk/ofstd/oftraits.h
+
 **** Changes from 2014.04.24 (riesmeier)
 
 - Added support for determining the FrameTime:
