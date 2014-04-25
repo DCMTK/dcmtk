@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.25 (schlamelcher)
 
+- Fixed possibly wrong overload resolution in DSRCodedEntryValue:
+  The introduction of the "check" parameter, which was added to the
+  constructor and the "setCode"-method of DSRCodedEntryValue
+  (see changes from 2012.06.11) yielded the possibility of string
+  literals being automatically converted to OFBool and therefore being
+  misinterpreted as the value of "check" instead of "codeMeaning".
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/libsrc/dsrcodvl.cc
+
 - Introduced the new explicit boolean type OFExplicitBool:
   OFExplicitBool can be used to restrict an overloaded function's
   parameter to "real" OFBool values, e.g. pointers and numeric values

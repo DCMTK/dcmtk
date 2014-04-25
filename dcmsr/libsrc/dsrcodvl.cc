@@ -46,7 +46,7 @@ DSRCodedEntryValue::DSRCodedEntryValue()
 DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
                                        const OFString &codingSchemeDesignator,
                                        const OFString &codeMeaning,
-                                       const OFBool check)
+                                       const OFExplicitBool check)
   : CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
@@ -459,7 +459,7 @@ OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryVal
 OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
                                         const OFString &codingSchemeDesignator,
                                         const OFString &codeMeaning,
-                                        const OFBool check)
+                                        const OFExplicitBool check)
 {
     return setCode(codeValue, codingSchemeDesignator, "" /*codingSchemeVersion*/, codeMeaning, check);
 }

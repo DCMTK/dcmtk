@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofexbl.h"
 
 
 /*---------------------*
@@ -63,7 +64,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     DSRCodedEntryValue(const OFString &codeValue,
                        const OFString &codingSchemeDesignator,
                        const OFString &codeMeaning,
-                       const OFBool check = OFTrue);
+                       const OFExplicitBool check = OFTrue);
 
     /** constructor
      ** @param  codeValue               identifier of the code to be set that is unambiguous
@@ -354,7 +355,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     OFCondition setCode(const OFString &codeValue,
                         const OFString &codingSchemeDesignator,
                         const OFString &codeMeaning,
-                        const OFBool check = OFTrue);
+                        const OFExplicitBool check = OFTrue);
 
     /** set code.
      *  Before setting the code, it is usually checked.  If the code is invalid, the current
