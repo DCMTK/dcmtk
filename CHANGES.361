@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.04.25 (schlamelcher)
 
+- Introduced the new explicit boolean type OFExplicitBool:
+  OFExplicitBool can be used to restrict an overloaded function's
+  parameter to "real" OFBool values, e.g. pointers and numeric values
+  can NOT be converted to OFExplicitBool implicitly.
+  Added:   ofstd/include/dcmtk/ofstd/ofexbl.h
+
 - Added support for some additional C++11 traits:
   Added aliases / fallback implementations for the C++11 <type-traits>
   std::conditional, std::is_same, std::is_array, std::is_function,
@@ -96,6 +102,7 @@ Changes between releases are documented here.
   currently implementing integral constants, enable_if and is_signed /
   is_unsigned. See http://en.cppreference.com/w/cpp/header/type_traits for
   details.
+  Added:   ofstd/include/dcmtk/ofstd/oftraits.h
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/osconfig.h.in
            config/configure
@@ -103,7 +110,6 @@ Changes between releases are documented here.
            config/include/dcmtk/config/osconfig.h.in
            doxygen/htmldocs.cfg
            ofstd/include/dcmtk/ofstd/ofstdinc.h
-           ofstd/include/dcmtk/ofstd/oftraits.h
            ofstd/include/dcmtk/ofstd/oftypes.h
            ofstd/libsrc/ofstd.cc
 
