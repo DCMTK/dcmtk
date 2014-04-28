@@ -116,7 +116,7 @@ struct OFis_array : OFfalse_type {};
 
 template<typename T>
 struct OFis_function : OFfalse_type {};
- 
+
 template<typename T>
 struct OFremove_reference { typedef T type; };
 
@@ -168,31 +168,31 @@ struct OFis_same<T,T> : OFtrue_type {};
 
 template<typename T>
 struct OFis_array<T[]> : OFtrue_type {};
- 
+
 template<typename T,size_t N>
 struct OFis_array<T[N]> : OFtrue_type {};
 
 template<typename R>
 struct OFis_function<R()> : OFtrue_type {};
- 
+
 template<typename R>
 struct OFis_function<R(...)> : OFtrue_type {};
 
 template<typename R,typename T0>
 struct OFis_function<R(T0)> : OFtrue_type {};
- 
+
 template<typename R,typename T0>
 struct OFis_function<R(T0,...)> : OFtrue_type {};
 
 template<typename R,typename T0,typename T1>
 struct OFis_function<R(T0,T1)> : OFtrue_type {};
- 
+
 template<typename R,typename T0,typename T1>
 struct OFis_function<R(T0,T1,...)> : OFtrue_type {};
 
 template<typename R,typename T0,typename T1,typename T2>
 struct OFis_function<R(T0,T1,T2)> : OFtrue_type {};
- 
+
 template<typename R,typename T0,typename T1,typename T2>
 struct OFis_function<R(T0,T1,T2,...)> : OFtrue_type {};
 
@@ -209,7 +209,7 @@ struct OFremove_volatile<volatile T> { typedef T type; };
 
 template<typename T>
 struct OFremove_extent<T[]> { typedef T type; };
- 
+
 template<typename T,size_t N>
 struct OFremove_extent<T[N]> { typedef T type;};
 
@@ -229,11 +229,11 @@ template<typename T>
 struct OFdecay
 {
     typedef typename OFconditional
-    < 
+    <
         OFis_array<typename OFremove_reference<T>::type>::value,
         typename OFremove_extent<typename OFremove_reference<T>::type>::type*,
         typename OFconditional
-        < 
+        <
             OFis_function<typename OFremove_reference<T>::type>::value,
             typename OFadd_pointer<typename OFremove_reference<T>::type>::type,
             typename OFremove_cv<typename OFremove_reference<T>::type>::type
@@ -328,7 +328,7 @@ struct OFis_array {};
  */
 template<typename T>
 struct OFis_function {};
- 
+
 /** Metafunction to remove the reference from a type.
  *  OFremove_reference provides a public member typedef "type" for the type
  *  referred by the given parameter.

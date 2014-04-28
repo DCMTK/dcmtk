@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef OFXBL_H
-#define OFXBL_H
+#ifndef OFEXBL_H
+#define OFEXBL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -76,7 +76,7 @@ public:
 #else
     ;
 #endif
-    
+
     /** Negation operator.
      *  This allows to negate OFExplicitBool like a normal OFBool value,
      *  for example to use the negated value in if-statements.
@@ -93,4 +93,4 @@ private:
     OFBool m_Value;
 };
 
-#endif // OFXBL_H
+#endif // OFEXBL_H

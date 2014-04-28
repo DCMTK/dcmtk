@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.28 (schlamelcher)
+
+- Minor fixes (whitespace and line ending errors).
+  Affects: ofstd/include/dcmtk/ofstd/ofexbl.h
+           ofstd/include/dcmtk/ofstd/oftraits.h
+
 **** Changes from 2014.04.25 (schlamelcher)
 
 - Fixed possibly wrong overload resolution in DSRCodedEntryValue:
