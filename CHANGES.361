@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.04.29 (riesmeier)
+
+- Access the (total) number of frames in an image:
+  Added support for accessing the value of Number of Frames (0028,0008), i.e.
+  the number of frames stored in a DICOM file/dataset.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+
 **** Changes from 2014.04.28 (schlamelcher)
 
 - Minor fixes (whitespace and line ending errors).

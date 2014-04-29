@@ -119,6 +119,15 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
         return FirstFrame;
     }
 
+    /** get total number of frames
+     *
+     ** @return total number of frames
+     */
+    inline Uint32 getTotalNumberOfFrames() const
+    {
+        return TotalNumberOfFrames;
+    }
+
     /** get representative frame
      *
      ** @return representative frame

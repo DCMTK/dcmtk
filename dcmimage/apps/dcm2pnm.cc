@@ -1024,7 +1024,7 @@ int main(int argc, char *argv[])
             << "  bits per sample     : " << di->getDepth() << OFendl
             << "  color model         : " << colorModel << OFendl
             << "  pixel aspect ratio  : " << aspectRatio << OFendl
-            << "  number of frames    : " << di->getFrameCount());
+            << "  number of frames    : " << di->getNumberOfFrames() << " (" << di->getFrameCount() << " processed)");
         if (di->getFrameTime() > 0)
             OFLOG_INFO(dcm2pnmLogger, "  frame time (in ms)  : " << di->getFrameTime());
 

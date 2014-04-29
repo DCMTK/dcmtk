@@ -207,10 +207,10 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
 
     /** get number of frames.
      *  Please note that this function does not return the number of frames stored in the
-     *  DICOM file/dataset.  It rather refers to the number of frames processed by this class
-     *  (see constructors for details).
+     *  DICOM file/dataset (use getNumberOfFrames() instead).  It rather refers to the
+     *  number of frames processed by this class (see constructors for details).
      *
-     ** @return number of frames
+     ** @return number of frames processed by this class
      */
     inline unsigned long getFrameCount() const
     {
@@ -228,6 +228,18 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
     {
         return (Image != NULL) ?
             Image->getFirstFrame() : 0;
+    }
+
+    /** get number of frames stored in the DICOM file/dataset.
+     *  This attribute is mandatory for DICOM images with multiple frames.
+     *  For single frame images, the value defaults to 1.
+     *
+     ** @return number of frames stored in the DICOM file/dataset
+     */
+    inline unsigned long getNumberOfFrames() const
+    {
+        return (Image != NULL) ?
+            Image->getTotalNumberOfFrames() : 0;
     }
 
     /** get index of representative frame.
