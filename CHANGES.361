@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.01 (riesmeier)
+
+- Fixed inconsistent parameter type:
+  Fixed inconsistent parameter type for setMaxReceivePDULength() method.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
 **** Changes from 2014.04.29 (riesmeier)
 
 - Access the (total) number of frames in an image:

@@ -579,7 +579,7 @@ public:
   /** Set maximum PDU length (to be received by SCU)
    *  @param maxRecPDU [in] The maximum PDU size to use in bytes
    */
-  void setMaxReceivePDULength(const unsigned long maxRecPDU);
+  void setMaxReceivePDULength(const Uint32 maxRecPDU);
 
   /** Set whether to send in DIMSE blocking or non-blocking mode
    *  @param blockingMode [in] Either blocking or non-blocking mode
