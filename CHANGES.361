@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.05.01 (riesmeier)
 
+- Added explicit type casts to avoid warnings:
+  Added explicit type casts to avoid warnings reported by gcc 4.7.2 (Linux)
+  with additional flags or MSVC++ with higher warning level (C4244). Thanks
+  to Rasmus Christian Pedersen <zerhacken@yahoo.com> for the original report.
+  Affects: dcmnet/apps/dcmrecv.cc
+           dcmnet/apps/dcmsend.cc
+
 - Fixed inconsistent parameter type:
   Fixed inconsistent parameter type for setMaxReceivePDULength() method.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h

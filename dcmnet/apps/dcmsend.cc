@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -459,9 +459,9 @@ int main(int argc, char *argv[])
     storageSCU.setPeerPort(OFstatic_cast(Uint16, opt_port));
     storageSCU.setPeerAETitle(opt_peerTitle);
     storageSCU.setAETitle(opt_ourTitle);
-    storageSCU.setMaxReceivePDULength(opt_maxReceivePDULength);
-    storageSCU.setACSETimeout(opt_acseTimeout);
-    storageSCU.setDIMSETimeout(opt_dimseTimeout);
+    storageSCU.setMaxReceivePDULength(OFstatic_cast(Uint32, opt_maxReceivePDULength));
+    storageSCU.setACSETimeout(OFstatic_cast(Uint32, opt_acseTimeout));
+    storageSCU.setDIMSETimeout(OFstatic_cast(Uint32, opt_dimseTimeout));
     storageSCU.setDIMSEBlockingMode(opt_blockMode);
     storageSCU.setVerbosePCMode(opt_showPresentationContexts);
     storageSCU.setDatasetConversionMode(opt_decompressionMode != DcmStorageSCU::DM_never);

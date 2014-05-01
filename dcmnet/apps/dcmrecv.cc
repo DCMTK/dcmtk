@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013, OFFIS e.V.
+ *  Copyright (C) 2013-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -263,11 +263,11 @@ int main(int argc, char *argv[])
     OFLOG_INFO(dcmrecvLogger, "configuring service class provider ...");
 
     /* set general network parameters */
-    storageSCP.setPort(opt_port);
+    storageSCP.setPort(OFstatic_cast(Uint16, opt_port));
     storageSCP.setAETitle(opt_aeTitle);
-    storageSCP.setMaxReceivePDULength(opt_maxPDULength);
-    storageSCP.setACSETimeout(opt_acseTimeout);
-    storageSCP.setDIMSETimeout(opt_dimseTimeout);
+    storageSCP.setMaxReceivePDULength(OFstatic_cast(Uint32, opt_maxPDULength));
+    storageSCP.setACSETimeout(OFstatic_cast(Uint32, opt_acseTimeout));
+    storageSCP.setDIMSETimeout(OFstatic_cast(Uint32, opt_dimseTimeout));
     storageSCP.setDIMSEBlockingMode(opt_blockingMode);
     storageSCP.setVerbosePCMode(opt_showPresentationContexts);
     storageSCP.setRespondWithCalledAETitle(opt_useCalledAETitle);
