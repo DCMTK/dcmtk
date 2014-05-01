@@ -13,6 +13,7 @@ Changes between releases are documented here.
 - Fixed inconsistent parameter type:
   Fixed inconsistent parameter type for setMaxReceivePDULength() method.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
 
 **** Changes from 2014.04.29 (riesmeier)
 

@@ -2248,7 +2248,7 @@ OFCondition DcmSCU::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
 }
 
 
-void DcmSCU::setMaxReceivePDULength(const unsigned long maxRecPDU)
+void DcmSCU::setMaxReceivePDULength(const Uint32 maxRecPDU)
 {
   m_maxReceivePDULength = maxRecPDU;
 }
