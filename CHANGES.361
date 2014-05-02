@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.02 (riesmeier)
+
+- Updated data dictionary for DICOM 2013 edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2014-04-30. Major parts of the "dicom.dic" file have
+  been generated automatically based on the machine-readable DocBook version of
+  Part 6 and 7 of the DICOM standard. In addition, all recently approved final
+  text Supplements and CPs have been added manually. Since the data dictionary
+  was already quite up-to-date, there should be minor changes only.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.05.01 (riesmeier)
 
 - Added explicit type casts to avoid warnings:
