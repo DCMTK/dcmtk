@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,7 +140,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
     size_t eqPos = toParse.find('=');
     if (n < 2)  // if at least no tag could be parsed
     {
-      // if value is given, extract it (and extrect dictname)
+      // if value is given, extract it (and dictionary name)
       if (eqPos != OFString_npos)
       {
         dicName = toParse.substr(0,eqPos).c_str();
@@ -754,9 +754,9 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_GETUID
     /* return to normal uid so that we can't do too much damage in case
-     * things go very wrong.   Only does someting if the program is setuid
+     * things go very wrong.   Only does something if the program is setuid
      * root, and run by another user.  Running as root user may be
-     * potentially disasterous if this program screws up badly.
+     * potentially disastrous if this program screws up badly.
      */
     if ((setuid(getuid()) == -1) && (errno == EAGAIN))
     {
@@ -913,8 +913,8 @@ addPresentationContext(T_ASC_Parameters *params,
     ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
     ** Some SCP implementations will just select the first transfer
     ** syntax they support (this is not part of the standard) so
-    ** organise the proposed transfer syntaxes to take advantage
-    ** of such behaviour.
+    ** organize the proposed transfer syntaxes to take advantage
+    ** of such behavior.
     **
     ** The presentation contexts proposed here are only used for
     ** C-FIND and C-MOVE, so there is no need to support compressed
@@ -1508,7 +1508,8 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
         OFLOG_INFO(movescuLogger, "Received Move Response " << responseCount);
         OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
     } else {
-        OFLOG_INFO(movescuLogger, "Received Move Response " << responseCount << " (" << DU_cmoveStatusString(response->DimseStatus) << ")");
+        OFLOG_INFO(movescuLogger, "Received Move Response " << responseCount << " ("
+            << DU_cmoveStatusString(response->DimseStatus) << ")");
     }
 
     /* should we send a cancel back ?? */
@@ -1584,8 +1585,7 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     req.DataSetType = DIMSE_DATASET_PRESENT;
     if (opt_moveDestination == NULL) {
         /* set the destination to be me */
-        ASC_getAPTitles(assoc->params, req.MoveDestination,
-            NULL, NULL);
+        ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
     } else {
         strcpy(req.MoveDestination, opt_moveDestination);
     }

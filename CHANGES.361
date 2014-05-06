@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.06 (riesmeier)
+
+- Fixed typos in comments.
+  Affects: dcmnet/apps/movescu.cc
+
 **** Changes from 2014.05.02 (riesmeier)
 
 - Updated data dictionary for DICOM 2013 edition:
