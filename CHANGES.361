@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.05.06 (riesmeier)
 
+- Added further error handling options:
+  Added error handling options known from dsrdump and dsr2html to dsr2xml.
+  Please be careful with these new command line options since they disable
+  certain validation checks on the DICOM SR input file and, therefore, might
+  result in non-standard conformant output.
+  Affects: CHANGES.361
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2xml.man
+
 - Fixed typos in comments.
   Affects: dcmnet/apps/movescu.cc
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -164,6 +164,11 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("error handling:");
+        cmd.addOption("--unknown-relationship", "-Er",    "accept unknown/missing relationship type");
+        cmd.addOption("--invalid-item-value",   "-Ev",    "accept invalid content item value\n(e.g. violation of VR or VM definition)");
+        cmd.addOption("--ignore-constraints",   "-Ec",    "ignore relationship content constraints");
+        cmd.addOption("--ignore-item-errors",   "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
+        cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
         cmd.addOption("--disable-vr-checker",   "-Dv",    "disable check for VR-conformant string values");
       cmd.addSubGroup("specific character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
@@ -248,6 +253,16 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         /* processing options */
+        if (cmd.findOption("--unknown-relationship"))
+            opt_readFlags |= DSRTypes::RF_acceptUnknownRelationshipType;
+        if (cmd.findOption("--invalid-item-value"))
+            opt_readFlags |= DSRTypes::RF_acceptInvalidContentItemValue;
+        if (cmd.findOption("--ignore-constraints"))
+            opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
+        if (cmd.findOption("--ignore-item-errors"))
+            opt_readFlags |= DSRTypes::RF_ignoreContentItemErrors;
+        if (cmd.findOption("--skip-invalid-items"))
+            opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
         if (cmd.findOption("--disable-vr-checker"))
             dcmEnableVRCheckerForStringValues.set(OFFalse);
         cmd.beginOptionBlock();

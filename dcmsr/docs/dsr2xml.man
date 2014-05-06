@@ -102,6 +102,23 @@ input transfer syntax:
 \verbatim
 error handling:
 
+  -Er  --unknown-relationship
+         accept unknown/missing relationship type
+
+  -Ev  --invalid-item-value
+         accept invalid content item value
+         (e.g. violation of VR or VM definition)
+
+  -Ec  --ignore-constraints
+         ignore relationship content constraints
+
+  -Ee  --ignore-item-errors
+         do not abort on content item errors, just warn
+         (e.g. missing value type specific attributes)
+
+  -Ei  --skip-invalid-items
+         skip invalid content items (including sub-tree)
+
   -Dv  --disable-vr-checker
          disable check for VR-conformant string values
 
@@ -225,6 +242,15 @@ mapped in case of value multiplicity).  If needed, option \e --convert-to-utf8
 can be used to convert the DICOM file or data set to UTF-8 encoding prior to
 the conversion to XML format.
 
+\subsection error_handling Error Handling
+
+Please be careful with the processing options \e --unknown-relationship,
+\e --invalid-item-value, \e --ignore-constraints, \e --ignore-item-errors and
+\e --skip-invalid-items since they disable certain validation checks on the
+DICOM SR input file and, therefore, might result in non-standard conformant
+output.  However, there might be reasons for using one or more of these
+options, e.g. in order to read and process an incorrectly encoded SR document.
+
 \subsection limitations Limitations
 
 The XML Schema <em>dsr2xml.xsd</em> does not support all variations of the
@@ -298,6 +324,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2013 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
