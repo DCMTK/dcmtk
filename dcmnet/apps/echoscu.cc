@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -509,7 +509,7 @@ main(int argc, char *argv[])
 
 #endif
 
-    /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+    /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
         OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
@@ -525,7 +525,7 @@ main(int argc, char *argv[])
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
     /* Set the transport layer type (type of network connection) in the params */
-    /* strucutre. The default is an insecure connection; where OpenSSL is  */
+    /* structure. The default is an insecure connection; where OpenSSL is  */
     /* available the user is able to request an encrypted,secure connection. */
     cond = ASC_setTransportLayerType(params, opt_secureConnection);
     if (cond.bad()) {
@@ -730,7 +730,7 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
     OFCondition cond = EC_Normal;
     unsigned long n = num_repeat;
 
-    /* as long as no error occured and the counter does not equal 0 */
+    /* as long as no error occurred and the counter does not equal 0 */
     /* send an C-ECHO-RQ and handle the response */
     while (cond.good() && n--) cond = echoSCU(assoc);
 
