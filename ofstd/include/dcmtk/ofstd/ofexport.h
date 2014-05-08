@@ -39,7 +39,7 @@
 #define DCMTK_DECL_IMPORT __declspec(dllexport)
 #endif
 #else
-#ifdef(HAVE_HIDDEN_VISIBILITY)
+#ifdef HAVE_HIDDEN_VISIBILITY
 /* GCC hides everything when given -fvisibility=hidden. The symbols which
  * should be visible have to get a default visibility again.
  */

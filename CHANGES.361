@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.08 (onken)
+
+- Fixed wrong ifdef syntax:
+  Thanks to Andrey Fedorov <andrey.fedorov@gmail.com> for the suggested fix.
+  Affects: ofstd/include/dcmtk/ofstd/ofexport.h
+
 **** Changes from 2014.05.06 (riesmeier)
 
 - Added further error handling options:
