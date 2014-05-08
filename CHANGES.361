@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.08 (riesmeier)
+
+- Fixed typos, added missing documentation, etc.
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
+
 **** Changes from 2014.05.08 (onken)
 
 - Fixed wrong ifdef syntax:

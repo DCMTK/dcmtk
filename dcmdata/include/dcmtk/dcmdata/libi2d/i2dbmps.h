@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,31 +40,30 @@ public:
   I2DBmpSource();
 
   /** Returns format of input image. For this class "BMP" is returned.
-   *  @return Returns format of input image, i. e. "BMP".
+   *  @return Returns format of input image, i.e. "BMP".
    */
   OFString inputFormat() const;
 
   /** Extracts the raw BMP pixel data stream from a BMP file and returns some
-   *  image information about this pixel data.
-   *  Raw means that any header information is removed from the BMP stream.
-   *  This function allocates memory for the pixel data returned to the user. The caller of this
-   *  function is responsible for deleting the memory buffer
+   *  further information about this pixel data. Raw means that any header
+   *  information is removed from the BMP stream.
+   *  This function allocates memory for the pixel data returned to the user.
+   *  The caller of this function is responsible for deleting the memory buffer.
    *  @param rows - [out] Rows of image
    *  @param cols - [out] Columns of image
    *  @param samplesPerPixel - [out] Number of components per pixel
    *  @param photoMetrInt - [out] The DICOM color model used for the compressed data
    *  @param bitsAlloc - [out] Bits Allocated for one sample
-   *  @param bitsStored - [out] Bits Stored, Number of bits actually stored within Bits Allocated
+   *  @param bitsStored - [out] Bits Stored, Number of bits actually stored within
+   *                            Bits Allocated
    *  @param highBit - [out] High Bit, Highest stored in bit within Bits Allocated
    *  @param pixelRepr - [out] Pixel Representation (0=unsigned, 1=signed)
    *  @param planConf - [out] Planar Configuration
    *  @param pixAspectH - [out] Horizontal value of pixel aspect ratio
    *  @param pixAspectV - [out] Vertical value of pixel aspect ratio
-   *  @param pixData - [out] Pointer to the pixel data in BMP Interchange Format (but without APPx markers).
+   *  @param pixData - [out] Pointer to the pixel data in BMP Interchange Format
    *  @param length - [out] Length of pixel data
-   *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data.
-                        This is necessary for the BMP importer that needs to report
-                        which TS must be used for the imported BMP data (ie. baseline, progressive, ...).
+   *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readPixelData( Uint16& rows,
@@ -84,11 +83,8 @@ public:
 
   /** After reading of pixel data, this function can be used for getting
    *  information about lossy compression parameters.
-   *  @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
-   *                            data read was lossy (OFtrue) or lossless (OFFalse)
-   *  @param srcLossyComprMethod - [out] Denotes the lossy compression method used
-   *                               in source if there is one (srcEncodingLossy = OFTrue).
-   *                               Should use defined terms of attribute Lossy Compression Method.
+   *  @param srcEncodingLossy - [out] Always returns OFFalse (i.e. lossless)
+   *  @param srcLossyComprMethod - [out] Unused parameter
    *  @return EC_Normal if information is available, error otherwise
    */
   virtual OFCondition getLossyComprInfo(OFBool& srcEncodingLossy,
@@ -128,7 +124,7 @@ protected:
    *  @param width - [out] width of the image in pixel
    *  @param height - [out] height of the image in pixel
    *  @param isTopDown - [out] OFTrue if this is a top down bitmap
-   *                     (height was read as negative value).OFFalse otherwise.
+   *                     (height was read as negative value). OFFalse otherwise.
    *  @param bpp - [out] bits per pixel of the image.
    *  @param colors - [out] number of entries in color table.
    *  @return EC_Normal, if successful, error otherwise
@@ -168,7 +164,7 @@ protected:
                              char*& pixData /*out*/,
                              Uint32& length /*out*/);
 
-  /** Parse a single 24bpp or 32bpp row of bmp data.
+  /** Parse a single 24bpp or 32bpp row of BMP data.
    *  @param row - [in] The row of data to parse.
    *  @param width - [in] The length in pixel of the row.
    *  @param bpp - [in] The number of bits per pixel.
@@ -180,7 +176,7 @@ protected:
                                const int bpp,
                                char *pixData /*out*/) const;
 
-  /** Parse a single 16bpp row of bmp data.
+  /** Parse a single 16bpp row of BMP data.
    *  @param row - [in] The row of data to parse.
    *  @param width - [in] The length in pixel of the row.
    *  @param pixData - [out] The buffer to write the data to (in "RGB" format).
@@ -190,7 +186,7 @@ protected:
                             const Uint16 width,
                             char *pixData /*out*/) const;
 
-  /** Parse a single 1, 4 or 8bpp row of bmp data.
+  /** Parse a single 1, 4 or 8bpp row of BMP data.
    *  @param row - [in] The row of data to parse.
    *  @param width - [in] The length in pixel of the row.
    *  @param bpp - [in] The number of bits per pixel.
@@ -228,4 +224,4 @@ protected:
   OFFile bmpFile;
 };
 
-#endif // #ifndef I2DBMPS_H
+#endif // I2DBMPS_H

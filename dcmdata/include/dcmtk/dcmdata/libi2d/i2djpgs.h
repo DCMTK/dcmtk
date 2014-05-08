@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2007-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,12 +28,11 @@
 #include "dcmtk/dcmdata/libi2d/i2dimgs.h"
 
 /**
- * JPEG markers consist of one or more 0xFF bytes, followed by a marker
- * code byte (which is not an FF). This enum lists the second byte
- * of all these markers. Note: RESn markers are not fully listed, but only
- * the first (RES0) and the last (RESN)
+ * JPEG markers consist of one or more 0xFF bytes, followed by a marker code byte
+ * (which is not an FF). This enum lists the second byte of all these markers.
+ * @note RESn markers are not fully listed, but only the first (RES0) and the
+ *       last (RESN)
  */
-
 enum E_JPGMARKER { E_JPGMARKER_SOF0 = 0xC0, E_JPGMARKER_SOF1 = 0xC1, E_JPGMARKER_SOF2 = 0xC2,
                    E_JPGMARKER_SOF3 = 0xC3, /*C4 and CC are not SOF markers,*/ E_JPGMARKER_SOF5 = 0xC5,
                    E_JPGMARKER_SOF6 = 0xC6, E_JPGMARKER_SOF7 = 0xC7, E_JPGMARKER_JPG = 0xC8,
@@ -70,6 +69,9 @@ struct DCMTK_I2D_EXPORT JPEGFileMapEntry {
 };
 
 
+/** This is a I2DImgSource implementation that can parse JPEG files and convert
+ *  them into DICOM images.
+ */
 class DCMTK_I2D_EXPORT I2DJpegSource : public I2DImgSource
 {
 
@@ -81,32 +83,35 @@ public:
   I2DJpegSource();
 
   /** Returns format of input image. For this class "JPEG" is returned.
-   *  @return Returns format of input image, i. e. "JPEG".
+   *  @return Returns format of input image, i.e. "JPEG".
    */
   OFString inputFormat() const;
 
   /** Extracts the raw JPEG pixel data stream from a JPEG file and returns some
-   *  image information about this pixel data.
-   *  Raw means here that all APP markers (e.g. JFIF information) are removed from the JPEG stream.
+   *  further information about this pixel data. Raw means here that all APP
+   *  markers (e.g. JFIF information) are removed from the JPEG stream.
    *  The pixel data returned is a JPEG stream in JPEG interchange format.
-   *  This function allocates memory for the pixel data returned to the user. The caller of this
-   *  function is responsible for deleting the memory buffer
+   *  This function allocates memory for the pixel data returned to the user.
+   *  The caller of this function is responsible for deleting the memory buffer.
    *  @param rows - [out] Rows of image
    *  @param cols - [out] Columns of image
    *  @param samplesPerPixel - [out] Number of components per pixel
    *  @param photoMetrInt - [out] The DICOM color model used for the compressed data
    *  @param bitsAlloc - [out] Bits Allocated for one sample
-   *  @param bitsStored - [out] Bits Stored, Number of bits actually stored within Bits Allocated
+   *  @param bitsStored - [out] Bits Stored, Number of bits actually stored within
+   *                            Bits Allocated
    *  @param highBit - [out] High Bit, Highest stored in bit within Bits Allocated
    *  @param pixelRepr - [out] Pixel Representation (0=unsigned, 1=signed)
    *  @param planConf - [out] Planar Configuration
    *  @param pixAspectH - [out] Horizontal value of pixel aspect ratio
    *  @param pixAspectV - [out] Vertical value of pixel aspect ratio
-   *  @param pixData - [out] Pointer to the pixel data in JPEG Interchange Format (but without APPx markers).
+   *  @param pixData - [out] Pointer to the pixel data in JPEG Interchange Format
+   *                         (but without APPx markers).
    *  @param length - [out] Length of pixel data
-   *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data.
-                        This is necessary for the JPEG importer that needs to report
-                        which TS must be used for the imported JPEG data (ie. baseline, progressive, ...).
+   *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel
+   *                    data. This is necessary for the JPEG importer that needs
+   *                    to report which TS must be used for the imported JPEG data
+   *                    (ie. baseline, progressive, ...).
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readPixelData( Uint16& rows,
@@ -124,26 +129,29 @@ public:
                              Uint32& length,
                              E_TransferSyntax& ts);
 
-  /* After reading of pixel data, this function can be used for getting
-   * information about lossy compression parameters.
-   * @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
-   *                           data read was lossy (OFtrue) or lossless (OFFalse)
-   * @param srcLossyComprMethod - [out] Denotes the lossy compression method used
-   *                              in source if there is one (srcEncodingLossy = OFTrue).
-   *                              Should use defined terms of attribute Lossy Compression Method.
-   * @return EC_Normal if information is available, error otherwise
+  /** After reading of pixel data, this function can be used for getting
+   *  information about lossy compression parameters.
+   *  @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
+   *                            data read was lossy (OFTrue) or lossless (OFFalse)
+   *  @param srcLossyComprMethod - [out] Denotes the lossy compression method used
+   *                               in source if there is one (srcEncodingLossy = OFTrue).
+   *                               Should use defined terms of attribute Lossy
+   *                               Compression Method.
+   *  @return EC_Normal if information is available, error otherwise
    */
   OFCondition getLossyComprInfo(OFBool& srcEncodingLossy,
                                 OFString& srcLossyComprMethod) const;
 
   /** Enable/Disable support for Extended Sequential JPEG Coding
-   *  @param enabled - [in] OFTrue: support Extended Sequential, OFTrue: Do not support
+   *  @param enabled - [in] OFTrue: support Extended Sequential,
+   *                        OFFalse: do not support
    *  @return none
    */
   void setExtSeqSupport(const OFBool enabled);
 
   /** Enable/Disable support for Progressive JPEG Coding
-   *  @param enabled - [in] OFTrue: support Extended Sequential, OFTrue: Do not support
+   *  @param enabled - [in] OFTrue: support Extended Sequential,
+   *                        OFFalse: do not support
    *  @return none
    */
   void setProgrSupport(const OFBool enabled);
@@ -159,7 +167,7 @@ public:
    *   JPEG file (for finding any APPn markers) the parsing stops after finding
    *   the SOFn marker (which is relevant for extracting width/height and so on.
    *   Default: false
-   *   @param enabled - [in] OFtrue: copy APPn, OFFalse: cut off APPn info
+   *   @param enabled - [in] OFTrue: copy APPn, OFFalse: cut off APPn info
    *   @return none
    */
   void setKeepAPPn(const OFBool enabled);
@@ -189,7 +197,7 @@ protected:
   void closeFile();
 
   /** Function that scans a JPEG file and creates a "file map" which
-   *  includes all JPEG markes and their byte positions in the file.
+   *  includes all JPEG markers and their byte positions in the file.
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition createJPEGFileMap();
@@ -202,11 +210,12 @@ protected:
   void debugDumpJPEGFileMap() const;
 
   /** Get image parameters as found at given SOF marker of the JPEG image.
-   *  @param entry - [in] This specifies the marker and the byte position of the SOF marker
+   *  @param entry - [in] This specifies the marker and the byte position of the
+   *                      SOF marker
    *  @param imageWidth - [out] The width of the image
    *  @param imageHeight - [out] The height of the image
    *  @param samplesPerPixel - [out] Number of components per pixel
-   *  @param bitsPerSample - [out] Nunber of bits per pixel component
+   *  @param bitsPerSample - [out] Number of bits per pixel component
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition getSOFImageParameters( const JPEGFileMapEntry& entry,
@@ -216,7 +225,8 @@ protected:
                                      Uint16& bitsPerSample);
 
   /** Get JPEG parameters as found at given JFIF marker of the JPEG image.
-   *  @param entry - [in] This specifies the marker and the byte position of the JFIF marker
+   *  @param entry - [in] This specifies the marker and the byte position of the
+   *                      JFIF marker
    *  @param jfifVersion - [out] The JFIF version of the JFIF data
    *  @param pixelAspectH - [out] The horizontal pixel aspect ratio
    *  @param pixelAspectV - [out] The vertical pixel aspect ratio
@@ -287,7 +297,7 @@ protected:
   /** Tries to find the next JPEG marker in underlying file stream.
    *  @param lastWasSOSMarker - [in] Denotes, whether the last marker read
    *         before was the SOS (start of scan) marker. This is needed to
-   *         ignore non-marker 0xFF ocurrences in the compressed data.
+   *         ignore non-marker 0xFF occurrences in the compressed data.
    *  @param result - [out] The result marker
    *  @return EC_Normal, if successful, error otherwise
    */
@@ -311,7 +321,8 @@ protected:
    */
   void clearMap();
 
-  /// JPEG file map. This map includes all JPEG markers and their byte positions in the JPEG file.
+  /// JPEG file map. This map includes all JPEG markers and their byte positions
+  /// in the JPEG file.
   OFList<JPEGFileMapEntry*> m_jpegFileMap;
 
   /// The JPEG file, if opened
@@ -337,7 +348,6 @@ protected:
   /// After reading pixel data, this denotes whether the source
   /// data is already lossy compressed
   OFBool m_lossyCompressed;
-
 };
 
-#endif // #ifndef I2DJPGS_H
+#endif // I2DJPGS_H
