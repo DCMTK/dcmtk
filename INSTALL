@@ -4,10 +4,12 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
 -------------------------------------------------------------------------------
+ IMPORTANT NOTE FOR SNAPSHOT AND CURRENT DEVELOPMENT VERSION 3.6.1_DEV
+-------------------------------------------------------------------------------
  Please note that most sections of this document refer to the official release
  DCMTK 3.6.0, i.e. they are not yet updated for the changes of the latest
- development snapshot (version 3.6.1).  This will be done for the next release,
- which will probably be called version 3.6.2.
+ development version 3.6.1.  This will be done for the next release, which will
+ probably be called version 3.6.2.
 
  The toolkit should compile on Linux systems with gcc 4.7.2 since this is our
  main development platform.  Also on Windows systems, it usually works with
@@ -626,7 +628,7 @@ Known limitations of DCMTK on the Windows platform.
    application errors that are hard to find.  The old, now deprecated
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
-   DCMTK can be configured to use either of the two interfaces.  This behaviour
+   DCMTK can be configured to use either of the two interfaces.  This behavior
    can be changed in "config/include/dcmtk/config/osconfig.h" in the build
    directory where the symbol USE_STD_CXX_INCLUDES is declared.
 
@@ -690,7 +692,7 @@ and no CMake defaults related to the selected configuration type kick in.
 
 
 DCMTKConfig.cmake AND DCMTKTargets.cmake
----------------------------------------
+----------------------------------------
 
 CMake permits to write files that describe the DCMTK build configuration
 (DCMTConfig.cmake) as well as all targets (executables and libraries) that have
@@ -700,7 +702,7 @@ adapt their own build configuration, and directly make use of all available
 target libraries and executables.
 
 On systems using CMake versions equal or greater than 2.8.8, these files are
-written during installation to the installation directory's subfolder 
+written during installation to the installation directory's subfolder
 /cmake on Windows systems, and /lib/cmake/dcmtk on Unix-like systems.
 Additionally, these files are already written to the main directory of CMake's
 build tree during the build, with all content (e.g. the include paths within
@@ -709,7 +711,7 @@ a DCMTK build tree can be used by external projects that process these two
 files.
 
 On systems using CMake versions lower than 2.8.8, only a simplified
-DCMTKConfig.cmake is created which is only available in the install tree.
+DCMTKConfig.cmake is created, which is only available in the install tree.
 DCMTKTargets.cmake is not created at all.
 
 
@@ -723,7 +725,7 @@ Doxygen installed can create a hypertext documentation with "make html" in the
 build the "DOXYGEN" subproject.  A project file for Microsoft's HTML Help
 Workshop can also be generated allowing to create a single CHM file (compressed
 HTML) from the documentation.  Other output formats (e.g. LaTeX) can be enabled
-by changing the configuration file in the doxygen directory.
+by changing the configuration file in the "doxygen" directory.
 
 At the current time, dcmimage, dcmimgle, dcmjpeg, dcmpstat, dcmrt, dcmsign,
 dcmsr, dcmtls, dcmwlm and ofstd are completely documented, dcmdata, dcmjpls,
@@ -742,12 +744,12 @@ the "doxygen" directory.  The output files are stored in "doxygen/man2text".
 COMPILE-TIME FLAGS AND ENVIRONMENT VARIABLES
 ============================================
 
-The behaviour of several DCMTK tools and libraries can be modified by a number
+The behavior of several DCMTK tools and libraries can be modified by a number
 of compile-time flags (macros).  Those macros which are not automatically
 handled by the configure mechanism are documented in "config/docs/macros.txt"
 (or "/usr/local/share/doc/dcmtk/macros.txt").
 
-There is also a number of environment variables which affect DCMTK's behaviour.
+There is also a number of environment variables which affect DCMTK's behavior.
 These are documented in "config/docs/envvars.txt" (or "/usr/local/share/doc/
 dcmtk/envvars.txt").
 
@@ -778,7 +780,7 @@ For more information, call this program with the --help option.
 
 Have fun.
 
-Marco Eichelberg, Joerg Riesmeier, Michael Onken, Jan Schlamelcher
-OFFIS DICOM Team, Oldenburg, Germany.
+M. Eichelberg, J. Riesmeier, M. Onken, U. Schlachter, J. Schlamelcher
+DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2014-03-07 (Onken)
+Last revised: 2014-05-09 (Riesmeier)

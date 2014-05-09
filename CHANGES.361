@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.09 (riesmeier)
+
+- Various minor fixes for development version.
+  Affects: INSTALL
+           VERSION
+
 **** Changes from 2014.05.08 (riesmeier)
 
 - Fixed typos, added missing documentation, etc.
