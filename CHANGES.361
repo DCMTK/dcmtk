@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.27 (schlamelcher)
+
+- Modified DcmQuantColorHashTable to perform lazy initialization:
+  To improve performance, DcmQuantColorHashTable now creates the internal
+  items when they are accessed for the first time instead of at its
+  initialization.
+  Thanks to Takeo Satomi <takeo.satomi@gmail.com> for the suggested
+  improvement.
+  Affects: dcmimage/include/dcmtk/dcmimage/diqthash.h
+           dcmimage/libsrc/diqthash.cc
+
 **** Changes from 2014.05.09 (riesmeier)
 
 - Various minor fixes for development version.

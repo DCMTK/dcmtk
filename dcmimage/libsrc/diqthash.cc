@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,36 +27,23 @@
 
 
 DcmQuantColorHashTable::DcmQuantColorHashTable()
-: table(NULL)
+: m_Table(DcmQuantHashSize, OFnullptr)
 {
-  table = new DcmQuantHistogramItemListPointer[DcmQuantHashSize];
-  if (table)
-  {
-    for (unsigned long i=0; i < DcmQuantHashSize; i++)
-    {
-      table[i] = new DcmQuantHistogramItemList();
-    }  
-  }
+
 }
 
 
 DcmQuantColorHashTable::~DcmQuantColorHashTable()
 {
-  if (table)
-  {
-    for (unsigned long i=0; i < DcmQuantHashSize; i++) delete table[i];
-    delete[] table;
-  }
+  for (table_iterator it = m_Table.begin(); it != m_Table.end(); delete *it++);
 }
 
 
 unsigned long DcmQuantColorHashTable::countEntries() const
 {
   unsigned long result = 0;
-  for (unsigned long i=0; i < DcmQuantHashSize; i++)
-  {
-    result += table[i]->size();
-  }  
+  for (const_table_iterator it = m_Table.begin(); it != m_Table.end(); ++it)
+    if (*it) result += (*it)->size();
   return result;
 }
 
@@ -68,17 +55,15 @@ unsigned long DcmQuantColorHashTable::createHistogram(DcmQuantHistogramItemPoint
   if (array)
   {
     unsigned long counter = 0;
-    for (unsigned long i=0; i < DcmQuantHashSize; i++)
-    {
-      table[i]->moveto(array, counter, numcolors);
-    }      
+    for (table_iterator it = m_Table.begin(); it != m_Table.end(); ++it)
+      if (*it) (*it)->moveto(array, counter, numcolors);
   }
   return numcolors;
 }
 
 
 unsigned long DcmQuantColorHashTable::addToHashTable(
-  DicomImage& image, 
+  DicomImage& image,
   unsigned long newmaxval,
   unsigned long maxcolors)
 {
@@ -119,7 +104,7 @@ unsigned long DcmQuantColorHashTable::addToHashTable(
           px.scale(r, g, b, scaletable);
 
           // lookup and increase if already in hash table
-          numcolors += table[px.hash()]->add(px);
+          numcolors += item(px).add(px);
           if (numcolors > maxcolors) return 0;
         }
       }

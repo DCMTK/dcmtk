@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,26 +25,26 @@
 
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/dcmimage/diqtpix.h"   /* for DcmQuantPixel */
 #include "dcmtk/dcmimage/diqthitl.h"  /* for DcmQuantHistogramItemList */
 
 
 class DicomImage;
 
-
-/** this class implements a hash table for colors.  
- *  Each entry of the hash table consists of an RGB 
+/** this class implements a hash table for colors.
+ *  Each entry of the hash table consists of an RGB
  *  color (DcmQuantPixel object) and an integer value (e. g. counter).
  *  This class is used during the quantization of a color image.
- */ 
+ */
 class DCMTK_DCMIMAGE_EXPORT DcmQuantColorHashTable
 {
-public: 
+public:
   /// constructor
-  DcmQuantColorHashTable(); 
+  DcmQuantColorHashTable();
 
   /// destructor
-  ~DcmQuantColorHashTable(); 
+  ~DcmQuantColorHashTable();
 
   /** adds a new color to the hash table.  The color must not yet
    *  be present (the caller is responsible for checking this).
@@ -53,7 +53,7 @@ public:
    */
   inline void add(const DcmQuantPixel& colorP, int value)
   {
-    table[colorP.hash()]->push_front(colorP, value);
+    item(colorP).push_front(colorP, value);
   }
 
   /** looks up the given color in the hash table.
@@ -63,24 +63,25 @@ public:
    */
   inline int lookup(const DcmQuantPixel& colorP) const
   {
-    return table[colorP.hash()]->lookup(colorP);  
+    DcmQuantHistogramItemListPointer const p(m_Table[colorP.hash()]);
+    return p ? p->lookup(colorP) : -1;
   }
 
-  /** adds all pixels of all frames of the given image (which must be a 
-   *  color image) to the hash table.  The counter (integer value associated 
+  /** adds all pixels of all frames of the given image (which must be a
+   *  color image) to the hash table.  The counter (integer value associated
    *  to each color) counts the occurence of the color in the image.
    *  If more than maxcolors colors are found, the function returns zero.
    *  @param image image in which colors are to be counted
-   *  @param newmaxval maximum pixel value to which the contents of the 
+   *  @param newmaxval maximum pixel value to which the contents of the
    *    image are scaled down (see documentation of class DcmQuantScaleTable)
-   *    before counting colors.  This is used by the caller to reduce the number 
+   *    before counting colors.  This is used by the caller to reduce the number
    *    of colors in the image if necessary.
    *  @param maxcolors maximum number of colors allowed.  If more colors are found,
    *    the method immediately returns with a return value of zero.
    *  @return number of colors found, 0 if too many colors.
    */
   unsigned long addToHashTable(
-    DicomImage& image, 
+    DicomImage& image,
     unsigned long newmaxval,
     unsigned long maxcolors);
 
@@ -101,14 +102,27 @@ public:
 
 private:
 
+  typedef OFVector<DcmQuantHistogramItemListPointer> table_type;
+  typedef OFTypename table_type::iterator table_iterator;
+  typedef OFTypename table_type::const_iterator const_table_iterator;
+
   /// private undefined copy constructor
   DcmQuantColorHashTable(const DcmQuantColorHashTable& src);
 
   /// private undefined copy assignment operator
   DcmQuantColorHashTable& operator=(const DcmQuantColorHashTable& src);
 
+  /** Retrieves the specified item from the hash table.
+   *  If the item has not been created a new item is created and is returned.
+   */
+  DcmQuantHistogramItemList& item(const DcmQuantPixel& colorP)
+  {
+    DcmQuantHistogramItemListPointer& p(m_Table[colorP.hash()]);
+    return p ? *p : *(p = new DcmQuantHistogramItemList());
+  }
+
   /// hash array of lists for color/value pairs
-  DcmQuantHistogramItemListPointer *table;
+  table_type m_Table;
 };
 
 
