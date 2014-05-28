@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.05.28 (riesmeier)
+
+- Fixed typos in comments.
+  Affects: CMake/DCMTKConfig.cmake26.in
+           dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/include/dcmtk/dcmnet/dstorscu.h
+
 **** Changes from 2014.05.27 (schlamelcher)
 
 - Modified DcmQuantColorHashTable to perform lazy initialization:

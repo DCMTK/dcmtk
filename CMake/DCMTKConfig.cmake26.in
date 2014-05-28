@@ -3,9 +3,10 @@
 #
 # This is the old version that is used by CMake versions lower than 2.8.8
 # which introduced the more convenient CONFIGURE_PACKAGE_CONFIG_FILE command.
-# As a result, this file lacks some information compared to the 
+# As a result, this file lacks some information compared to the
 # CONFIGURE_PACKAGE_CONFIG_FILE version.
 #
+
 # Basic version information
 SET(DCMTK_MAJOR_VERSION @DCMTK_MAJOR_VERSION@)
 SET(DCMTK_MINOR_VERSION @DCMTK_MINOR_VERSION@)
@@ -34,4 +35,3 @@ SET(DCMTK_SINGLE_SHARED_LIBRARY @BUILD_SINGLE_SHARED_LIBRARY@)
 SET(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS @DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS@)
 SET(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS @DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS@)
 SET(DCMTK_WIDE_CHAR_MAIN_FUNCTION @DCMTK_WIDE_CHAR_MAIN_FUNCTION@)
-

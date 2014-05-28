@@ -557,7 +557,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
     OFBool ReadFromDICOMDIRMode;
     /// AE title of the C-MOVE client that initiated the C-STORE operation (if applicable)
     OFString MoveOriginatorAETitle;
-    /// Message ID of the C-MOVE message that initiated the C-STORE operation (if applicable)
+    /// message ID of the C-MOVE message that initiated the C-STORE operation (if applicable)
     Uint16 MoveOriginatorMsgID;
     /// list of SOP instances to be transferred
     OFList<TransferEntry *> TransferList;
@@ -571,4 +571,4 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
     DcmStorageSCU &operator=(const DcmStorageSCU &);
 };
 
-#endif // DCMSTORSCU_H
+#endif // DSTORSCU_H
