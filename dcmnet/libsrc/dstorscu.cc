@@ -140,7 +140,7 @@ DcmStorageSCU::DcmStorageSCU()
     HaltOnUnsuccessfulStoreMode(OFTrue),
     AllowIllegalProposalMode(OFTrue),
     ReadFromDICOMDIRMode(OFFalse),
-    MoveOriginatorAETitle(""),
+    MoveOriginatorAETitle(),
     MoveOriginatorMsgID(0),
     TransferList(),
     CurrentTransferEntry()
@@ -166,6 +166,8 @@ void DcmStorageSCU::clear()
     HaltOnUnsuccessfulStoreMode = OFTrue;
     AllowIllegalProposalMode = OFTrue;
     ReadFromDICOMDIRMode = OFFalse;
+    MoveOriginatorAETitle.clear();
+    MoveOriginatorMsgID = 0;
     removeAllSOPInstances();
 }
 

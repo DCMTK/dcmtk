@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.05.28 (riesmeier)
 
+- Made sure that the move originator is cleared:
+  Made sure that the members MoveOriginatorAETitle and MoveOriginatorMsgID are
+  reset in the clear() method.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
 - Fixed typos in comments.
   Affects: CMake/DCMTKConfig.cmake26.in
            dcmnet/include/dcmtk/dcmnet/dstorscp.h
