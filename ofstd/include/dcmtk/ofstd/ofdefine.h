@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,5 +98,12 @@ END_EXTERN_C
 #    define HAVE_STRRCHR /* This makes using this easier */
 #  endif
 #endif
+
+/* define OFconstexpr to 'constexpr' or '' if not supported */
+#if __cplusplus >= 201103L
+#define OFconstexpr constexpr
+#else // C++11
+#define OFconstexpr
+#endif // NOT C++11
 
 #endif

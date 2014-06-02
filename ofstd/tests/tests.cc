@@ -74,4 +74,5 @@ OFTEST_REGISTER(ofstd_thread);
 #endif // WITH_THREADS
 OFTEST_REGISTER(ofstd_xmlParser);
 OFTEST_REGISTER(ofstd_memory);
+OFTEST_REGISTER(ofstd_optional);
 OFTEST_MAIN("ofstd")

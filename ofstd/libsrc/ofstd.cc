@@ -156,6 +156,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofnetdb.h"
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
+#include "dcmtk/ofstd/ofoption.h"
 
 // --- ftoa() processing flags ---
 
@@ -2847,4 +2848,5 @@ OFStandard::OFPasswd::operator OFBool() const { return ok; }
 
 #if __cplusplus < 201103L
 DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
+DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;
 #endif
