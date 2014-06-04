@@ -58,7 +58,7 @@ public:
        *  This must happen *before* actually calling run() (i.e. start()) on
        *  the worker.
        *  @param assoc The association that should be handled by the worker.
-       *  @return EC_Normal if ok, error code otherwise. An error may occur
+       *  @return EC_Normal if OK, error code otherwise. An error may occur
        *          if the the function was called before with a valid
        *          association, or if the given association is NULL.
        */
@@ -122,7 +122,7 @@ public:
       T_ASC_Association* m_assoc;
   };
 
-  /// Need to keep MS VC6 happy
+  // Needed to keep MS VC6 happy
   friend class DcmBaseSCPWorker;
 
   /** Virtual destructor, frees internal memory.
@@ -163,7 +163,7 @@ public:
    */
   virtual DcmSCPConfig& getConfig();
 
-  /* If enabled, the pool will return from listening for incoming requests
+  /** If enabled, the pool will return from listening for incoming requests
    *  as soon as the last worker is idle, i.e.\ no worker is handling a DICOM
    *  association any more.
    */

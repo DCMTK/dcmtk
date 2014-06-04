@@ -11,6 +11,9 @@ Changes between releases are documented here.
   Also removed trailing spaces and fixed some typos.
   Affects: oflog/libsrc/patlay.cc
 
+- Fixed some Doxygen related issues (and a typo).
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
 **** Changes from 2014.06.02 (schlamelcher)
 
 - Introduced OFoptional, implementing optional types:
