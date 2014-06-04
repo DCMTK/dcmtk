@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.04 (riesmeier)
+
+- Fixed issue with text alignment in PatternLayout:
+  Fixed issue with text alignment in oflog's PatternLayout. After switching to
+  log4cplus version 1.1.0 the format specifiers for left and right justified
+  text of a particular width did not work any more. This has been fixed by
+  returning to the implementation of the previous log4cplus version 1.0.x.
+  Also removed trailing spaces and fixed some typos.
+  Affects: oflog/libsrc/patlay.cc
+
 **** Changes from 2014.06.02 (schlamelcher)
 
 - Introduced OFoptional, implementing optional types:

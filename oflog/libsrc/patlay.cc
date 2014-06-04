@@ -100,7 +100,7 @@ class PatternConverter
 public:
     explicit PatternConverter(const FormattingInfo& info);
     virtual ~PatternConverter() {}
-    void formatAndAppend(tostream& output, 
+    void formatAndAppend(tostream& output,
         const spi::InternalLoggingEvent& event);
 
     virtual void convert(tstring & result,
@@ -156,14 +156,14 @@ public:
                 FULL_LOCATION_CONVERTER,
                 FUNCTION_CONVERTER };
     BasicPatternConverter(const FormattingInfo& info, Type type);
-    virtual void convert(tstring & result, 
+    virtual void convert(tstring & result,
         const spi::InternalLoggingEvent& event);
 
 private:
   // Disable copy
     BasicPatternConverter(const BasicPatternConverter&);
     BasicPatternConverter& operator=(BasicPatternConverter&);
-    
+
     LogLevelManager& llmCache;
     Type type;
 };
@@ -193,8 +193,8 @@ private:
  */
 class DatePatternConverter : public PatternConverter {
 public:
-    DatePatternConverter(const FormattingInfo& info, 
-                         const tstring& pattern, 
+    DatePatternConverter(const FormattingInfo& info,
+                         const tstring& pattern,
                          bool use_gmtime);
     virtual void convert(tstring & result,
         const spi::InternalLoggingEvent& event);
@@ -205,7 +205,7 @@ private:
 };
 
 
-//! This pattern is used to format miliseconds since process start.
+//! This pattern is used to format milliseconds since process start.
 class RelativeTimestampConverter: public PatternConverter {
 public:
     RelativeTimestampConverter(const FormattingInfo& info);
@@ -277,7 +277,7 @@ public:
 
 private:
   // Types
-    enum ParserState { LITERAL_STATE, 
+    enum ParserState { LITERAL_STATE,
                        CONVERTER_STATE,
                        DOT_STATE,
                        MIN_STATE,
@@ -303,7 +303,7 @@ private:
 // FormattingInfo methods:
 ////////////////////////////////////////////////
 
-void 
+void
 FormattingInfo::reset() {
     minLen = -1;
     maxLen = 0x7FFFFFFF;
@@ -311,7 +311,7 @@ FormattingInfo::reset() {
 }
 
 
-void 
+void
 FormattingInfo::dump(helpers::LogLog& loglog) {
     tostringstream buf;
     buf << DCMTK_LOG4CPLUS_TEXT("min=") << minLen
@@ -348,6 +348,7 @@ PatternConverter::formatAndAppend(
         output << s.substr(len - maxLen);
     else if (OFstatic_cast(int, len) < minLen)
     {
+/*
         STD_NAMESPACE ios_base::fmtflags const original_flags = output.flags ();
         tchar const fill = output.fill (DCMTK_LOG4CPLUS_TEXT(' '));
         output.setf (leftAlign ? STD_NAMESPACE ios_base::left : STD_NAMESPACE ios_base::right,
@@ -356,6 +357,16 @@ PatternConverter::formatAndAppend(
         output << s;
         output.fill (fill);
         output.flags (original_flags);
+*/
+        // use implementation from log4cplus 1.0.x since the above code does not work correctly
+        if(leftAlign) {
+            output << s;
+            output << tstring(minLen - len, DCMTK_LOG4CPLUS_TEXT(' '));
+        }
+        else {
+            output << tstring(minLen - len, DCMTK_LOG4CPLUS_TEXT(' '));
+            output << s;
+        }
     }
     else
         output << s;
@@ -409,7 +420,7 @@ BasicPatternConverter::convert(tstring & result,
         return;
 
     case PROCESS_CONVERTER:
-        helpers::convertIntegerToString(result, internal::get_process_id ()); 
+        helpers::convertIntegerToString(result, internal::get_process_id ());
         return;
 
     case NDC_CONVERTER:
@@ -422,7 +433,7 @@ BasicPatternConverter::convert(tstring & result,
 
     case NEWLINE_CONVERTER:
         result = DCMTK_LOG4CPLUS_TEXT("\n");
-        return; 
+        return;
 
     case FILE_CONVERTER:
         result = event.getFile();
@@ -458,7 +469,7 @@ BasicPatternConverter::convert(tstring & result,
                 result = DCMTK_LOG4CPLUS_TEXT(":");
             return;
         }
-        
+
     case FUNCTION_CONVERTER:
         result = event.getFunction ();
         return;
@@ -495,7 +506,7 @@ LoggerPatternConverter::convert(tstring & result,
 
         // We substract 1 from 'len' when assigning to 'end' to avoid out of
         // bounds exception in return r.substring(end+1, len). This can happen
-        // if precision is 1 and the logger name ends with a dot. 
+        // if precision is 1 and the logger name ends with a dot.
         tstring::size_type end = len - 1;
         for (int i = precision; i > 0; --i)
         {
@@ -643,11 +654,11 @@ PatternParser::PatternParser(
 
 
 
-tstring 
-PatternParser::extractOption() 
+tstring
+PatternParser::extractOption()
 {
-    if (   (pos < pattern.length()) 
-        && (pattern[pos] == DCMTK_LOG4CPLUS_TEXT('{'))) 
+    if (   (pos < pattern.length())
+        && (pattern[pos] == DCMTK_LOG4CPLUS_TEXT('{')))
     {
         tstring::size_type end = pattern.find_first_of(DCMTK_LOG4CPLUS_TEXT('}'), pos);
         if (end != OFString_npos) {
@@ -669,8 +680,8 @@ PatternParser::extractOption()
 }
 
 
-int 
-PatternParser::extractPrecisionOption() 
+int
+PatternParser::extractPrecisionOption()
 {
     tstring opt = extractOption();
     int r = 0;
@@ -683,7 +694,7 @@ PatternParser::extractPrecisionOption()
 
 
 PatternConverterList
-PatternParser::parse() 
+PatternParser::parse()
 {
     tchar c;
     pos = 0;
@@ -697,7 +708,7 @@ PatternParser::parse()
                 continue;
             }
             if(c == ESCAPE_CHAR) {
-                // peek at the next char. 
+                // peek at the next char.
                 switch (pattern[pos]) {
                 case ESCAPE_CHAR:
                     currentLiteral += c;
@@ -707,7 +718,7 @@ PatternParser::parse()
                     if(! currentLiteral.empty ()) {
                         list.push_back
                              (new LiteralPatternConverter(currentLiteral));
-                        //getLogLog().debug("Parsed LITERAL converter: \"" 
+                        //getLogLog().debug("Parsed LITERAL converter: \""
                         //                  +currentLiteral+"\".");
                     }
                     currentLiteral.resize(0);
@@ -762,7 +773,7 @@ PatternParser::parse()
             }
             else {
                 tostringstream buf;
-                buf << DCMTK_LOG4CPLUS_TEXT("Error occured in position ")
+                buf << DCMTK_LOG4CPLUS_TEXT("Error occurred in position ")
                     << pos
                     << DCMTK_LOG4CPLUS_TEXT(".\n Was expecting digit, instead got char \"")
                     << c
@@ -795,23 +806,23 @@ PatternParser::parse()
 
 
 void
-PatternParser::finalizeConverter(tchar c) 
+PatternParser::finalizeConverter(tchar c)
 {
     PatternConverter* pc = 0;
     switch (c) {
         case DCMTK_LOG4CPLUS_TEXT('b'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::BASENAME_CONVERTER);
             //getLogLog().debug("BASENAME converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
-            
+
         case DCMTK_LOG4CPLUS_TEXT('c'):
-            pc = new LoggerPatternConverter(formattingInfo, 
+            pc = new LoggerPatternConverter(formattingInfo,
                                             extractPrecisionOption());
             //getLogLog().debug( DCMTK_LOG4CPLUS_TEXT("LOGGER converter.") );
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('d'):
@@ -829,16 +840,16 @@ PatternParser::finalizeConverter(tchar c)
                 //else {
                 //    getLogLog().debug("LOCAL DATE converter.");
                 //}
-                //formattingInfo.dump(getLogLog());      
+                //formattingInfo.dump(getLogLog());
             }
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('F'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::FILE_CONVERTER);
             //getLogLog().debug("FILE NAME converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('h'):
@@ -853,54 +864,54 @@ PatternParser::finalizeConverter(tchar c)
 
         case DCMTK_LOG4CPLUS_TEXT('i'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::PROCESS_CONVERTER);
             //getLogLog().debug("PROCESS_CONVERTER converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('l'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::FULL_LOCATION_CONVERTER);
             //getLogLog().debug("FULL LOCATION converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('L'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::LINE_CONVERTER);
             //getLogLog().debug("LINE NUMBER converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('m'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::MESSAGE_CONVERTER);
             //getLogLog().debug("MESSAGE converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('M'):
             pc = new BasicPatternConverter (
                 formattingInfo, BasicPatternConverter::FUNCTION_CONVERTER);
             //getLogLog().debug("METHOD (function name) converter.");
-            //formattingInfo.dump(getLogLog());   
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('n'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::NEWLINE_CONVERTER);
             //getLogLog().debug("MESSAGE converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('p'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::LOGLEVEL_CONVERTER);
             //getLogLog().debug("LOGLEVEL converter.");
             //formattingInfo.dump(getLogLog());
@@ -908,7 +919,7 @@ PatternParser::finalizeConverter(tchar c)
 
         case DCMTK_LOG4CPLUS_TEXT('P'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::LOGLEVEL_PREFIX_CONVERTER);
             //getLogLog().debug("LOGLEVEL converter.");
             //formattingInfo.dump(getLogLog());
@@ -922,10 +933,10 @@ PatternParser::finalizeConverter(tchar c)
 
         case DCMTK_LOG4CPLUS_TEXT('t'):
             pc = new BasicPatternConverter
-                          (formattingInfo, 
+                          (formattingInfo,
                            BasicPatternConverter::THREAD_CONVERTER);
             //getLogLog().debug("THREAD converter.");
-            //formattingInfo.dump(getLogLog());      
+            //formattingInfo.dump(getLogLog());
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('T'):
@@ -938,7 +949,7 @@ PatternParser::finalizeConverter(tchar c)
 
         case DCMTK_LOG4CPLUS_TEXT('x'):
             pc = new NDCPatternConverter (formattingInfo, ndcMaxDepth);
-            //getLogLog().debug("NDC converter.");      
+            //getLogLog().debug("NDC converter.");
             break;
 
         case DCMTK_LOG4CPLUS_TEXT('X'):
@@ -952,7 +963,7 @@ PatternParser::finalizeConverter(tchar c)
                 << c
                 << DCMTK_LOG4CPLUS_TEXT("] at position ")
                 << pos
-                << DCMTK_LOG4CPLUS_TEXT(" in conversion patterrn.");
+                << DCMTK_LOG4CPLUS_TEXT(" in conversion pattern.");
             helpers::getLogLog().error(OFString(buf.str().c_str(), buf.str().length()));
             pc = new LiteralPatternConverter(currentLiteral);
     }
@@ -1001,7 +1012,7 @@ PatternLayout::PatternLayout(const helpers::Properties& properties)
             DCMTK_LOG4CPLUS_TEXT("PatternLayout- the \"Pattern\" property has been")
             DCMTK_LOG4CPLUS_TEXT(" deprecated.  Use \"ConversionPattern\" instead."));
     }
-    
+
     if(hasConversionPattern) {
         init(properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ConversionPattern") ), formatEachLine_,
             ndcMaxDepth);
@@ -1028,8 +1039,8 @@ PatternLayout::init(const tstring& pattern_, bool formatEachLine_, unsigned ndcM
     // Let's validate that our parser didn't give us any NULLs.  If it did,
     // we will convert them to a valid PatternConverter that does nothing so
     // at least we don't core.
-    for(PatternConverterList::iterator it=parsedPattern.begin(); 
-        it!=parsedPattern.end(); 
+    for(PatternConverterList::iterator it=parsedPattern.begin();
+        it!=parsedPattern.end();
         ++it)
     {
         if( (*it) == 0 ) {
@@ -1042,7 +1053,7 @@ PatternLayout::init(const tstring& pattern_, bool formatEachLine_, unsigned ndcM
         helpers::getLogLog().warn(
             DCMTK_LOG4CPLUS_TEXT("PatternLayout pattern is empty.  Using default..."));
         parsedPattern.push_back (
-            new pattern::BasicPatternConverter(pattern::FormattingInfo(), 
+            new pattern::BasicPatternConverter(pattern::FormattingInfo(),
             pattern::BasicPatternConverter::MESSAGE_CONVERTER));
     }
 }
@@ -1051,8 +1062,8 @@ PatternLayout::init(const tstring& pattern_, bool formatEachLine_, unsigned ndcM
 
 PatternLayout::~PatternLayout()
 {
-    for(PatternConverterList::iterator it=parsedPattern.begin(); 
-        it!=parsedPattern.end(); 
+    for(PatternConverterList::iterator it=parsedPattern.begin();
+        it!=parsedPattern.end();
         ++it)
     {
         delete (*it);
@@ -1062,7 +1073,7 @@ PatternLayout::~PatternLayout()
 
 
 void
-PatternLayout::formatAndAppend(tostream& output, 
+PatternLayout::formatAndAppend(tostream& output,
                                const spi::InternalLoggingEvent& event)
 {
     if (formatEachLine && event.getMessage().find('\n') != OFString_npos)
