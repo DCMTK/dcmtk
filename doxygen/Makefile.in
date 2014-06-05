@@ -23,11 +23,13 @@ all: html man
 html:
 	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_DATA_DIR@/./" \
 	    -e "s/@DOXYGEN_INPUT_DIR@/../" -e "s/@DOXYGEN_TAGFILE@/$(TAGFILE_NAME)/" \
+	    -e "s/@CMAKE_CURRENT_SOURCE_DIR@/./" \
 	    htmldocs.cfg > htmldocs.tmp
 	$(DOXYGEN) htmldocs.tmp
 
 man:
 	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_INPUT_DIR@/../" \
+	    -e "s/@CMAKE_CURRENT_SOURCE_DIR@/./" \
 	    manpages.cfg > manpages.tmp
 	$(DOXYGEN) manpages.tmp
 	rm -f manpages/man1/*.man.1
