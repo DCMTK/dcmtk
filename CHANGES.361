@@ -11,6 +11,13 @@ Changes between releases are documented here.
            doxygen/htmldocs.cfg
            doxygen/manpages.cfg
 
+- Minor fixes and workarounds for Microsoft's compilers:
+  Microsoft Visual Studio again shows its lack of standard compliance,
+  especially in the hard bug where calling "operator->()" does
+  something different than calling "->".
+  Affects: dcmimage/include/dcmtk/dcmimage/diqthash.h
+           ofstd/include/dcmtk/ofstd/ofoption.h
+
 **** Changes from 2014.06.04 (riesmeier)
 
 - Fixed issue with text alignment in PatternLayout:

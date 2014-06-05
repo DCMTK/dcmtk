@@ -30,6 +30,12 @@
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/oftraits.h"
 
+// include <type_traits> for "std::is_default_constructible"
+// to recover from compiler insanity (Visual Studio 12+).
+#if defined(_MSC_VER) && _MSC_VER >= 1700
+#include <type_traits>
+#endif
+
 #ifndef DOXYGEN
 struct OFnullopt_t {};
 #if __cplusplus >= 201103L
@@ -138,6 +144,10 @@ OFnullpt_t OFnullopt;
  *        constructed unless <kbd>T</kbd> is not default constructible or <kbd>T</kbd>'s default constructor is
  *        not accessible by <kbd>OFoptional<T></kbd>. If default construction is not possible, the expression has
  *        no effect (<i>o</i> remains disengaged).
+ *        @note Detecting if T is default constructible within OFoptional<T> does not work correctly on all
+ *          compilers. Especially all versions of Microsoft Visual Studio are impaired. For example a private
+ *          default constructor of T might be detected as <i>not accessible</i> although OFoptional<T>
+ *          was declared a friend of T.
  *      </td>
  *    </tr>
  *    <tr>
@@ -279,13 +289,33 @@ class OFoptional
 #ifndef DOXYGEN
     // types for detecting T's default constructibility via sfinae
     struct no_type {};
-    struct yes_type {int i;};
+    struct yes_type {double d;};
+#ifndef _MSC_VER
     // helper class to create an argument out of size_t
-    template<size_t X>
+    template<size_t>
     struct consume{};
     // sfinae overload working for default constructible Xs
     template<typename X>
-    static yes_type sfinae(consume<sizeof X()>*);
+    static yes_type sfinae(consume<sizeof *new X>*);
+#elif _MSC_VER < 1700
+    // Workaround bug in Visual Studio.
+    // On these broken compilers, the argument is not evaluated
+    // unless we require them to evaluate it for choosing which
+    // specialization should be instantiated.
+    template<size_t,size_t>
+    struct consume{};
+    template<size_t X>
+    struct consume<X,X> { typedef void type; };
+    // sfinae overload working for value-initializable Xs, that's as
+    // close as we get on these broken compilers
+    template<typename X>
+    static yes_type sfinae(typename consume<sizeof X(),sizeof X()>::type*);
+#else
+    // Visual Stuio 2012 is completely broken, but it has std::is_defaul_constructible
+    // Note: this tests constructibility, but not if WE can construct this.
+    template<typename X>
+    static yes_type sfinae(typename OFenable_if<std::is_default_constructible<X>::value>::type*);
+#endif
     // most general sfinae overload, chosen only if everything else fails
     template<typename X>
     static no_type sfinae(...);
@@ -630,7 +660,12 @@ public:
     // Destroy the contained object if engaged, otherwise do nothing.
     ~OFoptional()
     {
-        if( state() ) (*this)->~T();
+        if( state() )
+#ifndef _MSC_VER
+            (*this)->~T();
+#else // Workaround bug in Microsoft compilers
+            operator->()->~T();
+#endif
     }
 
     // False friend of the assignment operator to prevent wrong behavior
@@ -654,7 +689,11 @@ public:
             else if( state() ) // suicide if engaged and rhs isn't
             {
                 state() = 0;
+#ifndef _MSC_VER
                 (*this)->~T();
+#else // Workaround bug in Microsoft compilers
+                operator->()->~T();
+#endif
             }
             else // if rhs is engaged and we aren't, copy-construct from rhs.
             {
@@ -706,12 +745,20 @@ public:
             if( state() )
             {
                 new (rhs.content()) T( OFmove( **this ) );
+#ifndef _MSC_VER
                 (*this)->~T();
+#else // Workaround bug in Microsoft compilers
+                operator->()->~T();
+#endif
             }
             else // else move assign rhs' contents to us
             {
                 new (content()) T( OFmove( *rhs ) );
+#ifndef _MSC_VER
                 rhs->~T();
+#else // Workaround bug in Microsoft compilers
+                rhs.operator->()->~T();
+#endif
             }
             // finally, swap the states
             OFswap( state(), rhs.state() );

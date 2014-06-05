@@ -103,8 +103,8 @@ public:
 private:
 
   typedef OFVector<DcmQuantHistogramItemListPointer> table_type;
-  typedef OFTypename table_type::iterator table_iterator;
-  typedef OFTypename table_type::const_iterator const_table_iterator;
+  typedef table_type::iterator table_iterator;
+  typedef table_type::const_iterator const_table_iterator;
 
   /// private undefined copy constructor
   DcmQuantColorHashTable(const DcmQuantColorHashTable& src);
