@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.06 (riesmeier)
+
+- Consistently use "presInfo" for variables/parameters:
+  Consistently use "presInfo" as the name of parameter and local variables of
+  type DcmPresentationContextInfo, both in header and source files.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/dstorscp.cc
+           dcmnet/libsrc/scp.cc
+
 **** Changes from 2014.06.04 (schlamelcher)
 
 - Renamed DoxygenLayout.xml to comply with filename conventions.

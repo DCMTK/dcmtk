@@ -495,9 +495,9 @@ void DcmSCP::handleAssociation()
     // check if peer did release or abort, or if we have a valid message
     if( cond.good() )
     {
-      DcmPresentationContextInfo pcInfo;
-      getPresentationContextInfo(m_assoc, presID, pcInfo);
-      cond = handleIncomingCommand(&message, pcInfo);
+      DcmPresentationContextInfo presInfo;
+      getPresentationContextInfo(m_assoc, presID, presInfo);
+      cond = handleIncomingCommand(&message, presInfo);
     }
   }
   // Clean up on association termination.
@@ -526,13 +526,13 @@ void DcmSCP::handleAssociation()
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
-                                          const DcmPresentationContextInfo &info)
+                                          const DcmPresentationContextInfo &presInfo)
 {
   OFCondition cond;
-  if( incomingMsg->CommandField == DIMSE_C_ECHO_RQ )
+  if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
   {
     // Process C-ECHO request
-    cond = handleECHORequest( incomingMsg->msg.CEchoRQ, info.presentationContextID );
+    cond = handleECHORequest(incomingMsg->msg.CEchoRQ, presInfo.presentationContextID);
   } else {
     // We cannot handle this kind of message. Note that the condition will be returned
     // and that the caller is responsible to end the association if desired.
@@ -1965,18 +1965,18 @@ void DcmSCP::callbackRECEIVEProgress(void *callbackContext,
 
 OFBool DcmSCP::getPresentationContextInfo(const T_ASC_Association *assoc,
                                           const Uint8 presID,
-                                          DcmPresentationContextInfo &info)
+                                          DcmPresentationContextInfo &presInfo)
 {
   if (assoc != NULL)
   {
     DUL_PRESENTATIONCONTEXT *pc = findPresentationContextID(assoc->params->DULparams.acceptedPresentationContext, presID);
     if (pc != NULL)
     {
-      info.abstractSyntax = pc->abstractSyntax;
-      info.acceptedTransferSyntax = pc->acceptedTransferSyntax;
-      info.presentationContextID = pc->presentationContextID;
-      info.proposedSCRole = pc->proposedSCRole;
-      info.acceptedSCRole = pc->acceptedSCRole;
+      presInfo.abstractSyntax = pc->abstractSyntax;
+      presInfo.acceptedTransferSyntax = pc->acceptedTransferSyntax;
+      presInfo.presentationContextID = pc->presentationContextID;
+      presInfo.proposedSCRole = pc->proposedSCRole;
+      presInfo.acceptedSCRole = pc->acceptedSCRole;
       return OFTrue;
     }
   }

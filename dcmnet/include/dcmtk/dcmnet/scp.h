@@ -435,7 +435,7 @@ protected:
    *  by calling handleEchoRequest(). This function is most likely to be implemented by a
    *  derived class implementing a specific SCP behaviour.
    *  @param incomingMsg The DIMSE message received
-   *  @param presContextInfo The presentation context the message was received on.
+   *  @param presInfo Additional information on the Presentation Context used
    *  @return EC_Normal if the message could be handled, error if not. Especially
    *          DIMSE_BADCOMMANDTYPE should be returned if there is no handler for
    *          this particular type of DIMSE message. E.g. the default handler in
@@ -443,7 +443,7 @@ protected:
    *          DIMSE_BADCOMMANDTYPE otherwise.
    */
   virtual OFCondition handleIncomingCommand(T_DIMSE_Message *incomingMsg,
-                                            const DcmPresentationContextInfo &presContextInfo);
+                                            const DcmPresentationContextInfo &presInfo);
 
   /** Overwrite this function to be notified about an incoming association request.
    *  The standard handler only outputs some information to the logger.
@@ -832,13 +832,13 @@ protected:
    *  presentation context ID.
    *  @param assoc The association to search
    *  @param presID The presentation context ID
-   *  @param info The result presentation context information, if found
+   *  @param presInfo The result presentation context information, if found
    *  @return OFTrue if presentation context with ID could be found, OFFalse
    *          otherwise
    */
   static OFBool getPresentationContextInfo(const T_ASC_Association *assoc,
                                            const Uint8 presID,
-                                           DcmPresentationContextInfo &info);
+                                           DcmPresentationContextInfo &presInfo);
 
   /** This function takes care of receiving, negotiating and accepting/refusing an
    *  association request. Additionally, if negotiation was successful, it handles any

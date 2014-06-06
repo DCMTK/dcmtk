@@ -210,12 +210,12 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
      *  C-ECHO and C-STORE requests.  All other messages will be reported as an error.
      *  After a valid C-STORE request has been received, the request and associated
      *  dataset will be checked and further processed by checkAndProcessSTORERequest().
-     *  @param  incomingMsg      pointer to data structure containing the DIMSE message
-     *  @param  presContextInfo  additional information on the Presentation Context used
+     *  @param  incomingMsg  pointer to data structure containing the DIMSE message
+     *  @param  presInfo     additional information on the Presentation Context used
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition handleIncomingCommand(T_DIMSE_Message *incomingMsg,
-                                              const DcmPresentationContextInfo &presContextInfo);
+                                              const DcmPresentationContextInfo &presInfo);
 
     /** check the given C-STORE request and dataset for validity.  This method is called
      *  by handleIncomingCommand() before sending the response in order to determine the

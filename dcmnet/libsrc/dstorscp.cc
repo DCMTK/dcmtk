@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013, OFFIS e.V.
+ *  Copyright (C) 2013-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -173,7 +173,7 @@ OFCondition DcmStorageSCP::loadAssociationConfiguration(const OFString &filename
 // protected methods
 
 OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
-                                                 const DcmPresentationContextInfo &info)
+                                                 const DcmPresentationContextInfo &presInfo)
 {
     OFCondition status = EC_IllegalParameter;
     if (incomingMsg != NULL)
@@ -182,7 +182,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
         if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
         {
             // handle incoming C-ECHO request
-            status = handleECHORequest(incomingMsg->msg.CEchoRQ, info.presentationContextID);
+            status = handleECHORequest(incomingMsg->msg.CEchoRQ, presInfo.presentationContextID);
         }
         else if (incomingMsg->CommandField == DIMSE_C_STORE_RQ)
         {
@@ -200,7 +200,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
                     if (OFStandard::fileExists(filename))
                         DCMNET_WARN("file already exists, overwriting: " << filename);
                     // receive dataset directly to file
-                    status = receiveSTORERequest(storeReq, info.presentationContextID, filename);
+                    status = receiveSTORERequest(storeReq, presInfo.presentationContextID, filename);
                     if (status.good())
                     {
                         // call the notification handler (default implementation outputs to the logger)
@@ -212,7 +212,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
                 DcmFileFormat fileformat;
                 DcmDataset *reqDataset = fileformat.getDataset();
                 // receive dataset in memory
-                status = receiveSTORERequest(storeReq, info.presentationContextID, reqDataset);
+                status = receiveSTORERequest(storeReq, presInfo.presentationContextID, reqDataset);
                 if (status.good())
                 {
                     // do we need to store the received dataset at all?
@@ -229,11 +229,11 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
             }
             // send C-STORE response (with DIMSE status code)
             if (status.good())
-                status = sendSTOREResponse(info.presentationContextID, storeReq, rspStatusCode);
+                status = sendSTOREResponse(presInfo.presentationContextID, storeReq, rspStatusCode);
             else if (status == DIMSE_OUTOFRESOURCES)
             {
                 // do not overwrite the previous error status
-                sendSTOREResponse(info.presentationContextID, storeReq, STATUS_STORE_Refused_OutOfResources);
+                sendSTOREResponse(presInfo.presentationContextID, storeReq, STATUS_STORE_Refused_OutOfResources);
             }
         } else {
             // unsupported command
