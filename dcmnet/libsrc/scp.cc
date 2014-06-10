@@ -452,11 +452,11 @@ OFCondition DcmSCP::processAssociationRQ()
 
 OFCondition DcmSCP::negotiateAssociation()
 {
-  // check whether there is something to negotiate...
+  // Check whether there is something to negotiate...
   if (m_assoc == NULL)
     return DIMSE_ILLEGALASSOCIATION;
 
-  /* set presentation contexts as defined in association configuration */
+  // Set presentation contexts as defined in association configuration
   OFCondition result = m_cfg->evaluateIncomingAssociation(*m_assoc);
   if (result.bad())
   {
@@ -464,6 +464,29 @@ OFCondition DcmSCP::negotiateAssociation()
     DCMNET_ERROR(DimseCondition::dump(tempStr, result));
   }
   return result;
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition DcmSCP::abortAssociation()
+{
+    OFCondition cond = DIMSE_ILLEGALASSOCIATION;
+    // Check whether there is an active association
+    if (isConnected())
+    {
+      // Abort current association
+      DCMNET_INFO("Aborting Association (initiated by SCP)");
+      cond = ASC_abortAssociation(m_assoc);
+      // Notify user in case of error
+      if (cond.bad())
+      {
+        OFString tempStr;
+        DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(tempStr, cond));
+      }
+      // Note: association is dropped and memory freed somewhere else
+    } else
+      DCMNET_WARN("DcmSCP::abortAssociation() called but SCP actually has no association running, ignoring");
+    return cond;
 }
 
 // ----------------------------------------------------------------------------

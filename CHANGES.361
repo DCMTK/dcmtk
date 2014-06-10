@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.10 (riesmeier)
 
+- Added DcmSCP::abortAssociation() method:
+  Added method that allows one to abort an association by sending an A-ABORT
+  request from the SCP, i.e. classes derived from DcmSCP can now abort the
+  association in case of severe errors.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 - Added support for new SR IOD from Supplement 159:
   Added full support for the new Radiopharmaceutical Radiation Dose SR IOD
   introduced with Supplement 159.

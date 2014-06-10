@@ -138,7 +138,7 @@ class DCMTK_DCMNET_EXPORT DcmSCP
 
 public:
 
-  /** Constructor. Initializies internal member variables.
+  /** Constructor. Initializes internal member variables.
    */
   DcmSCP();
 
@@ -414,9 +414,9 @@ public:
 
 protected:
 
-  /* *********************************************************************** */
-  /*  Functions particularly interesting for overwriting in derived classes  */
-  /* *********************************************************************** */
+  /* ********************************************* */
+  /*  Functions available to derived classes only  */
+  /* ********************************************* */
 
   /** This call returns the presentation context belonging to the given
    *  presentation context ID.
@@ -429,6 +429,16 @@ protected:
   void findPresentationContext(const T_ASC_PresentationContextID presID,
                                OFString &abstractSyntax,
                                OFString &transferSyntax);
+
+  /** Aborts the current association by sending an A-ABORT request to the SCU.
+   *  This method allows derived classes to abort an association in case of severe errors.
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition abortAssociation();
+
+  /* *********************************************************************** */
+  /*  Functions particularly interesting for overwriting in derived classes  */
+  /* *********************************************************************** */
 
   /** Handle incoming command set and react accordingly, e.g.\ sending response via
    *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
