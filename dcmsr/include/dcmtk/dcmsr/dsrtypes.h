@@ -429,8 +429,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_ImplantationPlanSRDocument,
         /// DICOM IOD: Comprehensive 3D SR
         DT_Comprehensive3DSR,
+        /// DICOM IOD: Radiopharmaceutical Radiation Dose SR
+        DT_RadiopharmaceuticalRadiationDoseSR,
         /// internal type used to mark the last entry
-        DT_last = DT_Comprehensive3DSR
+        DT_last = DT_RadiopharmaceuticalRadiationDoseSR
     };
 
     /** SR relationship types

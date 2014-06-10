@@ -3,6 +3,23 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.10 (riesmeier)
 
+- Added support for new SR IOD from Supplement 159:
+  Added full support for the new Radiopharmaceutical Radiation Dose SR IOD
+  introduced with Supplement 159.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrrrdcc.h
+           dcmsr/libsrc/dsrrrdcc.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/Makefile.dep
+
 - Added support for new UID from Supplement 159:
   Added support for new SOP Class UID from Supplement 159 (Radiopharmaceutical
   Radiation Dose Reporting).
