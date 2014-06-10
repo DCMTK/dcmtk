@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-05-02 12:04:19
+**   Date: 2014-06-10 09:46:49
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-05-02 12:04:19"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-06-10 09:46:49"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3800
+** Number of entries: 3801
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -261,6 +261,7 @@
 #define DCM_AlternateRepresentationSequence      DcmTagKey(0x0008, 0x3001)
 #define DCM_IrradiationEventUID                  DcmTagKey(0x0008, 0x3010)
 #define DCM_SourceIrradiationEventSequence       DcmTagKey(0x0008, 0x3011)
+#define DCM_RadiopharmaceuticalAdministrationEventUID DcmTagKey(0x0008, 0x3012)
 #define DCM_RETIRED_IdentifyingComments          DcmTagKey(0x0008, 0x4000)
 #define DCM_FrameType                            DcmTagKey(0x0008, 0x9007)
 #define DCM_ReferencedImageEvidenceSequence      DcmTagKey(0x0008, 0x9092)

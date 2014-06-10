@@ -26,7 +26,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 124, 165.
+# - Supplement 124, 159, 165.
 # - CP 1282, 1285, 1287, 1294, 1297, 1325, 1326.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -3436,6 +3436,12 @@
 (0028,702C)	SQ	TestPatternCodeSequence	1	Supplement_124
 (0028,702D)	SQ	MeasurementPatternCodeSequence	1	Supplement_124
 (0028,702E)	SQ	VisualEvaluationMethodCodeSequence	1	Supplement_124
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 159 (Radiopharmaceutical Radiation Dose Reporting)
+#
+(0008,3012)	UI	RadiopharmaceuticalAdministrationEventUID	1	Supplement_159
 #
 #---------------------------------------------------------------------------
 #

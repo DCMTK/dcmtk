@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.10 (riesmeier)
+
+- Added support for Supplement 159 to data dictionary:
+  Added support for the final text version of Supplement 159
+  (Radiopharmaceutical Radiation Dose Reporting) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.06.06 (riesmeier)
 
 - Consistently use "presInfo" for variables/parameters:
