@@ -654,8 +654,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_ProcedureLogStorage) ||
              compare(sopClass, UID_MammographyCADSRStorage) ||
              compare(sopClass, UID_ChestCADSRStorage) ||
-             compare(sopClass, UID_XRayRadiationDoseSRStorage) ||
              compare(sopClass, UID_ColonCADSRStorage) ||
+             compare(sopClass, UID_XRayRadiationDoseSRStorage) ||
+             compare(sopClass, UID_RadiopharmaceuticalRadiationDoseSRStorage) ||
              compare(sopClass, UID_SpectaclePrescriptionReportStorage) ||
              compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage) ||
              compare(sopClass, UID_ImplantationPlanSRDocumentStorage))
@@ -1520,8 +1521,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
                                 compare(mediaSOPClassUID, UID_MammographyCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||
-                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ColonCADSRStorage) ||
+                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage) ||
+                                compare(mediaSOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) ||
                                 compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportStorage) ||
                                 compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) ||
                                 compare(mediaSOPClassUID, UID_ImplantationPlanSRDocumentStorage);

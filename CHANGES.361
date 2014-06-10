@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.10 (riesmeier)
 
+- Added support for new UID from Supplement 159:
+  Added support for new SOP Class UID from Supplement 159 (Radiopharmaceutical
+  Radiation Dose Reporting).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
 - Added support for Supplement 159 to data dictionary:
   Added support for the final text version of Supplement 159
   (Radiopharmaceutical Radiation Dose Reporting) to the data dictionary.

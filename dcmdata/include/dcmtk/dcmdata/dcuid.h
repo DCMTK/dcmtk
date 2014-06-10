@@ -455,6 +455,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_KeyObjectSelectionDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.59"
 #define UID_ChestCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.65"
 #define UID_XRayRadiationDoseSRStorage                             "1.2.840.10008.5.1.4.1.1.88.67"
+#define UID_RadiopharmaceuticalRadiationDoseSRStorage              "1.2.840.10008.5.1.4.1.1.88.68"
 #define UID_ColonCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.69"
 #define UID_ImplantationPlanSRDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.70"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"

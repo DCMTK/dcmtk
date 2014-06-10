@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2013, OFFIS e.V.
+ *  Copyright (C) 1993-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,13 +53,13 @@ END_EXTERN_C
 /**** The TbFindAttr table contains the description of tags (keys) supported
  **** by the DB Module.
  **** Tags described here have to be present in the Index Record file.
- **** The order is unsignificant.
+ **** The order is insignificant.
  ****
  **** Each element of this table is described by
  ****           The tag value
  ****           The level of this tag (from patient to image)
  ****           The Key Type (only UNIQUE_KEY values is used)
- ****           The key matching type, specifiing which type of
+ ****           The key matching type, specifying which type of
  ****                   matching should be performed. The OTHER_CLASS
  ****                   value specifies that only strict comparison is applied.
  ****
@@ -872,7 +872,7 @@ static double DB_TimeToDouble (char *thetime)
     double result = 0.;
     char *pc;
 
-    /*** Get fractionnal part if exists
+    /*** Get fractional part if exists
     **/
 
     strcpy (t, thetime);
@@ -913,7 +913,7 @@ static double DB_TimeToDouble (char *thetime)
 
 
 /***********************
- *    Duplicate a dicom element
+ *    Duplicate a DICOM element
  *    dst space is supposed provided by the caller
  */
 
@@ -968,7 +968,7 @@ DcmQueryRetrieveDatabaseHandle::~DcmQueryRetrieveDatabaseHandle()
 /************
 **      Try to match Two Dates
 **      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchDate (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1024,7 +1024,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchDate (DB_SmallDcmElmt *mod, DB_Sma
 /************
 **      Try to match Two Times
 **      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchTime (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1080,7 +1080,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchTime (DB_SmallDcmElmt *mod, DB_Sma
 /************
 **      Try to match Two UID
 **      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1164,7 +1164,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
 /************
 **      Try to match Two Strings
 **      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1223,9 +1223,9 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_
 
 /************
 **      Try to match Two Unknown elements
-**      Strict comparaison is applied
+**      Strict comparison is applied
 **      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchOther (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1239,7 +1239,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchOther (DB_SmallDcmElmt *mod, DB_Sm
 /************
 **      Try to match Two DB_SmallDcmElmts
 **      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1342,7 +1342,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
 /************
 **      Test a Find Request List
-**      Returns EC_Normal if ok, else returns QR_EC_IndexDatabaseError
+**      Returns EC_Normal if OK, else returns QR_EC_IndexDatabaseError
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
@@ -1401,7 +1401,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
         else if (level < queryLevel) {
 
             /** For this level, only unique keys are allowed
-            ** Parse the request list elements reffering to
+            ** Parse the request list elements referring to
             ** this level.
             ** Check that only unique key attr are provided
             */
@@ -1431,7 +1431,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
         else if (level == queryLevel) {
 
             /** For this level, all keys are allowed
-            ** Parse the request list elements reffering to
+            ** Parse the request list elements referring to
             ** this level.
             ** Check that at least one key is provided
             */
@@ -1455,7 +1455,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
         else if (level > queryLevel) {
 
             /** For this level, no key is allowed
-            ** Parse the request list elements reffering to
+            ** Parse the request list elements referring to
             ** this level.
             ** Check that no key is provided
             */
@@ -1480,7 +1480,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
 
 /************
 **      Hierarchical Search Algorithm
-**      Returns OFTrue if matching is ok, else returns OFFalse
+**      Returns OFTrue if matching is OK, else returns OFFalse
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
@@ -1642,7 +1642,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
 
     /**** Parse Identifiers in the Dicom Object
-    **** Find Query Level and contruct a list
+    **** Find Query Level and construct a list
     **** of query identifiers
     ***/
 
@@ -1804,7 +1804,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             break ;
     }
 
-    /**** If an error occured in Matching function
+    /**** If an error occurred in Matching function
     ****    return a failed status
     ***/
 
@@ -2075,7 +2075,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetr
 
 /************
  *      Test a Move Request List
- *      Returns EC_Normal if ok, else returns QR_EC_IndexDatabaseError
+ *      Returns EC_Normal if OK, else returns QR_EC_IndexDatabaseError
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
@@ -2135,7 +2135,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
         else if (level <= queryLevel) {
 
             /** For these levels, only unique keys are allowed
-            ** Parse the request list elements reffering to
+            ** Parse the request list elements referring to
             ** this level.
             ** Check that only unique key attr are provided
             */
@@ -2169,7 +2169,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
         else if (level > queryLevel) {
 
             /** For this level, no key is allowed
-            ** Parse the request list elements reffering to
+            ** Parse the request list elements referring to
             ** this level.
             ** Check that no key is provided
             */
@@ -2241,7 +2241,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
 
     /**** Parse Identifiers in the Dicom Object
-    **** Find Query Level and contruct a list
+    **** Find Query Level and construct a list
     **** of query identifiers
     ***/
 
@@ -2947,7 +2947,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                    (strcmp(SOPClassUID, UID_XRayRadiationDoseSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_SpectaclePrescriptionReportStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ImplantationPlanSRDocumentStorage) == 0))
+                   (strcmp(SOPClassUID, UID_ImplantationPlanSRDocumentStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) == 0))
         {
             OFString string;
             OFString description = "unknown SR";
