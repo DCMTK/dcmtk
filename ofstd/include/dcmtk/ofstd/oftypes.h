@@ -27,6 +27,12 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofdefine.h"
 
+// include this file in doxygen documentation
+
+/** @file oftypes.h
+ *  @brief Definition of standard types used throughout the toolkit
+ */
+
 // use native types if C++11 is supported
 #if __cplusplus >= 201103L
 #include <cstdint>

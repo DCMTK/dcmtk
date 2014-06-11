@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.11 (riesmeier)
 
+- Made sure that header file is parsed by Doxygen.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+
 - Renamed Doxygen's layout file again.
   Added:   doxygen/layout.xml
   Removed: doxygen/Layout.xml
