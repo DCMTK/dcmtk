@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.11 (riesmeier)
 
+- Removed meaningless layout file setting:
+  Removed setting a value for "LAYOUT_FILE" because it is meaningless for man
+  pages and produces only warnings in the "manpages.log" file.
+  Affects: doxygen/Makefile.in
+           doxygen/manpages.cfg
+
 - Fixed typo and updated copyright date.
   Affects: dcmdata/docs/dcm2pdf.man
            dcmdata/docs/dcm2xml.man

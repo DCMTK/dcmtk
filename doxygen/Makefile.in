@@ -29,7 +29,6 @@ html:
 
 man:
 	sed -e "s/@DCMTK_VERSION@/$(DCMTK_VERSION)/" -e "s/@DOXYGEN_INPUT_DIR@/../" \
-	    -e "s/@CMAKE_CURRENT_SOURCE_DIR@/./" \
 	    manpages.cfg > manpages.tmp
 	$(DOXYGEN) manpages.tmp
 	rm -f manpages/man1/*.man.1
