@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.11 (riesmeier)
 
+- Renamed Doxygen's layout file again.
+  Added:   doxygen/layout.xml
+  Removed: doxygen/Layout.xml
+  Affects: doxygen/htmldocs.cfg
+
 - Removed meaningless layout file setting:
   Removed setting a value for "LAYOUT_FILE" because it is meaningless for man
   pages and produces only warnings in the "manpages.log" file.
