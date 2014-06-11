@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.11 (riesmeier)
 
+- Group condition constants in Doxygen output.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           ofstd/include/dcmtk/ofstd/ofcond.h
+
 - Made sure that header file is parsed by Doxygen.
   Affects: ofstd/include/dcmtk/ofstd/oftypes.h
 

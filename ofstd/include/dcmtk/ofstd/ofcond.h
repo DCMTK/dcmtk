@@ -38,7 +38,7 @@
 // include this file in doxygen documentation
 
 /** @file ofcond.h
- *  @brief error handling, codes and strings for all modules
+ *  @brief Error handling, codes and strings for all modules
  */
 
 
@@ -100,11 +100,11 @@ struct DCMTK_OFSTD_EXPORT OFConditionConst
 };
 
 
-/*  global condition constants.
- *  All constants defined here use module number 0 which is reserved for
- *  global definitions. Other constants are defined elsewhere.
+/** @name global condition constants.
+ *  All constants defined here use module number 0, which is reserved for
+ *  global definitions. Other constants are defined in other modules.
  */
-
+//@{
 /// condition constant: successful completion
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_Normal;
 /// condition constant: error, function called with illegal parameters
@@ -142,6 +142,7 @@ extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
 
 /// status code constant: error, cannot create directory
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCreateDirectory;
+//@}
 
 /** use this macro for creating static OFCondition instances. Instead of an
  *  OFCondition instance which needs a constructor, an instance of

@@ -69,6 +69,11 @@ const unsigned short OFM_dcmenc   = 28;
 
 // condition constants
 
+/** @name condition constants for module dcmdata.
+ *  These constants can be used in addition to the general purpose ones
+ *  defined in module ofstd.
+ */
+//@{
 /// invalid tag
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidTag;
 /// tag not found
@@ -133,6 +138,7 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemDelimitationItemMissin
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PrematureSequDelimitationItem;
 /// Invalid DICOMDIR, e.g. corrupted data structures
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidDICOMDIR;
+//@}
 
 // status code constants
 
