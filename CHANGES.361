@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.12 (riesmeier)
 
+- Replaced CMake variable in Doxygen config file:
+  Replaced CMake variable "@CMAKE_CURRENT_SOURCE_DIR@" in Doxygen configuration
+  file by existing substitution variable "@DOXYGEN_INPUT_DIR@".
+  Affects: doxygen/htmldocs.cfg
+
 - Avoid full directory path in Doxygen footer:
   Avoid full directory path in Doxygen footer when HTML generation is initiated
   from CMake.
