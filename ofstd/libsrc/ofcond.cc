@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2013, OFFIS e.V.
+ *  Copyright (C) 2001-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,15 +30,15 @@ makeOFConditionConst(EC_IllegalParameter,              0,  1, OF_error,   "Illeg
 makeOFConditionConst(EC_MemoryExhausted,               0,  2, OF_failure, "Virtual Memory exhausted");
 makeOFConditionConst(EC_NoEncodingLibrary,             0,  3, OF_error,   "No character encoding library available");
 makeOFConditionConst(EC_NoEncodingSelected,            0,  4, OF_error,   "No character encoding selected");
-// codes 5..8 are used for dynamically created error messages (see below constants)
+// codes 5..8 are used for dynamically created error messages (see constants below)
 makeOFConditionConst(EC_CouldNotCreateTemporaryFile,   0,  9, OF_error,   "Could not create temporary file");
 makeOFConditionConst(EC_InvalidFilename,               0, 10, OF_error,   "Invalid filename");
 makeOFConditionConst(EC_DirectoryDoesNotExist,         0, 11, OF_error,   "Directory does not exist");
 makeOFConditionConst(EC_DirectoryNotWritable,          0, 12, OF_error,   "Directory is not writable");
-// codes 13 is for dynamically created error messages (see below constants)
+// codes 13 is for dynamically created error messages (see constants below)
 makeOFConditionConst(EC_CouldNotGenerateFilename,      0, 14, OF_error,   "Could not generate filename");
 makeOFConditionConst(EC_CouldNotGenerateDirectoryName, 0, 15, OF_error,   "Could not generate directory name");
-
+makeOFConditionConst(EC_setuidFailed,                  0, 16, OF_error,   "Call to setuid() failed");
 
 // NOTE:
 // error codes 1024..2047 are reserved for inter-process communication

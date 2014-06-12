@@ -2846,6 +2846,26 @@ OFStandard::OFPasswd::operator OFBool() const { return ok; }
 
 #endif // HAVE_PWD_H
 
+OFCondition OFStandard::dropPrivileges()
+{
+#if defined(HAVE_SETUID) && defined(HAVE_GETUID)
+  if ((setuid(getuid()) != 0) && (errno != EPERM))
+  {
+    /* setuid returning nonzero means that the setuid() operation has failed.
+     * An errno code of EPERM means that the application was never running with root
+     * privileges, i.e. was not installed with setuid root, which is safe and harmless.
+     * Other error codes (in particular EAGAIN) signal a problem. Most likely the
+     * calling user has already reached the maximum number of permitted processes.
+     * In this case the application should rather terminate than continue with
+     * full root privileges.
+     */
+    return EC_setuidFailed;
+  }
+#endif
+  return EC_Normal;
+}
+
+
 #if __cplusplus < 201103L
 DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
 DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;

@@ -130,6 +130,8 @@ extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryDoesNotExist;
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryNotWritable;
 /// condition constant: error, could not generate directory name
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotGenerateDirectoryName;
+/// condition constant: error, call to setuid() failed
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_setuidFailed;
 
 /// status code constant: error, cannot open character encoding
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotOpenEncoding;
@@ -143,6 +145,7 @@ extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
 /// status code constant: error, cannot create directory
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCreateDirectory;
 //@}
+
 
 /** use this macro for creating static OFCondition instances. Instead of an
  *  OFCondition instance which needs a constructor, an instance of

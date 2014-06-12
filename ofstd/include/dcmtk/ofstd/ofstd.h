@@ -863,6 +863,26 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFPasswd getPwNam( const char* name );
 
+    /** On Posix-like platform, this method executes setuid(getuid()),
+     *  which causes the application to revert from root privileges to
+     *  thos of the calling user when the program is installed as
+     *  setuid root. DCMTK command line tools that open a socket for
+     *  incoming DICOM network connections will call this method immediately
+     *  after opening the socket. Since DICOM by default operates on
+     *  port 104, which on Posix platforms requires root privileges to open,
+     *  this ensures that the socket can be opened, yet operation continues
+     *  with the (hopefully) limited rights of the calling user.
+     *  On non-Posix platforms, this method does nothing and returns success.
+     *
+     *  @return success or failure. This method can fail if the kernel has
+     *    been configured to only permit a certain number of processes
+     *    to be created for each user, and the calling user already has the
+     *    maximum number of processes running. In this case, the application
+     *    should terminate since otherwise it would continue to run with
+     *    full root privileges.
+     */
+    static OFCondition dropPrivileges();
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
