@@ -752,18 +752,12 @@ main(int argc, char *argv[])
         return 1;
     }
 
-#ifdef HAVE_GETUID
-    /* return to normal uid so that we can't do too much damage in case
-     * things go very wrong.   Only does something if the program is setuid
-     * root, and run by another user.  Running as root user may be
-     * potentially disastrous if this program screws up badly.
-     */
-    if ((setuid(getuid()) == -1) && (errno == EAGAIN))
+    /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+    if (OFStandard::dropPrivileges().bad())
     {
         OFLOG_FATAL(movescuLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
         return 1;
     }
-#endif
 
     /* set up main association */
     cond = ASC_createAssociationParameters(&params, opt_maxPDU);

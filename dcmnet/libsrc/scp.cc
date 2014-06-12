@@ -112,17 +112,13 @@ OFCondition DcmSCP::listen()
   if( cond.bad() )
     return cond;
 
-#if defined(HAVE_SETUID) && defined(HAVE_GETUID)
-  // Return to normal uid so that we can't do too much damage in case
-  // things go very wrong. Only works if the program is setuid root,
-  // and run by another user. Running as root user may be
-  // potentially disastrous if this program screws up badly.
-  if ((setuid(getuid()) == -1) && (errno == EAGAIN))
+  // drop root privileges now and revert to the calling user id (if we are running as setuid root)
+  cond = OFStandard::dropPrivileges();
+  if (cond.bad())
   {
       DCMNET_ERROR("setuid() failed, maximum number of processes/threads for uid already running.");
-      return NET_EC_InsufficientPortPrivileges;
+      return cond;
   }
-#endif
 
   // If we get to this point, the entire initialization process has been completed
   // successfully. Now, we want to start handling all incoming requests. Since

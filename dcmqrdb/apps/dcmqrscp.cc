@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2013, OFFIS e.V.
+ *  Copyright (C) 1993-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -679,18 +679,12 @@ main(int argc, char *argv[])
       return 10;
     }
 
-#if defined(HAVE_SETUID) && defined(HAVE_GETUID)
-    /* return to normal uid so that we can't do too much damage in case
-     * things go very wrong.   Only relevant if the program is setuid root,
-     * and run by another user.  Running as root user may be
-     * potentially disasterous if this program screws up badly.
-     */
-    if ((setuid(getuid()) == -1) && (errno == EAGAIN))
-    {
-        OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
-        return 10;
-    }
-#endif
+  /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+  if (OFStandard::dropPrivileges().bad())
+  {
+      OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+      return 10;
+  }
 
 #if defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
      OFStandard::OFGroup grp;

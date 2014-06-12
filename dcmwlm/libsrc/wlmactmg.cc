@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -241,17 +241,13 @@ OFCondition WlmActivityManager::StartProvidingService()
   cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net );
   if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
 
-#if defined(HAVE_SETUID) && defined(HAVE_GETUID)
-  // Return to normal uid so that we can't do too much damage in case
-  // things go very wrong. Only works if the program is setuid root,
-  // and run by another user. Running as root user may be
-  // potentially disasterous if this program screws up badly.
-  if ((setuid(getuid()) == -1) && (errno == EAGAIN))
+  /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+  cond = OFStandard::dropPrivileges();
+  if (cond.bad())
   {
       DCMWLM_ERROR("setuid() failed, maximum number of processes/threads for uid already running.");
-      return WLM_EC_InitializationOfNetworkConnectionFailed;
+      return cond;
   }
-#endif
 
   // If we get to this point, the entire initialization process has been completed
   // successfully. Now, we want to start handling all incoming requests. Since

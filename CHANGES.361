@@ -11,6 +11,18 @@ Changes between releases are documented here.
            ofstd/libsrc/ofcond.cc
            ofstd/libsrc/ofstd.cc
 
+- Tools now use OFStandard::dropPrivileges():
+  Modified applications and support classes to call
+  OFStandard::dropPrivileges() instead of setuid(getuid()).
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/libsrc/scp.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/tests/msgserv.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2014.06.11 (riesmeier)
 
 - Group condition constants in Doxygen output.
