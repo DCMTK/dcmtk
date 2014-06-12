@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.12 (riesmeier)
+
+- Avoid full directory path in Doxygen footer:
+  Avoid full directory path in Doxygen footer when HTML generation is initiated
+  from CMake.
+  Affects: doxygen/htmldocs.cfg
+
 **** Changes from 2014.06.11 (eichelberg)
 
 - Introduced OFStandard::dropPrivileges():
