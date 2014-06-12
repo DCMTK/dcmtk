@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.12 (riesmeier)
 
+- Removed outdated comment on DICOM 2008 standard.
+  Affects: dcmnet/docs/asconfig.txt
+
 - Replaced CMake variable in Doxygen config file:
   Replaced CMake variable "@CMAKE_CURRENT_SOURCE_DIR@" in Doxygen configuration
   file by existing substitution variable "@DOXYGEN_INPUT_DIR@".

@@ -186,11 +186,8 @@ The second part denotes the SOP class extended negotiation to be
 performed for this SOP class.  This part contains raw data in hexadecimal
 encoding.  Any SOP class that is negotiated but not contained in the
 extended negotiation list will be negotiated without extended
-negotiation.
-
-In the current (2008) edition of the DICOM standard, extended
-negotiation is only defined for the SOP classes of the Storage, Basic
-Worklist Management and Query/Retrieve Service Classes.
+negotiation.  See DICOM standard for a list of SOP classes that support
+extended negotiation.
 
 The following example shows an extended negotiation list for a
 storage SCP that accepts Structured Reporting documents as a
