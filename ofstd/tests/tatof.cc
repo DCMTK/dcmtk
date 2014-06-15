@@ -69,8 +69,10 @@ const ValuePair vp[] =
   // overflow is reported as infinity
   {"1.7976931348623157E+1000", HUGE_VAL, OFTrue},
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1700
   // underflow is reported as zero
   {"2.2250738585072014E-1000", 0.0, OFTrue},
+#endif
 
   // conversions that should fail
   // {"NaN", 0.0, OFFalse}, // this test will fail if DISABLE_OFSTD_ATOF is defined

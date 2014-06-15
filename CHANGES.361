@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.15 (schlamelcher)
+
+- Fixed ofstd_tatof error on older MSVC versions:
+  Older MSVC versions handle underflows incorrectly, therefore
+  the respective test is skipped on these compilers.
+  Affects: ofstd/tests/tatof.cc
+
 **** Changes from 2014.06.12 (riesmeier)
 
 - Removed outdated comment on DICOM 2008 standard.
