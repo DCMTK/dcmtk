@@ -332,6 +332,12 @@ and include files must be available during compilation of DCMTK.  See discussion
 on CMake below.
 
 
+C++11 SUPPORT
+=============
+DCMTK can be enabled to use the C++11 STL. This is controlled by the MACRO
+"DCMTK_USE_CXX11_STL", described in config/docs/macros.txt.
+
+
 BUILDING (Unix with autoconf)
 =============================
 

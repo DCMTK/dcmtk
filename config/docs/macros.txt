@@ -55,6 +55,14 @@ DCMTK_GUI
     either present them to the user or store them in a log file.  See
     comments in ofstd/include/dcmtk/ofstd/ofconsol.h.
 
+DCMTK_USE_CXX11_STL
+  Affected: all modules
+  Type of modification: Enables DCMTK to use the C++11 STL.
+  Explanation: DCMTK_USE_CXX11_STL is defined when the appropriate options
+    are passed to the configuration system. DCMTK will then use the native
+    C++11 STL classes and functions instead of it's own (legacy)
+    implementations.
+
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
   Type of modification: Disables feature

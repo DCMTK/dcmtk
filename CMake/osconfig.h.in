@@ -1045,4 +1045,13 @@ typedef unsigned long ulong;
 /* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
 #define STDIO_NAMESPACE ::
 
+/* Enable or disable C++11 while building DCMTK */
+#cmakedefine DCMTK_USE_CXX11_STL
+
+#if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
+#error\
+ DCMTK was configured to use the C++11 STL, but your compiler is not configured\
+ for building with C++11 features.
+#endif
+
 #endif /* !OSCONFIG_H*/

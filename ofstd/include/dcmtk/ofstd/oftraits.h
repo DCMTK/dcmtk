@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/oftypes.h"
 
 // use native classes if C++11 is supported
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
 #include <type_traits>
 
 template<bool B,typename... ARGS>

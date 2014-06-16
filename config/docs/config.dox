@@ -14,6 +14,8 @@ The following files provide further documentation:
 \li \ref file_macros
 \li \ref file_modules
 
+\section sec_cxx11_support C++11 Support
+DCMTK supports some C++11 features. See \ref cxx11_support for details.
 */
 
 /*!

@@ -26,7 +26,7 @@
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
 
 // use native classes when c++11 is supported
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
 
 #include <memory>
 template<typename... ARGS>

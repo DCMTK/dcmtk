@@ -38,7 +38,7 @@
 
 #ifndef DOXYGEN
 struct OFnullopt_t {};
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
 // declare constexpr nullopt if supported.
 constexpr OFnullopt_t OFnullopt{};
 #else // C++11
@@ -333,7 +333,7 @@ class OFoptional
 
 // implement "construct" when "emplace" is not supported
 // needed for the istream operator
-#if __cplusplus < 201103L
+#ifndef DCMTK_USE_CXX11_STL
     void construct() { state() = 1; new (content()) T; }
 #endif // C++11
 
@@ -354,7 +354,7 @@ public:
     {
         if( !opt )
         {
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
             opt.emplace();
 #else // C++11
             opt.construct();
@@ -554,7 +554,7 @@ public:
     // False friend of the copy constructor, to prevent incorrect behavior
     // (internally calls the real copy constructor).
     OFoptional( OFoptional& rhs )
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     // delegate constructor if possible
     : OFoptional( const_cast<const OFoptional&>( rhs ) )
     {
@@ -578,7 +578,7 @@ public:
             new (content()) T( *rhs );
     }
 
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     // Move constructor, kills rhs if it was engaged before.
     OFoptional( OFoptional&& rhs )
     : m_Content{}
@@ -707,7 +707,7 @@ public:
     // State and content accessing functions, see respective expression for details
 
 // declare cast operator as explicit, if possible
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     explicit
 #endif // C++11
     operator OFBool() const
@@ -838,7 +838,7 @@ public:
     }
 
     // Move semantics if C++11 is supported
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     OFoptional( OFoptional&& rhs )
     : m_pT( rhs.m_pT )
     {
@@ -874,7 +874,7 @@ public:
     // State and content accessing functions, see respective expression for details
 
 // declare cast operator as explicit, if possible
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     explicit
 #endif // C++11
     operator bool() const
@@ -909,7 +909,7 @@ private:
 };
 
 // Move semantics and std::swap overload if C++11 is supported
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
 template<typename T>
 OFoptional<typename OFdecay<T>::type> OFmake_optional( T&& t )
 {

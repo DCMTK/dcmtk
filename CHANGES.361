@@ -20,6 +20,22 @@ Changes between releases are documented here.
   Affects: CMake/osconfig.h.in
            ofstd/include/dcmtk/ofstd/ofoption.h
 
+- Added 'DCMTK_USE_CXX11_STL' and 'DCMTK_CXX11_FLAGS':
+  These flags control DCMTK's behavior regarding C++11 features.
+  DCMTK_USE_CXX11_STL may be used to switch between DCMTK's own classes and
+  the respective native C++11 implementations. DCMTK will try to set the
+  appropriate CXX_FLAGS to enable C++11 when DCMTK_USE_CXX11_STL is set.
+  DCMTK_CXX11_FLAGS may be used to override which CXX_FLAGS DCMTK sets, for
+  example to use C++14 instead of C++11.
+  Affects: INSTALL
+           CMake/osconfig.h.in
+           config/configure
+           config/configure.in
+           config/docs/config.dox
+           config/docs/cxx11.dox
+           config/docs/macros.txt
+           config/include/dcmtk/config/osconfig.h.in
+
 **** Changes from 2014.06.12 (riesmeier)
 
 - Removed outdated comment on DICOM 2008 standard.

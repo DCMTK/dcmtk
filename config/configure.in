@@ -102,7 +102,13 @@ AH_TOP([#ifndef OSCONFIG_H
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif])
 
-AH_BOTTOM([#endif /* OSCONFIG_H */])
+AH_BOTTOM([#if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
+#error\
+ DCMTK was configured to use the C++11 STL, but your compiler is not configured\
+ for building with C++11 features.
+#endif
+
+#endif /* OSCONFIG_H */])
 
 
 dnl Include general file
@@ -1207,6 +1213,26 @@ AC_TRY_COMPILE([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); const cha
     AC_DEFINE(LIBICONV_SECOND_ARGUMENT_CONST, , [Define if the second argument to iconv() is const.]) ],
   [AC_MSG_RESULT(no)])
 LIBS="$SAVELIBS"
+
+dnl -------------------------------------------------------
+dnl C++11 support
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(if the C++11 STL should be used)
+AC_ARG_WITH(cxx11-stl,
+[  --with-cxx11-stl        enable C++11 STL
+  --without-cxx11-stl     disable C++11 STL (default)],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(DCMTK_USE_CXX11_STL, , [Enable or disable C++11 while building DCMTK.])
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
 
 AC_CHECK_SYNC_FN([__sync_add_and_fetch],[HAVE_SYNC_ADD_AND_FETCH])
 AC_CHECK_SYNC_FN([__sync_sub_and_fetch],[HAVE_SYNC_SUB_AND_FETCH])

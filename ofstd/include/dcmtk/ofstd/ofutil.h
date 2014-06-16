@@ -23,13 +23,15 @@
 #ifndef OFUTIL_H
 #define OFUTIL_H
 
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 /** @file ofutil.h
  *  Implement fallback support for modern techniques defined
  *  in the STL's <utility> header (e.g.\ move semantics)
  *  for older compilers.
  */
 
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
 #define OFmove std::move
 #define OFswap std::swap
 #else // fallback implementations

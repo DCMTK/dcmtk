@@ -735,6 +735,7 @@ with_libsndfileinc
 with_libsndfile
 with_libiconvinc
 with_libiconv
+with_cxx11_stl
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1402,6 +1403,8 @@ Optional Packages:
   --with-libiconvinc=DIR  location of libiconv includes and libraries
   --with-libiconv         include libiconv support (default: auto)
   --without-libiconv      don't include libiconv support
+  --with-cxx11-stl        enable C++11 STL
+  --without-cxx11-stl     disable C++11 STL (default)
 
 Some influential environment variables:
   CC          C compiler command
@@ -12361,7 +12364,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12364 "configure"
+#line 12367 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12833,7 +12836,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12836 "configure"
+#line 12839 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12905,7 +12908,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12908 "configure"
+#line 12911 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12977,7 +12980,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12980 "configure"
+#line 12983 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -14278,6 +14281,32 @@ $as_echo "no" >&6; }
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 LIBS="$SAVELIBS"
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if the C++11 STL should be used" >&5
+$as_echo_n "checking if the C++11 STL should be used... " >&6; }
+
+# Check whether --with-cxx11-stl was given.
+if test "${with_cxx11_stl+set}" = set; then :
+  withval=$with_cxx11_stl;  case "$withval" in
+  yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define DCMTK_USE_CXX11_STL /**/" >>confdefs.h
+
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    ;;
+  esac
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+fi
+
 
 
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __sync_add_and_fetch" >&5

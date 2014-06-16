@@ -100,7 +100,7 @@ END_EXTERN_C
 #endif
 
 /* define OFconstexpr to 'constexpr' or '' if not supported */
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
 #define OFconstexpr constexpr
 #else // C++11
 #define OFconstexpr

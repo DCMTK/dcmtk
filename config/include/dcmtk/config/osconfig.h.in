@@ -40,6 +40,9 @@
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
+/* Enable or disable C++11 while building DCMTK. */
+#undef DCMTK_USE_CXX11_STL
+
 /* Define the default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 
@@ -1016,5 +1019,11 @@ typedef unsigned short ushort;
 
 /* Define to int if undefined. */
 #undef socklen_t
+
+#if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
+#error\
+ DCMTK was configured to use the C++11 STL, but your compiler is not configured\
+ for building with C++11 features.
+#endif
 
 #endif /* OSCONFIG_H */

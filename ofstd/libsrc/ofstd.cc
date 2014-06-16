@@ -210,7 +210,7 @@ extern "C"
 
 static int my_isinf(double x)
 {
-#if __cplusplus >= 201103L
+#if defined(DCMTK_USE_CXX11_STL) || ( defined(__MINGW32__) && __cplusplus >= 201103L )
   return STD_NAMESPACE isinf(x);
 #elif defined(HAVE_WINDOWS_H)
   return (! _finite(x)) && (! _isnan(x));
@@ -2457,7 +2457,7 @@ void OFStandard::ftoa(
   if (!dst || !siz) return;
 
   // check if val is NAN
-#if __cplusplus >= 201103L
+#if defined(DCMTK_USE_CXX11_STL) || ( defined(__MINGW32__) && __cplusplus >= 201103L )
   if (STD_NAMESPACE isnan(val))
 #elif defined(HAVE_WINDOWS_H)
   if (_isnan(val))
@@ -2866,7 +2866,7 @@ OFCondition OFStandard::dropPrivileges()
 }
 
 
-#if __cplusplus < 201103L
+#ifndef DCMTK_USE_CXX11_STL
 DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
 DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;
 #endif

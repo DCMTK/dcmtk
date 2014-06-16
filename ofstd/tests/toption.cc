@@ -54,7 +54,7 @@ OFTEST(ofstd_optional)
     s >> o1;
     OFCHECK( o1 && *o1 == 23 );
 
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     OFoptional<test> o3( 2, OFFalse );
 #else // C++11
     OFoptional<test> o3( test( 2, OFFalse ) );
@@ -73,7 +73,7 @@ OFTEST(ofstd_optional)
     OFCHECK( !(s >> o3).fail() ); // no fail, since no-call
     OFCHECK( !o3 );
 
-#if __cplusplus >= 201103L
+#ifdef DCMTK_USE_CXX11_STL
     o3.emplace( 0, OFFalse );
 #else // C++11
     o3 = test( 0, OFFalse );
