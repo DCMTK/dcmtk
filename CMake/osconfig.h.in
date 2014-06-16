@@ -985,6 +985,10 @@ typedef unsigned long ulong;
 
     #pragma warning( disable : 4251 )  /* disable warnings about needed dll-interface */
                                        /* http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html */
+    #pragma warning( disable: 4099 )   /* disable warning about mismatched class and struct keywords */
+                                       /* http://alfps.wordpress.com/2010/06/22/cppx-is-c4099-really-a-sillywarning-disabling-msvc-sillywarnings */
+    #pragma warning( disable: 4521 )   /* disable warnings about multiple copy constructors and assignment operators,*/
+    #pragma warning( disable: 4522 )   /* since these are sometimes necessary for correct overload resolution*/
 
 #if _MSC_VER >= 1400                   /* Additional settings for Visual Studio 2005 and newer */
     #pragma warning( disable : 4996 )  /* disable warnings about "deprecated" C runtime functions */

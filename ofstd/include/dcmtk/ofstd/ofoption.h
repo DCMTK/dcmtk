@@ -712,7 +712,7 @@ public:
 #endif // C++11
     operator OFBool() const
     {
-        return state();
+        return state() != 0;
     }
 
     OFBool operator!() const

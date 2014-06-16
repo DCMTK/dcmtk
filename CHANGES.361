@@ -14,6 +14,12 @@ Changes between releases are documented here.
   Affects: CMake/DCMTKConfig.cmake.in
            CMake/GenerateCMakeExports.cmake
 
+- Fixed and suppressed some warnings:
+  Fixed a warning about int / OFBool conversion and suppressed some (silly)
+  MSVC warnings.
+  Affects: CMake/osconfig.h.in
+           ofstd/include/dcmtk/ofstd/ofoption.h
+
 **** Changes from 2014.06.12 (riesmeier)
 
 - Removed outdated comment on DICOM 2008 standard.
