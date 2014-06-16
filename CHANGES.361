@@ -8,6 +8,12 @@ Changes between releases are documented here.
   the respective test is skipped on these compilers.
   Affects: ofstd/tests/tatof.cc
 
+- Fixed DCMTK-Exports for custom module setups:
+  The variable 'DCMTK_MODULES' is now honored while generating exports,
+  to skip modules the user removed from the build.
+  Affects: CMake/DCMTKConfig.cmake.in
+           CMake/GenerateCMakeExports.cmake
+
 **** Changes from 2014.06.12 (riesmeier)
 
 - Removed outdated comment on DICOM 2008 standard.
