@@ -4,61 +4,10 @@ Changes between releases are documented here.
 **** Changes from 2014.06.17 (schlamelcher)
 
 - Updated manpages.
-  Affects: doxygen/manpages/man1/dcm2pdf.1
-           doxygen/manpages/man1/dcm2pnm.1
-           doxygen/manpages/man1/dcm2xml.1
-           doxygen/manpages/man1/dcmcjpeg.1
-           doxygen/manpages/man1/dcmcjpls.1
-           doxygen/manpages/man1/dcmconv.1
-           doxygen/manpages/man1/dcmcrle.1
-           doxygen/manpages/man1/dcmdjpeg.1
-           doxygen/manpages/man1/dcmdjpls.1
-           doxygen/manpages/man1/dcmdrle.1
-           doxygen/manpages/man1/dcmdspfn.1
-           doxygen/manpages/man1/dcmdump.1
-           doxygen/manpages/man1/dcmftest.1
-           doxygen/manpages/man1/dcmgpdir.1
-           doxygen/manpages/man1/dcmj2pnm.1
-           doxygen/manpages/man1/dcml2pnm.1
-           doxygen/manpages/man1/dcmmkcrv.1
-           doxygen/manpages/man1/dcmmkdir.1
-           doxygen/manpages/man1/dcmmklut.1
-           doxygen/manpages/man1/dcmodify.1
-           doxygen/manpages/man1/dcmp2pgm.1
-           doxygen/manpages/man1/dcmprscp.1
-           doxygen/manpages/man1/dcmprscu.1
-           doxygen/manpages/man1/dcmpschk.1
-           doxygen/manpages/man1/dcmpsmk.1
-           doxygen/manpages/man1/dcmpsprt.1
-           doxygen/manpages/man1/dcmpsrcv.1
-           doxygen/manpages/man1/dcmpssnd.1
-           doxygen/manpages/man1/dcmqridx.1
-           doxygen/manpages/man1/dcmqrscp.1
-           doxygen/manpages/man1/dcmqrti.1
-           doxygen/manpages/man1/dcmquant.1
-           doxygen/manpages/man1/dcmrecv.1
-           doxygen/manpages/man1/dcmscale.1
-           doxygen/manpages/man1/dcmsend.1
-           doxygen/manpages/man1/dcmsign.1
-           doxygen/manpages/man1/dcod2lum.1
-           doxygen/manpages/man1/dconvlum.1
-           doxygen/manpages/man1/drtdump.1
-           doxygen/manpages/man1/dsr2html.1
-           doxygen/manpages/man1/dsr2xml.1
-           doxygen/manpages/man1/dsrdump.1
-           doxygen/manpages/man1/dump2dcm.1
-           doxygen/manpages/man1/echoscu.1
-           doxygen/manpages/man1/findscu.1
-           doxygen/manpages/man1/getscu.1
-           doxygen/manpages/man1/img2dcm.1
-           doxygen/manpages/man1/movescu.1
-           doxygen/manpages/man1/pdf2dcm.1
-           doxygen/manpages/man1/storescp.1
-           doxygen/manpages/man1/storescu.1
-           doxygen/manpages/man1/termscu.1
-           doxygen/manpages/man1/wlmscpfs.1
-           doxygen/manpages/man1/xml2dcm.1
-           doxygen/manpages/man1/xml2dsr.1
+  Affects: doxygen/manpages/man1/*
+
+- Updated DCMTK_ABI_VERSION for new development snapshot.
+  Affects: CMake/dcmtkPrepare.cmake
 
 **** Changes from 2014.06.15 (schlamelcher)
 
