@@ -1,4 +1,4 @@
-.TH "dcmftest" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmftest" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmftest \- Test if file uses DICOM part 10 format
@@ -21,10 +21,10 @@ dcmfile-in  DICOM input filename to be dumped
 .PP
 .SH "NOTES"
 .PP
-All files specified on the command line are checked for the presence of the DICOM 'magic word' 'DICM' at byte position 128\&. No attempt is made to parse the complete data set\&. For each file the test result is printed to \fIstdout\fP in the form 'yes: <filename>\\n' or 'no: <filename>\\n'\&. The utility terminates with a return code corresponding to the number of files found to be non-DICOM, i\&.e\&. if all files pass as DICOM files, the return value is 0\&. This behaviour is intended for use in shell script programming\&.
+All files specified on the command line are checked for the presence of the DICOM 'magic word' 'DICM' at byte position 128\&. No attempt is made to parse the complete data set\&. For each file the test result is printed to \fIstdout\fP in the form 'yes: <filename>\\n' or 'no: <filename>\\n'\&. The utility terminates with a return code corresponding to the number of files found to be non-DICOM, i\&.e\&. if all files pass as DICOM files, the return value is 0\&. This behavior is intended for use in shell script programming\&.
 .SH "SEE ALSO"
 .PP
 \fBdcmgpdir\fP(1), \fBdcmmkdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1997-2010 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1997-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

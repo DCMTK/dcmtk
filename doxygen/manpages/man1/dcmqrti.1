@@ -1,4 +1,4 @@
-.TH "dcmqrti" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrti" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrti \- The Terminal Initiator Telnet Client Program
@@ -94,7 +94,7 @@ peer  peer host name or symbolic name from cfg file
 .SS "Commands"
 All commands can be abbreviated\&. An abbreviation is allowed if it does not conflict with another command\&.
 .SS "'help' Command"
-The 'help' command gives a summary of all available commands\&. Its output is shown underneath\&. In order to separate the examples from surrounding text, all examples are bracketted by dashed lines\&. These lines do not appear when running the program\&.
+The 'help' command gives a summary of all available commands\&. Its output is shown underneath\&. In order to separate the examples from surrounding text, all examples are bracketed by dashed lines\&. These lines do not appear when running the program\&.
 .PP
 .PP
 .nf
@@ -135,7 +135,7 @@ Peer AE Titles:
 .PP
 The current peer AE is marked with an asterisk (*)\&. Each peer AE has an index (second column) which can be used as an argument to the 'title' command in order to set the current peer AE\&. The third column gives the AE title of the peer AE\&. The fourth column shows the hostname and TCP/IP port number of the peer AE\&.
 .PP
-When invoked with an argument index, the 'title' command will set the current peer AE\&. The \fBdcmqrti\fP program will attempt to initate an association to the current peer AE when asked to send a study/series/image or to send an echo\&.
+When invoked with an argument index, the 'title' command will set the current peer AE\&. The \fBdcmqrti\fP program will attempt to initiate an association to the current peer AE when asked to send a study/series/image or to send an echo\&.
 .SS "'database' Command"
 The 'database' command without an argument allows the user to list the know local databases (these correspond to dcmqrscp's Application Entity Titles)\&. An example output might look like:
 .PP
@@ -298,19 +298,19 @@ The \fBdcmqrti\fP program uses the same configuration file as the \fBdcmqrscp\fP
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBdcmqrti\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
 \fI<docdir>/dcmqrcnf\&.txt\fP - configuration information
@@ -323,4 +323,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmqrscp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1993-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

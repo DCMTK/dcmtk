@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -11,11 +11,11 @@ dcmodify [options] dcmfile-in...
 .PP
 .SH "DESCRIPTION"
 .PP
-\fBdcmodify\fP is a tool that allows to modify, insert and delete tags and items in DICOM files\&. Sequences and tags with a value multiplicity > 1 are also supported\&. Metaheader information and the tag's VR can not be modified directly by \fBdcmodify\fP at this time\&. In addition to tag modifications, \fBdcmodify\fP makes available some input options - forcing \fBdcmodify\fP to handle its input files as the user specifies - and output options to control the output format of the resulting files\&.
+\fBdcmodify\fP is a tool that allows one to modify, insert and delete tags and items in DICOM files\&. Sequences and tags with a value multiplicity > 1 are also supported\&. Metaheader information and the tag's VR can not be modified directly by \fBdcmodify\fP at this time\&. In addition to tag modifications, \fBdcmodify\fP makes available some input options - forcing \fBdcmodify\fP to handle its input files as the user specifies - and output options to control the output format of the resulting files\&.
 .PP
 In case multiple modifications have to be performed, \fBdcmodify\fP does the modifications in the same order as they appear on the command line\&. Please note that \fBdcmodify\fP does not check whether a given value matches its value representation (VR)\&. Usually, an error message is printed but generally the user should take care of the right VR usage\&.
 .PP
-If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is set to UN and the value provided on commandline is interpreted as being a series of hexadecimal numbers (like they are provided for VR=OB)\&. Please insert these tags into the dictionary to avoid this behaviour\&. Also, specifying the \fI-iun\fP option, it is possible to force \fBdcmodify\fP to leave UN values untouched\&. Using option \fI-u\fP lets \fBdcmodify\fP saving all VR=UN attributes as OB\&.
+If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is set to UN and the value provided on command line is interpreted as being a series of hexadecimal numbers (like they are provided for VR=OB)\&. Please insert these tags into the dictionary to avoid this behavior\&. Also, specifying the \fI-iun\fP option, it is possible to force \fBdcmodify\fP to leave UN values untouched\&. Using option \fI-u\fP lets \fBdcmodify\fP saving all VR=UN attributes as OB\&.
 .PP
 \fBdcmodify\fP is able to work with so-called tag paths to access tags in sequences\&. The (pseudo-formalized) syntax is
 .PP
@@ -277,7 +277,7 @@ See description above how inserting values into elements with unknown VR are han
 .SS "Modifications"
 If you modify a private tags value, \fBdcmodify\fP won't check its VR against the dictionary\&. So please be careful to enter only values that match the tag's VR\&.
 .PP
-If you wish to change a private tags value \fIand\fP VR, because you just added this tag to your dictionary, you can delete it with \fBdcmodify\fP and re-insert it\&. Then \fBdcmodify\fP uses your dicitionary entry to determine the right VR (also see subsection insertions)\&.
+If you wish to change a private tags value \fIand\fP VR, because you just added this tag to your dictionary, you can delete it with \fBdcmodify\fP and re-insert it\&. Then \fBdcmodify\fP uses your dictionary entry to determine the right VR (also see subsection insertions)\&.
 .PP
 Also, see description above how inserting values into elements with unknown VR are handled\&.
 .SS "Deletions"
@@ -286,14 +286,14 @@ When you use \fBdcmodify\fP to delete a private reservation tag, please note tha
 For the deletion of private non-reservation tags there are no special issues\&.
 .SH "CHANGING UIDS"
 .PP
-\fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options\&. You can disable this behaviour by using the \fI-nmu\fP option\&.
+\fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options\&. You can disable this behavior by using the \fI-nmu\fP option\&.
 .PP
-If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will only affect the UID you choosed to generate\&. So if you use \fI-gst\fP to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately\&. Normally, you would also modify the 'underlying' UIDs\&. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary\&.
+If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will only affect the UID you chose to generate\&. So if you use \fI-gst\fP to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately\&. Normally, you would also modify the 'underlying' UIDs\&. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary\&.
 .PP
-When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically\&. This behaviour cannot be disabled\&.
+When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically\&. This behavior cannot be disabled\&.
 .SH "CREATING NEW FILES"
 .PP
-Option \fI--create-file\fP lets \fBdcmodify\fP create a file if it does not already exist on disk\&. This can be used in order to create files from scratch by performing consecutive insertions with options like \fI--insert\fP\&. This might especially become handy when creating query files for tools like findscu or movescu\&. In case no specific output transfer syntax is defined, \fBdcmodify\fP chooses Little Endian Explicit Uncompressed for output\&. Files that are newly created are always written as DICOM file format, i\&.e\&. option \fI--write-dataset\fP is not permitted together with \fI--create\fP\&. This way, at least the metaheader is written and no file with zero byte length is created in a case where no insertions are performed in the \fBdcmodify\fP call\&.
+Option \fI--create-file\fP lets \fBdcmodify\fP create a file if it does not already exist on disk\&. This can be used in order to create files from scratch by performing consecutive insertions with options like \fI--insert\fP\&. This might especially become handy when creating query files for tools like \fBfindscu\fP or \fBmovescu\fP\&. In case no specific output transfer syntax is defined, \fBdcmodify\fP chooses Little Endian Explicit Uncompressed for output\&. Files that are newly created are always written as DICOM file format, i\&.e\&. option \fI--write-dataset\fP is not permitted together with \fI--create\fP\&. This way, at least the metaheader is written and no file with zero byte length is created in a case where no insertions are performed in the \fBdcmodify\fP call\&.
 .SH "ELEMENT VALUES FROM FILE"
 .PP
 In order to read the element value from a file instead of specifying it on the command line, option \fI-mf\fP and \fI-if\fP can be used\&. Please note that for OW elements, the data is expected to be little endian ordered and will be swapped if necessary\&. The file size should always be an even number of bytes, i\&.e\&. no automatic padding is performed\&.
@@ -302,7 +302,7 @@ In order to read the element value from a file instead of specifying it on the c
 \fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e\&.g\&. 'ContentSequence[*]\&.CodeValue' selects all 'Code
 Value' attributes in all items of the ContentSequence\&. Using a wildcard is possible for all basic operations, i\&.e\&. modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets\&.
 .PP
-The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of a DICOM element based on its tag do not accept any wildcards but only work on single elements (i\&.e\&. a single dictionary name or tag key)\&.
+The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurrences of a DICOM element based on its tag do not accept any wildcards but only work on single elements (i\&.e\&. a single dictionary name or tag key)\&.
 .SH "EXAMPLES"
 .PP
 .PP
@@ -412,28 +412,28 @@ The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of 
        but -nmu avoids, that dcmodify adjusts the
        MediaStorageSOPInstanceUID in the metaheader, too..fi
 .PP
-.SH "ERROR HANDLING"
+.SH "Error Handling"
 .PP
-\fBdcmodify\fP tries executing each modify operation given on command line: If one returns an error, the others are being performed anyway\&. However in case of any error, the modified file is not saved, unless the \fI--ignore-errors\fP option is specified\&. If that option is selected, \fBdcmodify\fP also continues modifying further files specified on commandline; otherwise \fBdcmodify\fP exits after the first file that had modification errors\&.
+\fBdcmodify\fP tries executing each modify operation given on command line: If one returns an error, the others are being performed anyway\&. However in case of any error, the modified file is not saved, unless the \fI--ignore-errors\fP option is specified\&. If that option is selected, \fBdcmodify\fP also continues modifying further files specified on command line; otherwise \fBdcmodify\fP exits after the first file that had modification errors\&.
 .PP
 If the \fI--ignore-missing-tags\fP option is enabled, any modify or erase operations (i\&.e\&. not \fI--insert\fP) that fails because of a non-existing tag is treated as being successful\&. That does make sense if someone wants to be sure that specific tags are not present in the file or that - if they exist - that they are set to a specific value\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2003-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

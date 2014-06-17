@@ -1,4 +1,4 @@
-.TH "dcmrecv" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmrecv" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmrecv \- Simple DICOM storage SCP (receiver)
@@ -226,14 +226,14 @@ Please note that option \fI--bit-preserving\fP cannot be used together with opti
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "EXIT CODES"
 .PP
 The \fBdcmrecv\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
@@ -271,7 +271,7 @@ EXITCODE_INVALID_ASSOCIATION_CONFIG      66
 .PP
 The \fBdcmrecv\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
 \fI<docdir>/asconfig\&.txt\fP - configuration file documentation
@@ -282,4 +282,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmsend\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2013-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "dcmmkdir" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkdir \- Create a DICOMDIR file
@@ -71,7 +71,7 @@ Ultrasound Single & Multi-Frame with Combined Calibration (STD-US-CC-MF-xxxx)
 .IP "\(bu" 2
 Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 .PP
-This tool extends \fBdcmgpdir\fP which can only create General Purpose \fIDICOMDIR\fP files\&. The default behaviour of \fBdcmmkdir\fP (with \fI--general-purpose\fP) is equivalent to that of \fBdcmgpdir\fP\&.
+This tool extends \fBdcmgpdir\fP which can only create General Purpose \fIDICOMDIR\fP files\&. The default behavior of \fBdcmmkdir\fP (with \fI--general-purpose\fP) is equivalent to that of \fBdcmgpdir\fP\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -115,11 +115,12 @@ dcmfile-in  referenced DICOM file (or directory to be scanned)
 .nf
 DICOMDIR identifiers:
 
-  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
-          use specific file set ID
+  +F    --fileset-id  [i]d: string
+          use specific file-set ID
+          (default: DCMTK_MEDIA_DEMO, "" for none)
 
   +R    --descriptor  [f]ilename: string
-          add a file set descriptor file ID
+          add a file-set descriptor file ID
           (e.g. README, default: no descriptor)
 
   +C    --char-set  [c]harset: string
@@ -341,6 +342,11 @@ writing:
   -w    --discard
           do not write out DICOMDIR
 
+backup:
+
+        --create-backup
+          create a backup of existing DICOMDIR (default)
+
   -nb   --no-backup
           do not create a backup of existing DICOMDIR
 
@@ -371,11 +377,11 @@ length encoding in sequences and items:
 .PP
 .SH "NOTES"
 .PP
-All files specified on the command line (or discovered by recursivly examining the contents of directories with the \fI+r\fP option) are first evaluated for their compatibility with the specified Media Storage Application Profile (Part 11)\&. Only appropriate files encoded using one of the allowed Transfer Syntaxes will be accepted\&. Files having invalid filenames will be rejected (the rules can be relaxed via the \fI+m\fP option)\&. Files missing required attributes will be rejected (the \fI+I\fP option can relax this behaviour)\&.
+All files specified on the command line (or discovered by recursively examining the contents of directories with the \fI+r\fP option) are first evaluated for their compatibility with the specified Media Storage Application Profile (Part 11)\&. Only appropriate files encoded using one of the allowed Transfer Syntaxes will be accepted\&. Files having invalid filenames will be rejected (the rules can be relaxed via the \fI+m\fP option)\&. Files missing required attributes will be rejected (the \fI+I\fP option can relax this behavior)\&.
 .PP
 A \fIDICOMDIR\fP file will only be constructed if all files have passed initial tests\&.
 .PP
-The \fBdcmmkdir\fP utility also allows to append new entries to and to update existing entries in a \fIDICOMDIR\fP file\&. Using option \fI+A\fP new entries are only appended to the DICOMDIR, i\&.e\&. existing records like the ones for PATIENT information are not updated\&. Using option \fI+U\fP also existing records are updated according to the information found in the referenced DICOM files\&. Please note that this update process might be slower than just appending new entries\&. However, it makes sure that additional information that is required for the selected application profile is also added to existing records\&.
+The \fBdcmmkdir\fP utility also allows one to append new entries to and to update existing entries in a \fIDICOMDIR\fP file\&. Using option \fI+A\fP new entries are only appended to the DICOMDIR, i\&.e\&. existing records like the ones for PATIENT information are not updated\&. Using option \fI+U\fP also existing records are updated according to the information found in the referenced DICOM files\&. Please note that this update process might be slower than just appending new entries\&. However, it makes sure that additional information that is required for the selected application profile is also added to existing records\&.
 .PP
 The support for icon images is currently restricted to monochrome images\&. This might change in the future\&. Till then, color images are automatically converted to grayscale mode\&. The icon size is 128*128 pixels for the cardiac profiles (as required by the DICOM standard) and 64*64 for all others\&.
 .SS "Scanning Directories"
@@ -384,22 +390,22 @@ Adding files from directories is possible by using option \fI--recurse\fP\&. If 
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBdcmmkdir\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2011 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "dcmsend" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsend" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsend \- Simple DICOM storage SCU (sender)
@@ -220,7 +220,7 @@ dcmsend -v +sd +r +rd <peer> <port> IMAGES_1 IMAGES_2 test.img DICOMDIR *.dcm
 .PP
 The default option \fI--read-file-only\fP makes sure that only DICOM files (i\&.e\&. the ones with meta-header and magic word 'DICM' after the preamble) are processed\&. Usually, if processing a whole bunch of files, it is also a good idea not to halt on the first invalid input file or if an unsuccessful store was encountered\&. This can be accomplished by using option \fI--no-halt\fP\&. Please note, however, that 'unsuccessful store' does not mean that the DIMSE status of the C-STORE response indicates an error\&. It means that the C-STORE request could not be sent to the storage SCP\&.
 .PP
-If more than 128 presentation contexts are needed, which is the maximum number allowed according to the DICOM standard, a new association is started after the previous one has been completed\&. In cases where this behaviour is unwanted, it can be disabled using option \fI--single-association\fP\&. In addition, whether only lossless compressed data sets are decompressed (if needed), which is the default, or also lossy compressed data sets can be specified using the \fI--decompress-xxx\fP options\&.
+If more than 128 presentation contexts are needed, which is the maximum number allowed according to the DICOM standard, a new association is started after the previous one has been completed\&. In cases where this behavior is unwanted, it can be disabled using option \fI--single-association\fP\&. In addition, whether only lossless compressed data sets are decompressed (if needed), which is the default, or also lossy compressed data sets can be specified using the \fI--decompress-xxx\fP options\&.
 .PP
 In order to get both an overview and detailed information on the transfer of the DICOM SOP instances, option \fI--create-report-file\fP can be used to create a corresponding text file\&. However, this file is only created as a final step if the application did not terminate before (with an error)\&.
 .SS "Scanning Directories"
@@ -253,7 +253,7 @@ Transfer syntaxes supported by decoders:
 .fi
 .PP
 .PP
-Since \fBdcmsend\fP tries to be as simple as possible for the user, by default presentation contexts might be proposed to the SCP that are strictly speaking 'illegal'\&. This is because, according to the DICOM standard, the SCU always has to propose the default transfer syntax in at least one presentation context associated with each abstract syntax (i\&.e\&. SOP class)\&. This requirement is waived when the SCU only has access to the SOP instance in lossy compressed form\&. With option \fI--no-illegal-proposal\fP the strict DICOM-conformant behaviour can be enforced, i\&.e\&. no possibly illegal presentation context will be proposed but the corresponding SOP instance will be rejected (if needed)\&.
+Since \fBdcmsend\fP tries to be as simple as possible for the user, by default presentation contexts might be proposed to the SCP that are strictly speaking 'illegal'\&. This is because, according to the DICOM standard, the SCU always has to propose the default transfer syntax in at least one presentation context associated with each abstract syntax (i\&.e\&. SOP class)\&. This requirement is waived when the SCU only has access to the SOP instance in lossy compressed form\&. With option \fI--no-illegal-proposal\fP the strict DICOM-conformant behavior can be enforced, i\&.e\&. no possibly illegal presentation context will be proposed but the corresponding SOP instance will be rejected (if needed)\&.
 .PP
 Please note, however, that the default transfer syntax for 'Lossless JPEG
 Compression', 'Lossy JPEG Compression' and so on are not always proposed as also required by the DICOM standard\&. The same limitation applies to other compression schemes\&. See DICOM PS 3\&.5 section 10 for details\&.
@@ -261,14 +261,14 @@ Compression', 'Lossy JPEG Compression' and so on are not always proposed as also
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "EXIT CODES"
 .PP
 The \fBdcmsend\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
@@ -310,10 +310,10 @@ EXITCODE_CANNOT_ADD_PRESENTATION_CONTEXT 65
 .PP
 The \fBdcmsend\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
 \fBdcmrecv\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "storescp" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -435,7 +435,7 @@ where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above\&. If mor
 .PP
 Option \fI--filename-extension\fP appends a specified suffix to each filename (a dot '\&.' is not added automatically)\&. This suffix is not appended to the filenames created by \fI--rename-on-eostudy\fP to maintain the length of 8 characters\&.
 .PP
-Option \fI--exec-on-reception\fP allows to execute a certain command line after having received and processed one DICOM object (through a C-STORE-RQ message)\&. The command line to be executed is passed to this option as a parameter\&. The specified command line may contain a number of placeholders which will be replaced at run time:
+Option \fI--exec-on-reception\fP allows one to execute a certain command line after having received and processed one DICOM object (through a C-STORE-RQ message)\&. The command line to be executed is passed to this option as a parameter\&. The specified command line may contain a number of placeholders which will be replaced at run time:
 .PP
 .PD 0
 .IP "\(bu" 2
@@ -451,7 +451,7 @@ Option \fI--exec-on-reception\fP allows to execute a certain command line after 
 .PP
 The specified command line is executed as a separate process, so that the execution of \fBstorescp\fP will not be held back\&. This behavior can be influenced with the \fI--exec-sync\fP option\&.
 .PP
-Option \fI--exec-on-eostudy\fP allows to execute a certain command line when all DICOM objects that belong to one study have been received by \fBstorescp\fP\&. The same placeholders as with \fI--exec-on-reception\fP may be used, except for '#f', which is not supported\&. A study is considered complete by \fBstorescp\fP when an object belonging to a different study is received or the timeout specified with \fI--eostudy-timeout\fP takes place\&. If option \fI--rename-on-eostudy\fP is in force, the renaming takes place before the external command is executed\&.
+Option \fI--exec-on-eostudy\fP allows one to execute a certain command line when all DICOM objects that belong to one study have been received by \fBstorescp\fP\&. The same placeholders as with \fI--exec-on-reception\fP may be used, except for '#f', which is not supported\&. A study is considered complete by \fBstorescp\fP when an object belonging to a different study is received or the timeout specified with \fI--eostudy-timeout\fP takes place\&. If option \fI--rename-on-eostudy\fP is in force, the renaming takes place before the external command is executed\&.
 .PP
 Option \fI--rename-on-eostudy\fP refers to the above mentioned \fI--sort-xxx\fP options and can only be used in combination with one of these options\&. If a user specifies option \fI--rename-on-eostudy\fP and \fBstorescp\fP determines that all DICOM objects that belong to a certain study have been received, all DICOM files that belong to the last study will be renamed in the corresponding output directory\&. The filenames into which the files are being renamed will be calculated using the pattern
 .PP
@@ -529,6 +529,8 @@ RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.
 XRay3DAngiographicImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.1
 XRay3DCraniofacialImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.2
 BreastTomosynthesisImageStorage                      1.2.840.10008.5.1.4.1.1.13.1.3
+BreastProjectionXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.13.1.4
+BreastProjectionXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.13.1.5
 IntravascularOpt.Coh.Tom.ImageStorageForPresentation 1.2.840.10008.5.1.4.1.1.14.1
 IntravascularOpt.Coh.Tom.ImageStorageForProcessing   1.2.840.10008.5.1.4.1.1.14.2
 NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
@@ -580,6 +582,7 @@ MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.
 KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
+RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
@@ -622,7 +625,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-The default behaviour of the \fBstorescp\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax\&. If \fBstorescp\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa)\&. This behaviour can be changed with the \fI--prefer\fP options (see above)\&. Using option \fI--accept-all\fP any of the following transfer syntaxes is supported:
+The default behavior of the \fBstorescp\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax\&. If \fBstorescp\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa)\&. This behavior can be changed with the \fI--prefer\fP options (see above)\&. Using option \fI--accept-all\fP any of the following transfer syntaxes is supported:
 .PP
 .PP
 .nf
@@ -663,25 +666,25 @@ where \fI-id\fP (\fI--inetd\fP) activates the inetd mode in which the DICOM asso
 .PP
 Please note that when run through inetd, \fBstorescp\fP is executed with root privileges, which may be a security risk\&.
 .SS "Association Negotiation Profiles and Configuration Files"
-\fBstorescp\fP supports a flexible mechanism for specifying the DICOM network association negotiation behaviour, based on so-called 'association negotiation
+\fBstorescp\fP supports a flexible mechanism for specifying the DICOM network association negotiation behavior, based on so-called 'association negotiation
 profiles' which may be read from a configuration file\&. The format and semantics of this configuration file are documented in \fIasconfig\&.txt\fP\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBstorescp\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
 \fI<docdir>/asconfig\&.txt\fP - configuration file documentation
@@ -692,4 +695,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBstorescu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2013 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

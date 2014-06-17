@@ -1,4 +1,4 @@
-.TH "dsr2xml" 1 "Thu Nov 14 2013" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2xml" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2xml \- Convert DICOM SR file and data set to XML
@@ -54,31 +54,6 @@ xmlfile-out  XML output filename (default: stdout)
          use config file f for the logger
 .fi
 .PP
-.SS "processing options"
-.PP
-.nf
-specific character set:
-
-  +Cr  --charset-require
-         require declaration of extended charset (default)
-
-  +Ca  --charset-assume  [c]harset: string
-         assume charset c if no extended charset declared
-
-  +Cc  --charset-check-all
-         check all data elements with string values
-         (default: only PN, LO, LT, SH, ST and UT)
-
-         # this option is only used for the mapping to an appropriate
-         # XML character encoding, but not for the conversion to UTF-8
-
-  +U8  --convert-to-utf8
-         convert all element values that are affected
-         by Specific Character Set (0008,0005) to UTF-8
-
-         # requires support from the libiconv toolkit
-.fi
-.PP
 .SS "input options"
 .PP
 .nf
@@ -109,6 +84,53 @@ input transfer syntax:
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+error handling:
+
+  -Er  --unknown-relationship
+         accept unknown/missing relationship type
+
+  -Ev  --invalid-item-value
+         accept invalid content item value
+         (e.g. violation of VR or VM definition)
+
+  -Ec  --ignore-constraints
+         ignore relationship content constraints
+
+  -Ee  --ignore-item-errors
+         do not abort on content item errors, just warn
+         (e.g. missing value type specific attributes)
+
+  -Ei  --skip-invalid-items
+         skip invalid content items (including sub-tree)
+
+  -Dv  --disable-vr-checker
+         disable check for VR-conformant string values
+
+specific character set:
+
+  +Cr  --charset-require
+         require declaration of extended charset (default)
+
+  +Ca  --charset-assume  [c]harset: string
+         assume charset c if no extended charset declared
+
+  +Cc  --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
+
+         # this option is only used for the mapping to an appropriate
+         # XML character encoding, but not for the conversion to UTF-8
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
 .fi
 .PP
 .SS "output options"
@@ -170,11 +192,13 @@ MacularGridThicknessAndVolumeReportStorage  1.2.840.10008.5.1.4.1.1.79.1
 BasicTextSRStorage                          1.2.840.10008.5.1.4.1.1.88.11
 EnhancedSRStorage                           1.2.840.10008.5.1.4.1.1.88.22
 ComprehensiveSRStorage                      1.2.840.10008.5.1.4.1.1.88.33
+Comprehensive3DSRStorage                    1.2.840.10008.5.1.4.1.1.88.34
 ProcedureLogStorage                         1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSRStorage                     1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocumentStorage           1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                  1.2.840.10008.5.1.4.1.1.88.67
+RadiopharmaceuticalRadiationDoseSRStorage   1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage           1.2.840.10008.5.1.4.1.1.88.70
 .fi
@@ -203,25 +227,27 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&.
 .PP
 Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity)\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&.
+.SS "Error Handling"
+Please be careful with the processing options \fI--unknown-relationship\fP, \fI--invalid-item-value\fP, \fI--ignore-constraints\fP, \fI--ignore-item-errors\fP and \fI--skip-invalid-items\fP since they disable certain validation checks on the DICOM SR input file and, therefore, might result in non-standard conformant output\&. However, there might be reasons for using one or more of these options, e\&.g\&. in order to read and process an incorrectly encoded SR document\&.
 .SS "Limitations"
 The XML Schema \fIdsr2xml\&.xsd\fP does not support all variations of the \fBdsr2xml\fP output format\&. However, the default output format (plus option \fI--use-xml-namespace\fP) should work\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP)\&.
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
 .PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behaviour conforms to the standard evaluation rules of common Unix shells\&.
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBdsr2xml\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
 \fI<datadir>/dsr2xml\&.xsd\fP - XML Schema file
@@ -230,4 +256,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBxml2dsr\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2012 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
