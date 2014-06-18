@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.18 (riesmeier)
 
+- Updated reference to DICOM standard edition.
+  Affects: dcmdata/include/dcmtk/dcmdata/modhelp.h
+
 - Added missing empty line.
   Affects: dcmimage/docs/dcmscale.man
 

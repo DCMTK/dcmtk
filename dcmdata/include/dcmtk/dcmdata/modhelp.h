@@ -30,13 +30,15 @@ class DcmTagKey;
 class DcmItem;
 
 
-/** This class contains helper functions to permit copying common modules from
- *  DICOM standard part 3 between DICOM datasets. The attribute lists per
- *  module are taken from the draft version of DICOM 2013 (as of 2014-03-10).
+/** This class contains helper functions that permit copying common modules
+ *  from DICOM standard part 3 between DICOM datasets.
+ *  @note The attribute lists per module are taken from the final text version
+ *        of DICOM 2013.
  */
 class DcmModuleHelpers {
 
   protected:
+
     /// Generic copy module helper method.
     template<size_t N>
     static inline void copyModule(const DcmTagKey (&tags)[N],
