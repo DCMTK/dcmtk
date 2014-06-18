@@ -119,6 +119,7 @@ scaling:
           scale y axis to n pixels, auto-compute x axis
 
 other transformations:
+
   +C    --clip-region  [l]eft [t]op [w]idth [h]eight: integer
           clip rectangular image region (l, t, w, h)
 

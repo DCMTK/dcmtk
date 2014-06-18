@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.18 (riesmeier)
+
+- Added missing empty line.
+  Affects: dcmimage/docs/dcmscale.man
+
 **** Changes from 2014.06.17 (schlamelcher)
 
 - Updated manpages.
