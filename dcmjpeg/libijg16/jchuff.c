@@ -49,7 +49,7 @@ jpeg_make_c_derived_tbl (j_compress_ptr cinfo, boolean isDC, int tblno,
       (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                   SIZEOF(c_derived_tbl));
   dtbl = *pdtbl;
-  
+
   /* Figure C.1: make table of Huffman code length for each symbol */
 
   p = 0;
@@ -62,7 +62,7 @@ jpeg_make_c_derived_tbl (j_compress_ptr cinfo, boolean isDC, int tblno,
   }
   huffsize[p] = 0;
   lastp = p;
-  
+
   /* Figure C.2: generate the codes themselves */
   /* We also validate that the counts represent a legal Huffman code tree. */
 
@@ -76,14 +76,13 @@ jpeg_make_c_derived_tbl (j_compress_ptr cinfo, boolean isDC, int tblno,
     }
     /* code is now 1 more than the last code used for codelength si; but
      * it must still fit in si bits, since no code is allowed to be all ones.
-     * BUG FIX 2001-09-03: Comparison must be >, not >=
      */
     if (((IJG_INT32) code) > (((IJG_INT32) 1) << si))
       ERREXIT(cinfo, JERR_BAD_HUFF_TABLE);
     code <<= 1;
     si++;
   }
-  
+
   /* Figure C.3: generate encoding tables */
   /* These are code and size indexed by symbol value */
 
@@ -154,7 +153,7 @@ jpeg_gen_optimal_table (j_compress_ptr cinfo, JHUFF_TBL * htbl, long freq[])
   MEMZERO(codesize, SIZEOF(codesize));
   for (i = 0; i < 257; i++)
     others[i] = -1;     /* init links to empty */
-  
+
   freq[256] = 1;        /* make sure 256 has a nonzero count */
   /* Including the pseudo-symbol 256 in the Huffman procedure guarantees
    * that no real symbol is given code-value of all ones, because 256
@@ -189,7 +188,7 @@ jpeg_gen_optimal_table (j_compress_ptr cinfo, JHUFF_TBL * htbl, long freq[])
     /* Done if we've merged everything into one frequency */
     if (c2 < 0)
       break;
-    
+
     /* Else merge the two counts/trees */
     freq[c1] += freq[c2];
     freq[c2] = 0;
@@ -200,9 +199,9 @@ jpeg_gen_optimal_table (j_compress_ptr cinfo, JHUFF_TBL * htbl, long freq[])
       c1 = others[c1];
       codesize[c1]++;
     }
-    
+
     others[c1] = c2;        /* chain c2 onto c1's tree branch */
-    
+
     /* Increment the codesize of everything in c2's tree branch */
     codesize[c2]++;
     while (others[c2] >= 0) {
@@ -233,13 +232,13 @@ jpeg_gen_optimal_table (j_compress_ptr cinfo, JHUFF_TBL * htbl, long freq[])
    * shortest nonzero BITS entry is converted into a prefix for two code words
    * one bit longer.
    */
-  
+
   for (i = MAX_CLEN; i > 16; i--) {
     while (bits[i] > 0) {
       j = i - 2;        /* find length of new prefix to be used */
       while (bits[j] == 0)
     j--;
-      
+
       bits[i] = (UINT8)(bits[i] - 2);       /* remove two symbols */
       bits[i-1]++;                  /* one goes in this length */
       bits[j+1] = (UINT8)(bits[j+1] + 2);   /* two new symbols in this length */
@@ -251,10 +250,10 @@ jpeg_gen_optimal_table (j_compress_ptr cinfo, JHUFF_TBL * htbl, long freq[])
   while (bits[i] == 0)      /* find largest codelength still in use */
     i--;
   bits[i]--;
-  
+
   /* Return final symbol counts (only for lengths 0..16) */
   MEMCOPY(htbl->bits, bits, SIZEOF(htbl->bits));
-  
+
   /* Return a list of the symbols sorted by code length */
   /* It's not real clear to me why we don't need to consider the codelength
    * changes made above, but the JPEG spec seems to think this works.

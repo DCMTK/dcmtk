@@ -7,6 +7,14 @@ Changes between releases are documented here.
   Affects: CMake/dcmtkPrepare.cmake
            config/docs/cxx11.dox
 
+- Removed misleading comment in dcmjpeg.
+  Affects: dcmjpeg/libijg12/jchuff.c
+           dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg16/jchuff.c
+           dcmjpeg/libijg16/jdhuff.c
+           dcmjpeg/libijg8/jchuff.c
+           dcmjpeg/libijg8/jdhuff.c
+
 **** Changes from 2014.06.18 (riesmeier)
 
 - Updated reference to DICOM standard edition.
