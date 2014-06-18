@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.18 (schlamelcher)
+
+- Clarified an ambiguous configure message.
+  Affects: CMake/dcmtkPrepare.cmake
+           config/docs/cxx11.dox
+
 **** Changes from 2014.06.18 (riesmeier)
 
 - Updated reference to DICOM standard edition.

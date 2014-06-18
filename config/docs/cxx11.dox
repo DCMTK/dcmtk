@@ -70,7 +70,7 @@ cmake ... -DDCMTK_USE_CXX11_STL:BOOL=ON
 Doing so will give you the following message during configure:
 
 @verbatim
-Info: Building DCMTK with C++11 support enabled.
+Info: Configured DCMTK to use native C++11 features.
 @endverbatim
 
 You may need to override the flags to enable C++11, for example to enable C++14

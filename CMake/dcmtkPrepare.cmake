@@ -392,7 +392,7 @@ ENDMACRO(GET_CLANG_VERSION VERSION)
 
 MACRO(ALLOW_CXX11_SUPPORT FLAGS)
   IF(DCMTK_USE_CXX11_STL)
-    MESSAGE(STATUS "Info: Building DCMTK with C++11 support enabled.")
+    MESSAGE(STATUS "Info: Configured DCMTK to use native C++11 features.")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DCMTK_CXX11_FLAGS}")
   ELSE()
     MESSAGE(STATUS "Info: Your compiler supports C++11. You may enable C++11 features via \"DCMTK_USE_CXX11_STL\" to create a C++11 build of DCMTK.")
