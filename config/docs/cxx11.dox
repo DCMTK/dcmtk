@@ -2,85 +2,113 @@
 
 \page cxx11_support C++11 support in DCMTK
 
-You may compile DCMTK with enabled C++11 support. This may increase performance since some
-operations can be performed in a more efficient manner, e.g. utilizing
+You may compile DCMTK with C++11 support enabled. This may increase performance
+since some operations can be performed in a more efficient manner, e.g.
+utilizing
 <a href="http://en.cppreference.com/w/cpp/language/move_constructor">move semantics</a>.
-To create a C++11 build of DCMTK, you simply need to set the appropriate compiler-flags while
-building it (e.g. -std=c++11). This will however not enable DCMTK to use available C++11
-features that aren't implicitly used by legacy code. This is especially important regarding
-some C++11 classes DCMTK directly supports, for example:
+To create a C++11 build of DCMTK, you simply need to set the appropriate
+compiler-flags while building it (e.g. -std=c++11).  This will however not
+enable DCMTK to use available C++11 features that aren't implicitly used by
+legacy code.  This is especially important regarding some C++11 classes DCMTK
+directly supports, for example:
+
 \li OFunique_ptr (std::unique_ptr)
 \li OFshared_ptr (std::shared_ptr)
 
-Since not every compiler supports C++11, legacy implementations for the respective
-functionality have been created, which are enabled <i>by default</i>.<br>
-If you use C++11 in your project, you may want to use the native C++11 classes instead, so
-you don't need to convert your objects to use them with DCMTK. To do so, you need to configure
-DCMTK to use the C++11 STL, which is described below.
+Since not every compiler supports C++11, legacy implementations for the
+respective functionality have been created, which are enabled <i>by default</i>.
+
+If you use C++11 in your project, you may want to use the native C++11 classes
+instead, so you don't need to convert your objects to use them with DCMTK.  To
+do so, you need to configure DCMTK to use the C++11 STL, which is described
+below.
 
 <h1>Enabling DCMTK to use the C++11 STL</h1>
-By enabling DCMTK to use the C++11 STL, you gain the following advantages:
-\li DCMTK will use available C++11 features instead of it's only legacy implementations. These
-    are probably more efficient and complete.
-\li The enabling of C++11 becomes part of DCMTK's configuration, which allows DCMTK to assist
-    you when checking for API/ABI (in-)compatibility between C++11 and non C++11 builds.
 
-Trying to include a DCMTK build with enabled C++11 STL from a non C++11 environment
-will give you the following error message:
+By enabling DCMTK to use the C++11 STL, you gain the following advantages:
+
+\li DCMTK will use available C++11 features instead of its only legacy
+    implementations.  These are probably more efficient and complete.
+\li The enabling of C++11 becomes part of DCMTK's configuration, which allows
+    DCMTK to assist you when checking for API/ABI (in-)compatibility between
+    C++11 and non C++11 builds.
+
+Trying to include a DCMTK build with C++11 STL enabled from a non C++11
+environment will give you the following error message:
+
 @verbatim
 DCMTK was configured to use the C++11 STL, but your compiler is not configured for building with C++11 features.
 @endverbatim
 
-To reduce DCMTK's implementation complexity, the C++11 STL shall only be used if your compiler
-<i>conforms closely</i> to the C++11 Standard. As far as we know, this is currently true for the
-following compilers:
+To reduce DCMTK's implementation complexity, the C++11 STL shall only be used if
+your compiler <i>conforms closely</i> to the C++11 Standard.  As far as we know,
+this is currently true for the following compilers:
+
 \li GNU C++ Compiler (g++) Version 4.8.1 or later.
 \li Clang (clang++) Version 3.3 or later.
 
-To enable the C++11 STL, different steps are necessary on CMake and GNU Autoconf, see the appropriate section below:
+To enable the C++11 STL, different steps are necessary on CMake and GNU
+Autoconf, see the appropriate section below:
 
 <h2>CMake</h2>
-CMake detects the C++11 compilers mentioned above and knows how to enable C++11 features on these compilers.
-If your compiler was detected successfully, CMake will give you the following message during configure:
+
+CMake detects the C++11 compilers mentioned above and knows how to enable C++11
+features on these compilers.  If your compiler was detected successfully, CMake
+will give you the following message during configure:
+
 @verbatim
 Info: Your compiler supports C++11. You may enable C++11 features via "DCMTK_USE_CXX11_STL" to create a C++11 build of DCMTK.
 @endverbatim
 
-As mentioned in this message, you may enable the C++11 STL by setting <kbd>DCMTK_USE_CXX11_STL</kbd>, for example via:
+As mentioned in this message, you may enable the C++11 STL by setting
+<kbd>DCMTK_USE_CXX11_STL</kbd>, for example via:
+
 @verbatim
 cmake ... -DDCMTK_USE_CXX11_STL:BOOL=ON
 @endverbatim
+
 Doing so will give you the following message during configure:
+
 @verbatim
-Info: Building DCMTK with enabled C++11 support.
+Info: Building DCMTK with C++11 support enabled.
 @endverbatim
 
-You may need to override the flags to enable C++11, for example to enable C++14 instead. Doing so can be done via <kbd>DCMTK_CXX11_FLAGS</kbd>,
-for example:
+You may need to override the flags to enable C++11, for example to enable C++14
+instead.  Doing so can be done via <kbd>DCMTK_CXX11_FLAGS</kbd>, for example:
+
 @verbatim
 cmake ... -DDCMTK_USE_CXX11_STL:BOOL=ON -DDCMTK_CXX11_FLAGS=-std=c++14
 @endverbatim
 
 <h3>Unsupported Compilers</h3>
-If CMake does not know how to enable C++11 on your compiler or your compiler does not support C++11 completely, you will see the following
-warning message when you try to enable <kbd>DCMTK_USE_CXX11_STL</kbd> anyway:
+
+If CMake does not know how to enable C++11 on your compiler or your compiler
+does not support C++11 completely, you will see the following warning message
+when you try to enable <kbd>DCMTK_USE_CXX11_STL</kbd> anyway:
+
 @verbatim
-DCMTK has been configured to use the C++11 STL, but compiler does not seem to support C++11.
+DCMTK has been configured to use the C++11 STL, but the compiler does not seem to support C++11.
 Override this warning by setting DCMTK_CXX11_FLAGS to tell DCMTK how to enable C++11 support for your compiler.
 @endverbatim
 
-As the message states, you need to take care about configuring your compiler for C++11 manually, for example by setting <kbd>CMAKE_CXX_FLAGS</kbd>
-appropriately. Setting <kbd>DCMTK_CXX11_FLAGS</kbd> instead will have the same result
-(CMake will set <kbd>CMAKE_CXX_FLAGS</kbd> based on <kbd>DCMTK_CXX_FLAGS</kbd>), but the warning goes away and instead you will see the following
-output:
+As the message states, you need to take care about configuring your compiler for
+C++11 manually, for example by setting <kbd>CMAKE_CXX_FLAGS</kbd> appropriately.
+Setting <kbd>DCMTK_CXX11_FLAGS</kbd> instead will have the same result (CMake
+will set <kbd>CMAKE_CXX_FLAGS</kbd> based on <kbd>DCMTK_CXX_FLAGS</kbd>), but
+the warning goes away and instead you will see the following output:
+
 @verbatim
 Info: Enabling C++11 support with custom flags "< YOUR FLAGS >" for a potentially unsupported compiler.
 @endverbatim
 
 <h2>GNU Autoconf</h2>
-Our GNU Autoconf setup understands the argument <kbd>\--with-cxx11-stl</kbd>, that may be used to configure DCMTK to use the
-C++11 STL. But this only enables API/ABI checks and maps DCMTK's functionalities to the respective STL ones. You still need to configure
-your compiler for C++11 manually, for example by setting the CXXFLAGS like this when using GCC 4.9:
+
+Our GNU Autoconf setup understands the argument <kbd>\--with-cxx11-stl</kbd>,
+that may be used to configure DCMTK to use the C++11 STL.  But this only enables
+API/ABI checks and maps DCMTK's functionalities to the respective STL ones.  You
+still need to configure your compiler for C++11 manually, for example by setting
+the CXXFLAGS like this when using GCC 4.9:
+
 @verbatim
 ./configure --with-cxx11-stl CXXFLAGS=-std=c++11
 @endverbatim

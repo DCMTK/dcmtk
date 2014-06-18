@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,7 +33,7 @@
 /** Accept or reject DcmItem objects by comparing a specific attribute to a set of values.
  *  DcmAttributeFilter objects can be used to compare a specific attribute with one or more
  *  values - or to accept any DcmItem if no attribute is specified. DcmAttributeFilter
- *  objects can be used like any funtion taking a DcmItem& or a DcmFileFormat& object as
+ *  objects can be used like any function taking a DcmItem& or a DcmFileFormat& object as
  *  parameter and returning a boolean value.
  */
 class DCMTK_DCMDATA_EXPORT DcmAttributeFilter
@@ -145,7 +145,7 @@ public:
      *  specific value.
      *  @param tag a DcmTagKey object determining which attribute of a DcmItem should be
      *    compared with the value.
-     *  @param value an OFString that is to be compaired with the actual value stored in
+     *  @param value an OFString that is to be compared with the actual value stored in
      *    the DcmItem the filter is invoked on.
      *
      */
@@ -191,10 +191,10 @@ private:
     /// Helper class for storing single values in a DcmAttributeFilter.
     class SingleValueFilter;
 
-    /// disable copy constructor.
+    // disable copy constructor.
     DcmAttributeFilter( const DcmAttributeFilter& );
 
-    /// disable copy assignment.
+    // disable copy assignment.
     DcmAttributeFilter& operator=( const DcmAttributeFilter& );
 
     /** a DcmTagKey object determining which attribute of a DcmItem should be compared

@@ -2,7 +2,7 @@
 DCMTK COMPILE TIME FLAGS AND MACROS
 ===================================
 
-The behaviour of several DCMTK tools and libraries can be modified by
+The behavior of several DCMTK tools and libraries can be modified by
 a number of compile time flags (macros), which are explained below.
 Most of these macros enable experimental or rarely needed features
 in DCMTK, others disable certain functions.  So please, use with care!
@@ -24,7 +24,7 @@ BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
     retained in the corresponding C-STORE-RSP message.  When this
     preprocessor macro is defined, it should contain the prefix of an
     implementation class UID of an implementation known to exhibit the
-    buggy behaviour.  The workaround is then activated in storescp
+    buggy behavior.  The workaround is then activated in storescp
     whenever a Storage SCU with the given implementation class UID root
     connects.
 
@@ -56,12 +56,11 @@ DCMTK_GUI
     comments in ofstd/include/dcmtk/ofstd/ofconsol.h.
 
 DCMTK_USE_CXX11_STL
-  Affected: all modules
-  Type of modification: Enables DCMTK to use the C++11 STL.
-  Explanation: DCMTK_USE_CXX11_STL is defined when the appropriate options
-    are passed to the configuration system. DCMTK will then use the native
-    C++11 STL classes and functions instead of it's own (legacy)
-    implementations.
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: DCMTK_USE_CXX11_STL is defined when the appropriate options are
+    passed to the configuration system.  DCMTK will then use the native C++11
+    STL classes and functions instead of it's own (legacy) implementations.
 
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
@@ -147,17 +146,17 @@ DONT_LOAD_EXTERNAL_DICTIONARIES
     default files are used.  This flag disables the loading of external
     dictionaries from file at application start, which might be useful
     when only the builtin dictionary should be used.  However, if no
-    dictionary gets loaded, this is likely to cause unexpected behaviour.
+    dictionary gets loaded, this is likely to cause unexpected behavior.
     Even if this flag is defined, the reloadDictionaries() method can be
     used to load the external dictionaries after application start.
 
 DOXYGEN
   Affected: everything
-  Type of modification: Hides complexity from doxygen
+  Type of modification: Hides complexity from Doxygen
   Explanation: Doxygen is unable to parse some complex statements correctly
     and it is sometimes sufficient to provide documentation for the basic
     functionality instead of documenting every detail.
-    This macro is defined when creating the documentation with doxygen and
+    This macro is defined when creating the documentation with Doxygen and
     should NEVER be defined when compiling DCMTK with a C/C++ compiler.
     NOTE: Doxygen is still unable to expand some macros correctly
     (e.g. HAVE_WINDOWS_H). Using this macro at the appropriate locations
@@ -259,7 +258,7 @@ NO_PATIENTSTUDYONLY_SUPPORT
 NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
   Affected: dcmnet
   Type of modification: Disables feature
-  Explanation: Under Windows 95 gethostbyname will not accept an IP
+  Explanation: Under Windows 95 gethostbyname() will not accept an IP
     address e.g. "134.106.1.1".  This appears to work without problems
     with other Windows versions and several Unix variants.  As a
     workaround, DCMTK explicitly handles the IP address case.  The
@@ -285,11 +284,11 @@ OLD_USER_INFO_SUB_ITEM_ORDER
   Type of modification: Activates experimental or rarely used feature
   Explanation: Prior DCMTK releases did not encode A-ASSOCIATE user
     information sub-items in ascending order, i.e. they sent 55H
-    followed by 54H and 56H.  This behaviour has been "legalized" by
+    followed by 54H and 56H.  This behavior has been "legalized" by
     DICOM CP 280 but is known to create problems with some other
     toolkits.  The current DCMTK release always sends the user
     information sub-items in ascending order, but can be "forced" with
-    this macro to revert to the old behaviour.  It should be re-activated
+    this macro to revert to the old behavior.  It should be re-activated
     for testing purposes only.
 
 PASTEL_COLOR_OUTPUT
@@ -325,14 +324,14 @@ REJECT_FILE_IF_META_GROUP_LENGTH_ABSENT
   Explanation: When reading the a file that contains an incorrect meta
     header where meta header group length (0002,0000) is absent, DCMTK
     since release 3.5.4 nevertheless tries to parse the file, unless this
-    macro is enabled, in which case the behaviour up to DCMTK 3.5.3 is
+    macro is enabled, in which case the behavior up to DCMTK 3.5.3 is
     retained.
 
 RETAIN_ASSOCIATION
   Affected: dcmqrti
   Type of modification: Activates experimental or rarely used feature
   Explanation: Keeps association to remote Query SCP open after
-    study/series/image listing.  Default behaviour is to open new
+    study/series/image listing.  Default behavior is to open new
     association for each query.
 
 REVERSE_OVERLAY_ORIGIN_ORDER
@@ -363,7 +362,7 @@ STRICT_COMPARE
   Affected: dcmqrdb
   Type of modification: Activates experimental or rarely used feature
   Explanation: By default, dcmqrdb ignores illegal leading and trailing
-    space characters when comparing UIDs.  This behaviour can be modified
+    space characters when comparing UIDs.  This behavior can be modified
     by defining this macro.
 
 SUPPRESS_CREATE_STAMP
@@ -401,7 +400,7 @@ USE_NULL_SAFE_OFSTRING
 
 USING_STD_NAMESPACE
   Affected: all modules
-  Type of modification: Re-activated behaviour of earlier DCMTK releases
+  Type of modification: Re-activated behavior of earlier DCMTK releases
   Explanation: DCMTK by default does not anymore pollute the default namespace
     by importing namespace std.  Earlier releases did this to simplify
     compatibility with older compilers where STL classes were not consistently
@@ -431,12 +430,12 @@ WIDE_CHAR_MAIN_FUNCTION
 
 WRITE_VERY_LARGE_CHUNKS
   Affected: dcmdata
-  Type of modification: Re-activated behaviour of earlier DCMTK releases
+  Type of modification: Re-activated behavior of earlier DCMTK releases
   Explanation: On Windows (at least for some versions of MSVC), calls to
     fwrite() for more than 67,076,095 bytes (a bit less than 64 MByte) fail if
     we're writing to a network share.  See MSDN KB899149.  As a workaround, we
     always write in chunks of 32M which should hardly negatively affect
-    performance.  This macro enables the behaviour of earlier DCMTK releases,
+    performance.  This macro enables the behavior of earlier DCMTK releases,
     i.e. to always call fwrite with as much data as possible, which is known
     not to work correctly on Win32 but might offer very minor performance
     benefits on other platforms.

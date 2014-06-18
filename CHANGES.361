@@ -6,6 +6,14 @@ Changes between releases are documented here.
 - Added missing empty line.
   Affects: dcmimage/docs/dcmscale.man
 
+- Fixed typos and other minor issues.
+  Affects: INSTALL
+           CMake/dcmtkPrepare.cmake
+           CMake/osconfig.h.in
+           config/docs/cxx11.dox
+           config/docs/macros.txt
+           dcmdata/include/dcmtk/dcmdata/dcfilter.h
+
 **** Changes from 2014.06.17 (schlamelcher)
 
 - Updated manpages.
