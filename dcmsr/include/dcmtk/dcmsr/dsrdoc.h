@@ -484,6 +484,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition getSeriesDescription(OFString &value,
                                              const signed long pos = 0) const;
 
+    /** get protocol name
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getProtocolName(OFString &value,
+                                        const signed long pos = 0) const;
+
     /** get manufacturer
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -690,6 +698,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual OFCondition setSeriesDescription(const OFString &value,
                                              const OFBool check = OFTrue);
+
+    /** set protocol name
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setProtocolName(const OFString &value,
+                                        const OFBool check = OFTrue);
 
     /** set manufacturer
      ** @param  value  value to be set (single value only) or "" for no value
@@ -1202,7 +1218,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     // tbd: conditional module for X-Ray Radiation Dose SR not yet supported
 
-    // --- SR Document Series Module (M) ---
+    // --- SR Document Series / Key Object Document Series Module (M) ---
 
     /// Modality: (CS, 1, 1)
     DcmCodeString       Modality;
@@ -1214,6 +1230,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmDate             SeriesDate;
     /// Series Time: (TM, 1, 3)
     DcmTime             SeriesTime;
+    /// Protocol Name: (LO, 1, 3)
+    DcmLongString       ProtocolName;
     /// Series Description: (LO, 1, 3)
     DcmLongString       SeriesDescription;
     /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)

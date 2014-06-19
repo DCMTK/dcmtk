@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2013, OFFIS e.V.
+      Copyright (C) 2003-2014, OFFIS e.V.
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -105,6 +105,7 @@
       <xsd:element name="number" type="dsr:IntegerString" minOccurs="0"/>
       <xsd:element name="date" type="dsr:Date" minOccurs="0"/>
       <xsd:element name="time" type="dsr:Time" minOccurs="0"/>
+      <xsd:element name="protocol" type="dsr:LongString" minOccurs="0"/>
       <xsd:element name="description" type="dsr:LongString" minOccurs="0"/>
     </xsd:sequence>
     <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>

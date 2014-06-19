@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.19 (riesmeier)
 
+- Added support for CP-1125 to SR implementation:
+  Added support for CP-1125, which adds the attribute Protocol Name (0018,1030)
+  to both SR Document Series Module and Key Object Document Series Module.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
 - Updated DCMTK's copyright date.
   Affects: COPYRIGHT
 

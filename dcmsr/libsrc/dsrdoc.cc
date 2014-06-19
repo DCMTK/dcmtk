@@ -85,6 +85,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     SeriesNumber(DCM_SeriesNumber),
     SeriesDate(DCM_SeriesDate),
     SeriesTime(DCM_SeriesTime),
+    ProtocolName(DCM_ProtocolName),
     SeriesDescription(DCM_SeriesDescription),
     ReferencedPerformedProcedureStep(DCM_ReferencedPerformedProcedureStepSequence),
     InstanceNumber(DCM_InstanceNumber),
@@ -150,6 +151,7 @@ void DSRDocument::clear()
     SeriesNumber.clear();
     SeriesDate.clear();
     SeriesTime.clear();
+    ProtocolName.clear();
     SeriesDescription.clear();
     ReferencedPerformedProcedureStep.clear();
     InstanceNumber.clear();
@@ -250,6 +252,13 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 stream << getPrintStringFromElement(SeriesDescription, tmpString);
                 if (!SeriesNumber.isEmpty())
                     stream << " (#" << getPrintStringFromElement(SeriesNumber, tmpString) << ")";
+                DCMSR_PRINT_HEADER_FIELD_END
+            }
+            /* protocol name */
+            if (!ProtocolName.isEmpty())
+            {
+                DCMSR_PRINT_HEADER_FIELD_START("Protocol           ", " : ")
+                stream << getPrintStringFromElement(ProtocolName, tmpString);
                 DCMSR_PRINT_HEADER_FIELD_END
             }
             /* manufacturer and device */
@@ -469,6 +478,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "KeyObjectDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesDate, "1", "3", "KeyObjectDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesTime, "1", "3", "KeyObjectDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, ProtocolName, "1", "3", "KeyObjectDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "KeyObjectDocumentSeriesModule");
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
@@ -478,6 +488,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "SRDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesDate, "1", "3", "SRDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesTime, "1", "3", "SRDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, ProtocolName, "1", "3", "SRDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "SRDocumentSeriesModule");
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
@@ -639,6 +650,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "1", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmDate(SeriesDate), "1", "3", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmTime(SeriesTime), "1", "3", "KeyObjectDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(ProtocolName), "1", "3", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "KeyObjectDocumentSeriesModule");
             /* always write empty sequence since not yet fully supported */
             ReferencedPerformedProcedureStep.clear();
@@ -649,6 +661,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "1", "SRDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmDate(SeriesDate), "1", "3", "SRDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmTime(SeriesTime), "1", "3", "SRDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(ProtocolName), "1", "3", "SRDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "SRDocumentSeriesModule");
             /* always write empty sequence since not yet fully supported */
             ReferencedPerformedProcedureStep.clear();
@@ -952,6 +965,7 @@ OFCondition DSRDocument::readXMLSeriesData(const DSRXMLDocument &doc,
                 SeriesTime.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, SeriesNumber, "number").bad() &&
+                doc.getElementFromNodeContent(cursor, ProtocolName, "protocol", OFTrue /*encoding*/).bad() &&
                 doc.getElementFromNodeContent(cursor, SeriesDescription, "description", OFTrue /*encoding*/).bad())
             {
                 doc.printUnexpectedNodeWarning(cursor);
@@ -1122,7 +1136,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                         }
                         else if (doc.matchNode(childCursor, "datetime"))
                         {
-                            /* Verification Datetime */
+                            /* Verification DateTime */
                             DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, childCursor, dateTimeString);
                         } else {
                             /* Verifying Observer Organization */
@@ -1251,6 +1265,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
         SeriesTime.getISOFormattedTime(tmpString);
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, ProtocolName, "protocol", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, SeriesDescription, "description", (flags & XF_writeEmptyTags) > 0);
         stream << "</series>" << OFendl;
 
@@ -1658,6 +1673,14 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 if (!SeriesNumber.isEmpty())
                     stream << " (#" << convertToHTMLString(getStringValueFromElement(SeriesNumber, tmpString), htmlString, newFlags) << ")";
                 stream << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
+            }
+            /* protocol name */
+            if (!ProtocolName.isEmpty())
+            {
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Protocol:</b></td>" << OFendl;
+                stream << "<td>" << convertToHTMLString(getStringValueFromElement(ProtocolName, tmpString), htmlString, newFlags) << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
             /* manufacturer */
@@ -2087,6 +2110,13 @@ OFCondition DSRDocument::getSeriesDescription(OFString &value,
 }
 
 
+OFCondition DSRDocument::getProtocolName(OFString &value,
+                                         const signed long pos) const
+{
+    return getStringValueFromElement(ProtocolName, value, pos);
+}
+
+
 OFCondition DSRDocument::getManufacturer(OFString &value,
                                          const signed long pos) const
 {
@@ -2294,6 +2324,16 @@ OFCondition DSRDocument::setSeriesDescription(const OFString &value,
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = SeriesDescription.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setProtocolName(const OFString &value,
+                                         const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ProtocolName.putOFStringArray(value);
     return result;
 }
 
