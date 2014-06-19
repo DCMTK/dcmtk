@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.19 (riesmeier)
+
+- Updated DCMTK's copyright date.
+  Affects: COPYRIGHT
+
 **** Changes from 2014.06.18 (schlamelcher)
 
 - Clarified an ambiguous configure message.
