@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.23 (riesmeier)
+
+- Fixed incomplete #include comment.
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2014.06.19 (riesmeier)
 
 - Added support for CP-1125 to SR implementation:
