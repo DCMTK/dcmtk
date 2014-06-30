@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.06.30 (riesmeier)
+
+- Added support for recently approved CPs:
+  Added support for CP-1203, CP-1331, CP-1343 and CP-1347 to the data
+  dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.06.23 (riesmeier)
 
 - Fixed incomplete #include comment.

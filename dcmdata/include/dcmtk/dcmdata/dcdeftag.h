@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-06-10 09:46:49
+**   Date: 2014-06-30 09:46:11
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-06-10 09:46:49"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-06-30 09:46:11"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3801
+** Number of entries: 3807
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -307,6 +307,7 @@
 #define DCM_MilitaryRank                         DcmTagKey(0x0010, 0x1080)
 #define DCM_BranchOfService                      DcmTagKey(0x0010, 0x1081)
 #define DCM_MedicalRecordLocator                 DcmTagKey(0x0010, 0x1090)
+#define DCM_ReferencedPatientPhotoSequence       DcmTagKey(0x0010, 0x1100)
 #define DCM_MedicalAlerts                        DcmTagKey(0x0010, 0x2000)
 #define DCM_Allergies                            DcmTagKey(0x0010, 0x2110)
 #define DCM_CountryOfResidence                   DcmTagKey(0x0010, 0x2150)
@@ -2448,6 +2449,7 @@
 #define DCM_PatientOrientationModifierCodeSequence DcmTagKey(0x0054, 0x0412)
 #define DCM_PatientGantryRelationshipCodeSequence DcmTagKey(0x0054, 0x0414)
 #define DCM_SliceProgressionDirection            DcmTagKey(0x0054, 0x0500)
+#define DCM_ScanProgressionDirection             DcmTagKey(0x0054, 0x0501)
 #define DCM_SeriesType                           DcmTagKey(0x0054, 0x1000)
 #define DCM_Units                                DcmTagKey(0x0054, 0x1001)
 #define DCM_CountsSource                         DcmTagKey(0x0054, 0x1002)
@@ -3292,6 +3294,9 @@
 #define DCM_SafePositionExitTime                 DcmTagKey(0x3008, 0x0164)
 #define DCM_SafePositionReturnDate               DcmTagKey(0x3008, 0x0166)
 #define DCM_SafePositionReturnTime               DcmTagKey(0x3008, 0x0168)
+#define DCM_PulseSpecificBrachyControlPointDeliveredSequence DcmTagKey(0x3008, 0x0171)
+#define DCM_PulseNumber                          DcmTagKey(0x3008, 0x0172)
+#define DCM_BrachyPulseControlPointDeliveredSequence DcmTagKey(0x3008, 0x0173)
 #define DCM_CurrentTreatmentStatus               DcmTagKey(0x3008, 0x0200)
 #define DCM_TreatmentStatusComment               DcmTagKey(0x3008, 0x0202)
 #define DCM_FractionGroupSummarySequence         DcmTagKey(0x3008, 0x0220)
@@ -3383,6 +3388,7 @@
 #define DCM_BeamName                             DcmTagKey(0x300a, 0x00c2)
 #define DCM_BeamDescription                      DcmTagKey(0x300a, 0x00c3)
 #define DCM_BeamType                             DcmTagKey(0x300a, 0x00c4)
+#define DCM_BeamDeliveryDurationLimit            DcmTagKey(0x300a, 0x00c5)
 #define DCM_RadiationType                        DcmTagKey(0x300a, 0x00c6)
 #define DCM_HighDoseTechniqueType                DcmTagKey(0x300a, 0x00c7)
 #define DCM_ReferenceImageNumber                 DcmTagKey(0x300a, 0x00c8)

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-06-10 09:46:53
+**   Date: 2014-06-30 09:46:12
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-06-10 09:46:53";
+const char* dcmBuiltinDictBuildDate = "2014-06-30 09:46:12";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1997,6 +1997,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0010, 0x1090, 0x0010, 0x1090,
       EVR_LO, "MedicalRecordLocator", 1, 1, "DICOM_2013",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x1100, 0x0010, 0x1100,
+      EVR_SQ, "ReferencedPatientPhotoSequence", 1, 1, "CP_1343",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x2000, 0x0010, 0x2000,
@@ -20109,6 +20113,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "SliceProgressionDirection", 1, 1, "DICOM_2013",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0054, 0x0501, 0x0054, 0x0501,
+      EVR_CS, "ScanProgressionDirection", 1, 1, "CP_1347",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0054, 0x1000, 0x0054, 0x1000,
       EVR_CS, "SeriesType", 2, 2, "DICOM_2013",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -24161,6 +24169,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_TM, "SafePositionReturnTime", 1, 1, "DICOM_2013",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x3008, 0x0171, 0x3008, 0x0171,
+      EVR_SQ, "PulseSpecificBrachyControlPointDeliveredSequence", 1, 1, "CP_1203",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3008, 0x0172, 0x3008, 0x0172,
+      EVR_US, "PulseNumber", 1, 1, "CP_1203",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3008, 0x0173, 0x3008, 0x0173,
+      EVR_SQ, "BrachyPulseControlPointDeliveredSequence", 1, 1, "CP_1203",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x3008, 0x0200, 0x3008, 0x0200,
       EVR_CS, "CurrentTreatmentStatus", 1, 1, "DICOM_2013",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -24523,6 +24543,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x00c4, 0x300a, 0x00c4,
       EVR_CS, "BeamType", 1, 1, "DICOM_2013",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x00c5, 0x300a, 0x00c5,
+      EVR_FD, "BeamDeliveryDurationLimit", 1, 1, "CP_1331",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x00c6, 0x300a, 0x00c6,

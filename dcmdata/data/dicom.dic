@@ -27,7 +27,7 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 124, 159, 165.
-# - CP 1282, 1285, 1287, 1294, 1297, 1325, 1326.
+# - CP 1203, 1282, 1285, 1287, 1294, 1297, 1325, 1326, 1331, 1343, 1347.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3469,7 +3469,12 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1282, 1285, 1287, 1294, 1297, 1325, 1326
+# Correction Items 1203, 1282, 1285, 1287, 1294, 1297, 1325, 1326, 1331,
+#                  1343, 1347
+#
+(3008,0171)	SQ	PulseSpecificBrachyControlPointDeliveredSequence	1	CP_1203
+(3008,0172)	US	PulseNumber	1	CP_1203
+(3008,0173)	SQ	BrachyPulseControlPointDeliveredSequence	1	CP_1203
 #
 (0018,9518)	SS	PrimaryPositionerIncrementSign	1	CP_1282
 (0018,9519)	SS	SecondaryPositionerIncrementSign	1	CP_1282
@@ -3487,6 +3492,12 @@
 (0018,0013)	FL	ContrastBolusT1Relaxivity	1	CP_1325
 #
 (0020,930B)	CS	VolumeToTransducerRelationship	1	CP_1326
+#
+(300A,00C5)	FD	BeamDeliveryDurationLimit	1	CP_1331
+#
+(0010,1100)	SQ	ReferencedPatientPhotoSequence	1	CP_1343
+#
+(0054,0501)	CS	ScanProgressionDirection	1	CP_1347
 #
 #---------------------------------------------------------------------------
 #
