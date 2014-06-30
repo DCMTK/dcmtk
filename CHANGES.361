@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.30 (riesmeier)
 
+- Added support for new Colon CAD SR constraints:
+  Added new "TCOORD selected from" line to the Colon CAD SR constraint checker
+  from Table A.35.10-2 (Relationship Content Constraints for Colon CAD SR IOD)
+  introduced with the recently approved CP-1335.
+  Affects: dcmsr/libsrc/dsrcolcc.cc
+
 - Updated comment based on CP-1335:
   Updated comment on not yet supported Frame of Reference IE / Synchronization
   Module that is conditional/optional for some SR IODs (based on CP-1335).

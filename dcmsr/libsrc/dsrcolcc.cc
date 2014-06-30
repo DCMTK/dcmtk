@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -116,6 +116,12 @@ OFBool DSRColonCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
     else if ((relationshipType == RT_selectedFrom) && !byReference && (sourceValueType == VT_SCoord))
     {
         result = (targetValueType == VT_Image);
+    }
+    /* row 8 of the table (introduced with CP-1335) */
+    else if ((relationshipType == RT_selectedFrom) && !byReference && (sourceValueType == VT_TCoord))
+    {
+        result = (targetValueType == VT_SCoord) || (targetValueType == VT_SCoord3D) || (targetValueType == VT_Image) ||
+                 (targetValueType == VT_Waveform);
     }
     return result;
 }
