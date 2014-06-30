@@ -1214,9 +1214,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     // Software Version(s): (LO, 1-n, 1)
     // - see 'General Equipment Module'
 
-    // --- Frame of Reference (C) ---
+    // --- Synchronization Module (C/U - for some IODs) ---
 
-    // tbd: conditional module for X-Ray Radiation Dose SR not yet supported
+    // tbd: conditional/optional module not yet supported
 
     // --- SR Document Series / Key Object Document Series Module (M) ---
 

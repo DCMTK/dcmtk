@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.06.30 (riesmeier)
 
+- Updated comment based on CP-1335:
+  Updated comment on not yet supported Frame of Reference IE / Synchronization
+  Module that is conditional/optional for some SR IODs (based on CP-1335).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 - Added support for recently approved CPs:
   Added support for CP-1203, CP-1331, CP-1343 and CP-1347 to the data
   dictionary.
