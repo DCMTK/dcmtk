@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,7 +29,7 @@
 #include "dcmtk/ofstd/ofmem.h"      /* For OFshared_ptr */
 
 /** Class that encapsulates an SCP configuration that is needed in order to
- *  configure the service negotiation behaviour (presentation contexts, AE
+ *  configure the service negotiation behavior (presentation contexts, AE
  *  title, listening port, etc) as well as some runtime configuration like
  *  the DIMSE timeout. The configuration, however, is not updated to reflect
  *  any runtime connection information, e.g. information about the current
@@ -65,7 +65,7 @@ public:
   OFCondition evaluateIncomingAssociation(T_ASC_Association &assoc) const;
 
   /* ************************************************************* */
-  /*             Set methods for configuring SCP behaviour         */
+  /*             Set methods for configuring SCP behavior          */
   /* ************************************************************* */
 
   /** Add abstract syntax to presentation contexts the SCP is able to negotiate with SCUs.
@@ -91,7 +91,7 @@ public:
 
   /** Set AE title of the server
    *  @param aetitle [in] The AE title of the server. By default, all SCU association requests
-   *                      calling another AE title will be rejected. This behaviour can be
+   *                      calling another AE title will be rejected. This behavior can be
    *                      changed by using the setRespondWithCalledAETitle() method.
    */
   void setAETitle(const OFString &aetitle);
@@ -112,8 +112,8 @@ public:
   OFCondition loadAssociationCfgFile(const OFString &assocFile);
 
   /** If an association profile should be selected, either by loading an association
-   *  configuration file or using the addAbstractSyntax() function, one of those can be
-   *  selected and checked for validity using this method.
+   *  configuration file or using the addPresentationContext() function, one of those can
+   *  be selected and checked for validity using this method.
    *  @param profileName [in] The name of the association profile which must be configured
    *                          before being selected here
    *  @return EC_Normal if selecting/checking was successful, an error code otherwise
@@ -179,7 +179,7 @@ public:
   void setVerbosePCMode(const OFBool mode);
 
   /** Enables or disables looking up the host name from a connecting system.
-   *  Note that this sets a GLOBAL flag in DCMTK, i.e. the behaviour changes
+   *  Note that this sets a GLOBAL flag in DCMTK, i.e. the behavior changes
    *  for all servers. This should be changed in the future.
    *  @param mode [in] OFTrue, if hostname lookup should be enabled,
    *              OFFalse for disabling it.
@@ -283,7 +283,7 @@ protected:
 
   /// AE title to be used for responding to SCU (default: DCMTK_SCP). This value is not
   /// evaluated if the the SCP is configured to respond to any association requests with the
-  /// name the SCU used as called AE title (which is the SCP's default behaviour); see
+  /// name the SCU used as called AE title (which is the SCP's default behavior); see
   /// setRespondWithCalledAETitle().
   OFString m_aetitle;
 

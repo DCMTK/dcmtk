@@ -61,7 +61,7 @@ struct DCMTK_DCMNET_EXPORT DcmProcessSlotType
   OFBool hasStorageAbility;
 };
 
-/** Action codes that can be given to DcmSCP to control behaviour during SCP's operation.
+/** Action codes that can be given to DcmSCP to control behavior during SCP's operation.
  *  Different hooks permit jumping into different phases of SCP operation.
  */
 enum DcmSCPActionType
@@ -128,7 +128,7 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
 /** Base class for implementing a DICOM Service Class Provider (SCP). Derived classes can
  *  add the presentation contexts they want to support, set further parameters (port, peer
  *  hostname, etc. as desired) and then call DcmSCP's listen() method to start the server.
- *  For incoming associations and DIMSE messages, a derived class can define the behaviour
+ *  For incoming associations and DIMSE messages, a derived class can define the behavior
  *  of the server. The DcmSCP base class is capable of responding to C-ECHO requests
  *  (Verification SOP Class).
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
@@ -153,7 +153,7 @@ public:
   virtual OFCondition listen();
 
   /* ************************************************************* */
-  /*             Set methods for configuring SCP behaviour         */
+  /*             Set methods for configuring SCP behavior          */
   /* ************************************************************* */
 
   /** Add abstract syntax to presentation contexts the SCP is able to negotiate with SCUs.
@@ -179,7 +179,7 @@ public:
 
   /** Set AE title of the server
    *  @param aetitle [in] The AE title of the server. By default, all SCU association requests
-   *                      calling another AE title will be rejected. This behaviour can be
+   *                      calling another AE title will be rejected. This behavior can be
    *                      changed by using the setRespondWithCalledAETitle() method.
    */
   void setAETitle(const OFString &aetitle);
@@ -200,8 +200,8 @@ public:
   virtual OFCondition loadAssociationCfgFile(const OFString &assocFile);
 
   /** If an association profile should be selected, either by loading an association
-   *  configuration file or using the addAbstractSyntax() function, one of those can be
-   *  selected and checked for validity using this method.
+   *  configuration file or using the addPresentationContext() function, one of those can
+   *  be selected and checked for validity using this method.
    *  @param profileName [in] The name of the association profile which must be configured
    *                          before being selected here
    *  @return EC_Normal if selecting/checking was successful, an error code otherwise
@@ -244,7 +244,7 @@ public:
   void setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode);
 
   /** Set the timeout to be waited for incoming DIMSE message packets. This is only relevant
-   *  for DIMSE blocking mode messaging (see also setDIMSEBlockingMode().
+   *  for DIMSE blocking mode messaging (see also setDIMSEBlockingMode()).
    *  @param dimseTimeout [in] DIMSE receive timeout in seconds
    */
   void setDIMSETimeout(const Uint32 dimseTimeout);
@@ -267,15 +267,14 @@ public:
   void setVerbosePCMode(const OFBool mode);
 
   /** Enables or disables looking up the host name from a connecting system.
-   *  Note that this sets a GLOBAL flag in DCMTK, i.e. the behaviour changes
+   *  Note that this sets a GLOBAL flag in DCMTK, i.e. the behavior changes
    *  for all servers. This should be changed in the future.
-   *  @param mode [in] OFTrue, if hostname lookup should be enabled,
-   *              OFFalse for disabling it.
+   *  @param mode [in] OFTrue, if hostname lookup should be enabled, OFFalse for disabling it.
    */
   void setHostLookupEnabled(const OFBool mode);
 
   /** Set the mode that specifies whether the progress of sending and receiving DIMSE messages
-   *  is notified by calling notifySENDProgress() andnotifyRECEIVEProgress(), respectively.
+   *  is notified by calling notifySENDProgress() and notifyRECEIVEProgress(), respectively.
    *  The progress notification is enabled by default.
    *  @param mode [in] Disable progress notification if OFFalse
    */
@@ -443,7 +442,7 @@ protected:
   /** Handle incoming command set and react accordingly, e.g.\ sending response via
    *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
    *  by calling handleEchoRequest(). This function is most likely to be implemented by a
-   *  derived class implementing a specific SCP behaviour.
+   *  derived class implementing a specific SCP behavior.
    *  @param incomingMsg The DIMSE message received
    *  @param presInfo Additional information on the Presentation Context used
    *  @return EC_Normal if the message could be handled, error if not. Especially

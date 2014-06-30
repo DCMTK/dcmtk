@@ -21,6 +21,10 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
 
+- Fixed various typos and minor Doxygen issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+
 **** Changes from 2014.06.23 (riesmeier)
 
 - Fixed incomplete #include comment.
