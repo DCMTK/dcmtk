@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.01 (riesmeier)
+
+- Updated data dictionary for DICOM 2014a edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2014-06-30. Since the data dictionary was already
+  up-to-date regarding the recently approved Supplements and CPs, there should
+  be no changes apart from the name of the underlying DICOM standard edition.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.06.30 (riesmeier)
 
 - Added support for new Colon CAD SR constraints:
