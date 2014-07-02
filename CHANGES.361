@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.02 (riesmeier)
+
+- Removed year component from version field:
+  Removed the name of the edition of the DICOM standard, i.e. "2014a" for the
+  current edition, from the version field of each DICOM attribute. Since the
+  DICOM standard will now be published/updated more often, the complete data
+  dictionary will be generated automatically several times a year. Having the
+  year component in the version field would change each entry every time and
+  would make it hard (if not impossible) to see what has actually changed.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.07.01 (riesmeier)
 
 - Updated data dictionary for DICOM 2014a edition:

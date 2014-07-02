@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-07-01 13:36:21
+**   Date: 2014-07-02 10:14:12
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-07-01 13:36:21"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-07-02 10:14:12"
 
 
 /*
