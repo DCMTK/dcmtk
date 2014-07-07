@@ -39,6 +39,16 @@ Changes between releases are documented here.
   Affects: ofstd/include/dcmtk/ofstd/ofoption.h
            ofstd/tests/toption.cc
 
+- Fixed building 32 bit targets with mingw-w64:
+  Added configure-time tests for some file access functions that aren't
+  available on every MinGW distribution.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2014.07.02 (riesmeier)
 
 - Removed year component from version field:

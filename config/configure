@@ -5566,6 +5566,27 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+ac_fn_c_check_type "$LINENO" "fpos64_t" "ac_cv_type_fpos64_t" "$ac_includes_default"
+if test "x$ac_cv_type_fpos64_t" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_FPOS64_T 1
+_ACEOF
+
+
+fi
+
+ac_fn_c_check_type "$LINENO" "off64_t" "ac_cv_type_off64_t" "$ac_includes_default"
+if test "x$ac_cv_type_off64_t" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_OFF64_T 1
+_ACEOF
+
+
+fi
+
+
 for ac_header in stdbool.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "stdbool.h" "ac_cv_header_stdbool_h" "$ac_includes_default"
@@ -6038,6 +6059,18 @@ fi
 done
 
 for ac_func in mbstowcs wcstombs
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
+for ac_func in popen pclose
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -12364,7 +12397,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12367 "configure"
+#line 12400 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12836,7 +12869,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12839 "configure"
+#line 12872 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12908,7 +12941,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12911 "configure"
+#line 12944 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12980,7 +13013,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12983 "configure"
+#line 13016 "configure"
 #include "confdefs.h"
 
 template <class T>

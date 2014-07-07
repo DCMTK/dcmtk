@@ -477,6 +477,14 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS("long long definition" "${HEADERS}" HAVE_LONG_LONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("unsigned long long definition" "${HEADERS}" HAVE_UNSIGNED_LONG_LONG)
 
+  # File access stuff
+  CHECK_FUNCTIONWITHHEADER_EXISTS("fpos64_t definition" "${HEADERS}" HAVE_FPOS64_T)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("off64_t definition" "${HEADERS}" HAVE_OFF64_T)
+  # Check if the POSIX functions are available (even on Windows). They are preferred
+  # to the Microsoft specific functions on compilers like MinGW.
+  CHECK_FUNCTIONWITHHEADER_EXISTS("popen" "${HEADERS}" HAVE_POPEN)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("pclose" "${HEADERS}" HAVE_PCLOSE)
+
 # Tests that require a try-compile
 INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake)
 

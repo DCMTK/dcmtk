@@ -221,6 +221,10 @@ AC_CHECK_TYPES(long long)
 AC_CHECK_TYPES(unsigned long long)
 CHECK_VLA
 
+dnl File access stuff
+AC_CHECK_TYPES(fpos64_t)
+AC_CHECK_TYPES(off64_t)
+
 dnl stdbool.h and stdint.h are only defined in ANSI C, not in C++
 AC_CHECK_HEADERS(stdbool.h)
 AC_CHECK_HEADERS(stdint.h)
@@ -258,6 +262,7 @@ AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
 AC_CHECK_FUNCS(vsnprintf)
 AC_CHECK_FUNCS(mbstowcs wcstombs)
+AC_CHECK_FUNCS(popen pclose)
 AC_FUNC_FSEEKO
 
 

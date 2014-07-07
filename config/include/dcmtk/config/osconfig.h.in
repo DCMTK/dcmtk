@@ -186,6 +186,9 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
+/* Define to 1 if the system has the type `fpos64_t'. */
+#undef HAVE_FPOS64_T
+
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
 
@@ -484,13 +487,22 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `ntohs' function. */
 #undef HAVE_NTOHS
 
+/* Define to 1 if the system has the type `off64_t'. */
+#undef HAVE_OFF64_T
+
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
 #undef HAVE_OLD_READDIR_R
 
+/* Define to 1 if you have the `pclose' function. */
+#undef HAVE_PCLOSE
+
 /* Define if pthread_t is a pointer type on your system */
 #undef HAVE_POINTER_TYPE_PTHREAD_T
+
+/* Define to 1 if you have the `popen' function. */
+#undef HAVE_POPEN
 
 /* Define if your system has a prototype for accept in sys/types.h
    sys/socket.h */

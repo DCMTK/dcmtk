@@ -1042,6 +1042,18 @@ typedef unsigned long ulong;
 
 #endif /* USE_STD_CXX_INCLUDES */
 
+/* Define if your system has off64_t */
+#cmakedefine HAVE_OFF64_T @HAVE_OFF64_T@
+
+/* Define if your system has fpos64_t */
+#cmakedefine HAVE_FPOS64_T @HAVE_FPOS64_T@
+
+/* Define if your system uses _popen instead of popen */
+#cmakedefine HAVE_POPEN @HAVE_POPEN@
+
+/* Define if your system uses _pclose instead of pclose */
+#cmakedefine HAVE_PCLOSE @HAVE_PCLOSE@
+
 /* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
 #define STDIO_NAMESPACE ::
 

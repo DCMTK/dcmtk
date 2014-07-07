@@ -70,26 +70,36 @@ END_EXTERN_C
   #endif
 #endif
 
-#if defined(_WIN32) && !defined(__MINGW32__)
-  // On Win32 systems except MinGW (where Posix definitions are available)
-  // we use Win32 specific definitions
-  typedef __int64 offile_off_t;
-  typedef fpos_t offile_fpos_t;
-#else
-  #if defined(EXPLICIT_LFS_64) && !defined(__MINGW64__)
-    // Explicit LFS (LFS64)
-    typedef fpos64_t offile_fpos_t;
-    typedef off64_t offile_off_t;
-  #else
-    // Implicit LFS or no LFS
-    #ifdef HAVE_FSEEKO
-      typedef off_t offile_off_t;
-    #else
-      typedef long offile_off_t;
-    #endif
-    typedef fpos_t offile_fpos_t;
-  #endif
+// Explicit LFS (LFS64) and Windows need 64 bit types
+#if defined(EXPLICIT_LFS_64) || defined(_WIN32)
+
+// Use POSIX 64 bit file position type when available
+#ifdef HAVE_FPOS64_T
+typedef fpos64_t offile_fpos_t;
+#else // Otherwise this should be sufficient
+typedef fpos_t offile_fpos_t;
 #endif
+
+// Use POSIX 64 bit file offset type when available
+#ifdef HAVE_OFF64_T
+typedef off64_t offile_off_t;
+#elif !defined(OF_NO_SINT64) // Otherwise use a 64 bit integer
+typedef Sint64 offile_off_t;
+#else // Cry when 64 LFS is required but no 64 bit integer exists
+#error \
+  Could not find a suitable offset-type for LFS64 support.
+#endif
+
+#else // Implicit LFS or no LFS
+
+#ifdef HAVE_FSEEKO
+typedef off_t offile_off_t;
+#else
+typedef long offile_off_t;
+#endif
+typedef fpos_t offile_fpos_t;
+
+#endif // basic type definitions
 
 // the type we use to store the last error.
 typedef int offile_errno_t;
@@ -381,10 +391,10 @@ public:
   OFBool popen(const char *command, const char *modes)
   {
     if (file_) fclose();
-#if defined(_WIN32) && !defined(__MINGW64__)
-    file_ = _popen(command, modes);
-#else
+#ifdef HAVE_POPEN
     file_ = :: popen(command, modes);
+#else
+    file_ = _popen(command, modes);
 #endif
     if (file_) popened_ = OFTrue; else storeLastError();
     return (file_ != NULL);
@@ -445,10 +455,10 @@ public:
     {
       if (popened_)
       {
-#if defined(_WIN32) && !defined(__MINGW64__)
-        result = _pclose(file_);
-#else
+#ifdef HAVE_PCLOSE
         result = :: pclose(file_);
+#else
+        result = _pclose(file_);
 #endif
       }
       else
