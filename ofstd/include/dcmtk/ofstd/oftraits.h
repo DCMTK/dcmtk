@@ -37,8 +37,8 @@ using OFenable_if = std::enable_if<B,ARGS...>;
 template<bool B,typename... ARGS>
 using OFconditional = std::conditional<B,ARGS...>;
 
-template<typename... ARGS>
-using OFintegral_constant = std::integral_constant<ARGS...>;
+template<typename T,T Value>
+using OFintegral_constant = std::integral_constant<T,Value>;
 
 template<typename... ARGS>
 using OFis_signed = std::is_signed<ARGS...>;

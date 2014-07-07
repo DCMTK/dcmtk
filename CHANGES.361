@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.07 (schlamelcher)
+
+- Fixed a wrong type-alias for OFintegral_constant:
+  The type-alias defined when C++11 support was enabled did not honor the
+  special nature of std::integral_constant which takes a non-type argument
+  as its second template parameter.
+  Affects: ofstd/include/dcmtk/ofstd/oftraits.h
+
 **** Changes from 2014.07.02 (riesmeier)
 
 - Removed year component from version field:
