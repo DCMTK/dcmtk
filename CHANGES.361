@@ -27,6 +27,18 @@ Changes between releases are documented here.
            config/configure.in
            config/include/dcmtk/config/osconfig.h.in
 
+- Fixed an alignment problem in OFoptional:
+  OFoptional now uses a policy based approach to manage its storage,
+  implemented as OFoptional_traits. This allows to customize memory
+  allocation and state management, as well as the default construction
+  policy.
+  The default implementation now uses OFalign when available, to align the
+  storage appropriately for its content type. If OFalign is not supported,
+  OFoptional falls back to an implementation employing pointers and
+  allocating the memory on the heap.
+  Affects: ofstd/include/dcmtk/ofstd/ofoption.h
+           ofstd/tests/toption.cc
+
 **** Changes from 2014.07.02 (riesmeier)
 
 - Removed year component from version field:

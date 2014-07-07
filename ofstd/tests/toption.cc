@@ -10,6 +10,9 @@ STD_NAMESPACE istream& operator>>( STD_NAMESPACE istream& in, const test& ) { in
 
 OFTEST(ofstd_optional)
 {
+    OFCHECK( OFoptional_traits<int>::is_default_constructible::value );
+    OFCHECK( !OFoptional_traits<test>::is_default_constructible::value );
+
     OFoptional<int> o0( 3 ), o1, o2( OFnullopt );
 
     OFCHECK( o0 && *o0 == 3 );
