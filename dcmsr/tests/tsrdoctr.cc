@@ -11,11 +11,12 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
- *  Purpose: test program for class DSRDocumentTree and DSRDocumentTreeNode
+ *  Purpose:
+ *    test program for classes DSRDocumentTree, DSRDocumentTreeNode and DSRContentItem
  *
  */
 
@@ -25,6 +26,7 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmsr/dsrdoc.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
+#include "dcmtk/dcmsr/dsrtextn.h"
 
 
 OFTEST(dcmsr_addContentItem)
@@ -47,9 +49,45 @@ OFTEST(dcmsr_addContentItem)
         OFCHECK(numNode->setFloatingPointRepresentation(1.5).good());
         /* the following code usually implies "Measurement not available", but this is only a test */
         OFCHECK(numNode->setNumericValueQualifier(DSRCodedEntryValue("114006", "DCM", "Measurement failure")).good());
-    }
+    } else
+        OFCHECK_FAIL("could not create new NUM content item");
     /* try to add content items that should fail */
     OFCHECK(tree.addContentItem(NULL) == NULL);
     OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_Text), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/) == NULL);
     /* NB: this test program does not always delete allocated memory (if adding a node fails) */
+}
+
+
+OFTEST(dcmsr_copyContentItem)
+{
+    /* first create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.getCurrentContentItem().setStringValue("Sample text").good());
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121111", "DCM", "Summary")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    /* create a copy of the current content item */
+    DSRContentItem item(tree.getCurrentContentItem());
+    OFCHECK_EQUAL(item.getValueType(), DSRTypes::VT_Num);
+    OFCHECK_EQUAL(item.getRelationshipType(), DSRTypes::RT_contains);
+    /* clone the previous content item */
+    OFCHECK(tree.gotoPrevious() > 0);
+    DSRDocumentTreeNode *treeNode = tree.cloneCurrentTreeNode();
+    if (treeNode != NULL)
+    {
+        /* and check some details */
+        if (treeNode->getValueType() == DSRTypes::VT_Text)
+        {
+            DSRTextTreeNode *textNode = OFstatic_cast(DSRTextTreeNode *, treeNode);
+            OFCHECK_EQUAL(textNode->getValue(), "Sample text");
+        } else
+            OFCHECK_FAIL("clone of TEXT content item has wrong value type");
+        OFCHECK_EQUAL(treeNode->getRelationshipType(), DSRTypes::RT_contains);
+        OFCHECK_EQUAL(treeNode->getConceptName().getCodeMeaning(), "Summary");
+        delete treeNode;
+    } else
+        OFCHECK_FAIL("could not create clone of TEXT content item");
 }

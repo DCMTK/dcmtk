@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
@@ -29,26 +29,41 @@
 
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_byReference),
-   ValidReference(OFFalse),
-   ReferencedContentItem(),
-   ReferencedNodeID(0)
+  : DSRDocumentTreeNode(relationshipType, VT_byReference),
+    ValidReference(OFFalse),
+    ReferencedContentItem(),
+    ReferencedNodeID(0)
 {
 }
 
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType,
                                                const size_t referencedNodeID)
- : DSRDocumentTreeNode(relationshipType, VT_byReference),
-   ValidReference(OFFalse),
-   ReferencedContentItem(),
-   ReferencedNodeID(referencedNodeID)
+  : DSRDocumentTreeNode(relationshipType, VT_byReference),
+    ValidReference(OFFalse),
+    ReferencedContentItem(),
+    ReferencedNodeID(referencedNodeID)
+{
+}
+
+
+DSRByReferenceTreeNode::DSRByReferenceTreeNode(const DSRByReferenceTreeNode &node)
+  : DSRDocumentTreeNode(node),
+    ValidReference(OFFalse),
+    ReferencedContentItem(node.ReferencedContentItem),
+    ReferencedNodeID(0)
 {
 }
 
 
 DSRByReferenceTreeNode::~DSRByReferenceTreeNode()
 {
+}
+
+
+DSRByReferenceTreeNode *DSRByReferenceTreeNode::clone() const
+{
+    return new DSRByReferenceTreeNode(*this);
 }
 
 

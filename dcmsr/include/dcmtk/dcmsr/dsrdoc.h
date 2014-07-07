@@ -123,7 +123,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  member variable section of this class.  Other data is not changed, so be careful
      *  when using this method.
      *  @param  dataset  reference to DICOM dataset from which the data should be read
-     *  @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readPatientData(DcmItem &dataset);
 
@@ -132,7 +132,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  "General Study Module" in the member variable section of this class.  Other data
      *  is not changed, so be careful when using this method.
      *  @param  dataset  reference to DICOM dataset from which the data should be read
-     *  @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readStudyData(DcmItem &dataset);
 
@@ -357,14 +357,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  present otherwise."  Note: An equivalent rendering of the document might be provided as an
      *  "Encapsulated PDF" DICOM object.
      *  Not applicable to Key Object Selection Documents.
-     *  @return reference to list object
+     ** @return reference to list object
      */
     virtual DSRReferencedInstanceList &getReferencedInstances();
 
     /** get list of coding schemes used (Coding Scheme Identification).
      *  The Coding Scheme Identification Sequence maps Coding Scheme Designators to an external coding
      *  system registration, or to a private or local coding scheme.  See DICOM standard for details.
-     *  @return reference to list object
+     ** @return reference to list object
      */
     virtual DSRCodingSchemeIdentificationList &getCodingSchemeIdentification();
 

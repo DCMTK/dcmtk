@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,6 +54,13 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     friend class DSRDocumentTree;
 
   public:
+
+    /** copy constructor.
+     *  Internally, the copy constructor of the respective tree node class is used, so the
+     *  corresponding comments apply.
+     ** @param item content item to be copied
+     */
+    DSRContentItem(const DSRContentItem &item);
 
     /** destructor
      */
@@ -147,13 +154,15 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get numeric value.
      *  Applicable to: NUM
-     ** @return numeric measurement value of current content item if valid, EmptyNumericMeasurement otherwise
+     ** @return numeric measurement value of current content item if valid,
+     *    EmptyNumericMeasurement otherwise
      */
     const DSRNumericMeasurementValue &getNumericValue() const;
 
     /** get copy of numeric value.
      *  Applicable to: NUM
-     ** @param  numericValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  numericValue  variable where the copy should be stored
+     *                        (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getNumericValue(DSRNumericMeasurementValue &numericValue) const;
@@ -169,19 +178,22 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get pointer to spatial coordinates.
      *  Applicable to: SCOORD
-     ** @return pointer to spatial coordinates value of current content item if valid, NULL otherwise
+     ** @return pointer to spatial coordinates value of current content item if valid,
+     *          NULL otherwise
      */
     DSRSpatialCoordinatesValue *getSpatialCoordinatesPtr();
 
     /** get spatial coordinates.
      *  Applicable to: SCOORD
-     ** @return spatial coordinates value of current content item if valid, EmptySpatialCoordinates otherwise
+     ** @return spatial coordinates value of current content item if valid,
+     *          EmptySpatialCoordinates otherwise
      */
     const DSRSpatialCoordinatesValue &getSpatialCoordinates() const;
 
     /** get copy of spatial coordinates.
      *  Applicable to: SCOORD
-     ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  coordinatesValue  variable where the copy should be stored
+     *                            (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getSpatialCoordinates(DSRSpatialCoordinatesValue &coordinatesValue) const;
@@ -197,19 +209,22 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get pointer to spatial coordinates 3D.
      *  Applicable to: SCOORD3D
-     ** @return pointer to spatial coordinates 3D value of current content item if valid, NULL otherwise
+     ** @return pointer to spatial coordinates 3D value of current content item if valid,
+     *          NULL otherwise
      */
     DSRSpatialCoordinates3DValue *getSpatialCoordinates3DPtr();
 
     /** get spatial coordinates 3D.
      *  Applicable to: SCOORD3D
-     ** @return spatial coordinates 3D value of current content item if valid, EmptySpatialCoordinates3D otherwise
+     ** @return spatial coordinates 3D value of current content item if valid,
+     *          EmptySpatialCoordinates3D otherwise
      */
     const DSRSpatialCoordinates3DValue &getSpatialCoordinates3D() const;
 
     /** get copy of spatial coordinates 3D.
      *  Applicable to: SCOORD3D
-     ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  coordinatesValue  variable where the copy should be stored
+     *                            (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getSpatialCoordinates3D(DSRSpatialCoordinates3DValue &coordinatesValue) const;
@@ -225,19 +240,22 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get pointer to temporal coordinates.
      *  Applicable to: TCOORD
-     ** @return pointer to temporal coordinates value of current content item if valid, NULL otherwise
+     ** @return pointer to temporal coordinates value of current content item if valid,
+     *          NULL otherwise
      */
     DSRTemporalCoordinatesValue *getTemporalCoordinatesPtr();
 
     /** get temporal coordinates.
      *  Applicable to: TCOORD
-     ** @return temporal coordinates value of current content item if valid, EmptyTemporalCoordinates otherwise
+     ** @return temporal coordinates value of current content item if valid,
+     *          EmptyTemporalCoordinates otherwise
      */
     const DSRTemporalCoordinatesValue &getTemporalCoordinates() const;
 
     /** get copy of temporal coordinates.
      *  Applicable to: TCOORD
-     ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  coordinatesValue  variable where the copy should be stored
+     *                            (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const;
@@ -265,7 +283,8 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get copy of composite reference.
      *  Applicable to: COMPOSITE
-     ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  referenceValue  variable where the copy should be stored
+     *                          (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getCompositeReference(DSRCompositeReferenceValue &referenceValue) const;
@@ -281,19 +300,22 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get pointer to image reference.
      *  Applicable to: IMAGE
-     ** @return pointer to image reference value of current content item if valid, NULL otherwise
+     ** @return pointer to image reference value of current content item if valid,
+     *          NULL otherwise
      */
     DSRImageReferenceValue *getImageReferencePtr();
 
     /** get image reference.
      *  Applicable to: IMAGE
-     ** @return image reference value of current content item if valid, EmptyImageReference otherwise
+     ** @return image reference value of current content item if valid,
+     *          EmptyImageReference otherwise
      */
     const DSRImageReferenceValue &getImageReference() const;
 
     /** get copy of image reference.
      *  Applicable to: IMAGE
-     ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  referenceValue  variable where the copy should be stored
+     *                          (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getImageReference(DSRImageReferenceValue &referenceValue) const;
@@ -309,19 +331,22 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get pointer to waveform reference.
      *  Applicable to: WAVEFORM
-     ** @return pointer to waveform reference value of current content item if valid, NULL otherwise
+     ** @return pointer to waveform reference value of current content item if valid,
+     *          NULL otherwise
      */
     DSRWaveformReferenceValue *getWaveformReferencePtr();
 
     /** get waveform reference.
      *  Applicable to: WAVEFORM
-     ** @return waveform reference value of current content item if valid, EmptyWaveformReference otherwise
+     ** @return waveform reference value of current content item if valid,
+     *          EmptyWaveformReference otherwise
      */
     const DSRWaveformReferenceValue &getWaveformReference() const;
 
     /** get copy of waveform reference.
      *  Applicable to: WAVEFORM
-     ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  referenceValue  variable where the copy should be stored
+     *                          (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getWaveformReference(DSRWaveformReferenceValue &referenceValue) const;
@@ -337,7 +362,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
-     *  logically linked in a continuous textual flow, or are sparate items.
+     *  logically linked in a continuous textual flow, or are separate items.
      *  Applicable to: CONTAINER
      ** @return continuity of content flag if successful, COC_invalid otherwise
      */
@@ -345,7 +370,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** set continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
-     *  logically linked in a continuous textual flow, or are sparate items.
+     *  logically linked in a continuous textual flow, or are separate items.
      *  Applicable to: CONTAINER
      ** @param  continuityOfContent  value to be set (should be different from COC_invalid)
      *  @param  check                if enabled, check value for validity before setting it
@@ -358,7 +383,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
      *  Applicable to all content items (by-value only).
-     ** @return pointer to comcept name value of current content item if valid, NULL otherwise
+     ** @return pointer to concept name value of current content item if valid, NULL otherwise
      */
     DSRCodedEntryValue *getConceptNamePtr();
 
@@ -374,7 +399,8 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
      *  Applicable to all content items (by-value only).
-     ** @param  conceptName  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  conceptName  variable where the copy should be stored
+     *                       (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getConceptName(DSRCodedEntryValue &conceptName) const;
@@ -382,7 +408,8 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
-     *  Applicable to all content items (by-value only, optional/conditional for some value types).
+     *  Applicable to all content items (by-value only, optional/conditional for some value
+     *  types).
      ** @param  conceptName  value to be set
      *  @param  check        if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -414,7 +441,8 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  The UID represents the semantic content of the observation; an encoding of the same
      *  observation with the same context into another representation may use the same UID.
      *  Applicable to all content items (by-value only, optional attribute).
-     ** @return observation unique identifier of current content item if valid, EmptyString otherwise
+     ** @return observation unique identifier of current content item if valid,
+     *          EmptyString otherwise
      */
     const OFString &getObservationUID() const;
 
@@ -440,7 +468,8 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  (non-empty) or absent (empty).
      *  Applicable to all content items (by-value only, optional attribute).
      ** @param  templateIdentifier  identifier of the template (might be empty)
-     *  @param  mappingResource     mapping resource that defines the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template
+     *                              (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getTemplateIdentification(OFString &templateIdentifier,
@@ -468,7 +497,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     DSRContentItem();
 
     /** set internal tree node pointer (protected)
-     *  @param  node  pointer to the document tree node (content item)
+     ** @param  node  pointer to the document tree node (content item)
      */
     inline void setTreeNode(DSRDocumentTreeNode *node)
     {
@@ -478,7 +507,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
   private:
 
-    /// internal tree node pointer (current conten item)
+    /// internal tree node pointer (current content item)
     DSRDocumentTreeNode *TreeNode;
 
     /// empty numeric measurement value. Used as default return value for getNumericValue().
@@ -487,27 +516,34 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /// before the main() function starts.
     const DSRNumericMeasurementValue EmptyNumericMeasurement;
 
-    /// empty string value. Used as default return value for getStringValue()
+    /// empty string value.
+    /// Used as default return value for getStringValue()
     static const OFString                     EmptyString;
-    /// empty coded entry value. Used as default return value for getCodeValue() and getConceptName()
+    /// empty coded entry value.
+    /// Used as default return value for getCodeValue() and getConceptName()
     static const DSRCodedEntryValue           EmptyCodedEntry;
-    /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
+    /// empty spatial coordinates value.
+    /// Used as default return value for getSpatialCoordinates()
     static const DSRSpatialCoordinatesValue   EmptySpatialCoordinates;
-    /// empty spatial coordinates 3D value. Used as default return value for getSpatialCoordinates3D()
+    /// empty spatial coordinates 3D value.
+    /// Used as default return value for getSpatialCoordinates3D()
     static const DSRSpatialCoordinates3DValue EmptySpatialCoordinates3D;
-    /// empty temporal coordinates value. Used as default return value for getTemporalCoordinates()
+    /// empty temporal coordinates value.
+    /// Used as default return value for getTemporalCoordinates()
     static const DSRTemporalCoordinatesValue  EmptyTemporalCoordinates;
-    /// empty composite reference value. Used as default return value for getCompositeReference()
+    /// empty composite reference value.
+    /// Used as default return value for getCompositeReference()
     static const DSRCompositeReferenceValue   EmptyCompositeReference;
-    /// empty image reference value. Used as default return value for getImageReference()
+    /// empty image reference value.
+    /// Used as default return value for getImageReference()
     static const DSRImageReferenceValue       EmptyImageReference;
-    /// empty waveform reference value. Used as default return value for getWaveformReference()
+    /// empty waveform reference value.
+    /// Used as default return value for getWaveformReference()
     static const DSRWaveformReferenceValue    EmptyWaveformReference;
 
 
- // --- declaration of copy constructor and assignment operator
+ // --- declaration of assignment operator
 
-    DSRContentItem(const DSRContentItem &);
     DSRContentItem &operator=(const DSRContentItem &);
 };
 

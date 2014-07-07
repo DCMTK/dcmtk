@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRNumTreeNode
@@ -29,14 +29,27 @@
 
 
 DSRNumTreeNode::DSRNumTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_Num),
-   DSRNumericMeasurementValue()
+  : DSRDocumentTreeNode(relationshipType, VT_Num),
+    DSRNumericMeasurementValue()
+{
+}
+
+
+DSRNumTreeNode::DSRNumTreeNode(const DSRNumTreeNode &node)
+  : DSRDocumentTreeNode(node),
+    DSRNumericMeasurementValue(node)
 {
 }
 
 
 DSRNumTreeNode::~DSRNumTreeNode()
 {
+}
+
+
+DSRNumTreeNode *DSRNumTreeNode::clone() const
+{
+    return new DSRNumTreeNode(*this);
 }
 
 

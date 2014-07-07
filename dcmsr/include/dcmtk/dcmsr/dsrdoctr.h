@@ -226,7 +226,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      *  removed from the tree and then deleted.  The internal cursor is set automatically
      *  to a new valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
-     *    occured or the tree is now empty.
+     *    occurred or the tree is now empty.
      */
     size_t removeCurrentContentItem();
 
@@ -235,6 +235,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      ** @return reference to current content item (might be invalid)
      */
     DSRContentItem &getCurrentContentItem();
+
+    /** clone the current tree node.
+     *  Internally, the copy constructor of the respective tree node class is used, so the
+     *  corresponding comments apply.  Please note that the new node has to deleted by the
+     *  caller if it is not added to the document tree using addContentItem().
+     ** @return pointer to a copy of the current tree node (might be NULL)
+     */
+    DSRDocumentTreeNode *cloneCurrentTreeNode() const;
 
     /** set internal cursor to the named node.
      *  If more than one node exists with the given concept name the first one will
@@ -295,7 +303,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      *  removed from the tree and deleted afterwards.  The cursor is set automatically to
      *  a new valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
-     *    occured or the tree is now empty.
+     *          occurred or the tree is now empty.
      */
     virtual size_t removeNode();
 

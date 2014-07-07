@@ -3,6 +3,59 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.07 (riesmeier)
 
+- Implemented copy constructors and added clone():
+  Implemented missing copy constructors for tree node classes and added clone()
+  methods to the relevant classes. This is the first step towards a better
+  support of SR templates, e.g. by preparing subtrees in advance that can later
+  be inserted into a document tree.
+  Acknowledgements: Development of this feature has been supported in part by
+  the Quantitative Image Informatics in Cancer Research (QIICR) project through
+  the award U24 CA180918 from the NIH National Cancer Institute. For future
+  commits, this reference will be shortened to the project acronym "QIICR".
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrcodtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrcontn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdattn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrdtitn.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrpnmtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3tn.h
+           dcmsr/include/dcmtk/dcmsr/dsrscotn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcotn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtextn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtimtn.h
+           dcmsr/include/dcmtk/dcmsr/dsruidtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavtn.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrrefin.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrsc3tn.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavtn.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 - Updated copyright date and other minor changes.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrbascc.h
            dcmsr/include/dcmtk/dcmsr/dsrc3dcc.h

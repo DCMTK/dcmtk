@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRWaveformTreeNode
@@ -29,14 +29,27 @@
 
 
 DSRWaveformTreeNode::DSRWaveformTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_Waveform),
-   DSRWaveformReferenceValue()
+  : DSRDocumentTreeNode(relationshipType, VT_Waveform),
+    DSRWaveformReferenceValue()
+{
+}
+
+
+DSRWaveformTreeNode::DSRWaveformTreeNode(const DSRWaveformTreeNode &node)
+  : DSRDocumentTreeNode(node),
+    DSRWaveformReferenceValue(node)
 {
 }
 
 
 DSRWaveformTreeNode::~DSRWaveformTreeNode()
 {
+}
+
+
+DSRWaveformTreeNode *DSRWaveformTreeNode::clone() const
+{
+    return new DSRWaveformTreeNode(*this);
 }
 
 

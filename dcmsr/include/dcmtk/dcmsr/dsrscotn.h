@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,9 +49,22 @@ class DCMTK_DCMSR_EXPORT DSRSCoordTreeNode
      */
     DSRSCoordTreeNode(const E_RelationshipType relationshipType);
 
+    /** copy constructor.
+     *  Please note that the comments on the copy constructor of the base class
+     *  DSRDocumentTreeNode apply.
+     ** @param  node  tree node to be copied
+     */
+    DSRSCoordTreeNode(const DSRSCoordTreeNode &node);
+
     /** destructor
      */
     virtual ~DSRSCoordTreeNode();
+
+    /** clone this tree node.
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this tree node
+     */
+    virtual DSRSCoordTreeNode *clone() const;
 
     /** clear all member variables.
      *  Please note that the content item might become invalid afterwards.
@@ -130,10 +143,9 @@ class DCMTK_DCMSR_EXPORT DSRSCoordTreeNode
 
   private:
 
-// --- declaration of default/copy constructor and assignment operator
+// --- declaration of default constructor and assignment operator
 
     DSRSCoordTreeNode();
-    DSRSCoordTreeNode(const DSRSCoordTreeNode &);
     DSRSCoordTreeNode &operator=(const DSRSCoordTreeNode &);
 };
 

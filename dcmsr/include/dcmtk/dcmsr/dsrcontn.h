@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -50,9 +50,22 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     DSRContainerTreeNode(const E_RelationshipType relationshipType,
                          const E_ContinuityOfContent continuityOfContent = COC_Separate);
 
+    /** copy constructor.
+     *  Please note that the comments on the copy constructor of the base class
+     *  DSRDocumentTreeNode apply.
+     ** @param  node  tree node to be copied
+     */
+    DSRContainerTreeNode(const DSRContainerTreeNode &node);
+
     /** destructor
      */
     virtual ~DSRContainerTreeNode();
+
+    /** clone this tree node.
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this tree node
+     */
+    virtual DSRContainerTreeNode *clone() const;
 
     /** clear all member variables.
      *  Please note that the content item might become invalid afterwards.
@@ -92,10 +105,10 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
                                  const size_t flags) const;
 
     /** render content item in HTML/XHTML format.
-     *  After rendering the current content item all child nodes (if any) are also rendered (see
-     *  renderHTMLChildNodes() for details).  This method overwrites the one specified in base class
-     *  DSRDocumentTree since the rendering of the child nodes depends on the value of the flag
-     *  'ContinuityOfContent'.
+     *  After rendering the current content item all child nodes (if any) are also rendered
+     *  (see renderHTMLChildNodes() for details).  This method overwrites the one specified in
+     *  base class DSRDocumentTree since the rendering of the child nodes depends on the value
+     *  of the flag 'ContinuityOfContent'.
      ** @param  docStream     output stream to which the main HTML/XHTML document is written
      *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
      *  @param  nestingLevel  current nesting level.  Used to render section headings.
@@ -112,7 +125,7 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
 
     /** get continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
-     *  logically linked in a continuous textual flow, or are sparate items.
+     *  logically linked in a continuous textual flow, or are separate items.
      ** @return continuity of content flag if successful, COC_invalid otherwise
      */
     inline E_ContinuityOfContent getContinuityOfContent() const
@@ -122,7 +135,7 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
 
     /** set continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
-     *  logically linked in a continuous textual flow, or are sparate items.
+     *  logically linked in a continuous textual flow, or are separate items.
      ** @param  continuityOfContent  value to be set (should be different from COC_invalid)
      *  @param  check                dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -175,10 +188,9 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     E_ContinuityOfContent ContinuityOfContent;
 
 
- // --- declaration of default/copy constructor and assignment operator
+ // --- declaration of default constructor and assignment operator
 
     DSRContainerTreeNode();
-    DSRContainerTreeNode(const DSRContainerTreeNode &);
     DSRContainerTreeNode &operator=(const DSRContainerTreeNode &);
 };
 

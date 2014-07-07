@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRDateTreeNode
@@ -45,8 +45,21 @@ DSRDateTreeNode::DSRDateTreeNode(const E_RelationshipType relationshipType,
 }
 
 
+DSRDateTreeNode::DSRDateTreeNode(const DSRDateTreeNode &node)
+  : DSRDocumentTreeNode(node),
+    DSRStringValue(node)
+{
+}
+
+
 DSRDateTreeNode::~DSRDateTreeNode()
 {
+}
+
+
+DSRDateTreeNode *DSRDateTreeNode::clone() const
+{
+    return new DSRDateTreeNode(*this);
 }
 
 

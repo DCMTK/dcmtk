@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRImageTreeNode
@@ -35,8 +35,21 @@ DSRImageTreeNode::DSRImageTreeNode(const E_RelationshipType relationshipType)
 }
 
 
+DSRImageTreeNode::DSRImageTreeNode(const DSRImageTreeNode &node)
+  : DSRDocumentTreeNode(node),
+    DSRImageReferenceValue(node)
+{
+}
+
+
 DSRImageTreeNode::~DSRImageTreeNode()
 {
+}
+
+
+DSRImageTreeNode *DSRImageTreeNode::clone() const
+{
+    return new DSRImageTreeNode(*this);
 }
 
 

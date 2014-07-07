@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -65,9 +65,28 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     DSRDocumentTreeNode(const E_RelationshipType relationshipType,
                         const E_ValueType valueType);
 
+    /** copy constructor.
+     *  Please note that the member variables of the base class DSRTreeNode are not copied
+     *  because the new tree node is not (yet) part of a document tree.  Furthermore, the
+     *  following member variables of this class are also not copied but initialized with
+     *  their respective default values:
+     *  - ReferenceTarget
+     *  - MACParameters
+     *  - DigitalSignatures
+     *
+     ** @param  node  tree node to be copied
+     */
+    DSRDocumentTreeNode(const DSRDocumentTreeNode &node);
+
     /** destructor
      */
     virtual ~DSRDocumentTreeNode();
+
+    /** clone this tree node (abstract).
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this tree node
+     */
+    virtual DSRDocumentTreeNode *clone() const = 0;
 
     /** clear all member variables.
      *  This does not apply to the relationship and value type since they are never changed.
@@ -560,9 +579,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 
   private:
 
-    /// flag indicating whether the content item is marked (e.g. used for digital signatures)
+    /// flag indicating whether the content item is marked (e.g. used for digital signatures).
+    /// The default value is OFFalse.
     OFBool                   MarkFlag;
     /// flag indicating whether the content item is referenced (by-reference relationship)
+    /// The default value is OFFalse.
     OFBool                   ReferenceTarget;
 
     /// relationship type to the parent node (associated DICOM VR=CS, mandatory)
@@ -588,10 +609,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     DcmSequenceOfItems       DigitalSignatures;
 
 
- // --- declaration of default/copy constructor and assignment operator
+ // --- declaration of default constructor and assignment operator
 
     DSRDocumentTreeNode();
-    DSRDocumentTreeNode(const DSRDocumentTreeNode &);
     DSRDocumentTreeNode &operator=(const DSRDocumentTreeNode &);
 };
 

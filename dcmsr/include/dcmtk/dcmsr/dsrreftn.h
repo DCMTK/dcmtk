@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,9 +58,26 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
     DSRByReferenceTreeNode(const E_RelationshipType relationshipType,
                            const size_t referencedNodeID);
 
+    /** copy constructor.
+     *  Please note that the comments on the copy constructor of the base class
+     *  DSRDocumentTreeNode apply.  Furthermore, the following member variables of
+     *  this class are also not copied but initialized with their default values:
+     *  - ValidReference
+     *  - ReferencedNodeID
+     *
+     ** @param  node  tree node to be copied
+     */
+    DSRByReferenceTreeNode(const DSRByReferenceTreeNode &node);
+
     /** destructor
      */
     virtual ~DSRByReferenceTreeNode();
+
+    /** clone this tree node.
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this tree node
+     */
+    virtual DSRByReferenceTreeNode *clone() const;
 
     /** clear all member variables.
      *  Please note that the content item becomes invalid afterwards.
@@ -177,18 +194,20 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
 
   private:
 
-    /// flag indicating whether the reference is valid or not (i.e. checked)
+    /// flag indicating whether the reference is valid or not (i.e. checked).
+    /// The default value is OFFalse.
     OFBool   ValidReference;
-    /// position string of the referenced content item (target)
+    /// position string of the referenced content item (target).
+    /// The default value is en empty string.
     OFString ReferencedContentItem;
-    /// node ID of the referenced content item (target)
+    /// node ID of the referenced content item (target).
+    /// The default value is 0.
     size_t   ReferencedNodeID;
 
 
- // --- declaration of default/copy constructor and assignment operator
+ // --- declaration of default constructor and assignment operator
 
     DSRByReferenceTreeNode();
-    DSRByReferenceTreeNode(const DSRByReferenceTreeNode &);
     DSRByReferenceTreeNode &operator=(const DSRByReferenceTreeNode &);
 };
 

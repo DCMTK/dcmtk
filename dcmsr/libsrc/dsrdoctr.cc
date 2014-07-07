@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRDocumentTree
@@ -476,6 +476,14 @@ DSRContentItem &DSRDocumentTree::getCurrentContentItem()
 {
     CurrentContentItem.setTreeNode(OFstatic_cast(DSRDocumentTreeNode *, getNode()));
     return CurrentContentItem;
+}
+
+
+DSRDocumentTreeNode *DSRDocumentTree::cloneCurrentTreeNode() const
+{
+    DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+    /* create a copy if the current node is valid */
+    return (node != NULL) ? node->clone() : NULL;
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRTCoordTreeNode
@@ -29,14 +29,27 @@
 
 
 DSRTCoordTreeNode::DSRTCoordTreeNode(const E_RelationshipType relationshipType)
- : DSRDocumentTreeNode(relationshipType, VT_TCoord),
-   DSRTemporalCoordinatesValue()
+  : DSRDocumentTreeNode(relationshipType, VT_TCoord),
+    DSRTemporalCoordinatesValue()
+{
+}
+
+
+DSRTCoordTreeNode::DSRTCoordTreeNode(const DSRTCoordTreeNode &node)
+  : DSRDocumentTreeNode(node),
+    DSRTemporalCoordinatesValue(node)
 {
 }
 
 
 DSRTCoordTreeNode::~DSRTCoordTreeNode()
 {
+}
+
+
+DSRTCoordTreeNode *DSRTCoordTreeNode::clone() const
+{
+    return new DSRTCoordTreeNode(*this);
 }
 
 

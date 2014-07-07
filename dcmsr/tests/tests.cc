@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose: main test program
  *
@@ -25,4 +25,5 @@
 
 OFTEST_REGISTER(dcmsr_addTreeNode);
 OFTEST_REGISTER(dcmsr_addContentItem);
+OFTEST_REGISTER(dcmsr_copyContentItem);
 OFTEST_MAIN("dcmsr")

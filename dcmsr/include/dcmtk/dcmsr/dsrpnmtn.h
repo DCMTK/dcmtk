@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,6 +60,19 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
     DSRPNameTreeNode(const E_RelationshipType relationshipType,
                      const OFString &personNameValue,
                      const OFBool check = OFTrue);
+
+    /** copy constructor.
+     *  Please note that the comments on the copy constructor of the base class
+     *  DSRDocumentTreeNode apply.
+     ** @param  node  tree node to be copied
+     */
+    DSRPNameTreeNode(const DSRPNameTreeNode &node);
+
+    /** clone this tree node.
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this tree node
+     */
+    virtual DSRPNameTreeNode *clone() const;
 
     /** destructor
      */
@@ -158,10 +171,9 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
 
   private:
 
- // --- declaration of default/copy constructor and assignment operator
+ // --- declaration of default constructor and assignment operator
 
     DSRPNameTreeNode();
-    DSRPNameTreeNode(const DSRPNameTreeNode &);
     DSRPNameTreeNode &operator=(const DSRPNameTreeNode &);
 };
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRDocumentTreeNode
@@ -44,6 +44,23 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipTy
     ObservationUID(),
     TemplateIdentifier(),
     MappingResource(),
+    MACParameters(DCM_MACParametersSequence),
+    DigitalSignatures(DCM_DigitalSignaturesSequence)
+{
+}
+
+
+DSRDocumentTreeNode::DSRDocumentTreeNode(const DSRDocumentTreeNode &node)
+  : DSRTreeNode(),
+    MarkFlag(node.MarkFlag),
+    ReferenceTarget(OFFalse),
+    RelationshipType(node.RelationshipType),
+    ValueType(node.ValueType),
+    ConceptName(node.ConceptName),
+    ObservationDateTime(node.ObservationDateTime),
+    ObservationUID(node.ObservationUID),
+    TemplateIdentifier(node.TemplateIdentifier),
+    MappingResource(node.MappingResource),
     MACParameters(DCM_MACParametersSequence),
     DigitalSignatures(DCM_DigitalSignaturesSequence)
 {
