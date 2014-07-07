@@ -3,6 +3,45 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.07 (riesmeier)
 
+- Updated copyright date and other minor changes.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrbascc.h
+           dcmsr/include/dcmtk/dcmsr/dsrc3dcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrchecc.h
+           dcmsr/include/dcmtk/dcmsr/dsrcolcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrenhcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgfr.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgse.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrimpcc.h
+           dcmsr/include/dcmtk/dcmsr/dsriodcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrkeycc.h
+           dcmsr/include/dcmtk/dcmsr/dsrmaccc.h
+           dcmsr/include/dcmtk/dcmsr/dsrmamcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrprocc.h
+           dcmsr/include/dcmtk/dcmsr/dsrrefin.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3gr.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3vl.h
+           dcmsr/include/dcmtk/dcmsr/dsrscogr.h
+           dcmsr/include/dcmtk/dcmsr/dsrscovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrspecc.h
+           dcmsr/include/dcmtk/dcmsr/dsrstrvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcodt.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcosp.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcoto.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcovl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtlist.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavch.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrxmlc.h
+           dcmsr/include/dcmtk/dcmsr/dsrxmld.h
+           dcmsr/include/dcmtk/dcmsr/dsrxrdcc.h
+
 - Minor fixes to file's comment header.
   Affects: dcmsr/apps/dsr2html.cc
            dcmsr/apps/dsr2xml.cc

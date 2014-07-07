@@ -83,7 +83,8 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
     /** read list of items from XML document
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   optional flag used to customize the reading process
+     *                  (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXML(const DSRXMLDocument &doc,

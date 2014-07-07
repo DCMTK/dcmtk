@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2012, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,9 +84,12 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
   // --- input and output ---
 
     /** read XML document from file.
-     *  In order to enable the optional Schema validation the flag XF_validateSchema has to be set.
-     ** @param  filename  name of the file from which the XML document is read ("-" for stdin)
-     *  @param  flags     optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  In order to enable the optional Schema validation the flag XF_validateSchema has
+     *  to be set.
+     ** @param  filename  name of the file from which the XML document is read
+     *                    ("-" for stdin)
+     *  @param  flags     optional flag used to customize the reading process
+     *                    (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition read(const OFString &filename,

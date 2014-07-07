@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,7 +156,7 @@ class DCMTK_DCMSR_EXPORT DSRTree
      *  removed from the tree and then deleted.  The cursor is set automatically to a new
      *  valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
-     *          occured or the tree is now empty.
+     *          occurred or the tree is now empty.
      */
     virtual size_t removeNode();
 
