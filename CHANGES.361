@@ -1,6 +1,52 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.07 (riesmeier)
+
+- Minor fixes to file's comment header.
+  Affects: dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/include/dcmtk/dcmsr/dsdefine.h
+           dcmsr/libsrc/dsrbascc.cc
+           dcmsr/libsrc/dsrc3dcc.cc
+           dcmsr/libsrc/dsrchecc.cc
+           dcmsr/libsrc/dsrcolcc.cc
+           dcmsr/libsrc/dsrcomcc.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrenhcc.cc
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrimgse.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrimpcc.cc
+           dcmsr/libsrc/dsriodcc.cc
+           dcmsr/libsrc/dsrkeycc.cc
+           dcmsr/libsrc/dsrmaccc.cc
+           dcmsr/libsrc/dsrmamcc.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrprocc.cc
+           dcmsr/libsrc/dsrsc3gr.cc
+           dcmsr/libsrc/dsrsc3vl.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrspecc.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrtcovl.cc
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrwavch.cc
+           dcmsr/libsrc/dsrwavvl.cc
+           dcmsr/libsrc/dsrxmlc.cc
+           dcmsr/libsrc/dsrxmld.cc
+           dcmsr/libsrc/dsrxrdcc.cc
+           dcmsr/tests/tsrtree.cc
+
 **** Changes from 2014.07.07 (schlamelcher)
 
 - Fixed a wrong type-alias for OFintegral_constant:

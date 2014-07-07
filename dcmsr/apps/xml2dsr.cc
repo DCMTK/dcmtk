@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2013, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,12 +11,12 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
- *  Purpose: Convert the contents of an XML document to a DICOM structured
- *            reporting file
+ *  Purpose:
+ *    convert the contents of an XML document to a DICOM structured reporting file
  *
  */
 

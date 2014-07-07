@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,11 +11,12 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
- *  Purpose: test program for class DSRTree and DSRTreeNodeCursor
+ *  Purpose:
+ *    test program for classes DSRTree and DSRTreeNodeCursor
  *
  */
 

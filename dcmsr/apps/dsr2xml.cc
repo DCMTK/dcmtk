@@ -11,12 +11,12 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmsr
+ *  Module: dcmsr
  *
- *  Author:  Joerg Riesmeier
+ *  Author: Joerg Riesmeier
  *
- *  Purpose: Convert the contents of a DICOM structured reporting file to
- *           XML format
+ *  Purpose:
+ *    convert the contents of a DICOM structured reporting file to XML format
  *
  */
 
