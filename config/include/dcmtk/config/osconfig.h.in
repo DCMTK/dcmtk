@@ -72,6 +72,9 @@
 /* Define to 1 if you have the <assert.h> header file. */
 #undef HAVE_ASSERT_H
 
+/* Define if __attribute__((aligned)) is available */
+#undef HAVE_ATTRIBUTE_ALIGNED
+
 /* Define to 1 if you have the `bcmp' function. */
 #undef HAVE_BCMP
 
@@ -251,6 +254,9 @@
 
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
+
+/* Define if __alignof__ is available */
+#undef HAVE_GNU_ALIGNOF
 
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H

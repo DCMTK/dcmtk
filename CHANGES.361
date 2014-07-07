@@ -9,6 +9,24 @@ Changes between releases are documented here.
   as its second template parameter.
   Affects: ofstd/include/dcmtk/ofstd/oftraits.h
 
+- Introduced C++11-like alignment support:
+  Created configure tests that detect the availability of various native
+  alignment specifiers on different platform / compiler combinations.
+  Implemented fallback definitions for OFalignas and OFalignof based on these
+  specifiers and the non-standard macros "OFalign" and "OFalign_typename"
+  which compensate for the reduced functionality available on Microsoft
+  compilers by employing C++ templates.
+  OFalign and OFalign_typename are also available on compilers supplying true
+  alignment support, making them the most platform-independent
+  implementations.
+  Added:   ofstd/include/dcmtk/ofstd/ofalign.h
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+
 **** Changes from 2014.07.02 (riesmeier)
 
 - Removed year component from version field:

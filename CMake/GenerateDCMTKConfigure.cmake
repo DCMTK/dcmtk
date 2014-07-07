@@ -687,3 +687,32 @@ int main()
 }
 ")
 ENDIF(WIN32)
+
+# Check for alignment query / specifier support
+DCMTK_TRY_COMPILE(HAVE_GNU_ALIGNOF "__alignof__ is supported"
+    "int main()
+{
+    char c[__alignof__(int)];
+    return 0;
+}")
+
+DCMTK_TRY_COMPILE(HAVE_MS_ALIGNOF "__alignof is supported"
+    "int main()
+{
+    char c[__alignof(int)];
+    return 0;
+}")
+
+DCMTK_TRY_COMPILE(HAVE_ATTRIBUTE_ALIGNED "__attribute__((aligned)) is supported"
+    "int main()
+{
+    __attribute__((aligned(4))) char c[16];
+    return 0;
+}")
+
+DCMTK_TRY_COMPILE(HAVE_DECLSPEC_ALIGN "__declspec(align) is supported"
+    "int main()
+{
+    __declspec(align(4)) char c[16];
+    return 0;
+}")

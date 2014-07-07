@@ -1819,6 +1819,47 @@ AC_DEFUN([AC_CHECK_SYNC_FN],
     fi
 ])
 
+AC_DEFUN([AC_CHECK_ALIGNOF],
+[
+    AC_MSG_CHECKING([for __alignof__])
+    AC_LINK_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            int main(){char c[[__alignof__(int)]];return 0;}
+        ])
+    ],
+    [dcmtk_have_alignof=[yes]],
+    [dcmtk_have_alignof=[no]]
+    )
+    if test "$dcmtk_have_alignof" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($1,[1],[Define if __alignof__ is available])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
+
+AC_DEFUN([AC_CHECK_ATTRIBUTE_ALIGNED],
+[
+    AC_MSG_CHECKING([for __attribute__((aligned))])
+    AC_LINK_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            int main(){__attribute__((aligned(4))) char c[[16]];return 0;}
+        ])
+    ],
+    [dcmtk_have_attribute_aligned=[yes]],
+    [dcmtk_have_attribute_aligned=[no]]
+    )
+    if test "$dcmtk_have_attribute_aligned" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($1,[1],[Define if __attribute__((aligned)) is available])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
 
 dnl
 dnl This macro checks if a given preprocessor symbol exists and is a string

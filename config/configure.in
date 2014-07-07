@@ -1236,6 +1236,8 @@ AC_ARG_WITH(cxx11-stl,
 
 AC_CHECK_SYNC_FN([__sync_add_and_fetch],[HAVE_SYNC_ADD_AND_FETCH])
 AC_CHECK_SYNC_FN([__sync_sub_and_fetch],[HAVE_SYNC_SUB_AND_FETCH])
+AC_CHECK_ALIGNOF([HAVE_GNU_ALIGNOF])
+AC_CHECK_ATTRIBUTE_ALIGNED([HAVE_ATTRIBUTE_ALIGNED])
 
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags

@@ -1054,4 +1054,16 @@ typedef unsigned long ulong;
  for building with C++11 features.
 #endif
 
+/* Define if the compiler supports __alignof__ */
+#cmakedefine HAVE_GNU_ALIGNOF
+
+/* Define if the compiler supports __alignof */
+#cmakedefine HAVE_MS_ALIGNOF
+
+/* Define if the compiler supports __attribute__(aligned) */
+#cmakedefine HAVE_ATTRIBUTE_ALIGNED
+
+/* Define if the compiler supports __declspec(align) */
+#cmakedefine HAVE_DECLSPEC_ALIGN
+
 #endif /* !OSCONFIG_H*/
