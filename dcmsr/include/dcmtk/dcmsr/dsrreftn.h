@@ -65,6 +65,8 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
      *  - ValidReference
      *  - ReferencedNodeID
      *
+     *  As a result, the contained by-reference relationship becomes invalid and should
+     *  be updated after the node has been added to a document tree.
      ** @param  node  tree node to be copied
      */
     DSRByReferenceTreeNode(const DSRByReferenceTreeNode &node);

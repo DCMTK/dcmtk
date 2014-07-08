@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.08 (riesmeier)
+
+- Added explaining comment on new copy constructor.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+
 **** Changes from 2014.07.07 (riesmeier)
 
 - Implemented copy constructors and added clone():
