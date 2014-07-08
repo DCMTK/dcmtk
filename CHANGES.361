@@ -3,6 +3,27 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.08 (riesmeier)
 
+- Removed outdated CMake exclude pattern:
+  Removed outdated "CVS" exclude pattern from CMake install command. After the
+  change from CVS to git there is no need to exclude the subdirectory anymore.
+  Affects: dcmdata/include/CMakeLists.txt
+           dcmimage/include/CMakeLists.txt
+           dcmimgle/include/CMakeLists.txt
+           dcmjpeg/include/CMakeLists.txt
+           dcmjpls/include/CMakeLists.txt
+           dcmnet/include/CMakeLists.txt
+           dcmpstat/include/CMakeLists.txt
+           dcmqrdb/include/CMakeLists.txt
+           dcmrt/include/CMakeLists.txt
+           dcmsign/include/CMakeLists.txt
+           dcmsr/include/CMakeLists.txt
+           dcmtls/include/CMakeLists.txt
+           dcmwlm/data/CMakeLists.txt
+           dcmwlm/include/CMakeLists.txt
+           doxygen/CMakeLists.txt
+           oflog/include/CMakeLists.txt
+           ofstd/include/CMakeLists.txt
+
 - Added explaining comment on new copy constructor.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrreftn.h
 
