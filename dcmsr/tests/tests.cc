@@ -24,6 +24,7 @@
 #include "dcmtk/ofstd/oftest.h"
 
 OFTEST_REGISTER(dcmsr_addTreeNode);
+OFTEST_REGISTER(dcmsr_treeWithoutRoot);
 OFTEST_REGISTER(dcmsr_addContentItem);
 OFTEST_REGISTER(dcmsr_copyContentItem);
 OFTEST_MAIN("dcmsr")

@@ -52,7 +52,14 @@ OFBool DSRTree::isEmpty() const
 void DSRTree::clear()
 {
     if (gotoRoot())
-        removeNode();
+    {
+        size_t nodeID = 0;
+        /* there might be more than one node at top-level */
+        do {
+            /* so delete them all */
+            nodeID = removeNode();
+        } while (nodeID > 0);
+    }
 }
 
 

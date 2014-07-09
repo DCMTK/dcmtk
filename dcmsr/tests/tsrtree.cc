@@ -49,7 +49,7 @@ OFTEST(dcmsr_addTreeNode)
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), 9);
     OFCHECK_EQUAL(tree.gotoPrevious(), 8);
     OFCHECK_EQUAL(tree.goUp(), 1);
-    /* and finally, iterate over all tree nodes ... */
+    /* iterate over all tree nodes ... */
     OFCHECK_EQUAL(tree.getLevel(), 1);
     OFCHECK_EQUAL(tree.iterate(), 2);
     OFCHECK_EQUAL(tree.getLevel(), 2);
@@ -68,4 +68,25 @@ OFTEST(dcmsr_addTreeNode)
     OFCHECK_EQUAL(tree.iterate(), 7);
     OFCHECK_EQUAL(tree.getLevel(), 2);
     OFCHECK_EQUAL(tree.iterate(), 0);
+    /* and finally, delete them all */
+    tree.clear();
+    OFCHECK(tree.isEmpty());
+}
+
+
+OFTEST(dcmsr_treeWithoutRoot)
+{
+    DSRTree tree;
+    /* first, create a simple tree of 6 nodes (with 3 nodes on top-level!) */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), 10);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 11);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 12);
+    OFCHECK_EQUAL(tree.gotoPrevious(), 11);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 13);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 14);
+    OFCHECK_EQUAL(tree.gotoPrevious(), 13);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 15);
+    /* then clear the tree; should be empty now */
+    tree.clear();
+    OFCHECK(tree.isEmpty());
 }

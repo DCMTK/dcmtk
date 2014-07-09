@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.09 (riesmeier)
+
+- Made sure that all top-level nodes are deleted:
+  Made sure that all nodes in the tree are deleted with clear(), even if there
+  is more than one node on the top-level (i.e. no dedicated root). This feature
+  will be needed for handling the upcoming document subtree class properly.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/libsrc/dsrtree.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrtree.cc
+
 **** Changes from 2014.07.08 (riesmeier)
 
 - Excluded "*.md5" files from installation:
