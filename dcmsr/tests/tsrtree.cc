@@ -30,46 +30,47 @@
 OFTEST(dcmsr_addTreeNode)
 {
     DSRTree tree;
+    const size_t nodeID = tree.getNextNodeID();
     OFCHECK_EQUAL(tree.countNodes(), 0);
     /* first, create a simple tree of 6 nodes and check the references */
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), 1);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 2);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 3);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 4);
-    OFCHECK_EQUAL(tree.gotoPrevious(), 3);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 5);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 6);
-    OFCHECK_EQUAL(tree.gotoPrevious(), 5);
-    OFCHECK_EQUAL(tree.goUp(), 3);
-    OFCHECK_EQUAL(tree.gotoPrevious(), 2);
-    OFCHECK_EQUAL(tree.goUp(), 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 4);
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 2);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 1);
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 0);
     OFCHECK_EQUAL(tree.countNodes(), 6);
     /* then, insert new nodes into the tree and check the references */
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 7);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), 8);
-    OFCHECK_EQUAL(tree.gotoNext(), 7);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), 9);
-    OFCHECK_EQUAL(tree.gotoPrevious(), 8);
-    OFCHECK_EQUAL(tree.goUp(), 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 6);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), nodeID + 7);
+    OFCHECK_EQUAL(tree.gotoNext(), nodeID + 6);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), nodeID + 8);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 7);
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 0);
     OFCHECK_EQUAL(tree.countNodes(), 9);
     /* iterate over all tree nodes ... */
-    OFCHECK_EQUAL(tree.getLevel(), 1);
-    OFCHECK_EQUAL(tree.iterate(), 2);
-    OFCHECK_EQUAL(tree.getLevel(), 2);
-    OFCHECK_EQUAL(tree.iterate(), 3);
-    OFCHECK_EQUAL(tree.getLevel(), 2);
-    OFCHECK_EQUAL(tree.iterate(), 5);
-    OFCHECK_EQUAL(tree.getLevel(), 3);
-    OFCHECK_EQUAL(tree.iterate(), 6);
-    OFCHECK_EQUAL(tree.getLevel(), 3);
-    OFCHECK_EQUAL(tree.iterate(), 4);
-    OFCHECK_EQUAL(tree.getLevel(), 2);
-    OFCHECK_EQUAL(tree.iterate(), 8);
-    OFCHECK_EQUAL(tree.getLevel(), 2);
-    OFCHECK_EQUAL(tree.iterate(), 9);
-    OFCHECK_EQUAL(tree.getLevel(), 2);
-    OFCHECK_EQUAL(tree.iterate(), 7);
-    OFCHECK_EQUAL(tree.getLevel(), 2);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 0);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 1);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 1);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 2);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 1);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 4);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 2);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 5);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 2);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 3);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 1);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 7);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 1);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 8);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 1);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 6);
+    OFCHECK_EQUAL(tree.getLevel(), nodeID + 1);
     OFCHECK_EQUAL(tree.iterate(), 0);
     /* and finally, delete them all */
     tree.clear();
@@ -81,16 +82,17 @@ OFTEST(dcmsr_addTreeNode)
 OFTEST(dcmsr_treeWithoutRoot)
 {
     DSRTree tree;
+    const size_t nodeID = tree.getNextNodeID();
     OFCHECK_EQUAL(tree.countNodes(), 0);
     /* first, create a simple tree of 6 nodes (with 3 nodes on top-level!) */
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), 10);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 11);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 12);
-    OFCHECK_EQUAL(tree.gotoPrevious(), 11);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 13);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 14);
-    OFCHECK_EQUAL(tree.gotoPrevious(), 13);
-    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 15);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 4);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 3);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 5);
     OFCHECK_EQUAL(tree.countNodes(), 6);
     /* then clear the tree; should be empty now */
     tree.clear();

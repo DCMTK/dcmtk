@@ -120,6 +120,12 @@ class DCMTK_DCMSR_EXPORT DSRTree
      */
     size_t countNodes() const;
 
+    /** get ID of the next node to be created.
+     *  The node ID uniquely identifies a content item in the document tree.
+     ** @return ID of the next node to be created (should never be 0)
+     */
+    size_t getNextNodeID() const;
+
     /** set internal cursor to root node
      ** @return ID of root node if successful, 0 otherwise
      */

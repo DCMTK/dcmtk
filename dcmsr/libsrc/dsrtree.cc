@@ -78,6 +78,13 @@ size_t DSRTree::countNodes() const
 }
 
 
+size_t DSRTree::getNextNodeID() const
+{
+    /* current value of the counter used to create unique identifiers */
+    return DSRTreeNode::IdentCounter;
+}
+
+
 size_t DSRTree::gotoRoot()
 {
     return setCursor(RootNode);

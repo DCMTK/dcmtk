@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.09 (riesmeier)
 
+- Fixed issue with tests run in different order:
+  Fixed issue with tests being run in different order when using the CMake
+  build system. Now, the ID of the next node to be created can be determined in
+  advance.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/tests/tsrdoctr.cc
+           dcmsr/tests/tsrtree.cc
+
 - Added two new convenience functions:
   Added new convenience functions that allow for adding a new node (either on
   the same level or as a child node) and for specifying the concept name with a
