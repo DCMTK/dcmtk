@@ -114,6 +114,12 @@ class DCMTK_DCMSR_EXPORT DSRTree
      */
     OFBool isEmpty() const;
 
+    /** count number of nodes in the tree.
+     *  This method iterates over all nodes that are stored in the tree.
+     *  @return number of nodes, 0 if tree is empty
+     */
+    size_t countNodes() const;
+
     /** set internal cursor to root node
      ** @return ID of root node if successful, 0 otherwise
      */

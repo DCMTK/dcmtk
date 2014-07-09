@@ -30,6 +30,7 @@
 OFTEST(dcmsr_addTreeNode)
 {
     DSRTree tree;
+    OFCHECK_EQUAL(tree.countNodes(), 0);
     /* first, create a simple tree of 6 nodes and check the references */
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), 1);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 2);
@@ -42,6 +43,7 @@ OFTEST(dcmsr_addTreeNode)
     OFCHECK_EQUAL(tree.goUp(), 3);
     OFCHECK_EQUAL(tree.gotoPrevious(), 2);
     OFCHECK_EQUAL(tree.goUp(), 1);
+    OFCHECK_EQUAL(tree.countNodes(), 6);
     /* then, insert new nodes into the tree and check the references */
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 7);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), 8);
@@ -49,6 +51,7 @@ OFTEST(dcmsr_addTreeNode)
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_beforeCurrent), 9);
     OFCHECK_EQUAL(tree.gotoPrevious(), 8);
     OFCHECK_EQUAL(tree.goUp(), 1);
+    OFCHECK_EQUAL(tree.countNodes(), 9);
     /* iterate over all tree nodes ... */
     OFCHECK_EQUAL(tree.getLevel(), 1);
     OFCHECK_EQUAL(tree.iterate(), 2);
@@ -71,12 +74,14 @@ OFTEST(dcmsr_addTreeNode)
     /* and finally, delete them all */
     tree.clear();
     OFCHECK(tree.isEmpty());
+    OFCHECK_EQUAL(tree.countNodes(), 0);
 }
 
 
 OFTEST(dcmsr_treeWithoutRoot)
 {
     DSRTree tree;
+    OFCHECK_EQUAL(tree.countNodes(), 0);
     /* first, create a simple tree of 6 nodes (with 3 nodes on top-level!) */
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), 10);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 11);
@@ -86,7 +91,9 @@ OFTEST(dcmsr_treeWithoutRoot)
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), 14);
     OFCHECK_EQUAL(tree.gotoPrevious(), 13);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), 15);
+    OFCHECK_EQUAL(tree.countNodes(), 6);
     /* then clear the tree; should be empty now */
     tree.clear();
     OFCHECK(tree.isEmpty());
+    OFCHECK_EQUAL(tree.countNodes(), 0);
 }

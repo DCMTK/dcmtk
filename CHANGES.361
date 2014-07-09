@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.09 (riesmeier)
 
+- Added method counting the number of nodes:
+  Added method that counts the number of nodes stored in a tree.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/tests/tsrtree.cc
+
 - Made sure that all top-level nodes are deleted:
   Made sure that all nodes in the tree are deleted with clear(), even if there
   is more than one node on the top-level (i.e. no dedicated root). This feature

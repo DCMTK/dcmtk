@@ -43,12 +43,6 @@ DSRTree::~DSRTree()
 }
 
 
-OFBool DSRTree::isEmpty() const
-{
-    return (RootNode == NULL);
-}
-
-
 void DSRTree::clear()
 {
     if (gotoRoot())
@@ -60,6 +54,27 @@ void DSRTree::clear()
             nodeID = removeNode();
         } while (nodeID > 0);
     }
+}
+
+
+OFBool DSRTree::isEmpty() const
+{
+    return (RootNode == NULL);
+}
+
+
+size_t DSRTree::countNodes() const
+{
+    size_t count = 0;
+    DSRTreeNodeCursor cursor(RootNode);
+    if (cursor.isValid())
+    {
+        /* iterate over all nodes */
+        do {
+            ++count;
+        } while (cursor.iterate());
+    }
+    return count;
 }
 
 
@@ -77,6 +92,7 @@ size_t DSRTree::gotoNode(const size_t searchID,
     {
         if (startFromRoot)
             gotoRoot();
+        /* call the real function */
         nodeID = DSRTreeNodeCursor::gotoNode(searchID);
     }
     return nodeID;
@@ -91,6 +107,7 @@ size_t DSRTree::gotoNode(const OFString &reference,
     {
         if (startFromRoot)
             gotoRoot();
+        /* call the real function */
         nodeID = DSRTreeNodeCursor::gotoNode(reference);
     }
     return nodeID;
