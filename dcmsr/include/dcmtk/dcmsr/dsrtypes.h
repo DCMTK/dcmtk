@@ -163,6 +163,12 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_RepresentationNotAvailabl
 
 /// error: an icon image could not be created from the given DICOM image
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotCreateIconImage;
+
+/// error: a new content item could not be added to the current one
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotAddContentItem;
+
+/// error: an invalid concept name code has been passed or is used
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidConceptName;
 //@}
 
 

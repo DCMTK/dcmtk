@@ -423,6 +423,40 @@ DSRDocumentTreeNode *DSRDocumentTree::addContentItem(DSRDocumentTreeNode *node,
 }
 
 
+OFCondition DSRDocumentTree::addContentItem(const E_RelationshipType relationshipType,
+                                            const E_ValueType valueType,
+                                            const DSRCodedEntryValue &conceptName)
+{
+    OFCondition result = EC_Normal;
+    /* call the functions doing the real work */
+    if (addContentItem(relationshipType, valueType, AM_afterCurrent) > 0)
+    {
+        /* use a more appropriate code than the one returned */
+        if (getCurrentContentItem().setConceptName(conceptName).bad())
+            result = SR_EC_InvalidConceptName;
+    } else
+        result = SR_EC_CannotAddContentItem;
+    return result;
+}
+
+
+OFCondition DSRDocumentTree::addChildContentItem(const E_RelationshipType relationshipType,
+                                                 const E_ValueType valueType,
+                                                 const DSRCodedEntryValue &conceptName)
+{
+    OFCondition result = EC_Normal;
+    /* call the functions doing the real work */
+    if (addContentItem(relationshipType, valueType, AM_belowCurrent) > 0)
+    {
+        /* use a more appropriate code than the one returned */
+        if (getCurrentContentItem().setConceptName(conceptName).bad())
+            result = SR_EC_InvalidConceptName;
+    } else
+        result = SR_EC_CannotAddContentItem;
+    return result;
+}
+
+
 size_t DSRDocumentTree::addByReferenceRelationship(const E_RelationshipType relationshipType,
                                                    const size_t referencedNodeID)
 {

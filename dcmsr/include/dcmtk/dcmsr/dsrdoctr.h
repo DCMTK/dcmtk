@@ -210,6 +210,38 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
                                         const E_AddMode addMode = AM_afterCurrent,
                                         const OFBool deleteIfFail = OFFalse);
 
+    /** add specified content item after the current one.
+     *  If possible this method creates a new node as specified and adds it after the current
+     *  one, i.e. on the same level.  Internally, the first variant of the addContentItem()
+     *  method is called with the third parameter being DSRTypes::AM_afterCurrent.  If
+     *  successful, the given concept name is set for the new node, and the cursor is updated.
+     *  @note This is a convenience function that avoids calling several other functions.
+     ** @param  relationshipType  relationship type of node to be added with regard
+     *                            to the current one
+     *  @param  valueType         value type of node to be added
+     *  @param  conceptName       concept name of the node to be added
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addContentItem(const E_RelationshipType relationshipType,
+                               const E_ValueType valueType,
+                               const DSRCodedEntryValue &conceptName);
+
+    /** add specified content item below the current one.
+     *  If possible this method creates a new node as specified and adds it below the current
+     *  one, i.e. as a child.  Internally, the first variant of the addContentItem() method
+     *  is called with the third parameter being DSRTypes::AM_belowCurrent.  If successful,
+     *  the given concept name is set for the new node, and the cursor is updated.
+     *  @note This is a convenience function that avoids calling several other functions.
+     ** @param  relationshipType  relationship type of node to be added with regard
+     *                            to the current one
+     *  @param  valueType         value type of node to be added
+     *  @param  conceptName       concept name of the node to be added
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addChildContentItem(const E_RelationshipType relationshipType,
+                                    const E_ValueType valueType,
+                                    const DSRCodedEntryValue &conceptName);
+
     /** add specified by-reference relationship to the current content item.
      *  If possible this method creates a new pseudo-node (relationship) and adds it to the
      *  current one.  The method canAddByReferenceRelationship() is called internally to check

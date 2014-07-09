@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.09 (riesmeier)
 
+- Added two new convenience functions:
+  Added new convenience functions that allow for adding a new node (either on
+  the same level or as a child node) and for specifying the concept name with a
+  single call. Also added a test case for these functions and gotoNamedNode().
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 - Added method counting the number of nodes:
   Added method that counts the number of nodes stored in a tree.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrtree.h

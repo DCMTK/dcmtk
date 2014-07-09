@@ -27,4 +27,5 @@ OFTEST_REGISTER(dcmsr_addTreeNode);
 OFTEST_REGISTER(dcmsr_treeWithoutRoot);
 OFTEST_REGISTER(dcmsr_addContentItem);
 OFTEST_REGISTER(dcmsr_copyContentItem);
+OFTEST_REGISTER(dcmsr_gotoNamedNode);
 OFTEST_MAIN("dcmsr")

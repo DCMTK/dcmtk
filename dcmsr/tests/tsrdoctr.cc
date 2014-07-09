@@ -91,3 +91,19 @@ OFTEST(dcmsr_copyContentItem)
     } else
         OFCHECK_FAIL("could not create clone of TEXT content item");
 }
+
+
+OFTEST(dcmsr_gotoNamedNode)
+{
+    /* first create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container, DSRCodedEntryValue("121111", "DCM", "Summary")).good());
+    OFCHECK(tree.addChildContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    size_t nodeID = tree.getNodeID();
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRCodedEntryValue("1234", "99_PRV", "NOS")).good());
+    /* and check the "search by name" function */
+    OFCHECK_EQUAL(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")), nodeID);
+    OFCHECK_EQUAL(tree.gotoNamedNode(DSRCodedEntryValue("1234", "99_PRV", "NOS")), nodeID + 1);
+}

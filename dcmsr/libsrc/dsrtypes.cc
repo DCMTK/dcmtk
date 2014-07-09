@@ -267,6 +267,8 @@ makeOFConditionConst(SR_EC_CodingSchemeNotFound,             OFM_dcmsr, 13, OF_e
 makeOFConditionConst(SR_EC_CorruptedXMLStructure,            OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
 makeOFConditionConst(SR_EC_RepresentationNotAvailable,       OFM_dcmsr, 15, OF_error, "Representation not available");
 makeOFConditionConst(SR_EC_CannotCreateIconImage,            OFM_dcmsr, 16, OF_error, "Cannot create Icon Image");
+makeOFConditionConst(SR_EC_CannotAddContentItem,             OFM_dcmsr, 17, OF_error, "Cannot add Content Item");
+makeOFConditionConst(SR_EC_InvalidConceptName,               OFM_dcmsr, 18, OF_error, "Invalid Concept Name");
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
