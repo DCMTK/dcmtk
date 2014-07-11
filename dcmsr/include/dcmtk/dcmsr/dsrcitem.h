@@ -86,13 +86,14 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** get value type.
      *  Applicable to all content items.
-     ** @return value type of current content item if valid, VT_invalid otherwise
+     ** @return value type of current content item if valid, DSRTypes::VT_invalid otherwise
      */
     E_ValueType getValueType() const;
 
     /** get relationship type.
      *  Applicable to all content items.
-     ** @return relationship type of current content item if valid, RT_invalid otherwise
+     ** @return relationship type of current content item if valid, DSRTypes::RT_invalid
+     *          otherwise
      */
     E_RelationshipType getRelationshipType() const;
 
@@ -364,7 +365,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are separate items.
      *  Applicable to: CONTAINER
-     ** @return continuity of content flag if successful, COC_invalid otherwise
+     ** @return continuity of content flag if successful, DSRTypes::COC_invalid otherwise
      */
     E_ContinuityOfContent getContinuityOfContent() const;
 
@@ -372,7 +373,8 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are separate items.
      *  Applicable to: CONTAINER
-     ** @param  continuityOfContent  value to be set (should be different from COC_invalid)
+     ** @param  continuityOfContent  value to be set
+     *                               (should be different from DSRTypes::COC_invalid)
      *  @param  check                if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */

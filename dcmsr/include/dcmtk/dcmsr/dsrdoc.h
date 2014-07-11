@@ -108,8 +108,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *                   and the DigitalSignaturesSequence are read for the general document
      *                   header (equivalent to top-level content item) and each content item
      *                   of the document tree.
-     *                   If not removed manually (with 'DSRDocumentTree::removeSignatures')
-     *                   the signatures are written back to the dataset when the method 'write'
+     *                   If not removed manually (with DSRDocumentTree::removeSignatures())
+     *                   the signatures are written back to the dataset when the write() method
      *                   is called.
      *                   Please note that the two signature sequences for any other sequence
      *                   (e.g. VerifyingObserver or PredecessorDocuments) are never read.

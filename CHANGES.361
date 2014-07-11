@@ -1,6 +1,31 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.11 (riesmeier)
+
+- Fixed various Doxygen-related issues:
+  Fixed various Doxygen-related issues, mainly missing class name for some
+  identifiers. Also fixed wrong header include (where appropriate).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrcodtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrcontn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdattn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdtitn.h
+           dcmsr/include/dcmtk/dcmsr/dsrimgtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrpnmtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3tn.h
+           dcmsr/include/dcmtk/dcmsr/dsrscotn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcotn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtextn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtimtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/include/dcmtk/dcmsr/dsruidtn.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavtn.h
 
 **** Changes from 2014.07.11 (onken)
 

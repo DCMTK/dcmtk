@@ -877,79 +877,79 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** convert SOP class UID to SR document type
      ** @param  sopClassUID  SOP class UID to be converted
-     ** @return SR document type if successful, DT_invalid otherwise
+     ** @return SR document type if successful, DSRTypes::DT_invalid otherwise
      */
     static E_DocumentType sopClassUIDToDocumentType(const OFString &sopClassUID);
 
     /** convert DICOM defined term to relationship type
      ** @param  definedTerm  defined term to be converted
-     ** @return relationship type if successful, RT_invalid otherwise
+     ** @return relationship type if successful, DSRTypes::RT_invalid otherwise
      */
     static E_RelationshipType definedTermToRelationshipType(const OFString &definedTerm);
 
     /** convert DICOM defined term to value type
      ** @param  definedTerm  defined term to be converted
-     ** @return value type if successful, VT_invalid otherwise
+     ** @return value type if successful, DSRTypes::VT_invalid otherwise
      */
     static E_ValueType definedTermToValueType(const OFString &definedTerm);
 
     /** convert SOP class UID to presentation state type
      ** @param  sopClassUID  SOP class UID to be converted
-     ** @return presentation state type if successful, PT_invalid otherwise
+     ** @return presentation state type if successful, DSRTypes::PT_invalid otherwise
      */
     static E_PresentationStateType sopClassUIDToPresentationStateType(const OFString &sopClassUID);
 
     /** convert XML tag name to value type
      ** @param  xmlTagName  XML tag name to be converted
-     ** @return value type if successful, VT_invalid otherwise
+     ** @return value type if successful, DSRTypes::VT_invalid otherwise
      */
     static E_ValueType xmlTagNameToValueType(const OFString &xmlTagName);
 
     /** convert DICOM enumerated value to graphic type
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return graphic type if successful, GT_invalid otherwise
+     ** @return graphic type if successful, DSRTypes::GT_invalid otherwise
      */
     static E_GraphicType enumeratedValueToGraphicType(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to graphic type (3D)
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return graphic type if successful, GT3_invalid otherwise
+     ** @return graphic type if successful, DSRTypes::GT3_invalid otherwise
      */
     static E_GraphicType3D enumeratedValueToGraphicType3D(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to temporal range type
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return temporal range type if successful, TRT_invalid otherwise
+     ** @return temporal range type if successful, DSRTypes::TRT_invalid otherwise
      */
     static E_TemporalRangeType enumeratedValueToTemporalRangeType(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to continuity of content flag
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return continuity of content flag type if successful, COC_invalid otherwise
+     ** @return continuity of content flag type if successful, DSRTypes::COC_invalid otherwise
      */
     static E_ContinuityOfContent enumeratedValueToContinuityOfContent(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to preliminary flag
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return preliminary flag type if successful, PF_invalid otherwise
+     ** @return preliminary flag type if successful, DSRTypes::PF_invalid otherwise
      */
     static E_PreliminaryFlag enumeratedValueToPreliminaryFlag(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to completion flag
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return completion flag type if successful, CF_invalid otherwise
+     ** @return completion flag type if successful, DSRTypes::CF_invalid otherwise
      */
     static E_CompletionFlag enumeratedValueToCompletionFlag(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to verification flag
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return verification flag type if successful, VF_invalid otherwise
+     ** @return verification flag type if successful, DSRTypes::VF_invalid otherwise
      */
     static E_VerificationFlag enumeratedValueToVerificationFlag(const OFString &enumeratedValue);
 
     /** convert DICOM defined term to character set
      ** @param  definedTerm  defined term to be converted
-     ** @return character set if successful, CS_invalid otherwise
+     ** @return character set if successful, DSRTypes::CS_invalid otherwise
      */
     static E_CharacterSet definedTermToCharacterSet(const OFString &definedTerm);
 
@@ -1046,7 +1046,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /** convert unsigned integer number to character string
      ** @param  number       unsigned integer number to be converted
      *  @param  stringValue  character string used to store the result
-     ** @return pointer to the first character of the resulting string (may be NULL if 'string' was NULL)
+     ** @return pointer to the first character of the resulting string
+     *          (may be NULL if 'string' was NULL)
      */
     static const char *numberToString(const size_t number,
                                       char *stringValue);
@@ -1068,14 +1069,14 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                 OFString &printString);
 
     /** convert character string to HTML mnenonic string.
-     *  Characters with special meaning for HTML (e.g. '<' and '&') are replace by the
-     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'HF_convertNonASCIICharacters'
-     *  is set all characters > #127 are also converted (useful if only HTML 3.2 is supported which
-     *  does not allow to specify the character set).
+     *  Characters with special meaning for HTML (e.g. '<' and '&') are replace by the corresponding
+     *  mnenonics (e.g. "&lt;" and "&amp;").
+     *  If flag DSRTypes::HF_convertNonASCIICharacters is set, all characters > #127 are also converted
+     *  (useful if only HTML 3.2 is supported which does not allow to specify the character set).
      ** @param  sourceString     source string to be converted
      *  @param  markupString     reference to variable where the result should be stored
-     *  @param  flags            optional flags, checking HF_convertNonASCIICharacters,
-                                 HF_HTML32Compatibility and HF_XHTML11Compatibility only
+     *  @param  flags            optional flags, only checking DSRTypes::HF_convertNonASCIICharacters,
+     *                           DSRTypes::HF_HTML32Compatibility and DSRTypes::HF_XHTML11Compatibility
      *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
      *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
      *                           The following combinations are accepted: LF, CR, LF CR, CF LF.

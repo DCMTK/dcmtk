@@ -44,14 +44,14 @@ class DCMTK_DCMSR_EXPORT DSRUIDRefTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRUIDRefTreeNode(const E_RelationshipType relationshipType);
 
     /** constructor.
      ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     *                            Should not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      *  @param  uidValue          initial value to be set (VR=UI, mandatory)
      *  @param  check             if enabled, check 'uidValue' for validity before setting
      *                            it.  See checkValue() for details.  An empty value is never

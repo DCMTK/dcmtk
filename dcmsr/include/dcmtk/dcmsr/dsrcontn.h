@@ -26,7 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmsr/dsrdoctr.h"
+#include "dcmtk/dcmsr/dsrdoctn.h"
 
 
 /*---------------------*
@@ -42,10 +42,10 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType     type of relationship to the parent tree node.
-     *                               Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType     type of relationship to the parent tree node.  Should
+     *                               not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      *  @param  continuityOfContent  Continuity of content flag (default: separate).
-     *                               Should be different from COC_invalid.
+     *                               Should be different from DSRTypes::COC_invalid.
      */
     DSRContainerTreeNode(const E_RelationshipType relationshipType,
                          const E_ContinuityOfContent continuityOfContent = COC_Separate);
@@ -107,8 +107,8 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     /** render content item in HTML/XHTML format.
      *  After rendering the current content item all child nodes (if any) are also rendered
      *  (see renderHTMLChildNodes() for details).  This method overwrites the one specified in
-     *  base class DSRDocumentTree since the rendering of the child nodes depends on the value
-     *  of the flag 'ContinuityOfContent'.
+     *  base class DSRDocumentTreeNode since the rendering of the child nodes depends on the
+     *  value of the flag 'ContinuityOfContent'.
      ** @param  docStream     output stream to which the main HTML/XHTML document is written
      *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
      *  @param  nestingLevel  current nesting level.  Used to render section headings.
@@ -126,7 +126,7 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     /** get continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are separate items.
-     ** @return continuity of content flag if successful, COC_invalid otherwise
+     ** @return continuity of content flag if successful, DSRTypes::COC_invalid otherwise
      */
     inline E_ContinuityOfContent getContinuityOfContent() const
     {
@@ -136,7 +136,8 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     /** set continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are separate items.
-     ** @param  continuityOfContent  value to be set (should be different from COC_invalid)
+     ** @param  continuityOfContent  value to be set
+     *                               (should be different from DSRTypes::COC_invalid)
      *  @param  check                dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */

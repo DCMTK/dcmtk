@@ -44,14 +44,14 @@ class DCMTK_DCMSR_EXPORT DSRTextTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRTextTreeNode(const E_RelationshipType relationshipType);
 
     /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     *                            Should not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      *  @param  textValue         initial value to be set (VR=UT, mandatory)
      *  @param  check             if enabled, check 'textValue' for validity before setting
      *                            it.  See checkValue() for details.  An empty value is never
@@ -99,8 +99,8 @@ class DCMTK_DCMSR_EXPORT DSRTextTreeNode
 
     /** print content item.
      *  A typical output looks like this: contains TEXT:(,,"Text Code")="This is a Text."
-     *  If the 'flag' PF_shortenLongItemValues is set the text is limited to 40 characters
-     *  (incl. trailing "...").
+     *  If the 'flag' DSRTypes::PF_shortenLongItemValues is set, the text is limited to
+     *  40 characters (incl. trailing "...").
      ** @param  stream  output stream to which the content item should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise

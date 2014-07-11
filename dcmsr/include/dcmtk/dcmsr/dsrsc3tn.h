@@ -26,7 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmsr/dsrdoctr.h"
+#include "dcmtk/dcmsr/dsrdoctn.h"
 #include "dcmtk/dcmsr/dsrsc3vl.h"
 
 
@@ -44,8 +44,8 @@ class DCMTK_DCMSR_EXPORT DSRSCoord3DTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRSCoord3DTreeNode(const E_RelationshipType relationshipType);
 
@@ -78,7 +78,7 @@ class DCMTK_DCMSR_EXPORT DSRSCoord3DTreeNode
     virtual OFBool isValid() const;
 
     /** check whether the content is short.
-     *  The method isShort() from the base class DSRSpatialCoordinatesValue is called.
+     *  The method isShort() from the base class DSRSpatialCoordinates3DValue is called.
      ** @param  flags  flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return OFTrue if the content is short, OFFalse otherwise
      */

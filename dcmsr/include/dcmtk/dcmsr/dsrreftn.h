@@ -26,7 +26,6 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmsr/dsrdoctr.h"
 #include "dcmtk/dcmsr/dsrdoctn.h"
 
 
@@ -46,13 +45,13 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
 
     /** constructor
      ** @param  relationshipType  type of relationship to the parent/source tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     *                            Should not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRByReferenceTreeNode(const E_RelationshipType relationshipType);
 
     /** constructor
      ** @param  relationshipType  type of relationship to the parent/source tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     *                            Should not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      *  @param  referencedNodeID  ID of the node to be referenced
      */
     DSRByReferenceTreeNode(const E_RelationshipType relationshipType,

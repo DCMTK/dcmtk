@@ -44,8 +44,8 @@ class DCMTK_DCMSR_EXPORT DSRNumTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRNumTreeNode(const E_RelationshipType relationshipType);
 

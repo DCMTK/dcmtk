@@ -26,7 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmsr/dsrdoctr.h"
+#include "dcmtk/dcmsr/dsrdoctn.h"
 #include "dcmtk/dcmsr/dsrwavvl.h"
 
 
@@ -44,8 +44,8 @@ class DCMTK_DCMSR_EXPORT DSRWaveformTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRWaveformTreeNode(const E_RelationshipType relationshipType);
 

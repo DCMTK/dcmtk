@@ -44,14 +44,14 @@ class DCMTK_DCMSR_EXPORT DSRDateTreeNode
   public:
 
     /** constructor
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      */
     DSRDateTreeNode(const E_RelationshipType relationshipType);
 
     /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+     *                            Should not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
      *  @param  dateValue         initial value to be set (VR=DA, mandatory)
      *  @param  check             if enabled, check 'dateValue' for validity before setting
      *                            it.  See checkValue() for details.  An empty value is never

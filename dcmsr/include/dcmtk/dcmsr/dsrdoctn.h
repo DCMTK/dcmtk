@@ -56,11 +56,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  The 'relationshipType' and 'valueType' can never be changed after the tree node
      *  has been created (therefore, the corresponding member variables are declared
      *  "const").
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid and RT_isRoot only for the
-     *                            root node.
-     *  @param  valueType         value type of the associated content item.
-     *                            Should not be VT_invalid.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should
+     *                            not be DSRTypes::RT_invalid, and DSRTypes::RT_isRoot
+     *                            only for the root node.
+     *  @param  valueType         value type of the associated content item.  Should not
+     *                            be DSRTypes::VT_invalid.
      */
     DSRDocumentTreeNode(const E_RelationshipType relationshipType,
                         const E_ValueType valueType);
@@ -193,10 +193,10 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     }
 
     /** check whether content item is marked.
-     *  Use method 'setMark' to mark and unmark the current content item.
+     *  Use method setMark() to mark and unmark the current content item.
      *  Pointers to the DICOM dataset/item of marked content items are added to the optional
-     *  stack when calling the 'write' method.  This mechanism can e.g. be used to digitally
-     *  sign particular content items.
+     *  stack when calling the DSRDocument::write() method.  This mechanism can e.g. be used
+     *  to digitally sign particular content items.
      ** @return OFTrue if content item is marked, OFFalse otherwise
      */
     inline OFBool isMarked() const
@@ -205,7 +205,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     }
 
     /** mark/unmark the current content item.
-     *  See explanation for method 'isMarked' for details.
+     *  See explanation for method isMarked() for details.
      *  @param  flag  mark item if OFTrue, unmark otherwise
      */
     inline void setMark(const OFBool flag)
@@ -254,7 +254,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     }
 
     /** get relationship type of the current content item
-     ** @return relationship type of the current content item (might be RT_invalid)
+     ** @return relationship type of the current content item (might be DSRTypes::RT_invalid)
      */
     inline E_RelationshipType getRelationshipType() const
     {
@@ -262,7 +262,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     }
 
     /** get value type of the current content item
-     ** @return value type of the current content item (might be VT_invalid)
+     ** @return value type of the current content item (might be DSRTypes::VT_invalid)
      */
     inline E_ValueType getValueType() const
     {
