@@ -2296,6 +2296,12 @@ void DcmSCU::setACSETimeout(const Uint32 acseTimeout)
 }
 
 
+void DcmSCU::setConnectionTimeout(const Sint32 connectionTimeout)
+{
+  dcmConnectionTimeout.set(connectionTimeout);
+}
+
+
 void DcmSCU::setAssocConfigFileAndProfile(const OFString &filename,
                                           const OFString &profile)
 {
@@ -2392,6 +2398,12 @@ Uint32 DcmSCU::getDIMSETimeout() const
 Uint32 DcmSCU::getACSETimeout() const
 {
   return m_acseTimeout;
+}
+
+
+Sint32 DcmSCU::getConnectionTimeout() const
+{
+  return dcmConnectionTimeout.get();
 }
 
 

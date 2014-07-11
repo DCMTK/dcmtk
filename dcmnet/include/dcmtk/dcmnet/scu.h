@@ -607,17 +607,30 @@ public:
   void setPeerPort(const Uint16 peerPort);
 
   /** Set timeout for receiving DIMSE messages
-   *  @param dimseTimeout [in] DIMSE Timeout in seconds for receiving data. If the blocking
-   *                           mode is DIMSE_NONBLOCKING and we are trying to read data from
-   *                           the incoming socket stream and no data has been received.
+   *  @param dimseTimeout [in] DIMSE timeout in seconds for receiving data.
+   *                           If the blocking mode is DIMSE_NONBLOCKING the SCU
+   *                           will try to read data from the incoming socket stream
+   *                           for the number of seconds configured.
    */
   void setDIMSETimeout(const Uint32 dimseTimeout);
 
   /** Set timeout for receiving ACSE messages
-   *  @param acseTimeout [in] ACSE Timeout in seconds used by timer for message timeouts
+   *  @param acseTimeout [in] ACSE timeout in seconds used by timer for message timeouts
    *                          during association negotiation
    */
   void setACSETimeout(const Uint32 acseTimeout);
+
+  /** Set global timeout for connecting to the SCP. Note that this is a global
+   *  DCMTK setting i.e. it affects all code that uses dcmnet to start a DICOM
+   *  association to another host. Setting the timeout to -1 sets an infinite timeout,
+   *  i.e. any association request will wait forever (blocking) until the SCP accepts
+   *  the connection request. A value of 0 lets the SCU return immediately if the SCP
+   *  is not reachable at the first attempt.
+   *  @param connectionTimeout [in] Connection Timeout in seconds when connecting
+   *                                to SCPs. -1 will wait forever (blocking mode).
+   */
+  void setConnectionTimeout(const Sint32 connectionTimeout);
+
 
   /** Set an association configuration file and profile to be used
    *  @param filename [in] File name of the association configuration file
@@ -696,16 +709,25 @@ public:
    */
   Uint16 getPeerPort() const;
 
-  /** Returns the DIMSE timeout configured defining how long SCU will wait for DIMSE responses
-   *  @return The DIMSE timeout configured
+  /** Returns DIMSE timeout in seconds for receiving data. If the blocking
+   *  mode is DIMSE_NONBLOCKING the SCU will try to read data from
+   *  the incoming socket stream for the number of seconds configured.
+   *  @return The DIMSE timeout (in seconds) configured
    */
   Uint32 getDIMSETimeout() const;
 
-  /** Returns the timeout configured defining how long SCU will wait for messages during ACSE
-   *  messaging (association negotiation)
-   *  @return The ACSE timeout configured
+  /** Returns ACSE timeout in seconds used by timer for message timeouts during
+   *  association negotiation.
+   *  @return The ACSE timeout (in seconds) configured
    */
   Uint32 getACSETimeout() const;
+
+  /** Returns the timeout configured defining how long SCU will wait for the
+   *  SCP when requesting an association. -1 means infinite waiting (blocking),
+   *  0 means no waiting at all. Note that this is currently a global DCMTK setting.
+   *  @return The connection timeout (in seconds)
+   */
+  Sint32 getConnectionTimeout() const;
 
   /** Returns the storage directory used for storing objects received with C-STORE requests
    *  in the context of C-GET sessions. Default is empty string which refers to the current

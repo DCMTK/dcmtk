@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+
+**** Changes from 2014.07.11 (onken)
+
+- Add connection timeout setting to SCU class.
+  Add DCMTK's global connection timeout to SCU API. Though the timeout is still
+  a global settings, this enhances visibility to users. Enhanced documentation
+  comments about other existing timeout settings.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2014.07.09 (riesmeier)
 
 - Fixed issue with tests run in different order:
