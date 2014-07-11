@@ -31,7 +31,7 @@
 
 OFTEST(dcmsr_addContentItem)
 {
-    /* first create an SR document to get an empty SR tree */
+    /* first, create an SR document to get an empty SR tree */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     DSRDocumentTree &tree = doc.getTree();
     /* then try to add some content items */
@@ -60,7 +60,7 @@ OFTEST(dcmsr_addContentItem)
 
 OFTEST(dcmsr_copyContentItem)
 {
-    /* first create a new SR document */
+    /* first, create a new SR document */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     DSRDocumentTree &tree = doc.getTree();
     /* then add some content items */
@@ -95,7 +95,7 @@ OFTEST(dcmsr_copyContentItem)
 
 OFTEST(dcmsr_gotoNamedNode)
 {
-    /* first create a new SR document */
+    /* first, create a new SR document */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     DSRDocumentTree &tree = doc.getTree();
     /* then add some content items */
@@ -106,4 +106,19 @@ OFTEST(dcmsr_gotoNamedNode)
     /* and check the "search by name" function */
     OFCHECK_EQUAL(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")), nodeID);
     OFCHECK_EQUAL(tree.gotoNamedNode(DSRCodedEntryValue("1234", "99_PRV", "NOS")), nodeID + 1);
+}
+
+
+OFTEST(dcmsr_createSubTree)
+{
+    /* first, create an empty document subtree */
+    DSRDocumentSubTree tree;
+    /* then try to add some content items (no dedicated root) */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Num));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    /* try to add content items that should fail */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_invalid, DSRTypes::VT_Date) == 0);
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_invalid) == 0);
+    OFCHECK(tree.addContentItem(DSRTypes::RT_invalid, DSRTypes::VT_invalid) == 0);
 }

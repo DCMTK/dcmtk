@@ -9,6 +9,8 @@ of supported SOP classes is provided in DSRTypes::E_DocumentType.
 The main interface classes are:
 \li \b DSRDocument
 \li \b DSRDocumentTree
+\li \b DSRDocumentSubTree
+\li \b DSRDocumentTreeNode
 \li \b DSRContentItem
 \li \b DSRCodedEntryValue
 

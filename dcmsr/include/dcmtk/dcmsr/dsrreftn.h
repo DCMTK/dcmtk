@@ -39,7 +39,7 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
   : public DSRDocumentTreeNode
 {
     // allow access to private member variables
-    friend class DSRDocumentTree;
+    friend class DSRDocumentSubTree;
 
   public:
 

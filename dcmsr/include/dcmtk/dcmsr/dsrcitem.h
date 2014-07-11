@@ -50,8 +50,8 @@
 class DCMTK_DCMSR_EXPORT DSRContentItem
   : protected DSRTypes
 {
-    // allow DSRDocumentTree to access protected method setTreeNode()
-    friend class DSRDocumentTree;
+    // allow DSRDocumentSubTree to access protected method setTreeNode()
+    friend class DSRDocumentSubTree;
 
   public:
 

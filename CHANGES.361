@@ -3,6 +3,26 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.11 (riesmeier)
 
+- Introduced new class DSRDocumentSubTree:
+  Introduced new class DSRDocumentSubTree as the base class for the existing
+  class DSRDocumentTree. A subtree represents an extract of a SR document tree.
+  This new class is another step towards the future support of SR Templates.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/docs/dcmsr.dox
+           dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 - Fixed various Doxygen-related issues:
   Fixed various Doxygen-related issues, mainly missing class name for some
   identifiers. Also fixed wrong header include (where appropriate).
