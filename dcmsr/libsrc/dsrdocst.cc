@@ -38,9 +38,23 @@ DSRDocumentSubTree::DSRDocumentSubTree()
 }
 
 
+DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
+  : DSRTree(tree),
+    ConstraintChecker(NULL),
+    CurrentContentItem()
+{
+}
+
+
 DSRDocumentSubTree::~DSRDocumentSubTree()
 {
     delete ConstraintChecker;
+}
+
+
+DSRDocumentSubTree *DSRDocumentSubTree::clone() const
+{
+    return new DSRDocumentSubTree(*this);
 }
 
 

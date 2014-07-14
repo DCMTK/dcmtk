@@ -61,6 +61,15 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
     {
     }
 
+    /** clone this tree node.
+     *  Actually, a new tree node is created since the pointer members are not needed.
+     ** @return copy of this tree node
+     */
+    virtual DSRTreeNode *clone() const
+    {
+        return new DSRTreeNode;
+    }
+
 
   protected:
 
@@ -100,6 +109,13 @@ class DCMTK_DCMSR_EXPORT DSRTree
     /** default constructor
      */
     DSRTree();
+
+    /** copy constructor.
+     *  Please note that the internal cursor is not copied but reset, i.e. set to the
+     *  root node.
+     ** @param  tree  tree to be copied
+     */
+    DSRTree(const DSRTree &tree);
 
     /** destructor
      */
@@ -157,7 +173,8 @@ class DCMTK_DCMSR_EXPORT DSRTree
      *  If the node could be added successfully the cursor is set to it automatically.
      ** @param  node     pointer to the new node to be added
      *  @param  addMode  flag specifying at which position to add the new node.
-     *                   (AM_afterCurrent, AM_beforeCurrent, AM_belowCurrent)
+     *                   Possible values: DSRTypes::AM_afterCurrent,
+     *                   DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent)
      ** @return ID of the new added node if successful, 0 otherwise
      */
     virtual size_t addNode(DSRTreeNode *node,
@@ -190,9 +207,8 @@ class DCMTK_DCMSR_EXPORT DSRTree
     DSRTreeNode *RootNode;
 
 
- // --- declaration of copy constructor and assignment operator
+ // --- declaration of assignment operator
 
-    DSRTree(const DSRTree &);
     DSRTree &operator=(const DSRTree &);
 };
 

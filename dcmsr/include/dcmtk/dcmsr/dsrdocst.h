@@ -60,9 +60,23 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     DSRDocumentSubTree();
 
+    /** copy constructor.
+     *  Please note that the internal cursor is not copied but reset, i.e. set to the root
+     *  node.  Also the IOD constraint checker is not copied by this class but recreated
+     *  by the derived class DSRDocumentTree (based on the corresponding document type).
+     ** @param  tree  subtree to be copied
+     */
+    DSRDocumentSubTree(const DSRDocumentSubTree &tree);
+
     /** destructor
      */
     virtual ~DSRDocumentSubTree();
+
+    /** clone this subtree.
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this subtree
+     */
+    virtual DSRDocumentSubTree *clone() const;
 
     /** clear internal member variables
      */
@@ -305,9 +319,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     DSRContentItem CurrentContentItem;
 
 
- // --- declaration of copy constructor and assignment operator
+ // --- declaration of assignment operator
 
-    DSRDocumentSubTree(const DSRDocumentSubTree &);
     DSRDocumentSubTree &operator=(const DSRDocumentSubTree &);
 };
 

@@ -122,3 +122,21 @@ OFTEST(dcmsr_createSubTree)
     OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_invalid) == 0);
     OFCHECK(tree.addContentItem(DSRTypes::RT_invalid, DSRTypes::VT_invalid) == 0);
 }
+
+
+OFTEST(dcmsr_copySubTree)
+{
+    /* first, create a document subtree with some content items */
+    DSRDocumentSubTree tree;
+    OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Num));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    /* then copy this tree and check the content items */
+    DSRDocumentSubTree newTree(tree);
+    OFCHECK_EQUAL(newTree.getCurrentContentItem().getValueType(), DSRTypes::VT_Text);
+    OFCHECK(newTree.gotoNext() > 0);
+    OFCHECK_EQUAL(newTree.getCurrentContentItem().getValueType(), DSRTypes::VT_Num);
+    OFCHECK(newTree.goDown() > 0);
+    OFCHECK_EQUAL(newTree.getCurrentContentItem().getValueType(), DSRTypes::VT_Code);
+    OFCHECK_EQUAL(newTree.getCurrentContentItem().getRelationshipType(), DSRTypes::RT_hasProperties);
+}

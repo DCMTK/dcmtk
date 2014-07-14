@@ -202,10 +202,10 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
      */
     size_t setCursor(DSRTreeNode *node);
 
-    /// pointer current node
+    /// pointer to current node
     DSRTreeNode *NodeCursor;
     /// stack of node pointers. Used to store the cursor position of upper levels.
-    OFStack< DSRTreeNodePointer > NodeCursorStack;
+    OFStack<DSRTreeNodePointer> NodeCursorStack;
 
     /// current position within the current level
     size_t Position;

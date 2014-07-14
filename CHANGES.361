@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.14 (riesmeier)
+
+- Implemented copy constructors for tree classes:
+  Added missing copy constructors and clone() methods to various tree classes.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+           dcmsr/tests/tsrtree.cc
+
 **** Changes from 2014.07.11 (riesmeier)
 
 - Introduced new class DSRDocumentSubTree:

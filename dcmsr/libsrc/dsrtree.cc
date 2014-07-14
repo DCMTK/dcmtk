@@ -37,6 +37,63 @@ DSRTree::DSRTree()
 }
 
 
+DSRTree::DSRTree(const DSRTree &tree)
+  : DSRTreeNodeCursor(),
+    RootNode(NULL)
+{
+    if (!tree.isEmpty())
+    {
+        E_AddMode addMode = AM_afterCurrent;
+        DSRTreeNode *newNode = NULL;
+        DSRTreeNode *nodeCursor = tree.getRoot();
+        OFStack<DSRTreeNode *> nodeCursorStack;
+        /* perform a "deep search", just like DSRTreeNodeCursor::iterate() */
+        while (nodeCursor != NULL)
+        {
+            /* clone current node and add it to the tree */
+            if (addNode(newNode = nodeCursor->clone(), addMode) == 0)
+            {
+                /* failed to add node, so delete it and exit the loop */
+                delete newNode;
+                break;
+            }
+            /* then goto to the next node to be copied */
+            if (nodeCursor->Down != NULL)
+            {
+                nodeCursorStack.push(nodeCursor);
+                nodeCursor = nodeCursor->Down;
+                addMode = AM_belowCurrent;
+            }
+            else if (nodeCursor->Next != NULL)
+            {
+                nodeCursor = nodeCursor->Next;
+                addMode = AM_afterCurrent;
+            }
+            else if (!nodeCursorStack.empty())
+            {
+                do {
+                    if (!nodeCursorStack.empty())
+                    {
+                        nodeCursor = nodeCursorStack.top();
+                        nodeCursorStack.pop();
+                        goUp();
+                    } else
+                        nodeCursor = NULL;
+                } while ((nodeCursor != NULL) && (nodeCursor->Next == NULL));
+                if (nodeCursor != NULL)
+                {
+                    nodeCursor = nodeCursor->Next;
+                    addMode = AM_afterCurrent;
+                }
+            } else
+                nodeCursor = NULL;
+        }
+        /* initialize the cursor */
+        gotoRoot();
+    }
+}
+
+
 DSRTree::~DSRTree()
 {
     clear();

@@ -53,9 +53,22 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      */
     DSRDocumentTree(const E_DocumentType documentType);
 
+    /** copy constructor.
+     *  Please note that the internal cursor is not copied but reset, i.e. set to the
+     *  root node.
+     ** @param  tree  tree to be copied
+     */
+    DSRDocumentTree(const DSRDocumentTree &tree);
+
     /** destructor
      */
     virtual ~DSRDocumentTree();
+
+    /** clone this tree.
+     *  Internally, the copy constructor is used, so the corresponding comments apply.
+     ** @return copy of this tree
+     */
+    virtual DSRDocumentTree *clone() const;
 
     /** clear internal member variables.
      *  The document type is not changed (e.g. set to DSRTypes::DT_invalid).
@@ -178,10 +191,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     E_DocumentType DocumentType;
 
 
- // --- declaration of default/copy constructor and assignment operator
+ // --- declaration of default constructor and assignment operator
 
     DSRDocumentTree();
-    DSRDocumentTree(const DSRDocumentTree &);
     DSRDocumentTree &operator=(const DSRDocumentTree &);
 };
 

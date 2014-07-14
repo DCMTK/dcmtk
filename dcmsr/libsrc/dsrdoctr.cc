@@ -39,8 +39,23 @@ DSRDocumentTree::DSRDocumentTree(const E_DocumentType documentType)
 }
 
 
+DSRDocumentTree::DSRDocumentTree(const DSRDocumentTree &tree)
+  : DSRDocumentSubTree(tree),
+    DocumentType(tree.DocumentType)
+{
+    /* create a new constraint checker */
+    ConstraintChecker = createIODConstraintChecker(DocumentType);
+}
+
+
 DSRDocumentTree::~DSRDocumentTree()
 {
+}
+
+
+DSRDocumentTree *DSRDocumentTree::clone() const
+{
+    return new DSRDocumentTree(*this);
 }
 
 
