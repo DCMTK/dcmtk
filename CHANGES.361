@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.15 (riesmeier)
 
+- Added further checking methods to cursor class:
+  Added methods that check whether the current node has a parent, at least one
+  child node, preceding or following siblings. Also added new tests for that.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/tests/tsrtree.cc
+
 - Added getPreviousNode() and getChildNode():
   Added missing getPreviousNode() and getChildNode() methods, which allow for
   looking up the previous node or first child node without changing the cursor.

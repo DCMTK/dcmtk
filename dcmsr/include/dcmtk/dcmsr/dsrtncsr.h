@@ -98,6 +98,26 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
      */
     virtual OFBool isValid() const;
 
+    /** check whether the current node has a parent
+     ** @return OFTrue if the current node has a parent, OFFalse otherwise
+     */
+    OFBool hasParentNode() const;
+
+    /** check whether the current node has at least one child
+     ** @return OFTrue if the current node has at least one child, OFFalse otherwise
+     */
+    OFBool hasChildNode() const;
+
+    /** check whether the current node has a preceding sibling
+     ** @return OFTrue if the current node has a preceding sibling, OFFalse otherwise
+     */
+    OFBool hasPreviousNode() const;
+
+    /** check whether the current node has a following sibling
+     ** @return OFTrue if the current node has a following sibling, OFFalse otherwise
+     */
+    OFBool hasNextNode() const;
+
     /** get pointer to current node
      ** @return pointer to current node (might be NULL)
      */

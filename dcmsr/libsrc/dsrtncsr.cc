@@ -99,11 +99,38 @@ void DSRTreeNodeCursor::clearNodeCursorStack()
 }
 
 
+OFBool DSRTreeNodeCursor::hasParentNode() const
+{
+    return ((NodeCursor != NULL) && !NodeCursorStack.empty());
+}
+
+
+OFBool DSRTreeNodeCursor::hasChildNode() const
+{
+    return (getChildNode() != NULL);
+}
+
+
+OFBool DSRTreeNodeCursor::hasPreviousNode() const
+{
+    return (getPreviousNode() != NULL);
+}
+
+
+OFBool DSRTreeNodeCursor::hasNextNode() const
+{
+    return (getNextNode() != NULL);
+}
+
+
 const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
 {
     DSRTreeNode *node = NULL;
-    if (!NodeCursorStack.empty())
+    if (hasParentNode())
+    {
+        /* this method is not "const" because of OFStack.top() */
         node = NodeCursorStack.top();
+    }
     return node;
 }
 
