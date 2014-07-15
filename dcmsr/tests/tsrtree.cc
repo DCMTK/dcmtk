@@ -72,6 +72,12 @@ OFTEST(dcmsr_addTreeNode)
     OFCHECK_EQUAL(tree.iterate(), nodeID + 6);
     OFCHECK_EQUAL(tree.getLevel(), 2);
     OFCHECK_EQUAL(tree.iterate(), 0);
+    /* check the goto node methods */
+    OFCHECK_EQUAL(tree.gotoNode(nodeID + 3), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoFirst(), nodeID + 1);
+    OFCHECK_EQUAL(tree.gotoNext(), nodeID + 2);
+    OFCHECK_EQUAL(tree.gotoLast(), nodeID + 6);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 8);
     /* and finally, delete them all */
     tree.clear();
     OFCHECK(tree.isEmpty());

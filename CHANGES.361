@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.15 (riesmeier)
 
+- Added gotoFirst() and gotoLast() methods:
+  Added gotoFirst() and gotoLast() methods, which allow for setting the cursor
+  to the first or last node on the same level (i.e. the first or last sibling).
+  These methods will be useful for the upcoming cloneSubTree() methods.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/tests/tsrtree.cc
+
 - Added further checking methods to cursor class:
   Added methods that check whether the current node has a parent, at least one
   child node, preceding or following siblings. Also added new tests for that.

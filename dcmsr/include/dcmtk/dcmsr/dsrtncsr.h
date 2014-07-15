@@ -69,7 +69,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
     DSRTreeNodeCursor(const DSRTreeNodeCursor &cursor);
 
     /** constructor
-     ** @param  node  pointer tree node used to initialize the cursor (set to this node)
+     ** @param  node  pointer to tree node used to initialize the cursor (set to this node)
      */
     DSRTreeNodeCursor(DSRTreeNode *node);
 
@@ -150,12 +150,24 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
      */
     const DSRTreeNode *getNextNode() const;
 
-    /** goto previous node on the same level
+    /** goto first node on the same level (first sibling).
+     *  Please note that the first node might be identical to the current node.
+     ** @return ID of the first node if successful, 0 otherwise
+     */
+    size_t gotoFirst();
+
+    /** goto last node on the same level (last sibling).
+     *  Please note that the last node might be identical to the current node.
+     ** @return ID of the last node if successful, 0 otherwise
+     */
+    size_t gotoLast();
+
+    /** goto previous node on the same level (preceding sibling)
      ** @return ID of the previous node if successful, 0 otherwise
      */
     size_t gotoPrevious();
 
-    /** goto next node on the same level
+    /** goto next node on the same level (following sibling)
      ** @return ID of the next node if successful, 0 otherwise
      */
     size_t gotoNext();

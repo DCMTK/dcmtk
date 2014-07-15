@@ -178,6 +178,38 @@ size_t DSRTreeNodeCursor::setCursor(DSRTreeNode *node)
 }
 
 
+size_t DSRTreeNodeCursor::gotoFirst()
+{
+    size_t nodeID = 0;
+    if (NodeCursor != NULL)
+    {
+        while (NodeCursor->Prev != NULL)
+        {
+            NodeCursor = NodeCursor->Prev;
+            --Position;
+        }
+        nodeID = NodeCursor->Ident;
+    }
+    return nodeID;
+}
+
+
+size_t DSRTreeNodeCursor::gotoLast()
+{
+    size_t nodeID = 0;
+    if (NodeCursor != NULL)
+    {
+        while (NodeCursor->Next != NULL)
+        {
+            NodeCursor = NodeCursor->Next;
+            ++Position;
+        }
+        nodeID = NodeCursor->Ident;
+    }
+    return nodeID;
+}
+
+
 size_t DSRTreeNodeCursor::gotoPrevious()
 {
     size_t nodeID = 0;
