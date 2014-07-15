@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.15 (riesmeier)
+
+- Added getPreviousNode() and getChildNode():
+  Added missing getPreviousNode() and getChildNode() methods, which allow for
+  looking up the previous node or first child node without changing the cursor.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/libsrc/dsrtncsr.cc
+
 **** Changes from 2014.07.14 (riesmeier)
 
 - Implemented copy constructors for tree classes:

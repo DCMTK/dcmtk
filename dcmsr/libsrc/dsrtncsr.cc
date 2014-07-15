@@ -108,11 +108,29 @@ const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
 }
 
 
+const DSRTreeNode *DSRTreeNodeCursor::getChildNode() const
+{
+    DSRTreeNode *node = NULL;
+    if (NodeCursor != NULL)
+        node = NodeCursor->Down;
+    return node;
+}
+
+
+const DSRTreeNode *DSRTreeNodeCursor::getPreviousNode() const
+{
+    DSRTreeNode *node = NULL;
+    if (NodeCursor != NULL)
+        node = NodeCursor->Prev;
+    return node;
+}
+
+
 const DSRTreeNode *DSRTreeNodeCursor::getNextNode() const
 {
     DSRTreeNode *node = NULL;
     if (NodeCursor != NULL)
-        return NodeCursor->Next;
+        node = NodeCursor->Next;
     return node;
 }
 
