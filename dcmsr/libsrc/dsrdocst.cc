@@ -143,7 +143,7 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
     /* never accept invalid types */
     if ((relationshipType != RT_invalid) && (valueType != VT_invalid))
     {
-        const DSRDocumentTreeNode *node = OFstatic_cast(const DSRDocumentTreeNode *, getNode());
+        const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
         if (node != NULL)
         {
             /* do we have an IOD constraint checker? */
@@ -180,7 +180,7 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
         /* do we have an IOD constraint checker? */
         if (ConstraintChecker != NULL)
         {
-            const DSRDocumentTreeNode *node = OFstatic_cast(const DSRDocumentTreeNode *, getNode());
+            const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
             if (node != NULL)
                 result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
         } else {
@@ -329,7 +329,7 @@ DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
 
 DSRDocumentTreeNode *DSRDocumentSubTree::cloneCurrentTreeNode() const
 {
-    DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+    const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
     /* create a copy if the current node is valid */
     return (node != NULL) ? node->clone() : NULL;
 }
@@ -344,7 +344,7 @@ size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
     {
         if (startFromRoot)
             gotoRoot();
-        DSRDocumentTreeNode *node = NULL;
+        const DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
             node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
@@ -409,7 +409,8 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
             if (cursor.isValid())
             {
                 const DSRDocumentTreeNode *node = NULL;
-                do {    /* for all content items */
+                /* for all content items */
+                do {
                     node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
                     if (node != NULL)
                     {

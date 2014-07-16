@@ -305,8 +305,9 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
     DSRTreeNodeCursor cursor(Down);
     if (cursor.isValid())
     {
-        DSRDocumentTreeNode *node = NULL;
-        do {    /* for all child nodes */
+        const DSRDocumentTreeNode *node = NULL;
+        /* for all child nodes */
+        do {
             node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
                 result = node->writeXML(stream, flags);
@@ -875,7 +876,8 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
         {
             DcmItem *ditem = NULL;
             DSRDocumentTreeNode *node = NULL;
-            do {        /* for all child nodes */
+            /* for all child nodes */
+            do {
                 node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
                 if (node != NULL)
                 {
@@ -990,8 +992,9 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
         size_t footnoteNumber = 1;
         /* create memory output stream for the temporal document */
         OFOStringStream tempDocStream;
-        DSRDocumentTreeNode *node = NULL;
-        do {        /* for all child nodes */
+        const DSRDocumentTreeNode *node = NULL;
+        /* for all child nodes */
+        do {
             node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
             {

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.16 (riesmeier)
+
+- Minor fixes on "const" declaration of pointers.
+  Affects: dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctn.cc
+
 **** Changes from 2014.07.15 (riesmeier)
 
 - Added gotoFirst() and gotoLast() methods:
