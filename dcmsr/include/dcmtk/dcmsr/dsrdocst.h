@@ -96,6 +96,37 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     virtual OFCondition print(STD_NAMESPACE ostream &stream,
                               const size_t flags = 0);
 
+    /** get reference to current content item.
+     *  This mechanism allows to access all content items without using pointers.
+     ** @return reference to current content item (might be invalid)
+     */
+    virtual DSRContentItem &getCurrentContentItem();
+
+    /** set internal cursor to the named node.
+     *  If more than one node exists with the given concept name the first one will
+     *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.
+     ** @param  conceptName    concept name of the node to be searched for
+     *  @param  startFromRoot  flag indicating whether to start from the root node
+     *                         or the current one
+     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the current level only
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    virtual size_t gotoNamedNode(const DSRCodedEntryValue &conceptName,
+                                 const OFBool startFromRoot = OFTrue,
+                                 const OFBool searchIntoSub = OFTrue);
+
+    /** set internal cursor to the next named node.
+     *  Starts from "next" node, i.e. either the first children of the current node
+     *  or the first sibling following the current node.
+     ** @param  conceptName    concept name of the node to be searched for
+     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the current level only
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    virtual size_t gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
+                                     const OFBool searchIntoSub = OFTrue);
+
     /** check whether specified content item can be added to the current one.
      *  This method can be used to decide which type of content items can be added prior
      *  to really doing so.
@@ -212,47 +243,32 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual size_t removeCurrentContentItem();
 
-    /** get reference to current content item.
-     *  This mechanism allows to access all content items without using pointers.
-     ** @return reference to current content item (might be invalid)
-     */
-    virtual DSRContentItem &getCurrentContentItem();
-
     /** clone the current tree node.
      *  Internally, the copy constructor of the respective tree node class is used, so the
      *  corresponding comments apply.  Please note that the new node has to deleted by the
      *  caller if it is not added to the document tree using addContentItem().
-     ** @return pointer to a copy of the current tree node (might be NULL)
+     ** @return pointer to a copy of the current tree node, NULL in case of error
      */
     virtual DSRDocumentTreeNode *cloneCurrentTreeNode() const;
 
-    /** set internal cursor to the named node.
-     *  If more than one node exists with the given concept name the first one will
-     *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.
-     ** @param  conceptName    concept name of the node to be searched for
-     *  @param  startFromRoot  flag indicating whether to start from the root node
-     *                         or the current one
-     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
-     *                         ("deep search") or on the current level only
-     ** @return ID of the new current node if successful, 0 otherwise
+    /** clone a subtree i.e.\ a fragment of this tree.
+     *  The cloning starts with the current node and ends with the given node.
+     ** @param  stopAfterNodeID  ID of the node after which the cloning should stop.
+     *                           By default (0), the process ends after cloning the
+     *                           current node with all of its child nodes (if any).
+     ** @return pointer to a copy of the specified subtree, NULL in case of error
      */
-    virtual size_t gotoNamedNode(const DSRCodedEntryValue &conceptName,
-                                 const OFBool startFromRoot = OFTrue,
-                                 const OFBool searchIntoSub = OFTrue);
-
-    /** set internal cursor to the next named node.
-     *  Starts from "next" node, i.e. either the first children of the current node
-     *  or the first sibling following the current node.
-     ** @param  conceptName    concept name of the node to be searched for
-     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
-     *                         ("deep search") or on the current level only
-     ** @return ID of the new current node if successful, 0 otherwise
-     */
-    virtual size_t gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
-                                     const OFBool searchIntoSub = OFTrue);
+    virtual DSRDocumentSubTree *cloneSubTree(const size_t stopAfterNodeID = 0) const;
 
 
   protected:
+
+    /** special copy constructor that clones a particular subtree only
+     ** @param  startCursor      first node of the subtree to be copied
+     *  @param  stopAfterNodeID  ID of the node after which the cloning should stop
+     */
+    DSRDocumentSubTree(const DSRTreeNodeCursor &startCursor,
+                       size_t stopAfterNodeID);
 
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node

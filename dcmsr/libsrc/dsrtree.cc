@@ -60,17 +60,18 @@ DSRTree::DSRTree(const DSRTree &tree)
             /* then goto to the next node to be copied */
             if (nodeCursor->Down != NULL)
             {
+                /* go one level down to the first child node */
                 nodeCursorStack.push(nodeCursor);
                 nodeCursor = nodeCursor->Down;
                 addMode = AM_belowCurrent;
             }
             else if (nodeCursor->Next != NULL)
             {
+                /* proceed with the following sibling */
                 nodeCursor = nodeCursor->Next;
                 addMode = AM_afterCurrent;
-            }
-            else if (!nodeCursorStack.empty())
-            {
+            } else {
+                /* check whether there are any siblings on higher levels */
                 do {
                     if (!nodeCursorStack.empty())
                     {
@@ -85,8 +86,82 @@ DSRTree::DSRTree(const DSRTree &tree)
                     nodeCursor = nodeCursor->Next;
                     addMode = AM_afterCurrent;
                 }
-            } else
-                nodeCursor = NULL;
+            }
+        }
+        /* initialize the cursor */
+        gotoRoot();
+    }
+}
+
+
+DSRTree::DSRTree(const DSRTreeNodeCursor &startCursor,
+                 size_t stopAfterNodeID)
+  : DSRTreeNodeCursor(),
+    RootNode(NULL)
+{
+    DSRTreeNode *nodeCursor = startCursor.getNode();
+    /* since we start from a particular node, we need to check it first */
+    if (nodeCursor != NULL)
+    {
+        E_AddMode addMode = AM_afterCurrent;
+        DSRTreeNode *newNode = NULL;
+        OFStack<DSRTreeNode *> nodeCursorStack;
+        /* use current node if none was specified */
+        if (stopAfterNodeID == 0)
+            stopAfterNodeID = nodeCursor->Ident;
+        /* perform a "deep search", just like DSRTreeNodeCursor::iterate() */
+        while (nodeCursor != NULL)
+        {
+            /* clone current node and add it to the tree */
+            if (addNode(newNode = nodeCursor->clone(), addMode) == 0)
+            {
+                /* failed to add node, so delete it and exit the loop */
+                delete newNode;
+                break;
+            }
+            /* then goto to the next node to be copied */
+            if (nodeCursor->Down != NULL)
+            {
+                /* go one level down to the first child node */
+                nodeCursorStack.push(nodeCursor);
+                nodeCursor = nodeCursor->Down;
+                addMode = AM_belowCurrent;
+            }
+            else if (nodeCursor->Next != NULL)
+            {
+                /* check whether the last node has been processed */
+                if (nodeCursor->Ident == stopAfterNodeID)
+                {
+                    /* exit the loop */
+                    nodeCursor = NULL;
+                } else {
+                    /* proceed with the following sibling */
+                    nodeCursor = nodeCursor->Next;
+                    addMode = AM_afterCurrent;
+                }
+            } else {
+                /* check whether there are any siblings on higher levels */
+                do {
+                    if (!nodeCursorStack.empty())
+                    {
+                        nodeCursor = nodeCursorStack.top();
+                        nodeCursorStack.pop();
+                        goUp();
+                        /* check whether the last node has been processed */
+                        if ((nodeCursor != NULL) && (nodeCursor->Ident == stopAfterNodeID))
+                        {
+                            /* exit the loop */
+                            nodeCursor = NULL;
+                        }
+                    } else
+                        nodeCursor = NULL;
+                } while ((nodeCursor != NULL) && (nodeCursor->Next == NULL));
+                if (nodeCursor != NULL)
+                {
+                    nodeCursor = nodeCursor->Next;
+                    addMode = AM_afterCurrent;
+                }
+            }
         }
         /* initialize the cursor */
         gotoRoot();
@@ -335,4 +410,11 @@ size_t DSRTree::removeNode()
             nodeID = NodeCursor->Ident;
     }
     return nodeID;
+}
+
+
+DSRTree *DSRTree::cloneSubTree(const size_t stopAfterNodeID) const
+{
+    /* create a copy of the specified subtree */
+    return new DSRTree(NodeCursor, stopAfterNodeID);
 }

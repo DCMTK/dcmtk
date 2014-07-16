@@ -43,6 +43,17 @@ DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
     ConstraintChecker(NULL),
     CurrentContentItem()
 {
+    /* the real work is done in the base class DSRTree */
+}
+
+
+DSRDocumentSubTree::DSRDocumentSubTree(const DSRTreeNodeCursor &startCursor,
+                                       size_t stopAfterNodeID)
+  : DSRTree(startCursor, stopAfterNodeID),
+    ConstraintChecker(NULL),
+    CurrentContentItem()
+{
+    /* the real work is done in the base class DSRTree */
 }
 
 
@@ -132,6 +143,45 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
         } while (result.good() && cursor.iterate());
     }
     return result;
+}
+
+
+DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
+{
+    CurrentContentItem.setTreeNode(OFstatic_cast(DSRDocumentTreeNode *, getNode()));
+    return CurrentContentItem;
+}
+
+
+size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
+                                         const OFBool startFromRoot,
+                                         const OFBool searchIntoSub)
+{
+    size_t nodeID = 0;
+    if (conceptName.isValid())
+    {
+        if (startFromRoot)
+            gotoRoot();
+        const DSRDocumentTreeNode *node = NULL;
+        /* iterate over all nodes */
+        do {
+            node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+            if ((node != NULL) && (node->getConceptName() == conceptName))
+                nodeID = node->getNodeID();
+        } while ((nodeID == 0) && iterate(searchIntoSub));
+    }
+    return nodeID;
+}
+
+
+size_t DSRDocumentSubTree::gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
+                                             const OFBool searchIntoSub)
+{
+    /* first, goto "next" node */
+    size_t nodeID = iterate(searchIntoSub);
+    if (nodeID > 0)
+        nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, searchIntoSub);
+    return nodeID;
 }
 
 
@@ -320,13 +370,6 @@ size_t DSRDocumentSubTree::removeCurrentContentItem()
 }
 
 
-DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
-{
-    CurrentContentItem.setTreeNode(OFstatic_cast(DSRDocumentTreeNode *, getNode()));
-    return CurrentContentItem;
-}
-
-
 DSRDocumentTreeNode *DSRDocumentSubTree::cloneCurrentTreeNode() const
 {
     const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
@@ -335,37 +378,14 @@ DSRDocumentTreeNode *DSRDocumentSubTree::cloneCurrentTreeNode() const
 }
 
 
-size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
-                                         const OFBool startFromRoot,
-                                         const OFBool searchIntoSub)
+DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeID) const
 {
-    size_t nodeID = 0;
-    if (conceptName.isValid())
-    {
-        if (startFromRoot)
-            gotoRoot();
-        const DSRDocumentTreeNode *node = NULL;
-        /* iterate over all nodes */
-        do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
-            if ((node != NULL) && (node->getConceptName() == conceptName))
-                nodeID = node->getNodeID();
-        } while ((nodeID == 0) && iterate(searchIntoSub));
-    }
-    return nodeID;
+    /* create a copy of the specified subtree */
+    return new DSRDocumentSubTree(NodeCursor, stopAfterNodeID);
 }
 
 
-size_t DSRDocumentSubTree::gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
-                                             const OFBool searchIntoSub)
-{
-    /* first, goto "next" node */
-    size_t nodeID = iterate(searchIntoSub);
-    if (nodeID > 0)
-        nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, searchIntoSub);
-    return nodeID;
-}
-
+// protected methods
 
 size_t DSRDocumentSubTree::addNode(DSRTreeNode * /*node*/,
                                    const E_AddMode /*addMode*/)

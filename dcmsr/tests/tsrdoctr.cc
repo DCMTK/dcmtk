@@ -109,7 +109,7 @@ OFTEST(dcmsr_gotoNamedNode)
 }
 
 
-OFTEST(dcmsr_createSubTree)
+OFTEST(dcmsr_createDocSubTree)
 {
     /* first, create an empty document subtree */
     DSRDocumentSubTree tree;
@@ -124,7 +124,7 @@ OFTEST(dcmsr_createSubTree)
 }
 
 
-OFTEST(dcmsr_copySubTree)
+OFTEST(dcmsr_copyDocSubTree)
 {
     /* first, create a document subtree with some content items */
     DSRDocumentSubTree tree;
@@ -139,4 +139,37 @@ OFTEST(dcmsr_copySubTree)
     OFCHECK(newTree.goDown() > 0);
     OFCHECK_EQUAL(newTree.getCurrentContentItem().getValueType(), DSRTypes::VT_Code);
     OFCHECK_EQUAL(newTree.getCurrentContentItem().getRelationshipType(), DSRTypes::RT_hasProperties);
+}
+
+
+OFTEST(dcmsr_cloneDocSubTree)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    /* and clone a particular subtree */
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
+    DSRDocumentSubTree *newTree = tree.cloneSubTree();
+    if (newTree != NULL)
+    {
+        /* check the content items */
+        OFCHECK_EQUAL(newTree->countNodes(), 3);
+        OFCHECK_EQUAL(newTree->getCurrentContentItem().getValueType(), DSRTypes::VT_Num);
+        OFCHECK_EQUAL(newTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_contains);
+        OFCHECK(newTree->iterate() > 0);
+        OFCHECK_EQUAL(newTree->getCurrentContentItem().getValueType(), DSRTypes::VT_Code);
+        OFCHECK_EQUAL(newTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_hasProperties);
+        OFCHECK(newTree->iterate() > 0);
+        OFCHECK_EQUAL(newTree->getCurrentContentItem().getValueType(), DSRTypes::VT_Code);
+        OFCHECK_EQUAL(newTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_hasConceptMod);
+        delete newTree;
+    } else
+        OFCHECK_FAIL("could not create clone of subtree");
 }

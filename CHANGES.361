@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.16 (riesmeier)
 
+- Added cloneSubTree() method to tree classes:
+  Added cloneSubTree() method to the tree classes. This allows for copying a
+  particular subtree from an SR document tree or from another subtree. Also
+  added new tests for these methods.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+           dcmsr/tests/tsrtree.cc
+
 - Minor fixes on "const" declaration of pointers.
   Affects: dcmsr/libsrc/dsrdocst.cc
            dcmsr/libsrc/dsrdoctn.cc

@@ -189,8 +189,24 @@ class DCMTK_DCMSR_EXPORT DSRTree
      */
     virtual size_t removeNode();
 
+    /** clone a subtree i.e.\ a fragment of this tree.
+     *  The cloning starts with the current node and ends with the given node.
+     ** @param  stopAfterNodeID  ID of the node after which the cloning should stop.
+     *                           By default (0), the process ends after cloning the
+     *                           current node with all of its child nodes (if any).
+     ** @return pointer to a copy of the specified subtree, NULL in case of error
+     */
+    virtual DSRTree *cloneSubTree(const size_t stopAfterNodeID = 0) const;
+
 
   protected:
+
+    /** special copy constructor that clones a particular subtree only
+     ** @param  startCursor      first node of the subtree to be copied
+     *  @param  stopAfterNodeID  ID of the node after which the cloning should stop
+     */
+    DSRTree(const DSRTreeNodeCursor &startCursor,
+            size_t stopAfterNodeID);
 
     /** get pointer to root node
      ** @return pointer to root node, might be NULL (empty tree)

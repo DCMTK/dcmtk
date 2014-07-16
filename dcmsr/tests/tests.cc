@@ -26,9 +26,12 @@
 OFTEST_REGISTER(dcmsr_addTreeNode);
 OFTEST_REGISTER(dcmsr_treeWithoutRoot);
 OFTEST_REGISTER(dcmsr_copyTree);
+OFTEST_REGISTER(dcmsr_cloneSubTree_1);
+OFTEST_REGISTER(dcmsr_cloneSubTree_2);
 OFTEST_REGISTER(dcmsr_addContentItem);
 OFTEST_REGISTER(dcmsr_copyContentItem);
 OFTEST_REGISTER(dcmsr_gotoNamedNode);
-OFTEST_REGISTER(dcmsr_createSubTree);
-OFTEST_REGISTER(dcmsr_copySubTree);
+OFTEST_REGISTER(dcmsr_createDocSubTree);
+OFTEST_REGISTER(dcmsr_copyDocSubTree);
+OFTEST_REGISTER(dcmsr_cloneDocSubTree);
 OFTEST_MAIN("dcmsr")
