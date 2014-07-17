@@ -38,7 +38,7 @@ OFTEST(dcmsr_addContentItem)
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
     /* add content item with given pointer */
     DSRNumTreeNode *numNode = new DSRNumTreeNode(DSRTypes::RT_contains);
-    OFCHECK_EQUAL(tree.addContentItem(numNode, DSRTypes::AM_belowCurrent), numNode);
+    OFCHECK(tree.addContentItem(numNode, DSRTypes::AM_belowCurrent).good());
     if (numNode != NULL)
     {
         OFCHECK(numNode->getRelationshipType() == DSRTypes::RT_contains);
@@ -52,8 +52,8 @@ OFTEST(dcmsr_addContentItem)
     } else
         OFCHECK_FAIL("could not create new NUM content item");
     /* try to add content items that should fail */
-    OFCHECK(tree.addContentItem(NULL) == NULL);
-    OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_Text), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/) == NULL);
+    OFCHECK(tree.addContentItem(NULL).bad());
+    OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_Text), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
     /* NB: this test program does not always delete allocated memory (if adding a node fails) */
 }
 

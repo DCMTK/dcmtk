@@ -185,11 +185,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  @param  deleteIfFail  flag specifying whether to delete the given 'node' if
      *                        adding fails.  By default the item is not deleted, i.e.
      *                        in case of error it has to be deleted by the caller.
-     ** @return pointer to new node if successful, NULL otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual DSRDocumentTreeNode *addContentItem(DSRDocumentTreeNode *node,
-                                                const E_AddMode addMode = AM_afterCurrent,
-                                                const OFBool deleteIfFail = OFFalse);
+    virtual OFCondition addContentItem(DSRDocumentTreeNode *node,
+                                       const E_AddMode addMode = AM_afterCurrent,
+                                       const OFBool deleteIfFail = OFFalse);
 
     /** add specified content item after the current one.
      *  If possible this method creates a new node as specified and adds it after the current

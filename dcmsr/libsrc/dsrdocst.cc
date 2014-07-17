@@ -255,16 +255,23 @@ size_t DSRDocumentSubTree::addContentItem(const E_RelationshipType relationshipT
         {
             /* ... and add it to the current node */
             nodeID = addNode(node, addMode);
+            /* in case of error, free allocated memory */
+            if (nodeID == 0)
+            {
+                delete node;
+                node = NULL;
+            }
         }
     }
     return nodeID;
 }
 
 
-DSRDocumentTreeNode *DSRDocumentSubTree::addContentItem(DSRDocumentTreeNode *node,
-                                                           const E_AddMode addMode,
-                                                           const OFBool deleteIfFail)
+OFCondition DSRDocumentSubTree::addContentItem(DSRDocumentTreeNode *node,
+                                               const E_AddMode addMode,
+                                               const OFBool deleteIfFail)
 {
+    OFCondition result = EC_Normal;
     if (node != NULL)
     {
         /* check whether new node can be added */
@@ -272,17 +279,18 @@ DSRDocumentTreeNode *DSRDocumentSubTree::addContentItem(DSRDocumentTreeNode *nod
         {
             /* check whether adding the node actually works */
             if (addNode(node, addMode) == 0)
-            {
-                /* if not, delete node (if needed) */
-                if (deleteIfFail)
-                    delete node;
-                node = NULL;
-            }
+                result = SR_EC_CannotAddContentItem;
         } else
+            result = SR_EC_CannotAddContentItem;
+        /* if not, delete node (if needed) */
+        if (deleteIfFail && result.bad())
+        {
+            delete node;
             node = NULL;
-    }
-    /* either returns given pointer or NULL (in case of error) */
-    return node;
+        }
+    } else
+        result = EC_IllegalParameter;
+    return result;
 }
 
 
@@ -350,9 +358,15 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
                             if (node != NULL)
                             {
                                 nodeID = addNode(node, AM_belowCurrent);
-                                /* go back to current node */
-                                if (nodeID > 0)
+                                /* in case of error, free allocated memory */
+                                if (nodeID == 0)
+                                {
+                                    delete node;
+                                    node = NULL;
+                                } else {
+                                    /* otherwise, go back to current node */
                                     goUp();
+                                }
                             }
                         }
                     }

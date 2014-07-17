@@ -1,11 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.17 (riesmeier)
+
+- Changed return type of addContentItem(node*):
+  Changed return type of addContentItem() method that expects a pointer to a
+  newly created document tree node. It now returns an OFCondition (like other
+  similar methods) instead of the pointer to the tree node that was passed to
+  it. Also fixed possible memory leaks in case adding the new tree node failed.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/tests/tsrdoctr.cc
+
 **** Changes from 2014.07.17 (onken)
 
 - Fixed possible memory leak.
   Thanks to Peter Hille<peter@das-system-networks.de> for the report and
-  suggested fix
+  suggested fix.
   Affects: dcmnet/libsrc/assoc.cc
 
 **** Changes from 2014.07.16 (riesmeier)
