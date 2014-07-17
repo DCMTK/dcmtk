@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.17 (onken)
+
+- Fixed possible memory leak.
+  Thanks to Peter Hille<peter@das-system-networks.de> for the report and
+  suggested fix
+  Affects: dcmnet/libsrc/assoc.cc
+
 **** Changes from 2014.07.16 (riesmeier)
 
 - Added cloneSubTree() method to tree classes:

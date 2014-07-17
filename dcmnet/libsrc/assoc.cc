@@ -698,7 +698,11 @@ ASC_addPresentationContext(
     lst = params->DULparams.requestedPresentationContext;
     if (lst == NULL) {
         lst = LST_Create();
-        if (lst == NULL) return EC_MemoryExhausted;
+        if (lst == NULL)
+        {
+            free(pc);
+            return EC_MemoryExhausted;
+        }
     }
 
     LST_Enqueue(&lst, (LST_NODE*)pc);
