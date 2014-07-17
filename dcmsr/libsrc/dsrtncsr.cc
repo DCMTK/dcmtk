@@ -123,6 +123,12 @@ OFBool DSRTreeNodeCursor::hasNextNode() const
 }
 
 
+DSRTreeNode *DSRTreeNodeCursor::getNode() const
+{
+    return NodeCursor;
+}
+
+
 const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
 {
     DSRTreeNode *node = NULL;

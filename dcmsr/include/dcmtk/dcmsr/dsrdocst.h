@@ -270,6 +270,40 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     DSRDocumentSubTree(const DSRTreeNodeCursor &startCursor,
                        size_t stopAfterNodeID);
 
+    /** get pointer to root node
+     ** @return pointer to root node, might be NULL (empty tree)
+     */
+    virtual DSRDocumentTreeNode *getRoot() const;
+
+    /** get pointer to current node
+     ** @return pointer to current node (might be NULL)
+     */
+    virtual DSRDocumentTreeNode *getNode() const;
+
+    /** get pointer to parent node.
+     *  Can be used to have a lookup to the parent node without changing the cursor.
+     ** @return pointer to parent node (if any), NULL otherwise
+     */
+    virtual const DSRDocumentTreeNode *getParentNode();
+
+    /** get pointer to first child node.
+     *  Can be used to have a lookup to the first child node without changing the cursor.
+     ** @return pointer to first child node (if any), NULL otherwise
+     */
+    virtual const DSRDocumentTreeNode *getChildNode() const;
+
+    /** get pointer to previous node.
+     *  Can be used to have a lookup to the previous node without changing the cursor.
+     ** @return pointer to previous node (if any), NULL otherwise
+     */
+    virtual const DSRDocumentTreeNode *getPreviousNode() const;
+
+    /** get pointer to next node.
+     *  Can be used to have a lookup to the next node without changing the cursor.
+     ** @return pointer to next node (if any), NULL otherwise
+     */
+    virtual const DSRDocumentTreeNode *getNextNode() const;
+
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node
      *  has to be created with new() - do not use a reference to a local variable.

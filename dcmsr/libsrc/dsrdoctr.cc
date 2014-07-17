@@ -71,7 +71,7 @@ OFBool DSRDocumentTree::isValid() const
     if (isDocumentTypeSupported(DocumentType))
     {
         /* check root node */
-        const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
+        const DSRDocumentTreeNode *node = getRoot();
         if (node != NULL)
         {
             if ((node->getRelationshipType() == RT_isRoot) && (node->getValueType() == VT_Container))
@@ -208,7 +208,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
+        DSRDocumentTreeNode *node = getRoot();
         if (node != NULL)
         {
             /* check and update by-reference relationships (if applicable) */
@@ -228,7 +228,7 @@ OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream &stream,
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
+        DSRDocumentTreeNode *node = getRoot();
         /* start writing from root node */
         if (node != NULL)
         {
@@ -250,7 +250,7 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
+        DSRDocumentTreeNode *node = getRoot();
         /* start rendering from root node */
         if (node != NULL)
         {

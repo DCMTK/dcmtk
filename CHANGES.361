@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.17 (riesmeier)
 
+- Reimplemented various getXXX() methods:
+  Reimplemented various public getXXX() methods in derived tree class, but in
+  the "protected" section. This also avoids some explicit type casts.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/libsrc/dsrtree.cc
+
 - Changed return type of addContentItem(node*):
   Changed return type of addContentItem() method that expects a pointer to a
   newly created document tree node. It now returns an OFCondition (like other

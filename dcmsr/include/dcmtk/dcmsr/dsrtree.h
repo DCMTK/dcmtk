@@ -211,10 +211,7 @@ class DCMTK_DCMSR_EXPORT DSRTree
     /** get pointer to root node
      ** @return pointer to root node, might be NULL (empty tree)
      */
-    inline DSRTreeNode *getRoot() const
-    {
-        return RootNode;
-    }
+    virtual DSRTreeNode *getRoot() const;
 
 
   private:

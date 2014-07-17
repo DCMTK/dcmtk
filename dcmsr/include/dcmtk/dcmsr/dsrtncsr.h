@@ -121,34 +121,31 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
     /** get pointer to current node
      ** @return pointer to current node (might be NULL)
      */
-    inline DSRTreeNode *getNode() const
-    {
-        return NodeCursor;
-    }
+    virtual DSRTreeNode *getNode() const;
 
     /** get pointer to parent node.
      *  Can be used to have a lookup to the parent node without changing the cursor.
      ** @return pointer to parent node (if any), NULL otherwise
      */
-    const DSRTreeNode *getParentNode();
+    virtual const DSRTreeNode *getParentNode();
 
     /** get pointer to first child node.
      *  Can be used to have a lookup to the first child node without changing the cursor.
      ** @return pointer to first child node (if any), NULL otherwise
      */
-    const DSRTreeNode *getChildNode() const;
+    virtual const DSRTreeNode *getChildNode() const;
 
     /** get pointer to previous node.
      *  Can be used to have a lookup to the previous node without changing the cursor.
      ** @return pointer to previous node (if any), NULL otherwise
      */
-    const DSRTreeNode *getPreviousNode() const;
+    virtual const DSRTreeNode *getPreviousNode() const;
 
     /** get pointer to next node.
      *  Can be used to have a lookup to the next node without changing the cursor.
      ** @return pointer to next node (if any), NULL otherwise
      */
-    const DSRTreeNode *getNextNode() const;
+    virtual const DSRTreeNode *getNextNode() const;
 
     /** goto first node on the same level (first sibling).
      *  Please note that the first node might be identical to the current node.

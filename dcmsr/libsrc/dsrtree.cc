@@ -418,3 +418,11 @@ DSRTree *DSRTree::cloneSubTree(const size_t stopAfterNodeID) const
     /* create a copy of the specified subtree */
     return new DSRTree(NodeCursor, stopAfterNodeID);
 }
+
+
+// protected methods
+
+DSRTreeNode *DSRTree::getRoot() const
+{
+    return RootNode;
+}

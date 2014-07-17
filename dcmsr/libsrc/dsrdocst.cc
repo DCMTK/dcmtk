@@ -148,7 +148,7 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
 
 DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
 {
-    CurrentContentItem.setTreeNode(OFstatic_cast(DSRDocumentTreeNode *, getNode()));
+    CurrentContentItem.setTreeNode(getNode());
     return CurrentContentItem;
 }
 
@@ -165,7 +165,7 @@ size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
         const DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+            node = getNode();
             if ((node != NULL) && (node->getConceptName() == conceptName))
                 nodeID = node->getNodeID();
         } while ((nodeID == 0) && iterate(searchIntoSub));
@@ -193,7 +193,7 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
     /* never accept invalid types */
     if ((relationshipType != RT_invalid) && (valueType != VT_invalid))
     {
-        const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+        const DSRDocumentTreeNode *node = getNode();
         if (node != NULL)
         {
             /* do we have an IOD constraint checker? */
@@ -202,7 +202,7 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
                 if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
                 {
                     /* check parent node */
-                    node = OFstatic_cast(const DSRDocumentTreeNode *, getParentNode());
+                    node = getParentNode();
                     if (node != NULL)
                         result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
                 } else
@@ -230,7 +230,7 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
         /* do we have an IOD constraint checker? */
         if (ConstraintChecker != NULL)
         {
-            const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+            const DSRDocumentTreeNode *node = getNode();
             if (node != NULL)
                 result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
         } else {
@@ -386,7 +386,7 @@ size_t DSRDocumentSubTree::removeCurrentContentItem()
 
 DSRDocumentTreeNode *DSRDocumentSubTree::cloneCurrentTreeNode() const
 {
-    const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+    const DSRDocumentTreeNode *node = getNode();
     /* create a copy if the current node is valid */
     return (node != NULL) ? node->clone() : NULL;
 }
@@ -400,6 +400,42 @@ DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeI
 
 
 // protected methods
+
+DSRDocumentTreeNode *DSRDocumentSubTree::getRoot() const
+{
+    return OFstatic_cast(DSRDocumentTreeNode *, DSRTree::getRoot());
+}
+
+
+DSRDocumentTreeNode *DSRDocumentSubTree::getNode() const
+{
+    return OFstatic_cast(DSRDocumentTreeNode *, DSRTreeNodeCursor::getNode());
+}
+
+
+const DSRDocumentTreeNode *DSRDocumentSubTree::getParentNode()
+{
+    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getParentNode());
+}
+
+
+const DSRDocumentTreeNode *DSRDocumentSubTree::getChildNode() const
+{
+    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getChildNode());
+}
+
+
+const DSRDocumentTreeNode *DSRDocumentSubTree::getPreviousNode() const
+{
+    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getPreviousNode());
+}
+
+
+const DSRDocumentTreeNode *DSRDocumentSubTree::getNextNode() const
+{
+    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getNextNode());
+}
+
 
 size_t DSRDocumentSubTree::addNode(DSRTreeNode * /*node*/,
                                    const E_AddMode /*addMode*/)
