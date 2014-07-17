@@ -293,7 +293,9 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
     {
         /* root node has to be a Container */
         result = (relationshipType == RT_isRoot) && (valueType == VT_Container);
-    } else {
+    }
+    else if (relationshipType != RT_unknown)
+    {
         /* use checking routine from base class */
         result = DSRDocumentSubTree::canAddContentItem(relationshipType, valueType, addMode);
     }

@@ -54,6 +54,7 @@ OFTEST(dcmsr_addContentItem)
     /* try to add content items that should fail */
     OFCHECK(tree.addContentItem(NULL).bad());
     OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_Text), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text) == 0);
     /* NB: this test program does not always delete allocated memory (if adding a node fails) */
 }
 
@@ -118,6 +119,7 @@ OFTEST(dcmsr_createDocSubTree)
     OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Num));
     OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
     /* try to add content items that should fail */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text) == 0);
     OFCHECK(tree.addContentItem(DSRTypes::RT_invalid, DSRTypes::VT_Date) == 0);
     OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_invalid) == 0);
     OFCHECK(tree.addContentItem(DSRTypes::RT_invalid, DSRTypes::VT_invalid) == 0);

@@ -208,8 +208,8 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
                 } else
                     result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
             } else {
-                /* cannot check, therefore, allow everything */
-                result = OFTrue;
+                /* "unknown" relationships are only allowed on top-level */
+                result = (!hasParentNode() && (addMode != AM_belowCurrent)) || (relationshipType != RT_unknown);
             }
         } else {
             /* no special rules for root node (at least in a subtree) */
@@ -233,9 +233,10 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
             const DSRDocumentTreeNode *node = getNode();
             if (node != NULL)
                 result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
+            /* tbd: what if this is the first node of the tree? */
         } else {
-            /* cannot check, therefore, allow everything */
-            result = OFTrue;
+            /* "unknown" relationships are never allowed */
+            result = (relationshipType != RT_unknown);
         }
     }
     return result;

@@ -6,6 +6,7 @@ Changes between releases are documented here.
 - Reimplemented various getXXX() methods:
   Reimplemented various public getXXX() methods in derived tree class, but in
   the "protected" section. This also avoids some explicit type casts.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
            dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
            dcmsr/include/dcmtk/dcmsr/dsrtree.h
@@ -19,14 +20,23 @@ Changes between releases are documented here.
   newly created document tree node. It now returns an OFCondition (like other
   similar methods) instead of the pointer to the tree node that was passed to
   it. Also fixed possible memory leaks in case adding the new tree node failed.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
            dcmsr/libsrc/dsrdocst.cc
+           dcmsr/tests/tsrdoctr.cc
+
+- Cleaned up handling of "unknown" relationships:
+  Made sure that the "unknown" relationship type is only permitted on top-level
+  in a document subtree. This will be used for certain DICOM SR templates.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
            dcmsr/tests/tsrdoctr.cc
 
 **** Changes from 2014.07.17 (onken)
 
 - Fixed possible memory leak.
-  Thanks to Peter Hille<peter@das-system-networks.de> for the report and
+  Thanks to Peter Hille <peter@das-system-networks.de> for the report and
   suggested fix.
   Affects: dcmnet/libsrc/assoc.cc
 
