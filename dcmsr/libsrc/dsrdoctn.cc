@@ -150,10 +150,10 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         DSRDocumentTreeNode *node = NULL;
         /* read "id" attribute (optional) and compare with expected value */
         if (!doc.getStringFromAttribute(cursor, idAttr, "id", OFFalse /*encoding*/, OFFalse /*required*/).empty() &&
-            (stringToNumber(idAttr.c_str()) != Ident))
+            (stringToNumber(idAttr.c_str()) != getNodeID()))
         {
             /* create warning message */
-            DCMSR_WARN("XML attribute 'id' (" << idAttr << ") deviates from current node number (" << Ident << ")");
+            DCMSR_WARN("XML attribute 'id' (" << idAttr << ") deviates from current node number (" << getNodeID() << ")");
         }
         /* template identification information expected "inside" content item */
         if (!(flags & XF_templateElementEnclosesItems))
@@ -302,13 +302,13 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
         stream << "</observation>" << OFendl;
     }
     /* write child nodes (if any) */
-    DSRTreeNodeCursor cursor(Down);
+    DSRDocumentTreeNodeCursor cursor(getDown());
     if (cursor.isValid())
     {
         const DSRDocumentTreeNode *node = NULL;
         /* for all child nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+            node = cursor.getNode();
             if (node != NULL)
                 result = node->writeXML(stream, flags);
             else
@@ -867,7 +867,7 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     /* goto first child of current node */
-    DSRTreeNodeCursor cursor(Down);
+    DSRDocumentTreeNodeCursor cursor(getDown());
     if (cursor.isValid())
     {
         /* write ContentSequence */
@@ -878,7 +878,7 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
             DSRDocumentTreeNode *node = NULL;
             /* for all child nodes */
             do {
-                node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+                node = cursor.getNode();
                 if (node != NULL)
                 {
                     ditem = new DcmItem();
@@ -981,7 +981,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
 {
     OFCondition result = EC_Normal;
     /* goto first child of current node */
-    DSRTreeNodeCursor cursor(Down);
+    DSRDocumentTreeNodeCursor cursor(getDown());
     if (cursor.isValid())
     {
         /* flag used to format the relationship reference texts */
@@ -995,7 +995,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
         const DSRDocumentTreeNode *node = NULL;
         /* for all child nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+            node = cursor.getNode();
             if (node != NULL)
             {
                 /* set/reset flag for footnote creation*/
@@ -1149,6 +1149,8 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
     return result;
 }
 
+
+// static functions
 
 const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipType relationshipType,
                                                          OFString &relationshipText,

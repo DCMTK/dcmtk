@@ -5673,8 +5673,7 @@ dsrtncsr.o: dsrtncsr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtree.h \
- ../include/dcmtk/dcmsr/dsrtypes.h \
+ ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \

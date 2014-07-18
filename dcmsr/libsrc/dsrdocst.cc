@@ -30,7 +30,7 @@
 
 
 DSRDocumentSubTree::DSRDocumentSubTree()
-  : DSRTree(),
+  : DSRTree<DSRDocumentTreeNode>(),
     ConstraintChecker(NULL),
     CurrentContentItem()
 {
@@ -39,7 +39,7 @@ DSRDocumentSubTree::DSRDocumentSubTree()
 
 
 DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
-  : DSRTree(tree),
+  : DSRTree<DSRDocumentTreeNode>(tree),
     ConstraintChecker(NULL),
     CurrentContentItem()
 {
@@ -47,9 +47,9 @@ DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
 }
 
 
-DSRDocumentSubTree::DSRDocumentSubTree(const DSRTreeNodeCursor &startCursor,
+DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentTreeNodeCursor &startCursor,
                                        size_t stopAfterNodeID)
-  : DSRTree(startCursor, stopAfterNodeID),
+  : DSRTree<DSRDocumentTreeNode>(startCursor, stopAfterNodeID),
     ConstraintChecker(NULL),
     CurrentContentItem()
 {
@@ -71,14 +71,14 @@ DSRDocumentSubTree *DSRDocumentSubTree::clone() const
 
 void DSRDocumentSubTree::clear()
 {
-    DSRTree::clear();
+    DSRTree<DSRDocumentTreeNode>::clear();
 }
 
 
 OFBool DSRDocumentSubTree::isValid() const
 {
     /* an empty subtree is not valid */
-    return !DSRTree::isEmpty();
+    return !DSRTree<DSRDocumentTreeNode>::isEmpty();
 }
 
 
@@ -86,7 +86,7 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                                       const size_t flags)
 {
     OFCondition result = EC_Normal;
-    DSRTreeNodeCursor cursor(getRoot());
+    DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         /* check and update by-reference relationships (if applicable) */
@@ -96,7 +96,7 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
         const DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+            node = cursor.getNode();
             if (node != NULL)
             {
                 /* print node position */
@@ -336,7 +336,7 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
     if (referencedNodeID > 0)
     {
         /* always start from root node */
-        DSRTreeNodeCursor cursor(getRoot());
+        DSRDocumentTreeNodeCursor cursor(getRoot());
         if (cursor.isValid())
         {
             /* goto specified target node (might be improved later on) */
@@ -349,7 +349,7 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
                 /* check whether target node is an ancestor of source node (prevent loops) */
                 if (sourceString.substr(0, targetString.length()) != targetString)
                 {
-                    const DSRDocumentTreeNode *targetNode = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+                    const DSRDocumentTreeNode *targetNode = cursor.getNode();
                     if (targetNode != NULL)
                     {
                         /* check whether relationship is valid/allowed */
@@ -402,62 +402,18 @@ DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeI
 
 // protected methods
 
-DSRDocumentTreeNode *DSRDocumentSubTree::getRoot() const
-{
-    return OFstatic_cast(DSRDocumentTreeNode *, DSRTree::getRoot());
-}
-
-
-DSRDocumentTreeNode *DSRDocumentSubTree::getNode() const
-{
-    return OFstatic_cast(DSRDocumentTreeNode *, DSRTreeNodeCursor::getNode());
-}
-
-
-const DSRDocumentTreeNode *DSRDocumentSubTree::getParentNode()
-{
-    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getParentNode());
-}
-
-
-const DSRDocumentTreeNode *DSRDocumentSubTree::getChildNode() const
-{
-    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getChildNode());
-}
-
-
-const DSRDocumentTreeNode *DSRDocumentSubTree::getPreviousNode() const
-{
-    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getPreviousNode());
-}
-
-
-const DSRDocumentTreeNode *DSRDocumentSubTree::getNextNode() const
-{
-    return OFstatic_cast(const DSRDocumentTreeNode *, DSRTreeNodeCursor::getNextNode());
-}
-
-
-size_t DSRDocumentSubTree::addNode(DSRTreeNode * /*node*/,
-                                   const E_AddMode /*addMode*/)
-{
-    /* invalid for this class */
-    return 0;
-}
-
-
 size_t DSRDocumentSubTree::addNode(DSRDocumentTreeNode *node,
                                    const E_AddMode addMode)
 {
     /* might add a check for templates later on */
-    return DSRTree::addNode(node, addMode);
+    return DSRTree<DSRDocumentTreeNode>::addNode(node, addMode);
 }
 
 
 size_t DSRDocumentSubTree::removeNode()
 {
     /* might add a check for templates later on */
-    return DSRTree::removeNode();
+    return DSRTree<DSRDocumentTreeNode>::removeNode();
 }
 
 
@@ -476,13 +432,13 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
             if (mode & CM_resetReferenceTargetFlag)
                 resetReferenceTargetFlag();
             /* start at the root of the document tree */
-            DSRTreeNodeCursor cursor(getRoot());
+            DSRDocumentTreeNodeCursor cursor(getRoot());
             if (cursor.isValid())
             {
                 const DSRDocumentTreeNode *node = NULL;
                 /* for all content items */
                 do {
-                    node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+                    node = cursor.getNode();
                     if (node != NULL)
                     {
                         /* only check/update by-reference relationships */
@@ -497,7 +453,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                 DCMSR_WARN("Updating by-reference relationship in content item " << cursor.getPosition(posString));
                             }
                             /* start searching from root node (be careful with large trees, might be improved later on) */
-                            DSRTreeNodeCursor refCursor(getRoot());
+                            DSRDocumentTreeNodeCursor refCursor(getRoot());
                             if (mode & CM_updateNodeID)
                             {
                                 /* update node ID */
@@ -534,7 +490,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                     {
                                         /* refCursor should now point to the reference target (refNodeID > 0) */
                                         const DSRDocumentTreeNode *parentNode = OFstatic_cast(const DSRDocumentTreeNode *, cursor.getParentNode());
-                                        DSRDocumentTreeNode *targetNode = OFstatic_cast(DSRDocumentTreeNode *, refCursor.getNode());
+                                        DSRDocumentTreeNode *targetNode = refCursor.getNode();
                                         if ((parentNode != NULL) && (targetNode != NULL))
                                         {
                                             /* specify that this content item is target of an by-reference relationship */
@@ -579,13 +535,13 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
 
 void DSRDocumentSubTree::resetReferenceTargetFlag()
 {
-    DSRTreeNodeCursor cursor(getRoot());
+    DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+            node = cursor.getNode();
             if (node != NULL)
                 node->setReferenceTarget(OFFalse);
         } while (cursor.iterate());

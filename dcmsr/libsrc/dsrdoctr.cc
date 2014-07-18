@@ -305,13 +305,13 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
 
 void DSRDocumentTree::unmarkAllContentItems()
 {
-    DSRTreeNodeCursor cursor(getRoot());
+    DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+            node = cursor.getNode();
             if (node != NULL)
                 node->setMark(OFFalse);
         } while (cursor.iterate());
@@ -321,13 +321,13 @@ void DSRDocumentTree::unmarkAllContentItems()
 
 void DSRDocumentTree::removeSignatures()
 {
-    DSRTreeNodeCursor cursor(getRoot());
+    DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+            node = cursor.getNode();
             if (node != NULL)
                 node->removeSignatures();
         } while (cursor.iterate());

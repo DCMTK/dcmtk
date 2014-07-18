@@ -51,7 +51,7 @@ class DSRIODConstraintChecker;
  *  on the top-level, i.e. no dedicated root, or to use "unknown" relationship types.
  */
 class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
-  : public DSRTree
+  : public DSRTree<DSRDocumentTreeNode>
 {
 
   public:
@@ -267,42 +267,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @param  startCursor      first node of the subtree to be copied
      *  @param  stopAfterNodeID  ID of the node after which the cloning should stop
      */
-    DSRDocumentSubTree(const DSRTreeNodeCursor &startCursor,
+    DSRDocumentSubTree(const DSRDocumentTreeNodeCursor &startCursor,
                        size_t stopAfterNodeID);
-
-    /** get pointer to root node
-     ** @return pointer to root node, might be NULL (empty tree)
-     */
-    virtual DSRDocumentTreeNode *getRoot() const;
-
-    /** get pointer to current node
-     ** @return pointer to current node (might be NULL)
-     */
-    virtual DSRDocumentTreeNode *getNode() const;
-
-    /** get pointer to parent node.
-     *  Can be used to have a lookup to the parent node without changing the cursor.
-     ** @return pointer to parent node (if any), NULL otherwise
-     */
-    virtual const DSRDocumentTreeNode *getParentNode();
-
-    /** get pointer to first child node.
-     *  Can be used to have a lookup to the first child node without changing the cursor.
-     ** @return pointer to first child node (if any), NULL otherwise
-     */
-    virtual const DSRDocumentTreeNode *getChildNode() const;
-
-    /** get pointer to previous node.
-     *  Can be used to have a lookup to the previous node without changing the cursor.
-     ** @return pointer to previous node (if any), NULL otherwise
-     */
-    virtual const DSRDocumentTreeNode *getPreviousNode() const;
-
-    /** get pointer to next node.
-     *  Can be used to have a lookup to the next node without changing the cursor.
-     ** @return pointer to next node (if any), NULL otherwise
-     */
-    virtual const DSRDocumentTreeNode *getNextNode() const;
 
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node
@@ -354,16 +320,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
 
   private:
-
-    /** add new node to the current one.
-     *  This method just overwrites the method from the base class DSRTree.  Use the
-     *  above addNode() method instead.
-     ** @param  node     dummy parameter
-     *  @param  addMode  dummy parameter
-     ** @return always 0 (invalid)
-     */
-    virtual size_t addNode(DSRTreeNode *node,
-                           const E_AddMode addMode = AM_afterCurrent);
 
     /// current content item.  Introduced to avoid the external use of pointers.
     DSRContentItem CurrentContentItem;

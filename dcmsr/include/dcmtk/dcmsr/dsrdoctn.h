@@ -38,6 +38,13 @@
 class DSRIODConstraintChecker;
 
 
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+typedef DSRTreeNodeCursor<DSRDocumentTreeNode> DSRDocumentTreeNodeCursor;
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -47,6 +54,10 @@ class DSRIODConstraintChecker;
 class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
   : public DSRTreeNode
 {
+    // allow direct access to protected methods
+    friend class DSRTree<DSRDocumentTreeNode>;
+    friend class DSRTreeNodeCursor<DSRDocumentTreeNode>;
+
     // allow access to getConceptNamePtr()
     friend class DSRContentItem;
 
@@ -234,7 +245,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     inline OFBool hasChildNodes() const
     {
-        return (Down != NULL);
+        return (getDown() != NULL);
     }
 
     /** check whether the current content item has any siblings
@@ -242,7 +253,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     inline OFBool hasSiblingNodes() const
     {
-        return (Prev != NULL) || (Next != NULL);
+        return (getPrev() != NULL) || (getNext() != NULL);
     }
 
     /** get ID of the current tree node
@@ -250,7 +261,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     inline size_t getNodeID() const
     {
-        return Ident;
+        return getIdent();
     }
 
     /** get relationship type of the current content item
@@ -383,6 +394,38 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     inline DSRCodedEntryValue *getConceptNamePtr()
     {
         return &ConceptName;
+    }
+
+    /** get pointer to previous tree node
+     ** @return pointer to previous tree node (might be NULL)
+     */
+    inline DSRDocumentTreeNode *getPrev() const
+    {
+        return OFstatic_cast(DSRDocumentTreeNode *, DSRTreeNode::getPrev());
+    }
+
+    /** get pointer to next tree node
+     ** @return pointer to next tree node (might be NULL)
+     */
+    inline DSRDocumentTreeNode *getNext() const
+    {
+        return OFstatic_cast(DSRDocumentTreeNode *, DSRTreeNode::getNext());
+    }
+
+    /** get pointer to first child node
+     ** @return pointer to first child node (might be NULL)
+     */
+    inline DSRDocumentTreeNode *getDown() const
+    {
+        return OFstatic_cast(DSRDocumentTreeNode *, DSRTreeNode::getDown());
+    }
+
+    /** get unique identifier of this node
+     ** @return unique identifier of this node
+     */
+    inline size_t getIdent() const
+    {
+        return DSRTreeNode::getIdent();
     }
 
     /** create a new node and append it to the current one
@@ -607,7 +650,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     DcmSequenceOfItems       MACParameters;
     /// digital signatures sequence (VR=SQ, optional)
     DcmSequenceOfItems       DigitalSignatures;
-
 
  // --- declaration of default constructor and assignment operator
 

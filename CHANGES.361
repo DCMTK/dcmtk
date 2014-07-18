@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.18 (riesmeier)
+
+- Restructured classes for nodes and trees:
+  Converted basic node and tree classes to C++ templates. This makes the code
+  clearer and avoids many explicit type casts. Also fixed some scope issues.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/tests/tsrtree.cc
+
 **** Changes from 2014.07.17 (riesmeier)
 
 - Reimplemented various getXXX() methods:

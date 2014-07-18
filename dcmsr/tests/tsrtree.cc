@@ -29,7 +29,7 @@
 
 OFTEST(dcmsr_addTreeNode)
 {
-    DSRTree tree;
+    DSRTree<> tree;
     const size_t nodeID = tree.getNextNodeID();
     OFCHECK_EQUAL(tree.countNodes(), 0);
     /* first, create a simple tree of 6 nodes and check the references */
@@ -87,7 +87,7 @@ OFTEST(dcmsr_addTreeNode)
 
 OFTEST(dcmsr_treeWithoutRoot)
 {
-    DSRTree tree;
+    DSRTree<> tree;
     const size_t nodeID = tree.getNextNodeID();
     OFCHECK_EQUAL(tree.countNodes(), 0);
     /* first, create a simple tree of 6 nodes (with 3 nodes on top-level!) */
@@ -109,7 +109,7 @@ OFTEST(dcmsr_treeWithoutRoot)
 
 OFTEST(dcmsr_copyTree)
 {
-    DSRTree tree;
+    DSRTree<> tree;
     const size_t nodeID = tree.getNextNodeID();
     /* first, create a simple tree of 6 nodes */
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
@@ -121,48 +121,48 @@ OFTEST(dcmsr_copyTree)
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
     /* then copy this tree and check the nodes */
     OFString posString;
-    DSRTree newTree(tree);
+    DSRTree<> newTree(tree);
     OFCHECK_EQUAL(newTree.getPosition(posString), "1");
     OFCHECK(!newTree.hasParentNode());
     OFCHECK(!newTree.hasPreviousNode());
     OFCHECK(!newTree.hasNextNode());
-    OFCHECK(newTree.hasChildNode());
+    OFCHECK(newTree.hasChildNodes());
     newTree.iterate();
     OFCHECK_EQUAL(newTree.getPosition(posString), "1.1");
     OFCHECK(newTree.hasParentNode());
     OFCHECK(!newTree.hasPreviousNode());
     OFCHECK(newTree.hasNextNode());
-    OFCHECK(!newTree.hasChildNode());
+    OFCHECK(!newTree.hasChildNodes());
     newTree.iterate();
     OFCHECK_EQUAL(newTree.getPosition(posString), "1.2");
     OFCHECK(newTree.hasParentNode());
     OFCHECK(newTree.hasPreviousNode());
     OFCHECK(newTree.hasNextNode());
-    OFCHECK(newTree.hasChildNode());
+    OFCHECK(newTree.hasChildNodes());
     newTree.iterate();
     OFCHECK_EQUAL(newTree.getPosition(posString), "1.2.1");
     OFCHECK(newTree.hasParentNode());
     OFCHECK(!newTree.hasPreviousNode());
     OFCHECK(newTree.hasNextNode());
-    OFCHECK(!newTree.hasChildNode());
+    OFCHECK(!newTree.hasChildNodes());
     newTree.iterate();
     OFCHECK_EQUAL(newTree.getPosition(posString), "1.2.2");
     OFCHECK(newTree.hasParentNode());
     OFCHECK(newTree.hasPreviousNode());
     OFCHECK(!newTree.hasNextNode());
-    OFCHECK(!newTree.hasChildNode());
+    OFCHECK(!newTree.hasChildNodes());
     newTree.iterate();
     OFCHECK_EQUAL(newTree.getPosition(posString), "1.3");
     OFCHECK(newTree.hasParentNode());
     OFCHECK(newTree.hasPreviousNode());
     OFCHECK(!newTree.hasNextNode());
-    OFCHECK(!newTree.hasChildNode());
+    OFCHECK(!newTree.hasChildNodes());
 }
 
 
 OFTEST(dcmsr_cloneSubTree_1)
 {
-    DSRTree tree;
+    DSRTree<> tree;
     const size_t nodeID = tree.getNextNodeID();
     /* first, create a simple tree of 6 nodes */
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
@@ -175,7 +175,7 @@ OFTEST(dcmsr_cloneSubTree_1)
     /* then clone a subtree and check its nodes */
     tree.gotoNode(nodeID + 1);
     OFString posString;
-    DSRTree *newTree = tree.cloneSubTree(nodeID + 2);
+    DSRTree<> *newTree = tree.cloneSubTree(nodeID + 2);
     if (newTree != NULL)
     {
         OFCHECK_EQUAL(newTree->countNodes(), 4);
@@ -183,25 +183,25 @@ OFTEST(dcmsr_cloneSubTree_1)
         OFCHECK(!newTree->hasParentNode());
         OFCHECK(!newTree->hasPreviousNode());
         OFCHECK(newTree->hasNextNode());
-        OFCHECK(!newTree->hasChildNode());
+        OFCHECK(!newTree->hasChildNodes());
         newTree->iterate();
         OFCHECK_EQUAL(newTree->getPosition(posString), "2");
         OFCHECK(!newTree->hasParentNode());
         OFCHECK(newTree->hasPreviousNode());
         OFCHECK(!newTree->hasNextNode());
-        OFCHECK(newTree->hasChildNode());
+        OFCHECK(newTree->hasChildNodes());
         newTree->iterate();
         OFCHECK_EQUAL(newTree->getPosition(posString), "2.1");
         OFCHECK(newTree->hasParentNode());
         OFCHECK(!newTree->hasPreviousNode());
         OFCHECK(newTree->hasNextNode());
-        OFCHECK(!newTree->hasChildNode());
+        OFCHECK(!newTree->hasChildNodes());
         newTree->iterate();
         OFCHECK_EQUAL(newTree->getPosition(posString), "2.2");
         OFCHECK(newTree->hasParentNode());
         OFCHECK(newTree->hasPreviousNode());
         OFCHECK(!newTree->hasNextNode());
-        OFCHECK(!newTree->hasChildNode());
+        OFCHECK(!newTree->hasChildNodes());
         delete newTree;
     } else
         OFCHECK_FAIL("could not create clone of subtree");
@@ -210,7 +210,7 @@ OFTEST(dcmsr_cloneSubTree_1)
 
 OFTEST(dcmsr_cloneSubTree_2)
 {
-    DSRTree tree;
+    DSRTree<> tree;
     const size_t nodeID = tree.getNextNodeID();
     /* first, create a simple tree of 6 nodes */
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
@@ -223,7 +223,7 @@ OFTEST(dcmsr_cloneSubTree_2)
     /* then clone a subtree and check its nodes */
     tree.gotoNode(nodeID + 2);
     OFString posString;
-    DSRTree *newTree = tree.cloneSubTree();
+    DSRTree<> *newTree = tree.cloneSubTree();
     if (newTree != NULL)
     {
         OFCHECK_EQUAL(newTree->countNodes(), 3);
@@ -231,19 +231,19 @@ OFTEST(dcmsr_cloneSubTree_2)
         OFCHECK(!newTree->hasParentNode());
         OFCHECK(!newTree->hasPreviousNode());
         OFCHECK(!newTree->hasNextNode());
-        OFCHECK(newTree->hasChildNode());
+        OFCHECK(newTree->hasChildNodes());
         newTree->iterate();
         OFCHECK_EQUAL(newTree->getPosition(posString), "1.1");
         OFCHECK(newTree->hasParentNode());
         OFCHECK(!newTree->hasPreviousNode());
         OFCHECK(newTree->hasNextNode());
-        OFCHECK(!newTree->hasChildNode());
+        OFCHECK(!newTree->hasChildNodes());
         newTree->iterate();
         OFCHECK_EQUAL(newTree->getPosition(posString), "1.2");
         OFCHECK(newTree->hasParentNode());
         OFCHECK(newTree->hasPreviousNode());
         OFCHECK(!newTree->hasNextNode());
-        OFCHECK(!newTree->hasChildNode());
+        OFCHECK(!newTree->hasChildNodes());
         delete newTree;
     } else
         OFCHECK_FAIL("could not create clone of subtree");
