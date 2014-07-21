@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -320,7 +320,7 @@ searchCommentOrEol(char *s)
 }
 
 
-static char *
+static void
 convertNewlineCharacters(char *s)
 {
     // convert the string "\n" into the \r\n combination required by DICOM
@@ -329,7 +329,6 @@ convertNewlineCharacters(char *s)
         *s = '\r';
         *++s = '\n';
     }
-    return s;
 }
 
 static OFBool
@@ -351,7 +350,7 @@ parseValue(char *&s, char *&value, DcmEVR &vr, const DcmTagKey &tagkey)
             {
                 value = new char[len - 1];
                 OFStandard::strlcpy(value, s + 1, len - 1);
-                value = convertNewlineCharacters(value);
+                convertNewlineCharacters(value);
             }
             else
                 value = NULL;
