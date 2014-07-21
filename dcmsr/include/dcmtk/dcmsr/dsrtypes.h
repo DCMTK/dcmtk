@@ -169,6 +169,12 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotAddContentItem;
 
 /// error: an invalid concept name code has been passed or is used
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidConceptName;
+
+/// error: a given subtree could not be inserted at the current node
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotInsertSubTree;
+
+/// error: the current relationship type cannot be replaced by the given one
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotChangeRelationshipType;
 //@}
 
 

@@ -64,9 +64,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
   public:
 
     /** constructor.
-     *  The 'relationshipType' and 'valueType' can never be changed after the tree node
-     *  has been created (therefore, the corresponding member variables are declared
-     *  "const").
+     *  The 'valueType' can never be changed after the tree node has been created
+     *  (therefore, the corresponding member variable is declared "const").
      ** @param  relationshipType  type of relationship to the parent tree node.  Should
      *                            not be DSRTypes::RT_invalid, and DSRTypes::RT_isRoot
      *                            only for the root node.
@@ -272,6 +271,18 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
         return RelationshipType;
     }
 
+    /** set relationship type of the current content item (if previously unknown).
+     *  Please note that changing the relationship type (which was originally passed to the
+     *  constructor of this class) only works if the current value is DSRTypes::RT_unknown.
+     *  This is needed for inserting document subtrees where the top-level nodes might have an
+     *  "unknown" relationship to the parent node (see DSRDocumentSubTree::insertSubTree()).
+     ** @param  relationshipType  type of relationship to the parent tree node.
+     *                            Should not be DSRTypes::RT_invalid, DSRTypes::RT_unknown or
+     *                            DSRTypes::RT_isRoot.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setRelationshipType(const E_RelationshipType relationshipType);
+
     /** get value type of the current content item
      ** @return value type of the current content item (might be DSRTypes::VT_invalid)
      */
@@ -294,7 +305,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      ** @param  conceptName  reference to a variable where the code should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition getConceptName(DSRCodedEntryValue &conceptName) const;
+    virtual OFCondition getConceptName(DSRCodedEntryValue &conceptName) const;
 
     /** set the concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
@@ -363,8 +374,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  @param  mappingResource     mapping resource that defines the template (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition getTemplateIdentification(OFString &templateIdentifier,
-                                          OFString &mappingResource) const;
+    virtual OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                                  OFString &mappingResource) const;
 
     /** set template identifier and mapping resource.
      *  The identification is valid if both values are either present (non-empty) or absent
@@ -624,32 +635,32 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 
     /// flag indicating whether the content item is marked (e.g. used for digital signatures).
     /// The default value is OFFalse.
-    OFBool                   MarkFlag;
+    OFBool             MarkFlag;
     /// flag indicating whether the content item is referenced (by-reference relationship)
     /// The default value is OFFalse.
-    OFBool                   ReferenceTarget;
+    OFBool             ReferenceTarget;
 
     /// relationship type to the parent node (associated DICOM VR=CS, mandatory)
-    const E_RelationshipType RelationshipType;
+    E_RelationshipType RelationshipType;
     /// value type (associated DICOM VR=CS, mandatory)
-    const E_ValueType        ValueType;
+    const E_ValueType  ValueType;
 
     /// concept name (VR=SQ, conditional)
-    DSRCodedEntryValue       ConceptName;
+    DSRCodedEntryValue ConceptName;
     /// observation date/time (VR=DT, conditional)
-    OFString                 ObservationDateTime;
+    OFString           ObservationDateTime;
     /// observation unique identifier (VR=UI, optional)
-    OFString                 ObservationUID;
+    OFString           ObservationUID;
 
     /// template identifier (VR=CS, mandatory in ContentTemplateSequence)
-    OFString                 TemplateIdentifier;
+    OFString           TemplateIdentifier;
     /// mapping resource (VR=CS, mandatory in ContentTemplateSequence)
-    OFString                 MappingResource;
+    OFString           MappingResource;
 
     /// MAC parameters sequence (VR=SQ, optional)
-    DcmSequenceOfItems       MACParameters;
+    DcmSequenceOfItems MACParameters;
     /// digital signatures sequence (VR=SQ, optional)
-    DcmSequenceOfItems       DigitalSignatures;
+    DcmSequenceOfItems DigitalSignatures;
 
  // --- declaration of default constructor and assignment operator
 

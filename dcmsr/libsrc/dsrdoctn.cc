@@ -390,6 +390,23 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
 }
 
 
+OFCondition DSRDocumentTreeNode::setRelationshipType(const E_RelationshipType relationshipType)
+{
+    OFCondition result = EC_Normal;
+    /* check parameter before setting the value */
+    if ((relationshipType != RT_invalid) && (relationshipType != RT_unknown) && (relationshipType != RT_isRoot))
+    {
+        /* only "unknown" relationship types can be replaced */
+        if (RelationshipType == RT_unknown)
+            RelationshipType = relationshipType;
+        else
+            result = SR_EC_CannotChangeRelationshipType;
+    } else
+        result = EC_IllegalParameter;
+    return result;
+}
+
+
 OFCondition DSRDocumentTreeNode::getConceptName(DSRCodedEntryValue &conceptName) const
 {
     conceptName = ConceptName;

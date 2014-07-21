@@ -156,7 +156,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                                  const E_ValueType targetValueType);
 
     /** add specified content item to the current one.
-     *  If possible this method creates a new node as specified and adds it to the current
+     *  If possible, this method creates a new node as specified and adds it to the current
      *  one.  The method canAddContentItem() is called internally to check parameters first.
      *  If the node could be added successfully, the cursor is set to it automatically.
      ** @param  relationshipType  relationship type of node to be added with regard to
@@ -172,7 +172,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                   const E_AddMode addMode = AM_afterCurrent);
 
     /** add specified content item to the current one.
-     *  If possible this method adds a given new node to the current one.  The method
+     *  If possible, this method adds a given new node to the current one.  The method
      *  canAddContentItem() is called internally to check parameters first.  If the
      *  node could be added successfully, the cursor is set to it automatically.
      *  Please note that no copy of the given node is created.  Therefore, the node
@@ -183,7 +183,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *                        Possible values: DSRTypes::AM_afterCurrent,
      *                        DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
      *  @param  deleteIfFail  flag specifying whether to delete the given 'node' if
-     *                        adding fails.  By default the item is not deleted, i.e.
+     *                        adding fails.  By default, the item is not deleted, i.e.
      *                        in case of error it has to be deleted by the caller.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -192,7 +192,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                        const OFBool deleteIfFail = OFFalse);
 
     /** add specified content item after the current one.
-     *  If possible this method creates a new node as specified and adds it after the current
+     *  If possible, this method creates a new node as specified and adds it after the current
      *  one, i.e. on the same level.  Internally, the first variant of the addContentItem()
      *  method is called with the third parameter being DSRTypes::AM_afterCurrent.  If
      *  successful, the given concept name is set for the new node, and the cursor is updated.
@@ -208,7 +208,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                        const DSRCodedEntryValue &conceptName);
 
     /** add specified content item below the current one.
-     *  If possible this method creates a new node as specified and adds it below the current
+     *  If possible, this method creates a new node as specified and adds it below the current
      *  one, i.e. as a child.  Internally, the first variant of the addContentItem() method
      *  is called with the third parameter being DSRTypes::AM_belowCurrent.  If successful,
      *  the given concept name is set for the new node, and the cursor is updated.
@@ -224,7 +224,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                             const DSRCodedEntryValue &conceptName);
 
     /** add specified by-reference relationship to the current content item.
-     *  If possible this method creates a new pseudo-node (relationship) and adds it to the
+     *  If possible, this method creates a new pseudo-node (relationship) and adds it to the
      *  current one.  The method canAddByReferenceRelationship() is called internally to check
      *  parameters first.  The internal cursor is automatically re-set to the current node.
      ** @param  relationshipType  relationship type between current and referenced node
@@ -233,6 +233,47 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual size_t addByReferenceRelationship(const E_RelationshipType relationshipType,
                                               const size_t referencedNodeID);
+
+    /** check whether specified subtree can be inserted at the current position, i.e.\ added
+     *  to the current content item.  Internally, the method canAddContentItem() is used for
+     *  all top-level nodes of the document subtree.
+     *  @note Currently, it is not checked whether the given subtree meets the requirements of
+     *        the tree it should be inserted to, e.g. the constraints of the associated IOD.
+     ** @param  tree            pointer to new subtree to be inserted
+     *  @param  addMode         flag specifying at which position the new subtree would
+     *                          be added.  Possible values: DSRTypes::AM_afterCurrent,
+     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  defaultRelType  default relationship type between the top-level nodes of
+     *                          the given subtree and the current node.  This relationship
+     *                          type is used if the one of a top-level node is "unknown".
+     ** @return OFTrue if specified subtree can be inserted, OFFalse otherwise
+     */
+    virtual OFBool canInsertSubTree(DSRDocumentSubTree *tree,
+                                    const E_AddMode addMode = AM_belowCurrent,
+                                    const E_RelationshipType defaultRelType = RT_unknown);
+
+    /** insert specified subtree to this tree, i.e.\ add it to the current content item.
+     *  If possible, this method adds a given new subtree to the current content item.
+     *  The method canInsertSubTree() is called internally to check the parameters first.
+     *  Please note that no copy of the given subtree is created.  Therefore, the subtree
+     *  has to be created with new() or with cloneSubTree() - do not use a reference to a
+     *  local variable and do not delete it a second time.
+     ** @param  tree            pointer to new subtree to be inserted
+     *  @param  addMode         flag specifying at which position to add the new subtree.
+     *                          Possible values: DSRTypes::AM_afterCurrent,
+     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  defaultRelType  default relationship type between the top-level nodes of
+     *                          the given subtree and the current node.  This relationship
+     *                          type is used if the one of a top-level node is "unknown".
+     *  @param  deleteIfFail    flag specifying whether to delete the given 'tree' if
+     *                          adding fails.  By default, the tree is not deleted, i.e.
+     *                          in case of error it has to be deleted by the caller.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition insertSubTree(DSRDocumentSubTree *tree,
+                                      const E_AddMode addMode = AM_belowCurrent,
+                                      const E_RelationshipType defaultRelType = RT_unknown,
+                                      const OFBool deleteIfFail = OFFalse);
 
     /** remove current content item from tree.
      *  Please note that not only the specified node but also all of its child nodes are

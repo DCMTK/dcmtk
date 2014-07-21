@@ -3,9 +3,24 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.21 (riesmeier)
 
+- Added insertSubTree() method to subtree class:
+  Added insertSubTree() and canInsertSubTree() method to the document subtree
+  class. This allows for adding a particular subtree to an SR document tree or
+  to another subtree. Also added new tests for these methods (as always).
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 - Fixed a bug in convertNewlineCharacters():
   Fixed an ugly bug in convertNewlineCharacters() that caused dump2dcm to crash.
   This issue was introduced with commit 093768a, i.e. the previous one.
+  Thanks to Markus Konrad <markus.konrad@et-innovations.org> for the report.
   Affects: dcmdata/apps/dump2dcm.cc
 
 **** Changes from 2014.07.18 (riesmeier)

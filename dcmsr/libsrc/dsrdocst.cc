@@ -207,7 +207,10 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
                         result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
                 } else
                     result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
-            } else {
+            }
+            /* a root node can only be added to an empty tree */
+            else if (relationshipType != RT_isRoot)
+            {
                 /* "unknown" relationships are only allowed on top-level */
                 result = (!hasParentNode() && (addMode != AM_belowCurrent)) || (relationshipType != RT_unknown);
             }
@@ -235,8 +238,8 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
                 result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
             /* tbd: what if this is the first node of the tree? */
         } else {
-            /* "unknown" relationships are never allowed */
-            result = (relationshipType != RT_unknown);
+            /* certain relationships are never allowed */
+            result = (relationshipType != RT_isRoot) && (relationshipType != RT_unknown);
         }
     }
     return result;
@@ -376,6 +379,96 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
         }
     }
     return nodeID;
+}
+
+
+OFBool DSRDocumentSubTree::canInsertSubTree(DSRDocumentSubTree *tree,
+                                            const E_AddMode addMode,
+                                            const E_RelationshipType defaultRelType)
+{
+    OFBool result = OFFalse;
+    if (tree != NULL)
+    {
+        const DSRDocumentTreeNode *currentNode = getNode();
+        if (currentNode != NULL)
+        {
+            /* check whether the top-level nodes of the subtree can be added */
+            DSRDocumentTreeNodeCursor cursor(tree->getRoot());
+            if (cursor.isValid())
+            {
+                DSRDocumentTreeNode *node;
+                E_RelationshipType relationshipType;
+                do {
+                    node = cursor.getNode();
+                    /* use default relationship type if "unknown" */
+                    relationshipType = node->getRelationshipType();
+                    if (relationshipType == RT_unknown)
+                        relationshipType = defaultRelType;
+                    result = canAddContentItem(relationshipType, node->getValueType(), addMode);
+                    /* exit loop on first node that cannot be added */
+                } while (cursor.gotoNext() && result);
+            }
+        } else {
+            /* no special rules for root node (at least in a subtree) */
+            result = OFTrue;
+        }
+        /* do we have an IOD constraint checker? */
+        if (ConstraintChecker != NULL)
+        {
+            // TODO: then we also need to check all other nodes in the subtree
+        }
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::insertSubTree(DSRDocumentSubTree *tree,
+                                              const E_AddMode addMode,
+                                              const E_RelationshipType defaultRelType,
+                                              const OFBool deleteIfFail)
+{
+    OFCondition result = EC_Normal;
+    if (tree != NULL)
+    {
+        /* check whether subtree can be inserted */
+        if (canInsertSubTree(tree, addMode, defaultRelType))
+        {
+            /* replace "unknown" relationship type on top-level */
+            if (defaultRelType != RT_unknown)
+            {
+                DSRDocumentTreeNodeCursor cursor(tree->getRoot());
+                if (cursor.isValid())
+                {
+                    DSRDocumentTreeNode *node;
+                    do {
+                        node = cursor.getNode();
+                        /* use default relationship type if "unknown" */
+                        if (node->getRelationshipType() == RT_unknown)
+                            result = node->setRelationshipType(defaultRelType);
+                    } while (cursor.gotoNext() && result.good());
+                    /* use a more appropriate error code */
+                    if (result == EC_IllegalParameter)
+                        result = SR_EC_CannotChangeRelationshipType;
+                }
+            }
+            /* finally, if everything worked as expected... */
+            if (result.good())
+            {
+                /* try to add the root node of the given subtree */
+                if (addNode(tree->getRoot(), addMode) == 0)
+                    result = SR_EC_CannotInsertSubTree;
+            }
+        } else
+            result = SR_EC_CannotInsertSubTree;
+        /* if not, delete node (if needed) */
+        if (deleteIfFail && result.bad())
+        {
+            delete tree;
+            tree = NULL;
+        }
+    } else
+        result = EC_IllegalParameter;
+    return result;
 }
 
 
