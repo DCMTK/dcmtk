@@ -412,11 +412,9 @@ OFBool DSRDocumentSubTree::canInsertSubTree(DSRDocumentSubTree *tree,
             /* no special rules for root node (at least in a subtree) */
             result = OFTrue;
         }
-        /* do we have an IOD constraint checker? */
-        if (ConstraintChecker != NULL)
-        {
-            // TODO: then we also need to check all other nodes in the subtree
-        }
+        /* we also need to check all other nodes in the subtree */
+        if (result && checkSubTreeConstraints(tree).bad())
+            result = OFFalse;
     }
     return result;
 }
@@ -513,11 +511,10 @@ size_t DSRDocumentSubTree::removeNode()
 OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                                               const size_t flags)
 {
-    OFCondition result = EC_IllegalParameter;
+    OFCondition result = EC_Normal;
     /* the update flags are mutually exclusive */
     if (!((mode & CM_updatePositionString) && (mode & CM_updateNodeID)))
     {
-        result = EC_Normal;
         /* by-reference relationships are only allowed for particular IODs */
         if ((ConstraintChecker != NULL) && ConstraintChecker->isByReferenceAllowed())
         {
@@ -621,7 +618,8 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                 } while (result.good() && cursor.iterate());
             }
         }
-    }
+    } else
+        result = EC_IllegalParameter;
     return result;
 }
 
@@ -635,8 +633,47 @@ void DSRDocumentSubTree::resetReferenceTargetFlag()
         /* iterate over all nodes */
         do {
             node = cursor.getNode();
+            /* and reset the flag */
             if (node != NULL)
                 node->setReferenceTarget(OFFalse);
         } while (cursor.iterate());
     }
+}
+
+
+OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree)
+{
+    OFCondition result = EC_Normal;
+    if (tree != NULL)
+    {
+        /* do we have an IOD constraint checker? */
+        if (ConstraintChecker != NULL)
+        {
+            /* check whether the nodes of the subtree can be added to this tree */
+            DSRDocumentTreeNodeCursor cursor(tree->getRoot());
+            if (cursor.isValid())
+            {
+                OFBool check = OFTrue;
+                do {
+                    const DSRDocumentTreeNode *node = cursor.getNode();
+                    const DSRDocumentTreeNode *parent = cursor.getParentNode();
+                    if (parent != NULL)
+                    {
+                        /* check whether relationship with parent is allowed */
+                        check = ConstraintChecker->checkContentRelationship(parent->getValueType(),
+                                                                            node->getRelationshipType(), node->getValueType());
+                        // tbd: what about by-reference relationships?
+                    }
+                    /* exit loop on first node that has a disallowed relationship */
+                } while (cursor.iterate() && check);
+                /* there has been at least one disallowed relationship */
+                if (!check)
+                    result = SR_EC_CannotAddContentItem;
+            }
+        } else {
+            /* if not, there is nothing we can do */
+        }
+    } else
+        result = EC_IllegalParameter;
+    return result;
 }

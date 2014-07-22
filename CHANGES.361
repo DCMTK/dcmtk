@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.22 (riesmeier)
+
+- Added checking of IOD-specific constraints:
+  Enhanced new insertSubTree() method by also checking whether the content
+  relationship constraints of the underlying SR IOD are followed, which is
+  needed for the derived class DSRDocumentTree. Also added further tests.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 **** Changes from 2014.07.21 (riesmeier)
 
 - Added insertSubTree() method to subtree class:

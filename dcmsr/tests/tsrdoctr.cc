@@ -56,7 +56,7 @@ OFTEST(dcmsr_addContentItem)
     OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_Text), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
     OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text) == 0);
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container) == 0);
-    /* NB: this test program does not always delete allocated memory (if adding a node fails) */
+    /* NB: this test does not always delete allocated memory (if adding a node fails) */
 }
 
 
@@ -179,36 +179,92 @@ OFTEST(dcmsr_cloneDocSubTree)
 }
 
 
-OFTEST(dcmsr_insertDocSubTree)
+OFTEST(dcmsr_insertDocSubTree_1)
 {
     /* first, create an empty document subtree*/
-    DSRDocumentSubTree tree1;
+    DSRDocumentSubTree tree;
     /* then create another document subtree with some content items */
-    DSRDocumentSubTree *tree2 = new DSRDocumentSubTree;
-    if (tree2 != NULL)
+    DSRDocumentSubTree *newTree1 = new DSRDocumentSubTree;
+    if (newTree1 != NULL)
     {
-        OFCHECK(tree2->addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
-        OFCHECK(tree2->addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
-        OFCHECK(tree2->addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
-        OFCHECK(tree2->getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
-        OFCHECK(tree2->addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
-        OFCHECK(tree2->addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+        OFCHECK(newTree1->addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+        OFCHECK(newTree1->addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+        OFCHECK(newTree1->addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+        OFCHECK(newTree1->getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+        OFCHECK(newTree1->addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+        OFCHECK(newTree1->addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
         /* and insert it into the first one */
-        OFCHECK(tree1.insertSubTree(tree2, DSRTypes::AM_belowCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).good());
-        OFCHECK_EQUAL(tree1.countNodes(), 5);
+        OFCHECK(tree.insertSubTree(newTree1, DSRTypes::AM_belowCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).good());
+        OFCHECK_EQUAL(tree.countNodes(), 5);
     } else
         OFCHECK_FAIL("could not allocate memory for subtree");
     /* create a third document subtree with some content items */
-    DSRDocumentSubTree *tree3 = new DSRDocumentSubTree;
-    if (tree3 != NULL)
+    DSRDocumentSubTree *newTree2 = new DSRDocumentSubTree;
+    if (newTree2 != NULL)
     {
-        OFCHECK(tree3->addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text));
-        OFCHECK(tree3->addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Num));
-        OFCHECK(tree3->addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+        OFCHECK(newTree2->addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text));
+        OFCHECK(newTree2->addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Num));
+        OFCHECK(newTree2->addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
         /* and insert it into the first one (below a certain node of the second subtree) */
-        OFCHECK(tree1.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
-        OFCHECK(tree1.insertSubTree(tree3, DSRTypes::AM_belowCurrent, DSRTypes::RT_contains, OFTrue /*deleteIfFail*/).good());
-        OFCHECK_EQUAL(tree1.countNodes(), 8);
+        OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
+        OFCHECK(tree.insertSubTree(newTree2, DSRTypes::AM_belowCurrent, DSRTypes::RT_contains, OFTrue /*deleteIfFail*/).good());
+        OFCHECK_EQUAL(tree.countNodes(), 8);
     } else
         OFCHECK_FAIL("could not allocate memory for subtree");
+}
+
+
+OFTEST(dcmsr_insertDocSubTree_2)
+{
+    /* first, create an empty document subtree*/
+    DSRDocumentSubTree tree;
+    /* then create another empty document subtree */
+    DSRDocumentSubTree *newTree = new DSRDocumentSubTree;
+    if (newTree != NULL)
+    {
+        /* and try to insert it (should fail) */
+        OFCHECK(tree.insertSubTree(newTree, DSRTypes::AM_belowCurrent, DSRTypes::RT_contains, OFTrue /*deleteIfFail*/).bad());
+    } else
+        OFCHECK_FAIL("could not allocate memory for subtree");
+    /* inserting a NULL subtrees should also fail */
+    OFCHECK(tree.insertSubTree(NULL).bad());
+    /* original tree should still be empty */
+    OFCHECK(tree.isEmpty());
+    OFCHECK_EQUAL(tree.countNodes(), 0);
+}
+
+
+OFTEST(dcmsr_insertDocSubTree_3)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    /* clone a particular subtree */
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
+    DSRDocumentSubTree *newTree1 = tree.cloneSubTree();
+    DSRDocumentSubTree *newTree2 = newTree1->clone();
+    DSRDocumentSubTree *newTree3 = newTree2->clone();
+    /* and try to add it to the SR document at different nodes */
+    OFCHECK(tree.insertSubTree(newTree1, DSRTypes::AM_belowCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).bad());
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    /* second try at another node (this time it should work) */
+    OFCHECK(tree.gotoPrevious() > 0);
+    OFCHECK(tree.insertSubTree(newTree2, DSRTypes::AM_beforeCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).good());
+    OFCHECK_EQUAL(tree.countNodes(), 8);
+    /* third try at another node (should also work) */
+    OFCHECK(tree.gotoRoot() > 0);
+    OFCHECK(tree.insertSubTree(newTree3, DSRTypes::AM_belowCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).good());
+    OFCHECK_EQUAL(tree.countNodes(), 11);
+    /* and finally, delete all nodes */
+    tree.clear();
+    OFCHECK(tree.isEmpty());
+    OFCHECK_EQUAL(tree.countNodes(), 0);
 }

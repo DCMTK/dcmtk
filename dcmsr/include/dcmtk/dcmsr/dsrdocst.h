@@ -236,10 +236,10 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
     /** check whether specified subtree can be inserted at the current position, i.e.\ added
      *  to the current content item.  Internally, the method canAddContentItem() is used for
-     *  all top-level nodes of the document subtree.
-     *  @note Currently, it is not checked whether the given subtree meets the requirements of
-     *        the tree it should be inserted to, e.g. the constraints of the associated IOD.
-     ** @param  tree            pointer to new subtree to be inserted
+     *  all top-level nodes of the document subtree.  In addition, if a constraint checker
+     *  is available, the remaining nodes of the given subtree are also checked for their
+     *  compliance with the content relationship constraints of the underlying SR IOD.
+     ** @param  tree            pointer to new subtree to be inserted (should not be empty)
      *  @param  addMode         flag specifying at which position the new subtree would
      *                          be added.  Possible values: DSRTypes::AM_afterCurrent,
      *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
@@ -258,7 +258,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  Please note that no copy of the given subtree is created.  Therefore, the subtree
      *  has to be created with new() or with cloneSubTree() - do not use a reference to a
      *  local variable and do not delete it a second time.
-     ** @param  tree            pointer to new subtree to be inserted
+     ** @param  tree            pointer to new subtree to be inserted (should not be empty)
      *  @param  addMode         flag specifying at which position to add the new subtree.
      *                          Possible values: DSRTypes::AM_afterCurrent,
      *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
@@ -342,8 +342,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  In addition, the position strings (used to encode by-reference relationships
      *  according to the DICOM standard) OR the node IDs (used internally to uniquely
      *  identify nodes) can be updated.
-     *  Please note that the checking modes 'DSRTypes::CM_updatePositionString' and
-     *  'DSRTypes::CM_updateNodeID' are mutually exclusive.
+     *  Please note that the checking modes DSRTypes::CM_updatePositionString and
+     *  DSRTypes::CM_updateNodeID are mutually exclusive.
      ** @param  mode   mode used to customize the checking process (see DSRTypes::CM_xxx)
      *  @param  flags  flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -355,6 +355,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  This function calls 'setReferenceTarget(OFFalse)' for all content items.
      */
     virtual void resetReferenceTargetFlag();
+
+    /** check whether the given subtree complies with the constraints of the underlying IOD.
+     *  If no IOD constraint checker is available, no checks are performed by this method.
+     ** @param  tree  pointer to subtree that should be checked
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition checkSubTreeConstraints(DSRDocumentSubTree *tree);
 
     /// check relationship content constraints of the associated IOD
     DSRIODConstraintChecker *ConstraintChecker;

@@ -34,5 +34,7 @@ OFTEST_REGISTER(dcmsr_gotoNamedNode);
 OFTEST_REGISTER(dcmsr_createDocSubTree);
 OFTEST_REGISTER(dcmsr_copyDocSubTree);
 OFTEST_REGISTER(dcmsr_cloneDocSubTree);
-OFTEST_REGISTER(dcmsr_insertDocSubTree);
+OFTEST_REGISTER(dcmsr_insertDocSubTree_1);
+OFTEST_REGISTER(dcmsr_insertDocSubTree_2);
+OFTEST_REGISTER(dcmsr_insertDocSubTree_3);
 OFTEST_MAIN("dcmsr")
