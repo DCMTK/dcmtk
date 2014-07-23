@@ -217,7 +217,7 @@
         <!-- special handling for root content item -->
         <xsd:complexType>
           <xsd:sequence>
-            <!-- template identification currently only for container items -->
+            <!-- template identification only for container items -->
             <xsd:element name="template" type="dsr:Template" minOccurs="0"/>
             <xsd:element name="concept" type="dsr:Code"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
@@ -664,7 +664,7 @@
       <xsd:element name="container">
         <xsd:complexType>
           <xsd:sequence>
-            <!-- template identification currently only for container items -->
+            <!-- template identification only for container items -->
             <xsd:element name="template" type="dsr:Template" minOccurs="0"/>
             <xsd:element name="relationship" type="dsr:RelationshipType"/>
             <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>

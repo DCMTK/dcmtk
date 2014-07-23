@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.23 (riesmeier)
 
+- Clarified use of template identification:
+  Made it clearer that the template identification using the Content Template
+  Sequence (0040,A504) is only applicable to CONTAINER content items. At the
+  time when the development of the "dcmsr" module started, this restriction was
+  not present in the DICOM standard (see DICOM PS 3.3-2000 for details).
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdoctn.cc
+
 - Fixed two memory leaks in recently added code:
   Fixed a memory leak in DSRDocumentSubTree::insertSubTree() and another one in
   the destructor of class DSRContentItem. These leaks were found with valgrind.

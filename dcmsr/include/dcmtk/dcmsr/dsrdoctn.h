@@ -367,9 +367,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  (and its children).  According to the DICOM standard it is "required if a template
      *  was used to define the content of this Item, and the template consists of a single
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
-     *  nested templates that start with the same CONTAINER."  However, this condition is
-     *  currently not checked.  The identification is valid if both values are either present
-     *  (non-empty) or absent (empty).
+     *  nested templates that start with the same CONTAINER."  The identification is valid
+     *  if both values are either present (non-empty) or absent (empty).
      ** @param  templateIdentifier  identifier of the template (might be empty)
      *  @param  mappingResource     mapping resource that defines the template (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -380,6 +379,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     /** set template identifier and mapping resource.
      *  The identification is valid if both values are either present (non-empty) or absent
      *  (empty).  See getTemplateIdentification() for details.
+     *  A warning message is reported to the logger if a template identification is specified
+     *  for a content item that is not a CONTAINER.
      ** @param  templateIdentifier  identifier of the template to be set
      *  @param  mappingResource     mapping resource that defines the template
      *  @param  check               check 'templateIdentifier' and 'mappingResource' for

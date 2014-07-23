@@ -382,6 +382,36 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent,
                                        const OFBool check = OFTrue);
 
+    /** get template identifier and mapping resource.
+     *  This value pair identifies the template that was used to create this content item
+     *  (and its children).  According to the DICOM standard this is "required if a template
+     *  was used to define the content of this Item, and the template consists of a single
+     *  CONTAINER with nested content, and it is the outermost invocation of a set of
+     *  nested templates that start with the same CONTAINER."  The identification is valid
+     *  if both values are either present (non-empty) or absent (empty).
+     *  Applicable to: CONTAINER
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template
+     *                              (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                          OFString &mappingResource) const;
+
+    /** set template identifier and mapping resource.
+     *  The identification is valid if both values are either present (non-empty) or absent
+     *  (empty).  See getTemplateIdentification() for details.
+     *  Please use the correct DICOM format for both values (VR=CS).
+     *  Applicable to: CONTAINER
+     ** @param  templateIdentifier  identifier of the template to be set
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  check               if enabled, check value for validity before setting it
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setTemplateIdentification(const OFString &templateIdentifier,
+                                          const OFString &mappingResource,
+                                          const OFBool check = OFTrue);
+
     /** get pointer to concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
@@ -460,37 +490,6 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      */
     OFCondition setObservationUID(const OFString &observationUID,
                                   const OFBool check = OFTrue);
-
-    /** get template identifier and mapping resource.
-     *  This value pair identifies the template that was used to create this content item
-     *  (and its children).  According to the DICOM standard this is "required if a template
-     *  was used to define the content of this Item, and the template consists of a single
-     *  CONTAINER with nested content, and it is the outermost invocation of a set of
-     *  nested templates that start with the same CONTAINER."  However, this condition is
-     *  currently not checked.  The identification is valid if both values are either present
-     *  (non-empty) or absent (empty).
-     *  Applicable to all content items (by-value only, optional attribute).
-     ** @param  templateIdentifier  identifier of the template (might be empty)
-     *  @param  mappingResource     mapping resource that defines the template
-     *                              (might be empty)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition getTemplateIdentification(OFString &templateIdentifier,
-                                          OFString &mappingResource) const;
-
-    /** set template identifier and mapping resource.
-     *  The identification is valid if both values are either present (non-empty) or absent
-     *  (empty).  See getTemplateIdentification() for details.
-     *  Please use the correct DICOM format for both values (VR=CS).
-     *  Applicable to all content items (by-value only).
-     ** @param  templateIdentifier  identifier of the template to be set
-     *  @param  mappingResource     mapping resource that defines the template
-     *  @param  check               if enabled, check value for validity before setting it
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition setTemplateIdentification(const OFString &templateIdentifier,
-                                          const OFString &mappingResource,
-                                          const OFBool check = OFTrue);
 
 
   protected:

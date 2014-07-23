@@ -479,6 +479,9 @@ OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templ
     }
     if (result.good())
     {
+        if ((ValueType != VT_Container) && !templateIdentifier.empty())
+            DCMSR_WARN("Template identification should only be specified for CONTAINER content items");
+        /* set current values, might be empty */
         TemplateIdentifier = templateIdentifier;
         MappingResource = mappingResource;
     }
@@ -567,6 +570,8 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     DcmItem *ditem = NULL;
     if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
     {
+        if (ValueType != VT_Container)
+            DCMSR_WARN("Found ContentTemplateSequence for content item that is not a CONTAINER");
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", "ContentTemplateSequence");
         /* check for a common error: Template Identifier includes "TID" prefix */
@@ -637,6 +642,8 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
             result = dataset.findOrCreateSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*position*/);
             if (result.good())
             {
+                if (ValueType != VT_Container)
+                    DCMSR_WARN("Writing ContentTemplateSequence for content item that is not a CONTAINER");
                 /* write item data */
                 putStringValueToDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier);
                 putStringValueToDataset(*ditem, DCM_MappingResource, MappingResource);

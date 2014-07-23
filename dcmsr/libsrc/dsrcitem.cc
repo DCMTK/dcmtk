@@ -626,6 +626,33 @@ OFCondition DSRContentItem::setContinuityOfContent(const E_ContinuityOfContent c
 }
 
 
+OFCondition DSRContentItem::getTemplateIdentification(OFString &templateIdentifier,
+                                                      OFString &mappingResource) const
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Container)
+            result = TreeNode->getTemplateIdentification(templateIdentifier, mappingResource);
+    }
+    return result;
+}
+
+
+OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateIdentifier,
+                                                      const OFString &mappingResource,
+                                                      const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Container)
+            result = TreeNode->setTemplateIdentification(templateIdentifier, mappingResource, check);
+    }
+    return result;
+}
+
+
 DSRCodedEntryValue *DSRContentItem::getConceptNamePtr()
 {
     DSRCodedEntryValue *pointer = NULL;
@@ -696,26 +723,5 @@ OFCondition DSRContentItem::setObservationUID(const OFString &observationUID,
     OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
         result = TreeNode->setObservationUID(observationUID, check);
-    return result;
-}
-
-
-OFCondition DSRContentItem::getTemplateIdentification(OFString &templateIdentifier,
-                                                      OFString &mappingResource) const
-{
-    OFCondition result = EC_IllegalCall;
-    if (TreeNode != NULL)
-        result = TreeNode->getTemplateIdentification(templateIdentifier, mappingResource);
-    return result;
-}
-
-
-OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateIdentifier,
-                                                      const OFString &mappingResource,
-                                                      const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (TreeNode != NULL)
-        result = TreeNode->setTemplateIdentification(templateIdentifier, mappingResource, check);
     return result;
 }
