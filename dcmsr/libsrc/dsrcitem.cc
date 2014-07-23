@@ -55,6 +55,7 @@ const DSRWaveformReferenceValue    DSRContentItem::EmptyWaveformReference;
 
 DSRContentItem::DSRContentItem()
   : TreeNode(NULL),
+    DeleteTreeNode(OFFalse),
     EmptyNumericMeasurement()
 {
 }
@@ -62,6 +63,7 @@ DSRContentItem::DSRContentItem()
 
 DSRContentItem::DSRContentItem(const DSRContentItem &item)
   : TreeNode(NULL),
+    DeleteTreeNode(OFTrue),
     EmptyNumericMeasurement()
 {
     if (item.TreeNode != NULL)
@@ -71,6 +73,8 @@ DSRContentItem::DSRContentItem(const DSRContentItem &item)
 
 DSRContentItem::~DSRContentItem()
 {
+    if (DeleteTreeNode)
+        delete TreeNode;
 }
 
 

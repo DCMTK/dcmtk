@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.23 (riesmeier)
+
+- Fixed two memory leaks in recently added code:
+  Fixed a memory leak in DSRDocumentSubTree::insertSubTree() and another one in
+  the destructor of class DSRContentItem. These leaks were found with valgrind.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdocst.cc
+
 **** Changes from 2014.07.22 (riesmeier)
 
 - Added checking of IOD-specific constraints:

@@ -178,7 +178,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  Please note that no copy of the given node is created.  Therefore, the node
      *  has to be created with new() or with DSRTypes::createDocumentTreeNode() - do
      *  not use a reference to a local variable and do not delete it a second time.
-     ** @param  node          pointer to the new node to be added
+     ** @param  node          pointer to the new node to be added (should not be empty).
+     *                        Reference remains valid after successful insertion.
      *  @param  addMode       flag specifying at which position to add the new node.
      *                        Possible values: DSRTypes::AM_afterCurrent,
      *                        DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
@@ -258,7 +259,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  Please note that no copy of the given subtree is created.  Therefore, the subtree
      *  has to be created with new() or with cloneSubTree() - do not use a reference to a
      *  local variable and do not delete it a second time.
-     ** @param  tree            pointer to new subtree to be inserted (should not be empty)
+     ** @param  tree            pointer to new subtree to be inserted (should not be empty).
+     *                          Reference becomes invalid after successful insertion!
      *  @param  addMode         flag specifying at which position to add the new subtree.
      *                          Possible values: DSRTypes::AM_afterCurrent,
      *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent

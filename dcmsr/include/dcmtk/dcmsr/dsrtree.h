@@ -260,6 +260,13 @@ template<typename T = DSRTreeNode> class DCMTK_DCMSR_EXPORT DSRTree
      */
     virtual T *getRoot() const;
 
+    /** get pointer to root node and "forget" the internal reference to this node.
+     *  In other words: after calling this method, the stored tree will be empty.
+     *  This also means that the caller is responsible for deleting the allocated memory.
+     ** @return pointer to root node, might be NULL (empty tree)
+     */
+    virtual T* getAndRemoveRootNode();
+
 
   private:
 
@@ -687,6 +694,16 @@ template<typename T>
 T *DSRTree<T>::getRoot() const
 {
     return RootNode;
+}
+
+
+template<typename T>
+T *DSRTree<T>::getAndRemoveRootNode()
+{
+    T* root = RootNode;
+    /* "forget" reference to root node */
+    RootNode = NULL;
+    return root;
 }
 
 

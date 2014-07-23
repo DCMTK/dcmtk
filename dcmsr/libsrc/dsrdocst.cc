@@ -453,13 +453,17 @@ OFCondition DSRDocumentSubTree::insertSubTree(DSRDocumentSubTree *tree,
             if (result.good())
             {
                 /* try to add the root node of the given subtree */
-                if (addNode(tree->getRoot(), addMode) == 0)
+                if (addNode(tree->getRoot(), addMode) > 0)
+                {
+                    /* "forget" reference to root node */
+                    tree->getAndRemoveRootNode();
+                } else
                     result = SR_EC_CannotInsertSubTree;
             }
         } else
             result = SR_EC_CannotInsertSubTree;
-        /* if not, delete node (if needed) */
-        if (deleteIfFail && result.bad())
+        /* delete given subtree (if needed) */
+        if (result.good() || (deleteIfFail && result.bad()))
         {
             delete tree;
             tree = NULL;

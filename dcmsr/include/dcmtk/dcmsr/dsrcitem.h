@@ -57,8 +57,9 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     /** copy constructor.
      *  Internally, the copy constructor of the respective tree node class is used, so the
-     *  corresponding comments apply.
-     ** @param item content item to be copied
+     *  corresponding comments apply.  This also means that the copy describes a separate
+     *  content item, i.e. without relationships to other content items.
+     ** @param  item  content item to be copied
      */
     DSRContentItem(const DSRContentItem &item);
 
@@ -509,8 +510,10 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
   private:
 
-    /// internal tree node pointer (current content item)
+    /// internal tree node pointer to current content item
     DSRDocumentTreeNode *TreeNode;
+    /// flag indicating whether to delete the 'TreeNode' during destruction (or not)
+    const OFBool DeleteTreeNode;
 
     /// empty numeric measurement value. Used as default return value for getNumericValue().
     /// A static member variable (as for the other values below) cannot be used because this
