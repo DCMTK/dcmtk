@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.24 (onken)
 
+- Reverted false retirement status of some SOP Classes.
+
+  Three composite instance retrieve SOP Classes have accidentially
+  been added using the "RETIRED_" prefix in their respective constant
+  names. Thanks to Michael Spacek <tupinek@gmail.com> for the report
+  and suggested patch.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 - Specific error if no presentation context proposed.
   Return specific error if Association requestor does not propose any
   presentation context (must propose one or more).

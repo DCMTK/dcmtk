@@ -502,9 +502,9 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.3.1"
 #define UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.3.2"
 #define UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel  "1.2.840.10008.5.1.4.1.2.3.3"
-#define UID_RETIRED_MOVECompositeInstanceRootRetrieve              "1.2.840.10008.5.1.4.1.2.4.2"
-#define UID_RETIRED_GETCompositeInstanceRootRetrieve               "1.2.840.10008.5.1.4.1.2.4.3"
-#define UID_RETIRED_GETCompositeInstanceRetrieveWithoutBulkData    "1.2.840.10008.5.1.4.1.2.5.3"
+#define UID_MOVECompositeInstanceRootRetrieve                      "1.2.840.10008.5.1.4.1.2.4.2"
+#define UID_GETCompositeInstanceRootRetrieve                       "1.2.840.10008.5.1.4.1.2.4.3"
+#define UID_GETCompositeInstanceRetrieveWithoutBulkData            "1.2.840.10008.5.1.4.1.2.5.3"
 
 // Worklist
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
