@@ -279,10 +279,10 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MOVEPatientRootQueryRetrieveInformationModel,              "MOVEPatientRootQueryRetrieveInformationModel" },
     { UID_MOVEStudyRootQueryRetrieveInformationModel,                "MOVEStudyRootQueryRetrieveInformationModel" },
     { UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel, "RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_RETIRED_GETCompositeInstanceRetrieveWithoutBulkData,       "RETIRED_GETCompositeInstanceRetrieveWithoutBulkData" },
-    { UID_RETIRED_GETCompositeInstanceRootRetrieve,                  "RETIRED_GETCompositeInstanceRootRetrieve" },
+    { UID_GETCompositeInstanceRetrieveWithoutBulkData,               "GETCompositeInstanceRetrieveWithoutBulkData" },
+    { UID_GETCompositeInstanceRootRetrieve,                          "GETCompositeInstanceRootRetrieve" },
     { UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel,  "RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_RETIRED_MOVECompositeInstanceRootRetrieve,                 "RETIRED_MOVECompositeInstanceRootRetrieve" },
+    { UID_MOVECompositeInstanceRootRetrieve,                         "MOVECompositeInstanceRootRetrieve" },
     { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel, "RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
 
     // Worklist

@@ -3,8 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.24 (onken)
 
-- Reverted false retirement status of some SOP Classes.
+- Fix last commit by including implementation file.
+  Affects: dcmdata/libsrc/dcuid.cc
 
+- Reverted false retirement status of some SOP Classes.
   Three composite instance retrieve SOP Classes have accidentially
   been added using the "RETIRED_" prefix in their respective constant
   names. Thanks to Michael Spacek <tupinek@gmail.com> for the report
