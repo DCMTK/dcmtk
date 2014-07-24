@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.24 (onken)
+
+- Specific error if no presentation context proposed.
+  Return specific error if Association requestor does not propose any
+  presentation context (must propose one or more).
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+
 **** Changes from 2014.07.23 (riesmeier)
 
 - Clarified use of template identification:

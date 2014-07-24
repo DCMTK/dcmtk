@@ -26,12 +26,13 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
-makeOFConditionConst(ASC_BADPRESENTATIONCONTEXTID, OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID,  OF_error, "ASC Bad presentation context ID");
-makeOFConditionConst(ASC_MISSINGTRANSFERSYNTAX,    OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,     OF_error, "ASC Missing transfer syntax");
-makeOFConditionConst(ASC_NULLKEY,                  OFM_dcmnet, ASCC_NULLKEY,                   OF_error, "ASC Caller passed in a NULL key");
-makeOFConditionConst(ASC_SHUTDOWNAPPLICATION,      OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,       OF_error, "ASC Application shutdown requested");
-makeOFConditionConst(ASC_USERIDENTIFICATIONFAILED, OFM_dcmnet, ASCC_USERIDENTIFICATIONFAILED,  OF_error, "ASC User Identification Negotiation failed");
-makeOFConditionConst(ASC_SCPSCUROLESELECTIONFAILED,OFM_dcmnet, ASCC_SCPSCUROLESELECTIONFAILED, OF_error, "ASC SCP/SCU role selection failed");
+makeOFConditionConst(ASC_BADPRESENTATIONCONTEXTID,      OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID,      OF_error, "ASC Bad presentation context ID");
+makeOFConditionConst(ASC_MISSINGTRANSFERSYNTAX,         OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,         OF_error, "ASC Missing transfer syntax");
+makeOFConditionConst(ASC_NULLKEY,                       OFM_dcmnet, ASCC_NULLKEY,                       OF_error, "ASC Caller passed in a NULL key");
+makeOFConditionConst(ASC_SHUTDOWNAPPLICATION,           OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,           OF_error, "ASC Application shutdown requested");
+makeOFConditionConst(ASC_USERIDENTIFICATIONFAILED,      OFM_dcmnet, ASCC_USERIDENTIFICATIONFAILED,      OF_error, "ASC User Identification Negotiation failed");
+makeOFConditionConst(ASC_SCPSCUROLESELECTIONFAILED,     OFM_dcmnet, ASCC_SCPSCUROLESELECTIONFAILED,     OF_error, "ASC SCP/SCU role selection failed");
+makeOFConditionConst(ASC_NOPRESENTATIONCONTEXTPROPOSED, OFM_dcmnet, ASCC_NOPRESENTATIONCONTEXTPROPOSED, OF_error, "No presentation context proposed");
 
 makeOFConditionConst(DIMSE_BADCOMMANDTYPE,               OFM_dcmnet, DIMSEC_BADCOMMANDTYPE,               OF_error, "DIMSE Bad command type");
 makeOFConditionConst(DIMSE_BADDATA,                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");

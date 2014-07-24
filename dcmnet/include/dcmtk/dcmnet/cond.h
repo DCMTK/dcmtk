@@ -64,14 +64,16 @@ const unsigned short ASCC_NULLKEY                        = 0x106;
 const unsigned short ASCC_SHUTDOWNAPPLICATION            = 0x107;
 const unsigned short ASCC_USERIDENTIFICATIONFAILED       = 0x108;
 const unsigned short ASCC_SCPSCUROLESELECTIONFAILED      = 0x109;
+const unsigned short ASCC_NOPRESENTATIONCONTEXTPROPOSED  = 0x110;
 
 // condition constants used in the association module
-extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_BADPRESENTATIONCONTEXTID;   /* Bad presentation context ID */
-extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_MISSINGTRANSFERSYNTAX;      /* Missing transfer syntax */
-extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_NULLKEY;                    /* Caller passed in a NULL key */
-extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_SHUTDOWNAPPLICATION;        /* Peer requested application shutdown */
-extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_USERIDENTIFICATIONFAILED;   /* User Identity Negotiation failed */
-extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_SCPSCUROLESELECTIONFAILED;  /* SCP/SCU role selection failed */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_BADPRESENTATIONCONTEXTID;      /* Bad presentation context ID */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_MISSINGTRANSFERSYNTAX;         /* Missing transfer syntax */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_NULLKEY;                       /* Caller passed in a NULL key */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_SHUTDOWNAPPLICATION;           /* Peer requested application shutdown */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_USERIDENTIFICATIONFAILED;      /* User Identity Negotiation failed */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_SCPSCUROLESELECTIONFAILED;     /* SCP/SCU role selection failed */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst ASC_NOPRESENTATIONCONTEXTPROPOSED; /* No presentation context proposed */
 
 // condition code constants used in the DIMSE module
 const unsigned short DIMSEC_BADCOMMANDTYPE               = 0x201;

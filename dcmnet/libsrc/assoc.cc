@@ -1164,6 +1164,12 @@ ASC_acceptContextsWithTransferSyntax(
     OFBool abstractOK = OFFalse;
 
     n = ASC_countPresentationContexts(params);
+    // No presentation context proposed at all? Return error.
+    if (n == 0)
+    {
+      return ASC_NOPRESENTATIONCONTEXTPROPOSED;
+    }
+
     for (i = 0; i < n; i++) {
         cond = ASC_getPresentationContext(params, i, &pc);
         if (cond.bad()) return cond;
