@@ -3,6 +3,24 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.25 (riesmeier)
 
+- Added public method to change SR document type:
+  Added public method that allows for changing the type of an SR document (IOD)
+  without deleting the currently stored document tree, if this is possible.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Added:   dcmsr/tests/tsrdoc.cc
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/Makefile.in
+           dcmsr/tests/tests.cc
+
 - Slightly enhanced layout of Doxygen documentation.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
            dcmsr/include/dcmtk/dcmsr/dsrdoc.h

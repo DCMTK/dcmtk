@@ -144,12 +144,20 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     }
 
     /** change document type.
-     *  Please note that the document tree is deleted if the specified 'documentType'
-     *  is supported.  Otherwise the current document remains in force.
+     *  First, it is checked whether the specified 'documentType' is supported at all.  If so,
+     *  the currently stored document tree is either deleted (see 'deleteTree' parameter) or
+     *  it is checked whether the tree also complies with the relationship content constraints
+     *  of the new SR IOD.  Otherwise the current document remains in force.
+     *  Please note that the 'documentType' is not compared with the type of the currently
+     *  stored document tree, i.e. the above described process is always performed, even if
+     *  the document type does not change.
      ** @param  documentType  new document type to be set (should not be DSRTypes::DT_invalid)
+     *  @param  deleteTree    delete the currently stored document tree if OFTrue.
+     *                        Otherwise, it is checked whether the tree can be preserved.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition changeDocumentType(const E_DocumentType documentType);
+    virtual OFCondition changeDocumentType(const E_DocumentType documentType,
+                                           const OFBool deleteTree);
 
     /** check whether specified content item can be added to the current one.
      *  This method can be used to decide which type of content items can be added prior
@@ -169,6 +177,15 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     virtual OFBool canAddContentItem(const E_RelationshipType relationshipType,
                                      const E_ValueType valueType,
                                      const E_AddMode addMode = AM_afterCurrent);
+
+    /** check whether the document tree complies with the constraints of the given checker.
+     *  This method also checks whether the currently stored document tree is either empty
+     *  or valid, and whether the template identification of the root node (if any) is as
+     *  expected.  However, the latter only results in a warning message to the logger.
+     ** @param  checker  pointer to relationship content constraints checker to be used
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition checkDocumentTreeConstraints(DSRIODConstraintChecker *checker);
 
     /** unmark all content items in the document tree.
      *  Use method DSRDocumentTreeNode::setMark() to mark and unmark a single content item.

@@ -175,6 +175,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotInsertSubTree;
 
 /// error: the current relationship type cannot be replaced by the given one
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotChangeRelationshipType;
+
+/// error: the document tree does not comply with the given SR IOD constraints
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_IncompatibleDocumentTree;
 //@}
 
 

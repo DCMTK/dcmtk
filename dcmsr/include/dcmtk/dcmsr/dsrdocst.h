@@ -239,7 +239,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  to the current content item.  Internally, the method canAddContentItem() is used for
      *  all top-level nodes of the document subtree.  In addition, if a constraint checker
      *  is available, the remaining nodes of the given subtree are also checked for their
-     *  compliance with the content relationship constraints of the underlying SR IOD.
+     *  compliance with the relationship content constraints of the underlying SR IOD.
      ** @param  tree            pointer to new subtree to be inserted (should not be empty)
      *  @param  addMode         flag specifying at which position the new subtree would
      *                          be added.  Possible values: DSRTypes::AM_afterCurrent,
@@ -358,12 +358,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual void resetReferenceTargetFlag();
 
-    /** check whether the given subtree complies with the constraints of the underlying IOD.
-     *  If no IOD constraint checker is available, no checks are performed by this method.
-     ** @param  tree  pointer to subtree that should be checked
+    /** check whether the given subtree complies with the constraints of the given checker
+     ** @param  tree     pointer to subtree that should be checked
+     *  @param  checker  pointer to relationship content constraints checker to be used.
+     *                   If NULL, no checks are performed by this method.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition checkSubTreeConstraints(DSRDocumentSubTree *tree);
+    virtual OFCondition checkSubTreeConstraints(DSRDocumentSubTree *tree,
+                                                DSRIODConstraintChecker *checker);
 
     /// check relationship content constraints of the associated IOD
     DSRIODConstraintChecker *ConstraintChecker;

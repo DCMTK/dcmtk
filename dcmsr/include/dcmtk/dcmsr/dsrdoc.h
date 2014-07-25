@@ -895,6 +895,17 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual OFCondition createNewDocument(const E_DocumentType documentType);
 
+    /** change the type of the current document.
+     *  Please note that only the type of the SR document is changed (if possible) but no new
+     *  SOP instance is created.  If needed, this has to be done with createNewSOPInstance()
+     *  in addition to this method or by calling createNewDocument() instead of this method.
+     *  Before changing the document type, it is checked whether the currently stored document
+     *  tree complies with the relationship content constraints of the new SR IOD.
+     ** @param  documentType  new type of the SR document (see DSRTypes::E_DocumentType)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition changeDocumentType(const E_DocumentType documentType);
+
     /** create a revised version of the current document.
      *  A revised version can only be created if the current document is already completed
      *  (see completion flag).  If so, a reference to the current document is added to the

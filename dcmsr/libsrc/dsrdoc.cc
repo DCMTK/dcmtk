@@ -2557,7 +2557,7 @@ OFCondition DSRDocument::createNewDocument()
 OFCondition DSRDocument::createNewDocument(const E_DocumentType documentType)
 {
     /* document type is stored only once (namely in the document tree) */
-    OFCondition result = DocumentTree.changeDocumentType(documentType);
+    OFCondition result = DocumentTree.changeDocumentType(documentType, OFTrue /*deleteTree*/);
     if (result.good())
     {
         /* clear object (all member variables) */
@@ -2566,6 +2566,13 @@ OFCondition DSRDocument::createNewDocument(const E_DocumentType documentType)
         createNewSOPInstance();
     }
     return result;
+}
+
+
+OFCondition DSRDocument::changeDocumentType(const E_DocumentType documentType)
+{
+    /* tbc: do we need further checks for Key Object Selection Documents? */
+    return DocumentTree.changeDocumentType(documentType, OFFalse /*deleteTree*/);
 }
 
 

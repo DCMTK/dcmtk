@@ -35,7 +35,7 @@ DSRDocumentTree::DSRDocumentTree(const E_DocumentType documentType)
     DocumentType(DT_invalid)
 {
     /* check & set document type, create constraint checker object */
-    changeDocumentType(documentType);
+    changeDocumentType(documentType, OFTrue /*deleteTree*/);
 }
 
 
@@ -87,7 +87,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                                   const size_t flags)
 {
     /* clear current document tree, check & change document type */
-    OFCondition result = changeDocumentType(documentType);
+    OFCondition result = changeDocumentType(documentType, OFTrue /*deleteTree*/);
     if (result.good())
     {
         if (ConstraintChecker == NULL)
@@ -265,20 +265,36 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
 }
 
 
-OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType)
+OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType,
+                                                const OFBool deleteTree)
 {
     OFCondition result = SR_EC_UnsupportedValue;
     /* first, check whether new document type is supported at all */
     if (isDocumentTypeSupported(documentType))
     {
-        /* clear object */
-        clear();
-        /* store new document type */
-        DocumentType = documentType;
-        /* create appropriate IOD constraint checker */
-        delete ConstraintChecker;
-        ConstraintChecker = createIODConstraintChecker(documentType);
-        result = EC_Normal;
+        /* create constraint checker for new document type */
+        DSRIODConstraintChecker *constraintChecker = createIODConstraintChecker(documentType);
+        if (deleteTree)
+        {
+            /* clear object, i.e. delete the currently stored tree */
+            clear();
+            result = EC_Normal;
+        } else {
+            /* check whether new document type is "compatible" */
+            result = checkDocumentTreeConstraints(constraintChecker);
+        }
+        /* check whether we can proceed */
+        if (result.good())
+        {
+            /* store new document type ... */
+            DocumentType = documentType;
+            /* and new IOD constraint checker */
+            delete ConstraintChecker;
+            ConstraintChecker = constraintChecker;
+        } else {
+            /* if not, free allocated memory */
+            delete constraintChecker;
+        }
     }
     return result;
 }
@@ -299,6 +315,51 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
         /* use checking routine from base class */
         result = DSRDocumentSubTree::canAddContentItem(relationshipType, valueType, addMode);
     }
+    return result;
+}
+
+
+OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecker *checker)
+{
+    OFCondition result = EC_Normal;
+    /* make sure that the passed parameter is valid */
+    if (checker != NULL)
+    {
+        /* an empty document tree always complies with the constraints */
+        if (!isEmpty())
+        {
+            /* check whether the current document tree is valid, i.e. the root node is a CONTAINER */
+            if (isValid())
+            {
+                /* determine template identifier (TID) expected for the new document type */
+                const OFString expectedTemplateIdentifier = OFSTRING_GUARD(checker->getRootTemplateIdentifier());
+                /* check whether the expected template (if known) has been used */
+                if (!expectedTemplateIdentifier.empty())
+                {
+                    OFString templateIdentifier;
+                    OFString mappingResource;
+                    if (getRoot()->getTemplateIdentification(templateIdentifier, mappingResource).good())
+                    {
+                        /* check for DICOM Content Mapping Resource */
+                        if (mappingResource == "DCMR")
+                        {
+                            /* compare with expected TID */
+                            if (templateIdentifier != expectedTemplateIdentifier)
+                            {
+                                DCMSR_WARN("Incorrect value for TemplateIdentifier ("
+                                    << ((templateIdentifier.empty()) ? "<empty>" : templateIdentifier) << "), "
+                                    << expectedTemplateIdentifier << " expected");
+                            }
+                        }
+                    }
+                }
+                /* check whether the nodes of this tree also comply with the given constraints */
+                result = checkSubTreeConstraints(this, checker);
+            } else
+                result = SR_EC_InvalidDocumentTree;
+        }
+    } else
+        result = EC_IllegalParameter;
     return result;
 }
 

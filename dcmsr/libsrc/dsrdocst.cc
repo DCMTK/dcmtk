@@ -413,7 +413,7 @@ OFBool DSRDocumentSubTree::canInsertSubTree(DSRDocumentSubTree *tree,
             result = OFTrue;
         }
         /* we also need to check all other nodes in the subtree */
-        if (result && checkSubTreeConstraints(tree).bad())
+        if (result && checkSubTreeConstraints(tree, ConstraintChecker).bad())
             result = OFFalse;
     }
     return result;
@@ -645,13 +645,15 @@ void DSRDocumentSubTree::resetReferenceTargetFlag()
 }
 
 
-OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree)
+OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree,
+                                                        DSRIODConstraintChecker *checker)
 {
     OFCondition result = EC_Normal;
+    /* make sure that the passed tree pointer is valid */
     if (tree != NULL)
     {
         /* do we have an IOD constraint checker? */
-        if (ConstraintChecker != NULL)
+        if (checker != NULL)
         {
             /* check whether the nodes of the subtree can be added to this tree */
             DSRDocumentTreeNodeCursor cursor(tree->getRoot());
@@ -664,15 +666,15 @@ OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree
                     if (parent != NULL)
                     {
                         /* check whether relationship with parent is allowed */
-                        check = ConstraintChecker->checkContentRelationship(parent->getValueType(),
-                                                                            node->getRelationshipType(), node->getValueType());
+                        check = checker->checkContentRelationship(parent->getValueType(),
+                                                                  node->getRelationshipType(), node->getValueType());
                         // tbd: what about by-reference relationships?
                     }
                     /* exit loop on first node that has a disallowed relationship */
                 } while (cursor.iterate() && check);
                 /* there has been at least one disallowed relationship */
                 if (!check)
-                    result = SR_EC_CannotAddContentItem;
+                    result = SR_EC_IncompatibleDocumentTree;
             }
         } else {
             /* if not, there is nothing we can do */

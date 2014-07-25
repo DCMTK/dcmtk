@@ -25,7 +25,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
 	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
-tstobjs = tests.o tsrtree.o tsrdoctr.o
+tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o
 objs = mkreport.o $(tstobjs)
 progs = mkreport tests
 
