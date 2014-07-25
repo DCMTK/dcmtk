@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.25 (riesmeier)
 
+- Added removeSubTree() method to subtree class:
+  Added removeSubTree() method to the document subtree class. This allows for
+  removing (and deleting) a particular subtree from an SR document tree/subtree.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 - Added public method to change SR document type:
   Added public method that allows for changing the type of an SR document (IOD)
   without deleting the currently stored document tree, if this is possible.

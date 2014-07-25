@@ -286,6 +286,16 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual size_t removeCurrentContentItem();
 
+    /** remove a subtree from this tree.
+     *  The subtree to be removed (and deleted) is either specified by the current node or by
+     *  the node with the given ID.  Afterwards, the internal cursor is set automatically to
+     *  a new valid position.  It would be an error to remove a subtree from an empty tree.
+     ** @param  searchID  ID of the root node specifying the subtree to be removed.
+     *                    By default (0), the current node is used.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition removeSubTree(const size_t searchID = 0);
+
     /** clone the current tree node.
      *  Internally, the copy constructor of the respective tree node class is used, so the
      *  corresponding comments apply.  Please note that the new node has to deleted by the

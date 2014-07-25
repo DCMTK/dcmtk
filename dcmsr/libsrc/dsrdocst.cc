@@ -476,7 +476,33 @@ OFCondition DSRDocumentSubTree::insertSubTree(DSRDocumentSubTree *tree,
 
 size_t DSRDocumentSubTree::removeCurrentContentItem()
 {
+    /* remove the current node from the tree (including all child nodes) */
     return removeNode();
+}
+
+
+OFCondition DSRDocumentSubTree::removeSubTree(const size_t searchID)
+{
+    OFCondition result = EC_Normal;
+    /* we cannot remove anything from an empty tree */
+    if (!isEmpty())
+    {
+        /* goto the given content item (if specified) */
+        if (searchID > 0)
+        {
+            if (gotoNode(searchID, OFTrue /*startFromRoot*/) == 0)
+                result = SR_EC_ContentItemNotFound;
+        }
+        /* and, remove it, i.e. the current node, from the tree */
+        if (result.good())
+        {
+            /* removing the root node deletes the complete subtree */
+            if ((removeNode() == 0) && !isEmpty())
+                result = SR_EC_CannotRemoveSubTree;
+        }
+    } else
+        result = SR_EC_EmptyDocumentTree;
+    return result;
 }
 
 

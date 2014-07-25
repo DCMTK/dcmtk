@@ -178,6 +178,15 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotChangeRelationshipT
 
 /// error: the document tree does not comply with the given SR IOD constraints
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_IncompatibleDocumentTree;
+
+/// error: the specified content item (node) could not be found
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_ContentItemNotFound;
+
+/// error: the specified subtree could not be removed from the document tree
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotRemoveSubTree;
+
+/// error: the document tree is empty (and this is not allowed in this context)
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_EmptyDocumentTree;
 //@}
 
 

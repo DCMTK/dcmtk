@@ -272,6 +272,9 @@ makeOFConditionConst(SR_EC_InvalidConceptName,               OFM_dcmsr, 18, OF_e
 makeOFConditionConst(SR_EC_CannotInsertSubTree,              OFM_dcmsr, 19, OF_error, "Cannot insert Subtree");
 makeOFConditionConst(SR_EC_CannotChangeRelationshipType,     OFM_dcmsr, 20, OF_error, "Cannot change Relationship Type");
 makeOFConditionConst(SR_EC_IncompatibleDocumentTree,         OFM_dcmsr, 21, OF_error, "Incompatible Document Tree");
+makeOFConditionConst(SR_EC_ContentItemNotFound,              OFM_dcmsr, 22, OF_error, "Content Item not found");
+makeOFConditionConst(SR_EC_CannotRemoveSubTree,              OFM_dcmsr, 23, OF_error, "Cannot remove Subtree");
+makeOFConditionConst(SR_EC_EmptyDocumentTree,                OFM_dcmsr, 24, OF_error, "Empty Document Tree");
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =

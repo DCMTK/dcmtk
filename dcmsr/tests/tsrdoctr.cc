@@ -268,3 +268,27 @@ OFTEST(dcmsr_insertDocSubTree_3)
     OFCHECK(tree.isEmpty());
     OFCHECK_EQUAL(tree.countNodes(), 0);
 }
+
+
+OFTEST(dcmsr_removeDocSubTree)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    /* and, remove a particular subtree */
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
+    OFCHECK(tree.removeSubTree().good());
+    OFCHECK_EQUAL(tree.countNodes(), 2);
+    OFCHECK(tree.gotoRoot());
+    OFCHECK(tree.removeSubTree().good());
+    OFCHECK_EQUAL(tree.countNodes(), 0);
+    OFCHECK(tree.removeSubTree().bad());
+}
