@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the
+/** Class for checking the relationship content constraints of the
  *  Spectacle Prescription Report IOD
  */
 class DCMTK_DCMSR_EXPORT DSRSpectaclePrescriptionReportConstraintChecker

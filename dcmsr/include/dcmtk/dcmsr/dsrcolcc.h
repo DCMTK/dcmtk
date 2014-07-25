@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the Colon CAD SR IOD
+/** Class for checking the relationship content constraints of the Colon CAD SR IOD
  */
 class DCMTK_DCMSR_EXPORT DSRColonCadSRConstraintChecker
   : public DSRIODConstraintChecker

@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the X-Ray Radiation Dose SR IOD
+/** Class for checking the relationship content constraints of the X-Ray Radiation Dose SR IOD
  */
 class DCMTK_DCMSR_EXPORT DSRXRayRadiationDoseSRConstraintChecker
   : public DSRIODConstraintChecker

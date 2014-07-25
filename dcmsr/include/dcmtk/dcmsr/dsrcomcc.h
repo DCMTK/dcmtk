@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the Comprehensive SR IOD
+/** Class for checking the relationship content constraints of the Comprehensive SR IOD
  */
 class DCMTK_DCMSR_EXPORT DSRComprehensiveSRConstraintChecker
   : public DSRIODConstraintChecker

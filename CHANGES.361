@@ -21,6 +21,25 @@ Changes between releases are documented here.
            dcmsr/tests/Makefile.in
            dcmsr/tests/tests.cc
 
+- Fixed wrong term in Doxygen documentation:
+  Instead of "content relationship constraints" the DICOM standard uses the
+  term "relationship content constraints".
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrbascc.h
+           dcmsr/include/dcmtk/dcmsr/dsrc3dcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrchecc.h
+           dcmsr/include/dcmtk/dcmsr/dsrcolcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrenhcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrimpcc.h
+           dcmsr/include/dcmtk/dcmsr/dsriodcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrkeycc.h
+           dcmsr/include/dcmtk/dcmsr/dsrmaccc.h
+           dcmsr/include/dcmtk/dcmsr/dsrmamcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrprocc.h
+           dcmsr/include/dcmtk/dcmsr/dsrrrdcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrspecc.h
+           dcmsr/include/dcmtk/dcmsr/dsrxrdcc.h
+
 - Slightly enhanced layout of Doxygen documentation.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
            dcmsr/include/dcmtk/dcmsr/dsrdoc.h

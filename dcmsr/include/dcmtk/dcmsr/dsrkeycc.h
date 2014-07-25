@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the
+/** Class for checking the relationship content constraints of the
  *  Key Object Selection Document IOD
  */
 class DCMTK_DCMSR_EXPORT DSRKeyObjectSelectionDocumentConstraintChecker

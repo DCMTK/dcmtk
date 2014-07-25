@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the Chest CAD SR IOD
+/** Class for checking the relationship content constraints of the Chest CAD SR IOD
  */
 class DCMTK_DCMSR_EXPORT DSRChestCadSRConstraintChecker
   : public DSRIODConstraintChecker

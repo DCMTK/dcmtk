@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the Radiopharmaceutical
+/** Class for checking the relationship content constraints of the Radiopharmaceutical
  *  Radiation Dose SR IOD
  */
 class DCMTK_DCMSR_EXPORT DSRRadiopharmaceuticalRadiationDoseConstraintChecker

@@ -33,7 +33,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the
+/** Class for checking the relationship content constraints of the
  *  Macular Grid Thickness And Volume Report IOD
  */
 class DCMTK_DCMSR_EXPORT DSRMacularGridThicknessAndVolumeReportConstraintChecker
