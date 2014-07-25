@@ -110,8 +110,10 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      */
     const OFString &getStringValue() const;
 
-    /** set string value.  Please use the correct format for the string value depending on
-     *  the corresponding content item (value type).
+    /** set string value.
+     *  Please use the correct format for the string value depending on the corresponding
+     *  content item (value type).
+     *
      *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
      ** @param  stringValue  value to be set
      *  @param  check        if enabled, check value for validity before setting it
@@ -365,6 +367,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** get continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are separate items.
+     *
      *  Applicable to: CONTAINER
      ** @return continuity of content flag if successful, DSRTypes::COC_invalid otherwise
      */
@@ -373,6 +376,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
      *  logically linked in a continuous textual flow, or are separate items.
+     *
      *  Applicable to: CONTAINER
      ** @param  continuityOfContent  value to be set
      *                               (should be different from DSRTypes::COC_invalid)
@@ -389,6 +393,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
      *  nested templates that start with the same CONTAINER."  The identification is valid
      *  if both values are either present (non-empty) or absent (empty).
+     *
      *  Applicable to: CONTAINER
      ** @param  templateIdentifier  identifier of the template (might be empty)
      *  @param  mappingResource     mapping resource that defines the template
@@ -423,6 +428,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** get concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
+     *
      *  Applicable to all content items (by-value only).
      ** @return concept name value of current content item if valid, EmptyCodedEntry otherwise
      */
@@ -431,6 +437,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** get copy of concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
+     *
      *  Applicable to all content items (by-value only).
      ** @param  conceptName  variable where the copy should be stored
      *                       (cleared if an error occurs)
@@ -441,6 +448,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** set concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
+     *
      *  Applicable to all content items (by-value only, optional/conditional for some value
      *  types).
      ** @param  conceptName  value to be set
@@ -453,6 +461,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** get observation date/time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
+     *
      *  Applicable to all content items (by-value only, optional attribute).
      ** @return observation date/time of current content item if valid, EmptyString otherwise
      */
@@ -462,6 +471,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
      *  Please use the correct DICOM format (VR=DT).
+     *
      *  Applicable to all content items (by-value only).
      ** @param  observationDateTime  value to be set (might be an empty string)
      *  @param  check                if enabled, check value for validity before setting it
@@ -473,6 +483,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** get observation unique identifier.
      *  The UID represents the semantic content of the observation; an encoding of the same
      *  observation with the same context into another representation may use the same UID.
+     *
      *  Applicable to all content items (by-value only, optional attribute).
      ** @return observation unique identifier of current content item if valid,
      *          EmptyString otherwise
@@ -483,6 +494,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  The UID represents the semantic content of the observation; an encoding of the same
      *  observation with the same context into another representation may use the same UID.
      *  Please use the correct DICOM format (VR=UI).
+     *
      *  Applicable to all content items (by-value only).
      ** @param  observationUID  value to be set (might be an empty string)
      *  @param  check           if enabled, check value for validity before setting it

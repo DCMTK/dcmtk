@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.25 (riesmeier)
 
+- Slightly enhanced layout of Doxygen documentation.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 - Removed DLL specifier from template classes:
   Removed DLL import/export specifier from template classes since this does not
   seem to work with VisualStudio (when compiling with shared libraries enabled).
