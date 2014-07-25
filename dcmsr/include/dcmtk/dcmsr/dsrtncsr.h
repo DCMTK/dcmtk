@@ -47,8 +47,7 @@ class DSRTreeNode;
 
 /** Class implementing a tree node cursor
  */
-template<typename T = DSRTreeNode>
-class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
+template<typename T = DSRTreeNode> class DSRTreeNodeCursor
 {
 
   public:

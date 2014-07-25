@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.25 (riesmeier)
+
+- Removed DLL specifier from template classes:
+  Removed DLL import/export specifier from template classes since this does not
+  seem to work with VisualStudio (when compiling with shared libraries enabled).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+
 **** Changes from 2014.07.24 (onken)
 
 - Fix last commit by including implementation file.

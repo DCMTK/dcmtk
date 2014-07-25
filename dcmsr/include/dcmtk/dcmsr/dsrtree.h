@@ -146,7 +146,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
 
 /** Class managing a tree of nodes
  */
-template<typename T = DSRTreeNode> class DCMTK_DCMSR_EXPORT DSRTree
+template<typename T = DSRTreeNode> class DSRTree
   : public DSRTreeNodeCursor<T>,
     protected DSRTypes
 {
