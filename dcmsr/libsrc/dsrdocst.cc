@@ -573,7 +573,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
     if (!((mode & CM_updatePositionString) && (mode & CM_updateNodeID)))
     {
         /* by-reference relationships are only allowed for particular IODs */
-        if ((ConstraintChecker != NULL) && ConstraintChecker->isByReferenceAllowed())
+        if ((ConstraintChecker == NULL) || ConstraintChecker->isByReferenceAllowed())
         {
             /* specify for all content items not to be the target of a by-reference relationship */
             if (mode & CM_resetReferenceTargetFlag)
@@ -597,7 +597,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                             if (flags & RF_showCurrentlyProcessedItem)
                             {
                                 OFString posString;
-                                DCMSR_WARN("Updating by-reference relationship in content item " << cursor.getPosition(posString));
+                                DCMSR_INFO("Updating by-reference relationship in content item " << cursor.getPosition(posString));
                             }
                             /* start searching from root node (be careful with large trees, might be improved later on) */
                             DSRDocumentTreeNodeCursor refCursor(getRoot());

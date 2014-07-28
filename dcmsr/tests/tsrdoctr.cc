@@ -294,7 +294,7 @@ OFTEST(dcmsr_removeDocSubTree)
 }
 
 
-OFTEST(dcmsr_extractDocSubTree)
+OFTEST(dcmsr_extractDocSubTree_1)
 {
     /* first, create a new SR document */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
@@ -316,6 +316,42 @@ OFTEST(dcmsr_extractDocSubTree)
         OFCHECK_EQUAL(subTree->countNodes(), 3);
         OFCHECK_EQUAL(subTree->getCurrentContentItem().getValueType(), DSRTypes::VT_Num);
         OFCHECK_EQUAL(subTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_contains);
+        delete subTree;
+    } else
+        OFCHECK_FAIL("could not extract subtree from document");
+}
+
+
+OFTEST(dcmsr_extractDocSubTree_2)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then, add some content items (incl. by-reference relationship) */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121111", "DCM", "Summary")).good());
+    const size_t refTarget = tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Num, DSRTypes::AM_belowCurrent);
+    OFCHECK(refTarget > 0);
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    const size_t refSource = tree.addByReferenceRelationship(DSRTypes::RT_inferredFrom, refTarget);
+    OFCHECK(refSource > 0);
+    OFCHECK(tree.gotoRoot());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    /* extract a particular subtree */
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121111", "DCM", "Summary")) > 0);
+    DSRDocumentSubTree *subTree = tree.extractSubTree();
+    if (subTree != NULL)
+    {
+        OFCHECK_EQUAL(tree.countNodes(), 2);
+        OFCHECK_EQUAL(subTree->countNodes(), 4);
+        /* and finally, check whether the by-reference relationship is still valid */
+        OFCHECK(subTree->gotoNode(refSource));
+        OFCHECK_EQUAL(subTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_inferredFrom);
+        OFCHECK_EQUAL(subTree->getCurrentContentItem().getReferencedNodeID(), refTarget);
+        OFCHECK(subTree->gotoNode(refTarget));
+        OFCHECK_EQUAL(subTree->getCurrentContentItem().getValueType(), DSRTypes::VT_Num);
+        OFCHECK_EQUAL(subTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_hasProperties);
         delete subTree;
     } else
         OFCHECK_FAIL("could not extract subtree from document");

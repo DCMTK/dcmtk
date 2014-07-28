@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.28 (riesmeier)
 
+- Enhanced support for by-reference relationships:
+  Enhanced support for by-reference relationships in subtrees extracted from a
+  valid document tree. Also added a new test for this particular case.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 - Added extractSubTree() method to tree classes:
   Added extractSubTree() method to the tree classes. This allows for extracting
   a particular subtree from an SR document tree or from another subtree. Also

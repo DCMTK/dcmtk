@@ -279,8 +279,10 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
     /** extract a subtree i.e.\ a fragment from this tree.
      *  The subtree is specified by the current node, which becomes the root of the subtree.
-     *  Please note that the returned subtree has to be deleted by the caller if it is not
-     *  inserted into the document tree using insertSubTree().
+     *  In contrast to cloneSubTree(), this method also makes sure that the by-reference
+     *  relationships are preserved (as long as both source and target node are contained
+     *  in the same tree).  Please note that the returned subtree has to be deleted by the
+     *  caller if it is not inserted into the document tree using insertSubTree().
      ** @return pointer to the extracted subtree, NULL in case of error
      */
     virtual DSRDocumentSubTree *extractSubTree();
