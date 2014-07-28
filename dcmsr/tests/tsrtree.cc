@@ -119,7 +119,7 @@ OFTEST(dcmsr_copyTree)
     OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
-    /* then copy this tree and check the nodes */
+    /* then, copy this tree and check the nodes */
     OFString posString;
     DSRTree<> newTree(tree);
     OFCHECK_EQUAL(newTree.getPosition(posString), "1");
@@ -172,7 +172,7 @@ OFTEST(dcmsr_cloneSubTree_1)
     OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
-    /* then clone a subtree and check its nodes */
+    /* then, clone a subtree and check its nodes */
     tree.gotoNode(nodeID + 1);
     OFString posString;
     DSRTree<> *newTree = tree.cloneSubTree(nodeID + 2);
@@ -220,7 +220,7 @@ OFTEST(dcmsr_cloneSubTree_2)
     OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
-    /* then clone a subtree and check its nodes */
+    /* then, clone a subtree and check its nodes */
     tree.gotoNode(nodeID + 2);
     OFString posString;
     DSRTree<> *newTree = tree.cloneSubTree();
@@ -247,4 +247,36 @@ OFTEST(dcmsr_cloneSubTree_2)
         delete newTree;
     } else
         OFCHECK_FAIL("could not create clone of subtree");
+}
+
+
+OFTEST(dcmsr_extractSubTree)
+{
+    DSRTree<> tree;
+    const size_t nodeID = tree.getNextNodeID();
+    /* first, create a simple tree of 6 nodes */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
+    /* then, extract a subtree and check its nodes */
+    tree.gotoNode(nodeID + 2);
+    DSRTree<> *subTree = tree.extractSubTree();
+    if (subTree != NULL)
+    {
+        OFCHECK_EQUAL(subTree->countNodes(), 3);
+        OFCHECK_EQUAL(subTree->getNodeID(), nodeID + 2);
+        OFCHECK_EQUAL(subTree->iterate(), nodeID + 4);
+        OFCHECK_EQUAL(subTree->iterate(), nodeID + 5);
+        delete subTree;
+    } else
+        OFCHECK_FAIL("could not extract subtree");
+    /* and check the original tree (again) */
+    OFCHECK_EQUAL(tree.countNodes(), 3);
+    OFCHECK_EQUAL(tree.gotoRoot(), nodeID + 0);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 1);
+    OFCHECK_EQUAL(tree.iterate(), nodeID + 3);
 }

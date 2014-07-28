@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.28 (riesmeier)
+
+- Added extractSubTree() method to tree classes:
+  Added extractSubTree() method to the tree classes. This allows for extracting
+  a particular subtree from an SR document tree or from another subtree. Also
+  added new tests for the new methods on DSRDocumentSubTree and DSRTree level.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+           dcmsr/tests/tsrtree.cc
+
 **** Changes from 2014.07.25 (riesmeier)
 
 - Added removeSubTree() method to subtree class:

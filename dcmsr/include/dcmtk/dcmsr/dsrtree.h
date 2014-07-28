@@ -227,6 +227,13 @@ template<typename T = DSRTreeNode> class DSRTree
     virtual size_t addNode(T *node,
                            const E_AddMode addMode = AM_afterCurrent);
 
+    /** extract current node from tree.
+     *  Please note that not only the specified node but also all of its child nodes are
+     *  extracted from the tree.  The cursor is set automatically to a new valid position.
+     ** @return pointer to extracted node, NULL in case of error (or the tree was empty)
+     */
+    virtual T *extractNode();
+
     /** remove current node from tree.
      *  Please note that not only the specified node but also all of its child nodes are
      *  removed from the tree and then deleted.  The cursor is set automatically to a new
@@ -235,6 +242,12 @@ template<typename T = DSRTreeNode> class DSRTree
      *          occurred or the tree is now empty.
      */
     virtual size_t removeNode();
+
+    /** extract a subtree i.e.\ a fragment from this tree.
+     *  The subtree is specified by the current node, which becomes the root of the subtree.
+     ** @return pointer to the extracted subtree, NULL in case of error
+     */
+    virtual DSRTree<T> *extractSubTree();
 
     /** clone a subtree i.e.\ a fragment of this tree.
      *  The cloning starts with the current node and ends with the given node.
@@ -247,6 +260,12 @@ template<typename T = DSRTreeNode> class DSRTree
 
 
   protected:
+
+    /** special constructor that receives a pointer to the root node.
+     *  Please note that the 'rootNode' and the associated tree is not copied!
+     ** @param  rootNode  pointer to the root node of the "new" tree
+     */
+    DSRTree(T *rootNode);
 
     /** special copy constructor that clones a particular subtree only
      ** @param  startCursor      first node of the subtree to be copied
@@ -347,6 +366,16 @@ DSRTree<T>::DSRTree(const DSRTree<T> &tree)
         /* initialize the cursor */
         gotoRoot();
     }
+}
+
+
+template<typename T>
+DSRTree<T>::DSRTree(T *rootNode)
+  : DSRTreeNodeCursor<T>(),
+    RootNode(rootNode)
+{
+    /* initialize the cursor */
+    gotoRoot();
 }
 
 
@@ -585,23 +614,20 @@ size_t DSRTree<T>::addNode(T *node,
 
 
 template<typename T>
-size_t DSRTree<T>::removeNode()
+T *DSRTree<T>::extractNode()
 {
-    size_t nodeID = 0;
-    if (this->NodeCursor != NULL)
+    T *cursor = this->NodeCursor;
+    /* extract current node (incl. subtree) from tree */
+    if (cursor != NULL)
     {
-        T *cursor = this->NodeCursor;
-
-        /* extract current node (incl. subtree) from tree */
-
         /* are there any siblings? */
         if ((cursor->Prev != NULL) || (cursor->Next != NULL))
         {
             /* connect to previous node */
             if (cursor->Prev != NULL)
-            {
                 (cursor->Prev)->Next = cursor->Next;
-            } else {
+            else
+            {
                 /* is there any direct parent node? */
                 if (!this->NodeCursorStack.empty())
                 {
@@ -644,14 +670,24 @@ size_t DSRTree<T>::removeNode()
                 this->PositionList.clear();
             }
         }
-
         /* remove references to former siblings */
         cursor->Prev = NULL;
         cursor->Next = NULL;
+    }
+    return cursor;
+}
 
+
+template<typename T>
+size_t DSRTree<T>::removeNode()
+{
+    size_t nodeID = 0;
+    /* extract current node (incl. subtree) from tree */
+    T *cursor = extractNode();
+    if (cursor != NULL)
+    {
         /* delete all nodes from extracted subtree */
-        /* (this routine might also use the "new" DSRTreeNodeCursor class) */
-
+        /* (could also use the "new" DSRTreeNodeCursor class) */
         T *delNode = NULL;
         OFStack<T *> cursorStack;
         while (cursor != NULL)
@@ -662,7 +698,8 @@ size_t DSRTree<T>::removeNode()
                 if (cursor->Next != NULL)
                     cursorStack.push(cursor->getNext());
                 cursor = cursor->getDown();
-            } else if (cursor->Next != NULL)
+            }
+            else if (cursor->Next != NULL)
                 cursor = cursor->getNext();
             else if (!cursorStack.empty())
             {
@@ -672,11 +709,23 @@ size_t DSRTree<T>::removeNode()
                 cursor = NULL;
             delete delNode;
         }
-
+        /* return identifier of (new) current node */
         if (this->NodeCursor != NULL)
             nodeID = this->NodeCursor->getIdent();
     }
     return nodeID;
+}
+
+
+template<typename T>
+DSRTree<T> *DSRTree<T>::extractSubTree()
+{
+    DSRTree<T> *tree = NULL;
+    /* extract current node from tree and create a new tree object (with this root) */
+    T *node = extractNode();
+    if (node != NULL)
+        tree = new DSRTree<T>(node);
+    return tree;
 }
 
 

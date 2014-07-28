@@ -277,6 +277,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                       const E_RelationshipType defaultRelType = RT_unknown,
                                       const OFBool deleteIfFail = OFFalse);
 
+    /** extract a subtree i.e.\ a fragment from this tree.
+     *  The subtree is specified by the current node, which becomes the root of the subtree.
+     *  Please note that the returned subtree has to be deleted by the caller if it is not
+     *  inserted into the document tree using insertSubTree().
+     ** @return pointer to the extracted subtree, NULL in case of error
+     */
+    virtual DSRDocumentSubTree *extractSubTree();
+
     /** remove current content item from tree.
      *  Please note that not only the specified node but also all of its child nodes are
      *  removed from the tree and then deleted.  The internal cursor is set automatically
@@ -298,14 +306,16 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
     /** clone the current tree node.
      *  Internally, the copy constructor of the respective tree node class is used, so the
-     *  corresponding comments apply.  Please note that the new node has to deleted by the
-     *  caller if it is not added to the document tree using addContentItem().
+     *  corresponding comments apply.  Please note that the returned tree node has to be
+     *  deleted by the caller if it is not added to the document tree using addContentItem().
      ** @return pointer to a copy of the current tree node, NULL in case of error
      */
     virtual DSRDocumentTreeNode *cloneCurrentTreeNode() const;
 
     /** clone a subtree i.e.\ a fragment of this tree.
      *  The cloning starts with the current node and ends with the given node.
+     *  Please note that the returned subtree has to be deleted by the caller if it is not
+     *  inserted into the document tree using insertSubTree().
      ** @param  stopAfterNodeID  ID of the node after which the cloning should stop.
      *                           By default (0), the process ends after cloning the
      *                           current node with all of its child nodes (if any).
@@ -315,6 +325,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
 
   protected:
+
+    /** special constructor that receives a pointer to the root node.
+     *  Please note that the 'rootNode' and the associated tree is not copied!
+     ** @param  rootNode  pointer to the root node of the "new" tree
+     */
+    DSRDocumentSubTree(DSRDocumentTreeNode *rootNode);
 
     /** special copy constructor that clones a particular subtree only
      ** @param  startCursor      first node of the subtree to be copied
@@ -335,6 +351,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual size_t addNode(DSRDocumentTreeNode *node,
                            const E_AddMode addMode = AM_afterCurrent);
+
+    /** extract current node from tree.
+     *  Please note that not only the specified node but also all of its child nodes are
+     *  extracted from the tree.  The cursor is set automatically to a new valid position.
+     ** @return pointer to extracted node, NULL in case of error (or the tree was empty)
+     */
+    virtual DSRDocumentTreeNode *extractNode();
 
     /** remove current node from tree.
      *  Please note that not only the specified node but also all of his child nodes are

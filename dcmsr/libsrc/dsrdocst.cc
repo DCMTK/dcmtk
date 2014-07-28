@@ -47,6 +47,15 @@ DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
 }
 
 
+DSRDocumentSubTree::DSRDocumentSubTree(DSRDocumentTreeNode *rootNode)
+  : DSRTree<DSRDocumentTreeNode>(rootNode),
+    ConstraintChecker(NULL),
+    CurrentContentItem()
+{
+    /* the real work is done in the base class DSRTree */
+}
+
+
 DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentTreeNodeCursor &startCursor,
                                        size_t stopAfterNodeID)
   : DSRTree<DSRDocumentTreeNode>(startCursor, stopAfterNodeID),
@@ -474,6 +483,17 @@ OFCondition DSRDocumentSubTree::insertSubTree(DSRDocumentSubTree *tree,
 }
 
 
+DSRDocumentSubTree *DSRDocumentSubTree::extractSubTree()
+{
+    DSRDocumentSubTree *tree = NULL;
+    /* extract current node from tree and create a new subtree object (with this root) */
+    DSRDocumentTreeNode *node = extractNode();
+    if (node != NULL)
+        tree = new DSRDocumentSubTree(node);
+    return tree;
+}
+
+
 size_t DSRDocumentSubTree::removeCurrentContentItem()
 {
     /* remove the current node from the tree (including all child nodes) */
@@ -526,14 +546,21 @@ DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeI
 size_t DSRDocumentSubTree::addNode(DSRDocumentTreeNode *node,
                                    const E_AddMode addMode)
 {
-    /* might add a check for templates later on */
+    /* might add further checks later on */
     return DSRTree<DSRDocumentTreeNode>::addNode(node, addMode);
+}
+
+
+DSRDocumentTreeNode *DSRDocumentSubTree::extractNode()
+{
+    /* might add further checks later on */
+    return DSRTree<DSRDocumentTreeNode>::extractNode();
 }
 
 
 size_t DSRDocumentSubTree::removeNode()
 {
-    /* might add a check for templates later on */
+    /* might add further checks later on */
     return DSRTree<DSRDocumentTreeNode>::removeNode();
 }
 

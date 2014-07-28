@@ -292,3 +292,31 @@ OFTEST(dcmsr_removeDocSubTree)
     OFCHECK_EQUAL(tree.countNodes(), 0);
     OFCHECK(tree.removeSubTree().bad());
 }
+
+
+OFTEST(dcmsr_extractDocSubTree)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    /* and, extract a particular subtree */
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
+    DSRDocumentSubTree *subTree = tree.extractSubTree();
+    if (subTree != NULL)
+    {
+        OFCHECK_EQUAL(tree.countNodes(), 2);
+        OFCHECK_EQUAL(subTree->countNodes(), 3);
+        OFCHECK_EQUAL(subTree->getCurrentContentItem().getValueType(), DSRTypes::VT_Num);
+        OFCHECK_EQUAL(subTree->getCurrentContentItem().getRelationshipType(), DSRTypes::RT_contains);
+        delete subTree;
+    } else
+        OFCHECK_FAIL("could not extract subtree from document");
+}
