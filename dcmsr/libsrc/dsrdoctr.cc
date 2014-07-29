@@ -353,8 +353,11 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
                         }
                     }
                 }
+                /* check by-reference relationships (update 'target value type' if applicable) */
+                result = checkByReferenceRelationships(CM_resetReferenceTargetFlag, RF_ignoreRelationshipConstraints);
                 /* check whether the nodes of this tree also comply with the given constraints */
-                result = checkSubTreeConstraints(this, checker);
+                if (result.good())
+                    result = checkSubTreeConstraints(this, checker);
             } else
                 result = SR_EC_InvalidDocumentTree;
         }

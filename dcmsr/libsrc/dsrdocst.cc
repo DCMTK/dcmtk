@@ -364,10 +364,11 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
                     const DSRDocumentTreeNode *targetNode = cursor.getNode();
                     if (targetNode != NULL)
                     {
+                        const E_ValueType targetValueType = targetNode->getValueType();
                         /* check whether relationship is valid/allowed */
-                        if (canAddByReferenceRelationship(relationshipType, targetNode->getValueType()))
+                        if (canAddByReferenceRelationship(relationshipType, targetValueType))
                         {
-                            DSRDocumentTreeNode *node = new DSRByReferenceTreeNode(relationshipType, referencedNodeID);
+                            DSRDocumentTreeNode *node = new DSRByReferenceTreeNode(relationshipType, referencedNodeID, targetValueType);
                             if (node != NULL)
                             {
                                 nodeID = addNode(node, AM_belowCurrent);
@@ -592,82 +593,81 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                         if (node->getValueType() == VT_byReference)
                         {
                             size_t refNodeID = 0;
-                            /* type cast to directly access member variables of by-reference class */
-                            DSRByReferenceTreeNode *refNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, node));
+                            OFString nodePosString;
+                            cursor.getPosition(nodePosString);
+                            /* type cast to access members of by-reference class */
+                            DSRByReferenceTreeNode *byRefNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, node));
                             if (flags & RF_showCurrentlyProcessedItem)
-                            {
-                                OFString posString;
-                                DCMSR_INFO("Updating by-reference relationship in content item " << cursor.getPosition(posString));
-                            }
-                            /* start searching from root node (be careful with large trees, might be improved later on) */
+                                DCMSR_INFO("Updating by-reference relationship in content item " << nodePosString);
+                            /* start searching from root node, be careful with large trees! (tbd: might be improved later on) */
                             DSRDocumentTreeNodeCursor refCursor(getRoot());
                             if (mode & CM_updateNodeID)
                             {
-                                /* update node ID */
-                                refNodeID = refCursor.gotoNode(refNode->ReferencedContentItem);
-                                if (refNodeID > 0)
-                                    refNode->ReferencedNodeID = refCursor.getNodeID();
-                                else
-                                    refNode->ReferencedNodeID = 0;
-                                refNode->ValidReference = (refNode->ReferencedNodeID > 0);
+                                /* update node ID (based on position string) */
+                                refNodeID = refCursor.gotoNode(byRefNode->getReferencedContentItem());
+                                const DSRDocumentTreeNode *targetNode = (refNodeID > 0) ? refCursor.getNode() : NULL;
+                                const E_ValueType targetValueType = (targetNode != NULL) ? targetNode->getValueType() : VT_invalid;
+                                byRefNode->updateReference(refNodeID, targetValueType);
                             } else {
-                                /* ReferenceNodeID contains a valid value */
-                                refNodeID = refCursor.gotoNode(refNode->ReferencedNodeID);
+                                /* node ID is expected to be valid */
+                                refNodeID = refCursor.gotoNode(byRefNode->getReferencedNodeID());
                                 if (mode & CM_updatePositionString)
                                 {
+                                    OFString refPosString;
                                     /* update position string */
                                     if (refNodeID > 0)
-                                        refCursor.getPosition(refNode->ReferencedContentItem);
-                                    else
-                                        refNode->ReferencedContentItem.clear();
-                                    /* tbd: check for valid reference could be more strict */
-                                    refNode->ValidReference = checkForValidReference(refNode->ReferencedContentItem);
+                                        refCursor.getPosition(refPosString);
+                                    byRefNode->updateReference(refPosString);
                                 } else if (refNodeID == 0)
-                                    refNode->ValidReference = OFFalse;
+                                    byRefNode->invalidateReference();
                             }
+                            const OFString refContentItem(byRefNode->getReferencedContentItem());
                             if (refNodeID > 0)
                             {
                                 /* source and target content items should not be identical */
                                 if (refNodeID != cursor.getNodeID())
                                 {
-                                    OFString posString;
-                                    cursor.getPosition(posString);
                                     /* check whether target node is an ancestor of source node (prevent loops) */
-                                    if (posString.substr(0, refNode->ReferencedContentItem.length()) != refNode->ReferencedContentItem)
+                                    if (refContentItem.empty() || (nodePosString.substr(0, refContentItem.length()) != refContentItem))
                                     {
                                         /* refCursor should now point to the reference target (refNodeID > 0) */
-                                        const DSRDocumentTreeNode *parentNode = OFstatic_cast(const DSRDocumentTreeNode *, cursor.getParentNode());
+                                        const DSRDocumentTreeNode *parentNode = cursor.getParentNode();
                                         DSRDocumentTreeNode *targetNode = refCursor.getNode();
                                         if ((parentNode != NULL) && (targetNode != NULL))
                                         {
                                             /* specify that this content item is target of an by-reference relationship */
                                             targetNode->setReferenceTarget();
                                             /* do we really need to check the constraints? */
-                                            E_RelationshipType relationshipType = refNode->getRelationshipType();
+                                            E_RelationshipType relationshipType = byRefNode->getRelationshipType();
                                             if (!(flags & RF_ignoreRelationshipConstraints) &&
                                                 (!(flags & RF_acceptUnknownRelationshipType) || (relationshipType != RT_unknown)))
                                             {
                                                 /* check whether relationship is valid */
-                                                if ((ConstraintChecker != NULL) && !ConstraintChecker->checkContentRelationship(parentNode->getValueType(),
-                                                    relationshipType, targetNode->getValueType(), OFTrue /*byReference*/))
+                                                if ((ConstraintChecker != NULL) &&
+                                                    !ConstraintChecker->checkContentRelationship(parentNode->getValueType(), relationshipType,
+                                                                                                 targetNode->getValueType(), OFTrue /*byReference*/))
                                                 {
-                                                    DCMSR_WARN("Invalid by-reference relationship between item \"" << posString
-                                                        << "\" and \"" << refNode->ReferencedContentItem << "\"");
+                                                    if (refContentItem.empty())
+                                                        DCMSR_WARN("Invalid by-reference relationship at content item \"" << nodePosString << "\"");
+                                                    else {
+                                                        DCMSR_WARN("Invalid by-reference relationship between content item \""
+                                                            << nodePosString << "\" and \"" << refContentItem << "\"");
+                                                    }
                                                 }
                                             }
                                         } else
                                             DCMSR_WARN("Corrupted data structures while checking by-reference relationships");
-                                    } else
-                                        DCMSR_WARN("By-reference relationship to ancestor content item (loop check)");
+                                    } else {
+                                        DCMSR_WARN("By-reference relationship from \"" << nodePosString << "\" to ancestor content item \""
+                                            << refContentItem << "\" (loop check)");
+                                    }
                                 } else
                                     DCMSR_WARN("Source and target content item of by-reference relationship are identical");
                             } else {
-                                if (mode & CM_updateNodeID)
-                                {
-                                    DCMSR_WARN("Target content item of by-reference relationship ("
-                                        << refNode->ReferencedContentItem << ") does not exist");
-                                } else
+                                if (refContentItem.empty())
                                     DCMSR_WARN("Target content item of by-reference relationship does not exist");
+                                else
+                                    DCMSR_WARN("Target content item \"" << refContentItem << "\" of by-reference relationship does not exist");
                             }
                         }
                     } else
@@ -718,10 +718,20 @@ OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree
                     const DSRDocumentTreeNode *parent = cursor.getParentNode();
                     if (parent != NULL)
                     {
-                        /* check whether relationship with parent is allowed */
-                        check = checker->checkContentRelationship(parent->getValueType(),
-                                                                  node->getRelationshipType(), node->getValueType());
-                        // tbd: what about by-reference relationships?
+                        /* is it a by-reference relationship? */
+                        if (node->getValueType() == VT_byReference)
+                        {
+                            /* type cast to access members of by-reference class */
+                            const E_ValueType targetValueType = OFstatic_cast(const DSRByReferenceTreeNode *, node)->getTargetValueType();
+                            /* use 'target value type' that is stored within the node instance */
+                            check = checker->checkContentRelationship(parent->getValueType(),
+                                                                      node->getRelationshipType(), targetValueType,
+                                                                      OFTrue /*byReference*/);
+                        } else {
+                            /* check whether the relationship with parent is allowed */
+                            check = checker->checkContentRelationship(parent->getValueType(),
+                                                                      node->getRelationshipType(), node->getValueType());
+                        }
                     }
                     /* exit loop on first node that has a disallowed relationship */
                 } while (cursor.iterate() && check);
@@ -730,7 +740,7 @@ OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree
                     result = SR_EC_IncompatibleDocumentTree;
             }
         } else {
-            /* if not, there is nothing we can do */
+            /* if not, there is nothing we can do but it's no error */
         }
     } else
         result = EC_IllegalParameter;

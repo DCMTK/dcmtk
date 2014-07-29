@@ -32,17 +32,20 @@ DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relation
   : DSRDocumentTreeNode(relationshipType, VT_byReference),
     ValidReference(OFFalse),
     ReferencedContentItem(),
-    ReferencedNodeID(0)
+    ReferencedNodeID(0),
+    TargetValueType(VT_invalid)
 {
 }
 
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType,
-                                               const size_t referencedNodeID)
+                                               const size_t referencedNodeID,
+                                               const E_ValueType targetValueType)
   : DSRDocumentTreeNode(relationshipType, VT_byReference),
     ValidReference(OFFalse),
     ReferencedContentItem(),
-    ReferencedNodeID(referencedNodeID)
+    ReferencedNodeID(referencedNodeID),
+    TargetValueType(targetValueType)
 {
 }
 
@@ -51,7 +54,8 @@ DSRByReferenceTreeNode::DSRByReferenceTreeNode(const DSRByReferenceTreeNode &nod
   : DSRDocumentTreeNode(node),
     ValidReference(OFFalse),
     ReferencedContentItem(node.ReferencedContentItem),
-    ReferencedNodeID(0)
+    ReferencedNodeID(0),
+    TargetValueType(VT_invalid)
 {
 }
 
@@ -73,6 +77,7 @@ void DSRByReferenceTreeNode::clear()
     ValidReference = OFFalse;
     ReferencedContentItem.clear();
     ReferencedNodeID = 0;
+    TargetValueType = VT_invalid;
 }
 
 
@@ -112,7 +117,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset)
     DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
     /* clear before reading */
     ReferencedContentItem.clear();
-    ReferencedNodeID = 0;
+    updateReference(0, VT_invalid);
     /* read ReferencedContentItemIdentifier */
     OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "by-reference relationship");
     if (result.good())
@@ -226,4 +231,31 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 {
     /* invalid: no template identification allowed */
     return EC_IllegalCall;
+}
+
+
+void DSRByReferenceTreeNode::invalidateReference()
+{
+    ValidReference = OFFalse;
+}
+
+
+OFBool DSRByReferenceTreeNode::updateReference(const size_t referencedNodeID,
+                                               const E_ValueType targetValueType)
+{
+    ReferencedNodeID = referencedNodeID;
+    TargetValueType = targetValueType;
+    /* check whether the given reference is valid */
+    ValidReference = (ReferencedNodeID > 0);
+    return ValidReference;
+}
+
+
+OFBool DSRByReferenceTreeNode::updateReference(const OFString &referencedContentItem)
+{
+
+    ReferencedContentItem = referencedContentItem;
+    /* tbd: check for valid reference could be more strict */
+    ValidReference = checkForValidReference(ReferencedContentItem);
+    return ValidReference;
 }

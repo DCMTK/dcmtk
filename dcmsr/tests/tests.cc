@@ -41,5 +41,6 @@ OFTEST_REGISTER(dcmsr_insertDocSubTree_3);
 OFTEST_REGISTER(dcmsr_removeDocSubTree);
 OFTEST_REGISTER(dcmsr_extractDocSubTree_1);
 OFTEST_REGISTER(dcmsr_extractDocSubTree_2);
-OFTEST_REGISTER(dcmsr_changeDocumentType);
+OFTEST_REGISTER(dcmsr_changeDocumentType_1);
+OFTEST_REGISTER(dcmsr_changeDocumentType_2);
 OFTEST_MAIN("dcmsr")

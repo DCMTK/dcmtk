@@ -149,7 +149,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  Always returns true if no constraint checker is available but 'relationshipType' and
      *  'targetValueType' have valid values.
      ** @param  relationshipType  type of relationship between current and target node
-     *  @param  targetValueType   value type of the referenced target node
+     *  @param  targetValueType   value type of the referenced node (target content item)
      ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
      */
     virtual OFBool canAddByReferenceRelationship(const E_RelationshipType relationshipType,
@@ -229,7 +229,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  current one.  The method canAddByReferenceRelationship() is called internally to check
      *  parameters first.  The internal cursor is automatically re-set to the current node.
      ** @param  relationshipType  relationship type between current and referenced node
-     *  @param  referencedNodeID  node ID of the referenced content item
+     *  @param  referencedNodeID  ID of the referenced node (target content item)
      ** @return ID of new pseudo-node if successful, 0 otherwise
      */
     virtual size_t addByReferenceRelationship(const E_RelationshipType relationshipType,

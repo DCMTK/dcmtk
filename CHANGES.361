@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.29 (riesmeier)
+
+- Further enhanced by-reference relationships:
+  Now storing the value type of a referenced node (target content item) in the
+  by-reference tree node class in order to facilitate IOD constraint checking.
+  Added new methods to by-reference tree node class in order to avoid direct
+  access to the member variables (by a friend class), and to allow updating the
+  referenced node. Added missing support for by-reference relationships in
+  DSRDocumentSubTree::checkSubTreeConstraints(). Also added a new test on this.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoc.cc
+
 **** Changes from 2014.07.28 (riesmeier)
 
 - Enhanced support for by-reference relationships:

@@ -38,8 +38,6 @@
 class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
   : public DSRDocumentTreeNode
 {
-    // allow access to private member variables
-    friend class DSRDocumentSubTree;
 
   public:
 
@@ -52,10 +50,12 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
     /** constructor
      ** @param  relationshipType  type of relationship to the parent/source tree node.
      *                            Should not be DSRTypes::RT_invalid or DSRTypes::RT_isRoot.
-     *  @param  referencedNodeID  ID of the node to be referenced
+     *  @param  referencedNodeID  ID of the node to be referenced (target content item)
+     *  @param  targetValueType   value type of the node to be referenced, i.e.\ the target
      */
     DSRByReferenceTreeNode(const E_RelationshipType relationshipType,
-                           const size_t referencedNodeID);
+                           const size_t referencedNodeID,
+                           const E_ValueType targetValueType);
 
     /** copy constructor.
      *  Please note that the comments on the copy constructor of the base class
@@ -63,9 +63,10 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
      *  this class are also not copied but initialized with their default values:
      *  - ValidReference
      *  - ReferencedNodeID
+     *  - TargetValueType
      *
      *  As a result, the contained by-reference relationship becomes invalid and should
-     *  be updated after the node has been added to a document tree.
+     *  be updated by updateReference() after the node has been added to a document tree.
      ** @param  node  tree node to be copied
      */
     DSRByReferenceTreeNode(const DSRByReferenceTreeNode &node);
@@ -146,13 +147,54 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
                                                   const OFString &mappingResource,
                                                   const OFBool check = OFTrue);
 
-    /** get ID of the referenced node
+    /** get ID of the referenced node (target content item)
      ** @return ID of the referenced node if valid, 0 otherwise
      */
     size_t getReferencedNodeID() const
     {
         return ReferencedNodeID;
     }
+
+    /** get position string of the referenced node (target content item)
+     ** @return position string of the referenced node if valid, an empty string otherwise
+     */
+    const OFString &getReferencedContentItem() const
+    {
+        return ReferencedContentItem;
+    }
+
+    /** get value type of the referenced node (target content item)
+     ** @return value type of the referenced node if valid, DSRTypes::VT_invalid otherwise
+     */
+    E_ValueType getTargetValueType() const
+    {
+        return TargetValueType;
+    }
+
+    /** invalidate reference to the target content item.
+     *  Sets the internal flag accordingly, see isValid() method.
+     */
+    void invalidateReference();
+
+    /** update reference to the target content item (using the node ID).
+     *  Also sets the internal flag accordingly, see isValid() method.  Please note, however,
+     *  that it is not checked whether the referenced content item really exists.  This is
+     *  done later on by DSRDocumentSubTree::checkByReferenceRelationships().
+     ** @param  referencedNodeID  ID of the node to be referenced (target content item)
+     *  @param  targetValueType   value type of the node to be referenced, i.e.\ the target
+     ** @return OFTrue if the reference is valid, OFFalse otherwise
+     */
+    OFBool updateReference(const size_t referencedNodeID,
+                           const E_ValueType targetValueType);
+
+    /** update reference the target content item (using the position string).
+     *  Also sets the internal flag accordingly, see isValid() method.  Please note, however,
+     *  that it is not checked whether the referenced content item really exists.  This is
+     *  done later on by DSRDocumentSubTree::checkByReferenceRelationships().
+     ** @param  referencedContentItem  position string of the node to be referenced
+     ** @return OFTrue if the reference is valid, OFFalse otherwise
+     */
+    OFBool updateReference(const OFString &referencedContentItem);
 
 
   protected:
@@ -197,13 +239,16 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
 
     /// flag indicating whether the reference is valid or not (i.e. checked).
     /// The default value is OFFalse.
-    OFBool   ValidReference;
-    /// position string of the referenced content item (target).
+    OFBool      ValidReference;
+    /// position string of the referenced nodes (target content item).
     /// The default value is en empty string.
-    OFString ReferencedContentItem;
-    /// node ID of the referenced content item (target).
+    OFString    ReferencedContentItem;
+    /// node ID of the referenced node (target content item).
     /// The default value is 0.
-    size_t   ReferencedNodeID;
+    size_t      ReferencedNodeID;
+    /// value type of the referenced node (target content item).
+    /// The default value is DSRTypes::VT_invalid.
+    E_ValueType TargetValueType;
 
 
  // --- declaration of default constructor and assignment operator
