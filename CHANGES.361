@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.30 (riesmeier)
+
+- Insert a subtree into an empty document tree:
+  Added missing support for inserting a subtree into an empty document tree (if
+  this subtree is a valid document tree). Also added new tests for this case.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 **** Changes from 2014.07.29 (riesmeier)
 
 - Further enhanced by-reference relationships:

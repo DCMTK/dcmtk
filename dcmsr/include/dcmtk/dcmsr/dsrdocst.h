@@ -88,6 +88,16 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFBool isValid() const;
 
+    /** check whether this subtree is a valid document tree.
+     *  In order to be a valid document tree, there should be a single root node only, with
+     *  the value type "CONTAINER", and the internal relationship type of this node should be
+     *  DSRTypes::RT_isRoot.
+     ** @param  defaultRelType  default relationship type that is used if the one of the
+     *                          top-level node (root node) is "unknown"
+     ** @return OFTrue if subtree is a valid document tree, OFFalse otherwise
+     */
+    virtual OFBool isValidDocumentTree(const E_RelationshipType defaultRelType = RT_unknown) const;
+
     /** print current SR document tree to specified output stream
      ** @param  stream  output stream
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)

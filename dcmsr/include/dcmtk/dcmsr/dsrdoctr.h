@@ -78,7 +78,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     /** check whether the current internal state is valid.
      *  The SR document is valid if the document type is supported, the tree is not
      *  empty, the root item is a container and has the internal relationship type
-     *  DSRTypes::RT_isRoot.
+     *  DSRTypes::RT_isRoot.  Also see DSRDocumentSubTree::isValidDocumentTree().
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -177,6 +177,24 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     virtual OFBool canAddContentItem(const E_RelationshipType relationshipType,
                                      const E_ValueType valueType,
                                      const E_AddMode addMode = AM_afterCurrent);
+
+    /** check whether specified subtree can be inserted at the current position, i.e.\ added
+     *  to the current content item.
+     *  If this tree is currently empty, only a CONTAINER with the internal relationship
+     *  type DSRTypes::RT_isRoot is allowed as the new root node (of the given subtree).
+     *  In all other cases, the method DSRDocumentSubTree::canInsertSubTree() is called.
+     ** @param  tree            pointer to new subtree to be inserted (should not be empty)
+     *  @param  addMode         flag specifying at which position the new subtree would
+     *                          be added.  Possible values: DSRTypes::AM_afterCurrent,
+     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  defaultRelType  default relationship type between the top-level nodes of
+     *                          the given subtree and the current node.  This relationship
+     *                          type is used if the one of a top-level node is "unknown".
+     ** @return OFTrue if specified subtree can be inserted, OFFalse otherwise
+     */
+    virtual OFBool canInsertSubTree(DSRDocumentSubTree *tree,
+                                    const E_AddMode addMode = AM_belowCurrent,
+                                    const E_RelationshipType defaultRelType = RT_unknown);
 
     /** check whether the document tree complies with the constraints of the given checker.
      *  This method also checks whether the currently stored document tree is either empty

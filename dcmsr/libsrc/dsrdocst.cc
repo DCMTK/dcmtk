@@ -91,6 +91,26 @@ OFBool DSRDocumentSubTree::isValid() const
 }
 
 
+OFBool DSRDocumentSubTree::isValidDocumentTree(const E_RelationshipType defaultRelType) const
+{
+    OFBool result = OFFalse;
+    /* check root node */
+    const DSRDocumentTreeNode *node = getRoot();
+    if (node != NULL)
+    {
+        E_RelationshipType relationshipType;
+        /* use default relationship type if "unknown" */
+        relationshipType = node->getRelationshipType();
+        if (relationshipType == RT_unknown)
+            relationshipType = defaultRelType;
+        /* make sure that there is a single root node only, with type "CONTAINER" */
+        if ((relationshipType == RT_isRoot) && (node->getValueType() == VT_Container))
+            result = !node->hasSiblingNodes();
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                                       const size_t flags)
 {
@@ -245,7 +265,6 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
             const DSRDocumentTreeNode *node = getNode();
             if (node != NULL)
                 result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
-            /* tbd: what if this is the first node of the tree? */
         } else {
             /* certain relationships are never allowed */
             result = (relationshipType != RT_isRoot) && (relationshipType != RT_unknown);
@@ -315,7 +334,7 @@ OFCondition DSRDocumentSubTree::addContentItem(const E_RelationshipType relation
     /* call the functions doing the real work */
     if (addContentItem(relationshipType, valueType, AM_afterCurrent) > 0)
     {
-        /* use a more appropriate code than the one returned */
+        /* use a more appropriate error code than the one returned */
         if (getCurrentContentItem().setConceptName(conceptName).bad())
             result = SR_EC_InvalidConceptName;
     } else
@@ -332,7 +351,7 @@ OFCondition DSRDocumentSubTree::addChildContentItem(const E_RelationshipType rel
     /* call the functions doing the real work */
     if (addContentItem(relationshipType, valueType, AM_belowCurrent) > 0)
     {
-        /* use a more appropriate code than the one returned */
+        /* use a more appropriate error code than the one returned */
         if (getCurrentContentItem().setConceptName(conceptName).bad())
             result = SR_EC_InvalidConceptName;
     } else
@@ -454,7 +473,7 @@ OFCondition DSRDocumentSubTree::insertSubTree(DSRDocumentSubTree *tree,
                         if (node->getRelationshipType() == RT_unknown)
                             result = node->setRelationshipType(defaultRelType);
                     } while (cursor.gotoNext() && result.good());
-                    /* use a more appropriate error code */
+                    /* use a more appropriate error code than the one returned */
                     if (result == EC_IllegalParameter)
                         result = SR_EC_CannotChangeRelationshipType;
                 }

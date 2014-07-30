@@ -67,18 +67,8 @@ void DSRDocumentTree::clear()
 
 OFBool DSRDocumentTree::isValid() const
 {
-    OFBool result = OFFalse;
-    if (isDocumentTypeSupported(DocumentType))
-    {
-        /* check root node */
-        const DSRDocumentTreeNode *node = getRoot();
-        if (node != NULL)
-        {
-            if ((node->getRelationshipType() == RT_isRoot) && (node->getValueType() == VT_Container))
-                result = OFTrue;
-        }
-    }
-    return result;
+    /* check whether both document type and tree are valid */
+    return isDocumentTypeSupported(DocumentType) && isValidDocumentTree();
 }
 
 
@@ -307,13 +297,31 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
     OFBool result = OFFalse;
     if (isEmpty())
     {
-        /* root node has to be a Container */
+        /* root node has to be a container */
         result = (relationshipType == RT_isRoot) && (valueType == VT_Container);
     }
     else if (relationshipType != RT_unknown)
     {
         /* use checking routine from base class */
         result = DSRDocumentSubTree::canAddContentItem(relationshipType, valueType, addMode);
+    }
+    return result;
+}
+
+
+OFBool DSRDocumentTree::canInsertSubTree(DSRDocumentSubTree *tree,
+                                         const E_AddMode addMode,
+                                         const E_RelationshipType defaultRelType)
+{
+    OFBool result = OFFalse;
+    if (isEmpty())
+    {
+        /* check whether the subtree to be inserted is a valid document tree */
+        if (tree != NULL)
+            result = tree->isValidDocumentTree(defaultRelType);
+    } else {
+        /* use checking routine from base class */
+        result = DSRDocumentSubTree::canInsertSubTree(tree, addMode, defaultRelType);
     }
     return result;
 }
@@ -328,7 +336,7 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
         /* an empty document tree always complies with the constraints */
         if (!isEmpty())
         {
-            /* check whether the current document tree is valid, i.e. the root node is a CONTAINER */
+            /* check whether the current document tree is valid, i.e. the root node is a container */
             if (isValid())
             {
                 /* determine template identifier (TID) expected for the new document type */

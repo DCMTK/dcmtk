@@ -356,3 +356,64 @@ OFTEST(dcmsr_extractDocSubTree_2)
     } else
         OFCHECK_FAIL("could not extract subtree from document");
 }
+
+
+OFTEST(dcmsr_extractAndInsertDocSubTree_1)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    /* extract the complete (sub)tree */
+    OFCHECK(tree.gotoRoot() > 0);
+    DSRDocumentSubTree *subTree = tree.extractSubTree();
+    if (subTree != NULL)
+    {
+        OFCHECK_EQUAL(tree.countNodes(), 0);
+        OFCHECK_EQUAL(subTree->countNodes(), 5);
+        OFCHECK(subTree->isValidDocumentTree());
+        /* and, finally, re-add it to the original SR document */
+        OFCHECK(tree.insertSubTree(subTree, DSRTypes::AM_belowCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).good());
+        OFCHECK_EQUAL(tree.countNodes(), 5);
+    } else
+        OFCHECK_FAIL("could not extract subtree from document");
+}
+
+
+OFTEST(dcmsr_extractAndInsertDocSubTree_2)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    /* extract a particular subtree */
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("121206", "DCM", "Distance")) > 0);
+    DSRDocumentSubTree *subTree = tree.extractSubTree();
+    if (subTree != NULL)
+    {
+        OFCHECK_EQUAL(tree.countNodes(), 2);
+        OFCHECK_EQUAL(subTree->countNodes(), 3);
+        OFCHECK(!subTree->isValidDocumentTree());
+        /* clear the original document tree */
+        tree.clear();
+        OFCHECK_EQUAL(tree.countNodes(), 0);
+        /* and, finally, try to re-add the subtree */
+        OFCHECK(tree.insertSubTree(subTree, DSRTypes::AM_belowCurrent, DSRTypes::RT_unknown, OFTrue /*deleteIfFail*/).bad());
+        OFCHECK_EQUAL(tree.countNodes(), 0);
+    } else
+        OFCHECK_FAIL("could not extract subtree from document");
+}
