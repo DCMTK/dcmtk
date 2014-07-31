@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2014.07.31 (riesmeier)
 
+- Added check on valid "IMAGE" SOP Classes:
+  Added check on SOP Classes to be referenced from an IMAGE content item, which
+  includes the Segmentation Storage SOP Class. This kind of check was already
+  performed for Presentation State and Waveform objects. Also compared these
+  lists of supported SOP Classes with the current edition of the DICOM standard.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
 - Added dcmIsImageStorageSOPClassUID() function:
   Added a global function that checks whether a given SOP Class UID is one of
   the known Image Storage SOP Classes (similar to dcmIsaStorageSOPClassUID()).

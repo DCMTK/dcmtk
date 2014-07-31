@@ -394,9 +394,9 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
-     *  Currently, this method does not further specialize the checks performed in the base
-     *  class DSRCompositeReferenceValue.  Later on, this method might be extended to also
-     *  check whether the specified SOP class is really an image storage SOP class.
+     *  This method further specializes the checks performed in the base class
+     *  DSRCompositeReferenceValue.  All image SOP classes that are defined in
+     *  DICOM PS 3.6-2014a and the "Segmentation Storage SOP Class" are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */

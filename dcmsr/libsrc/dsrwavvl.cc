@@ -243,7 +243,7 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2011) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2014a) */
         if ((sopClassUID != UID_TwelveLeadECGWaveformStorage) &&
             (sopClassUID != UID_GeneralECGWaveformStorage) &&
             (sopClassUID != UID_AmbulatoryECGWaveformStorage) &&

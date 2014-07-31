@@ -199,8 +199,8 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
 
     /** check the specified SOP class UID for validity.
      *  This method further specializes the checks performed in the base class
-     *  DSRCompositeReferenceValue.  Currently, all waveform SOP classes that are defined
-     *  in DICOM PS 3.6-2011 are allowed.
+     *  DSRCompositeReferenceValue.  All waveform SOP classes that are defined
+     *  in DICOM PS 3.6-2014a are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */

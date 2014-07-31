@@ -653,7 +653,12 @@ OFCondition DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* tbd: might check for known IMAGE storage class later on */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2014a) */
+        if (!dcmIsImageStorageSOPClassUID(sopClassUID.c_str()) &&
+            (sopClassUID != UID_SegmentationStorage))
+        {
+            result = SR_EC_InvalidValue;
+        }
     }
     return result;
 }
@@ -695,10 +700,10 @@ OFCondition DSRImageReferenceValue::checkListData(const DSRImageFrameList &frame
     OFCondition result = EC_Normal;
     if (!frameList.isEmpty() && !segmentList.isEmpty())
     {
-        // this is just a warning since only one list will ever be written
+        /* this is just a warning since only one list will ever be written */
         REPORT_WARNING("Both ReferencedFrameNumber and ReferencedSegmentNumber present in IMAGE content item")
     }
-    // tbd: check whether referenced image is a segmentation object? (see "type 1C" condition)
+    /* tbd: check whether referenced image is a segmentation object? (see "type 1C" condition) */
     return result;
 }
 
