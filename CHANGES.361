@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.07.31 (riesmeier)
+
+- Added dcmIsImageStorageSOPClassUID() function:
+  Added a global function that checks whether a given SOP Class UID is one of
+  the known Image Storage SOP Classes (similar to dcmIsaStorageSOPClassUID()).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
 **** Changes from 2014.07.30 (riesmeier)
 
 - Insert a subtree into an empty document tree:

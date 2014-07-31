@@ -1207,9 +1207,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 const char*
 dcmFindNameOfUID(const char* uid, const char* defaultValue)
 {
-    int i = 0;
     if (uid == NULL) return defaultValue;
-    for (i=0; i<uidNameMap_size; i++) {
+    for (int i = 0; i < uidNameMap_size; i++) {
       if (uidNameMap[i].uid != NULL && strcmp(uid, uidNameMap[i].uid) == 0) {
         return uidNameMap[i].name;
       }
@@ -1224,8 +1223,8 @@ dcmFindNameOfUID(const char* uid, const char* defaultValue)
 // Returns NULL of the name is not known.
 //
 
-const char *
-dcmFindUIDFromName(const char * name)
+const char*
+dcmFindUIDFromName(const char* name)
 {
     if (name == NULL) return NULL;
     for(int i = 0; i < uidNameMap_size; i++)
@@ -1245,10 +1244,27 @@ dcmFindUIDFromName(const char * name)
 OFBool
 dcmIsaStorageSOPClassUID(const char* uid)
 {
-    int i = 0;
     if (uid == NULL) return OFFalse;
-    for (i=0; i<numberOfAllDcmStorageSOPClassUIDs; i++) {
+    for (int i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
       if (dcmAllStorageSOPClassUIDs[i] != NULL && strcmp(uid, dcmAllStorageSOPClassUIDs[i]) == 0) {
+        return OFTrue;
+      }
+    }
+    return OFFalse;
+}
+
+
+/*
+** dcmIsImageStorageSOPClassUID(const char* uid)
+** Returns true if the uid is one of the Image Storage SOP Classes.
+** Performs a table lookup in the dcmImageSOPClassUIDs table.
+*/
+OFBool
+dcmIsImageStorageSOPClassUID(const char* uid)
+{
+    if (uid == NULL) return OFFalse;
+    for (int i = 0; i < numberOfDcmImageSOPClassUIDs; i++) {
+      if (dcmImageSOPClassUIDs[i] != NULL && strcmp(uid, dcmImageSOPClassUIDs[i]) == 0) {
         return OFTrue;
       }
     }

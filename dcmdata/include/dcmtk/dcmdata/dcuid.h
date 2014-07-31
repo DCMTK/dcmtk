@@ -52,7 +52,7 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindNameOfUID(const char* uid, const char* d
  *  @param name name string for which the corresponding UID is to be looked up
  *  @return UID string or NULL if name is unknown
  */
-DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char * name);
+DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char* name);
 
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
@@ -60,7 +60,7 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char * name);
  *  Special cases such as hanging protocol storage or the Storage SOP Class
  *  are not included in this list.
  *  WARNING: This list contains more than 64 entries, i.e. it is not possible
- *  to use this list to configure the association negotiation behaviour of
+ *  to use this list to configure the association negotiation behavior of
  *  a Storage SCU that always proposes two presentation contexts for each
  *  SOP class.
  */
@@ -108,6 +108,13 @@ extern DCMTK_DCMDATA_EXPORT const char* dcmImageSOPClassUIDs[];
 
 /// number of entries in dcmImageSOPClassUIDs
 extern DCMTK_DCMDATA_EXPORT const int numberOfDcmImageSOPClassUIDs;
+
+/** returns true if the uid is one of the Image Storage SOP Classes.
+ *  Performs a table lookup in the dcmImageSOPClassUIDs table.
+ *  @param uid UID string
+ *  @return true if UID is a known Image Storage SOP Class, false otherwise
+ */
+DCMTK_DCMDATA_EXPORT OFBool dcmIsImageStorageSOPClassUID(const char* uid);
 
 /** creates a Unique Identifier in uid and returns uid.
  *  uid must be at least 65 bytes. Care is taken to make sure
