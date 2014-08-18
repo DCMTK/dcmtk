@@ -40,6 +40,8 @@
 #include <ostream>
 
 #define OFTypename typename
+#define OFlonglong long long
+#define OFulonglong unsigned long long
 
 using Sint8 = std::int8_t;
 using Uint8 = std::uint8_t;
@@ -88,39 +90,45 @@ typedef unsigned short  Uint16;
 typedef float           Float32;    /* 32 Bit Floating Point Single */
 typedef double          Float64;    /* 64 Bit Floating Point Double */
 
-#ifdef HAVE_INT64_T
-/* many platforms define int64_t in <stdint.h> */
-typedef int64_t         Sint64;
+#ifdef HAVE_LONG_LONG
+#define OFlonglong long long
 #elif defined(_WIN32)
-/* Win32 (MSVC) defines __int64 */
-typedef __int64         Sint64;
+#define OFlonglong __int64
 #elif defined(HAVE_LONGLONG)
-typedef longlong        Sint64;
+#define OFlonglong longlong
+#endif
+
+#ifdef HAVE_UNSIGNED_LONG_LONG
+#define OFulonglong unsigned long long
+#elif defined(_WIN32)
+#define OFulonglong unsigned __int64
+#elif defined(HAVE_ULONGLONG)
+#define OFulonglong ulonglong
+#endif
+
+#ifdef HAVE_INT64_T
+/* many platforms define int64_t in <cstdint> */
+typedef int64_t       Sint64;
 #elif SIZEOF_LONG == 8
 /* on some platforms, long is 64 bits */
-typedef long            Sint64;
-#elif defined(HAVE_LONG_LONG)
-/* again on some other platforms (including gcc), long long is a valid type */
-typedef long long       Sint64;
+typedef long          Sint64;
+#elif defined(OFlonglong)
+/* assume OFlonglong is 64 bits */
+typedef OFlonglong    Sint64;
 #else
 /* we have not found any 64-bit signed integer type */
 #define OF_NO_SINT64 1
 #endif
 
 #ifdef HAVE_INT64_T
-/* many platforms define uint64_t in <stdint.h> */
-typedef uint64_t        Uint64;
-#elif defined(_WIN32)
-/* Win32 (MSVC) defines __int64 */
-typedef unsigned __int64 Uint64;
-#elif defined(HAVE_ULONGLONG)
-typedef ulonglong       Uint64;
+/* many platforms define uint64_t in <cstdint> */
+typedef uint64_t      Uint64;
 #elif SIZEOF_LONG == 8
 /* on some platforms, long is 64 bits */
-typedef unsigned long   Uint64;
-#elif defined(HAVE_UNSIGNED_LONG_LONG)
-/* again on some other platforms (including gcc), unsigned long long is a valid type */
-typedef unsigned long long Uint64;
+typedef unsigned long Uint64;
+#elif defined(OFulonglong)
+/* assume OFulonglong is 64 bits */
+typedef OFulonglong   Uint64;
 #else
 /* we have not found any 64-bit unsigned integer type */
 #define OF_NO_UINT64 1

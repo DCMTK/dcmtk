@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.08.18 (schlamelcher)
+
+- Refined definition of numeric types and traits:
+  Introduced OFlonglong and OFulonglong preprocessor definitions that
+  expand to the platform specific long long type or are undefined if
+  no such type is available.
+  Reimplemented fixed width integer types employing these long long
+  types and refined integer traits to use the primitive types instead
+  of the fixed with types in their specializations.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+           ofstd/include/dcmtk/ofstd/oftraits.h
+
 **** Changes from 2014.07.31 (riesmeier)
 
 - Added check on valid "IMAGE" SOP Classes:

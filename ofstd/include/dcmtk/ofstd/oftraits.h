@@ -129,39 +129,58 @@ struct OFremove_volatile { typedef T type; };
 template<typename T>
 struct OFremove_extent { typedef T type; };
 
+#ifdef HAVE_CXX_BOOL
 template<>
-struct OFis_signed<Sint8> : OFtrue_type {};
+struct OFis_unsigned<bool> : OFtrue_type {};
+#endif
+
+#ifndef C_CHAR_UNSIGNED
+template<>
+struct OFis_signed<char> : OFtrue_type {};
+#else
+template<>
+struct OFis_unsigned<char> : OFtrue_type {};
+#endif
 
 template<>
-struct OFis_unsigned<Uint8> : OFtrue_type {};
+struct OFis_signed<signed char> : OFtrue_type {};
 
 template<>
-struct OFis_signed<Sint16> : OFtrue_type {};
+struct OFis_unsigned<unsigned char> : OFtrue_type {};
 
 template<>
-struct OFis_unsigned<Uint16> : OFtrue_type {};
+struct OFis_signed<signed short> : OFtrue_type {};
 
 template<>
-struct OFis_signed<Sint32> : OFtrue_type {};
+struct OFis_unsigned<unsigned short> : OFtrue_type {};
 
 template<>
-struct OFis_unsigned<Uint32> : OFtrue_type {};
-
-#ifndef OF_NO_SINT64
-template<>
-struct OFis_signed<Sint64> : OFtrue_type {};
-#endif // OF_NO_SINT64
-
-#ifndef OF_NO_UINT64
-template<>
-struct OFis_unsigned<Uint64> : OFtrue_type {};
-#endif // OF_NO_UINT64
+struct OFis_signed<signed int> : OFtrue_type {};
 
 template<>
-struct OFis_signed<Float32> : OFtrue_type {};
+struct OFis_unsigned<unsigned int> : OFtrue_type {};
 
 template<>
-struct OFis_signed<Float64> : OFtrue_type {};
+struct OFis_signed<signed long> : OFtrue_type {};
+
+template<>
+struct OFis_unsigned<unsigned long> : OFtrue_type {};
+
+#ifdef OFlonglong
+template<>
+struct OFis_signed<OFlonglong> : OFtrue_type {};
+#endif
+
+#ifdef OFulonglong
+template<>
+struct OFis_unsigned<OFulonglong> : OFtrue_type {};
+#endif
+
+template<>
+struct OFis_signed<float> : OFtrue_type {};
+
+template<>
+struct OFis_signed<double> : OFtrue_type {};
 
 template<typename T>
 struct OFis_same<T,T> : OFtrue_type {};
