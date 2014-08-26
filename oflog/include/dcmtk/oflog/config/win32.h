@@ -39,7 +39,7 @@
 #define DCMTK_LOG4CPLUS_HAVE_TIME_H
 #define DCMTK_LOG4CPLUS_HAVE_SYS_TIMEB_H
 #define DCMTK_LOG4CPLUS_HAVE_FTIME
-#if defined (_MSC_VER) || defined (__BORLANDC__) 
+#if defined (_MSC_VER) || defined (__BORLANDC__)
 #define DCMTK_LOG4CPLUS_HAVE_GMTIME_S
 #endif
 
@@ -72,16 +72,20 @@
 #undef DCMTK_LOG4CPLUS_HAVE_VSNPRINTF
 #endif
 
-#if defined (_MSC_VER) || defined (__MINGW32__)
 // MS secure versions of vprintf().
+#ifdef HAVE_VSPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE_VSPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE_VSWPRINTF_S
+#endif
 
 // MS secure versions of vfprintf().
+#ifdef HAVE_VFPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE_VFPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE_VFWPRINTF_S
+#endif
 
 // MS secure versions of vsnprintf().
+#ifdef HAVE_VSNPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE_VSNPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE__VSNPRINTF_S
 #  define DCMTK_LOG4CPLUS_HAVE__VSNWPRINTF_S

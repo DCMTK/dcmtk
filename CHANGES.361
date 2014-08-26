@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.08.26 (schlamelcher)
+
+- Fixed a problem with Microsoft Safe CRT in oflog:
+  The oflog module now honors the configure test results instead of using
+  its own definitions. Thanks to Matt McCormick <matt.mccormick@kitware.com>
+  for the report and suggested patch.
+  Affects: oflog/include/dcmtk/oflog/config/win32.h
+
 **** Changes from 2014.08.18 (schlamelcher)
 
 - Refined definition of numeric types and traits:
