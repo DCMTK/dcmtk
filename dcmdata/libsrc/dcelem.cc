@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -186,14 +186,38 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 }
 
 
+int DcmElement::compare(const DcmElement& rhs) const
+{
+    if (this == &rhs)
+        return 0;
+
+    DcmElement* myThis = OFconst_cast(DcmElement*, this);
+    DcmElement* myRhs = OFconst_cast(DcmElement*, &rhs);
+
+    DcmTagKey thisKey = (*myThis).getTag().getXTag();
+    DcmTagKey rhsKey = (*myRhs).getTag().getXTag();
+
+    if ( thisKey > rhsKey )
+    {
+        return 1;
+    }
+    else if (thisKey < rhsKey)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+
 OFCondition DcmElement::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmElement &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmElement &, rhs);
+    }
+    return EC_Normal;
 }
 
 

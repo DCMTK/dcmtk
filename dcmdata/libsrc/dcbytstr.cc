@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,6 +125,63 @@ DcmByteString &DcmByteString::operator=(const DcmByteString &obj)
     }
     return *this;
 }
+
+
+int DcmByteString::compare(const DcmElement& rhs) const
+{
+    int result = DcmElement::compare(rhs);
+    if (result != 0)
+    {
+        return result;
+    }
+
+    /* cast away constness (dcmdata is not const correct...) */
+    DcmByteString* myThis = NULL;
+    DcmByteString* myRhs = NULL;
+    myThis = OFconst_cast(DcmByteString*, this);
+    myRhs = OFdynamic_cast(DcmByteString*, OFconst_cast(DcmElement*, &rhs));
+    if (myRhs == NULL)
+        return -1;
+
+    /* iterate over all components and test equality */
+    unsigned long thisVM = myThis->getVM();
+    for (unsigned long count = 0; count < thisVM; count++)
+    {
+        OFString val;
+        if (myThis->getOFString(val, count).good())
+        {
+            OFString rhsVal;
+            if (myRhs->getOFString(rhsVal, count).good())
+            {
+                int result = val.compare(rhsVal);
+                if (result != 0)
+                {
+                    return result;
+                }
+            }
+            else
+            {
+                break; // values equal until this point (rhs shorter)
+            }
+        }
+    }
+
+    /* we get here if all values are equal. Now look at the number of components. */
+    unsigned long rhsVM = myRhs->getVM();
+    if (thisVM < rhsVM)
+    {
+        return -1;
+    }
+    else if (thisVM > rhsVM)
+    {
+        return 1;
+    }
+
+    /* all values as well as VM equal: objects are equal */
+    return 0;
+}
+
+
 
 
 OFCondition DcmByteString::copyFrom(const DcmObject& rhs)

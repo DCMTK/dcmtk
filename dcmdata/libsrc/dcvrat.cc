@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -57,14 +57,73 @@ DcmAttributeTag &DcmAttributeTag::operator=(const DcmAttributeTag &obj)
 }
 
 
+int DcmAttributeTag::compare(const DcmElement& rhs) const
+{
+    int result = DcmElement::compare(rhs);
+    if (result != 0)
+    {
+        return result;
+    }
+
+    /* cast away constness (dcmdata is not const correct...) */
+    DcmAttributeTag* myThis = NULL;
+    DcmAttributeTag* myRhs = NULL;
+    myThis = OFconst_cast(DcmAttributeTag*, this);
+    myRhs = OFdynamic_cast(DcmAttributeTag*, OFconst_cast(DcmElement*, &rhs));
+    if (myRhs == NULL)
+        return -1;
+
+    /* iterate over all components and test equality */
+    unsigned long thisVM = myThis->getVM();
+    for (unsigned long count = 0; count < thisVM; count++)
+    {
+        DcmTagKey val;
+        if (myThis->getTagVal(val, count).good())
+        {
+            DcmTagKey rhsVal;
+            if (myRhs->getTagVal(rhsVal, count).good())
+            {
+                if (val > rhsVal)
+                {
+                    return 1;
+                }
+                else if (val < rhsVal)
+                {
+                    return -1;
+                }
+                /* otherwise they are equal, continue comparison */
+            }
+            else
+            {
+                break; // values equal until this point (rhs shorter)
+            }
+        }
+    }
+
+    /* we get here if all values are equal. Now look at the number of components. */
+    unsigned long rhsVM = myRhs->getVM();
+    if (thisVM < rhsVM)
+    {
+        return -1;
+    }
+    else if (thisVM > rhsVM)
+    {
+        return 1;
+    }
+
+    /* all values as well as VM equal: objects are equal */
+    return 0;
+}
+
+
 OFCondition DcmAttributeTag::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmAttributeTag &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmAttributeTag &, rhs);
+    }
+    return EC_Normal;
 }
 
 

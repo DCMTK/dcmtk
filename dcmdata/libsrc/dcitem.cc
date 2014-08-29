@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -124,31 +124,83 @@ DcmItem::DcmItem(const DcmItem &old)
 
 DcmItem& DcmItem::operator=(const DcmItem& obj)
 {
-  if (this != &obj)
-  {
-    // copy parent's member variables
-    DcmObject::operator=(obj);
-
-    // delete any existing elements
-    elementList->deleteAllElements();
-
-    // copy DcmItem's member variables
-    lastElementComplete = obj.lastElementComplete;
-    fStartPosition = obj.fStartPosition;
-    if (!obj.elementList->empty())
+    if (this != &obj)
     {
-      elementList->seek(ELP_first);
-      obj.elementList->seek(ELP_first);
-      do
-      {
-        DcmObject *dO = obj.elementList->get()->clone();
-        elementList->insert(dO, ELP_next);
-        // remember the parent
-        dO->setParent(this);
-      } while (obj.elementList->seek(ELP_next));
+        // copy parent's member variables
+        DcmObject::operator=(obj);
+
+        // delete any existing elements
+        elementList->deleteAllElements();
+
+        // copy DcmItem's member variables
+        lastElementComplete = obj.lastElementComplete;
+        fStartPosition = obj.fStartPosition;
+        if (!obj.elementList->empty())
+        {
+            elementList->seek(ELP_first);
+            obj.elementList->seek(ELP_first);
+            do
+            {
+                DcmObject *dO = obj.elementList->get()->clone();
+                elementList->insert(dO, ELP_next);
+                // remember the parent
+                dO->setParent(this);
+            } while (obj.elementList->seek(ELP_next));
+        }
     }
-  }
-  return *this;
+    return *this;
+}
+
+
+int DcmItem::compare(const DcmItem& rhs) const
+{
+    if (this == &rhs)
+        return 0;
+
+    // cast away constness (dcmdata is not const correct...)
+    DcmItem* myThis = NULL;
+    DcmItem* myRhs = NULL;
+    myThis = OFconst_cast(DcmItem*, this);
+    myRhs =  OFconst_cast(DcmItem*, &rhs);
+
+    // iterate over all items and test equality
+    unsigned long thisVM = myThis->card();
+    for (unsigned long count = 0; count < thisVM; count++)
+    {
+        DcmElement* val = myThis->getElement(count);
+        if (val)
+        {
+            DcmElement* rhsVal = myRhs->getElement(count);
+            if (rhsVal)
+            {
+                int result = val->compare(*rhsVal);
+                if (val != 0)
+                {
+                    return result;
+                }
+                // otherwise they are equal, continue comparison
+            }
+            else
+            {
+                break; // values equal until this point (rhs shorter)
+            }
+        }
+    }
+
+    // we get here if all values are equal. Now look at the
+    // number of components
+    unsigned long rhsVM = myRhs->card();
+    if (thisVM < rhsVM)
+    {
+        return -1;
+    }
+    else if (thisVM > rhsVM)
+    {
+        return 1;
+    }
+
+    // all values as well as VM equal: objects are equal
+    return 0;
 }
 
 
@@ -156,8 +208,8 @@ OFCondition DcmItem::copyFrom(const DcmObject& rhs)
 {
   if (this != &rhs)
   {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmItem &, rhs);
+      if (rhs.ident() != ident()) return EC_IllegalCall;
+      *this = OFstatic_cast(const DcmItem &, rhs);
   }
   return EC_Normal;
 }

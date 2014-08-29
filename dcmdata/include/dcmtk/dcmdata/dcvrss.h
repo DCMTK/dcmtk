@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,21 @@ class DCMTK_DCMDATA_EXPORT DcmSignedShort
     /** destructor
      */
     virtual ~DcmSignedShort();
+
+    /** comparison operator that compares the normalized value of this object
+     *  with a given object of the same type. The tag of the element is also
+     *  considered as the first component that is compared.
+     *  @param  rhs the right hand side of the comparison
+     *  @return 0 if the object values are equal.
+     *          -1 if either the value of the  first component that does not match
+     *          is lower in the rhs object, or all compared components match
+     *          but the rhs component is shorter. Also returned if rhs cannot be casted
+     *          to DcmSignedShort.
+     *          1 if either the value of the first component that does not match
+     *          is greater in the rhs object, or all compared components match
+     *          but the rhs component is longer.
+     */
+    virtual int compare(const DcmElement& rhs) const;
 
     /** assignment operator
      *  @param obj element to be assigned/copied

@@ -71,6 +71,22 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      */
     DcmByteString& operator=(const DcmByteString& obj);
 
+    /** comparison operator that compares the normalized value of this object
+     *  with a given object of the same type. The tag of the element is also
+     *  considered as the first component that is compared.
+     *  @param  rhs the right hand side of the comparison
+     *  @return 0 if the object values are equal.
+     *          -1 if either the value of the  first component that does not match
+     *          is lower in the rhs object, or all compared components match
+     *          but the rhs component is shorter. Also returned if rhs cannot be casted
+     *          to "this" object type.
+     *          1 if either the value of the first component that does not match
+     *          is greater in the rhs object, or all compared components match
+     *          but the rhs component is longer.
+     */
+    virtual int compare(const DcmElement& rhs) const;
+
+
     /** clone method
      *  @return deep copy of this object
      */

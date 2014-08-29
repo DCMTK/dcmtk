@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,6 +63,22 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @return reference to this object
      */
     DcmElement &operator=(const DcmElement &obj);
+
+    /** comparison operator that compares the normalized value of this element
+     *  with a given element of the same type (e.g. an DcmUnsignedShort with a
+     *  DcmUnsignedShort). The tag of the element is also considered as the first
+     *  component that is compared. DcmElement's default implementation does only
+     *  compare the tag while the derived classes implement the value comparisons.
+     *  @param  rhs the right hand side of the comparison
+     *  @return 0 if the object values are equal.
+     *          -1 if either the value of the  first component that does not match
+     *          is lower in the rhs object, or all compared components match
+     *          but the rhs component is shorter.
+     *          1 if either the value of the first component that does not match
+     *          is greater in the rhs object, or all compared components match
+     *          but the rhs component is longer.
+     */
+    virtual int compare(const DcmElement& rhs) const =0;
 
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally

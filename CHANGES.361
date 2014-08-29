@@ -1,6 +1,44 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.08.29 (onken)
+
+- New compare() function for dcmdata object values:
+  A new compare() function is added to all VR classes under the DcmElement
+  object hierarchy which compares two objects (of the same type) by value.
+  The function takes into account that elements may have different tags,
+  values and VMs.
+  Added:   dcmdata/tests/tvrcomp.cc
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfd.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrobow.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrss.h
+           dcmdata/include/dcmtk/dcmdata/dcvrul.h
+           dcmdata/include/dcmtk/dcmdata/dcvrus.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
+
 **** Changes from 2014.08.26 (schlamelcher)
 
 - Fixed a problem with Microsoft Safe CRT in oflog:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,14 +59,73 @@ DcmFloatingPointSingle &DcmFloatingPointSingle::operator=(const DcmFloatingPoint
 }
 
 
+int DcmFloatingPointSingle::compare(const DcmElement& rhs) const
+{
+    int result = DcmElement::compare(rhs);
+    if (result != 0)
+    {
+        return result;
+    }
+
+    /* cast away constness (dcmdata is not const correct...) */
+    DcmFloatingPointSingle* myThis = NULL;
+    DcmFloatingPointSingle* myRhs = NULL;
+    myThis = OFconst_cast(DcmFloatingPointSingle*, this);
+    myRhs = OFdynamic_cast(DcmFloatingPointSingle*, OFconst_cast(DcmElement*, &rhs));
+    if (myRhs == NULL)
+        return -1;
+
+    // iterate over all components and test equality */
+    unsigned long thisVM = myThis->getVM();
+    for (unsigned long count = 0; count < thisVM; count++)
+    {
+        Float32 val = 0;
+        if (myThis->getFloat32(val, count).good())
+        {
+            Float32 rhsVal = 0;
+            if (myRhs->getFloat32(rhsVal, count).good())
+            {
+                if (val > rhsVal)
+                {
+                    return 1;
+                }
+                else if (val < rhsVal)
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                break; // values equal until this point (rhs shorter)
+            }
+      }
+  }
+
+  /* we get here if all values are equal. Now look at the number of components. */
+  unsigned long rhsVM = myRhs->getVM();
+  if (thisVM < rhsVM)
+  {
+      return -1;
+  }
+  else if (thisVM > rhsVM)
+  {
+      return 1;
+  }
+
+  /* all values as well as VM equal: objects are equal */
+  return 0;
+}
+
+
+
 OFCondition DcmFloatingPointSingle::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmFloatingPointSingle &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmFloatingPointSingle &, rhs);
+    }
+    return EC_Normal;
 }
 
 
