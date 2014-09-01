@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.01 (onken)
+
+- Make sure dcmdata tests compile with autoconf.
+  Affects: dcmdata/tests/Makefile.in
+
 **** Changes from 2014.08.29 (onken)
 
 - New compare() function for dcmdata object values:
