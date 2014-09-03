@@ -69,10 +69,7 @@ int DcmUnsignedLong::compare(const DcmElement& rhs) const
     DcmUnsignedLong* myThis = NULL;
     DcmUnsignedLong* myRhs = NULL;
     myThis = OFconst_cast(DcmUnsignedLong*, this);
-    myRhs =  OFdynamic_cast(DcmUnsignedLong*, OFconst_cast(DcmElement*, &rhs));
-    if (myRhs == NULL)
-        return -1;
-
+    myRhs =  OFstatic_cast(DcmUnsignedLong*, OFconst_cast(DcmElement*, &rhs));
 
     /* iterate over all components and test equality */
     unsigned long thisVM = myThis->getVM();

@@ -67,16 +67,20 @@ class DCMTK_DCMDATA_EXPORT DcmElement
     /** comparison operator that compares the normalized value of this element
      *  with a given element of the same type (e.g. an DcmUnsignedShort with a
      *  DcmUnsignedShort). The tag of the element is also considered as the first
-     *  component that is compared. DcmElement's default implementation does only
-     *  compare the tag while the derived classes implement the value comparisons.
+     *  component that is compared, followed by the object types (VR, i.e. DCMTK'S EVR).
+     *  DcmElement's default implementation does only compare the tag and EVR while
+     *  the derived classes implement the value comparisons by comparing all the
+     *  components that make up the value, preferrably in the order declared in
+     *  the object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
-     *          -1 if either the value of the  first component that does not match
-     *          is lower in the rhs object, or all compared components match
-     *          but the rhs component is shorter.
+     *          -1 if either the value of the first component that does not match
+     *          is lower in this object than in rhs, or all compared components match
+     *          but this object has fewer components than rhs. Also returned if rhs
+     *          cannot be casted to this object type.
      *          1 if either the value of the first component that does not match
-     *          is greater in the rhs object, or all compared components match
-     *          but the rhs component is longer.
+     *          is greater in this object than in rhs object, or all compared
+     *          components match but the this component is longer.
      */
     virtual int compare(const DcmElement& rhs) const =0;
 

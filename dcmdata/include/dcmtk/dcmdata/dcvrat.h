@@ -61,16 +61,19 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
 
     /** comparison operator that compares the normalized value of this object
      *  with a given object of the same type. The tag of the element is also
-     *  considered as the first component that is compared.
+     *  considered as the first component that is compared, followed by the
+     *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
+     *  components of the object, preferrably in the order declared in the
+     *  object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
      *          -1 if either the value of the  first component that does not match
-     *          is lower in the rhs object, or all compared components match
-     *          but the rhs component is shorter. Also returned if rhs cannot be
-     *          casted to DcmAttributeTag.
+     *          is lower in this object than in rhs, or all compared components match
+     *          but this object has fewer components than rhs. Also returned if rhs
+     *          cannot be casted to this object type.
      *          1 if either the value of the first component that does not match
-     *          is greater in the rhs object, or all compared components match
-     *          but the rhs component is longer.
+     *          is greater in this object than in rhs object, or all compared
+     *          components match but the this component is longer.
      */
     virtual int compare(const DcmElement& rhs) const;
 

@@ -71,9 +71,7 @@ int DcmFloatingPointDouble::compare(const DcmElement& rhs) const
     DcmFloatingPointDouble* myThis = NULL;
     DcmFloatingPointDouble* myRhs = NULL;
     myThis = OFconst_cast(DcmFloatingPointDouble*, this);
-    myRhs = OFdynamic_cast(DcmFloatingPointDouble*, OFconst_cast(DcmElement*, &rhs));
-    if (myRhs == NULL)
-        return -1;
+    myRhs = OFstatic_cast(DcmFloatingPointDouble*, OFconst_cast(DcmElement*, &rhs));
 
     /* iterate over all components and test equality */
     unsigned long thisVM = myThis->getVM();

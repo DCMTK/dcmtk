@@ -69,9 +69,7 @@ int DcmAttributeTag::compare(const DcmElement& rhs) const
     DcmAttributeTag* myThis = NULL;
     DcmAttributeTag* myRhs = NULL;
     myThis = OFconst_cast(DcmAttributeTag*, this);
-    myRhs = OFdynamic_cast(DcmAttributeTag*, OFconst_cast(DcmElement*, &rhs));
-    if (myRhs == NULL)
-        return -1;
+    myRhs = OFstatic_cast(DcmAttributeTag*, OFconst_cast(DcmElement*, &rhs));
 
     /* iterate over all components and test equality */
     unsigned long thisVM = myThis->getVM();

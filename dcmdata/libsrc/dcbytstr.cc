@@ -139,9 +139,7 @@ int DcmByteString::compare(const DcmElement& rhs) const
     DcmByteString* myThis = NULL;
     DcmByteString* myRhs = NULL;
     myThis = OFconst_cast(DcmByteString*, this);
-    myRhs = OFdynamic_cast(DcmByteString*, OFconst_cast(DcmElement*, &rhs));
-    if (myRhs == NULL)
-        return -1;
+    myRhs = OFstatic_cast(DcmByteString*, OFconst_cast(DcmElement*, &rhs));
 
     /* iterate over all components and test equality */
     unsigned long thisVM = myThis->getVM();

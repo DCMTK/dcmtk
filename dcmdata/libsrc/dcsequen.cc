@@ -191,9 +191,7 @@ int DcmSequenceOfItems::compare(const DcmElement& rhs) const
     DcmSequenceOfItems* myThis = NULL;
     DcmSequenceOfItems* myRhs = NULL;
     myThis = OFconst_cast(DcmSequenceOfItems*, this);
-    myRhs = OFdynamic_cast(DcmSequenceOfItems*, OFconst_cast(DcmElement*, &rhs));
-    if (myRhs == NULL)
-        return -1;
+    myRhs = OFstatic_cast(DcmSequenceOfItems*, OFconst_cast(DcmElement*, &rhs));
 
     /* iterate over all items and test equality */
     unsigned long thisVM = myThis->card();

@@ -80,10 +80,7 @@ int DcmOtherByteOtherWord::compare(const DcmElement& rhs) const
     DcmOtherByteOtherWord* myThis = NULL;
     DcmOtherByteOtherWord* myRhs = NULL;
     myThis = OFconst_cast(DcmOtherByteOtherWord*, this);
-    myRhs =  OFdynamic_cast(DcmOtherByteOtherWord*, OFconst_cast(DcmElement*, &rhs));
-    if (myRhs == NULL)
-        return -1;
-
+    myRhs =  OFstatic_cast(DcmOtherByteOtherWord*, OFconst_cast(DcmElement*, &rhs));
 
     unsigned long thisLength = myThis->getLength();
     unsigned long rhsLength= myRhs->getLength();

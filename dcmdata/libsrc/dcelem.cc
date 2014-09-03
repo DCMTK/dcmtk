@@ -206,6 +206,9 @@ int DcmElement::compare(const DcmElement& rhs) const
         return -1;
     }
 
+    if ( this->ident() != rhs.ident() )
+        return -1;
+
     return 0;
 }
 
