@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.18 (onken)
+
+- Fixed conversion of color to palette color mode.
+  Affects: dcmimage/libsrc/diquant.cc
+
 **** Changes from 2014.09.03 (onken)
 
 - Make new compare() method more reliable.

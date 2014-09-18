@@ -102,7 +102,7 @@ OFCondition DcmQuant::createPaletteColorImage(
 
     Uint16 *imageData16 = NULL;
     Uint8  *imageData8  = NULL;
-    DcmPolymorphOBOW *pixelData = new DcmPolymorphOBOW(DCM_PixelData);
+    DcmPixelData *pixelData = new DcmPixelData(DCM_PixelData);
     if (pixelData)
     {
        result = pixelData->createUint16Array(totalSize/sizeof(Uint16), imageData16);
