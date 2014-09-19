@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.19 (riesmeier)
+
+- Added support for optional JPEG fill byte:
+  Added support for optional fill byte '0xff' to JPEG decoder. Previously,
+  JPEG-compressed DICOM images containing fill bytes could not be decompressed.
+  Also added output to the logger in case an invalid JPEG marker is found.
+  Affects: dcmjpeg/libsrc/djcodecd.cc
+
 **** Changes from 2014.09.18 (onken)
 
 - Fixed conversion of color to palette color mode.

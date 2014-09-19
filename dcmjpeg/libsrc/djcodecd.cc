@@ -727,6 +727,9 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
       case 0xfffe: // COM
         offset += readUint16(data+offset+2)+2;
         break;
+      case 0xffff: // fill byte 0xff (skip one byte only)
+        offset += 1;
+        break;
       case 0xff01: // TEM
         break;
       default:
@@ -734,7 +737,15 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
         {
           offset += 2;
         }
-        else return 0; // syntax error, stop parsing
+        else
+        {
+          DCMJPEG_ERROR("found invalid marker in JPEG stream while scanning for bit depth: 0x"
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+            << STD_NAMESPACE setw(2) << OFstatic_cast(int, data[offset])
+            << STD_NAMESPACE setw(2) << OFstatic_cast(int, data[offset+1])
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' '));
+          return 0; // syntax error, stop parsing
+        }
         break;
     }
   } // while
