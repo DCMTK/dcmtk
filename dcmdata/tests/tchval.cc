@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2013, OFFIS e.V.
+ *  Copyright (C) 2009-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -251,6 +251,16 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "UI-10", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0\\99", "2") )
   CHECK_GOOD( "UI-11", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0.123.456.789.0.111222333444555666777888999000", "1") )
   CHECK_BAD ( "UI-12", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0.123.456.789.10.111222333444555666777888999000", "1") )
+
+  /* test "Universal Resource Identifier or Universal Resource Locator (URI/URL)" */
+  CHECK_GOOD( "UR-01", DcmUniversalResourceIdentifierOrLocator::checkStringValue("http://www.dcmtk.org/ ") )
+  CHECK_BAD ( "UR-02", DcmUniversalResourceIdentifierOrLocator::checkStringValue(" http://www.dcmtk.org/") )
+  CHECK_BAD ( "UR-03", DcmUniversalResourceIdentifierOrLocator::checkStringValue("http:\\\\www.dcmtk.org") )
+  CHECK_BAD ( "UR-04", DcmUniversalResourceIdentifierOrLocator::checkStringValue("http://localhost/some space") )
+  CHECK_GOOD( "UR-05", DcmUniversalResourceIdentifierOrLocator::checkStringValue("http://localhost/some%20space") )
+  CHECK_GOOD( "UR-06", DcmUniversalResourceIdentifierOrLocator::checkStringValue("foo://example.com:8042/over/there?name=ferret#nose") )
+  CHECK_GOOD( "UR-07", DcmUniversalResourceIdentifierOrLocator::checkStringValue("urn:example:animal:ferret:nose") )
+  CHECK_GOOD( "UR-08", DcmUniversalResourceIdentifierOrLocator::checkStringValue("http://joe:passwd@www.example.net:8080/index.html?action=something&session=A54C6FE2#info") )
 
   /* test "Unlimited Text" */
   OFString hugeString(1024 * 512, 'n');

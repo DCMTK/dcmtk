@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2013, OFFIS e.V.
+ *  Copyright (C) 1997-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,6 +54,7 @@ tm_second                             [0-5][0-9]
 is_positive                           \+?0*(([0-9]{1,9})|(1[0-9]{9})|(20[0-9]{8})|(21[0-3][0-9]{7})|(214[0-6][0-9]{6})|(2147[0-3][0-9]{5})|(21474[0-7][0-9]{4})|(214748[0-2][0-9]{3})|(2147483[0-5][0-9]{2})|(21474836[0-3][0-9])|(214748364[0-7]))
 is_negative                           \-0*(([0-9]{1,9})|(1[0-9]{9})|(20[0-9]{8})|(21[0-3][0-9]{7})|(214[0-6][0-9]{6})|(2147[0-3][0-9]{5})|(21474[0-7][0-9]{4})|(214748[0-2][0-9]{3})|(2147483[0-5][0-9]{2})|(21474836[0-3][0-9])|(214748364[0-8]))
 pn_chars                              {spaces}[\041-\074\076-\133\135\137-\176\240-\377\033][\040-\074\076-\133\135\137-\176\240-\377\033]*
+ur_chars                              [\041-\133\135-\176]+
 /* One of the components must not be empty */
 pn_component_group1                   {pn_chars}(\^)?|{pn_chars}?\^{pn_chars}
 pn_component_group2                   {pn_chars}(\^(\^)?)?|{pn_chars}?\^{pn_component_group1}?
@@ -78,6 +79,7 @@ normalized-pn-old   {pn_chars}
 normalized-lo-sh    {charset_without_control_chars}
 normalized-ae       {default_charset_without_control_chars}
 normalized-lt-st-ut {charset_with_control_chars}
+normalized-ur       {ur_chars}
 
 as       {normalized-as}
 da       {normalized-da}
@@ -96,6 +98,7 @@ pn-old   {normalized-pn-old}{spaces}
 lo-sh    {spaces}{normalized-lo-sh}{spaces}
 ae       {spaces}{normalized-ae}{spaces}
 lt-st-ut {normalized-lt-st-ut}{spaces}
+ur       {normalized-ur}{spaces}
 
 %%
 
@@ -116,6 +119,7 @@ oldpn{pn-old}?(\\{pn-old}?)* {return 15; /* OLD_PN */}
 lo{lo-sh}?(\\{lo-sh}?)*    {return 12; /* LO | SH */}
 ae{ae}?(\\{ae}?)*          {return 13; /* AE */}
 lt{lt-st-ut}               {return 14; /* LT | ST | UT */}
+ur{ur}                     {return 19; /* UR */}
                            /* . doesn't match \n, this needs a special case! */
 \n                         |
 .                          {return 16; /* UNKNOWN */;}

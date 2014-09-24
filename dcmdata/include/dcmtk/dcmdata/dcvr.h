@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,23 +28,33 @@
 
 /** Global flag to enable/disable the generation of VR=UN, which has been
  *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=OB is used instead.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnknownVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=UT, which has been
  *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=OB is used instead.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=OF, which has been
  *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=OB is used instead.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=OD, which has been
  *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=OB is used instead.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=UR, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=UT (if enabled) or alternatively VR=OB is used.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the automatic re-conversion of defined
  *  length UN elements read in an explicit VR transfer syntax, if the real
@@ -133,6 +143,9 @@ enum DcmEVR
 
     /// unsigned long
     EVR_UL,
+
+    /// universal resource identifier or universal resource locator (URI/URL)
+    EVR_UR,
 
     /// unsigned short
     EVR_US,

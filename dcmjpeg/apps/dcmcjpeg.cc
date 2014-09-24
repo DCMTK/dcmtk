@@ -564,6 +564,7 @@ int main(int argc, char *argv[])
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
         dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
         dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
@@ -571,6 +572,7 @@ int main(int argc, char *argv[])
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
         dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
         dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 

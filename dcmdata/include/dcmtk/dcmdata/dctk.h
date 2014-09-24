@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,6 +66,7 @@
 #include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcvrur.h"
 
 // element classes for string management (8-bit and/or 16-bit in later extensions)
 #include "dcmtk/dcmdata/dcchrstr.h"
@@ -91,6 +92,7 @@
 #include "dcmtk/dcmdata/dcvrfl.h"
 #include "dcmtk/dcmdata/dcvrfd.h"
 #include "dcmtk/dcmdata/dcvrof.h"
+#include "dcmtk/dcmdata/dcvrod.h"
 
 // misc supporting tools
 #include "dcmtk/dcmdata/cmdlnarg.h"

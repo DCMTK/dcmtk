@@ -292,6 +292,7 @@ int main(int argc, char *argv[])
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
       dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
     }
 
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */

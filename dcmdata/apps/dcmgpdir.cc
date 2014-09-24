@@ -458,6 +458,7 @@ DCMTK_MAIN_FUNCTION
             dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
             dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
             dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+            dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
         }
         if (cmd.findOption("--disable-new-vr"))
         {
@@ -465,6 +466,7 @@ DCMTK_MAIN_FUNCTION
             dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
             dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
             dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+            dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
         }
         cmd.endOptionBlock();
 

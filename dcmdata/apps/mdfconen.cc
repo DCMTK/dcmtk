@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2013, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -336,6 +336,7 @@ void MdfConsoleEngine::parseNonJobOptions()
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
         dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
         dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
     }
     if (cmd->findOption("--disable-new-vr"))
     {
@@ -343,6 +344,7 @@ void MdfConsoleEngine::parseNonJobOptions()
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
         dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
         dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
     }
     cmd->endOptionBlock();
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2013, OFFIS e.V.
+ *  Copyright (C) 2007-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -235,6 +235,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
         dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
         dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
@@ -242,6 +243,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
         dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
         dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 

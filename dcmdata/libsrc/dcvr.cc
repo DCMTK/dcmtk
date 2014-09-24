@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@ OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
 
 /*
@@ -85,6 +86,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_TM, "TM", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
     { EVR_UI, "UI", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_UR, "UR", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_US, "US", sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
     { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
@@ -268,6 +270,19 @@ DcmVR::getValidEVR() const
             {
                 DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"OD\" replaced by \"OB\" since support is disabled");
                 evr = EVR_OB; /* handle OD as if OB */
+            }
+            break;
+        case EVR_UR:
+            if (!dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.get())
+            {
+                if (dcmEnableUnlimitedTextVRGeneration.get())
+                {
+                    DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UR\" replaced by \"UT\" since support is disabled");
+                    evr = EVR_UT; /* handle UR as if UT */
+                } else {
+                    DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UR\" replaced by \"OB\" since support is disabled");
+                    evr = EVR_OB; /* handle OF as if OB */
+                }
             }
             break;
         default:

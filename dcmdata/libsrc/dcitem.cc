@@ -63,6 +63,7 @@
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrul.h"
 #include "dcmtk/dcmdata/dcvrulup.h"
+#include "dcmtk/dcmdata/dcvrur.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcvrut.h"
 #include "dcmtk/dcmdata/dcxfer.h"
@@ -2244,6 +2245,9 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_UI :
             newElement = new DcmUniqueIdentifier(tag, length);
             break;
+        case EVR_UR:
+            newElement = new DcmUniversalResourceIdentifierOrLocator(tag, length);
+            break;
 
         // character strings:
         case EVR_LO :
@@ -3343,6 +3347,9 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_UL:
             elem = new DcmUnsignedLong(tag);
             break;
+        case EVR_UR:
+            elem = new DcmUniversalResourceIdentifierOrLocator(tag);
+            break;
         case EVR_US:
             elem = new DcmUnsignedShort(tag);
             break;
@@ -3419,6 +3426,9 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
             break;
         case EVR_UI:
             elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_UR:
+            elem = new DcmUniversalResourceIdentifierOrLocator(tag);
             break;
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
@@ -3959,6 +3969,9 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
             break;
         case EVR_UL:
             elem = new DcmUnsignedLong(tag);
+            break;
+        case EVR_UR:
+            elem = new DcmUniversalResourceIdentifierOrLocator(tag);
             break;
         case EVR_US:
             elem = new DcmUnsignedShort(tag);

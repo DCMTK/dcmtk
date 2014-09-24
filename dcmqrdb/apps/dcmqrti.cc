@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2013, OFFIS e.V.
+ *  Copyright (C) 1993-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -225,12 +225,13 @@ int main( int argc, char *argv[] )
       conf.setBlockMode(DIMSE_NONBLOCKING, OFstatic_cast(int, opt_timeout));
     }
 
-    if( cmd.findOption("--disable-new-vr") )
+    if (cmd.findOption("--disable-new-vr"))
     {
-      dcmEnableUnknownVRGeneration.set( OFFalse );
-      dcmEnableUnlimitedTextVRGeneration.set( OFFalse );
-      dcmEnableOtherFloatStringVRGeneration.set( OFFalse );
-      dcmEnableOtherDoubleStringVRGeneration.set( OFFalse );
+      dcmEnableUnknownVRGeneration.set(OFFalse);
+      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
     }
 
     if (cmd.findOption("--remote", 0, OFCommandLine::FOM_First))

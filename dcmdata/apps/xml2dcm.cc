@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2013, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -299,7 +299,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                 OFLOG_ERROR(xml2dcmLogger, "filename for element " << element->getTag() << " is missing, empty element inserted");
         } else {
             OFString dicomVal;
-            /* convert character set from UTF8 (for specific VRs only) */
+            /* convert character set from UTF-8 (for specific VRs only) */
             if (((dcmEVR == EVR_PN) || (dcmEVR == EVR_SH) || (dcmEVR == EVR_LO) ||
                  (dcmEVR == EVR_ST) || (dcmEVR == EVR_LT) || (dcmEVR == EVR_UT)) &&
                 (xmlStrlen(elemVal) > 0) && convertUtf8ToCharset(elemVal, dicomVal))
@@ -830,6 +830,7 @@ int main(int argc, char *argv[])
             dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
             dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
             dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+            dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
         }
         if (cmd.findOption("--disable-new-vr"))
         {
@@ -837,6 +838,7 @@ int main(int argc, char *argv[])
             dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
             dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
             dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+            dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
         }
         cmd.endOptionBlock();
 
