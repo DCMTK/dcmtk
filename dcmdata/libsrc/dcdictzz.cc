@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-07-02 10:14:12
+**   Date: 2014-09-24 18:16:07
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-07-02 10:14:12";
+const char* dcmBuiltinDictBuildDate = "2014-09-24 18:16:07";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -822,7 +822,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1190, 0x0008, 0x1190,
-      EVR_UT, "RetrieveURL", 1, 1, "DICOM",
+      EVR_UR, "RetrieveURL", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1195, 0x0008, 0x1195,
@@ -14890,7 +14890,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x7fe0, 0x0028, 0x7fe0,
-      EVR_UT, "PixelDataProviderURL", 1, 1, "DICOM",
+      EVR_UR, "PixelDataProviderURL", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x9001, 0x0028, 0x9001,
@@ -18160,7 +18160,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xe010, 0x0040, 0xe010,
-      EVR_UT, "RetrieveURI", 1, 1, "DICOM",
+      EVR_UR, "RetrieveURI", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xe011, 0x0040, 0xe011,
@@ -20551,6 +20551,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "RecommendedLineThickness", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0066, 0x0040, 0x0066, 0x0040,
+      EVR_UL, "LongPrimitivePointIndexList", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0041, 0x0066, 0x0041,
+      EVR_UL, "LongTrianglePointIndexList", 3, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0042, 0x0066, 0x0042,
+      EVR_UL, "LongEdgePointIndexList", 2, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0043, 0x0066, 0x0043,
+      EVR_UL, "LongVertexPointIndexList", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0068, 0x6210, 0x0068, 0x6210,
       EVR_LO, "ImplantSize", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -21712,7 +21728,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x100a, 0x0074, 0x100a,
-      EVR_ST, "ContactURI", 1, 1, "DICOM",
+      EVR_UR, "ContactURI", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x100c, 0x0074, 0x100c,

@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2014a and PS 3.7-2014a
-# File created on 2014-07-01 13:20:51 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2014b and PS 3.7-2014b
+# File created on 2014-09-18 12:24:36 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
@@ -194,7 +194,7 @@
 (0008,1163)	FD	TimeRange	2	DICOM
 (0008,1164)	SQ	FrameExtractionSequence	1	DICOM
 (0008,1167)	UI	MultiFrameSourceSOPInstanceUID	1	DICOM
-(0008,1190)	UT	RetrieveURL	1	DICOM
+(0008,1190)	UR	RetrieveURL	1	DICOM
 (0008,1195)	UI	TransactionUID	1	DICOM
 (0008,1196)	US	WarningReason	1	DICOM
 (0008,1197)	US	FailureReason	1	DICOM
@@ -1636,7 +1636,7 @@
 (0028,702C)	SQ	TestPatternCodeSequence	1	DICOM
 (0028,702D)	SQ	MeasurementPatternCodeSequence	1	DICOM
 (0028,702E)	SQ	VisualEvaluationMethodCodeSequence	1	DICOM
-(0028,7FE0)	UT	PixelDataProviderURL	1	DICOM
+(0028,7FE0)	UR	PixelDataProviderURL	1	DICOM
 (0028,9001)	UL	DataPointRows	1	DICOM
 (0028,9002)	UL	DataPointColumns	1	DICOM
 (0028,9003)	CS	SignalDomainColumns	1	DICOM
@@ -1933,7 +1933,7 @@
 (0040,E004)	DT	HL7DocumentEffectiveTime	1	DICOM
 (0040,E006)	SQ	HL7DocumentTypeCodeSequence	1	DICOM
 (0040,E008)	SQ	DocumentClassCodeSequence	1	DICOM
-(0040,E010)	UT	RetrieveURI	1	DICOM
+(0040,E010)	UR	RetrieveURI	1	DICOM
 (0040,E011)	UI	RetrieveLocationUID	1	DICOM
 (0040,E020)	CS	TypeOfInstances	1	DICOM
 (0040,E021)	SQ	DICOMRetrievalSequence	1	DICOM
@@ -2271,6 +2271,10 @@
 (0066,0036)	LO	AlgorithmName	1	DICOM
 (0066,0037)	FL	RecommendedPointRadius	1	DICOM
 (0066,0038)	FL	RecommendedLineThickness	1	DICOM
+(0066,0040)	UL	LongPrimitivePointIndexList	1-n	DICOM
+(0066,0041)	UL	LongTrianglePointIndexList	3-3n	DICOM
+(0066,0042)	UL	LongEdgePointIndexList	2-2n	DICOM
+(0066,0043)	UL	LongVertexPointIndexList	1-n	DICOM
 (0068,6210)	LO	ImplantSize	1	DICOM
 (0068,6221)	LO	ImplantTemplateVersion	1	DICOM
 (0068,6222)	SQ	ReplacedImplantTemplateSequence	1	DICOM
@@ -2557,7 +2561,7 @@
 (0074,1004)	DS	ProcedureStepProgress	1	DICOM
 (0074,1006)	ST	ProcedureStepProgressDescription	1	DICOM
 (0074,1008)	SQ	ProcedureStepCommunicationsURISequence	1	DICOM
-(0074,100A)	ST	ContactURI	1	DICOM
+(0074,100A)	UR	ContactURI	1	DICOM
 (0074,100C)	LO	ContactDisplayName	1	DICOM
 (0074,100E)	SQ	ProcedureStepDiscontinuationReasonCodeSequence	1	DICOM
 (0074,1020)	SQ	BeamTaskSequence	1	DICOM

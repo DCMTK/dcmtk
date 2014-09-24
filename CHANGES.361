@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.09.24 (riesmeier)
 
+- Updated data dictionary for DICOM 2014b edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2014-09-18. Please note that the VR of some existing
+  attributes changed from ST or UT to the new VR "UR", which has been added
+  specifically for Universal Resource Identifiers/Locators (URI/URL).
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for new value representation "UR":
   Added support for new value representation "Universal Resource Identifier or
   Universal Resource Locator (URI/URL)" (UR) that has been introduced only
