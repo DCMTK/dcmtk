@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.24 (riesmeier)
+
+- Removed misleading comment from checkStringValue():
+  Removed misleading comment on possibly "multiple values" to be checked from
+  checkStringValue() method.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrlt.h
+           dcmdata/include/dcmtk/dcmdata/dcvrst.h
+           dcmdata/include/dcmtk/dcmdata/dcvrut.h
+
 **** Changes from 2014.09.19 (riesmeier)
 
 - Added support for optional JPEG fill byte:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,7 +121,7 @@ class DCMTK_DCMDATA_EXPORT DcmShortText
     /* --- static helper functions --- */
 
     /** check whether given string value conforms to the VR "ST" (Short Text)
-     *  @param value string value to be checked (possibly multi-valued)
+     *  @param value string value to be checked
      *  @param charset character set (according to the value of the SpecificCharacterSet
      *    element) to be used for checking the string value. The default is ASCII (7-bit).
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
