@@ -110,7 +110,7 @@ class DCMTK_DCMDATA_EXPORT DcmShortText
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
-    /** get the string value (all compenents)
+    /** get the string value (all components)
      *  @param stringVal string variable in which the result value is stored
      *  @param normalize remove trailing spaces if OFTrue
      *  @return status, EC_Normal if successful, an error code otherwise

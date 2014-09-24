@@ -16,7 +16,6 @@
  *  Author:  Andrew Hewett
  *
  *  Purpose: Interface of class DcmUnlimitedText
- *           Value Representation UT is defined in Correction Proposal 101
  *
  */
 
@@ -50,7 +49,8 @@ class DCMTK_DCMDATA_EXPORT DcmUnlimitedText
      */
     DcmUnlimitedText(const DcmUnlimitedText &old);
 
-    /// destructor
+    /** destructor
+     */
     virtual ~DcmUnlimitedText();
 
     /** copy assignment operator
@@ -80,11 +80,8 @@ class DCMTK_DCMDATA_EXPORT DcmUnlimitedText
      */
     virtual OFCondition copyFrom(const DcmObject& rhs);
 
-    /** return identifier for this class. Every class derived from this class
-     *  returns a unique value of type enum DcmEVR for this call. This is used
-     *  as a "poor man's RTTI" to correctly identify instances derived from
-     *  this class even on compilers not supporting RTTI.
-     *  @return type identifier of this class
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_UT)
      */
     virtual DcmEVR ident() const;
 
@@ -103,17 +100,17 @@ class DCMTK_DCMDATA_EXPORT DcmUnlimitedText
      */
     virtual unsigned long getVM();
 
-    /** get a particular components of the string value
-     *  @param stringVal string variable in which the result value is stored
-     *  @param pos not used since value multiplicity is always 1
-     *  @param normalize remove trailing spaces if OFTrue
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
-    /** get the string value (all compenents)
+    /** get the string value (all components)
      *  @param stringVal string variable in which the result value is stored
      *  @param normalize remove trailing spaces if OFTrue
      *  @return status, EC_Normal if successful, an error code otherwise

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2013, OFFIS e.V.
+ *  Copyright (C) 1998-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -16,7 +16,6 @@
  *  Author:  Andrew Hewett
  *
  *  Purpose: Implementation of class DcmUnlimitedText
- *           Value Representation UT is defined in Correction Proposal 101
  *
  */
 
@@ -116,7 +115,6 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 {
     /* get string value without handling the "\" as a delimiter */
     OFCondition l_error = getStringValue(strValue);
-    // leading spaces are significant and backslash is normal character
     if (l_error.good() && normalize)
         normalizeString(strValue, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
