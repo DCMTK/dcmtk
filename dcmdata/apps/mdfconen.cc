@@ -331,21 +331,9 @@ void MdfConsoleEngine::parseNonJobOptions()
 
     cmd->beginOptionBlock();
     if (cmd->findOption("--enable-new-vr"))
-    {
-        dcmEnableUnknownVRGeneration.set(OFTrue);
-        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-        dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
-        dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
-        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
-    }
+        dcmEnableGenerationOfNewVRs();
     if (cmd->findOption("--disable-new-vr"))
-    {
-        dcmEnableUnknownVRGeneration.set(OFFalse);
-        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-        dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-        dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
-    }
+        dcmDisableGenerationOfNewVRs();
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();

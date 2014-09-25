@@ -415,11 +415,7 @@ int main(int argc, char *argv[])
 
       OFLog::configureFromCommandLine(cmd, app);
 
-      dcmEnableUnknownVRGeneration.set(OFTrue);
-      dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-      dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
-      dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
-      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
+      dcmEnableGenerationOfNewVRs();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--generate"))

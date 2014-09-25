@@ -62,6 +62,20 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUniversalResourceIdentifie
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnknownVRConversion; /* default OFFalse */
 
+
+/** Global function that enables the generation of "new" value representations,
+ *  i.e. the ones that have been introduced after the first edition of the DICOM
+ *  standard (1993). See above dcmEnableXXXVRGeneration() flags for details.
+ */
+DCMTK_DCMDATA_EXPORT void dcmEnableGenerationOfNewVRs();
+
+/** Global function that disables the generation of "new" value representations,
+ *  i.e. the ones that have been introduced after the first edition of the DICOM
+ *  standard (1993). See above dcmEnableXXXVRGeneration() flags for details.
+ */
+DCMTK_DCMDATA_EXPORT void dcmDisableGenerationOfNewVRs();
+
+
 /*
 ** VR Enumerations.
 ** NB: The order of entries has to conform to the order in DcmVRDict (see dcmvr.cc)!

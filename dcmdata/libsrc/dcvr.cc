@@ -30,14 +30,36 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 /*
- * global flags
- */
+** global flags
+*/
 OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
+
+/*
+** global functions
+*/
+void dcmEnableGenerationOfNewVRs()
+{
+    dcmEnableUnknownVRGeneration.set(OFTrue);
+    dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
+    dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
+    dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+    dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
+}
+
+void dcmDisableGenerationOfNewVRs()
+{
+    dcmEnableUnknownVRGeneration.set(OFFalse);
+    dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+    dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
+    dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+    dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
+}
+
 
 /*
 ** VR property table

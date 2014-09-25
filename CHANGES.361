@@ -1,6 +1,43 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.25 (riesmeier)
+
+- Added functions to enable/disable post-1993 VRs:
+  Added global functions that allow for enabling and disabling the value
+  representations (VRs) that have been introduced after the first edition of
+  the DICOM standard (1993) with a single call. These new functions make it
+  easier to maintain the various command line tools that use the corresponding
+  global flags, e.g. dcmEnableUnlimitedTextVRGeneration.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libsrc/dcvr.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmwlm/apps/wlcefs.cc
+
 **** Changes from 2014.09.24 (riesmeier)
 
 - Updated data dictionary for DICOM 2014b edition:

@@ -379,22 +379,8 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       // output options
       // post-1993 value representations
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr"))
-      {
-        dcmEnableUnknownVRGeneration.set(OFTrue);
-        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-        dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
-        dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
-        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
-      }
-      if (cmd.findOption("--disable-new-vr"))
-      {
-        dcmEnableUnknownVRGeneration.set(OFFalse);
-        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-        dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-        dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
-      }
+      if (cmd.findOption("--enable-new-vr")) dcmEnableGenerationOfNewVRs();
+      if (cmd.findOption("--disable-new-vr")) dcmDisableGenerationOfNewVRs();
       cmd.endOptionBlock();
 
       // group length encoding

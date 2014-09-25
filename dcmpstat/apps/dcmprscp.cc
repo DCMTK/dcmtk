@@ -288,11 +288,7 @@ int main(int argc, char *argv[])
 
     if (targetDisableNewVRs)
     {
-      dcmEnableUnknownVRGeneration.set(OFFalse);
-      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
+      dcmDisableGenerationOfNewVRs();
     }
 
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */

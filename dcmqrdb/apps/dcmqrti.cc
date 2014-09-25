@@ -193,8 +193,8 @@ int main( int argc, char *argv[] )
     const char *myAE = NULL;
     if( cmd.findOption("--aetitle") )
     {
-        app.checkValue( cmd.getValue( myAE ) );
-        conf.setAETitle(myAE);
+      app.checkValue( cmd.getValue( myAE ) );
+      conf.setAETitle(myAE);
     }
     if( cmd.findOption("--max-pdu") )
     {
@@ -227,11 +227,7 @@ int main( int argc, char *argv[] )
 
     if (cmd.findOption("--disable-new-vr"))
     {
-      dcmEnableUnknownVRGeneration.set(OFFalse);
-      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
+      dcmDisableGenerationOfNewVRs();
     }
 
     if (cmd.findOption("--remote", 0, OFCommandLine::FOM_First))

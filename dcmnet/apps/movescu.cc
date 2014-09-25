@@ -612,20 +612,12 @@ main(int argc, char *argv[])
       if (cmd.findOption("--enable-new-vr"))
       {
         app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
-        dcmEnableUnknownVRGeneration.set(OFTrue);
-        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-        dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
-        dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
-        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
+        dcmEnableGenerationOfNewVRs();
       }
       if (cmd.findOption("--disable-new-vr"))
       {
         app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
-        dcmEnableUnknownVRGeneration.set(OFFalse);
-        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-        dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-        dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-        dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
+        dcmDisableGenerationOfNewVRs();
       }
       cmd.endOptionBlock();
 

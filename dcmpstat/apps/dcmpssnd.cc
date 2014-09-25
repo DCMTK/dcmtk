@@ -562,11 +562,7 @@ int main(int argc, char *argv[])
 
     if (targetDisableNewVRs)
     {
-      dcmEnableUnknownVRGeneration.set(OFFalse);
-      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
+        dcmDisableGenerationOfNewVRs();
     }
 
     OFOStringStream verboseParameters;

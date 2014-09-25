@@ -260,22 +260,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #endif
 
     cmd->beginOptionBlock();
-    if( cmd->findOption("--enable-new-vr") )
-    {
-      dcmEnableUnknownVRGeneration.set(OFTrue);
-      dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-      dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
-      dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
-      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
-    }
-    if( cmd->findOption("--disable-new-vr") )
-    {
-      dcmEnableUnknownVRGeneration.set(OFFalse);
-      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-      dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-      dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
-      dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
-    }
+    if (cmd->findOption("--enable-new-vr")) dcmEnableGenerationOfNewVRs();
+    if (cmd->findOption("--disable-new-vr")) dcmDisableGenerationOfNewVRs();
     cmd->endOptionBlock();
 
 #ifdef WITH_ZLIB
