@@ -34,25 +34,26 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnknownVRGeneration; /* de
 
 /** Global flag to enable/disable the generation of VR=UT, which has been
  *  introduced after the first edition of the DICOM standard (1993).
- *  If disabled, the VR=OB is used instead.
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=OF, which has been
  *  introduced after the first edition of the DICOM standard (1993).
- *  If disabled, the VR=OB is used instead.
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=OD, which has been
  *  introduced after the first edition of the DICOM standard (1993).
- *  If disabled, the VR=OB is used instead.
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=UR, which has been
  *  introduced after the first edition of the DICOM standard (1993).
- *  If disabled, the VR=UT (if enabled) or alternatively VR=OB is used.
+ *  If disabled, the VR=UT (if enabled), VR=UN (if enabled) or alternatively
+ *  VR=OB is used.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration; /* default OFTrue */
 

@@ -265,51 +265,58 @@ DcmVR::getValidEVR() const
     ** If the generation of post-1993 VRs is not globally enabled then use OB instead.
     ** We may not want to generate these "new" VRs if other software cannot handle it.
     */
+    DcmEVR oldVR = evr;
     switch (evr) {
         case EVR_UN:
             if (!dcmEnableUnknownVRGeneration.get())
-            {
-                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UN\" replaced by \"OB\" since support is disabled");
                 evr = EVR_OB; /* handle UN as if OB */
-            }
             break;
         case EVR_UT:
             if (!dcmEnableUnlimitedTextVRGeneration.get())
             {
-                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UT\" replaced by \"OB\" since support is disabled");
-                evr = EVR_OB; /* handle UT as if OB */
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle UT as if UN */
+                else
+                    evr = EVR_OB; /* handle UT as if OB */
             }
             break;
         case EVR_OF:
             if (!dcmEnableOtherFloatStringVRGeneration.get())
             {
-                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"OF\" replaced by \"OB\" since support is disabled");
-                evr = EVR_OB; /* handle OF as if OB */
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle OF as if UN */
+                else
+                    evr = EVR_OB; /* handle OF as if OB */
             }
             break;
         case EVR_OD:
             if (!dcmEnableOtherDoubleStringVRGeneration.get())
             {
-                DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"OD\" replaced by \"OB\" since support is disabled");
-                evr = EVR_OB; /* handle OD as if OB */
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle OD as if UN */
+                else
+                    evr = EVR_OB; /* handle OD as if OB */
             }
             break;
         case EVR_UR:
             if (!dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.get())
             {
                 if (dcmEnableUnlimitedTextVRGeneration.get())
-                {
-                    DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UR\" replaced by \"UT\" since support is disabled");
                     evr = EVR_UT; /* handle UR as if UT */
-                } else {
-                    DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"UR\" replaced by \"OB\" since support is disabled");
-                    evr = EVR_OB; /* handle OF as if OB */
-                }
+                else if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle UR as if UN */
+                else
+                    evr = EVR_OB; /* handle UR as if OB */
             }
             break;
         default:
             /* in all other cases, do nothing */
             break;
+    }
+    if (oldVR != evr)
+    {
+        DCMDATA_TRACE("DcmVR::getValidEVR() VR=\"" << DcmVR(oldVR).getVRName()
+            << "\" replaced by \"" << DcmVR(evr).getVRName() << "\" since support is disabled");
     }
 
     return evr;
