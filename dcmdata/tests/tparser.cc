@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -432,7 +432,7 @@ static void testExplicitVRinDataset(OFBool useDictionaryVR, OFBool useDictionary
     testForExpectedVR(dset, wrongExplicitVRinDataset_unknownTag2, EVR_UT);
     testForExpectedVR(dset, DCM_PatientName, useDictionaryVR ? EVR_PN : EVR_ST);
     testForExpectedVR(dset, DCM_PatientBirthName, useDictionaryVR ? EVR_PN : EVR_UN);
-    testForExpectedVR(dset, DCM_PixelDataProviderURL, useDictionaryVR ? EVR_UT : EVR_LO);
+    testForExpectedVR(dset, DCM_PixelDataProviderURL, useDictionaryVR ? EVR_UR : EVR_LO);
 }
 
 OFTEST(dcmdata_parser_wrongExplicitVRinDataset_default)

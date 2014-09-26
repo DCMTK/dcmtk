@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.26 (riesmeier)
+
+- Use new VR "UR" for Pixel Data Provider URL:
+  Use new VR "UR" (instead of "UT") for the Pixel Data Provider URL (0028,7fe0)
+  element because otherwise two test cases of the dcmdata module fail. This is
+  because the VR of this attribute changed with CP-1324 (see commit 79c499a).
+  Affects: dcmdata/tests/tparser.cc
+
 **** Changes from 2014.09.25 (riesmeier)
 
 - Enhanced rewriting rules in DcmVR::getValidEVR():
