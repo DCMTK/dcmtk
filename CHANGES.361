@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.09.30 (schlamelcher)
+
+- Fixed a bug in dcmdata:
+  Refactoring dcmdata to use unsigned types where possible caused problems
+  for some index comparisons. Solved by using iterators instead of indexed
+  access.
+  Affects: dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcuid.cc
+
 **** Changes from 2014.09.26 (riesmeier)
 
 - Use new VR "UR" for Pixel Data Provider URL:

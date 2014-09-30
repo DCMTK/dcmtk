@@ -1669,13 +1669,13 @@ initCounterOfCurrentUID()
 static char*
 stripTrailing(char* s, char c)
 {
-    size_t i, n;
-
     if (s == NULL) return s;
-
-    n = strlen(s);
-    for (i = n - 1; (i >= 0) && (s[i] == c); i--)
-        s[i] = '\0';
+    for
+    (
+        char* it = s + strlen(s) - 1;
+        it >= s && *it == c;
+        *it-- = '\0'
+    );
     return s;
 }
 

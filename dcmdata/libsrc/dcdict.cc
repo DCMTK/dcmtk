@@ -149,13 +149,13 @@ stripWhitespace(char* s)
 static char*
 stripTrailingWhitespace(char* s)
 {
-    size_t i, n;
-
     if (s == NULL) return s;
-
-    n = strlen(s);
-    for (i = n - 1; i >= 0 && isspace(OFstatic_cast(unsigned char, s[i])); i--)
-        s[i] = '\0';
+    for
+    (
+        char* it = s + strlen(s) - 1;
+        it >= s && isspace(OFstatic_cast(unsigned char, *it));
+        *it-- = '\0'
+    );
     return s;
 }
 
