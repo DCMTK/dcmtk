@@ -73,7 +73,7 @@ OFCondition DcmBaseSCPPool::listen()
     T_ASC_Association *assoc = NULL;
     // Listen to a socket for timeout seconds for an association request, accepts TCP connection.
     cond = ASC_receiveAssociation( network, &assoc, m_cfg.getMaxReceivePDULength(), NULL, NULL, OFFalse,
-        m_cfg.getConnectionBlockingMode(), OFstatic_cast(int, m_cfg.getConnnectionTimeout()) );
+        m_cfg.getConnectionBlockingMode(), OFstatic_cast(int, m_cfg.getConnectionTimeout()) );
 
     /* If we have a connection request, try to find/create a worker to handle it */
     if (cond.good())

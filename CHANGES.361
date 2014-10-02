@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.02 (riesmeier)
+
+- Fixed typo in method name:
+  Renamed method getConnnectionTimeout() to getConnectionTimeout().
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scpcfg.cc
+           dcmnet/libsrc/scppool.cc
+
 **** Changes from 2014.09.30 (schlamelcher)
 
 - Fixed a bug in dcmdata:

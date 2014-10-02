@@ -309,7 +309,7 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network *network)
   if (m_assoc != NULL)
     return DIMSE_ILLEGALASSOCIATION;
 
-  Uint32 timeout = m_cfg->getConnnectionTimeout();
+  Uint32 timeout = m_cfg->getConnectionTimeout();
 
   // Listen to a socket for timeout seconds and wait for an association request
   OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_cfg->getMaxReceivePDULength(), NULL, NULL, OFFalse,
@@ -1783,9 +1783,9 @@ Uint32 DcmSCP::getDIMSETimeout() const
 
 // ----------------------------------------------------------------------------
 
-Uint32 DcmSCP::getConnnectionTimeout() const
+Uint32 DcmSCP::getConnectionTimeout() const
 {
-  return m_cfg->getConnnectionTimeout();
+  return m_cfg->getConnectionTimeout();
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -256,7 +256,7 @@ Uint32 DcmSCPConfig::getDIMSETimeout() const
 
 // ----------------------------------------------------------------------------
 
-Uint32 DcmSCPConfig::getConnnectionTimeout() const
+Uint32 DcmSCPConfig::getConnectionTimeout() const
 {
   return m_connectionTimeout;
 }

@@ -333,7 +333,7 @@ public:
   /** Returns connection timeout
    *  @return TCP/IP connection timeout in seconds
    */
-  Uint32 getConnnectionTimeout() const;
+  Uint32 getConnectionTimeout() const;
 
   /** Returns the verbose presentation context mode configured specifying whether details on
    *  the presentation contexts (negotiated during association setup) should be shown in
