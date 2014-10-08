@@ -544,36 +544,15 @@ public:
     }
 
     // comparison operator overloads, see expression itself for details
-    friend bool operator==( const OFoptional& lhs, OFnullopt_t )
-    {
-        return !lhs;
-    }
-
     friend bool operator==( OFnullopt_t, const OFoptional& rhs )
     {
         return !rhs;
     }
 
-    friend bool operator==( const OFoptional& lhs, const OFoptional& rhs )
-    {
-        return ( !lhs && !rhs ) || ( lhs.state() == rhs.state() && *lhs == *rhs );
-    }
-
     template<typename X>
-    friend bool operator==( const OFoptional& lhs, const X& rhs )
-    {
-        return lhs.state() && *lhs == rhs;
-    }
-
-    template<typename X>
-    friend bool operator==(  const X& lhs, const OFoptional& rhs )
+    friend bool operator==( const X& lhs, const OFoptional& rhs )
     {
         return rhs.state() && lhs == *rhs;
-    }
-
-    friend bool operator!=( const OFoptional& lhs, OFnullopt_t )
-    {
-        return lhs.state();
     }
 
     friend bool operator!=( OFnullopt_t, const OFoptional& rhs )
@@ -581,42 +560,15 @@ public:
         return rhs.state();
     }
 
-    friend bool operator!=( const OFoptional& lhs, const OFoptional& rhs )
-    {
-        return lhs.state() != rhs.state() || ( lhs.state() && *lhs != *rhs );
-    }
-
     template<typename X>
-    friend bool operator!=( const OFoptional& lhs, const X& rhs )
+    friend bool operator!=( const X& lhs, const OFoptional& rhs )
     {
-        return !lhs || *lhs != rhs;
-    }
-
-    template<typename X>
-    friend bool operator!=(  const X& lhs, const OFoptional& rhs )
-    {
-        return !rhs || lhs == *rhs;
-    }
-
-    friend bool operator<( const OFoptional& lhs, OFnullopt_t )
-    {
-        return OFFalse;
+        return !rhs || lhs != *rhs;
     }
 
     friend bool operator<( OFnullopt_t, const OFoptional& rhs )
     {
         return rhs.state();
-    }
-
-    friend bool operator<( const OFoptional& lhs, const OFoptional& rhs )
-    {
-        return lhs.state() < rhs.state() || ( rhs.state() && *lhs < *rhs );
-    }
-
-    template<typename X>
-    friend bool operator<( const OFoptional& lhs, const X& rhs )
-    {
-        return !lhs || *lhs < rhs;
     }
 
     template<typename X>
@@ -625,25 +577,9 @@ public:
         return rhs.state() && lhs < *rhs;
     }
 
-    friend bool operator>( const OFoptional& lhs, OFnullopt_t )
-    {
-        return lhs.state();
-    }
-
     friend bool operator>( OFnullopt_t, const OFoptional& rhs )
     {
         return OFFalse;
-    }
-
-    friend bool operator>( const OFoptional& lhs, const OFoptional& rhs )
-    {
-        return lhs.state() > rhs.state() || ( lhs.state() && *lhs > *rhs );
-    }
-
-    template<typename X>
-    friend bool operator>( const OFoptional& lhs, const X& rhs )
-    {
-        return lhs.state() && *lhs > rhs;
     }
 
     template<typename X>
@@ -652,25 +588,9 @@ public:
         return !rhs || lhs > *rhs;
     }
 
-    friend bool operator<=( const OFoptional& lhs, OFnullopt_t )
-    {
-        return !lhs;
-    }
-
     friend bool operator<=( OFnullopt_t, const OFoptional& rhs )
     {
         return OFTrue;
-    }
-
-    friend bool operator<=( const OFoptional& lhs, const OFoptional& rhs )
-    {
-        return !lhs || ( rhs.state() && *lhs <= *rhs );
-    }
-
-    template<typename X>
-    friend bool operator<=( const OFoptional& lhs, const X& rhs )
-    {
-        return !lhs || *lhs <= rhs;
     }
 
     template<typename X>
@@ -679,31 +599,111 @@ public:
         return rhs.state() && lhs <= *rhs;
     }
 
-    friend bool operator>=( const OFoptional& lhs, OFnullopt_t )
-    {
-        return OFTrue;
-    }
-
     friend bool operator>=( OFnullopt_t, const OFoptional& rhs )
     {
         return !rhs;
-    }
-
-    friend bool operator>=( const OFoptional& lhs, const OFoptional& rhs )
-    {
-        return !rhs || ( lhs.state() && *lhs >= *rhs );
-    }
-
-    template<typename X>
-    friend bool operator>=( const OFoptional& lhs, const X& rhs )
-    {
-        return lhs.state() && *lhs >= rhs;
     }
 
     template<typename X>
     friend bool operator>=( const X& lhs, const OFoptional& rhs )
     {
         return !rhs || lhs >= *rhs;
+    }
+
+    bool operator==( OFnullopt_t )
+    {
+        return !*this;
+    }
+
+    bool operator==( const OFoptional& rhs )
+    {
+        return ( !*this && !rhs ) || ( OFoptional_traits<T>::state() == rhs.state() && **this == *rhs );
+    }
+
+    template<typename X>
+    bool operator==( const X& rhs )
+    {
+        return OFoptional_traits<T>::state() && **this == rhs;
+    }
+
+    bool operator!=( OFnullopt_t )
+    {
+        return OFoptional_traits<T>::state();
+    }
+
+    bool operator!=( const OFoptional& rhs )
+    {
+        return OFoptional_traits<T>::state() != rhs.state() || ( rhs.state() && **this != *rhs );
+    }
+
+    template<typename X>
+    bool operator!=( const X& rhs )
+    {
+        return !*this || **this != rhs;
+    }
+
+    bool operator<( OFnullopt_t )
+    {
+        return OFFalse;
+    }
+
+    bool operator<( const OFoptional& rhs )
+    {
+        return OFoptional_traits<T>::state() < rhs.state() || ( rhs.state() && **this < *rhs );
+    }
+
+    template<typename X>
+    bool operator<( const X& rhs )
+    {
+        return !*this || **this < rhs;
+    }
+
+    bool operator>( OFnullopt_t )
+    {
+        return OFoptional_traits<T>::state();
+    }
+
+    bool operator>( const OFoptional& rhs )
+    {
+        return OFoptional_traits<T>::state() > rhs.state() || ( OFoptional_traits<T>::state() && **this > *rhs );
+    }
+
+    template<typename X>
+    bool operator>( const X& rhs )
+    {
+        return OFoptional_traits<T>::state() && **this > rhs;
+    }
+
+    bool operator<=( OFnullopt_t )
+    {
+        return !*this;
+    }
+
+    bool operator<=( const OFoptional& rhs )
+    {
+        return !*this || ( rhs.state() && **this <= *rhs );
+    }
+
+    template<typename X>
+    bool operator<=( const X& rhs )
+    {
+        return !*this || **this <= rhs;
+    }
+
+    bool operator>=( OFnullopt_t )
+    {
+        return OFTrue;
+    }
+
+    bool operator>=( const OFoptional& rhs )
+    {
+        return !rhs || ( OFoptional_traits<T>::state() && **this >= *rhs );
+    }
+
+    template<typename X>
+    bool operator>=( const X& rhs )
+    {
+        return OFoptional_traits<T>::state() && **this >= rhs;
     }
 
     // Default construct an OFoptional object in the disengaged state.

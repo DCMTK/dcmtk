@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2014.10.08 (jschlamelcher)
 
+- Modified some of OFoptional's comparison operators:
+  All comparison operators with an OFoptional object as left hand side
+  argument are now implemented as member methods instead of friend functions.
+  This is meant to reduce incorrect overload lookup in some Visual Studio
+  compilers.
+  Affects: ofstd/include/dcmtk/ofstd/ofoption.h
+
 - Fixed a problem in storescp:
   Storescp aborts if it cannot create files in its working directory.
   This behavior is intended, but it should be omitted if the "--ignore"
