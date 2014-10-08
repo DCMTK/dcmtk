@@ -1010,7 +1010,7 @@ int main(int argc, char *argv[])
   }
 
   /* check if the output directory is writeable */
-  if (!OFStandard::isWriteable(opt_outputDirectory))
+  if (!opt_ignore && !OFStandard::isWriteable(opt_outputDirectory))
   {
     OFLOG_FATAL(storescpLogger, "specified output directory is not writeable");
     return 1;
@@ -2086,7 +2086,7 @@ storeSCPCallback(
 
       // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond
       // to those mentioned in the request. If not, set the status in the response message variable.
-      if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
+      if (rsp->DimseStatus == STATUS_Success)
       {
         // which SOP class and SOP instance ?
         if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
