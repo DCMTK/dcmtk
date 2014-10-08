@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2014.10.08 (schlamelcher)
 
+- Small fixes for a previous commit about OFtuple:
+  Removed unnecessary additions to the Doxygen configuration file for
+  manpages.
+  Added OFtuple's testcase to the autoconf configuration.
+  Added 'Purpose' statement to OFtuple's header file.
+  Affects: doxygen/manpages.cfg
+           ofstd/include/dcmtk/ofstd/oftuple.h
+           ofstd/tests/Makefile.in
+
 - Introduced move emulation for pre C++11 compilers:
   C++11's move semantics allow more efficient parameter and especially
   return value passing then before. The implemented emulation allows to use

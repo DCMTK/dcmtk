@@ -15,8 +15,7 @@
  *
  *  Author:  Jan Schlamelcher
  *
- *  Purpose:
- *      .
+ *  Purpose: Implementing generic tuples similar to C++11's std::tuple.
  *
  */
 
