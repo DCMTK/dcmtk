@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.08 (jschlamelcher)
+
+- Introduced DcmOutputBufferStream::filled() method:
+  This method allows to query the bytes in buffer without flushing it.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the suggestion.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcostrmb.h
+           dcmdata/libsrc/dcostrmb.cc
+
 **** Changes from 2014.10.02 (riesmeier)
 
 - Fixed typo in method name:

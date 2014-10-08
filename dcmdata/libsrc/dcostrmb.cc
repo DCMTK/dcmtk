@@ -84,6 +84,11 @@ void DcmBufferConsumer::flushBuffer(void *& buffer, offile_off_t& length)
   filled_ = 0;
 }
 
+offile_off_t DcmBufferConsumer::filled()
+{
+  return filled_;
+}
+
 /* ======================================================================= */
 
 DcmOutputBufferStream::DcmOutputBufferStream(void *buf, offile_off_t bufLen)
@@ -105,4 +110,9 @@ DcmOutputBufferStream::~DcmOutputBufferStream()
 void DcmOutputBufferStream::flushBuffer(void *& buffer, offile_off_t& length)
 {
   consumer_.flushBuffer(buffer, length);
+}
+
+offile_off_t DcmOutputBufferStream::filled()
+{
+  return consumer_.filled();
 }
