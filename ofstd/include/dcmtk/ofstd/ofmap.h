@@ -25,13 +25,13 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofutil.h" // for OFPair
+
 #if defined(HAVE_STL) || defined(HAVE_STL_MAP)
 // it is possible to use the standard template library map class since the
 // interface is nearly identical.
 #include <map>
 #define OFMap std::map
-#define OFPair std::pair
-#define OFMake_pair std::make_pair
 #else
 
 #include "dcmtk/ofstd/oftypes.h"
@@ -41,59 +41,6 @@
 #ifndef HAVE_CLASS_TEMPLATE
 #error Your C++ compiler cannot handle class templates:
 #endif
-
-
-/** a pair - this implements parts of std::pair's interface.
- */
-template<typename K, typename V> class OFPair
-{
-public:
-
-    /** this is the first value of the pair */
-    K first;
-
-    /** this is the second value of the pair */
-    V second;
-
-    /** default constructor */
-    OFPair() : first(), second() { }
-
-    /** construct a OFPair for the two given values
-     *  @param f the value for first.
-     *  @param s the value for second.
-     */
-    OFPair(const K& f, const V& s) : first(f), second(s) { }
-
-    /** copy constructor
-     *  @param p Other OFPair to copy from.
-     */
-    template<class OK, class OV>
-    OFPair(const OFPair<OK, OV>& p) : first(p.first), second(p.second) { }
-
-    /** copy constructor
-     *  @param p Other OFPair to copy from.
-     */
-    OFPair(const OFPair& p) : first(p.first), second(p.second) { }
-
-    /** assignment operator */
-    OFPair<K, V>& operator=(const OFPair<K, V>& other)
-    {
-        first = other.first;
-        second = other.second;
-        return *this;
-    }
-};
-
-/** helper function to create a pair. This is similar to std::make_pair()
- *  @param first the first part of the pair
- *  @param second the second art of the pair
- *  @return the pair (first, second)
- */
-template<typename K, typename V>
-OFPair<K, V> OFMake_pair(const K& first, const V& second)
-{
-    return OFPair<K, V>(first, second);
-}
 
 /** associative container class. This class is a subset of std::map.
  */

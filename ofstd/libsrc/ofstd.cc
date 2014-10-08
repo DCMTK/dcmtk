@@ -96,6 +96,7 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/offile.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/oftuple.h"
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
@@ -2869,4 +2870,7 @@ OFCondition OFStandard::dropPrivileges()
 #ifndef DCMTK_USE_CXX11_STL
 DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
 DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;
+const DCMTK_OFSTD_EXPORT OFignore_t OFignore;
+OFtuple<> OFmake_tuple() { return OFtuple<>(); }
+OFtuple<> OFtie() { return OFtuple<>(); }
 #endif

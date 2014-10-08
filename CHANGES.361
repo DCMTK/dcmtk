@@ -1,7 +1,25 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2014.10.08 (jschlamelcher)
+**** Changes from 2014.10.08 (schlamelcher)
+
+- Introduced OFtuple implementing generic tuples:
+  OFtuple is a fixed-size collection of heterogeneous values. It can be
+  regarded as a generalization of OFPair.
+  OFtuple is similar to C++11's std::tuple and can be replaced by
+  std::tuple via enabling 'DCMTK_USE_CXX11_STL'.
+  Added:   ofstd/include/dcmtk/ofstd/oftuple.h
+           ofstd/include/dcmtk/ofstd/variadic/tuple.h
+           ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h
+           ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h
+           ofstd/tests/ttuple.cc
+  Affects: doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+           ofstd/include/dcmtk/ofstd/ofmap.h
+           ofstd/include/dcmtk/ofstd/ofutil.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/tests.cc
 
 - Modified some of OFoptional's comparison operators:
   All comparison operators with an OFoptional object as left hand side
