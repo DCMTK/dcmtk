@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2014.10.08 (schlamelcher)
 
+- Introduced move emulation for pre C++11 compilers:
+  C++11's move semantics allow more efficient parameter and especially
+  return value passing then before. The implemented emulation allows to use
+  the primary functionality of move semantics in pre C++11 compilers in a way
+  that automatically translates to the appropriate C++11 syntax when C++11
+  support is enabled via 'DCMTK_USE_CXX11_STL'.
+  The only class utilizing move semantics so far is OFunique_ptr, where move
+  semantics are essential to allow using OFunique_ptr objects as parameters
+  or return values.
+  Affects: ofstd/include/dcmtk/ofstd/ofmem.h
+           ofstd/include/dcmtk/ofstd/ofutil.h
+           ofstd/tests/tmem.cc
+
 - Introduced OFtuple implementing generic tuples:
   OFtuple is a fixed-size collection of heterogeneous values. It can be
   regarded as a generalization of OFPair.

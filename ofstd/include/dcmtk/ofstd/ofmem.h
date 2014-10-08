@@ -24,6 +24,7 @@
 #define OFMEM_H
 
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
+#include "dcmtk/ofstd/ofutil.h"
 
 // use native classes when c++11 is supported
 #ifdef DCMTK_USE_CXX11_STL
@@ -77,7 +78,7 @@ public:
      *  @param pt the managed object that this shared_ptr takes
      *    the ownership to.
      */
-    OFshared_ptr( T* const pt = 0 )
+    OFshared_ptr( T* const pt = OFnullptr )
     : m_pData( new Data( pt ) )
     {
 
@@ -120,7 +121,7 @@ public:
      */
     operator OFBool() const
     {
-        return m_pData->pointer() != NULL;
+        return m_pData->pointer() != OFnullptr;
     }
 
     /** Checks if *this does not manage an object, i.e. whether get() == 0.
@@ -158,7 +159,7 @@ public:
     /** Replaces the managed object with an object pointed to by pt.
      *  @param pt pointer to an object to acquire ownership of.
      */
-    void reset( T* const pt = NULL )
+    void reset( T* const pt = OFnullptr )
     {
         destroy();
         m_pData = new Data( pt );
@@ -277,7 +278,7 @@ private:
  *  OFunique_ptr is NOT CopyConstructible or CopyAssignable.
  *  @tparam T the type of the managed object, e.g. int for an OFunique_ptr behaving like an int*.
  *  @note this implementation is meant to be a subset of the c++11's std::unique_ptr that lacks the
- *    following features: swap support, custom deleters, move support, specialized handling of pointers to
+ *    following features: swap support, custom deleters, specialized handling of pointers to
  *                        arrays and some functions like comparing OFunique_ptrs or creating a hash key.
  *    see http://en.cppreference.com/w/cpp/memory/unique_ptr to compare OFunique_ptr against std::unique_ptr.
  */
@@ -294,43 +295,106 @@ public:
 
     /** Constructs an empty OFunique_ptr
      */
-    OFunique_ptr() : m_pData( NULL ) {}
+    OFunique_ptr() : m_pData( OFnullptr ) {}
 
     /** Constructs a OFunique_ptr which owns p.
      *  @param p the pointer that's going to be owned by this unique_ptr.
      */
     explicit OFunique_ptr( pointer p ) : m_pData( p ) {}
 
-    /** If get() == NULL there are no effects -- otherwise, the owned object is destroyed.
+    /** Move constructor.
+     *  The move constructor <i>moves</i> the ownership of the managed
+     *  object from its parameter to the newly created OFunique_ptr
+     *  object, effectively emptying the former OFunique_ptr
+     *  object.
+     *  @param rhs an <i>rvalue reference</i> to another OFunique_ptr
+     *    object, e.g. obtained via OFmove.
+     *  @details
+     *  <h3>Example</h3>
+     *  This example shows how to move the ownership of a managed
+     *  object from one OFunique_ptr to another. Note that the
+     *  ownership always remains unique in this example, even
+     *  if an error occurred while reading the Dataset.
+     *  Therefore no memory leaks are possible!
+     *  @code
+     *  void consumeDataset( OFunique_ptr<DcmDataset> pDataset )
+     *  . . .
+     *  OFunique_ptr<DcmDataset> pDataset( new DcmDataset );
+     *  if( pDataset && pDataset->read( ... ).good() )
+     *  {
+     *    // Error: copy constructor not available, as it would
+     *    // compromise the unique ownership principle
+     *    // consumeDataset( pDataset );
+     *
+     *    // OFmove allows us to 'tell' OFunique_ptr we want
+     *    // to give away the ownership.
+     *    consumeDataset( OFmove( pDataset ) );
+     *  }
+     *  @endcode
+     */
+    OFunique_ptr( OFrvalue_ref(OFunique_ptr) rhs )
+#ifndef DOXYGEN
+    : m_pData( rhs.m_pData )
+    {
+        OFrvalue_access(rhs).m_pData = OFnullptr;
+    }
+#else
+    ;
+#endif
+
+    /** Move assignment operator.
+     *  The move assignment operator <i>moves</i> the ownership of the
+     *  managed object from its parameter to itself, effectively emptying
+     *  the other OFunique_ptr object. See OFunique_ptr's <i>move constructor</i>
+     *  for more information.
+     *  @param rhs an <i>rvalue reference</i> to another OFunique_ptr
+     *    object, e.g. obtained via OFmove.
+     */
+    OFunique_ptr& operator=( OFrvalue_ref(OFunique_ptr) rhs )
+#ifndef DOXYGEN
+    {
+        OFunique_ptr& other = OFrvalue_access(rhs);
+        if( &other != this )
+        {
+            reset( other.m_pData );
+            other.m_pData = OFnullptr;
+        }
+        return *this;
+    }
+#else
+    ;
+#endif
+
+    /** If get() == OFnullptr there are no effects -- otherwise, the owned object is destroyed.
      */
     ~OFunique_ptr() { delete m_pData; }
 
     /** Replaces the managed object. The previously owned object is deleted if the unique_ptr
      *  was not empty.
-     *  @param p the new pointer to be owned, defaults to NULL.
+     *  @param p the new pointer to be owned, defaults to OFnullptr.
      */
-    void reset( pointer p = NULL ) { delete m_pData; m_pData = p; }
+    void reset( pointer p = OFnullptr ) { delete m_pData; m_pData = p; }
 
     /** Releases the ownership of the managed object if any.
      *  Retrieves the owned object (if any) and lets the unique_ptr become empty.
      *  @return same as get().
      */
-    pointer release() { pointer const p = m_pData; m_pData = NULL; return p; }
+    pointer release() { pointer const p = m_pData; m_pData = OFnullptr; return p; }
 
-    /** Returns a pointer to the managed object or NULL if no object is owned.
-     *  @return Pointer to the managed object or NULL if no object is owned.
+    /** Returns a pointer to the managed object or OFnullptr if no object is owned.
+     *  @return Pointer to the managed object or OFnullptr if no object is owned.
      */
     pointer get() const { return m_pData; }
 
-    /** Checks whether *this owns an object, i.e. whether get() != NULL.
-     *  @return get() != NULL.
+    /** Checks whether *this owns an object, i.e. whether get() != OFnullptr.
+     *  @return get() != OFnullptr.
      */
-    operator bool() const { return m_pData != NULL; }
+    operator bool() const { return m_pData != OFnullptr; }
 
-    /** Checks whether *this does NOT own an object, i.e. whether get() == NULL.
-     *  @return get() == NULL.
+    /** Checks whether *this does NOT own an object, i.e. whether get() == OFnullptr.
+     *  @return get() == OFnullptr.
      */
-    bool operator!() const { return m_pData == NULL; }
+    bool operator!() const { return m_pData == OFnullptr; }
 
     /** Access the object owned by *this.
      *  @return the object owned by *this, i.e. *get().

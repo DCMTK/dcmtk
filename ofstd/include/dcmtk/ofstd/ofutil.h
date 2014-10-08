@@ -24,7 +24,9 @@
 #define OFUTIL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/oftraits.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 /** @file ofutil.h
  *  Implement fallback support for modern techniques defined
@@ -47,22 +49,200 @@ using OFtuple_size = std::tuple_size<Tuple>;
 
 template<std::size_t Index,typename Tuple>
 using OFtuple_element = std::tuple_element<Index,Tuple>;
+
+// OFrvalue simply equals 'identity', as C++11 natively handles
+// rvalues / prvalues and so on.
+template<typename T>
+using OFrvalue = T;
+
+#define OFrvalue_ref(T) T&&
+#define OFrvalue_access(RV) RV
+
 #else // fallback implementations
+
+#ifndef DOXYGEN
+
+// Meta-template to select the base class for OFrvalue
+template<typename T,OFBool>
+struct OFrvalue_storage
+{
+    // Helper template to wrap types that we can't derive from,
+    // e.g. primitive types.
+    class type
+    {
+    public:
+        // copy constructor should be fine for primitive types.
+        inline type(const T& pt)
+        : t( pt ) {}
+        inline type(const OFrvalue_storage& rhs)
+        : t( rhs.pt ) {}
+
+        // automatic conversion to the underlying type
+        inline operator T&() const { return OFconst_cast( T&, t ); }
+
+    private:
+        // the actual object
+        T t;
+    };
+};
+
+// specialization for compound types
+template<typename T>
+struct OFrvalue_storage<T,OFTrue>
+{
+    // simply use T itself as base
+    typedef T type;
+};
+
+// SFINAE to detect if a type is derivable from
+template<typename T>
+class OFrvalue_base
+{
+    // magic SFINAE stuff stolen from en.cppreference.com
+    struct no_type {};
+    struct yes_type {double d;};
+    template<typename X>
+    static yes_type sfinae(int X::*);
+    template<typename X>
+    static no_type sfinae(...);
+
+public:
+    // employ SFINAE + template specialization to select
+    // the base type
+    typedef OFTypename OFrvalue_storage
+    <
+        T,
+        sizeof(sfinae<T>(OFnullptr)) == sizeof(yes_type)
+    >::type type;
+};
+#endif // NOT DOXYGEN
+
+/** A helper class to 'tag' objects as <i>rvalues</i> to help
+ *  DCMTK's move emulation employed on pre C++11 compilers.
+ *  @tparam T the base type an rvalue should be create of.
+ *  @details OFrvalue wrapps the type T inside a zero-overhead
+ *    object employing T's move constructor when possible.
+ *  @note When C++11 support is available, OFrvalue<T> will
+ *    simply be a type alias for <i>T</i>, since a C++11 compiler
+ *    handles rvalue reference conversions natively.
+ *  @details
+ *  <h2>Example</h2>
+ *  This example describes how to move an object of type
+ *  OFunique_ptr out of a function by using OFrvalue.
+ *  @code
+ *  OFrvalue<OFunique_ptr<DcmDataset> > getDataset()
+ *  {
+ *    return OFunique_ptr<DcmDataset>( new DcmDataset );
+ *  }
+ *  . . .
+ *  OFunique_ptr<DcmDataset> pDataset = getDataset();
+ *  @endcode
+ */
+template<typename T>
+struct OFrvalue : OFrvalue_base<T>::type
+{
+#ifndef DOXYGEN
+    // allow to move construct from lvalue references
+    inline OFrvalue(const T& t) : OFrvalue_base<T>::type( *OFreinterpret_cast( const OFrvalue*,  &t ) ) {}
+    // copy-construct from an rvalue reference
+    inline OFrvalue(const OFrvalue& rv) : OFrvalue_base<T>::type( rv ) {}
+#endif // NOT DOXYGEN
+};
+
+#ifdef DOXYGEN
+/** Determines <i>rvalue reference</i> type for the type <kbd>T</kbd>.
+ *  @param T the base type to determine the rvalue reference type for.
+ *  @note <i>OFrvalue_ref(T)</i> will expand to <kbd>T&&</kbd> when
+ *    C++11 support is available. Otherwise DCMTK's move emulation will
+ *    be used, employing an unspecified type to implement rvalue references.
+ *  @details
+ *  <h2>Example</h2>
+ *  This example shows how to implement the <i>move constructor</i> and
+ *  <i>move assignment</i> for a custom class in a portable fashion
+ *  (employing C++11's native features when available and using DCMTK's
+ *  move emulation otherwise).
+ *  @code
+ *  class MyMovable
+ *  {
+ *  public:
+ *    MyMovable( OFrvalue_ref(MyMovable) rhs )
+ *    : m_hDatabase( rhs.m_hDatabase )
+ *    {
+ *      // You need to use OFrvalue_access to get write access
+ *      // to rvalue references when DCMTK's move emulation
+ *      // is used.
+ *      OFrvalue_access(rhs).m_hDatabase = OFnullptr;
+ *    }
+ *
+ *    MyMovable& operator=( OFrvalue_ref(MyMovable) rvrhs )
+ *    {
+ *      // You may bind the rvalue reference to an lvalue
+ *      // reference to ease access.
+ *      MyMovable& rhs = OFrvalue_access(rvrhs);
+ *      if( this != &rhs )
+ *      {
+ *        disconnectDatabase( m_hDatabase );
+ *        m_hDatabase = rhs.m_hDatabase;
+ *        rhs.m_hDatabase = OFnullptr;
+ *      }
+ *      return *this;
+ *    }
+ *  };
+ *  @endcode
+ */
+#define OFrvalue_ref(T) unspecified
+#else // NOT DOXYGEN
+#define OFrvalue_ref(T) const OFrvalue<T>&
+#endif
+
+/** Obtain an lvalue reference from an rvalue reference.
+ *  DCMTK's move emulations does restrict write access to rvalue references
+ *  due to compiler limitations.
+ *  This method enables you to workaround this restriction by converting
+ *  DCMTK's emulated rvalue references to lvalue references.
+ *  @note Native rvalue references from C++11 don't need this workaround,
+ *   therefore <i>OFrvalue_access</i> has no effect when C++11 support is
+ *   available.
+ *  @param rv an rvalue reference, e.g. the parameter of a <i>move constructor</i>.
+ */
+template<typename T>
+T& OFrvalue_access( OFrvalue_ref(T) rv )
+{
+#ifndef DOXYGEN
+    return OFconst_cast( OFrvalue<T>&, rv );
+#endif
+}
+
 /** Obtains an rvalue reference to its argument and converts it
  *  to an xvalue. OFmove is meant to 'mark' an object for a
  *  move operation, e.g. to move an OFVector object into another
  *  OFVector instance instead of copying it.
- *  @note Currently move semantics are only supported when C++11
- *    support is available. If that's the case, OFmove is simply
- *    an alias for std::move. Otherwise OFmove has no effect
- *    and the object will still be copied.
+ *  @note OFmove will be an alias for std::move when native
+ *    move semantics are supported (C++11 support is available).
+ *    Otherwise DCMTK's move emulation will be used. This means
+ *    you will have to specify rvalues (e.g. function return values)
+ *    employing the OFrvalue class template.
  *  @param t The object to move.
+ *  @see OFrvalue
+ *  @see OFrvalue_ref
  */
 template<typename T>
 #ifndef DOXYGEN
-T& OFmove( T& t )
+OFrvalue<T>& OFmove( T& t )
 {
-    return t;
+    return *OFreinterpret_cast( OFrvalue<T>*, &t );
+}
+
+template<typename T>
+OFrvalue<T>& OFmove( OFrvalue<T>& rv )
+{
+    return rv;
+}
+
+template<typename T>
+OFrvalue<T>& OFmove( const OFrvalue<T>& rv )
+{
+    return OFconst_cast( OFrvalue<T>&, rv );
 }
 #else // NOT DOXYGEN
 OFconstexpr xvalue OFmove( T< unspecified > t );
