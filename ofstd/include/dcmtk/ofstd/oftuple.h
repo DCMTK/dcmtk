@@ -47,15 +47,18 @@ using OFtuple = std::tuple<Args...>;
 // which it then simply ignores.
 struct DCMTK_OFSTD_EXPORT OFignore_t
 {
-    inline OFignore_t(...) {}
+    inline OFignore_t() {}
+    template<typename X>
+    inline OFignore_t(const X&) {}
     template<typename X>
     inline OFignore_t& operator=(const X&) { return *this; }
     template<typename X>
     inline const OFignore_t& operator=(const X&) const { return *this; }
 };
 
-// OFignore simply is an object of type OFignore_t
-const extern DCMTK_OFSTD_EXPORT OFignore_t OFignore;
+// OFignore is a reference to an object of type OFignore_t, to
+// fix some external linkage problems in MinGW
+extern DCMTK_OFSTD_EXPORT const OFignore_t& OFignore;
 
 // Helper metatemplate for OFget for OFtuple. The first
 // parameter is the return type. This way OFtuple_element
@@ -285,15 +288,21 @@ struct OFtuple_content_tail<void>
 template<>
 struct OFtuple_content<>
 {
+    OFtuple_content() {}
     template<typename X>
     OFtuple_content(const X&) {}
-    OFtuple_content(...) {}
-    void assign(...) {}
-    OFBool equal(...) const { return OFTrue; }
-    OFBool not_equal(...) const { return OFFalse; }
-    OFBool less(...) const { return OFFalse; }
-    OFBool less_equal(...) const { return OFTrue; }
-    void swap_content(...) {}
+    template<typename X>
+    void assign(const X&) {}
+    template<typename X>
+    OFBool equal(const X&) const { return OFTrue; }
+    template<typename X>
+    OFBool not_equal(const X&) const { return OFFalse; }
+    template<typename X>
+    OFBool less(const X&) const { return OFFalse; }
+    template<typename X>
+    OFBool less_equal(const X&) const { return OFTrue; }
+    template<typename X>
+    void swap_content(const X&) {}
 };
 
 // Specialization of OFtuple_element for OFtuple.

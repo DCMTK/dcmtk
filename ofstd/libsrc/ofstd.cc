@@ -2870,7 +2870,8 @@ OFCondition OFStandard::dropPrivileges()
 #ifndef DCMTK_USE_CXX11_STL
 DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
 DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;
-const DCMTK_OFSTD_EXPORT OFignore_t OFignore;
+static const OFignore_t OFignore_value;
+DCMTK_OFSTD_EXPORT const OFignore_t& OFignore( OFignore_value );
 OFtuple<> OFmake_tuple() { return OFtuple<>(); }
 OFtuple<> OFtie() { return OFtuple<>(); }
 #endif

@@ -544,68 +544,86 @@ public:
     }
 
     // comparison operator overloads, see expression itself for details
-    friend bool operator==( OFnullopt_t, const OFoptional& rhs )
+    template<typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator==( OFnullopt_t, const O& rhs )
     {
         return !rhs;
     }
 
-    template<typename X>
-    friend bool operator==( const X& lhs, const OFoptional& rhs )
+    template<typename X,typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator==( const X& lhs, const O& rhs )
     {
         return rhs.state() && lhs == *rhs;
     }
 
-    friend bool operator!=( OFnullopt_t, const OFoptional& rhs )
+    template<typename O>
+    friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator!=( OFnullopt_t, const O& rhs )
     {
         return rhs.state();
     }
 
-    template<typename X>
-    friend bool operator!=( const X& lhs, const OFoptional& rhs )
+    template<typename X,typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator!=( const X& lhs, const O& rhs )
     {
         return !rhs || lhs != *rhs;
     }
 
-    friend bool operator<( OFnullopt_t, const OFoptional& rhs )
+    template<typename O>
+    friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator<( OFnullopt_t, const O& rhs )
     {
         return rhs.state();
     }
 
-    template<typename X>
-    friend bool operator<( const X& lhs, const OFoptional& rhs )
+    template<typename X,typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator<( const X& lhs, const O& rhs )
     {
         return rhs.state() && lhs < *rhs;
     }
 
-    friend bool operator>( OFnullopt_t, const OFoptional& rhs )
+    template<typename O>
+    friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator>( OFnullopt_t, const O& rhs )
     {
         return OFFalse;
     }
 
-    template<typename X>
-    friend bool operator>( const X& lhs, const OFoptional& rhs )
+    template<typename X,typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator>( const X& lhs, const O& rhs )
     {
         return !rhs || lhs > *rhs;
     }
 
-    friend bool operator<=( OFnullopt_t, const OFoptional& rhs )
+    template<typename O>
+    friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator<=( OFnullopt_t, const O& rhs )
     {
         return OFTrue;
     }
 
-    template<typename X>
-    friend bool operator<=( const X& lhs, const OFoptional& rhs )
+    template<typename X,typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator<=( const X& lhs, const O& rhs )
     {
         return rhs.state() && lhs <= *rhs;
     }
 
-    friend bool operator>=( OFnullopt_t, const OFoptional& rhs )
+    template<typename O>
+    friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator>=( OFnullopt_t, const O& rhs )
     {
         return !rhs;
     }
 
-    template<typename X>
-    friend bool operator>=( const X& lhs, const OFoptional& rhs )
+    template<typename X,typename O>
+    friend OFTypename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
+    operator>=( const X& lhs, const O& rhs )
     {
         return !rhs || lhs >= *rhs;
     }

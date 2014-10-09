@@ -34,8 +34,11 @@ OFTEST(ofstd_optional)
     o1 = o2;
     OFCHECK( o1 == o2 );
     OFCHECK( o0 == OFnullopt );
+    OFCHECK( OFnullopt == o0 );
     OFCHECK( o2 == 3 );
+    OFCHECK( 3 == o2 );
     OFCHECK( o1 >= 1 );
+    OFCHECK( 1 <= o1 );
 
     OFStringStream s( "42" );
     o1 = OFnullopt;

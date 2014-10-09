@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.09 (schlamelcher)
+
+- Several fixes and additions for yesterday's commits:
+  Guarded remaining friend comparison operators of OFoptional via
+  OFenable_if. This should finally fix the faulty overload resolution
+  problem in Visual Studio.
+  Worked around a limitation in MinGW where const objects could not have
+  external linkage.
+  Corrected template-recursion related problem in OFtuple that prevented
+  compiling with Clang.
+  Affects: ofstd/include/dcmtk/ofstd/ofoption.h
+           ofstd/include/dcmtk/ofstd/oftuple.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/toption.cc
+
 **** Changes from 2014.10.08 (schlamelcher)
 
 - Small fixes for a previous commit about OFtuple:
