@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.14 (riesmeier)
+
+- RLE images should not use multiple fragments:
+  Made it clearer that the DICOM standard does not allow for storing the pixel
+  data with multiple fragments per frame when RLE compression is used. Added
+  comment/note and report a warning during encoding. Closes DCMTK Bug #396.
+  Affects: dcmdata/docs/dcmcrle.man
+           dcmdata/include/dcmtk/dcmdata/dcrlecp.h
+           dcmdata/libsrc/dcrlecce.cc
+
 **** Changes from 2014.10.09 (schlamelcher)
 
 - Several fixes and additions for yesterday's commits:

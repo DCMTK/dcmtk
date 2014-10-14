@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,6 +35,9 @@ public:
    *  @param pCreateSOPInstanceUID true if a new SOP instance UID should be assigned
    *    upon compression/decompression
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
+   *    Please note that the DICOM standard does not allow for storing the pixel data with
+   *    multiple fragments per frame (when RLE compression is used). So limiting the fragment
+   *    size may result in non-standard conformant DICOM images.
    *  @param pCreateOffsetTable create offset table during image compression?
    *  @param pConvertToSC flag indicating whether image should be converted to
    *    Secondary Capture upon compression
@@ -56,7 +59,7 @@ public:
   virtual ~DcmRLECodecParameter();
 
   /** this methods creates a copy of type DcmCodecParameter *
-   *  it must be overweritten in every subclass.
+   *  it must be overwritten in every subclass.
    *  @return copy of this object
    */
   virtual DcmCodecParameter *clone() const;

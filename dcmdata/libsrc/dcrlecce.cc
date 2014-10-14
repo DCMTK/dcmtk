@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,7 +91,7 @@ OFCondition DcmRLECodecEncoder::decodeFrame(
 {
   // we are an encoder only
   return EC_IllegalCall;
-}    
+}
 
 
 OFCondition DcmRLECodecEncoder::encode(
@@ -199,7 +199,7 @@ OFCondition DcmRLECodecEncoder::encode(
     // byte swap pixel data to little endian
     if (gLocalByteOrder == EBO_BigEndian)
     {
-       swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
+      swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
     }
 
     // create RLE stripe sets
@@ -219,6 +219,10 @@ OFCondition DcmRLECodecEncoder::encode(
       Uint32 rleSize = 0;
       Uint8 *rleData = NULL;
       Uint8 *rleData2 = NULL;
+
+      // warn about (possibly) non-standard fragmentation
+      if (djcp->getFragmentSize() > 0)
+         DCMDATA_WARN("DcmRLECodecEncoder: limiting the fragment size may result in non-standard conformant encoding");
 
       // compute byte offset between samples
       if (planarConfiguration == 0)
@@ -360,7 +364,7 @@ OFCondition DcmRLECodecEncoder::encode(
             if (djcp->getConvertToSC() || djcp->getUIDCreation())
             {
                 result = DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset), "DCM", "121320", "Uncompressed predecessor");
-                
+
                 // set image type to DERIVED
                 if (result.good()) result = updateImageType(OFstatic_cast(DcmItem *, dataset));
 

@@ -163,6 +163,13 @@ data set trailing padding:
          and items on multiple of i bytes
 \endverbatim
 
+\section notes NOTES
+
+Please note that the DICOM standard does not allow for storing the pixel data
+with multiple fragments per frame (when RLE compression is used).  So limiting
+the fragment size with option \e --fragment-size (or \e +fs) may result in a
+non-standard conformant DICOM image.
+
 \section transfer_syntaxes TRANSFER SYNTAXES
 
 \b dcmcrle supports the following transfer syntaxes for input
