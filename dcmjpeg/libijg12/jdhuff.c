@@ -80,6 +80,7 @@ jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
     }
     /* code is now 1 more than the last code used for codelength si; but
      * it must still fit in si bits, since no code is allowed to be all ones.
+     * BUG FIX: Comparison must be >, not >=
      */
     if (((IJG_INT32) code) > (((IJG_INT32) 1) << si))
       ERREXIT(cinfo, JERR_BAD_HUFF_TABLE);

@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.15 (schlamelcher)
+
+- Reintroduced bugfix-comment in dcmjpeg:
+  The comment was previously removed because of the misleading date notice,
+  it has now been reintroduced without that notice.
+  Affects: dcmjpeg/libijg12/jchuff.c
+           dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg16/jchuff.c
+           dcmjpeg/libijg16/jdhuff.c
+           dcmjpeg/libijg8/jchuff.c
+           dcmjpeg/libijg8/jdhuff.c
+
 **** Changes from 2014.10.14 (riesmeier)
 
 - RLE images should not use multiple fragments:
