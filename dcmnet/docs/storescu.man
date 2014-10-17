@@ -167,6 +167,10 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose RLE lossless TS
           and all uncompressed transfer syntaxes
 
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
+
   -R    --required
           propose only required presentation contexts
           (default: propose all supported)

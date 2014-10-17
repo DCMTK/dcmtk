@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.17 (riesmeier)
+
+- Added missing documentation for --propose-deflated:
+  Apparently, the command line option --propose-deflated (-xd) was not
+  documented in the man page.
+  Affects: dcmnet/docs/storescu.man
+
 **** Changes from 2014.10.15 (schlamelcher)
 
 - Reintroduced bugfix-comment in dcmjpeg:
