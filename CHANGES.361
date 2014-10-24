@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.24 (schlamelcher)
+
+- Fixed autoconf install regarding ofstd variadic:
+  Added the location ofstd/variadic to the autoconf install configuration.
+  Thanks to Hüseyin Kozan <posta@huseyinkozan.com.tr> for the suggestion.
+  Affects: ofstd/include/Makefile.in
+
 **** Changes from 2014.10.17 (riesmeier)
 
 - Added missing documentation for --propose-deflated:
