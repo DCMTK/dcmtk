@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -186,7 +186,7 @@ int DiGSDFunction::writeCurveData(const char *filename,
                 file << "# Type of output device  : Camera (softcopy)" << OFendl;
             else
                 file << "# Type of output device  : Monitor (softcopy)" << OFendl;
-            file << "# Device driving levels  : " << ValueCount << OFendl;
+            file << "# Digital driving levels : " << ValueCount << OFendl;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
                 file << "# Illumination  [cd/m^2] : " << Illumination << OFendl;
             file << "# Ambient light [cd/m^2] : " << AmbientLight << OFendl;

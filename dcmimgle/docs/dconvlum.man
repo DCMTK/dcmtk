@@ -41,7 +41,7 @@ displays).  This definition is required before the luminance data can be
 defined.  Optionally the ambient light value can be specified in this file
 too.  The floating point value (in candela per square meter) must follow the
 word 'amb'.  Finally the luminance values are defined for each corresponding
-DDL (device driving level) value.  The entries do not necessarily have to be
+DDL (digital driving level) value.  The entries do not necessarily have to be
 ordered or complete, i.e. there can be less than 'max' + 1 entries.  Missing
 values are calculated by cubic spline interpolation.
 

@@ -20,7 +20,7 @@ characteristics file to tabbed text file describing the characteristic curve
 display.  The 256 values of each curve can be visualized by a common spread
 sheet program.  Above that the display curve (without CC and PSC) can also be
 computed for a specified luminance/OD range (min/max) and a certain number of
-Device Driving Levels (DDL).
+Digital Driving Levels (DDL).
 
 \section parameters PARAMETERS
 
@@ -95,7 +95,7 @@ dcmfile-in  DICOM input filename to be dumped
          Dmax value (default: off, only with +Ip and +Io)
 
   +Cd  --ddl-count  [n]umber of DDLs: integer
-         number of Device Driving Levels
+         number of Digital Driving Levels
          (default: 256, only with --lum/od-range)
 
   +Cf  --curve-fitting  [n]umber: integer
@@ -122,7 +122,7 @@ tool \b dconvlum.
 
 The ambient light value possibly defined in the characteristics file is also
 used for the calculation.  In this case the value is part of the file comment
-header as well as the number of DDL (device driving level) values, the
+header as well as the number of DDL (digital driving level) values, the
 absolute luminance range (measured in candela per square meter) and the range
 of the JND index (just noticeable difference) in case of GSDF.  Alternatively,
 the ambient light value can be specified as a command line option.  When

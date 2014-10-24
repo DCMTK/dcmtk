@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--max-density",   "+Dx", 1, "[m]aximum optical density: float",
                                                 "Dmax value (default: off, only with +Ip and +Io)");
      cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs: integer",
-                                                "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
+                                                "number of Digital Driving Levels\n(default: 256, only with --lum/od-range)");
      cmd.addOption("--curve-fitting", "+Cf", 1, "[n]umber : integer",
                                                 "use polynomial curve fitting algorithm with order n\n(0..99, default: file setting or cubic spline)");
 
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
                     OFLOG_INFO(dcmdspfnLogger, "setting illumination value ...");
                     disp->setIlluminationValue(opt_illum);
                 }
-                /* Dmin/max only suppoted for printers */
+                /* Dmin/max only supported for printers */
                 if (disp->getDeviceType() == DiDisplayFunction::EDT_Printer)
                 {
                     if (opt_Dmin >= 0)
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
                     OFLOG_INFO(dcmdspfnLogger, "setting ambient light value ...");
                     disp->setAmbientLightValue(opt_ambLight);
                 }
-                /* Dmin/max only suppoted for printers */
+                /* Dmin/max only supported for printers */
                 if (disp->getDeviceType() == DiDisplayFunction::EDT_Printer)
                 {
                     if (opt_Dmin >= 0)

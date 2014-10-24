@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2014.10.24 (riesmeier)
 
+- Fixed wrong term "Device Driving Level":
+  Replaced wrong term "Device Driving Level" by "Digital Driving Level" (DDL).
+  Affects: dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dconvlum.man
+           dcmimgle/include/dcmtk/dcmimgle/diciefn.h
+           dcmimgle/include/dcmtk/dcmimgle/didispfn.h
+           dcmimgle/include/dcmtk/dcmimgle/digsdfn.h
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/digsdfn.cc
+
 - Attribute (0040,4005) has not been retired:
   Fixed an issue with Scheduled Procedure Step Start DateTime (0040,4005) being
   retired accidentally by the 2013 edition of the DICOM standard. The editor

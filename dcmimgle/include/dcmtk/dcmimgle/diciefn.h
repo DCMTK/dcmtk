@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@ class DCMTK_DCMIMGLE_EXPORT DiCIELABFunction
  public:
 
     /** constructor, read device characteristics file.
-     *  Keywords: "max" for maximum DDL (Device Driving Level, required at first position)
+     *  Keywords: "max" for maximum DDL (Digital Driving Level, required at first position)
      *            "amb" for ambient light and "lum" for illumination (both optional)
      *            "ord" for the order of the polynomial curve fitting algorithm used to interpolate
      *                  the given base points (0 or absent = use cubic spline interpolation)
@@ -62,7 +62,7 @@ class DCMTK_DCMIMGLE_EXPORT DiCIELABFunction
      *
      ** @param  val_tab     pointer to array with luminance/OD values
      *  @param  count       number of array elements (should be equal to 'max + 1')
-     *  @param  max         maximum DDL (device driving level)
+     *  @param  max         maximum DDL (digital driving level)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
      *                      the given base points (0 or negative = use cubic spline interpolation)
@@ -80,7 +80,7 @@ class DCMTK_DCMIMGLE_EXPORT DiCIELABFunction
      ** @param  ddl_tab     pointer to array with DDL values (must be with the interval 0..max)
      *  @param  val_tab     pointer to array with luminance/OD values
      *  @param  count       number of array elements (2..65536)
-     *  @param  max         maximum DDL (device driving level)
+     *  @param  max         maximum DDL (digital driving level)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
      *                      the given base points (0 or negative = use cubic spline interpolation)
@@ -96,7 +96,7 @@ class DCMTK_DCMIMGLE_EXPORT DiCIELABFunction
      *
      ** @param  val_min     minimum luminance/OD value
      *  @param  val_max     maximum luminance/OD value
-     *  @param  count       number of DDLs (device driving level, 1..65536))
+     *  @param  count       number of DDLs (digital driving level, 1..65536))
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
      *                      the given base points (0 or negative = use cubic spline interpolation)
