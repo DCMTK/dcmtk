@@ -1839,6 +1839,7 @@
 (0040,2017)	LO	FillerOrderNumberImagingServiceRequest	1	DICOM
 (0040,2400)	LT	ImagingServiceRequestComments	1	DICOM
 (0040,3001)	LO	ConfidentialityConstraintOnPatientDataDescription	1	DICOM
+(0040,4005)	DT	ScheduledProcedureStepStartDateTime	1	DICOM
 (0040,4007)	SQ	PerformedProcessingApplicationsCodeSequence	1	DICOM
 (0040,4009)	SQ	HumanPerformerCodeSequence	1	DICOM
 (0040,4010)	DT	ScheduledProcedureStepModificationDateTime	1	DICOM
@@ -3731,7 +3732,6 @@
 (0040,4002)	CS	RETIRED_GeneralPurposePerformedProcedureStepStatus	1	DICOM/retired
 (0040,4003)	CS	RETIRED_GeneralPurposeScheduledProcedureStepPriority	1	DICOM/retired
 (0040,4004)	SQ	RETIRED_ScheduledProcessingApplicationsCodeSequence	1	DICOM/retired
-(0040,4005)	DT	RETIRED_ScheduledProcedureStepStartDateTime	1	DICOM/retired
 (0040,4006)	CS	RETIRED_MultipleCopiesFlag	1	DICOM/retired
 (0040,4015)	SQ	RETIRED_ResultingGeneralPurposePerformedProcedureStepsSequence	1	DICOM/retired
 (0040,4016)	SQ	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence	1	DICOM/retired

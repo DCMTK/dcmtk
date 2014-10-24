@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-09-24 18:15:58
+**   Date: 2014-10-24 15:21:05
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-09-24 18:15:58"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-10-24 15:21:05"
 
 
 /*
@@ -2055,7 +2055,7 @@
 #define DCM_RETIRED_GeneralPurposePerformedProcedureStepStatus DcmTagKey(0x0040, 0x4002)
 #define DCM_RETIRED_GeneralPurposeScheduledProcedureStepPriority DcmTagKey(0x0040, 0x4003)
 #define DCM_RETIRED_ScheduledProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4004)
-#define DCM_RETIRED_ScheduledProcedureStepStartDateTime DcmTagKey(0x0040, 0x4005)
+#define DCM_ScheduledProcedureStepStartDateTime  DcmTagKey(0x0040, 0x4005)
 #define DCM_RETIRED_MultipleCopiesFlag           DcmTagKey(0x0040, 0x4006)
 #define DCM_PerformedProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4007)
 #define DCM_HumanPerformerCodeSequence           DcmTagKey(0x0040, 0x4009)

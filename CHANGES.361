@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.24 (riesmeier)
+
+- Attribute (0040,4005) has not been retired:
+  Fixed an issue with Scheduled Procedure Step Start DateTime (0040,4005) being
+  retired accidentally by the 2013 edition of the DICOM standard. The editor
+  of the DICOM standard, David Clunie, confirmed that this was not intended.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.10.24 (schlamelcher)
 
 - Fixed autoconf install regarding ofstd variadic:
