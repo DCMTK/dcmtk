@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTIonRangeCompensatorSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -117,6 +117,13 @@ class DCMTK_DCMRT_EXPORT DRTIonRangeCompensatorSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getCompensatorColumns(Sint32 &value, const unsigned long pos = 0) const;
+
+        /** get CompensatorDescription (300a,02eb)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getCompensatorDescription(OFString &value, const signed long pos = 0) const;
 
         /** get CompensatorDivergence (300a,02e0)
          *  @param  value  reference to variable in which the value should be stored
@@ -285,6 +292,13 @@ class DCMTK_DCMRT_EXPORT DRTIonRangeCompensatorSequence
          */
         OFCondition setCompensatorColumns(const OFString &value, const OFBool check = OFTrue);
 
+        /** set CompensatorDescription (300a,02eb)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LT) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setCompensatorDescription(const OFString &value, const OFBool check = OFTrue);
+
         /** set CompensatorDivergence (300a,02e0)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
@@ -387,6 +401,8 @@ class DCMTK_DCMRT_EXPORT DRTIonRangeCompensatorSequence
         DcmFloatingPointSingle CompensatorColumnOffset;
         /// CompensatorColumns (300a,00e8) vr=IS, vm=1, type=1
         DcmIntegerString CompensatorColumns;
+        /// CompensatorDescription (300a,02eb) vr=LT, vm=1, type=3
+        DcmLongText CompensatorDescription;
         /// CompensatorDivergence (300a,02e0) vr=CS, vm=1, type=1
         DcmCodeString CompensatorDivergence;
         /// CompensatorID (300a,00e5) vr=SH, vm=1, type=3

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTChannelShieldSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -223,7 +223,7 @@ class DCMTK_DCMRT_EXPORT DRTChannelShieldSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// ChannelShieldID (300a,02b3) vr=SH, vm=1, type=2C
+        /// ChannelShieldID (300a,02b3) vr=SH, vm=1, type=2
         DcmShortString ChannelShieldID;
         /// ChannelShieldName (300a,02b4) vr=LO, vm=1, type=3
         DcmLongString ChannelShieldName;
@@ -231,11 +231,11 @@ class DCMTK_DCMRT_EXPORT DRTChannelShieldSequence
         DcmDecimalString ChannelShieldNominalThickness;
         /// ChannelShieldNominalTransmission (300a,02ba) vr=DS, vm=1, type=3
         DcmDecimalString ChannelShieldNominalTransmission;
-        /// ChannelShieldNumber (300a,02b2) vr=IS, vm=1, type=1C
+        /// ChannelShieldNumber (300a,02b2) vr=IS, vm=1, type=1
         DcmIntegerString ChannelShieldNumber;
         /// MaterialID (300a,00e1) vr=SH, vm=1, type=3
         DcmShortString MaterialID;
-        /// ReferencedROINumber (3006,0084) vr=IS, vm=1, type=2C
+        /// ReferencedROINumber (3006,0084) vr=IS, vm=1, type=2
         DcmIntegerString ReferencedROINumber;
 
     };

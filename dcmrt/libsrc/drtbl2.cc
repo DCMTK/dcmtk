@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBlockSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -140,17 +140,17 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, BlockTrayID, "1", "3", "BlockSequence");
         getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, SourceToBlockTrayDistance, "1", "2C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockType, "1", "1C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockDivergence, "1", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, SourceToBlockTrayDistance, "1", "2", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockType, "1", "1", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockDivergence, "1", "2", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockMountingPosition, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockNumber, "1", "1C", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockNumber, "1", "1", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockName, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, MaterialID, "1", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, MaterialID, "1", "2", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockThickness, "1", "2C", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockTransmission, "1", "2C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockNumberOfPoints, "1", "2C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockData, "2-2n", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockNumberOfPoints, "1", "2", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockData, "2-2n", "2", "BlockSequence");
         result = EC_Normal;
     }
     return result;
@@ -165,17 +165,17 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmShortString(BlockTrayID), "1", "3", "BlockSequence");
         addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmDecimalString(SourceToBlockTrayDistance), "1", "2C", "BlockSequence");
-        addElementToDataset(result, item, new DcmCodeString(BlockType), "1", "1C", "BlockSequence");
-        addElementToDataset(result, item, new DcmCodeString(BlockDivergence), "1", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmDecimalString(SourceToBlockTrayDistance), "1", "2", "BlockSequence");
+        addElementToDataset(result, item, new DcmCodeString(BlockType), "1", "1", "BlockSequence");
+        addElementToDataset(result, item, new DcmCodeString(BlockDivergence), "1", "2", "BlockSequence");
         addElementToDataset(result, item, new DcmCodeString(BlockMountingPosition), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmIntegerString(BlockNumber), "1", "1C", "BlockSequence");
+        addElementToDataset(result, item, new DcmIntegerString(BlockNumber), "1", "1", "BlockSequence");
         addElementToDataset(result, item, new DcmLongString(BlockName), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "2", "BlockSequence");
         addElementToDataset(result, item, new DcmDecimalString(BlockThickness), "1", "2C", "BlockSequence");
         addElementToDataset(result, item, new DcmDecimalString(BlockTransmission), "1", "2C", "BlockSequence");
-        addElementToDataset(result, item, new DcmIntegerString(BlockNumberOfPoints), "1", "2C", "BlockSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BlockData), "2-2n", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmIntegerString(BlockNumberOfPoints), "1", "2", "BlockSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BlockData), "2-2n", "2", "BlockSequence");
     }
     return result;
 }

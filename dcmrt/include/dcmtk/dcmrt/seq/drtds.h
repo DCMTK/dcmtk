@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -152,6 +152,13 @@ class DCMTK_DCMRT_EXPORT DRTDeviceSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getContextIdentifier(OFString &value, const signed long pos = 0) const;
+
+        /** get ContextUID (0008,0117)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextUID(OFString &value, const signed long pos = 0) const;
 
         /** get DeviceDescription (0050,0020)
          *  @param  value  reference to variable in which the value should be stored
@@ -323,6 +330,13 @@ class DCMTK_DCMRT_EXPORT DRTDeviceSequence
          */
         OFCondition setContextIdentifier(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ContextUID (0008,0117)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextUID(const OFString &value, const OFBool check = OFTrue);
+
         /** set DeviceDescription (0050,0020)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -405,11 +419,11 @@ class DCMTK_DCMRT_EXPORT DRTDeviceSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// CodeMeaning (0008,0104) vr=LO, vm=1, type=1C
+        /// CodeMeaning (0008,0104) vr=LO, vm=1, type=1
         DcmLongString CodeMeaning;
-        /// CodeValue (0008,0100) vr=SH, vm=1, type=1C
+        /// CodeValue (0008,0100) vr=SH, vm=1, type=1
         DcmShortString CodeValue;
-        /// CodingSchemeDesignator (0008,0102) vr=SH, vm=1, type=1C
+        /// CodingSchemeDesignator (0008,0102) vr=SH, vm=1, type=1
         DcmShortString CodingSchemeDesignator;
         /// CodingSchemeVersion (0008,0103) vr=SH, vm=1, type=1C
         DcmShortString CodingSchemeVersion;
@@ -423,6 +437,8 @@ class DCMTK_DCMRT_EXPORT DRTDeviceSequence
         DcmDateTime ContextGroupVersion;
         /// ContextIdentifier (0008,010f) vr=CS, vm=1, type=3
         DcmCodeString ContextIdentifier;
+        /// ContextUID (0008,0117) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier ContextUID;
         /// DeviceDescription (0050,0020) vr=LO, vm=1, type=3
         DcmLongString DeviceDescription;
         /// DeviceDiameter (0050,0016) vr=DS, vm=1, type=3

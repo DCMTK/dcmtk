@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedReferenceImageSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -190,11 +190,11 @@ class DCMTK_DCMRT_EXPORT DRTReferencedReferenceImageSequenceInRTBeamsModule
 
         /// EndCumulativeMetersetWeight (300c,0009) vr=DS, vm=1, type=3
         DcmDecimalString EndCumulativeMetersetWeight;
-        /// ReferenceImageNumber (300a,00c8) vr=IS, vm=1, type=1C
+        /// ReferenceImageNumber (300a,00c8) vr=IS, vm=1, type=1
         DcmIntegerString ReferenceImageNumber;
-        /// ReferencedSOPClassUID (0008,1150) vr=UI, vm=1, type=1C
+        /// ReferencedSOPClassUID (0008,1150) vr=UI, vm=1, type=1
         DcmUniqueIdentifier ReferencedSOPClassUID;
-        /// ReferencedSOPInstanceUID (0008,1155) vr=UI, vm=1, type=1C
+        /// ReferencedSOPInstanceUID (0008,1155) vr=UI, vm=1, type=1
         DcmUniqueIdentifier ReferencedSOPInstanceUID;
         /// StartCumulativeMetersetWeight (300c,0008) vr=DS, vm=1, type=3
         DcmDecimalString StartCumulativeMetersetWeight;

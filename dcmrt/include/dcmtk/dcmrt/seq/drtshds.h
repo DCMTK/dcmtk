@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTShieldingDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -171,11 +171,11 @@ class DCMTK_DCMRT_EXPORT DRTShieldingDeviceSequence
         DcmLongString AccessoryCode;
         /// ShieldingDeviceDescription (300a,01a6) vr=ST, vm=1, type=3
         DcmShortText ShieldingDeviceDescription;
-        /// ShieldingDeviceLabel (300a,01a4) vr=SH, vm=1, type=2C
+        /// ShieldingDeviceLabel (300a,01a4) vr=SH, vm=1, type=2
         DcmShortString ShieldingDeviceLabel;
         /// ShieldingDevicePosition (300a,01a8) vr=SH, vm=1, type=3
         DcmShortString ShieldingDevicePosition;
-        /// ShieldingDeviceType (300a,01a2) vr=CS, vm=1, type=1C
+        /// ShieldingDeviceType (300a,01a2) vr=CS, vm=1, type=1
         DcmCodeString ShieldingDeviceType;
 
     };

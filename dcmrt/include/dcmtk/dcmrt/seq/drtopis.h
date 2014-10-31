@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTOtherPatientIDsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtipiqs.h"  // for IssuerOfPatientIDQualifiersSequence
 
 
 /** Interface class for OtherPatientIDsSequence (0010,1002)
@@ -111,6 +112,20 @@ class DCMTK_DCMRT_EXPORT DRTOtherPatientIDsSequence
          */
         OFCondition getTypeOfPatientID(OFString &value, const signed long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get IssuerOfPatientIDQualifiersSequence (0010,0024)
+         *  @return reference to sequence element
+         */
+        DRTIssuerOfPatientIDQualifiersSequence &getIssuerOfPatientIDQualifiersSequence()
+            { return IssuerOfPatientIDQualifiersSequence; }
+
+        /** get IssuerOfPatientIDQualifiersSequence (0010,0024)
+         *  @return const reference to sequence element
+         */
+        const DRTIssuerOfPatientIDQualifiersSequence &getIssuerOfPatientIDQualifiersSequence() const
+            { return IssuerOfPatientIDQualifiersSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set IssuerOfPatientID (0010,0021)
@@ -139,8 +154,10 @@ class DCMTK_DCMRT_EXPORT DRTOtherPatientIDsSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// IssuerOfPatientID (0010,0021) vr=LO, vm=1, type=1
+        /// IssuerOfPatientID (0010,0021) vr=LO, vm=1, type=3
         DcmLongString IssuerOfPatientID;
+        /// IssuerOfPatientIDQualifiersSequence (0010,0024) vr=SQ, vm=1, type=3
+        DRTIssuerOfPatientIDQualifiersSequence IssuerOfPatientIDQualifiersSequence;
         /// PatientID (0010,0020) vr=LO, vm=1, type=1
         DcmLongString PatientID;
         /// TypeOfPatientID (0010,0022) vr=CS, vm=1, type=1

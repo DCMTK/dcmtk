@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedDoseReferenceSequenceInRTFractionSchemeModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -363,7 +363,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedDoseReferenceSequenceInRTFractionSchemeMod
         DcmDecimalString OrganAtRiskMaximumDose;
         /// OrganAtRiskOverdoseVolumeFraction (300a,002d) vr=DS, vm=1, type=3
         DcmDecimalString OrganAtRiskOverdoseVolumeFraction;
-        /// ReferencedDoseReferenceNumber (300c,0051) vr=IS, vm=1, type=1C
+        /// ReferencedDoseReferenceNumber (300c,0051) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedDoseReferenceNumber;
         /// TargetMaximumDose (300a,0027) vr=DS, vm=1, type=3
         DcmDecimalString TargetMaximumDose;

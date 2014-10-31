@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTContentItemModifierSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -25,9 +25,13 @@ DRTContentItemModifierSequence::Item::Item(const OFBool emptyDefaultItem)
     ConceptNameCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     Date(DCM_Date),
     DateTime(DCM_DateTime),
+    FloatingPointValue(DCM_FloatingPointValue),
     MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumericValue(DCM_NumericValue),
     PersonName(DCM_PersonName),
+    RationalDenominatorValue(DCM_RationalDenominatorValue),
+    RationalNumeratorValue(DCM_RationalNumeratorValue),
+    ReferencedSOPSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     TextValue(DCM_TextValue),
     Time(DCM_Time),
     UID(DCM_UID),
@@ -42,9 +46,13 @@ DRTContentItemModifierSequence::Item::Item(const Item &copy)
     ConceptNameCodeSequence(copy.ConceptNameCodeSequence),
     Date(copy.Date),
     DateTime(copy.DateTime),
+    FloatingPointValue(copy.FloatingPointValue),
     MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
     NumericValue(copy.NumericValue),
     PersonName(copy.PersonName),
+    RationalDenominatorValue(copy.RationalDenominatorValue),
+    RationalNumeratorValue(copy.RationalNumeratorValue),
+    ReferencedSOPSequence(copy.ReferencedSOPSequence),
     TextValue(copy.TextValue),
     Time(copy.Time),
     UID(copy.UID),
@@ -67,9 +75,13 @@ DRTContentItemModifierSequence::Item &DRTContentItemModifierSequence::Item::oper
         ConceptNameCodeSequence = copy.ConceptNameCodeSequence;
         Date = copy.Date;
         DateTime = copy.DateTime;
+        FloatingPointValue = copy.FloatingPointValue;
         MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
         NumericValue = copy.NumericValue;
         PersonName = copy.PersonName;
+        RationalDenominatorValue = copy.RationalDenominatorValue;
+        RationalNumeratorValue = copy.RationalNumeratorValue;
+        ReferencedSOPSequence = copy.ReferencedSOPSequence;
         TextValue = copy.TextValue;
         Time = copy.Time;
         UID = copy.UID;
@@ -94,7 +106,11 @@ void DRTContentItemModifierSequence::Item::clear()
         TextValue.clear();
         ConceptCodeSequence.clear();
         NumericValue.clear();
+        FloatingPointValue.clear();
+        RationalNumeratorValue.clear();
+        RationalDenominatorValue.clear();
         MeasurementUnitsCodeSequence.clear();
+        ReferencedSOPSequence.clear();
     }
 }
 
@@ -111,7 +127,11 @@ OFBool DRTContentItemModifierSequence::Item::isEmpty()
            TextValue.isEmpty() &&
            ConceptCodeSequence.isEmpty() &&
            NumericValue.isEmpty() &&
-           MeasurementUnitsCodeSequence.isEmpty();
+           FloatingPointValue.isEmpty() &&
+           RationalNumeratorValue.isEmpty() &&
+           RationalDenominatorValue.isEmpty() &&
+           MeasurementUnitsCodeSequence.isEmpty() &&
+           ReferencedSOPSequence.isEmpty();
 }
 
 
@@ -138,7 +158,11 @@ OFCondition DRTContentItemModifierSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, TextValue, "1", "1C", "ContentItemModifierSequence");
         ConceptCodeSequence.read(item, "1-n", "1C", "ContentItemModifierSequence");
         getAndCheckElementFromDataset(item, NumericValue, "1-n", "1C", "ContentItemModifierSequence");
+        getAndCheckElementFromDataset(item, FloatingPointValue, "1-n", "1C", "ContentItemModifierSequence");
+        getAndCheckElementFromDataset(item, RationalNumeratorValue, "1-n", "1C", "ContentItemModifierSequence");
+        getAndCheckElementFromDataset(item, RationalDenominatorValue, "1-n", "1C", "ContentItemModifierSequence");
         MeasurementUnitsCodeSequence.read(item, "1-n", "1C", "ContentItemModifierSequence");
+        ReferencedSOPSequence.read(item, "1-n", "1C", "ContentItemModifierSequence");
         result = EC_Normal;
     }
     return result;
@@ -161,7 +185,11 @@ OFCondition DRTContentItemModifierSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUnlimitedText(TextValue), "1", "1C", "ContentItemModifierSequence");
         if (result.good()) result = ConceptCodeSequence.write(item, "1-n", "1C", "ContentItemModifierSequence");
         addElementToDataset(result, item, new DcmDecimalString(NumericValue), "1-n", "1C", "ContentItemModifierSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(FloatingPointValue), "1-n", "1C", "ContentItemModifierSequence");
+        addElementToDataset(result, item, new DcmSignedLong(RationalNumeratorValue), "1-n", "1C", "ContentItemModifierSequence");
+        addElementToDataset(result, item, new DcmUnsignedLong(RationalDenominatorValue), "1-n", "1C", "ContentItemModifierSequence");
         if (result.good()) result = MeasurementUnitsCodeSequence.write(item, "1-n", "1C", "ContentItemModifierSequence");
+        if (result.good()) result = ReferencedSOPSequence.write(item, "1-n", "1C", "ContentItemModifierSequence");
     }
     return result;
 }
@@ -182,6 +210,15 @@ OFCondition DRTContentItemModifierSequence::Item::getDateTime(OFString &value, c
         return EC_IllegalCall;
     else
         return getStringValueFromElement(DateTime, value, pos);
+}
+
+
+OFCondition DRTContentItemModifierSequence::Item::getFloatingPointValue(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointDouble &, FloatingPointValue).getFloat64(value, pos);
 }
 
 
@@ -218,6 +255,24 @@ OFCondition DRTContentItemModifierSequence::Item::getPersonName(OFString &value,
         return EC_IllegalCall;
     else
         return getStringValueFromElement(PersonName, value, pos);
+}
+
+
+OFCondition DRTContentItemModifierSequence::Item::getRationalDenominatorValue(Uint32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmUnsignedLong &, RationalDenominatorValue).getUint32(value, pos);
+}
+
+
+OFCondition DRTContentItemModifierSequence::Item::getRationalNumeratorValue(Sint32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmSignedLong &, RationalNumeratorValue).getSint32(value, pos);
 }
 
 
@@ -283,6 +338,15 @@ OFCondition DRTContentItemModifierSequence::Item::setDateTime(const OFString &va
 }
 
 
+OFCondition DRTContentItemModifierSequence::Item::setFloatingPointValue(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return FloatingPointValue.putFloat64(value, pos);
+}
+
+
 OFCondition DRTContentItemModifierSequence::Item::setNumericValue(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -306,6 +370,24 @@ OFCondition DRTContentItemModifierSequence::Item::setPersonName(const OFString &
             result = PersonName.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTContentItemModifierSequence::Item::setRationalDenominatorValue(const Uint32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RationalDenominatorValue.putUint32(value, pos);
+}
+
+
+OFCondition DRTContentItemModifierSequence::Item::setRationalNumeratorValue(const Sint32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RationalNumeratorValue.putSint32(value, pos);
 }
 
 

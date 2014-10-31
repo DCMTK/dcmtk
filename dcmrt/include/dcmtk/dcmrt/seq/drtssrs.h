@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTStructureSetROISequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtdcs.h"    // for DerivationCodeSequence
 
 
 /** Interface class for StructureSetROISequence (3006,0020)
@@ -153,6 +154,20 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetROISequence
          */
         OFCondition getReferencedFrameOfReferenceUID(OFString &value, const signed long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get DerivationCodeSequence (0008,9215)
+         *  @return reference to sequence element
+         */
+        DRTDerivationCodeSequence &getDerivationCodeSequence()
+            { return DerivationCodeSequence; }
+
+        /** get DerivationCodeSequence (0008,9215)
+         *  @return const reference to sequence element
+         */
+        const DRTDerivationCodeSequence &getDerivationCodeSequence() const
+            { return DerivationCodeSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set ROIDescription (3006,0028)
@@ -209,19 +224,21 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetROISequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// DerivationCodeSequence (0008,9215) vr=SQ, vm=1, type=3
+        DRTDerivationCodeSequence DerivationCodeSequence;
         /// ROIDescription (3006,0028) vr=ST, vm=1, type=3
         DcmShortText ROIDescription;
-        /// ROIGenerationAlgorithm (3006,0036) vr=CS, vm=1, type=2C
+        /// ROIGenerationAlgorithm (3006,0036) vr=CS, vm=1, type=2
         DcmCodeString ROIGenerationAlgorithm;
         /// ROIGenerationDescription (3006,0038) vr=LO, vm=1, type=3
         DcmLongString ROIGenerationDescription;
-        /// ROIName (3006,0026) vr=LO, vm=1, type=2C
+        /// ROIName (3006,0026) vr=LO, vm=1, type=2
         DcmLongString ROIName;
-        /// ROINumber (3006,0022) vr=IS, vm=1, type=1C
+        /// ROINumber (3006,0022) vr=IS, vm=1, type=1
         DcmIntegerString ROINumber;
         /// ROIVolume (3006,002c) vr=DS, vm=1, type=3
         DcmDecimalString ROIVolume;
-        /// ReferencedFrameOfReferenceUID (3006,0024) vr=UI, vm=1, type=1C
+        /// ReferencedFrameOfReferenceUID (3006,0024) vr=UI, vm=1, type=1
         DcmUniqueIdentifier ReferencedFrameOfReferenceUID;
 
     };

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTSourceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -139,6 +139,13 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
          */
         OFCondition getReferenceAirKermaRate(Float64 &value, const unsigned long pos = 0) const;
 
+        /** get SourceDescription (300a,021c)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getSourceDescription(OFString &value, const signed long pos = 0) const;
+
         /** get SourceEncapsulationNominalThickness (300a,0222)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -195,6 +202,13 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
          */
         OFCondition getSourceManufacturer(OFString &value, const signed long pos = 0) const;
 
+        /** get SourceModelID (300a,021b)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getSourceModelID(OFString &value, const signed long pos = 0) const;
+
         /** get SourceNumber (300a,0212)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -208,6 +222,13 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getSourceNumber(Sint32 &value, const unsigned long pos = 0) const;
+
+        /** get SourceSerialNumber (3008,0105)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getSourceSerialNumber(OFString &value, const signed long pos = 0) const;
 
         /** get SourceStrength (300a,022b)
          *  @param  value  reference to variable in which the value should be stored
@@ -281,6 +302,13 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
          */
         OFCondition setReferenceAirKermaRate(const OFString &value, const OFBool check = OFTrue);
 
+        /** set SourceDescription (300a,021c)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setSourceDescription(const OFString &value, const OFBool check = OFTrue);
+
         /** set SourceEncapsulationNominalThickness (300a,0222)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -316,12 +344,26 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
          */
         OFCondition setSourceManufacturer(const OFString &value, const OFBool check = OFTrue);
 
+        /** set SourceModelID (300a,021b)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setSourceModelID(const OFString &value, const OFBool check = OFTrue);
+
         /** set SourceNumber (300a,0212)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setSourceNumber(const OFString &value, const OFBool check = OFTrue);
+
+        /** set SourceSerialNumber (3008,0105)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setSourceSerialNumber(const OFString &value, const OFBool check = OFTrue);
 
         /** set SourceStrength (300a,022b)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -371,6 +413,8 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
         DcmShortString MaterialID;
         /// ReferenceAirKermaRate (300a,022a) vr=DS, vm=1, type=1
         DcmDecimalString ReferenceAirKermaRate;
+        /// SourceDescription (300a,021c) vr=LO, vm=1, type=3
+        DcmLongString SourceDescription;
         /// SourceEncapsulationNominalThickness (300a,0222) vr=DS, vm=1, type=3
         DcmDecimalString SourceEncapsulationNominalThickness;
         /// SourceEncapsulationNominalTransmission (300a,0224) vr=DS, vm=1, type=3
@@ -381,8 +425,12 @@ class DCMTK_DCMRT_EXPORT DRTSourceSequence
         DcmLongString SourceIsotopeName;
         /// SourceManufacturer (300a,0216) vr=LO, vm=1, type=3
         DcmLongString SourceManufacturer;
+        /// SourceModelID (300a,021b) vr=SH, vm=1, type=3
+        DcmShortString SourceModelID;
         /// SourceNumber (300a,0212) vr=IS, vm=1, type=1
         DcmIntegerString SourceNumber;
+        /// SourceSerialNumber (3008,0105) vr=LO, vm=1, type=3
+        DcmLongString SourceSerialNumber;
         /// SourceStrength (300a,022b) vr=DS, vm=1, type=1C
         DcmDecimalString SourceStrength;
         /// SourceStrengthReferenceDate (300a,022c) vr=DA, vm=1, type=1

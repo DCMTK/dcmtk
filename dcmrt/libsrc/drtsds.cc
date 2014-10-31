@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTSetupDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,6 +21,7 @@
 
 DRTSetupDeviceSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    AccessoryCode(DCM_AccessoryCode),
     SetupDeviceDescription(DCM_SetupDeviceDescription),
     SetupDeviceLabel(DCM_SetupDeviceLabel),
     SetupDeviceParameter(DCM_SetupDeviceParameter),
@@ -32,6 +33,7 @@ DRTSetupDeviceSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTSetupDeviceSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    AccessoryCode(copy.AccessoryCode),
     SetupDeviceDescription(copy.SetupDeviceDescription),
     SetupDeviceLabel(copy.SetupDeviceLabel),
     SetupDeviceParameter(copy.SetupDeviceParameter),
@@ -51,6 +53,7 @@ DRTSetupDeviceSequence::Item &DRTSetupDeviceSequence::Item::operator=(const Item
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        AccessoryCode = copy.AccessoryCode;
         SetupDeviceDescription = copy.SetupDeviceDescription;
         SetupDeviceLabel = copy.SetupDeviceLabel;
         SetupDeviceParameter = copy.SetupDeviceParameter;
@@ -71,6 +74,7 @@ void DRTSetupDeviceSequence::Item::clear()
         SetupDeviceDescription.clear();
         SetupDeviceParameter.clear();
         SetupReferenceDescription.clear();
+        AccessoryCode.clear();
     }
 }
 
@@ -81,7 +85,8 @@ OFBool DRTSetupDeviceSequence::Item::isEmpty()
            SetupDeviceLabel.isEmpty() &&
            SetupDeviceDescription.isEmpty() &&
            SetupDeviceParameter.isEmpty() &&
-           SetupReferenceDescription.isEmpty();
+           SetupReferenceDescription.isEmpty() &&
+           AccessoryCode.isEmpty();
 }
 
 
@@ -98,11 +103,12 @@ OFCondition DRTSetupDeviceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, SetupDeviceType, "1", "1C", "SetupDeviceSequence");
-        getAndCheckElementFromDataset(item, SetupDeviceLabel, "1", "2C", "SetupDeviceSequence");
+        getAndCheckElementFromDataset(item, SetupDeviceType, "1", "1", "SetupDeviceSequence");
+        getAndCheckElementFromDataset(item, SetupDeviceLabel, "1", "2", "SetupDeviceSequence");
         getAndCheckElementFromDataset(item, SetupDeviceDescription, "1", "3", "SetupDeviceSequence");
-        getAndCheckElementFromDataset(item, SetupDeviceParameter, "1", "2C", "SetupDeviceSequence");
+        getAndCheckElementFromDataset(item, SetupDeviceParameter, "1", "2", "SetupDeviceSequence");
         getAndCheckElementFromDataset(item, SetupReferenceDescription, "1", "3", "SetupDeviceSequence");
+        getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "SetupDeviceSequence");
         result = EC_Normal;
     }
     return result;
@@ -115,13 +121,23 @@ OFCondition DRTSetupDeviceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmCodeString(SetupDeviceType), "1", "1C", "SetupDeviceSequence");
-        addElementToDataset(result, item, new DcmShortString(SetupDeviceLabel), "1", "2C", "SetupDeviceSequence");
+        addElementToDataset(result, item, new DcmCodeString(SetupDeviceType), "1", "1", "SetupDeviceSequence");
+        addElementToDataset(result, item, new DcmShortString(SetupDeviceLabel), "1", "2", "SetupDeviceSequence");
         addElementToDataset(result, item, new DcmShortText(SetupDeviceDescription), "1", "3", "SetupDeviceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(SetupDeviceParameter), "1", "2C", "SetupDeviceSequence");
+        addElementToDataset(result, item, new DcmDecimalString(SetupDeviceParameter), "1", "2", "SetupDeviceSequence");
         addElementToDataset(result, item, new DcmShortText(SetupReferenceDescription), "1", "3", "SetupDeviceSequence");
+        addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "SetupDeviceSequence");
     }
     return result;
+}
+
+
+OFCondition DRTSetupDeviceSequence::Item::getAccessoryCode(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(AccessoryCode, value, pos);
 }
 
 
@@ -176,6 +192,19 @@ OFCondition DRTSetupDeviceSequence::Item::getSetupReferenceDescription(OFString 
         return EC_IllegalCall;
     else
         return getStringValueFromElement(SetupReferenceDescription, value, pos);
+}
+
+
+OFCondition DRTSetupDeviceSequence::Item::setAccessoryCode(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = AccessoryCode.putOFStringArray(value);
+    }
+    return result;
 }
 
 

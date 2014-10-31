@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTRequestAttributesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -22,6 +22,7 @@
 DRTRequestAttributesSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     AccessionNumber(DCM_AccessionNumber),
+    IssuerOfAccessionNumberSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReasonForRequestedProcedureCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReasonForTheRequestedProcedure(DCM_ReasonForTheRequestedProcedure),
     ReferencedStudySequence(emptyDefaultItem /*emptyDefaultSequence*/),
@@ -39,6 +40,7 @@ DRTRequestAttributesSequence::Item::Item(const OFBool emptyDefaultItem)
 DRTRequestAttributesSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     AccessionNumber(copy.AccessionNumber),
+    IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
     ReasonForRequestedProcedureCodeSequence(copy.ReasonForRequestedProcedureCodeSequence),
     ReasonForTheRequestedProcedure(copy.ReasonForTheRequestedProcedure),
     ReferencedStudySequence(copy.ReferencedStudySequence),
@@ -64,6 +66,7 @@ DRTRequestAttributesSequence::Item &DRTRequestAttributesSequence::Item::operator
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
         AccessionNumber = copy.AccessionNumber;
+        IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
         ReasonForRequestedProcedureCodeSequence = copy.ReasonForRequestedProcedureCodeSequence;
         ReasonForTheRequestedProcedure = copy.ReasonForTheRequestedProcedure;
         ReferencedStudySequence = copy.ReferencedStudySequence;
@@ -86,6 +89,7 @@ void DRTRequestAttributesSequence::Item::clear()
         /* clear all DICOM attributes */
         RequestedProcedureID.clear();
         AccessionNumber.clear();
+        IssuerOfAccessionNumberSequence.clear();
         StudyInstanceUID.clear();
         ReferencedStudySequence.clear();
         RequestedProcedureDescription.clear();
@@ -103,6 +107,7 @@ OFBool DRTRequestAttributesSequence::Item::isEmpty()
 {
     return RequestedProcedureID.isEmpty() &&
            AccessionNumber.isEmpty() &&
+           IssuerOfAccessionNumberSequence.isEmpty() &&
            StudyInstanceUID.isEmpty() &&
            ReferencedStudySequence.isEmpty() &&
            RequestedProcedureDescription.isEmpty() &&
@@ -128,15 +133,16 @@ OFCondition DRTRequestAttributesSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, RequestedProcedureID, "1", "1", "RequestAttributesSequence");
+        getAndCheckElementFromDataset(item, RequestedProcedureID, "1", "1C", "RequestAttributesSequence");
         getAndCheckElementFromDataset(item, AccessionNumber, "1", "3", "RequestAttributesSequence");
+        IssuerOfAccessionNumberSequence.read(item, "1-n", "3", "RequestAttributesSequence");
         getAndCheckElementFromDataset(item, StudyInstanceUID, "1", "3", "RequestAttributesSequence");
         ReferencedStudySequence.read(item, "1-n", "3", "RequestAttributesSequence");
         getAndCheckElementFromDataset(item, RequestedProcedureDescription, "1", "3", "RequestAttributesSequence");
         RequestedProcedureCodeSequence.read(item, "1-n", "3", "RequestAttributesSequence");
         getAndCheckElementFromDataset(item, ReasonForTheRequestedProcedure, "1", "3", "RequestAttributesSequence");
         ReasonForRequestedProcedureCodeSequence.read(item, "1-n", "3", "RequestAttributesSequence");
-        getAndCheckElementFromDataset(item, ScheduledProcedureStepID, "1", "1", "RequestAttributesSequence");
+        getAndCheckElementFromDataset(item, ScheduledProcedureStepID, "1", "1C", "RequestAttributesSequence");
         getAndCheckElementFromDataset(item, ScheduledProcedureStepDescription, "1", "3", "RequestAttributesSequence");
         ScheduledProtocolCodeSequence.read(item, "1-n", "3", "RequestAttributesSequence");
         result = EC_Normal;
@@ -151,15 +157,16 @@ OFCondition DRTRequestAttributesSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmShortString(RequestedProcedureID), "1", "1", "RequestAttributesSequence");
+        addElementToDataset(result, item, new DcmShortString(RequestedProcedureID), "1", "1C", "RequestAttributesSequence");
         addElementToDataset(result, item, new DcmShortString(AccessionNumber), "1", "3", "RequestAttributesSequence");
+        if (result.good()) result = IssuerOfAccessionNumberSequence.write(item, "1-n", "3", "RequestAttributesSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(StudyInstanceUID), "1", "3", "RequestAttributesSequence");
         if (result.good()) result = ReferencedStudySequence.write(item, "1-n", "3", "RequestAttributesSequence");
         addElementToDataset(result, item, new DcmLongString(RequestedProcedureDescription), "1", "3", "RequestAttributesSequence");
         if (result.good()) result = RequestedProcedureCodeSequence.write(item, "1-n", "3", "RequestAttributesSequence");
         addElementToDataset(result, item, new DcmLongString(ReasonForTheRequestedProcedure), "1", "3", "RequestAttributesSequence");
         if (result.good()) result = ReasonForRequestedProcedureCodeSequence.write(item, "1-n", "3", "RequestAttributesSequence");
-        addElementToDataset(result, item, new DcmShortString(ScheduledProcedureStepID), "1", "1", "RequestAttributesSequence");
+        addElementToDataset(result, item, new DcmShortString(ScheduledProcedureStepID), "1", "1C", "RequestAttributesSequence");
         addElementToDataset(result, item, new DcmLongString(ScheduledProcedureStepDescription), "1", "3", "RequestAttributesSequence");
         if (result.good()) result = ScheduledProtocolCodeSequence.write(item, "1-n", "3", "RequestAttributesSequence");
     }

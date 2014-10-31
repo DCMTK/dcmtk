@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTTreatmentSessionIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -32,6 +32,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     DeliveredTreatmentTime(DCM_DeliveredTreatmentTime),
     FixationLightAzimuthalAngle(DCM_FixationLightAzimuthalAngle),
     FixationLightPolarAngle(DCM_FixationLightPolarAngle),
+    GeneralAccessorySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     IonControlPointDeliverySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumberOfBlocks(DCM_NumberOfBlocks),
     NumberOfBoli(DCM_NumberOfBoli),
@@ -87,6 +88,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const Item &copy)
     DeliveredTreatmentTime(copy.DeliveredTreatmentTime),
     FixationLightAzimuthalAngle(copy.FixationLightAzimuthalAngle),
     FixationLightPolarAngle(copy.FixationLightPolarAngle),
+    GeneralAccessorySequence(copy.GeneralAccessorySequence),
     IonControlPointDeliverySequence(copy.IonControlPointDeliverySequence),
     NumberOfBlocks(copy.NumberOfBlocks),
     NumberOfBoli(copy.NumberOfBoli),
@@ -150,6 +152,7 @@ DRTTreatmentSessionIonBeamSequence::Item &DRTTreatmentSessionIonBeamSequence::It
         DeliveredTreatmentTime = copy.DeliveredTreatmentTime;
         FixationLightAzimuthalAngle = copy.FixationLightAzimuthalAngle;
         FixationLightPolarAngle = copy.FixationLightPolarAngle;
+        GeneralAccessorySequence = copy.GeneralAccessorySequence;
         IonControlPointDeliverySequence = copy.IonControlPointDeliverySequence;
         NumberOfBlocks = copy.NumberOfBlocks;
         NumberOfBoli = copy.NumberOfBoli;
@@ -223,6 +226,7 @@ void DRTTreatmentSessionIonBeamSequence::Item::clear()
         RecordedBlockSequence.clear();
         RecordedSnoutSequence.clear();
         ApplicatorSequence.clear();
+        GeneralAccessorySequence.clear();
         NumberOfRangeShifters.clear();
         RecordedRangeShifterSequence.clear();
         NumberOfLateralSpreadingDevices.clear();
@@ -278,6 +282,7 @@ OFBool DRTTreatmentSessionIonBeamSequence::Item::isEmpty()
            RecordedBlockSequence.isEmpty() &&
            RecordedSnoutSequence.isEmpty() &&
            ApplicatorSequence.isEmpty() &&
+           GeneralAccessorySequence.isEmpty() &&
            NumberOfRangeShifters.isEmpty() &&
            RecordedRangeShifterSequence.isEmpty() &&
            NumberOfLateralSpreadingDevices.isEmpty() &&
@@ -343,6 +348,7 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::read(DcmItem &item)
         RecordedBlockSequence.read(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
         RecordedSnoutSequence.read(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
         ApplicatorSequence.read(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
+        GeneralAccessorySequence.read(item, "1-n", "3", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, NumberOfRangeShifters, "1", "1", "TreatmentSessionIonBeamSequence");
         RecordedRangeShifterSequence.read(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, NumberOfLateralSpreadingDevices, "1", "1", "TreatmentSessionIonBeamSequence");
@@ -404,6 +410,7 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::write(DcmItem &item)
         if (result.good()) result = RecordedBlockSequence.write(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
         if (result.good()) result = RecordedSnoutSequence.write(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
         if (result.good()) result = ApplicatorSequence.write(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
+        if (result.good()) result = GeneralAccessorySequence.write(item, "1-n", "3", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfRangeShifters), "1", "1", "TreatmentSessionIonBeamSequence");
         if (result.good()) result = RecordedRangeShifterSequence.write(item, "1-n", "1C", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfLateralSpreadingDevices), "1", "1", "TreatmentSessionIonBeamSequence");

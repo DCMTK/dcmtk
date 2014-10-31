@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTFractionGroupSummarySequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -99,9 +99,9 @@ OFCondition DRTFractionGroupSummarySequence::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ReferencedFractionGroupNumber, "1", "3", "FractionGroupSummarySequence");
-        getAndCheckElementFromDataset(item, FractionGroupType, "1", "2C", "FractionGroupSummarySequence");
-        getAndCheckElementFromDataset(item, NumberOfFractionsPlanned, "1", "2C", "FractionGroupSummarySequence");
-        getAndCheckElementFromDataset(item, NumberOfFractionsDelivered, "1", "2C", "FractionGroupSummarySequence");
+        getAndCheckElementFromDataset(item, FractionGroupType, "1", "2", "FractionGroupSummarySequence");
+        getAndCheckElementFromDataset(item, NumberOfFractionsPlanned, "1", "2", "FractionGroupSummarySequence");
+        getAndCheckElementFromDataset(item, NumberOfFractionsDelivered, "1", "2", "FractionGroupSummarySequence");
         FractionStatusSummarySequence.read(item, "1-n", "3", "FractionGroupSummarySequence");
         result = EC_Normal;
     }
@@ -116,9 +116,9 @@ OFCondition DRTFractionGroupSummarySequence::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedFractionGroupNumber), "1", "3", "FractionGroupSummarySequence");
-        addElementToDataset(result, item, new DcmCodeString(FractionGroupType), "1", "2C", "FractionGroupSummarySequence");
-        addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsPlanned), "1", "2C", "FractionGroupSummarySequence");
-        addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsDelivered), "1", "2C", "FractionGroupSummarySequence");
+        addElementToDataset(result, item, new DcmCodeString(FractionGroupType), "1", "2", "FractionGroupSummarySequence");
+        addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsPlanned), "1", "2", "FractionGroupSummarySequence");
+        addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsDelivered), "1", "2", "FractionGroupSummarySequence");
         if (result.good()) result = FractionStatusSummarySequence.write(item, "1-n", "3", "FractionGroupSummarySequence");
     }
     return result;

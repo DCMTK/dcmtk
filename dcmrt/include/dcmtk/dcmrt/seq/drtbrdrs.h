@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBrachyReferencedDoseReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -139,9 +139,9 @@ class DCMTK_DCMRT_EXPORT DRTBrachyReferencedDoseReferenceSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// CumulativeDoseReferenceCoefficient (300a,010c) vr=DS, vm=1, type=1C
+        /// CumulativeDoseReferenceCoefficient (300a,010c) vr=DS, vm=1, type=1
         DcmDecimalString CumulativeDoseReferenceCoefficient;
-        /// ReferencedDoseReferenceNumber (300c,0051) vr=IS, vm=1, type=1C
+        /// ReferencedDoseReferenceNumber (300c,0051) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedDoseReferenceNumber;
 
     };

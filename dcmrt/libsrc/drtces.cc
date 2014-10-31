@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTContributingEquipmentSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -30,6 +30,8 @@ DRTContributingEquipmentSequence::Item::Item(const OFBool emptyDefaultItem)
     InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
     Manufacturer(DCM_Manufacturer),
     ManufacturerModelName(DCM_ManufacturerModelName),
+    OperatorIdentificationSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    OperatorsName(DCM_OperatorsName),
     PurposeOfReferenceCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     SoftwareVersions(DCM_SoftwareVersions),
     SpatialResolution(DCM_SpatialResolution),
@@ -50,6 +52,8 @@ DRTContributingEquipmentSequence::Item::Item(const Item &copy)
     InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
     Manufacturer(copy.Manufacturer),
     ManufacturerModelName(copy.ManufacturerModelName),
+    OperatorIdentificationSequence(copy.OperatorIdentificationSequence),
+    OperatorsName(copy.OperatorsName),
     PurposeOfReferenceCodeSequence(copy.PurposeOfReferenceCodeSequence),
     SoftwareVersions(copy.SoftwareVersions),
     SpatialResolution(copy.SpatialResolution),
@@ -78,6 +82,8 @@ DRTContributingEquipmentSequence::Item &DRTContributingEquipmentSequence::Item::
         InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
         Manufacturer = copy.Manufacturer;
         ManufacturerModelName = copy.ManufacturerModelName;
+        OperatorIdentificationSequence = copy.OperatorIdentificationSequence;
+        OperatorsName = copy.OperatorsName;
         PurposeOfReferenceCodeSequence = copy.PurposeOfReferenceCodeSequence;
         SoftwareVersions = copy.SoftwareVersions;
         SpatialResolution = copy.SpatialResolution;
@@ -99,6 +105,8 @@ void DRTContributingEquipmentSequence::Item::clear()
         InstitutionAddress.clear();
         StationName.clear();
         InstitutionalDepartmentName.clear();
+        OperatorsName.clear();
+        OperatorIdentificationSequence.clear();
         ManufacturerModelName.clear();
         DeviceSerialNumber.clear();
         SoftwareVersions.clear();
@@ -119,6 +127,8 @@ OFBool DRTContributingEquipmentSequence::Item::isEmpty()
            InstitutionAddress.isEmpty() &&
            StationName.isEmpty() &&
            InstitutionalDepartmentName.isEmpty() &&
+           OperatorsName.isEmpty() &&
+           OperatorIdentificationSequence.isEmpty() &&
            ManufacturerModelName.isEmpty() &&
            DeviceSerialNumber.isEmpty() &&
            SoftwareVersions.isEmpty() &&
@@ -149,6 +159,8 @@ OFCondition DRTContributingEquipmentSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, InstitutionAddress, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, StationName, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, InstitutionalDepartmentName, "1", "3", "ContributingEquipmentSequence");
+        getAndCheckElementFromDataset(item, OperatorsName, "1-n", "3", "ContributingEquipmentSequence");
+        OperatorIdentificationSequence.read(item, "1-n", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, ManufacturerModelName, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, DeviceSerialNumber, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, SoftwareVersions, "1-n", "3", "ContributingEquipmentSequence");
@@ -175,6 +187,8 @@ OFCondition DRTContributingEquipmentSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmShortText(InstitutionAddress), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmShortString(StationName), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(InstitutionalDepartmentName), "1", "3", "ContributingEquipmentSequence");
+        addElementToDataset(result, item, new DcmPersonName(OperatorsName), "1-n", "3", "ContributingEquipmentSequence");
+        if (result.good()) result = OperatorIdentificationSequence.write(item, "1-n", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(ManufacturerModelName), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(DeviceSerialNumber), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(SoftwareVersions), "1-n", "3", "ContributingEquipmentSequence");
@@ -266,6 +280,15 @@ OFCondition DRTContributingEquipmentSequence::Item::getManufacturerModelName(OFS
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ManufacturerModelName, value, pos);
+}
+
+
+OFCondition DRTContributingEquipmentSequence::Item::getOperatorsName(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(OperatorsName, value, pos);
 }
 
 
@@ -426,6 +449,19 @@ OFCondition DRTContributingEquipmentSequence::Item::setManufacturerModelName(con
         result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ManufacturerModelName.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTContributingEquipmentSequence::Item::setOperatorsName(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+        if (result.good())
+            result = OperatorsName.putOFStringArray(value);
     }
     return result;
 }

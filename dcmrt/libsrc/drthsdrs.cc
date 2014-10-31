@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTHL7StructuredDocumentReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -112,7 +112,7 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::Item::write(DcmItem &item
         addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "HL7StructuredDocumentReferenceSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "HL7StructuredDocumentReferenceSequence");
         addElementToDataset(result, item, new DcmShortText(HL7InstanceIdentifier), "1", "1", "HL7StructuredDocumentReferenceSequence");
-        addElementToDataset(result, item, new DcmUnlimitedText(RetrieveURI), "1", "3", "HL7StructuredDocumentReferenceSequence");
+        addElementToDataset(result, item, new DcmUniversalResourceIdentifierOrLocator(RetrieveURI), "1", "3", "HL7StructuredDocumentReferenceSequence");
     }
     return result;
 }
@@ -198,7 +198,7 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::Item::setRetrieveURI(cons
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
-        result = (check) ? DcmUnlimitedText::checkStringValue(value) : EC_Normal;
+        result = (check) ? DcmUniversalResourceIdentifierOrLocator::checkStringValue(value) : EC_Normal;
         if (result.good())
             result = RetrieveURI.putOFStringArray(value);
     }

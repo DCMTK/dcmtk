@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtas6.h"    // for ApplicatorSequence
+#include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
 #include "dcmtk/dcmrt/seq/drtiblds.h"  // for IonBeamLimitingDeviceSequence
 #include "dcmtk/dcmrt/seq/drtibls.h"   // for IonBlockSequence
 #include "dcmtk/dcmrt/seq/drticps.h"   // for IonControlPointSequence
@@ -481,6 +482,18 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         const DRTApplicatorSequenceInRTIonBeamsModule &getApplicatorSequence() const
             { return ApplicatorSequence; }
 
+        /** get GeneralAccessorySequence (300a,0420)
+         *  @return reference to sequence element
+         */
+        DRTGeneralAccessorySequence &getGeneralAccessorySequence()
+            { return GeneralAccessorySequence; }
+
+        /** get GeneralAccessorySequence (300a,0420)
+         *  @return const reference to sequence element
+         */
+        const DRTGeneralAccessorySequence &getGeneralAccessorySequence() const
+            { return GeneralAccessorySequence; }
+
         /** get IonBeamLimitingDeviceSequence (300a,03a4)
          *  @return reference to sequence element
          */
@@ -916,6 +929,8 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         DcmFloatingPointSingle FixationLightAzimuthalAngle;
         /// FixationLightPolarAngle (300a,0358) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationLightPolarAngle;
+        /// GeneralAccessorySequence (300a,0420) vr=SQ, vm=1, type=3
+        DRTGeneralAccessorySequence GeneralAccessorySequence;
         /// InstitutionAddress (0008,0081) vr=ST, vm=1, type=3
         DcmShortText InstitutionAddress;
         /// InstitutionName (0008,0080) vr=LO, vm=1, type=3

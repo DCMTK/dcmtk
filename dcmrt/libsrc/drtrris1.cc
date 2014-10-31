@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedReferenceImageSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -98,9 +98,9 @@ OFCondition DRTReferencedReferenceImageSequenceInRTBeamsModule::Item::read(DcmIt
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1C", "ReferencedReferenceImageSequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1C", "ReferencedReferenceImageSequence");
-        getAndCheckElementFromDataset(item, ReferenceImageNumber, "1", "1C", "ReferencedReferenceImageSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "ReferencedReferenceImageSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "ReferencedReferenceImageSequence");
+        getAndCheckElementFromDataset(item, ReferenceImageNumber, "1", "1", "ReferencedReferenceImageSequence");
         getAndCheckElementFromDataset(item, StartCumulativeMetersetWeight, "1", "3", "ReferencedReferenceImageSequence");
         getAndCheckElementFromDataset(item, EndCumulativeMetersetWeight, "1", "3", "ReferencedReferenceImageSequence");
         result = EC_Normal;
@@ -115,9 +115,9 @@ OFCondition DRTReferencedReferenceImageSequenceInRTBeamsModule::Item::write(DcmI
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1C", "ReferencedReferenceImageSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1C", "ReferencedReferenceImageSequence");
-        addElementToDataset(result, item, new DcmIntegerString(ReferenceImageNumber), "1", "1C", "ReferencedReferenceImageSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "ReferencedReferenceImageSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "ReferencedReferenceImageSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferenceImageNumber), "1", "1", "ReferencedReferenceImageSequence");
         addElementToDataset(result, item, new DcmDecimalString(StartCumulativeMetersetWeight), "1", "3", "ReferencedReferenceImageSequence");
         addElementToDataset(result, item, new DcmDecimalString(EndCumulativeMetersetWeight), "1", "3", "ReferencedReferenceImageSequence");
     }

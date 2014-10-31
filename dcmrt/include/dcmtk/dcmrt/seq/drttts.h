@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTToleranceTableSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -182,6 +182,20 @@ class DCMTK_DCMRT_EXPORT DRTToleranceTableSequence
          */
         OFCondition getTableTopLongitudinalPositionTolerance(Float64 &value, const unsigned long pos = 0) const;
 
+        /** get TableTopPitchAngleTolerance (300a,004f)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getTableTopPitchAngleTolerance(Float32 &value, const unsigned long pos = 0) const;
+
+        /** get TableTopRollAngleTolerance (300a,0050)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getTableTopRollAngleTolerance(Float32 &value, const unsigned long pos = 0) const;
+
         /** get TableTopVerticalPositionTolerance (300a,0051)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -282,6 +296,20 @@ class DCMTK_DCMRT_EXPORT DRTToleranceTableSequence
          */
         OFCondition setTableTopLongitudinalPositionTolerance(const OFString &value, const OFBool check = OFTrue);
 
+        /** set TableTopPitchAngleTolerance (300a,004f)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setTableTopPitchAngleTolerance(const Float32 value, const unsigned long pos = 0);
+
+        /** set TableTopRollAngleTolerance (300a,0050)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setTableTopRollAngleTolerance(const Float32 value, const unsigned long pos = 0);
+
         /** set TableTopVerticalPositionTolerance (300a,0051)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -324,11 +352,15 @@ class DCMTK_DCMRT_EXPORT DRTToleranceTableSequence
         DcmDecimalString TableTopLateralPositionTolerance;
         /// TableTopLongitudinalPositionTolerance (300a,0052) vr=DS, vm=1, type=3
         DcmDecimalString TableTopLongitudinalPositionTolerance;
+        /// TableTopPitchAngleTolerance (300a,004f) vr=FL, vm=1, type=3
+        DcmFloatingPointSingle TableTopPitchAngleTolerance;
+        /// TableTopRollAngleTolerance (300a,0050) vr=FL, vm=1, type=3
+        DcmFloatingPointSingle TableTopRollAngleTolerance;
         /// TableTopVerticalPositionTolerance (300a,0051) vr=DS, vm=1, type=3
         DcmDecimalString TableTopVerticalPositionTolerance;
         /// ToleranceTableLabel (300a,0043) vr=SH, vm=1, type=3
         DcmShortString ToleranceTableLabel;
-        /// ToleranceTableNumber (300a,0042) vr=IS, vm=1, type=1C
+        /// ToleranceTableNumber (300a,0042) vr=IS, vm=1, type=1
         DcmIntegerString ToleranceTableNumber;
 
     };

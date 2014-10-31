@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTTreatmentSummaryCalculatedDoseReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -90,7 +90,7 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item::read(DcmIt
         clear();
         getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "3", "TreatmentSummaryCalculatedDoseReferenceSequence");
         getAndCheckElementFromDataset(item, DoseReferenceDescription, "1", "3", "TreatmentSummaryCalculatedDoseReferenceSequence");
-        getAndCheckElementFromDataset(item, CumulativeDoseToDoseReference, "1", "1C", "TreatmentSummaryCalculatedDoseReferenceSequence");
+        getAndCheckElementFromDataset(item, CumulativeDoseToDoseReference, "1", "1", "TreatmentSummaryCalculatedDoseReferenceSequence");
         result = EC_Normal;
     }
     return result;
@@ -105,7 +105,7 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item::write(DcmI
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "3", "TreatmentSummaryCalculatedDoseReferenceSequence");
         addElementToDataset(result, item, new DcmLongString(DoseReferenceDescription), "1", "3", "TreatmentSummaryCalculatedDoseReferenceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseToDoseReference), "1", "1C", "TreatmentSummaryCalculatedDoseReferenceSequence");
+        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseToDoseReference), "1", "1", "TreatmentSummaryCalculatedDoseReferenceSequence");
     }
     return result;
 }

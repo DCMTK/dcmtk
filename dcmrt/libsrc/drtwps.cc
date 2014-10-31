@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTWedgePositionSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTWedgePositionSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedWedgeNumber, "1", "1C", "WedgePositionSequence");
-        getAndCheckElementFromDataset(item, WedgePosition, "1", "1C", "WedgePositionSequence");
+        getAndCheckElementFromDataset(item, ReferencedWedgeNumber, "1", "1", "WedgePositionSequence");
+        getAndCheckElementFromDataset(item, WedgePosition, "1", "1", "WedgePositionSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTWedgePositionSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedWedgeNumber), "1", "1C", "WedgePositionSequence");
-        addElementToDataset(result, item, new DcmCodeString(WedgePosition), "1", "1C", "WedgePositionSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedWedgeNumber), "1", "1", "WedgePositionSequence");
+        addElementToDataset(result, item, new DcmCodeString(WedgePosition), "1", "1", "WedgePositionSequence");
     }
     return result;
 }

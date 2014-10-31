@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBeamLimitingDeviceSequenceInRTIonBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -98,11 +98,11 @@ OFCondition DRTBeamLimitingDeviceSequenceInRTIonBeamsModule::Item::read(DcmItem 
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, RTBeamLimitingDeviceType, "1", "1C", "BeamLimitingDeviceSequence");
+        getAndCheckElementFromDataset(item, RTBeamLimitingDeviceType, "1", "1", "BeamLimitingDeviceSequence");
         getAndCheckElementFromDataset(item, SourceToBeamLimitingDeviceDistance, "1", "3", "BeamLimitingDeviceSequence");
-        getAndCheckElementFromDataset(item, NumberOfLeafJawPairs, "1", "1C", "BeamLimitingDeviceSequence");
+        getAndCheckElementFromDataset(item, NumberOfLeafJawPairs, "1", "1", "BeamLimitingDeviceSequence");
         getAndCheckElementFromDataset(item, LeafPositionBoundaries, "3-n", "2C", "BeamLimitingDeviceSequence");
-        getAndCheckElementFromDataset(item, LeafJawPositions, "2-2n", "1C", "BeamLimitingDeviceSequence");
+        getAndCheckElementFromDataset(item, LeafJawPositions, "2-2n", "1", "BeamLimitingDeviceSequence");
         result = EC_Normal;
     }
     return result;
@@ -115,11 +115,11 @@ OFCondition DRTBeamLimitingDeviceSequenceInRTIonBeamsModule::Item::write(DcmItem
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmCodeString(RTBeamLimitingDeviceType), "1", "1C", "BeamLimitingDeviceSequence");
+        addElementToDataset(result, item, new DcmCodeString(RTBeamLimitingDeviceType), "1", "1", "BeamLimitingDeviceSequence");
         addElementToDataset(result, item, new DcmDecimalString(SourceToBeamLimitingDeviceDistance), "1", "3", "BeamLimitingDeviceSequence");
-        addElementToDataset(result, item, new DcmIntegerString(NumberOfLeafJawPairs), "1", "1C", "BeamLimitingDeviceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(NumberOfLeafJawPairs), "1", "1", "BeamLimitingDeviceSequence");
         addElementToDataset(result, item, new DcmDecimalString(LeafPositionBoundaries), "3-n", "2C", "BeamLimitingDeviceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(LeafJawPositions), "2-2n", "1C", "BeamLimitingDeviceSequence");
+        addElementToDataset(result, item, new DcmDecimalString(LeafJawPositions), "2-2n", "1", "BeamLimitingDeviceSequence");
     }
     return result;
 }

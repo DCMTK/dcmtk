@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTContrastBolusAgentSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -30,6 +30,7 @@ DRTContrastBolusAgentSequence::Item::Item(const OFBool emptyDefaultItem)
     ContextGroupLocalVersion(DCM_ContextGroupLocalVersion),
     ContextGroupVersion(DCM_ContextGroupVersion),
     ContextIdentifier(DCM_ContextIdentifier),
+    ContextUID(DCM_ContextUID),
     MappingResource(DCM_MappingResource)
 {
 }
@@ -46,6 +47,7 @@ DRTContrastBolusAgentSequence::Item::Item(const Item &copy)
     ContextGroupLocalVersion(copy.ContextGroupLocalVersion),
     ContextGroupVersion(copy.ContextGroupVersion),
     ContextIdentifier(copy.ContextIdentifier),
+    ContextUID(copy.ContextUID),
     MappingResource(copy.MappingResource)
 {
 }
@@ -70,6 +72,7 @@ DRTContrastBolusAgentSequence::Item &DRTContrastBolusAgentSequence::Item::operat
         ContextGroupLocalVersion = copy.ContextGroupLocalVersion;
         ContextGroupVersion = copy.ContextGroupVersion;
         ContextIdentifier = copy.ContextIdentifier;
+        ContextUID = copy.ContextUID;
         MappingResource = copy.MappingResource;
     }
     return *this;
@@ -86,6 +89,7 @@ void DRTContrastBolusAgentSequence::Item::clear()
         CodingSchemeVersion.clear();
         CodeMeaning.clear();
         ContextIdentifier.clear();
+        ContextUID.clear();
         MappingResource.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
@@ -102,6 +106,7 @@ OFBool DRTContrastBolusAgentSequence::Item::isEmpty()
            CodingSchemeVersion.isEmpty() &&
            CodeMeaning.isEmpty() &&
            ContextIdentifier.isEmpty() &&
+           ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
@@ -123,11 +128,12 @@ OFCondition DRTContrastBolusAgentSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, CodeValue, "1", "1C", "ContrastBolusAgentSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1C", "ContrastBolusAgentSequence");
+        getAndCheckElementFromDataset(item, CodeValue, "1", "1", "ContrastBolusAgentSequence");
+        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1", "ContrastBolusAgentSequence");
         getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "1C", "ContrastBolusAgentSequence");
-        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1C", "ContrastBolusAgentSequence");
+        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1", "ContrastBolusAgentSequence");
         getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "ContrastBolusAgentSequence");
+        getAndCheckElementFromDataset(item, ContextUID, "1", "3", "ContrastBolusAgentSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ContrastBolusAgentSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ContrastBolusAgentSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ContrastBolusAgentSequence");
@@ -145,11 +151,12 @@ OFCondition DRTContrastBolusAgentSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1C", "ContrastBolusAgentSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1C", "ContrastBolusAgentSequence");
+        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1", "ContrastBolusAgentSequence");
+        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1", "ContrastBolusAgentSequence");
         addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "1C", "ContrastBolusAgentSequence");
-        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1C", "ContrastBolusAgentSequence");
+        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1", "ContrastBolusAgentSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "ContrastBolusAgentSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "ContrastBolusAgentSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ContrastBolusAgentSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ContrastBolusAgentSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ContrastBolusAgentSequence");
@@ -238,6 +245,15 @@ OFCondition DRTContrastBolusAgentSequence::Item::getContextIdentifier(OFString &
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ContextIdentifier, value, pos);
+}
+
+
+OFCondition DRTContrastBolusAgentSequence::Item::getContextUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextUID, value, pos);
 }
 
 
@@ -362,6 +378,19 @@ OFCondition DRTContrastBolusAgentSequence::Item::setContextIdentifier(const OFSt
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ContextIdentifier.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTContrastBolusAgentSequence::Item::setContextUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextUID.putOFStringArray(value);
     }
     return result;
 }

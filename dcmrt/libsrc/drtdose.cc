@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTDoseIOD
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,8 +21,11 @@ DRTDoseIOD::DRTDoseIOD()
   : PatientName(DCM_PatientName),
     PatientID(DCM_PatientID),
     IssuerOfPatientID(DCM_IssuerOfPatientID),
+    IssuerOfPatientIDQualifiersSequence(),
     PatientBirthDate(DCM_PatientBirthDate),
     PatientSex(DCM_PatientSex),
+    ReferencedPatientPhotoSequence(),
+    QualityControlSubject(DCM_QualityControlSubject),
     ReferencedPatientSequence(),
     PatientBirthTime(DCM_PatientBirthTime),
     OtherPatientIDs(DCM_OtherPatientIDs),
@@ -48,6 +51,8 @@ DRTDoseIOD::DRTDoseIOD()
     ClinicalTrialSiteName(DCM_ClinicalTrialSiteName),
     ClinicalTrialSubjectID(DCM_ClinicalTrialSubjectID),
     ClinicalTrialSubjectReadingID(DCM_ClinicalTrialSubjectReadingID),
+    ClinicalTrialProtocolEthicsCommitteeName(DCM_ClinicalTrialProtocolEthicsCommitteeName),
+    ClinicalTrialProtocolEthicsCommitteeApprovalNumber(DCM_ClinicalTrialProtocolEthicsCommitteeApprovalNumber),
     StudyInstanceUID(DCM_StudyInstanceUID),
     StudyDate(DCM_StudyDate),
     StudyTime(DCM_StudyTime),
@@ -55,37 +60,54 @@ DRTDoseIOD::DRTDoseIOD()
     ReferringPhysicianIdentificationSequence(),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
+    IssuerOfAccessionNumberSequence(),
     StudyDescription(DCM_StudyDescription),
     PhysiciansOfRecord(DCM_PhysiciansOfRecord),
     PhysiciansOfRecordIdentificationSequence(),
     NameOfPhysiciansReadingStudy(DCM_NameOfPhysiciansReadingStudy),
     PhysiciansReadingStudyIdentificationSequence(),
+    RequestingServiceCodeSequence(),
     ReferencedStudySequence(),
     ProcedureCodeSequence(),
+    ReasonForPerformedProcedureCodeSequence(),
     AdmittingDiagnosesDescription(DCM_AdmittingDiagnosesDescription),
     AdmittingDiagnosesCodeSequence(),
     PatientAge(DCM_PatientAge),
     PatientSize(DCM_PatientSize),
     PatientWeight(DCM_PatientWeight),
+    PatientSizeCodeSequence(),
     Occupation(DCM_Occupation),
     AdditionalPatientHistory(DCM_AdditionalPatientHistory),
     AdmissionID(DCM_AdmissionID),
-    IssuerOfAdmissionID(DCM_RETIRED_IssuerOfAdmissionID),
+    IssuerOfAdmissionIDSequence(),
+    ServiceEpisodeID(DCM_ServiceEpisodeID),
+    IssuerOfServiceEpisodeIDSequence(),
+    ServiceEpisodeDescription(DCM_ServiceEpisodeDescription),
     PatientSexNeutered(DCM_PatientSexNeutered),
     ClinicalTrialTimePointID(DCM_ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(DCM_ClinicalTrialTimePointDescription),
+    ConsentForClinicalTrialUseSequence(),
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
+    SeriesDate(DCM_SeriesDate),
+    SeriesTime(DCM_SeriesTime),
     SeriesDescription(DCM_SeriesDescription),
+    SeriesDescriptionCodeSequence(),
+    OperatorsName(DCM_OperatorsName),
     ReferencedPerformedProcedureStepSequence(),
     RequestAttributesSequence(),
     PerformedProcedureStepID(DCM_PerformedProcedureStepID),
     PerformedProcedureStepStartDate(DCM_PerformedProcedureStepStartDate),
     PerformedProcedureStepStartTime(DCM_PerformedProcedureStepStartTime),
+    PerformedProcedureStepEndDate(DCM_PerformedProcedureStepEndDate),
+    PerformedProcedureStepEndTime(DCM_PerformedProcedureStepEndTime),
     PerformedProcedureStepDescription(DCM_PerformedProcedureStepDescription),
     PerformedProtocolCodeSequence(),
+    CommentsOnThePerformedProcedureStep(DCM_CommentsOnThePerformedProcedureStep),
     ClinicalTrialCoordinatingCenterName(DCM_ClinicalTrialCoordinatingCenterName),
+    ClinicalTrialSeriesID(DCM_ClinicalTrialSeriesID),
+    ClinicalTrialSeriesDescription(DCM_ClinicalTrialSeriesDescription),
     FrameOfReferenceUID(DCM_FrameOfReferenceUID),
     PositionReferenceIndicator(DCM_PositionReferenceIndicator),
     Manufacturer(DCM_Manufacturer),
@@ -111,19 +133,19 @@ DRTDoseIOD::DRTDoseIOD()
     AcquisitionDateTime(DCM_AcquisitionDateTime),
     ReferencedImageSequence(),
     DerivationDescription(DCM_DerivationDescription),
-    DerivationCodeSequence(),
     SourceImageSequence(),
-    ReferencedInstanceSequence(),
     ImagesInAcquisition(DCM_ImagesInAcquisition),
     ImageComments(DCM_ImageComments),
     QualityControlImage(DCM_QualityControlImage),
     BurnedInAnnotation(DCM_BurnedInAnnotation),
+    RecognizableVisualFeatures(DCM_RecognizableVisualFeatures),
     LossyImageCompression(DCM_LossyImageCompression),
     LossyImageCompressionRatio(DCM_LossyImageCompressionRatio),
     LossyImageCompressionMethod(DCM_LossyImageCompressionMethod),
     IconImageSequence(),
     PresentationLUTShape(DCM_PresentationLUTShape),
     IrradiationEventUID(DCM_IrradiationEventUID),
+    RealWorldValueMappingSequence(),
     PixelSpacing(DCM_PixelSpacing),
     ImageOrientationPatient(DCM_ImageOrientationPatient),
     ImagePositionPatient(DCM_ImagePositionPatient),
@@ -144,6 +166,7 @@ DRTDoseIOD::DRTDoseIOD()
     BluePaletteColorLookupTableData(DCM_BluePaletteColorLookupTableData),
     ICCProfile(DCM_ICCProfile),
     PixelDataProviderURL(DCM_PixelDataProviderURL),
+    PixelPaddingRangeLimit(DCM_PixelPaddingRangeLimit),
     NumberOfFrames(DCM_NumberOfFrames),
     FrameIncrementPointer(DCM_FrameIncrementPointer),
     OverlayRows(DCM_OverlayRows),
@@ -173,14 +196,19 @@ DRTDoseIOD::DRTDoseIOD()
     PixelRepresentation(DCM_PixelRepresentation),
     DoseUnits(DCM_DoseUnits),
     DoseType(DCM_DoseType),
+    SpatialTransformOfDose(DCM_SpatialTransformOfDose),
+    ReferencedSpatialRegistrationSequence(),
     InstanceNumber(DCM_InstanceNumber),
     DoseComment(DCM_DoseComment),
     NormalizationPoint(DCM_NormalizationPoint),
     DoseSummationType(DCM_DoseSummationType),
     ReferencedRTPlanSequence(),
+    ReferencedTreatmentRecordSequence(),
     GridFrameOffsetVector(DCM_GridFrameOffsetVector),
     DoseGridScaling(DCM_DoseGridScaling),
     TissueHeterogeneityCorrection(DCM_TissueHeterogeneityCorrection),
+    DerivationCodeSequence(),
+    ReferencedInstanceSequence(),
     ReferencedStructureSetSequence(),
     DVHNormalizationPoint(DCM_DVHNormalizationPoint),
     DVHNormalizationDoseValue(DCM_DVHNormalizationDoseValue),
@@ -192,6 +220,7 @@ DRTDoseIOD::DRTDoseIOD()
     StructureSetTime(DCM_StructureSetTime),
     ReferencedFrameOfReferenceSequence(),
     StructureSetROISequence(),
+    PredecessorStructureSetSequence(),
     ROIContourSequence(),
     RTDoseROISequence(),
     SOPClassUID(DCM_SOPClassUID),
@@ -199,6 +228,7 @@ DRTDoseIOD::DRTDoseIOD()
     SpecificCharacterSet(DCM_SpecificCharacterSet),
     InstanceCreationDate(DCM_InstanceCreationDate),
     InstanceCreationTime(DCM_InstanceCreationTime),
+    InstanceCoercionDateTime(DCM_InstanceCoercionDateTime),
     InstanceCreatorUID(DCM_InstanceCreatorUID),
     RelatedGeneralSOPClassUID(DCM_RelatedGeneralSOPClassUID),
     OriginalSpecializedSOPClassUID(DCM_OriginalSpecializedSOPClassUID),
@@ -213,7 +243,14 @@ DRTDoseIOD::DRTDoseIOD()
     DigitalSignaturesSequence(),
     EncryptedAttributesSequence(),
     OriginalAttributesSequence(),
-    HL7StructuredDocumentReferenceSequence()
+    HL7StructuredDocumentReferenceSequence(),
+    LongitudinalTemporalInformationModified(DCM_LongitudinalTemporalInformationModified),
+    QueryRetrieveView(DCM_QueryRetrieveView),
+    ConversionSourceAttributesSequence(),
+    ContentQualification(DCM_ContentQualification),
+    ReferencedSeriesSequence(),
+    StudiesContainingOtherReferencedInstancesSequence(),
+    FrameExtractionSequence()
 {
     /* set initial values for a new SOP instance */
     updateAttributes();
@@ -224,8 +261,11 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
   : PatientName(copy.PatientName),
     PatientID(copy.PatientID),
     IssuerOfPatientID(copy.IssuerOfPatientID),
+    IssuerOfPatientIDQualifiersSequence(copy.IssuerOfPatientIDQualifiersSequence),
     PatientBirthDate(copy.PatientBirthDate),
     PatientSex(copy.PatientSex),
+    ReferencedPatientPhotoSequence(copy.ReferencedPatientPhotoSequence),
+    QualityControlSubject(copy.QualityControlSubject),
     ReferencedPatientSequence(copy.ReferencedPatientSequence),
     PatientBirthTime(copy.PatientBirthTime),
     OtherPatientIDs(copy.OtherPatientIDs),
@@ -251,6 +291,8 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     ClinicalTrialSiteName(copy.ClinicalTrialSiteName),
     ClinicalTrialSubjectID(copy.ClinicalTrialSubjectID),
     ClinicalTrialSubjectReadingID(copy.ClinicalTrialSubjectReadingID),
+    ClinicalTrialProtocolEthicsCommitteeName(copy.ClinicalTrialProtocolEthicsCommitteeName),
+    ClinicalTrialProtocolEthicsCommitteeApprovalNumber(copy.ClinicalTrialProtocolEthicsCommitteeApprovalNumber),
     StudyInstanceUID(copy.StudyInstanceUID),
     StudyDate(copy.StudyDate),
     StudyTime(copy.StudyTime),
@@ -258,37 +300,54 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     ReferringPhysicianIdentificationSequence(copy.ReferringPhysicianIdentificationSequence),
     StudyID(copy.StudyID),
     AccessionNumber(copy.AccessionNumber),
+    IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
     StudyDescription(copy.StudyDescription),
     PhysiciansOfRecord(copy.PhysiciansOfRecord),
     PhysiciansOfRecordIdentificationSequence(copy.PhysiciansOfRecordIdentificationSequence),
     NameOfPhysiciansReadingStudy(copy.NameOfPhysiciansReadingStudy),
     PhysiciansReadingStudyIdentificationSequence(copy.PhysiciansReadingStudyIdentificationSequence),
+    RequestingServiceCodeSequence(copy.RequestingServiceCodeSequence),
     ReferencedStudySequence(copy.ReferencedStudySequence),
     ProcedureCodeSequence(copy.ProcedureCodeSequence),
+    ReasonForPerformedProcedureCodeSequence(copy.ReasonForPerformedProcedureCodeSequence),
     AdmittingDiagnosesDescription(copy.AdmittingDiagnosesDescription),
     AdmittingDiagnosesCodeSequence(copy.AdmittingDiagnosesCodeSequence),
     PatientAge(copy.PatientAge),
     PatientSize(copy.PatientSize),
     PatientWeight(copy.PatientWeight),
+    PatientSizeCodeSequence(copy.PatientSizeCodeSequence),
     Occupation(copy.Occupation),
     AdditionalPatientHistory(copy.AdditionalPatientHistory),
     AdmissionID(copy.AdmissionID),
-    IssuerOfAdmissionID(copy.IssuerOfAdmissionID),
+    IssuerOfAdmissionIDSequence(copy.IssuerOfAdmissionIDSequence),
+    ServiceEpisodeID(copy.ServiceEpisodeID),
+    IssuerOfServiceEpisodeIDSequence(copy.IssuerOfServiceEpisodeIDSequence),
+    ServiceEpisodeDescription(copy.ServiceEpisodeDescription),
     PatientSexNeutered(copy.PatientSexNeutered),
     ClinicalTrialTimePointID(copy.ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(copy.ClinicalTrialTimePointDescription),
+    ConsentForClinicalTrialUseSequence(copy.ConsentForClinicalTrialUseSequence),
     Modality(copy.Modality),
     SeriesInstanceUID(copy.SeriesInstanceUID),
     SeriesNumber(copy.SeriesNumber),
+    SeriesDate(copy.SeriesDate),
+    SeriesTime(copy.SeriesTime),
     SeriesDescription(copy.SeriesDescription),
+    SeriesDescriptionCodeSequence(copy.SeriesDescriptionCodeSequence),
+    OperatorsName(copy.OperatorsName),
     ReferencedPerformedProcedureStepSequence(copy.ReferencedPerformedProcedureStepSequence),
     RequestAttributesSequence(copy.RequestAttributesSequence),
     PerformedProcedureStepID(copy.PerformedProcedureStepID),
     PerformedProcedureStepStartDate(copy.PerformedProcedureStepStartDate),
     PerformedProcedureStepStartTime(copy.PerformedProcedureStepStartTime),
+    PerformedProcedureStepEndDate(copy.PerformedProcedureStepEndDate),
+    PerformedProcedureStepEndTime(copy.PerformedProcedureStepEndTime),
     PerformedProcedureStepDescription(copy.PerformedProcedureStepDescription),
     PerformedProtocolCodeSequence(copy.PerformedProtocolCodeSequence),
+    CommentsOnThePerformedProcedureStep(copy.CommentsOnThePerformedProcedureStep),
     ClinicalTrialCoordinatingCenterName(copy.ClinicalTrialCoordinatingCenterName),
+    ClinicalTrialSeriesID(copy.ClinicalTrialSeriesID),
+    ClinicalTrialSeriesDescription(copy.ClinicalTrialSeriesDescription),
     FrameOfReferenceUID(copy.FrameOfReferenceUID),
     PositionReferenceIndicator(copy.PositionReferenceIndicator),
     Manufacturer(copy.Manufacturer),
@@ -314,19 +373,19 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     AcquisitionDateTime(copy.AcquisitionDateTime),
     ReferencedImageSequence(copy.ReferencedImageSequence),
     DerivationDescription(copy.DerivationDescription),
-    DerivationCodeSequence(copy.DerivationCodeSequence),
     SourceImageSequence(copy.SourceImageSequence),
-    ReferencedInstanceSequence(copy.ReferencedInstanceSequence),
     ImagesInAcquisition(copy.ImagesInAcquisition),
     ImageComments(copy.ImageComments),
     QualityControlImage(copy.QualityControlImage),
     BurnedInAnnotation(copy.BurnedInAnnotation),
+    RecognizableVisualFeatures(copy.RecognizableVisualFeatures),
     LossyImageCompression(copy.LossyImageCompression),
     LossyImageCompressionRatio(copy.LossyImageCompressionRatio),
     LossyImageCompressionMethod(copy.LossyImageCompressionMethod),
     IconImageSequence(copy.IconImageSequence),
     PresentationLUTShape(copy.PresentationLUTShape),
     IrradiationEventUID(copy.IrradiationEventUID),
+    RealWorldValueMappingSequence(copy.RealWorldValueMappingSequence),
     PixelSpacing(copy.PixelSpacing),
     ImageOrientationPatient(copy.ImageOrientationPatient),
     ImagePositionPatient(copy.ImagePositionPatient),
@@ -347,6 +406,7 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     BluePaletteColorLookupTableData(copy.BluePaletteColorLookupTableData),
     ICCProfile(copy.ICCProfile),
     PixelDataProviderURL(copy.PixelDataProviderURL),
+    PixelPaddingRangeLimit(copy.PixelPaddingRangeLimit),
     NumberOfFrames(copy.NumberOfFrames),
     FrameIncrementPointer(copy.FrameIncrementPointer),
     OverlayRows(copy.OverlayRows),
@@ -376,14 +436,19 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     PixelRepresentation(copy.PixelRepresentation),
     DoseUnits(copy.DoseUnits),
     DoseType(copy.DoseType),
+    SpatialTransformOfDose(copy.SpatialTransformOfDose),
+    ReferencedSpatialRegistrationSequence(copy.ReferencedSpatialRegistrationSequence),
     InstanceNumber(copy.InstanceNumber),
     DoseComment(copy.DoseComment),
     NormalizationPoint(copy.NormalizationPoint),
     DoseSummationType(copy.DoseSummationType),
     ReferencedRTPlanSequence(copy.ReferencedRTPlanSequence),
+    ReferencedTreatmentRecordSequence(copy.ReferencedTreatmentRecordSequence),
     GridFrameOffsetVector(copy.GridFrameOffsetVector),
     DoseGridScaling(copy.DoseGridScaling),
     TissueHeterogeneityCorrection(copy.TissueHeterogeneityCorrection),
+    DerivationCodeSequence(copy.DerivationCodeSequence),
+    ReferencedInstanceSequence(copy.ReferencedInstanceSequence),
     ReferencedStructureSetSequence(copy.ReferencedStructureSetSequence),
     DVHNormalizationPoint(copy.DVHNormalizationPoint),
     DVHNormalizationDoseValue(copy.DVHNormalizationDoseValue),
@@ -395,6 +460,7 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     StructureSetTime(copy.StructureSetTime),
     ReferencedFrameOfReferenceSequence(copy.ReferencedFrameOfReferenceSequence),
     StructureSetROISequence(copy.StructureSetROISequence),
+    PredecessorStructureSetSequence(copy.PredecessorStructureSetSequence),
     ROIContourSequence(copy.ROIContourSequence),
     RTDoseROISequence(copy.RTDoseROISequence),
     SOPClassUID(copy.SOPClassUID),
@@ -402,6 +468,7 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     SpecificCharacterSet(copy.SpecificCharacterSet),
     InstanceCreationDate(copy.InstanceCreationDate),
     InstanceCreationTime(copy.InstanceCreationTime),
+    InstanceCoercionDateTime(copy.InstanceCoercionDateTime),
     InstanceCreatorUID(copy.InstanceCreatorUID),
     RelatedGeneralSOPClassUID(copy.RelatedGeneralSOPClassUID),
     OriginalSpecializedSOPClassUID(copy.OriginalSpecializedSOPClassUID),
@@ -416,7 +483,14 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     DigitalSignaturesSequence(copy.DigitalSignaturesSequence),
     EncryptedAttributesSequence(copy.EncryptedAttributesSequence),
     OriginalAttributesSequence(copy.OriginalAttributesSequence),
-    HL7StructuredDocumentReferenceSequence(copy.HL7StructuredDocumentReferenceSequence)
+    HL7StructuredDocumentReferenceSequence(copy.HL7StructuredDocumentReferenceSequence),
+    LongitudinalTemporalInformationModified(copy.LongitudinalTemporalInformationModified),
+    QueryRetrieveView(copy.QueryRetrieveView),
+    ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
+    ContentQualification(copy.ContentQualification),
+    ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
+    StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence),
+    FrameExtractionSequence(copy.FrameExtractionSequence)
 {
 }
 
@@ -433,8 +507,11 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         PatientName = copy.PatientName;
         PatientID = copy.PatientID;
         IssuerOfPatientID = copy.IssuerOfPatientID;
+        IssuerOfPatientIDQualifiersSequence = copy.IssuerOfPatientIDQualifiersSequence;
         PatientBirthDate = copy.PatientBirthDate;
         PatientSex = copy.PatientSex;
+        ReferencedPatientPhotoSequence = copy.ReferencedPatientPhotoSequence;
+        QualityControlSubject = copy.QualityControlSubject;
         ReferencedPatientSequence = copy.ReferencedPatientSequence;
         PatientBirthTime = copy.PatientBirthTime;
         OtherPatientIDs = copy.OtherPatientIDs;
@@ -460,6 +537,8 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         ClinicalTrialSiteName = copy.ClinicalTrialSiteName;
         ClinicalTrialSubjectID = copy.ClinicalTrialSubjectID;
         ClinicalTrialSubjectReadingID = copy.ClinicalTrialSubjectReadingID;
+        ClinicalTrialProtocolEthicsCommitteeName = copy.ClinicalTrialProtocolEthicsCommitteeName;
+        ClinicalTrialProtocolEthicsCommitteeApprovalNumber = copy.ClinicalTrialProtocolEthicsCommitteeApprovalNumber;
         StudyInstanceUID = copy.StudyInstanceUID;
         StudyDate = copy.StudyDate;
         StudyTime = copy.StudyTime;
@@ -467,37 +546,54 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         ReferringPhysicianIdentificationSequence = copy.ReferringPhysicianIdentificationSequence;
         StudyID = copy.StudyID;
         AccessionNumber = copy.AccessionNumber;
+        IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
         StudyDescription = copy.StudyDescription;
         PhysiciansOfRecord = copy.PhysiciansOfRecord;
         PhysiciansOfRecordIdentificationSequence = copy.PhysiciansOfRecordIdentificationSequence;
         NameOfPhysiciansReadingStudy = copy.NameOfPhysiciansReadingStudy;
         PhysiciansReadingStudyIdentificationSequence = copy.PhysiciansReadingStudyIdentificationSequence;
+        RequestingServiceCodeSequence = copy.RequestingServiceCodeSequence;
         ReferencedStudySequence = copy.ReferencedStudySequence;
         ProcedureCodeSequence = copy.ProcedureCodeSequence;
+        ReasonForPerformedProcedureCodeSequence = copy.ReasonForPerformedProcedureCodeSequence;
         AdmittingDiagnosesDescription = copy.AdmittingDiagnosesDescription;
         AdmittingDiagnosesCodeSequence = copy.AdmittingDiagnosesCodeSequence;
         PatientAge = copy.PatientAge;
         PatientSize = copy.PatientSize;
         PatientWeight = copy.PatientWeight;
+        PatientSizeCodeSequence = copy.PatientSizeCodeSequence;
         Occupation = copy.Occupation;
         AdditionalPatientHistory = copy.AdditionalPatientHistory;
         AdmissionID = copy.AdmissionID;
-        IssuerOfAdmissionID = copy.IssuerOfAdmissionID;
+        IssuerOfAdmissionIDSequence = copy.IssuerOfAdmissionIDSequence;
+        ServiceEpisodeID = copy.ServiceEpisodeID;
+        IssuerOfServiceEpisodeIDSequence = copy.IssuerOfServiceEpisodeIDSequence;
+        ServiceEpisodeDescription = copy.ServiceEpisodeDescription;
         PatientSexNeutered = copy.PatientSexNeutered;
         ClinicalTrialTimePointID = copy.ClinicalTrialTimePointID;
         ClinicalTrialTimePointDescription = copy.ClinicalTrialTimePointDescription;
+        ConsentForClinicalTrialUseSequence = copy.ConsentForClinicalTrialUseSequence;
         Modality = copy.Modality;
         SeriesInstanceUID = copy.SeriesInstanceUID;
         SeriesNumber = copy.SeriesNumber;
+        SeriesDate = copy.SeriesDate;
+        SeriesTime = copy.SeriesTime;
         SeriesDescription = copy.SeriesDescription;
+        SeriesDescriptionCodeSequence = copy.SeriesDescriptionCodeSequence;
+        OperatorsName = copy.OperatorsName;
         ReferencedPerformedProcedureStepSequence = copy.ReferencedPerformedProcedureStepSequence;
         RequestAttributesSequence = copy.RequestAttributesSequence;
         PerformedProcedureStepID = copy.PerformedProcedureStepID;
         PerformedProcedureStepStartDate = copy.PerformedProcedureStepStartDate;
         PerformedProcedureStepStartTime = copy.PerformedProcedureStepStartTime;
+        PerformedProcedureStepEndDate = copy.PerformedProcedureStepEndDate;
+        PerformedProcedureStepEndTime = copy.PerformedProcedureStepEndTime;
         PerformedProcedureStepDescription = copy.PerformedProcedureStepDescription;
         PerformedProtocolCodeSequence = copy.PerformedProtocolCodeSequence;
+        CommentsOnThePerformedProcedureStep = copy.CommentsOnThePerformedProcedureStep;
         ClinicalTrialCoordinatingCenterName = copy.ClinicalTrialCoordinatingCenterName;
+        ClinicalTrialSeriesID = copy.ClinicalTrialSeriesID;
+        ClinicalTrialSeriesDescription = copy.ClinicalTrialSeriesDescription;
         FrameOfReferenceUID = copy.FrameOfReferenceUID;
         PositionReferenceIndicator = copy.PositionReferenceIndicator;
         Manufacturer = copy.Manufacturer;
@@ -523,19 +619,19 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         AcquisitionDateTime = copy.AcquisitionDateTime;
         ReferencedImageSequence = copy.ReferencedImageSequence;
         DerivationDescription = copy.DerivationDescription;
-        DerivationCodeSequence = copy.DerivationCodeSequence;
         SourceImageSequence = copy.SourceImageSequence;
-        ReferencedInstanceSequence = copy.ReferencedInstanceSequence;
         ImagesInAcquisition = copy.ImagesInAcquisition;
         ImageComments = copy.ImageComments;
         QualityControlImage = copy.QualityControlImage;
         BurnedInAnnotation = copy.BurnedInAnnotation;
+        RecognizableVisualFeatures = copy.RecognizableVisualFeatures;
         LossyImageCompression = copy.LossyImageCompression;
         LossyImageCompressionRatio = copy.LossyImageCompressionRatio;
         LossyImageCompressionMethod = copy.LossyImageCompressionMethod;
         IconImageSequence = copy.IconImageSequence;
         PresentationLUTShape = copy.PresentationLUTShape;
         IrradiationEventUID = copy.IrradiationEventUID;
+        RealWorldValueMappingSequence = copy.RealWorldValueMappingSequence;
         PixelSpacing = copy.PixelSpacing;
         ImageOrientationPatient = copy.ImageOrientationPatient;
         ImagePositionPatient = copy.ImagePositionPatient;
@@ -556,6 +652,7 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         BluePaletteColorLookupTableData = copy.BluePaletteColorLookupTableData;
         ICCProfile = copy.ICCProfile;
         PixelDataProviderURL = copy.PixelDataProviderURL;
+        PixelPaddingRangeLimit = copy.PixelPaddingRangeLimit;
         NumberOfFrames = copy.NumberOfFrames;
         FrameIncrementPointer = copy.FrameIncrementPointer;
         OverlayRows = copy.OverlayRows;
@@ -585,14 +682,19 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         PixelRepresentation = copy.PixelRepresentation;
         DoseUnits = copy.DoseUnits;
         DoseType = copy.DoseType;
+        SpatialTransformOfDose = copy.SpatialTransformOfDose;
+        ReferencedSpatialRegistrationSequence = copy.ReferencedSpatialRegistrationSequence;
         InstanceNumber = copy.InstanceNumber;
         DoseComment = copy.DoseComment;
         NormalizationPoint = copy.NormalizationPoint;
         DoseSummationType = copy.DoseSummationType;
         ReferencedRTPlanSequence = copy.ReferencedRTPlanSequence;
+        ReferencedTreatmentRecordSequence = copy.ReferencedTreatmentRecordSequence;
         GridFrameOffsetVector = copy.GridFrameOffsetVector;
         DoseGridScaling = copy.DoseGridScaling;
         TissueHeterogeneityCorrection = copy.TissueHeterogeneityCorrection;
+        DerivationCodeSequence = copy.DerivationCodeSequence;
+        ReferencedInstanceSequence = copy.ReferencedInstanceSequence;
         ReferencedStructureSetSequence = copy.ReferencedStructureSetSequence;
         DVHNormalizationPoint = copy.DVHNormalizationPoint;
         DVHNormalizationDoseValue = copy.DVHNormalizationDoseValue;
@@ -604,6 +706,7 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         StructureSetTime = copy.StructureSetTime;
         ReferencedFrameOfReferenceSequence = copy.ReferencedFrameOfReferenceSequence;
         StructureSetROISequence = copy.StructureSetROISequence;
+        PredecessorStructureSetSequence = copy.PredecessorStructureSetSequence;
         ROIContourSequence = copy.ROIContourSequence;
         RTDoseROISequence = copy.RTDoseROISequence;
         SOPClassUID = copy.SOPClassUID;
@@ -611,6 +714,7 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         SpecificCharacterSet = copy.SpecificCharacterSet;
         InstanceCreationDate = copy.InstanceCreationDate;
         InstanceCreationTime = copy.InstanceCreationTime;
+        InstanceCoercionDateTime = copy.InstanceCoercionDateTime;
         InstanceCreatorUID = copy.InstanceCreatorUID;
         RelatedGeneralSOPClassUID = copy.RelatedGeneralSOPClassUID;
         OriginalSpecializedSOPClassUID = copy.OriginalSpecializedSOPClassUID;
@@ -626,6 +730,13 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         EncryptedAttributesSequence = copy.EncryptedAttributesSequence;
         OriginalAttributesSequence = copy.OriginalAttributesSequence;
         HL7StructuredDocumentReferenceSequence = copy.HL7StructuredDocumentReferenceSequence;
+        LongitudinalTemporalInformationModified = copy.LongitudinalTemporalInformationModified;
+        QueryRetrieveView = copy.QueryRetrieveView;
+        ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
+        ContentQualification = copy.ContentQualification;
+        ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
+        StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
+        FrameExtractionSequence = copy.FrameExtractionSequence;
     }
     return *this;
 }
@@ -637,8 +748,11 @@ void DRTDoseIOD::clear()
     PatientName.clear();
     PatientID.clear();
     IssuerOfPatientID.clear();
+    IssuerOfPatientIDQualifiersSequence.clear();
     PatientBirthDate.clear();
     PatientSex.clear();
+    ReferencedPatientPhotoSequence.clear();
+    QualityControlSubject.clear();
     ReferencedPatientSequence.clear();
     PatientBirthTime.clear();
     OtherPatientIDs.clear();
@@ -664,6 +778,8 @@ void DRTDoseIOD::clear()
     ClinicalTrialSiteName.clear();
     ClinicalTrialSubjectID.clear();
     ClinicalTrialSubjectReadingID.clear();
+    ClinicalTrialProtocolEthicsCommitteeName.clear();
+    ClinicalTrialProtocolEthicsCommitteeApprovalNumber.clear();
     StudyInstanceUID.clear();
     StudyDate.clear();
     StudyTime.clear();
@@ -671,37 +787,54 @@ void DRTDoseIOD::clear()
     ReferringPhysicianIdentificationSequence.clear();
     StudyID.clear();
     AccessionNumber.clear();
+    IssuerOfAccessionNumberSequence.clear();
     StudyDescription.clear();
     PhysiciansOfRecord.clear();
     PhysiciansOfRecordIdentificationSequence.clear();
     NameOfPhysiciansReadingStudy.clear();
     PhysiciansReadingStudyIdentificationSequence.clear();
+    RequestingServiceCodeSequence.clear();
     ReferencedStudySequence.clear();
     ProcedureCodeSequence.clear();
+    ReasonForPerformedProcedureCodeSequence.clear();
     AdmittingDiagnosesDescription.clear();
     AdmittingDiagnosesCodeSequence.clear();
     PatientAge.clear();
     PatientSize.clear();
     PatientWeight.clear();
+    PatientSizeCodeSequence.clear();
     Occupation.clear();
     AdditionalPatientHistory.clear();
     AdmissionID.clear();
-    IssuerOfAdmissionID.clear();
+    IssuerOfAdmissionIDSequence.clear();
+    ServiceEpisodeID.clear();
+    IssuerOfServiceEpisodeIDSequence.clear();
+    ServiceEpisodeDescription.clear();
     PatientSexNeutered.clear();
     ClinicalTrialTimePointID.clear();
     ClinicalTrialTimePointDescription.clear();
+    ConsentForClinicalTrialUseSequence.clear();
     Modality.clear();
     SeriesInstanceUID.clear();
     SeriesNumber.clear();
+    SeriesDate.clear();
+    SeriesTime.clear();
     SeriesDescription.clear();
+    SeriesDescriptionCodeSequence.clear();
+    OperatorsName.clear();
     ReferencedPerformedProcedureStepSequence.clear();
     RequestAttributesSequence.clear();
     PerformedProcedureStepID.clear();
     PerformedProcedureStepStartDate.clear();
     PerformedProcedureStepStartTime.clear();
+    PerformedProcedureStepEndDate.clear();
+    PerformedProcedureStepEndTime.clear();
     PerformedProcedureStepDescription.clear();
     PerformedProtocolCodeSequence.clear();
+    CommentsOnThePerformedProcedureStep.clear();
     ClinicalTrialCoordinatingCenterName.clear();
+    ClinicalTrialSeriesID.clear();
+    ClinicalTrialSeriesDescription.clear();
     FrameOfReferenceUID.clear();
     PositionReferenceIndicator.clear();
     Manufacturer.clear();
@@ -735,12 +868,14 @@ void DRTDoseIOD::clear()
     ImageComments.clear();
     QualityControlImage.clear();
     BurnedInAnnotation.clear();
+    RecognizableVisualFeatures.clear();
     LossyImageCompression.clear();
     LossyImageCompressionRatio.clear();
     LossyImageCompressionMethod.clear();
     IconImageSequence.clear();
     PresentationLUTShape.clear();
     IrradiationEventUID.clear();
+    RealWorldValueMappingSequence.clear();
     PixelSpacing.clear();
     ImageOrientationPatient.clear();
     ImagePositionPatient.clear();
@@ -767,6 +902,7 @@ void DRTDoseIOD::clear()
     BluePaletteColorLookupTableData.clear();
     ICCProfile.clear();
     PixelDataProviderURL.clear();
+    PixelPaddingRangeLimit.clear();
     NumberOfFrames.clear();
     FrameIncrementPointer.clear();
     OverlayRows.clear();
@@ -790,10 +926,13 @@ void DRTDoseIOD::clear()
     RescaleType.clear();
     DoseUnits.clear();
     DoseType.clear();
+    SpatialTransformOfDose.clear();
+    ReferencedSpatialRegistrationSequence.clear();
     DoseComment.clear();
     NormalizationPoint.clear();
     DoseSummationType.clear();
     ReferencedRTPlanSequence.clear();
+    ReferencedTreatmentRecordSequence.clear();
     GridFrameOffsetVector.clear();
     DoseGridScaling.clear();
     TissueHeterogeneityCorrection.clear();
@@ -808,6 +947,7 @@ void DRTDoseIOD::clear()
     StructureSetTime.clear();
     ReferencedFrameOfReferenceSequence.clear();
     StructureSetROISequence.clear();
+    PredecessorStructureSetSequence.clear();
     ROIContourSequence.clear();
     RTDoseROISequence.clear();
     SOPClassUID.clear();
@@ -815,6 +955,7 @@ void DRTDoseIOD::clear()
     SpecificCharacterSet.clear();
     InstanceCreationDate.clear();
     InstanceCreationTime.clear();
+    InstanceCoercionDateTime.clear();
     InstanceCreatorUID.clear();
     RelatedGeneralSOPClassUID.clear();
     OriginalSpecializedSOPClassUID.clear();
@@ -830,6 +971,13 @@ void DRTDoseIOD::clear()
     EncryptedAttributesSequence.clear();
     OriginalAttributesSequence.clear();
     HL7StructuredDocumentReferenceSequence.clear();
+    LongitudinalTemporalInformationModified.clear();
+    QueryRetrieveView.clear();
+    ConversionSourceAttributesSequence.clear();
+    ContentQualification.clear();
+    ReferencedSeriesSequence.clear();
+    StudiesContainingOtherReferencedInstancesSequence.clear();
+    FrameExtractionSequence.clear();
 }
 
 
@@ -894,7 +1042,7 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, SpatialResolution, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, DateOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, TimeOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
-        getAndCheckElementFromDataset(dataset, PixelPaddingValue, "1", "3", "GeneralEquipmentModule");
+        getAndCheckElementFromDataset(dataset, PixelPaddingValue, "1", "1C", "GeneralEquipmentModule");
 
         // --- GeneralImageModule (C) ---
         // getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "2", "GeneralImageModule");
@@ -908,19 +1056,21 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, AcquisitionDateTime, "1", "3", "GeneralImageModule");
         ReferencedImageSequence.read(dataset, "1-n", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, DerivationDescription, "1", "3", "GeneralImageModule");
-        DerivationCodeSequence.read(dataset, "1-n", "3", "GeneralImageModule");
+        // DerivationCodeSequence.read(dataset, "1-n", "3", "GeneralImageModule");
         SourceImageSequence.read(dataset, "1-n", "3", "GeneralImageModule");
-        ReferencedInstanceSequence.read(dataset, "1-n", "3", "GeneralImageModule");
+        // ReferencedInstanceSequence.read(dataset, "1-n", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, ImagesInAcquisition, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, ImageComments, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, QualityControlImage, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, BurnedInAnnotation, "1", "3", "GeneralImageModule");
+        getAndCheckElementFromDataset(dataset, RecognizableVisualFeatures, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, LossyImageCompression, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, LossyImageCompressionRatio, "1-n", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, LossyImageCompressionMethod, "1-n", "3", "GeneralImageModule");
         IconImageSequence.read(dataset, "1-n", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, PresentationLUTShape, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, IrradiationEventUID, "1-n", "3", "GeneralImageModule");
+        RealWorldValueMappingSequence.read(dataset, "1-n", "3", "GeneralImageModule");
 
         // --- ImagePlaneModule (C) ---
         if (dataset.tagExists(DCM_PixelSpacing) ||
@@ -960,6 +1110,7 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
             getAndCheckElementFromDataset(dataset, BluePaletteColorLookupTableData, "1", "1C", "ImagePixelModule");
             getAndCheckElementFromDataset(dataset, ICCProfile, "1", "3", "ImagePixelModule");
             getAndCheckElementFromDataset(dataset, PixelDataProviderURL, "1", "1C", "ImagePixelModule");
+            getAndCheckElementFromDataset(dataset, PixelPaddingRangeLimit, "1", "1C", "ImagePixelModule");
         }
 
         // --- MultiFrameModule (C) ---
@@ -1016,14 +1167,19 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, PixelRepresentation, "1", "1C", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, DoseUnits, "1", "1", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, DoseType, "1", "1", "RTDoseModule");
+        getAndCheckElementFromDataset(dataset, SpatialTransformOfDose, "1", "3", "RTDoseModule");
+        ReferencedSpatialRegistrationSequence.read(dataset, "1-n", "2C", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "3", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, DoseComment, "1", "3", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, NormalizationPoint, "3", "3", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, DoseSummationType, "1", "1", "RTDoseModule");
         ReferencedRTPlanSequence.read(dataset, "1-n", "1C", "RTDoseModule");
+        ReferencedTreatmentRecordSequence.read(dataset, "1-n", "1C", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, GridFrameOffsetVector, "2-n", "1C", "RTDoseModule");
-        getAndCheckElementFromDataset(dataset, DoseGridScaling, "1", "1", "RTDoseModule");
+        getAndCheckElementFromDataset(dataset, DoseGridScaling, "1", "1C", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, TissueHeterogeneityCorrection, "1-3", "3", "RTDoseModule");
+        DerivationCodeSequence.read(dataset, "1-n", "3", "RTDoseModule");
+        ReferencedInstanceSequence.read(dataset, "1-n", "3", "RTDoseModule");
 
         // --- RTDVHModule (U) ---
         if (dataset.tagExists(DCM_ReferencedStructureSetSequence) ||
@@ -1038,7 +1194,8 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         // --- StructureSetModule (C) ---
         if (dataset.tagExists(DCM_StructureSetLabel) ||
             dataset.tagExists(DCM_StructureSetDate) ||
-            dataset.tagExists(DCM_StructureSetTime))
+            dataset.tagExists(DCM_StructureSetTime) ||
+            dataset.tagExists(DCM_StructureSetROISequence))
         {
             getAndCheckElementFromDataset(dataset, StructureSetLabel, "1", "1", "StructureSetModule");
             getAndCheckElementFromDataset(dataset, StructureSetName, "1", "3", "StructureSetModule");
@@ -1047,7 +1204,8 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
             getAndCheckElementFromDataset(dataset, StructureSetDate, "1", "2", "StructureSetModule");
             getAndCheckElementFromDataset(dataset, StructureSetTime, "1", "2", "StructureSetModule");
             ReferencedFrameOfReferenceSequence.read(dataset, "1-n", "3", "StructureSetModule");
-            StructureSetROISequence.read(dataset, "1-n", "3", "StructureSetModule");
+            StructureSetROISequence.read(dataset, "1-n", "1", "StructureSetModule");
+            PredecessorStructureSetSequence.read(dataset, "1-n", "3", "StructureSetModule");
         }
 
         // --- ROIContourModule (C) ---
@@ -1068,6 +1226,7 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, InstanceCoercionDateTime, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, RelatedGeneralSOPClassUID, "1-n", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, OriginalSpecializedSOPClassUID, "1", "3", "SOPCommonModule");
@@ -1084,6 +1243,20 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         EncryptedAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         OriginalAttributesSequence.read(dataset, "1-n", "3", "SOPCommonModule");
         HL7StructuredDocumentReferenceSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, LongitudinalTemporalInformationModified, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, QueryRetrieveView, "1", "1C", "SOPCommonModule");
+        ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
+
+        // --- CommonInstanceReferenceModule (U) ---
+        ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
+        StudiesContainingOtherReferencedInstancesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
+
+        // --- FrameExtractionModule (C) ---
+        if (dataset.tagExists(DCM_FrameExtractionSequence))
+        {
+            FrameExtractionSequence.read(dataset, "1-n", "1", "FrameExtractionModule");
+        }
     }
     return result;
 }
@@ -1097,8 +1270,11 @@ OFCondition DRTDoseIOD::readPatientData(DcmItem &dataset)
     getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, IssuerOfPatientID, "1", "3", "PatientModule");
+    IssuerOfPatientIDQualifiersSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientSex, "1", "2", "PatientModule");
+    ReferencedPatientPhotoSequence.read(dataset, "1-n", "3", "PatientModule");
+    getAndCheckElementFromDataset(dataset, QualityControlSubject, "1", "3", "PatientModule");
     ReferencedPatientSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthTime, "1", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, OtherPatientIDs, "1-n", "3", "PatientModule");
@@ -1132,6 +1308,8 @@ OFCondition DRTDoseIOD::readPatientData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, ClinicalTrialSiteName, "1", "2", "ClinicalTrialSubjectModule");
         getAndCheckElementFromDataset(dataset, ClinicalTrialSubjectID, "1", "1C", "ClinicalTrialSubjectModule");
         getAndCheckElementFromDataset(dataset, ClinicalTrialSubjectReadingID, "1", "1C", "ClinicalTrialSubjectModule");
+        getAndCheckElementFromDataset(dataset, ClinicalTrialProtocolEthicsCommitteeName, "1", "1C", "ClinicalTrialSubjectModule");
+        getAndCheckElementFromDataset(dataset, ClinicalTrialProtocolEthicsCommitteeApprovalNumber, "1", "3", "ClinicalTrialSubjectModule");
     }
     return result;
 }
@@ -1151,13 +1329,16 @@ OFCondition DRTDoseIOD::readStudyData(DcmItem &dataset)
         ReferringPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
+        IssuerOfAccessionNumberSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, PhysiciansOfRecord, "1-n", "3", "GeneralStudyModule");
         PhysiciansOfRecordIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, NameOfPhysiciansReadingStudy, "1-n", "3", "GeneralStudyModule");
         PhysiciansReadingStudyIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        RequestingServiceCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         ReferencedStudySequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         ProcedureCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        ReasonForPerformedProcedureCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
 
         // --- PatientStudyModule (U) ---
         getAndCheckElementFromDataset(dataset, AdmittingDiagnosesDescription, "1-n", "3", "PatientStudyModule");
@@ -1165,10 +1346,14 @@ OFCondition DRTDoseIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, PatientAge, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, PatientSize, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, PatientWeight, "1", "3", "PatientStudyModule");
+        PatientSizeCodeSequence.read(dataset, "1-n", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, Occupation, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, AdditionalPatientHistory, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, AdmissionID, "1", "3", "PatientStudyModule");
-        getAndCheckElementFromDataset(dataset, IssuerOfAdmissionID, "1", "3", "PatientStudyModule");
+        IssuerOfAdmissionIDSequence.read(dataset, "1-n", "3", "PatientStudyModule");
+        getAndCheckElementFromDataset(dataset, ServiceEpisodeID, "1", "3", "PatientStudyModule");
+        IssuerOfServiceEpisodeIDSequence.read(dataset, "1-n", "3", "PatientStudyModule");
+        getAndCheckElementFromDataset(dataset, ServiceEpisodeDescription, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, PatientSexNeutered, "1", "2C", "PatientStudyModule");
 
         // --- ClinicalTrialStudyModule (U) ---
@@ -1176,6 +1361,7 @@ OFCondition DRTDoseIOD::readStudyData(DcmItem &dataset)
         {
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointID, "1", "2", "ClinicalTrialStudyModule");
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointDescription, "1", "3", "ClinicalTrialStudyModule");
+            ConsentForClinicalTrialUseSequence.read(dataset, "1-n", "3", "ClinicalTrialStudyModule");
         }
     }
     return result;
@@ -1192,19 +1378,28 @@ OFCondition DRTDoseIOD::readSeriesData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, Modality, "1", "1", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "2", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, SeriesDate, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, SeriesTime, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "RTSeriesModule");
+        SeriesDescriptionCodeSequence.read(dataset, "1-n", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, OperatorsName, "1-n", "2", "RTSeriesModule");
         ReferencedPerformedProcedureStepSequence.read(dataset, "1-n", "3", "RTSeriesModule");
         RequestAttributesSequence.read(dataset, "1-n", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepID, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepStartDate, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepStartTime, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, PerformedProcedureStepEndDate, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, PerformedProcedureStepEndTime, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepDescription, "1", "3", "RTSeriesModule");
         PerformedProtocolCodeSequence.read(dataset, "1-n", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, CommentsOnThePerformedProcedureStep, "1", "3", "RTSeriesModule");
 
         // --- ClinicalTrialSeriesModule (U) ---
         if (dataset.tagExists(DCM_ClinicalTrialCoordinatingCenterName))
         {
             getAndCheckElementFromDataset(dataset, ClinicalTrialCoordinatingCenterName, "1", "2", "ClinicalTrialSeriesModule");
+            getAndCheckElementFromDataset(dataset, ClinicalTrialSeriesID, "1", "3", "ClinicalTrialSeriesModule");
+            getAndCheckElementFromDataset(dataset, ClinicalTrialSeriesDescription, "1", "3", "ClinicalTrialSeriesModule");
         }
     }
     return result;
@@ -1224,8 +1419,11 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmPersonName(PatientName), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(PatientID), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(IssuerOfPatientID), "1", "3", "PatientModule");
+        if (result.good()) result = IssuerOfPatientIDQualifiersSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmDate(PatientBirthDate), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmCodeString(PatientSex), "1", "2", "PatientModule");
+        if (result.good()) result = ReferencedPatientPhotoSequence.write(dataset, "1-n" ,"3", "PatientModule");
+        addElementToDataset(result, dataset, new DcmCodeString(QualityControlSubject), "1", "3", "PatientModule");
         if (result.good()) result = ReferencedPatientSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmTime(PatientBirthTime), "1", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(OtherPatientIDs), "1-n", "3", "PatientModule");
@@ -1255,6 +1453,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSiteName), "1", "2", "ClinicalTrialSubjectModule");
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSubjectID), "1", "1C", "ClinicalTrialSubjectModule");
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSubjectReadingID), "1", "1C", "ClinicalTrialSubjectModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialProtocolEthicsCommitteeName), "1", "1C", "ClinicalTrialSubjectModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialProtocolEthicsCommitteeApprovalNumber), "1", "3", "ClinicalTrialSubjectModule");
         }
 
         // --- GeneralStudyModule (M) ---
@@ -1265,13 +1465,16 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         if (result.good()) result = ReferringPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
+        if (result.good()) result = IssuerOfAccessionNumberSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmLongString(StudyDescription), "1", "3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(PhysiciansOfRecord), "1-n", "3", "GeneralStudyModule");
         if (result.good()) result = PhysiciansOfRecordIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(NameOfPhysiciansReadingStudy), "1-n", "3", "GeneralStudyModule");
         if (result.good()) result = PhysiciansReadingStudyIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        if (result.good()) result = RequestingServiceCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         if (result.good()) result = ReferencedStudySequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         if (result.good()) result = ProcedureCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        if (result.good()) result = ReasonForPerformedProcedureCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
 
         // --- PatientStudyModule (U) ---
         if (isPatientStudyModulePresent(OFFalse /*complete*/))
@@ -1281,10 +1484,14 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmAgeString(PatientAge), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmDecimalString(PatientSize), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmDecimalString(PatientWeight), "1", "3", "PatientStudyModule");
+            if (result.good()) result = PatientSizeCodeSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmShortString(Occupation), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongText(AdditionalPatientHistory), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongString(AdmissionID), "1", "3", "PatientStudyModule");
-            addElementToDataset(result, dataset, new DcmLongString(IssuerOfAdmissionID), "1", "3", "PatientStudyModule");
+            if (result.good()) result = IssuerOfAdmissionIDSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
+            addElementToDataset(result, dataset, new DcmLongString(ServiceEpisodeID), "1", "3", "PatientStudyModule");
+            if (result.good()) result = IssuerOfServiceEpisodeIDSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
+            addElementToDataset(result, dataset, new DcmLongString(ServiceEpisodeDescription), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmCodeString(PatientSexNeutered), "1", "2C", "PatientStudyModule");
         }
 
@@ -1293,25 +1500,35 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         {
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialTimePointID), "1", "2", "ClinicalTrialStudyModule");
             addElementToDataset(result, dataset, new DcmShortText(ClinicalTrialTimePointDescription), "1", "3", "ClinicalTrialStudyModule");
+            if (result.good()) result = ConsentForClinicalTrialUseSequence.write(dataset, "1-n" ,"3", "ClinicalTrialStudyModule");
         }
 
         // --- RTSeriesModule (M) ---
         addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "2", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmDate(SeriesDate), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmTime(SeriesTime), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "RTSeriesModule");
+        if (result.good()) result = SeriesDescriptionCodeSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmPersonName(OperatorsName), "1-n", "2", "RTSeriesModule");
         if (result.good()) result = ReferencedPerformedProcedureStepSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
         if (result.good()) result = RequestAttributesSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmShortString(PerformedProcedureStepID), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmDate(PerformedProcedureStepStartDate), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmTime(PerformedProcedureStepStartTime), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmDate(PerformedProcedureStepEndDate), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmTime(PerformedProcedureStepEndTime), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmLongString(PerformedProcedureStepDescription), "1", "3", "RTSeriesModule");
         if (result.good()) result = PerformedProtocolCodeSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmShortText(CommentsOnThePerformedProcedureStep), "1", "3", "RTSeriesModule");
 
         // --- ClinicalTrialSeriesModule (U) ---
         if (isClinicalTrialSeriesModulePresent(OFFalse /*complete*/))
         {
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialCoordinatingCenterName), "1", "2", "ClinicalTrialSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSeriesID), "1", "3", "ClinicalTrialSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSeriesDescription), "1", "3", "ClinicalTrialSeriesModule");
         }
 
         // --- FrameOfReferenceModule (M) ---
@@ -1331,7 +1548,7 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmDecimalString(SpatialResolution), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmDate(DateOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmTime(TimeOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
-        addElementToDataset(result, dataset, new DcmUnsignedShort(PixelPaddingValue), "1", "3", "GeneralEquipmentModule");
+        addElementToDataset(result, dataset, new DcmUnsignedShort(PixelPaddingValue), "1", "1C", "GeneralEquipmentModule");
 
         // --- GeneralImageModule (C) ---
         if (isGeneralImageModulePresent(OFFalse /*complete*/))
@@ -1347,19 +1564,21 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmDateTime(AcquisitionDateTime), "1", "3", "GeneralImageModule");
             if (result.good()) result = ReferencedImageSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmShortText(DerivationDescription), "1", "3", "GeneralImageModule");
-            if (result.good()) result = DerivationCodeSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
+            // if (result.good()) result = DerivationCodeSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
             if (result.good()) result = SourceImageSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
-            if (result.good()) result = ReferencedInstanceSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
+            // if (result.good()) result = ReferencedInstanceSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmIntegerString(ImagesInAcquisition), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmLongText(ImageComments), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(QualityControlImage), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(BurnedInAnnotation), "1", "3", "GeneralImageModule");
+            addElementToDataset(result, dataset, new DcmCodeString(RecognizableVisualFeatures), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(LossyImageCompression), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmDecimalString(LossyImageCompressionRatio), "1-n", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(LossyImageCompressionMethod), "1-n", "3", "GeneralImageModule");
             if (result.good()) result = IconImageSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(PresentationLUTShape), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(IrradiationEventUID), "1-n", "3", "GeneralImageModule");
+            if (result.good()) result = RealWorldValueMappingSequence.write(dataset, "1-n" ,"3", "GeneralImageModule");
         }
 
         // --- ImagePlaneModule (C) ---
@@ -1395,7 +1614,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmOtherByteOtherWord(GreenPaletteColorLookupTableData), "1", "1C", "ImagePixelModule");
             addElementToDataset(result, dataset, new DcmOtherByteOtherWord(BluePaletteColorLookupTableData), "1", "1C", "ImagePixelModule");
             addElementToDataset(result, dataset, new DcmOtherByteOtherWord(ICCProfile), "1", "3", "ImagePixelModule");
-            addElementToDataset(result, dataset, new DcmUnlimitedText(PixelDataProviderURL), "1", "1C", "ImagePixelModule");
+            addElementToDataset(result, dataset, new DcmUniversalResourceIdentifierOrLocator(PixelDataProviderURL), "1", "1C", "ImagePixelModule");
+            addElementToDataset(result, dataset, new DcmUnsignedShort(PixelPaddingRangeLimit), "1", "1C", "ImagePixelModule");
         }
 
         // --- MultiFrameModule (C) ---
@@ -1448,14 +1668,19 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmUnsignedShort(PixelRepresentation), "1", "1C", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(DoseUnits), "1", "1", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(DoseType), "1", "1", "RTDoseModule");
+        addElementToDataset(result, dataset, new DcmCodeString(SpatialTransformOfDose), "1", "3", "RTDoseModule");
+        if (result.good()) result = ReferencedSpatialRegistrationSequence.write(dataset, "1-n" ,"2C", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber), "1", "3", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmLongString(DoseComment), "1", "3", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmDecimalString(NormalizationPoint), "3", "3", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(DoseSummationType), "1", "1", "RTDoseModule");
         if (result.good()) result = ReferencedRTPlanSequence.write(dataset, "1-n" ,"1C", "RTDoseModule");
+        if (result.good()) result = ReferencedTreatmentRecordSequence.write(dataset, "1-n" ,"1C", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmDecimalString(GridFrameOffsetVector), "2-n", "1C", "RTDoseModule");
-        addElementToDataset(result, dataset, new DcmDecimalString(DoseGridScaling), "1", "1", "RTDoseModule");
+        addElementToDataset(result, dataset, new DcmDecimalString(DoseGridScaling), "1", "1C", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(TissueHeterogeneityCorrection), "1-3", "3", "RTDoseModule");
+        if (result.good()) result = DerivationCodeSequence.write(dataset, "1-n" ,"3", "RTDoseModule");
+        if (result.good()) result = ReferencedInstanceSequence.write(dataset, "1-n" ,"3", "RTDoseModule");
 
         // --- RTDVHModule (U) ---
         if (isRTDVHModulePresent(OFFalse /*complete*/))
@@ -1476,7 +1701,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmDate(StructureSetDate), "1", "2", "StructureSetModule");
             addElementToDataset(result, dataset, new DcmTime(StructureSetTime), "1", "2", "StructureSetModule");
             if (result.good()) result = ReferencedFrameOfReferenceSequence.write(dataset, "1-n" ,"3", "StructureSetModule");
-            if (result.good()) result = StructureSetROISequence.write(dataset, "1-n" ,"3", "StructureSetModule");
+            if (result.good()) result = StructureSetROISequence.write(dataset, "1-n" ,"1", "StructureSetModule");
+            if (result.good()) result = PredecessorStructureSetSequence.write(dataset, "1-n" ,"3", "StructureSetModule");
         }
 
         // --- ROIContourModule (C) ---
@@ -1497,6 +1723,7 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet), "1-n", "1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmDateTime(InstanceCoercionDateTime), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(RelatedGeneralSOPClassUID), "1-n", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(OriginalSpecializedSOPClassUID), "1", "3", "SOPCommonModule");
@@ -1513,6 +1740,23 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         if (result.good()) result = EncryptedAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         if (result.good()) result = OriginalAttributesSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
         if (result.good()) result = HL7StructuredDocumentReferenceSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(LongitudinalTemporalInformationModified), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(QueryRetrieveView), "1", "1C", "SOPCommonModule");
+        if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
+
+        // --- CommonInstanceReferenceModule (U) ---
+        if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
+        {
+            if (result.good()) result = ReferencedSeriesSequence.write(dataset, "1-n" ,"1C", "CommonInstanceReferenceModule");
+            if (result.good()) result = StudiesContainingOtherReferencedInstancesSequence.write(dataset, "1-n" ,"1C", "CommonInstanceReferenceModule");
+        }
+
+        // --- FrameExtractionModule (C) ---
+        if (isFrameExtractionModulePresent(OFFalse /*complete*/))
+        {
+            if (result.good()) result = FrameExtractionSequence.write(dataset, "1-n" ,"1", "FrameExtractionModule");
+        }
     } else
         result = RT_EC_InvalidObject;
     return result;
@@ -1534,7 +1778,9 @@ OFBool DRTDoseIOD::isClinicalTrialSubjectModulePresent(const OFBool complete)
                !ClinicalTrialSiteID.isEmpty() ||
                !ClinicalTrialSiteName.isEmpty() ||
                !ClinicalTrialSubjectID.isEmpty() ||
-               !ClinicalTrialSubjectReadingID.isEmpty();
+               !ClinicalTrialSubjectReadingID.isEmpty() ||
+               !ClinicalTrialProtocolEthicsCommitteeName.isEmpty() ||
+               !ClinicalTrialProtocolEthicsCommitteeApprovalNumber.isEmpty();
     }
 }
 
@@ -1547,10 +1793,14 @@ OFBool DRTDoseIOD::isPatientStudyModulePresent(const OFBool /*complete*/)
            !PatientAge.isEmpty() ||
            !PatientSize.isEmpty() ||
            !PatientWeight.isEmpty() ||
+           !PatientSizeCodeSequence.isEmpty() ||
            !Occupation.isEmpty() ||
            !AdditionalPatientHistory.isEmpty() ||
            !AdmissionID.isEmpty() ||
-           !IssuerOfAdmissionID.isEmpty() ||
+           !IssuerOfAdmissionIDSequence.isEmpty() ||
+           !ServiceEpisodeID.isEmpty() ||
+           !IssuerOfServiceEpisodeIDSequence.isEmpty() ||
+           !ServiceEpisodeDescription.isEmpty() ||
            !PatientSexNeutered.isEmpty();
 }
 
@@ -1559,14 +1809,17 @@ OFBool DRTDoseIOD::isClinicalTrialStudyModulePresent(const OFBool /*complete*/)
 {
     /* check whether at least one attribute is present */
     return !ClinicalTrialTimePointID.isEmpty() ||
-           !ClinicalTrialTimePointDescription.isEmpty();
+           !ClinicalTrialTimePointDescription.isEmpty() ||
+           !ConsentForClinicalTrialUseSequence.isEmpty();
 }
 
 
 OFBool DRTDoseIOD::isClinicalTrialSeriesModulePresent(const OFBool /*complete*/)
 {
     /* check whether at least one attribute is present */
-    return !ClinicalTrialCoordinatingCenterName.isEmpty();
+    return !ClinicalTrialCoordinatingCenterName.isEmpty() ||
+           !ClinicalTrialSeriesID.isEmpty() ||
+           !ClinicalTrialSeriesDescription.isEmpty();
 }
 
 
@@ -1583,19 +1836,19 @@ OFBool DRTDoseIOD::isGeneralImageModulePresent(const OFBool /*complete*/)
            !AcquisitionDateTime.isEmpty() ||
            !ReferencedImageSequence.isEmpty() ||
            !DerivationDescription.isEmpty() ||
-           !DerivationCodeSequence.isEmpty() ||
            !SourceImageSequence.isEmpty() ||
-           !ReferencedInstanceSequence.isEmpty() ||
            !ImagesInAcquisition.isEmpty() ||
            !ImageComments.isEmpty() ||
            !QualityControlImage.isEmpty() ||
            !BurnedInAnnotation.isEmpty() ||
+           !RecognizableVisualFeatures.isEmpty() ||
            !LossyImageCompression.isEmpty() ||
            !LossyImageCompressionRatio.isEmpty() ||
            !LossyImageCompressionMethod.isEmpty() ||
            !IconImageSequence.isEmpty() ||
            !PresentationLUTShape.isEmpty() ||
-           !IrradiationEventUID.isEmpty();
+           !IrradiationEventUID.isEmpty() ||
+           !RealWorldValueMappingSequence.isEmpty();
 }
 
 
@@ -1641,7 +1894,8 @@ OFBool DRTDoseIOD::isImagePixelModulePresent(const OFBool complete)
                !GreenPaletteColorLookupTableData.isEmpty() ||
                !BluePaletteColorLookupTableData.isEmpty() ||
                !ICCProfile.isEmpty() ||
-               !PixelDataProviderURL.isEmpty();
+               !PixelDataProviderURL.isEmpty() ||
+               !PixelPaddingRangeLimit.isEmpty();
     }
 }
 
@@ -1738,7 +1992,8 @@ OFBool DRTDoseIOD::isStructureSetModulePresent(const OFBool complete)
     if (complete)
     {
         /* check whether all mandatory attributes are present */
-        return !StructureSetLabel.isEmpty();
+        return !StructureSetLabel.isEmpty() &&
+               !StructureSetROISequence.isEmpty();
     } else {
         /* check whether at least one attribute is present */
         return !StructureSetLabel.isEmpty() ||
@@ -1747,7 +2002,8 @@ OFBool DRTDoseIOD::isStructureSetModulePresent(const OFBool complete)
                !StructureSetDate.isEmpty() ||
                !StructureSetTime.isEmpty() ||
                !ReferencedFrameOfReferenceSequence.isEmpty() ||
-               !StructureSetROISequence.isEmpty();
+               !StructureSetROISequence.isEmpty() ||
+               !PredecessorStructureSetSequence.isEmpty();
     }
 }
 
@@ -1763,6 +2019,21 @@ OFBool DRTDoseIOD::isRTDoseROIModulePresent(const OFBool /*complete*/)
 {
     /* check whether at least one attribute is present */
     return !RTDoseROISequence.isEmpty();
+}
+
+
+OFBool DRTDoseIOD::isCommonInstanceReferenceModulePresent(const OFBool /*complete*/)
+{
+    /* check whether at least one attribute is present */
+    return !ReferencedSeriesSequence.isEmpty() ||
+           !StudiesContainingOtherReferencedInstancesSequence.isEmpty();
+}
+
+
+OFBool DRTDoseIOD::isFrameExtractionModulePresent(const OFBool /*complete*/)
+{
+    /* check whether at least one attribute is present */
+    return !FrameExtractionSequence.isEmpty();
 }
 
 
@@ -1871,6 +2142,18 @@ OFCondition DRTDoseIOD::getClinicalTrialCoordinatingCenterName(OFString &value, 
 }
 
 
+OFCondition DRTDoseIOD::getClinicalTrialProtocolEthicsCommitteeApprovalNumber(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialProtocolEthicsCommitteeApprovalNumber, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getClinicalTrialProtocolEthicsCommitteeName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialProtocolEthicsCommitteeName, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getClinicalTrialProtocolID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ClinicalTrialProtocolID, value, pos);
@@ -1880,6 +2163,18 @@ OFCondition DRTDoseIOD::getClinicalTrialProtocolID(OFString &value, const signed
 OFCondition DRTDoseIOD::getClinicalTrialProtocolName(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ClinicalTrialProtocolName, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getClinicalTrialSeriesDescription(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialSeriesDescription, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getClinicalTrialSeriesID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialSeriesID, value, pos);
 }
 
 
@@ -1931,9 +2226,21 @@ OFCondition DRTDoseIOD::getColumns(Uint16 &value, const unsigned long pos) const
 }
 
 
+OFCondition DRTDoseIOD::getCommentsOnThePerformedProcedureStep(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(CommentsOnThePerformedProcedureStep, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getContentDate(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ContentDate, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getContentQualification(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ContentQualification, value, pos);
 }
 
 
@@ -2183,6 +2490,12 @@ OFCondition DRTDoseIOD::getImagesInAcquisition(Sint32 &value, const unsigned lon
 }
 
 
+OFCondition DRTDoseIOD::getInstanceCoercionDateTime(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(InstanceCoercionDateTime, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getInstanceCreationDate(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(InstanceCreationDate, value, pos);
@@ -2237,12 +2550,6 @@ OFCondition DRTDoseIOD::getIrradiationEventUID(OFString &value, const signed lon
 }
 
 
-OFCondition DRTDoseIOD::getIssuerOfAdmissionID(OFString &value, const signed long pos) const
-{
-    return getStringValueFromElement(IssuerOfAdmissionID, value, pos);
-}
-
-
 OFCondition DRTDoseIOD::getIssuerOfPatientID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(IssuerOfPatientID, value, pos);
@@ -2252,6 +2559,12 @@ OFCondition DRTDoseIOD::getIssuerOfPatientID(OFString &value, const signed long 
 OFCondition DRTDoseIOD::getLargestImagePixelValue(Uint16 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmUnsignedShort &, LargestImagePixelValue).getUint16(value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getLongitudinalTemporalInformationModified(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(LongitudinalTemporalInformationModified, value, pos);
 }
 
 
@@ -2354,6 +2667,12 @@ OFCondition DRTDoseIOD::getNumberOfFramesInOverlay(Sint32 &value, const unsigned
 OFCondition DRTDoseIOD::getOccupation(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(Occupation, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getOperatorsName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(OperatorsName, value, pos);
 }
 
 
@@ -2531,6 +2850,18 @@ OFCondition DRTDoseIOD::getPerformedProcedureStepDescription(OFString &value, co
 }
 
 
+OFCondition DRTDoseIOD::getPerformedProcedureStepEndDate(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(PerformedProcedureStepEndDate, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getPerformedProcedureStepEndTime(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(PerformedProcedureStepEndTime, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getPerformedProcedureStepID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(PerformedProcedureStepID, value, pos);
@@ -2576,6 +2907,12 @@ OFCondition DRTDoseIOD::getPixelAspectRatio(Sint32 &value, const unsigned long p
 OFCondition DRTDoseIOD::getPixelDataProviderURL(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(PixelDataProviderURL, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getPixelPaddingRangeLimit(Uint16 &value, const unsigned long pos) const
+{
+    return OFconst_cast(DcmUnsignedShort &, PixelPaddingRangeLimit).getUint16(value, pos);
 }
 
 
@@ -2633,6 +2970,18 @@ OFCondition DRTDoseIOD::getQualityControlImage(OFString &value, const signed lon
 }
 
 
+OFCondition DRTDoseIOD::getQualityControlSubject(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(QualityControlSubject, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getQueryRetrieveView(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(QueryRetrieveView, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getROIArea(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ROIArea, value, pos);
@@ -2666,6 +3015,12 @@ OFCondition DRTDoseIOD::getROIStandardDeviation(OFString &value, const signed lo
 OFCondition DRTDoseIOD::getROIStandardDeviation(Float64 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmDecimalString &, ROIStandardDeviation).getFloat64(value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getRecognizableVisualFeatures(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(RecognizableVisualFeatures, value, pos);
 }
 
 
@@ -2792,6 +3147,12 @@ OFCondition DRTDoseIOD::getSamplesPerPixel(Uint16 &value, const unsigned long po
 }
 
 
+OFCondition DRTDoseIOD::getSeriesDate(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(SeriesDate, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getSeriesDescription(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(SeriesDescription, value, pos);
@@ -2813,6 +3174,24 @@ OFCondition DRTDoseIOD::getSeriesNumber(OFString &value, const signed long pos) 
 OFCondition DRTDoseIOD::getSeriesNumber(Sint32 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmIntegerString &, SeriesNumber).getSint32(value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getSeriesTime(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(SeriesTime, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getServiceEpisodeDescription(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ServiceEpisodeDescription, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getServiceEpisodeID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ServiceEpisodeID, value, pos);
 }
 
 
@@ -2861,6 +3240,12 @@ OFCondition DRTDoseIOD::getSpatialResolution(OFString &value, const signed long 
 OFCondition DRTDoseIOD::getSpatialResolution(Float64 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmDecimalString &, SpatialResolution).getFloat64(value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getSpatialTransformOfDose(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(SpatialTransformOfDose, value, pos);
 }
 
 
@@ -3077,6 +3462,24 @@ OFCondition DRTDoseIOD::setClinicalTrialCoordinatingCenterName(const OFString &v
 }
 
 
+OFCondition DRTDoseIOD::setClinicalTrialProtocolEthicsCommitteeApprovalNumber(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialProtocolEthicsCommitteeApprovalNumber.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setClinicalTrialProtocolEthicsCommitteeName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialProtocolEthicsCommitteeName.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setClinicalTrialProtocolID(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
@@ -3091,6 +3494,24 @@ OFCondition DRTDoseIOD::setClinicalTrialProtocolName(const OFString &value, cons
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = ClinicalTrialProtocolName.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setClinicalTrialSeriesDescription(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialSeriesDescription.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setClinicalTrialSeriesID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialSeriesID.putOFStringArray(value);
     return result;
 }
 
@@ -3164,11 +3585,29 @@ OFCondition DRTDoseIOD::setColumns(const Uint16 value, const unsigned long pos)
 }
 
 
+OFCondition DRTDoseIOD::setCommentsOnThePerformedProcedureStep(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
+    if (result.good())
+        result = CommentsOnThePerformedProcedureStep.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setContentDate(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = ContentDate.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setContentQualification(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ContentQualification.putOFStringArray(value);
     return result;
 }
 
@@ -3401,6 +3840,15 @@ OFCondition DRTDoseIOD::setImagesInAcquisition(const OFString &value, const OFBo
 }
 
 
+OFCondition DRTDoseIOD::setInstanceCoercionDateTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = InstanceCoercionDateTime.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setInstanceCreationDate(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
@@ -3473,15 +3921,6 @@ OFCondition DRTDoseIOD::setIrradiationEventUID(const OFString &value, const OFBo
 }
 
 
-OFCondition DRTDoseIOD::setIssuerOfAdmissionID(const OFString &value, const OFBool check)
-{
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-    if (result.good())
-        result = IssuerOfAdmissionID.putOFStringArray(value);
-    return result;
-}
-
-
 OFCondition DRTDoseIOD::setIssuerOfPatientID(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
@@ -3494,6 +3933,15 @@ OFCondition DRTDoseIOD::setIssuerOfPatientID(const OFString &value, const OFBool
 OFCondition DRTDoseIOD::setLargestImagePixelValue(const Uint16 value, const unsigned long pos)
 {
     return LargestImagePixelValue.putUint16(value, pos);
+}
+
+
+OFCondition DRTDoseIOD::setLongitudinalTemporalInformationModified(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = LongitudinalTemporalInformationModified.putOFStringArray(value);
+    return result;
 }
 
 
@@ -3592,6 +4040,15 @@ OFCondition DRTDoseIOD::setOccupation(const OFString &value, const OFBool check)
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = Occupation.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setOperatorsName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = OperatorsName.putOFStringArray(value);
     return result;
 }
 
@@ -3824,6 +4281,24 @@ OFCondition DRTDoseIOD::setPerformedProcedureStepDescription(const OFString &val
 }
 
 
+OFCondition DRTDoseIOD::setPerformedProcedureStepEndDate(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PerformedProcedureStepEndDate.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setPerformedProcedureStepEndTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PerformedProcedureStepEndTime.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setPerformedProcedureStepID(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
@@ -3880,10 +4355,16 @@ OFCondition DRTDoseIOD::setPixelAspectRatio(const OFString &value, const OFBool 
 
 OFCondition DRTDoseIOD::setPixelDataProviderURL(const OFString &value, const OFBool check)
 {
-    OFCondition result = (check) ? DcmUnlimitedText::checkStringValue(value) : EC_Normal;
+    OFCondition result = (check) ? DcmUniversalResourceIdentifierOrLocator::checkStringValue(value) : EC_Normal;
     if (result.good())
         result = PixelDataProviderURL.putOFStringArray(value);
     return result;
+}
+
+
+OFCondition DRTDoseIOD::setPixelPaddingRangeLimit(const Uint16 value, const unsigned long pos)
+{
+    return PixelPaddingRangeLimit.putUint16(value, pos);
 }
 
 
@@ -3941,6 +4422,24 @@ OFCondition DRTDoseIOD::setQualityControlImage(const OFString &value, const OFBo
 }
 
 
+OFCondition DRTDoseIOD::setQualityControlSubject(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = QualityControlSubject.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setQueryRetrieveView(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = QueryRetrieveView.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setROIArea(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
@@ -3964,6 +4463,15 @@ OFCondition DRTDoseIOD::setROIStandardDeviation(const OFString &value, const OFB
     OFCondition result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = ROIStandardDeviation.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setRecognizableVisualFeatures(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = RecognizableVisualFeatures.putOFStringArray(value);
     return result;
 }
 
@@ -4109,6 +4617,15 @@ OFCondition DRTDoseIOD::setSamplesPerPixel(const Uint16 value, const unsigned lo
 }
 
 
+OFCondition DRTDoseIOD::setSeriesDate(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesDate.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setSeriesDescription(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
@@ -4132,6 +4649,33 @@ OFCondition DRTDoseIOD::setSeriesNumber(const OFString &value, const OFBool chec
     OFCondition result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = SeriesNumber.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setSeriesTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesTime.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setServiceEpisodeDescription(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ServiceEpisodeDescription.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setServiceEpisodeID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ServiceEpisodeID.putOFStringArray(value);
     return result;
 }
 
@@ -4174,6 +4718,15 @@ OFCondition DRTDoseIOD::setSpatialResolution(const OFString &value, const OFBool
     OFCondition result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = SpatialResolution.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setSpatialTransformOfDose(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SpatialTransformOfDose.putOFStringArray(value);
     return result;
 }
 

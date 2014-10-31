@@ -4,16 +4,16 @@
  *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTFrameOfReferenceRelationshipSequence
+ *  Header file for class DRTBeamDoseVerificationControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
 
-#ifndef DRTFORRS_H
-#define DRTFORRS_H
+#ifndef DRTBVCPS_H
+#define DRTBVCPS_H
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
@@ -21,9 +21,9 @@
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 
 
-/** Interface class for FrameOfReferenceRelationshipSequence (3006,00c0)
+/** Interface class for BeamDoseVerificationControlPointSequence (300a,008c)
  */
-class DCMTK_DCMRT_EXPORT DRTFrameOfReferenceRelationshipSequence
+class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
   : protected DRTTypes
 {
 
@@ -90,90 +90,107 @@ class DCMTK_DCMRT_EXPORT DRTFrameOfReferenceRelationshipSequence
 
       // --- get DICOM attribute values ---
 
-        /** get FrameOfReferenceTransformationComment (3006,00c8)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getFrameOfReferenceTransformationComment(OFString &value, const signed long pos = 0) const;
-
-        /** get FrameOfReferenceTransformationMatrix (3006,00c6)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getFrameOfReferenceTransformationMatrix(OFString &value, const signed long pos = 0) const;
-
-        /** get FrameOfReferenceTransformationMatrix (3006,00c6)
+        /** get AverageBeamDosePointDepth (300a,008d)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1)
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getFrameOfReferenceTransformationMatrix(Float64 &value, const unsigned long pos = 0) const;
+        OFCondition getAverageBeamDosePointDepth(Float32 &value, const unsigned long pos = 0) const;
 
-        /** get FrameOfReferenceTransformationMatrix (3006,00c6)
-         *  @param  value  reference to variable in which the value(s) should be stored
+        /** get AverageBeamDosePointEquivalentDepth (300a,008e)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getFrameOfReferenceTransformationMatrix(OFVector<Float64> &value) const;
+        OFCondition getAverageBeamDosePointEquivalentDepth(Float32 &value, const unsigned long pos = 0) const;
 
-        /** get FrameOfReferenceTransformationType (3006,00c4)
+        /** get AverageBeamDosePointSSD (300a,008f)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getAverageBeamDosePointSSD(Float32 &value, const unsigned long pos = 0) const;
+
+        /** get CumulativeMetersetWeight (300a,0134)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getFrameOfReferenceTransformationType(OFString &value, const signed long pos = 0) const;
+        OFCondition getCumulativeMetersetWeight(OFString &value, const signed long pos = 0) const;
 
-        /** get RelatedFrameOfReferenceUID (3006,00c2)
+        /** get CumulativeMetersetWeight (300a,0134)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getCumulativeMetersetWeight(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get ReferencedControlPointIndex (300c,00f0)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getRelatedFrameOfReferenceUID(OFString &value, const signed long pos = 0) const;
+        OFCondition getReferencedControlPointIndex(OFString &value, const signed long pos = 0) const;
+
+        /** get ReferencedControlPointIndex (300c,00f0)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getReferencedControlPointIndex(Sint32 &value, const unsigned long pos = 0) const;
 
       // --- set DICOM attribute values ---
 
-        /** set FrameOfReferenceTransformationComment (3006,00c8)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+        /** set AverageBeamDosePointDepth (300a,008d)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setFrameOfReferenceTransformationComment(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setAverageBeamDosePointDepth(const Float32 value, const unsigned long pos = 0);
 
-        /** set FrameOfReferenceTransformationMatrix (3006,00c6)
-         *  @param  value  value to be set (possibly multi-valued) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (16) if enabled
+        /** set AverageBeamDosePointEquivalentDepth (300a,008e)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setFrameOfReferenceTransformationMatrix(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setAverageBeamDosePointEquivalentDepth(const Float32 value, const unsigned long pos = 0);
 
-        /** set FrameOfReferenceTransformationType (3006,00c4)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+        /** set AverageBeamDosePointSSD (300a,008f)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setFrameOfReferenceTransformationType(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setAverageBeamDosePointSSD(const Float32 value, const unsigned long pos = 0);
 
-        /** set RelatedFrameOfReferenceUID (3006,00c2)
+        /** set CumulativeMetersetWeight (300a,0134)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setRelatedFrameOfReferenceUID(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setCumulativeMetersetWeight(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ReferencedControlPointIndex (300c,00f0)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setReferencedControlPointIndex(const OFString &value, const OFBool check = OFTrue);
 
       private:
 
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// FrameOfReferenceTransformationComment (3006,00c8) vr=LO, vm=1, type=3
-        DcmLongString FrameOfReferenceTransformationComment;
-        /// FrameOfReferenceTransformationMatrix (3006,00c6) vr=DS, vm=16, type=1C
-        DcmDecimalString FrameOfReferenceTransformationMatrix;
-        /// FrameOfReferenceTransformationType (3006,00c4) vr=CS, vm=1, type=1C
-        DcmCodeString FrameOfReferenceTransformationType;
-        /// RelatedFrameOfReferenceUID (3006,00c2) vr=UI, vm=1, type=1C
-        DcmUniqueIdentifier RelatedFrameOfReferenceUID;
+        /// AverageBeamDosePointDepth (300a,008d) vr=FL, vm=1, type=2C
+        DcmFloatingPointSingle AverageBeamDosePointDepth;
+        /// AverageBeamDosePointEquivalentDepth (300a,008e) vr=FL, vm=1, type=2C
+        DcmFloatingPointSingle AverageBeamDosePointEquivalentDepth;
+        /// AverageBeamDosePointSSD (300a,008f) vr=FL, vm=1, type=2C
+        DcmFloatingPointSingle AverageBeamDosePointSSD;
+        /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=1
+        DcmDecimalString CumulativeMetersetWeight;
+        /// ReferencedControlPointIndex (300c,00f0) vr=IS, vm=1, type=1C
+        DcmIntegerString ReferencedControlPointIndex;
 
     };
 
@@ -182,21 +199,21 @@ class DCMTK_DCMRT_EXPORT DRTFrameOfReferenceRelationshipSequence
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTFrameOfReferenceRelationshipSequence(const OFBool emptyDefaultSequence = OFFalse);
+    DRTBeamDoseVerificationControlPointSequence(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTFrameOfReferenceRelationshipSequence(const DRTFrameOfReferenceRelationshipSequence &copy);
+    DRTBeamDoseVerificationControlPointSequence(const DRTBeamDoseVerificationControlPointSequence &copy);
 
     /** destructor
      */
-    virtual ~DRTFrameOfReferenceRelationshipSequence();
+    virtual ~DRTBeamDoseVerificationControlPointSequence();
 
     /** assigment operator
      *  @param copy sequence object to be copied
      */
-    DRTFrameOfReferenceRelationshipSequence &operator=(const DRTFrameOfReferenceRelationshipSequence &copy);
+    DRTBeamDoseVerificationControlPointSequence &operator=(const DRTBeamDoseVerificationControlPointSequence &copy);
 
   // --- general methods ---
 

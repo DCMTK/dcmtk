@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTWedgeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -113,13 +113,13 @@ OFCondition DRTWedgeSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, WedgeNumber, "1", "1C", "WedgeSequence");
-        getAndCheckElementFromDataset(item, WedgeType, "1", "2C", "WedgeSequence");
+        getAndCheckElementFromDataset(item, WedgeNumber, "1", "1", "WedgeSequence");
+        getAndCheckElementFromDataset(item, WedgeType, "1", "2", "WedgeSequence");
         getAndCheckElementFromDataset(item, WedgeID, "1", "3", "WedgeSequence");
         getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "WedgeSequence");
-        getAndCheckElementFromDataset(item, WedgeAngle, "1", "2C", "WedgeSequence");
-        getAndCheckElementFromDataset(item, WedgeFactor, "1", "2C", "WedgeSequence");
-        getAndCheckElementFromDataset(item, WedgeOrientation, "1", "2C", "WedgeSequence");
+        getAndCheckElementFromDataset(item, WedgeAngle, "1", "2", "WedgeSequence");
+        getAndCheckElementFromDataset(item, WedgeFactor, "1", "2", "WedgeSequence");
+        getAndCheckElementFromDataset(item, WedgeOrientation, "1", "2", "WedgeSequence");
         getAndCheckElementFromDataset(item, SourceToWedgeTrayDistance, "1", "3", "WedgeSequence");
         result = EC_Normal;
     }
@@ -133,13 +133,13 @@ OFCondition DRTWedgeSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(WedgeNumber), "1", "1C", "WedgeSequence");
-        addElementToDataset(result, item, new DcmCodeString(WedgeType), "1", "2C", "WedgeSequence");
+        addElementToDataset(result, item, new DcmIntegerString(WedgeNumber), "1", "1", "WedgeSequence");
+        addElementToDataset(result, item, new DcmCodeString(WedgeType), "1", "2", "WedgeSequence");
         addElementToDataset(result, item, new DcmShortString(WedgeID), "1", "3", "WedgeSequence");
         addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "WedgeSequence");
-        addElementToDataset(result, item, new DcmIntegerString(WedgeAngle), "1", "2C", "WedgeSequence");
-        addElementToDataset(result, item, new DcmDecimalString(WedgeFactor), "1", "2C", "WedgeSequence");
-        addElementToDataset(result, item, new DcmDecimalString(WedgeOrientation), "1", "2C", "WedgeSequence");
+        addElementToDataset(result, item, new DcmIntegerString(WedgeAngle), "1", "2", "WedgeSequence");
+        addElementToDataset(result, item, new DcmDecimalString(WedgeFactor), "1", "2", "WedgeSequence");
+        addElementToDataset(result, item, new DcmDecimalString(WedgeOrientation), "1", "2", "WedgeSequence");
         addElementToDataset(result, item, new DcmDecimalString(SourceToWedgeTrayDistance), "1", "3", "WedgeSequence");
     }
     return result;

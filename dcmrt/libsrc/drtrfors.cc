@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedFrameOfReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,7 +21,6 @@
 
 DRTReferencedFrameOfReferenceSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    FrameOfReferenceRelationshipSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     FrameOfReferenceUID(DCM_FrameOfReferenceUID),
     RTReferencedStudySequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
@@ -30,7 +29,6 @@ DRTReferencedFrameOfReferenceSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTReferencedFrameOfReferenceSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    FrameOfReferenceRelationshipSequence(copy.FrameOfReferenceRelationshipSequence),
     FrameOfReferenceUID(copy.FrameOfReferenceUID),
     RTReferencedStudySequence(copy.RTReferencedStudySequence)
 {
@@ -47,7 +45,6 @@ DRTReferencedFrameOfReferenceSequence::Item &DRTReferencedFrameOfReferenceSequen
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        FrameOfReferenceRelationshipSequence = copy.FrameOfReferenceRelationshipSequence;
         FrameOfReferenceUID = copy.FrameOfReferenceUID;
         RTReferencedStudySequence = copy.RTReferencedStudySequence;
     }
@@ -61,7 +58,6 @@ void DRTReferencedFrameOfReferenceSequence::Item::clear()
     {
         /* clear all DICOM attributes */
         FrameOfReferenceUID.clear();
-        FrameOfReferenceRelationshipSequence.clear();
         RTReferencedStudySequence.clear();
     }
 }
@@ -70,7 +66,6 @@ void DRTReferencedFrameOfReferenceSequence::Item::clear()
 OFBool DRTReferencedFrameOfReferenceSequence::Item::isEmpty()
 {
     return FrameOfReferenceUID.isEmpty() &&
-           FrameOfReferenceRelationshipSequence.isEmpty() &&
            RTReferencedStudySequence.isEmpty();
 }
 
@@ -88,8 +83,7 @@ OFCondition DRTReferencedFrameOfReferenceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, FrameOfReferenceUID, "1", "1C", "ReferencedFrameOfReferenceSequence");
-        FrameOfReferenceRelationshipSequence.read(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
+        getAndCheckElementFromDataset(item, FrameOfReferenceUID, "1", "1", "ReferencedFrameOfReferenceSequence");
         RTReferencedStudySequence.read(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
         result = EC_Normal;
     }
@@ -103,8 +97,7 @@ OFCondition DRTReferencedFrameOfReferenceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(FrameOfReferenceUID), "1", "1C", "ReferencedFrameOfReferenceSequence");
-        if (result.good()) result = FrameOfReferenceRelationshipSequence.write(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(FrameOfReferenceUID), "1", "1", "ReferencedFrameOfReferenceSequence");
         if (result.good()) result = RTReferencedStudySequence.write(item, "1-n", "3", "ReferencedFrameOfReferenceSequence");
     }
     return result;

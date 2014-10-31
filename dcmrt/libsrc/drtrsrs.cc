@@ -4,221 +4,145 @@
  *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTFrameOfReferenceRelationshipSequence
+ *  Source file for class DRTReferencedSpatialRegistrationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
-#include "dcmtk/dcmrt/seq/drtforrs.h"
+#include "dcmtk/dcmrt/seq/drtrsrs.h"
 
 
 // --- item class ---
 
-DRTFrameOfReferenceRelationshipSequence::Item::Item(const OFBool emptyDefaultItem)
+DRTReferencedSpatialRegistrationSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    FrameOfReferenceTransformationComment(DCM_FrameOfReferenceTransformationComment),
-    FrameOfReferenceTransformationMatrix(DCM_FrameOfReferenceTransformationMatrix),
-    FrameOfReferenceTransformationType(DCM_RETIRED_FrameOfReferenceTransformationType),
-    RelatedFrameOfReferenceUID(DCM_RETIRED_RelatedFrameOfReferenceUID)
+    ReferencedSOPClassUID(DCM_ReferencedSOPClassUID),
+    ReferencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID)
 {
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::Item::Item(const Item &copy)
+DRTReferencedSpatialRegistrationSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    FrameOfReferenceTransformationComment(copy.FrameOfReferenceTransformationComment),
-    FrameOfReferenceTransformationMatrix(copy.FrameOfReferenceTransformationMatrix),
-    FrameOfReferenceTransformationType(copy.FrameOfReferenceTransformationType),
-    RelatedFrameOfReferenceUID(copy.RelatedFrameOfReferenceUID)
+    ReferencedSOPClassUID(copy.ReferencedSOPClassUID),
+    ReferencedSOPInstanceUID(copy.ReferencedSOPInstanceUID)
 {
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::Item::~Item()
+DRTReferencedSpatialRegistrationSequence::Item::~Item()
 {
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::Item::operator=(const Item &copy)
+DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        FrameOfReferenceTransformationComment = copy.FrameOfReferenceTransformationComment;
-        FrameOfReferenceTransformationMatrix = copy.FrameOfReferenceTransformationMatrix;
-        FrameOfReferenceTransformationType = copy.FrameOfReferenceTransformationType;
-        RelatedFrameOfReferenceUID = copy.RelatedFrameOfReferenceUID;
+        ReferencedSOPClassUID = copy.ReferencedSOPClassUID;
+        ReferencedSOPInstanceUID = copy.ReferencedSOPInstanceUID;
     }
     return *this;
 }
 
 
-void DRTFrameOfReferenceRelationshipSequence::Item::clear()
+void DRTReferencedSpatialRegistrationSequence::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
-        RelatedFrameOfReferenceUID.clear();
-        FrameOfReferenceTransformationType.clear();
-        FrameOfReferenceTransformationMatrix.clear();
-        FrameOfReferenceTransformationComment.clear();
+        ReferencedSOPClassUID.clear();
+        ReferencedSOPInstanceUID.clear();
     }
 }
 
 
-OFBool DRTFrameOfReferenceRelationshipSequence::Item::isEmpty()
+OFBool DRTReferencedSpatialRegistrationSequence::Item::isEmpty()
 {
-    return RelatedFrameOfReferenceUID.isEmpty() &&
-           FrameOfReferenceTransformationType.isEmpty() &&
-           FrameOfReferenceTransformationMatrix.isEmpty() &&
-           FrameOfReferenceTransformationComment.isEmpty();
+    return ReferencedSOPClassUID.isEmpty() &&
+           ReferencedSOPInstanceUID.isEmpty();
 }
 
 
-OFBool DRTFrameOfReferenceRelationshipSequence::Item::isValid() const
+OFBool DRTReferencedSpatialRegistrationSequence::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::read(DcmItem &item)
+OFCondition DRTReferencedSpatialRegistrationSequence::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, RelatedFrameOfReferenceUID, "1", "1C", "FrameOfReferenceRelationshipSequence");
-        getAndCheckElementFromDataset(item, FrameOfReferenceTransformationType, "1", "1C", "FrameOfReferenceRelationshipSequence");
-        getAndCheckElementFromDataset(item, FrameOfReferenceTransformationMatrix, "16", "1C", "FrameOfReferenceRelationshipSequence");
-        getAndCheckElementFromDataset(item, FrameOfReferenceTransformationComment, "1", "3", "FrameOfReferenceRelationshipSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "ReferencedSpatialRegistrationSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "ReferencedSpatialRegistrationSequence");
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::write(DcmItem &item)
+OFCondition DRTReferencedSpatialRegistrationSequence::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(RelatedFrameOfReferenceUID), "1", "1C", "FrameOfReferenceRelationshipSequence");
-        addElementToDataset(result, item, new DcmCodeString(FrameOfReferenceTransformationType), "1", "1C", "FrameOfReferenceRelationshipSequence");
-        addElementToDataset(result, item, new DcmDecimalString(FrameOfReferenceTransformationMatrix), "16", "1C", "FrameOfReferenceRelationshipSequence");
-        addElementToDataset(result, item, new DcmLongString(FrameOfReferenceTransformationComment), "1", "3", "FrameOfReferenceRelationshipSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "ReferencedSpatialRegistrationSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "ReferencedSpatialRegistrationSequence");
     }
     return result;
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::getFrameOfReferenceTransformationComment(OFString &value, const signed long pos) const
+OFCondition DRTReferencedSpatialRegistrationSequence::Item::getReferencedSOPClassUID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(FrameOfReferenceTransformationComment, value, pos);
+        return getStringValueFromElement(ReferencedSOPClassUID, value, pos);
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::getFrameOfReferenceTransformationMatrix(OFString &value, const signed long pos) const
+OFCondition DRTReferencedSpatialRegistrationSequence::Item::getReferencedSOPInstanceUID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(FrameOfReferenceTransformationMatrix, value, pos);
+        return getStringValueFromElement(ReferencedSOPInstanceUID, value, pos);
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::getFrameOfReferenceTransformationMatrix(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, FrameOfReferenceTransformationMatrix).getFloat64(value, pos);
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::getFrameOfReferenceTransformationMatrix(OFVector<Float64> &value) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, FrameOfReferenceTransformationMatrix).getFloat64Vector(value);
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::getFrameOfReferenceTransformationType(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(FrameOfReferenceTransformationType, value, pos);
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::getRelatedFrameOfReferenceUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(RelatedFrameOfReferenceUID, value, pos);
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::setFrameOfReferenceTransformationComment(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = FrameOfReferenceTransformationComment.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::setFrameOfReferenceTransformationMatrix(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "16") : EC_Normal;
-        if (result.good())
-            result = FrameOfReferenceTransformationMatrix.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::setFrameOfReferenceTransformationType(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = FrameOfReferenceTransformationType.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTFrameOfReferenceRelationshipSequence::Item::setRelatedFrameOfReferenceUID(const OFString &value, const OFBool check)
+OFCondition DRTReferencedSpatialRegistrationSequence::Item::setReferencedSOPClassUID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
-            result = RelatedFrameOfReferenceUID.putOFStringArray(value);
+            result = ReferencedSOPClassUID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedSpatialRegistrationSequence::Item::setReferencedSOPInstanceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ReferencedSOPInstanceUID.putOFStringArray(value);
     }
     return result;
 }
@@ -226,7 +150,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::Item::setRelatedFrameOfRefe
 
 // --- sequence class ---
 
-DRTFrameOfReferenceRelationshipSequence::DRTFrameOfReferenceRelationshipSequence(const OFBool emptyDefaultSequence)
+DRTReferencedSpatialRegistrationSequence::DRTReferencedSpatialRegistrationSequence(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -236,7 +160,7 @@ DRTFrameOfReferenceRelationshipSequence::DRTFrameOfReferenceRelationshipSequence
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::DRTFrameOfReferenceRelationshipSequence(const DRTFrameOfReferenceRelationshipSequence &copy)
+DRTReferencedSpatialRegistrationSequence::DRTReferencedSpatialRegistrationSequence(const DRTReferencedSpatialRegistrationSequence &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -262,7 +186,7 @@ DRTFrameOfReferenceRelationshipSequence::DRTFrameOfReferenceRelationshipSequence
 }
 
 
-DRTFrameOfReferenceRelationshipSequence &DRTFrameOfReferenceRelationshipSequence::operator=(const DRTFrameOfReferenceRelationshipSequence &copy)
+DRTReferencedSpatialRegistrationSequence &DRTReferencedSpatialRegistrationSequence::operator=(const DRTReferencedSpatialRegistrationSequence &copy)
 {
     if (this != &copy)
     {
@@ -290,13 +214,13 @@ DRTFrameOfReferenceRelationshipSequence &DRTFrameOfReferenceRelationshipSequence
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::~DRTFrameOfReferenceRelationshipSequence()
+DRTReferencedSpatialRegistrationSequence::~DRTReferencedSpatialRegistrationSequence()
 {
     clear();
 }
 
 
-void DRTFrameOfReferenceRelationshipSequence::clear()
+void DRTReferencedSpatialRegistrationSequence::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -315,25 +239,25 @@ void DRTFrameOfReferenceRelationshipSequence::clear()
 }
 
 
-OFBool DRTFrameOfReferenceRelationshipSequence::isEmpty()
+OFBool DRTReferencedSpatialRegistrationSequence::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTFrameOfReferenceRelationshipSequence::isValid() const
+OFBool DRTReferencedSpatialRegistrationSequence::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-unsigned long DRTFrameOfReferenceRelationshipSequence::getNumberOfItems() const
+unsigned long DRTReferencedSpatialRegistrationSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::gotoFirstItem()
+OFCondition DRTReferencedSpatialRegistrationSequence::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -345,7 +269,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::gotoFirstItem()
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::gotoNextItem()
+OFCondition DRTReferencedSpatialRegistrationSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -357,7 +281,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::gotoNextItem()
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTReferencedSpatialRegistrationSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -377,7 +301,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::gotoItem(const unsigned lon
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTReferencedSpatialRegistrationSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -397,13 +321,13 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::gotoItem(const unsigned lon
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::gotoItem(const unsigned long num)
+OFCondition DRTReferencedSpatialRegistrationSequence::gotoItem(const unsigned long num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::getCurrentItem(Item *&item) const
+OFCondition DRTReferencedSpatialRegistrationSequence::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -415,7 +339,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::getCurrentItem(Item *&item)
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::getCurrentItem()
+DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -424,7 +348,7 @@ DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSe
 }
 
 
-const DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::getCurrentItem() const
+const DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -433,7 +357,7 @@ const DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelation
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTReferencedSpatialRegistrationSequence::getItem(const unsigned long num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -443,7 +367,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::getItem(const unsigned long
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::getItem(const unsigned long num)
+DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::getItem(const unsigned long num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -453,7 +377,7 @@ DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSe
 }
 
 
-const DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::getItem(const unsigned long num) const
+const DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::getItem(const unsigned long num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -463,19 +387,19 @@ const DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelation
 }
 
 
-DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::operator[](const unsigned long num)
+DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::operator[](const unsigned long num)
 {
     return getItem(num);
 }
 
 
-const DRTFrameOfReferenceRelationshipSequence::Item &DRTFrameOfReferenceRelationshipSequence::operator[](const unsigned long num) const
+const DRTReferencedSpatialRegistrationSequence::Item &DRTReferencedSpatialRegistrationSequence::operator[](const unsigned long num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::addItem(Item *&item)
+OFCondition DRTReferencedSpatialRegistrationSequence::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -492,7 +416,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTReferencedSpatialRegistrationSequence::insertItem(const unsigned long pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -515,7 +439,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::insertItem(const unsigned l
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::removeItem(const unsigned long pos)
+OFCondition DRTReferencedSpatialRegistrationSequence::removeItem(const unsigned long pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -533,10 +457,10 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::removeItem(const unsigned l
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::read(DcmItem &dataset,
-                                                          const OFString &card,
-                                                          const OFString &type,
-                                                          const char *moduleName)
+OFCondition DRTReferencedSpatialRegistrationSequence::read(DcmItem &dataset,
+                                                           const OFString &card,
+                                                           const OFString &type,
+                                                           const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -545,7 +469,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::read(DcmItem &dataset,
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_RETIRED_FrameOfReferenceRelationshipSequence, sequence);
+        result = dataset.findAndGetSequence(DCM_ReferencedSpatialRegistrationSequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -575,7 +499,7 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::read(DcmItem &dataset,
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_RETIRED_FrameOfReferenceRelationshipSequence);
+            DcmSequenceOfItems element(DCM_ReferencedSpatialRegistrationSequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -583,16 +507,16 @@ OFCondition DRTFrameOfReferenceRelationshipSequence::read(DcmItem &dataset,
 }
 
 
-OFCondition DRTFrameOfReferenceRelationshipSequence::write(DcmItem &dataset,
-                                                           const OFString &card,
-                                                           const OFString &type,
-                                                           const char *moduleName)
+OFCondition DRTReferencedSpatialRegistrationSequence::write(DcmItem &dataset,
+                                                            const OFString &card,
+                                                            const OFString &type,
+                                                            const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_RETIRED_FrameOfReferenceRelationshipSequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_ReferencedSpatialRegistrationSequence);
         if (sequence != NULL)
         {
             result = EC_Normal;

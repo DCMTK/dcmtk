@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTContrastBolusAdministrationRouteSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -31,6 +31,7 @@ DRTContrastBolusAdministrationRouteSequence::Item::Item(const OFBool emptyDefaul
     ContextGroupLocalVersion(DCM_ContextGroupLocalVersion),
     ContextGroupVersion(DCM_ContextGroupVersion),
     ContextIdentifier(DCM_ContextIdentifier),
+    ContextUID(DCM_ContextUID),
     MappingResource(DCM_MappingResource)
 {
 }
@@ -48,6 +49,7 @@ DRTContrastBolusAdministrationRouteSequence::Item::Item(const Item &copy)
     ContextGroupLocalVersion(copy.ContextGroupLocalVersion),
     ContextGroupVersion(copy.ContextGroupVersion),
     ContextIdentifier(copy.ContextIdentifier),
+    ContextUID(copy.ContextUID),
     MappingResource(copy.MappingResource)
 {
 }
@@ -73,6 +75,7 @@ DRTContrastBolusAdministrationRouteSequence::Item &DRTContrastBolusAdministratio
         ContextGroupLocalVersion = copy.ContextGroupLocalVersion;
         ContextGroupVersion = copy.ContextGroupVersion;
         ContextIdentifier = copy.ContextIdentifier;
+        ContextUID = copy.ContextUID;
         MappingResource = copy.MappingResource;
     }
     return *this;
@@ -89,6 +92,7 @@ void DRTContrastBolusAdministrationRouteSequence::Item::clear()
         CodingSchemeVersion.clear();
         CodeMeaning.clear();
         ContextIdentifier.clear();
+        ContextUID.clear();
         MappingResource.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
@@ -106,6 +110,7 @@ OFBool DRTContrastBolusAdministrationRouteSequence::Item::isEmpty()
            CodingSchemeVersion.isEmpty() &&
            CodeMeaning.isEmpty() &&
            ContextIdentifier.isEmpty() &&
+           ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
@@ -128,11 +133,12 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::read(DcmItem &ite
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, CodeValue, "1", "1C", "ContrastBolusAdministrationRouteSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1C", "ContrastBolusAdministrationRouteSequence");
+        getAndCheckElementFromDataset(item, CodeValue, "1", "1", "ContrastBolusAdministrationRouteSequence");
+        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "1C", "ContrastBolusAdministrationRouteSequence");
-        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1C", "ContrastBolusAdministrationRouteSequence");
+        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "ContrastBolusAdministrationRouteSequence");
+        getAndCheckElementFromDataset(item, ContextUID, "1", "3", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ContrastBolusAdministrationRouteSequence");
@@ -151,11 +157,12 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::write(DcmItem &it
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1C", "ContrastBolusAdministrationRouteSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1C", "ContrastBolusAdministrationRouteSequence");
+        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1", "ContrastBolusAdministrationRouteSequence");
+        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "1C", "ContrastBolusAdministrationRouteSequence");
-        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1C", "ContrastBolusAdministrationRouteSequence");
+        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "ContrastBolusAdministrationRouteSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ContrastBolusAdministrationRouteSequence");
@@ -245,6 +252,15 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::getContextIdentif
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ContextIdentifier, value, pos);
+}
+
+
+OFCondition DRTContrastBolusAdministrationRouteSequence::Item::getContextUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextUID, value, pos);
 }
 
 
@@ -369,6 +385,19 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::setContextIdentif
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ContextIdentifier.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTContrastBolusAdministrationRouteSequence::Item::setContextUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextUID.putOFStringArray(value);
     }
     return result;
 }

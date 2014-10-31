@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTRTRelatedROISequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,7 +83,7 @@ OFCondition DRTRTRelatedROISequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "1C", "RTRelatedROISequence");
+        getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "1", "RTRelatedROISequence");
         getAndCheckElementFromDataset(item, RTROIRelationship, "1", "3", "RTRelatedROISequence");
         result = EC_Normal;
     }
@@ -97,7 +97,7 @@ OFCondition DRTRTRelatedROISequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "1C", "RTRelatedROISequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "1", "RTRelatedROISequence");
         addElementToDataset(result, item, new DcmCodeString(RTROIRelationship), "1", "3", "RTRelatedROISequence");
     }
     return result;

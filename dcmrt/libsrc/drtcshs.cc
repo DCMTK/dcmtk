@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTChannelShieldSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -108,13 +108,13 @@ OFCondition DRTChannelShieldSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ChannelShieldNumber, "1", "1C", "ChannelShieldSequence");
-        getAndCheckElementFromDataset(item, ChannelShieldID, "1", "2C", "ChannelShieldSequence");
+        getAndCheckElementFromDataset(item, ChannelShieldNumber, "1", "1", "ChannelShieldSequence");
+        getAndCheckElementFromDataset(item, ChannelShieldID, "1", "2", "ChannelShieldSequence");
         getAndCheckElementFromDataset(item, ChannelShieldName, "1", "3", "ChannelShieldSequence");
         getAndCheckElementFromDataset(item, MaterialID, "1", "3", "ChannelShieldSequence");
         getAndCheckElementFromDataset(item, ChannelShieldNominalThickness, "1", "3", "ChannelShieldSequence");
         getAndCheckElementFromDataset(item, ChannelShieldNominalTransmission, "1", "3", "ChannelShieldSequence");
-        getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "2C", "ChannelShieldSequence");
+        getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "2", "ChannelShieldSequence");
         result = EC_Normal;
     }
     return result;
@@ -127,13 +127,13 @@ OFCondition DRTChannelShieldSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ChannelShieldNumber), "1", "1C", "ChannelShieldSequence");
-        addElementToDataset(result, item, new DcmShortString(ChannelShieldID), "1", "2C", "ChannelShieldSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ChannelShieldNumber), "1", "1", "ChannelShieldSequence");
+        addElementToDataset(result, item, new DcmShortString(ChannelShieldID), "1", "2", "ChannelShieldSequence");
         addElementToDataset(result, item, new DcmLongString(ChannelShieldName), "1", "3", "ChannelShieldSequence");
         addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "3", "ChannelShieldSequence");
         addElementToDataset(result, item, new DcmDecimalString(ChannelShieldNominalThickness), "1", "3", "ChannelShieldSequence");
         addElementToDataset(result, item, new DcmDecimalString(ChannelShieldNominalTransmission), "1", "3", "ChannelShieldSequence");
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "2C", "ChannelShieldSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "2", "ChannelShieldSequence");
     }
     return result;
 }

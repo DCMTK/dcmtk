@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBrachyControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -24,6 +24,7 @@ DRTBrachyControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
     BrachyReferencedDoseReferenceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ControlPoint3DPosition(DCM_ControlPoint3DPosition),
     ControlPointIndex(DCM_ControlPointIndex),
+    ControlPointOrientation(DCM_ControlPointOrientation),
     ControlPointRelativePosition(DCM_ControlPointRelativePosition),
     CumulativeTimeWeight(DCM_CumulativeTimeWeight)
 {
@@ -35,6 +36,7 @@ DRTBrachyControlPointSequence::Item::Item(const Item &copy)
     BrachyReferencedDoseReferenceSequence(copy.BrachyReferencedDoseReferenceSequence),
     ControlPoint3DPosition(copy.ControlPoint3DPosition),
     ControlPointIndex(copy.ControlPointIndex),
+    ControlPointOrientation(copy.ControlPointOrientation),
     ControlPointRelativePosition(copy.ControlPointRelativePosition),
     CumulativeTimeWeight(copy.CumulativeTimeWeight)
 {
@@ -54,6 +56,7 @@ DRTBrachyControlPointSequence::Item &DRTBrachyControlPointSequence::Item::operat
         BrachyReferencedDoseReferenceSequence = copy.BrachyReferencedDoseReferenceSequence;
         ControlPoint3DPosition = copy.ControlPoint3DPosition;
         ControlPointIndex = copy.ControlPointIndex;
+        ControlPointOrientation = copy.ControlPointOrientation;
         ControlPointRelativePosition = copy.ControlPointRelativePosition;
         CumulativeTimeWeight = copy.CumulativeTimeWeight;
     }
@@ -70,6 +73,7 @@ void DRTBrachyControlPointSequence::Item::clear()
         CumulativeTimeWeight.clear();
         ControlPointRelativePosition.clear();
         ControlPoint3DPosition.clear();
+        ControlPointOrientation.clear();
         BrachyReferencedDoseReferenceSequence.clear();
     }
 }
@@ -81,6 +85,7 @@ OFBool DRTBrachyControlPointSequence::Item::isEmpty()
            CumulativeTimeWeight.isEmpty() &&
            ControlPointRelativePosition.isEmpty() &&
            ControlPoint3DPosition.isEmpty() &&
+           ControlPointOrientation.isEmpty() &&
            BrachyReferencedDoseReferenceSequence.isEmpty();
 }
 
@@ -102,6 +107,7 @@ OFCondition DRTBrachyControlPointSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, CumulativeTimeWeight, "1", "2", "BrachyControlPointSequence");
         getAndCheckElementFromDataset(item, ControlPointRelativePosition, "1", "1", "BrachyControlPointSequence");
         getAndCheckElementFromDataset(item, ControlPoint3DPosition, "3", "3", "BrachyControlPointSequence");
+        getAndCheckElementFromDataset(item, ControlPointOrientation, "3", "3", "BrachyControlPointSequence");
         BrachyReferencedDoseReferenceSequence.read(item, "1-n", "3", "BrachyControlPointSequence");
         result = EC_Normal;
     }
@@ -119,6 +125,7 @@ OFCondition DRTBrachyControlPointSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(CumulativeTimeWeight), "1", "2", "BrachyControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(ControlPointRelativePosition), "1", "1", "BrachyControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(ControlPoint3DPosition), "3", "3", "BrachyControlPointSequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(ControlPointOrientation), "3", "3", "BrachyControlPointSequence");
         if (result.good()) result = BrachyReferencedDoseReferenceSequence.write(item, "1-n", "3", "BrachyControlPointSequence");
     }
     return result;
@@ -167,6 +174,15 @@ OFCondition DRTBrachyControlPointSequence::Item::getControlPointIndex(Sint32 &va
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmIntegerString &, ControlPointIndex).getSint32(value, pos);
+}
+
+
+OFCondition DRTBrachyControlPointSequence::Item::getControlPointOrientation(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, ControlPointOrientation).getFloat32(value, pos);
 }
 
 
@@ -229,6 +245,15 @@ OFCondition DRTBrachyControlPointSequence::Item::setControlPointIndex(const OFSt
             result = ControlPointIndex.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTBrachyControlPointSequence::Item::setControlPointOrientation(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return ControlPointOrientation.putFloat32(value, pos);
 }
 
 

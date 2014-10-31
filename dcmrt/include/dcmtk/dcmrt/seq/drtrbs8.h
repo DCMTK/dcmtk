@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedBeamSequenceInRTFractionSchemeModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtbvcps.h"  // for BeamDoseVerificationControlPointSequence
 
 
 /** Interface class for ReferencedBeamSequence (300c,0004) in RTFractionSchemeModule
@@ -90,6 +91,13 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
 
       // --- get DICOM attribute values ---
 
+        /** get BeamDeliveryDurationLimit (300a,00c5)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBeamDeliveryDurationLimit(Float64 &value, const unsigned long pos = 0) const;
+
         /** get BeamDose (300a,0084)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -103,27 +111,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getBeamDose(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get BeamDosePointDepth (300a,0088)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBeamDosePointDepth(Float32 &value, const unsigned long pos = 0) const;
-
-        /** get BeamDosePointEquivalentDepth (300a,0089)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBeamDosePointEquivalentDepth(Float32 &value, const unsigned long pos = 0) const;
-
-        /** get BeamDosePointSSD (300a,008a)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBeamDosePointSSD(Float32 &value, const unsigned long pos = 0) const;
 
         /** get BeamDoseSpecificationPoint (300a,0082)
          *  @param  value  reference to variable in which the value should be stored
@@ -173,7 +160,28 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
          */
         OFCondition getReferencedBeamNumber(Sint32 &value, const unsigned long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get BeamDoseVerificationControlPointSequence (300a,008c)
+         *  @return reference to sequence element
+         */
+        DRTBeamDoseVerificationControlPointSequence &getBeamDoseVerificationControlPointSequence()
+            { return BeamDoseVerificationControlPointSequence; }
+
+        /** get BeamDoseVerificationControlPointSequence (300a,008c)
+         *  @return const reference to sequence element
+         */
+        const DRTBeamDoseVerificationControlPointSequence &getBeamDoseVerificationControlPointSequence() const
+            { return BeamDoseVerificationControlPointSequence; }
+
       // --- set DICOM attribute values ---
+
+        /** set BeamDeliveryDurationLimit (300a,00c5)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setBeamDeliveryDurationLimit(const Float64 value, const unsigned long pos = 0);
 
         /** set BeamDose (300a,0084)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -181,27 +189,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setBeamDose(const OFString &value, const OFBool check = OFTrue);
-
-        /** set BeamDosePointDepth (300a,0088)
-         *  @param  value  value to be set (should be valid for this VR)
-         *  @param  pos    index of the value to be set (0..vm-1), vm=1
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setBeamDosePointDepth(const Float32 value, const unsigned long pos = 0);
-
-        /** set BeamDosePointEquivalentDepth (300a,0089)
-         *  @param  value  value to be set (should be valid for this VR)
-         *  @param  pos    index of the value to be set (0..vm-1), vm=1
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setBeamDosePointEquivalentDepth(const Float32 value, const unsigned long pos = 0);
-
-        /** set BeamDosePointSSD (300a,008a)
-         *  @param  value  value to be set (should be valid for this VR)
-         *  @param  pos    index of the value to be set (0..vm-1), vm=1
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setBeamDosePointSSD(const Float32 value, const unsigned long pos = 0);
 
         /** set BeamDoseSpecificationPoint (300a,0082)
          *  @param  value  value to be set (possibly multi-valued) or "" for no value
@@ -229,19 +216,17 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// BeamDeliveryDurationLimit (300a,00c5) vr=FD, vm=1, type=3
+        DcmFloatingPointDouble BeamDeliveryDurationLimit;
         /// BeamDose (300a,0084) vr=DS, vm=1, type=3
         DcmDecimalString BeamDose;
-        /// BeamDosePointDepth (300a,0088) vr=FL, vm=1, type=3
-        DcmFloatingPointSingle BeamDosePointDepth;
-        /// BeamDosePointEquivalentDepth (300a,0089) vr=FL, vm=1, type=3
-        DcmFloatingPointSingle BeamDosePointEquivalentDepth;
-        /// BeamDosePointSSD (300a,008a) vr=FL, vm=1, type=3
-        DcmFloatingPointSingle BeamDosePointSSD;
         /// BeamDoseSpecificationPoint (300a,0082) vr=DS, vm=3, type=3
         DcmDecimalString BeamDoseSpecificationPoint;
+        /// BeamDoseVerificationControlPointSequence (300a,008c) vr=SQ, vm=1, type=3
+        DRTBeamDoseVerificationControlPointSequence BeamDoseVerificationControlPointSequence;
         /// BeamMeterset (300a,0086) vr=DS, vm=1, type=3
         DcmDecimalString BeamMeterset;
-        /// ReferencedBeamNumber (300c,0006) vr=IS, vm=1, type=1C
+        /// ReferencedBeamNumber (300c,0006) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedBeamNumber;
 
     };

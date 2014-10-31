@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTRTReferencedSeriesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTRTReferencedSeriesSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, SeriesInstanceUID, "1", "1C", "RTReferencedSeriesSequence");
-        ContourImageSequence.read(item, "1-n", "1C", "RTReferencedSeriesSequence");
+        getAndCheckElementFromDataset(item, SeriesInstanceUID, "1", "1", "RTReferencedSeriesSequence");
+        ContourImageSequence.read(item, "1-n", "1", "RTReferencedSeriesSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTRTReferencedSeriesSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1C", "RTReferencedSeriesSequence");
-        if (result.good()) result = ContourImageSequence.write(item, "1-n", "1C", "RTReferencedSeriesSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "RTReferencedSeriesSequence");
+        if (result.good()) result = ContourImageSequence.write(item, "1-n", "1", "RTReferencedSeriesSequence");
     }
     return result;
 }

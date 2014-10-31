@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBrachyAccessoryDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -237,7 +237,7 @@ class DCMTK_DCMRT_EXPORT DRTBrachyAccessoryDeviceSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// BrachyAccessoryDeviceID (300a,0263) vr=SH, vm=1, type=2C
+        /// BrachyAccessoryDeviceID (300a,0263) vr=SH, vm=1, type=2
         DcmShortString BrachyAccessoryDeviceID;
         /// BrachyAccessoryDeviceName (300a,0266) vr=LO, vm=1, type=3
         DcmLongString BrachyAccessoryDeviceName;
@@ -245,13 +245,13 @@ class DCMTK_DCMRT_EXPORT DRTBrachyAccessoryDeviceSequence
         DcmDecimalString BrachyAccessoryDeviceNominalThickness;
         /// BrachyAccessoryDeviceNominalTransmission (300a,026c) vr=DS, vm=1, type=3
         DcmDecimalString BrachyAccessoryDeviceNominalTransmission;
-        /// BrachyAccessoryDeviceNumber (300a,0262) vr=IS, vm=1, type=2C
+        /// BrachyAccessoryDeviceNumber (300a,0262) vr=IS, vm=1, type=2
         DcmIntegerString BrachyAccessoryDeviceNumber;
-        /// BrachyAccessoryDeviceType (300a,0264) vr=CS, vm=1, type=1C
+        /// BrachyAccessoryDeviceType (300a,0264) vr=CS, vm=1, type=1
         DcmCodeString BrachyAccessoryDeviceType;
         /// MaterialID (300a,00e1) vr=SH, vm=1, type=3
         DcmShortString MaterialID;
-        /// ReferencedROINumber (3006,0084) vr=IS, vm=1, type=2C
+        /// ReferencedROINumber (3006,0084) vr=IS, vm=1, type=2
         DcmIntegerString ReferencedROINumber;
 
     };

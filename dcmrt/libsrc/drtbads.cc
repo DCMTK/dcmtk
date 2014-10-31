@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBrachyAccessoryDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -113,14 +113,14 @@ OFCondition DRTBrachyAccessoryDeviceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, BrachyAccessoryDeviceNumber, "1", "2C", "BrachyAccessoryDeviceSequence");
-        getAndCheckElementFromDataset(item, BrachyAccessoryDeviceID, "1", "2C", "BrachyAccessoryDeviceSequence");
-        getAndCheckElementFromDataset(item, BrachyAccessoryDeviceType, "1", "1C", "BrachyAccessoryDeviceSequence");
+        getAndCheckElementFromDataset(item, BrachyAccessoryDeviceNumber, "1", "2", "BrachyAccessoryDeviceSequence");
+        getAndCheckElementFromDataset(item, BrachyAccessoryDeviceID, "1", "2", "BrachyAccessoryDeviceSequence");
+        getAndCheckElementFromDataset(item, BrachyAccessoryDeviceType, "1", "1", "BrachyAccessoryDeviceSequence");
         getAndCheckElementFromDataset(item, BrachyAccessoryDeviceName, "1", "3", "BrachyAccessoryDeviceSequence");
         getAndCheckElementFromDataset(item, MaterialID, "1", "3", "BrachyAccessoryDeviceSequence");
         getAndCheckElementFromDataset(item, BrachyAccessoryDeviceNominalThickness, "1", "3", "BrachyAccessoryDeviceSequence");
         getAndCheckElementFromDataset(item, BrachyAccessoryDeviceNominalTransmission, "1", "3", "BrachyAccessoryDeviceSequence");
-        getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "2C", "BrachyAccessoryDeviceSequence");
+        getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "2", "BrachyAccessoryDeviceSequence");
         result = EC_Normal;
     }
     return result;
@@ -133,14 +133,14 @@ OFCondition DRTBrachyAccessoryDeviceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(BrachyAccessoryDeviceNumber), "1", "2C", "BrachyAccessoryDeviceSequence");
-        addElementToDataset(result, item, new DcmShortString(BrachyAccessoryDeviceID), "1", "2C", "BrachyAccessoryDeviceSequence");
-        addElementToDataset(result, item, new DcmCodeString(BrachyAccessoryDeviceType), "1", "1C", "BrachyAccessoryDeviceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(BrachyAccessoryDeviceNumber), "1", "2", "BrachyAccessoryDeviceSequence");
+        addElementToDataset(result, item, new DcmShortString(BrachyAccessoryDeviceID), "1", "2", "BrachyAccessoryDeviceSequence");
+        addElementToDataset(result, item, new DcmCodeString(BrachyAccessoryDeviceType), "1", "1", "BrachyAccessoryDeviceSequence");
         addElementToDataset(result, item, new DcmLongString(BrachyAccessoryDeviceName), "1", "3", "BrachyAccessoryDeviceSequence");
         addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "3", "BrachyAccessoryDeviceSequence");
         addElementToDataset(result, item, new DcmDecimalString(BrachyAccessoryDeviceNominalThickness), "1", "3", "BrachyAccessoryDeviceSequence");
         addElementToDataset(result, item, new DcmDecimalString(BrachyAccessoryDeviceNominalTransmission), "1", "3", "BrachyAccessoryDeviceSequence");
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "2C", "BrachyAccessoryDeviceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "2", "BrachyAccessoryDeviceSequence");
     }
     return result;
 }

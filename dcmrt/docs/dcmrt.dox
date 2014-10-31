@@ -3,8 +3,8 @@
 \page mod_dcmrt dcmrt: a radiation therapy library and utility apps
 
 This module contains classes to read, write, create, modify and access various
-DICOM Radiation Therapy (RT) objects.  These classes are generated from a
-machine-readable description of the DICOM standard.
+DICOM Radiation Therapy (RT) objects.  These classes are generated automatically
+from the official DocBook/XML version of the DICOM standard.
 
 The main interface classes are:
 \li \b DRTDoseIOD
@@ -115,5 +115,14 @@ if (status.good())
 } else
   cerr << "Error: cannot load DICOM file (" << status.text() << ")" << endl;
 \endcode
+
+\section known_issues Known Issues
+
+Since most of the classes in this module are generated automatically from a
+machine-readable version of the DICOM standard and the RT objects are known to
+"re-use" the same sequence attributes with different content at various places,
+there still might be some issues with wrong definitions in a few sub-sequences.
+E.g., the Referenced Beam Sequence (300C,0004) and the Referenced SOP Sequence
+(0008,1199) are candidates that might not be handled 100% correctly yet.
 
 */

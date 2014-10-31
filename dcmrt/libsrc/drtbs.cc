@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -32,6 +32,7 @@ DRTBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     ControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     DeviceSerialNumber(DCM_DeviceSerialNumber),
     FinalCumulativeMetersetWeight(DCM_FinalCumulativeMetersetWeight),
+    GeneralAccessorySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     HighDoseTechniqueType(DCM_HighDoseTechniqueType),
     InstitutionAddress(DCM_InstitutionAddress),
     InstitutionName(DCM_InstitutionName),
@@ -45,6 +46,7 @@ DRTBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     NumberOfWedges(DCM_NumberOfWedges),
     PlannedVerificationImageSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     PrimaryDosimeterUnit(DCM_PrimaryDosimeterUnit),
+    PrimaryFluenceModeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RadiationType(DCM_RadiationType),
     ReferencedBolusSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedDoseSequence(emptyDefaultItem /*emptyDefaultSequence*/),
@@ -74,6 +76,7 @@ DRTBeamSequence::Item::Item(const Item &copy)
     ControlPointSequence(copy.ControlPointSequence),
     DeviceSerialNumber(copy.DeviceSerialNumber),
     FinalCumulativeMetersetWeight(copy.FinalCumulativeMetersetWeight),
+    GeneralAccessorySequence(copy.GeneralAccessorySequence),
     HighDoseTechniqueType(copy.HighDoseTechniqueType),
     InstitutionAddress(copy.InstitutionAddress),
     InstitutionName(copy.InstitutionName),
@@ -87,6 +90,7 @@ DRTBeamSequence::Item::Item(const Item &copy)
     NumberOfWedges(copy.NumberOfWedges),
     PlannedVerificationImageSequence(copy.PlannedVerificationImageSequence),
     PrimaryDosimeterUnit(copy.PrimaryDosimeterUnit),
+    PrimaryFluenceModeSequence(copy.PrimaryFluenceModeSequence),
     RadiationType(copy.RadiationType),
     ReferencedBolusSequence(copy.ReferencedBolusSequence),
     ReferencedDoseSequence(copy.ReferencedDoseSequence),
@@ -124,6 +128,7 @@ DRTBeamSequence::Item &DRTBeamSequence::Item::operator=(const Item &copy)
         ControlPointSequence = copy.ControlPointSequence;
         DeviceSerialNumber = copy.DeviceSerialNumber;
         FinalCumulativeMetersetWeight = copy.FinalCumulativeMetersetWeight;
+        GeneralAccessorySequence = copy.GeneralAccessorySequence;
         HighDoseTechniqueType = copy.HighDoseTechniqueType;
         InstitutionAddress = copy.InstitutionAddress;
         InstitutionName = copy.InstitutionName;
@@ -137,6 +142,7 @@ DRTBeamSequence::Item &DRTBeamSequence::Item::operator=(const Item &copy)
         NumberOfWedges = copy.NumberOfWedges;
         PlannedVerificationImageSequence = copy.PlannedVerificationImageSequence;
         PrimaryDosimeterUnit = copy.PrimaryDosimeterUnit;
+        PrimaryFluenceModeSequence = copy.PrimaryFluenceModeSequence;
         RadiationType = copy.RadiationType;
         ReferencedBolusSequence = copy.ReferencedBolusSequence;
         ReferencedDoseSequence = copy.ReferencedDoseSequence;
@@ -164,6 +170,7 @@ void DRTBeamSequence::Item::clear()
         BeamDescription.clear();
         BeamType.clear();
         RadiationType.clear();
+        PrimaryFluenceModeSequence.clear();
         HighDoseTechniqueType.clear();
         TreatmentMachineName.clear();
         Manufacturer.clear();
@@ -192,6 +199,7 @@ void DRTBeamSequence::Item::clear()
         TotalBlockTrayFactor.clear();
         BlockSequence.clear();
         ApplicatorSequence.clear();
+        GeneralAccessorySequence.clear();
         FinalCumulativeMetersetWeight.clear();
         NumberOfControlPoints.clear();
         ControlPointSequence.clear();
@@ -206,6 +214,7 @@ OFBool DRTBeamSequence::Item::isEmpty()
            BeamDescription.isEmpty() &&
            BeamType.isEmpty() &&
            RadiationType.isEmpty() &&
+           PrimaryFluenceModeSequence.isEmpty() &&
            HighDoseTechniqueType.isEmpty() &&
            TreatmentMachineName.isEmpty() &&
            Manufacturer.isEmpty() &&
@@ -234,6 +243,7 @@ OFBool DRTBeamSequence::Item::isEmpty()
            TotalBlockTrayFactor.isEmpty() &&
            BlockSequence.isEmpty() &&
            ApplicatorSequence.isEmpty() &&
+           GeneralAccessorySequence.isEmpty() &&
            FinalCumulativeMetersetWeight.isEmpty() &&
            NumberOfControlPoints.isEmpty() &&
            ControlPointSequence.isEmpty();
@@ -258,6 +268,7 @@ OFCondition DRTBeamSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, BeamDescription, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, BeamType, "1", "1", "BeamSequence");
         getAndCheckElementFromDataset(item, RadiationType, "1", "2", "BeamSequence");
+        PrimaryFluenceModeSequence.read(item, "1-n", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, HighDoseTechniqueType, "1", "1C", "BeamSequence");
         getAndCheckElementFromDataset(item, TreatmentMachineName, "1", "2", "BeamSequence");
         getAndCheckElementFromDataset(item, Manufacturer, "1", "3", "BeamSequence");
@@ -286,6 +297,7 @@ OFCondition DRTBeamSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, TotalBlockTrayFactor, "1", "3", "BeamSequence");
         BlockSequence.read(item, "1-n", "1C", "BeamSequence");
         ApplicatorSequence.read(item, "1-n", "3", "BeamSequence");
+        GeneralAccessorySequence.read(item, "1-n", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, FinalCumulativeMetersetWeight, "1", "1C", "BeamSequence");
         getAndCheckElementFromDataset(item, NumberOfControlPoints, "1", "1", "BeamSequence");
         ControlPointSequence.read(item, "1-n", "1", "BeamSequence");
@@ -306,6 +318,7 @@ OFCondition DRTBeamSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmShortText(BeamDescription), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmCodeString(BeamType), "1", "1", "BeamSequence");
         addElementToDataset(result, item, new DcmCodeString(RadiationType), "1", "2", "BeamSequence");
+        if (result.good()) result = PrimaryFluenceModeSequence.write(item, "1-n", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmCodeString(HighDoseTechniqueType), "1", "1C", "BeamSequence");
         addElementToDataset(result, item, new DcmShortString(TreatmentMachineName), "1", "2", "BeamSequence");
         addElementToDataset(result, item, new DcmLongString(Manufacturer), "1", "3", "BeamSequence");
@@ -334,6 +347,7 @@ OFCondition DRTBeamSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(TotalBlockTrayFactor), "1", "3", "BeamSequence");
         if (result.good()) result = BlockSequence.write(item, "1-n", "1C", "BeamSequence");
         if (result.good()) result = ApplicatorSequence.write(item, "1-n", "3", "BeamSequence");
+        if (result.good()) result = GeneralAccessorySequence.write(item, "1-n", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(FinalCumulativeMetersetWeight), "1", "1C", "BeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfControlPoints), "1", "1", "BeamSequence");
         if (result.good()) result = ControlPointSequence.write(item, "1-n", "1", "BeamSequence");

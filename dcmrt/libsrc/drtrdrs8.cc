@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedDoseReferenceSequenceInRTFractionSchemeModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -133,7 +133,7 @@ OFCondition DRTReferencedDoseReferenceSequenceInRTFractionSchemeModule::Item::re
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "1C", "ReferencedDoseReferenceSequence");
+        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "1", "ReferencedDoseReferenceSequence");
         getAndCheckElementFromDataset(item, ConstraintWeight, "1", "3", "ReferencedDoseReferenceSequence");
         getAndCheckElementFromDataset(item, DeliveryWarningDose, "1", "3", "ReferencedDoseReferenceSequence");
         getAndCheckElementFromDataset(item, DeliveryMaximumDose, "1", "3", "ReferencedDoseReferenceSequence");
@@ -157,7 +157,7 @@ OFCondition DRTReferencedDoseReferenceSequenceInRTFractionSchemeModule::Item::wr
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "1C", "ReferencedDoseReferenceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "1", "ReferencedDoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(ConstraintWeight), "1", "3", "ReferencedDoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(DeliveryWarningDose), "1", "3", "ReferencedDoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(DeliveryMaximumDose), "1", "3", "ReferencedDoseReferenceSequence");

@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -78,7 +78,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::rea
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedBrachyApplicationSetupNumber, "1", "1C", "ReferencedBrachyApplicationSetupSequence");
+        getAndCheckElementFromDataset(item, ReferencedBrachyApplicationSetupNumber, "1", "1", "ReferencedBrachyApplicationSetupSequence");
         result = EC_Normal;
     }
     return result;
@@ -91,7 +91,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::wri
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedBrachyApplicationSetupNumber), "1", "1C", "ReferencedBrachyApplicationSetupSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedBrachyApplicationSetupNumber), "1", "1", "ReferencedBrachyApplicationSetupSequence");
     }
     return result;
 }

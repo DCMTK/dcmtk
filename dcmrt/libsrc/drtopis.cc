@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTOtherPatientIDsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -22,6 +22,7 @@
 DRTOtherPatientIDsSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     IssuerOfPatientID(DCM_IssuerOfPatientID),
+    IssuerOfPatientIDQualifiersSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     PatientID(DCM_PatientID),
     TypeOfPatientID(DCM_TypeOfPatientID)
 {
@@ -31,6 +32,7 @@ DRTOtherPatientIDsSequence::Item::Item(const OFBool emptyDefaultItem)
 DRTOtherPatientIDsSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     IssuerOfPatientID(copy.IssuerOfPatientID),
+    IssuerOfPatientIDQualifiersSequence(copy.IssuerOfPatientIDQualifiersSequence),
     PatientID(copy.PatientID),
     TypeOfPatientID(copy.TypeOfPatientID)
 {
@@ -48,6 +50,7 @@ DRTOtherPatientIDsSequence::Item &DRTOtherPatientIDsSequence::Item::operator=(co
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
         IssuerOfPatientID = copy.IssuerOfPatientID;
+        IssuerOfPatientIDQualifiersSequence = copy.IssuerOfPatientIDQualifiersSequence;
         PatientID = copy.PatientID;
         TypeOfPatientID = copy.TypeOfPatientID;
     }
@@ -62,6 +65,7 @@ void DRTOtherPatientIDsSequence::Item::clear()
         /* clear all DICOM attributes */
         PatientID.clear();
         IssuerOfPatientID.clear();
+        IssuerOfPatientIDQualifiersSequence.clear();
         TypeOfPatientID.clear();
     }
 }
@@ -71,6 +75,7 @@ OFBool DRTOtherPatientIDsSequence::Item::isEmpty()
 {
     return PatientID.isEmpty() &&
            IssuerOfPatientID.isEmpty() &&
+           IssuerOfPatientIDQualifiersSequence.isEmpty() &&
            TypeOfPatientID.isEmpty();
 }
 
@@ -89,7 +94,8 @@ OFCondition DRTOtherPatientIDsSequence::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, PatientID, "1", "1", "OtherPatientIDsSequence");
-        getAndCheckElementFromDataset(item, IssuerOfPatientID, "1", "1", "OtherPatientIDsSequence");
+        getAndCheckElementFromDataset(item, IssuerOfPatientID, "1", "3", "OtherPatientIDsSequence");
+        IssuerOfPatientIDQualifiersSequence.read(item, "1-n", "3", "OtherPatientIDsSequence");
         getAndCheckElementFromDataset(item, TypeOfPatientID, "1", "1", "OtherPatientIDsSequence");
         result = EC_Normal;
     }
@@ -104,7 +110,8 @@ OFCondition DRTOtherPatientIDsSequence::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmLongString(PatientID), "1", "1", "OtherPatientIDsSequence");
-        addElementToDataset(result, item, new DcmLongString(IssuerOfPatientID), "1", "1", "OtherPatientIDsSequence");
+        addElementToDataset(result, item, new DcmLongString(IssuerOfPatientID), "1", "3", "OtherPatientIDsSequence");
+        if (result.good()) result = IssuerOfPatientIDQualifiersSequence.write(item, "1-n", "3", "OtherPatientIDsSequence");
         addElementToDataset(result, item, new DcmCodeString(TypeOfPatientID), "1", "1", "OtherPatientIDsSequence");
     }
     return result;

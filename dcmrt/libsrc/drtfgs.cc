@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTFractionGroupSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,6 +21,7 @@
 
 DRTFractionGroupSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    BeamDoseMeaning(DCM_BeamDoseMeaning),
     FractionGroupDescription(DCM_FractionGroupDescription),
     FractionGroupNumber(DCM_FractionGroupNumber),
     FractionPattern(DCM_FractionPattern),
@@ -39,6 +40,7 @@ DRTFractionGroupSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTFractionGroupSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    BeamDoseMeaning(copy.BeamDoseMeaning),
     FractionGroupDescription(copy.FractionGroupDescription),
     FractionGroupNumber(copy.FractionGroupNumber),
     FractionPattern(copy.FractionPattern),
@@ -65,6 +67,7 @@ DRTFractionGroupSequence::Item &DRTFractionGroupSequence::Item::operator=(const 
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        BeamDoseMeaning = copy.BeamDoseMeaning;
         FractionGroupDescription = copy.FractionGroupDescription;
         FractionGroupNumber = copy.FractionGroupNumber;
         FractionPattern = copy.FractionPattern;
@@ -95,6 +98,7 @@ void DRTFractionGroupSequence::Item::clear()
         NumberOfFractionPatternDigitsPerDay.clear();
         RepeatFractionCycleLength.clear();
         FractionPattern.clear();
+        BeamDoseMeaning.clear();
         NumberOfBeams.clear();
         ReferencedBeamSequence.clear();
         NumberOfBrachyApplicationSetups.clear();
@@ -113,6 +117,7 @@ OFBool DRTFractionGroupSequence::Item::isEmpty()
            NumberOfFractionPatternDigitsPerDay.isEmpty() &&
            RepeatFractionCycleLength.isEmpty() &&
            FractionPattern.isEmpty() &&
+           BeamDoseMeaning.isEmpty() &&
            NumberOfBeams.isEmpty() &&
            ReferencedBeamSequence.isEmpty() &&
            NumberOfBrachyApplicationSetups.isEmpty() &&
@@ -141,6 +146,7 @@ OFCondition DRTFractionGroupSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, NumberOfFractionPatternDigitsPerDay, "1", "3", "FractionGroupSequence");
         getAndCheckElementFromDataset(item, RepeatFractionCycleLength, "1", "3", "FractionGroupSequence");
         getAndCheckElementFromDataset(item, FractionPattern, "1", "3", "FractionGroupSequence");
+        getAndCheckElementFromDataset(item, BeamDoseMeaning, "1", "3", "FractionGroupSequence");
         getAndCheckElementFromDataset(item, NumberOfBeams, "1", "1", "FractionGroupSequence");
         ReferencedBeamSequence.read(item, "1-n", "1C", "FractionGroupSequence");
         getAndCheckElementFromDataset(item, NumberOfBrachyApplicationSetups, "1", "1", "FractionGroupSequence");
@@ -165,12 +171,22 @@ OFCondition DRTFractionGroupSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionPatternDigitsPerDay), "1", "3", "FractionGroupSequence");
         addElementToDataset(result, item, new DcmIntegerString(RepeatFractionCycleLength), "1", "3", "FractionGroupSequence");
         addElementToDataset(result, item, new DcmLongText(FractionPattern), "1", "3", "FractionGroupSequence");
+        addElementToDataset(result, item, new DcmCodeString(BeamDoseMeaning), "1", "3", "FractionGroupSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfBeams), "1", "1", "FractionGroupSequence");
         if (result.good()) result = ReferencedBeamSequence.write(item, "1-n", "1C", "FractionGroupSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfBrachyApplicationSetups), "1", "1", "FractionGroupSequence");
         if (result.good()) result = ReferencedBrachyApplicationSetupSequence.write(item, "1-n", "1C", "FractionGroupSequence");
     }
     return result;
+}
+
+
+OFCondition DRTFractionGroupSequence::Item::getBeamDoseMeaning(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BeamDoseMeaning, value, pos);
 }
 
 
@@ -297,6 +313,19 @@ OFCondition DRTFractionGroupSequence::Item::getRepeatFractionCycleLength(Sint32 
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmIntegerString &, RepeatFractionCycleLength).getSint32(value, pos);
+}
+
+
+OFCondition DRTFractionGroupSequence::Item::setBeamDoseMeaning(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = BeamDoseMeaning.putOFStringArray(value);
+    }
+    return result;
 }
 
 

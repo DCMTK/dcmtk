@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTContributingEquipmentSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtois.h"    // for OperatorIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtporcs.h"  // for PurposeOfReferenceCodeSequence
 
 
@@ -154,6 +155,13 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
          */
         OFCondition getManufacturerModelName(OFString &value, const signed long pos = 0) const;
 
+        /** get OperatorsName (0008,1070)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getOperatorsName(OFString &value, const signed long pos = 0) const;
+
         /** get SoftwareVersions (0018,1020)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -190,6 +198,18 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
         OFCondition getTimeOfLastCalibration(OFString &value, const signed long pos = 0) const;
 
       // --- get DICOM sequence attributes ---
+
+        /** get OperatorIdentificationSequence (0008,1072)
+         *  @return reference to sequence element
+         */
+        DRTOperatorIdentificationSequence &getOperatorIdentificationSequence()
+            { return OperatorIdentificationSequence; }
+
+        /** get OperatorIdentificationSequence (0008,1072)
+         *  @return const reference to sequence element
+         */
+        const DRTOperatorIdentificationSequence &getOperatorIdentificationSequence() const
+            { return OperatorIdentificationSequence; }
 
         /** get PurposeOfReferenceCodeSequence (0040,a170)
          *  @return reference to sequence element
@@ -268,6 +288,13 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
          */
         OFCondition setManufacturerModelName(const OFString &value, const OFBool check = OFTrue);
 
+        /** set OperatorsName (0008,1070)
+         *  @param  value  value to be set (possibly multi-valued) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (PN) and VM (1-n) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setOperatorsName(const OFString &value, const OFBool check = OFTrue);
+
         /** set SoftwareVersions (0018,1020)
          *  @param  value  value to be set (possibly multi-valued) or "" for no value
          *  @param  check  check 'value' for conformance with VR (LO) and VM (1-n) if enabled
@@ -319,6 +346,10 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
         DcmLongString Manufacturer;
         /// ManufacturerModelName (0008,1090) vr=LO, vm=1, type=3
         DcmLongString ManufacturerModelName;
+        /// OperatorIdentificationSequence (0008,1072) vr=SQ, vm=1, type=3
+        DRTOperatorIdentificationSequence OperatorIdentificationSequence;
+        /// OperatorsName (0008,1070) vr=PN, vm=1-n, type=3
+        DcmPersonName OperatorsName;
         /// PurposeOfReferenceCodeSequence (0040,a170) vr=SQ, vm=1, type=1
         DRTPurposeOfReferenceCodeSequence PurposeOfReferenceCodeSequence;
         /// SoftwareVersions (0018,1020) vr=LO, vm=1-n, type=3

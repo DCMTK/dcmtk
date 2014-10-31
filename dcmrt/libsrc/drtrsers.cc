@@ -4,145 +4,123 @@
  *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTReferencedTreatmentRecordSequence
+ *  Source file for class DRTReferencedSeriesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
-#include "dcmtk/dcmrt/seq/drtrtrs.h"
+#include "dcmtk/dcmrt/seq/drtrsers.h"
 
 
 // --- item class ---
 
-DRTReferencedTreatmentRecordSequence::Item::Item(const OFBool emptyDefaultItem)
+DRTReferencedSeriesSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    ReferencedSOPClassUID(DCM_ReferencedSOPClassUID),
-    ReferencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID)
+    ReferencedInstanceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    SeriesInstanceUID(DCM_SeriesInstanceUID)
 {
 }
 
 
-DRTReferencedTreatmentRecordSequence::Item::Item(const Item &copy)
+DRTReferencedSeriesSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    ReferencedSOPClassUID(copy.ReferencedSOPClassUID),
-    ReferencedSOPInstanceUID(copy.ReferencedSOPInstanceUID)
+    ReferencedInstanceSequence(copy.ReferencedInstanceSequence),
+    SeriesInstanceUID(copy.SeriesInstanceUID)
 {
 }
 
 
-DRTReferencedTreatmentRecordSequence::Item::~Item()
+DRTReferencedSeriesSequence::Item::~Item()
 {
 }
 
 
-DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::Item::operator=(const Item &copy)
+DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        ReferencedSOPClassUID = copy.ReferencedSOPClassUID;
-        ReferencedSOPInstanceUID = copy.ReferencedSOPInstanceUID;
+        ReferencedInstanceSequence = copy.ReferencedInstanceSequence;
+        SeriesInstanceUID = copy.SeriesInstanceUID;
     }
     return *this;
 }
 
 
-void DRTReferencedTreatmentRecordSequence::Item::clear()
+void DRTReferencedSeriesSequence::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
-        ReferencedSOPClassUID.clear();
-        ReferencedSOPInstanceUID.clear();
+        SeriesInstanceUID.clear();
+        ReferencedInstanceSequence.clear();
     }
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequence::Item::isEmpty()
+OFBool DRTReferencedSeriesSequence::Item::isEmpty()
 {
-    return ReferencedSOPClassUID.isEmpty() &&
-           ReferencedSOPInstanceUID.isEmpty();
+    return SeriesInstanceUID.isEmpty() &&
+           ReferencedInstanceSequence.isEmpty();
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequence::Item::isValid() const
+OFBool DRTReferencedSeriesSequence::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::Item::read(DcmItem &item)
+OFCondition DRTReferencedSeriesSequence::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1C", "ReferencedTreatmentRecordSequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1C", "ReferencedTreatmentRecordSequence");
+        getAndCheckElementFromDataset(item, SeriesInstanceUID, "1", "1", "ReferencedSeriesSequence");
+        ReferencedInstanceSequence.read(item, "1-n", "1", "ReferencedSeriesSequence");
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::Item::write(DcmItem &item)
+OFCondition DRTReferencedSeriesSequence::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1C", "ReferencedTreatmentRecordSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1C", "ReferencedTreatmentRecordSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "ReferencedSeriesSequence");
+        if (result.good()) result = ReferencedInstanceSequence.write(item, "1-n", "1", "ReferencedSeriesSequence");
     }
     return result;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::Item::getReferencedSOPClassUID(OFString &value, const signed long pos) const
+OFCondition DRTReferencedSeriesSequence::Item::getSeriesInstanceUID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(ReferencedSOPClassUID, value, pos);
+        return getStringValueFromElement(SeriesInstanceUID, value, pos);
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::Item::getReferencedSOPInstanceUID(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ReferencedSOPInstanceUID, value, pos);
-}
-
-
-OFCondition DRTReferencedTreatmentRecordSequence::Item::setReferencedSOPClassUID(const OFString &value, const OFBool check)
+OFCondition DRTReferencedSeriesSequence::Item::setSeriesInstanceUID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
-            result = ReferencedSOPClassUID.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTReferencedTreatmentRecordSequence::Item::setReferencedSOPInstanceUID(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedSOPInstanceUID.putOFStringArray(value);
+            result = SeriesInstanceUID.putOFStringArray(value);
     }
     return result;
 }
@@ -150,7 +128,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::Item::setReferencedSOPInstance
 
 // --- sequence class ---
 
-DRTReferencedTreatmentRecordSequence::DRTReferencedTreatmentRecordSequence(const OFBool emptyDefaultSequence)
+DRTReferencedSeriesSequence::DRTReferencedSeriesSequence(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -160,7 +138,7 @@ DRTReferencedTreatmentRecordSequence::DRTReferencedTreatmentRecordSequence(const
 }
 
 
-DRTReferencedTreatmentRecordSequence::DRTReferencedTreatmentRecordSequence(const DRTReferencedTreatmentRecordSequence &copy)
+DRTReferencedSeriesSequence::DRTReferencedSeriesSequence(const DRTReferencedSeriesSequence &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -186,7 +164,7 @@ DRTReferencedTreatmentRecordSequence::DRTReferencedTreatmentRecordSequence(const
 }
 
 
-DRTReferencedTreatmentRecordSequence &DRTReferencedTreatmentRecordSequence::operator=(const DRTReferencedTreatmentRecordSequence &copy)
+DRTReferencedSeriesSequence &DRTReferencedSeriesSequence::operator=(const DRTReferencedSeriesSequence &copy)
 {
     if (this != &copy)
     {
@@ -214,13 +192,13 @@ DRTReferencedTreatmentRecordSequence &DRTReferencedTreatmentRecordSequence::oper
 }
 
 
-DRTReferencedTreatmentRecordSequence::~DRTReferencedTreatmentRecordSequence()
+DRTReferencedSeriesSequence::~DRTReferencedSeriesSequence()
 {
     clear();
 }
 
 
-void DRTReferencedTreatmentRecordSequence::clear()
+void DRTReferencedSeriesSequence::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -239,25 +217,25 @@ void DRTReferencedTreatmentRecordSequence::clear()
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequence::isEmpty()
+OFBool DRTReferencedSeriesSequence::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequence::isValid() const
+OFBool DRTReferencedSeriesSequence::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-unsigned long DRTReferencedTreatmentRecordSequence::getNumberOfItems() const
+unsigned long DRTReferencedSeriesSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::gotoFirstItem()
+OFCondition DRTReferencedSeriesSequence::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -269,7 +247,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::gotoFirstItem()
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::gotoNextItem()
+OFCondition DRTReferencedSeriesSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -281,7 +259,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::gotoNextItem()
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTReferencedSeriesSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -301,7 +279,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::gotoItem(const unsigned long n
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTReferencedSeriesSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -321,13 +299,13 @@ OFCondition DRTReferencedTreatmentRecordSequence::gotoItem(const unsigned long n
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::gotoItem(const unsigned long num)
+OFCondition DRTReferencedSeriesSequence::gotoItem(const unsigned long num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::getCurrentItem(Item *&item) const
+OFCondition DRTReferencedSeriesSequence::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -339,7 +317,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::getCurrentItem(Item *&item) co
 }
 
 
-DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::getCurrentItem()
+DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -348,7 +326,7 @@ DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence
 }
 
 
-const DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::getCurrentItem() const
+const DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -357,7 +335,7 @@ const DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSe
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTReferencedSeriesSequence::getItem(const unsigned long num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -367,7 +345,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::getItem(const unsigned long nu
 }
 
 
-DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::getItem(const unsigned long num)
+DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::getItem(const unsigned long num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -377,7 +355,7 @@ DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence
 }
 
 
-const DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::getItem(const unsigned long num) const
+const DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::getItem(const unsigned long num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -387,19 +365,19 @@ const DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSe
 }
 
 
-DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::operator[](const unsigned long num)
+DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::operator[](const unsigned long num)
 {
     return getItem(num);
 }
 
 
-const DRTReferencedTreatmentRecordSequence::Item &DRTReferencedTreatmentRecordSequence::operator[](const unsigned long num) const
+const DRTReferencedSeriesSequence::Item &DRTReferencedSeriesSequence::operator[](const unsigned long num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::addItem(Item *&item)
+OFCondition DRTReferencedSeriesSequence::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -416,7 +394,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTReferencedSeriesSequence::insertItem(const unsigned long pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -439,7 +417,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::insertItem(const unsigned long
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::removeItem(const unsigned long pos)
+OFCondition DRTReferencedSeriesSequence::removeItem(const unsigned long pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -457,10 +435,10 @@ OFCondition DRTReferencedTreatmentRecordSequence::removeItem(const unsigned long
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::read(DcmItem &dataset,
-                                                       const OFString &card,
-                                                       const OFString &type,
-                                                       const char *moduleName)
+OFCondition DRTReferencedSeriesSequence::read(DcmItem &dataset,
+                                              const OFString &card,
+                                              const OFString &type,
+                                              const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -469,7 +447,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::read(DcmItem &dataset,
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_ReferencedTreatmentRecordSequence, sequence);
+        result = dataset.findAndGetSequence(DCM_ReferencedSeriesSequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -499,7 +477,7 @@ OFCondition DRTReferencedTreatmentRecordSequence::read(DcmItem &dataset,
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_ReferencedTreatmentRecordSequence);
+            DcmSequenceOfItems element(DCM_ReferencedSeriesSequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -507,16 +485,16 @@ OFCondition DRTReferencedTreatmentRecordSequence::read(DcmItem &dataset,
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequence::write(DcmItem &dataset,
-                                                        const OFString &card,
-                                                        const OFString &type,
-                                                        const char *moduleName)
+OFCondition DRTReferencedSeriesSequence::write(DcmItem &dataset,
+                                               const OFString &card,
+                                               const OFString &type,
+                                               const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_ReferencedTreatmentRecordSequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_ReferencedSeriesSequence);
         if (sequence != NULL)
         {
             result = EC_Normal;

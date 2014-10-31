@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedDoseReferenceSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTReferencedDoseReferenceSequenceInRTBeamsModule::Item::read(DcmIte
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "1C", "ReferencedDoseReferenceSequence");
-        getAndCheckElementFromDataset(item, CumulativeDoseReferenceCoefficient, "1", "2C", "ReferencedDoseReferenceSequence");
+        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "1", "ReferencedDoseReferenceSequence");
+        getAndCheckElementFromDataset(item, CumulativeDoseReferenceCoefficient, "1", "2", "ReferencedDoseReferenceSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTReferencedDoseReferenceSequenceInRTBeamsModule::Item::write(DcmIt
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "1C", "ReferencedDoseReferenceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseReferenceCoefficient), "1", "2C", "ReferencedDoseReferenceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "1", "ReferencedDoseReferenceSequence");
+        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseReferenceCoefficient), "1", "2", "ReferencedDoseReferenceSequence");
     }
     return result;
 }

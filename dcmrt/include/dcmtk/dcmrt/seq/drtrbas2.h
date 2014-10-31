@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -118,7 +118,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModu
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// ReferencedBrachyApplicationSetupNumber (300c,000c) vr=IS, vm=1, type=1C
+        /// ReferencedBrachyApplicationSetupNumber (300c,000c) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedBrachyApplicationSetupNumber;
 
     };

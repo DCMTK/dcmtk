@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBlockSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -329,17 +329,17 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
 
         /// AccessoryCode (300a,00f9) vr=LO, vm=1, type=3
         DcmLongString AccessoryCode;
-        /// BlockData (300a,0106) vr=DS, vm=2-2n, type=2C
+        /// BlockData (300a,0106) vr=DS, vm=2-2n, type=2
         DcmDecimalString BlockData;
-        /// BlockDivergence (300a,00fa) vr=CS, vm=1, type=2C
+        /// BlockDivergence (300a,00fa) vr=CS, vm=1, type=2
         DcmCodeString BlockDivergence;
         /// BlockMountingPosition (300a,00fb) vr=CS, vm=1, type=3
         DcmCodeString BlockMountingPosition;
         /// BlockName (300a,00fe) vr=LO, vm=1, type=3
         DcmLongString BlockName;
-        /// BlockNumber (300a,00fc) vr=IS, vm=1, type=1C
+        /// BlockNumber (300a,00fc) vr=IS, vm=1, type=1
         DcmIntegerString BlockNumber;
-        /// BlockNumberOfPoints (300a,0104) vr=IS, vm=1, type=2C
+        /// BlockNumberOfPoints (300a,0104) vr=IS, vm=1, type=2
         DcmIntegerString BlockNumberOfPoints;
         /// BlockThickness (300a,0100) vr=DS, vm=1, type=2C
         DcmDecimalString BlockThickness;
@@ -347,11 +347,11 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
         DcmDecimalString BlockTransmission;
         /// BlockTrayID (300a,00f5) vr=SH, vm=1, type=3
         DcmShortString BlockTrayID;
-        /// BlockType (300a,00f8) vr=CS, vm=1, type=1C
+        /// BlockType (300a,00f8) vr=CS, vm=1, type=1
         DcmCodeString BlockType;
-        /// MaterialID (300a,00e1) vr=SH, vm=1, type=2C
+        /// MaterialID (300a,00e1) vr=SH, vm=1, type=2
         DcmShortString MaterialID;
-        /// SourceToBlockTrayDistance (300a,00f6) vr=DS, vm=1, type=2C
+        /// SourceToBlockTrayDistance (300a,00f6) vr=DS, vm=1, type=2
         DcmDecimalString SourceToBlockTrayDistance;
 
     };

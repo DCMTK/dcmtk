@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTROIPhysicalPropertiesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtrecs.h"   // for ROIElementalCompositionSequence
 
 
 /** Interface class for ROIPhysicalPropertiesSequence (3006,00b0)
@@ -111,6 +112,20 @@ class DCMTK_DCMRT_EXPORT DRTROIPhysicalPropertiesSequence
          */
         OFCondition getROIPhysicalPropertyValue(Float64 &value, const unsigned long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get ROIElementalCompositionSequence (3006,00b6)
+         *  @return reference to sequence element
+         */
+        DRTROIElementalCompositionSequence &getROIElementalCompositionSequence()
+            { return ROIElementalCompositionSequence; }
+
+        /** get ROIElementalCompositionSequence (3006,00b6)
+         *  @return const reference to sequence element
+         */
+        const DRTROIElementalCompositionSequence &getROIElementalCompositionSequence() const
+            { return ROIElementalCompositionSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set ROIPhysicalProperty (3006,00b2)
@@ -132,9 +147,11 @@ class DCMTK_DCMRT_EXPORT DRTROIPhysicalPropertiesSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// ROIPhysicalProperty (3006,00b2) vr=CS, vm=1, type=1C
+        /// ROIElementalCompositionSequence (3006,00b6) vr=SQ, vm=1, type=1C
+        DRTROIElementalCompositionSequence ROIElementalCompositionSequence;
+        /// ROIPhysicalProperty (3006,00b2) vr=CS, vm=1, type=1
         DcmCodeString ROIPhysicalProperty;
-        /// ROIPhysicalPropertyValue (3006,00b4) vr=DS, vm=1, type=1C
+        /// ROIPhysicalPropertyValue (3006,00b4) vr=DS, vm=1, type=1
         DcmDecimalString ROIPhysicalPropertyValue;
 
     };

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTFractionGroupSummarySequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -189,13 +189,13 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSummarySequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// FractionGroupType (3008,0224) vr=CS, vm=1, type=2C
+        /// FractionGroupType (3008,0224) vr=CS, vm=1, type=2
         DcmCodeString FractionGroupType;
         /// FractionStatusSummarySequence (3008,0240) vr=SQ, vm=1, type=3
         DRTFractionStatusSummarySequence FractionStatusSummarySequence;
-        /// NumberOfFractionsDelivered (3008,005a) vr=IS, vm=1, type=2C
+        /// NumberOfFractionsDelivered (3008,005a) vr=IS, vm=1, type=2
         DcmIntegerString NumberOfFractionsDelivered;
-        /// NumberOfFractionsPlanned (300a,0078) vr=IS, vm=1, type=2C
+        /// NumberOfFractionsPlanned (300a,0078) vr=IS, vm=1, type=2
         DcmIntegerString NumberOfFractionsPlanned;
         /// ReferencedFractionGroupNumber (300c,0022) vr=IS, vm=1, type=3
         DcmIntegerString ReferencedFractionGroupNumber;

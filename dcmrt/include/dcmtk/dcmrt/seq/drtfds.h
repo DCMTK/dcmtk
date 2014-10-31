@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTFixationDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -199,7 +199,7 @@ class DCMTK_DCMRT_EXPORT DRTFixationDeviceSequence
         DcmLongString AccessoryCode;
         /// FixationDeviceDescription (300a,0196) vr=ST, vm=1, type=3
         DcmShortText FixationDeviceDescription;
-        /// FixationDeviceLabel (300a,0194) vr=SH, vm=1, type=2C
+        /// FixationDeviceLabel (300a,0194) vr=SH, vm=1, type=2
         DcmShortString FixationDeviceLabel;
         /// FixationDevicePitchAngle (300a,0199) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationDevicePitchAngle;
@@ -207,7 +207,7 @@ class DCMTK_DCMRT_EXPORT DRTFixationDeviceSequence
         DcmShortString FixationDevicePosition;
         /// FixationDeviceRollAngle (300a,019a) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationDeviceRollAngle;
-        /// FixationDeviceType (300a,0192) vr=CS, vm=1, type=1C
+        /// FixationDeviceType (300a,0192) vr=CS, vm=1, type=1
         DcmCodeString FixationDeviceType;
 
     };

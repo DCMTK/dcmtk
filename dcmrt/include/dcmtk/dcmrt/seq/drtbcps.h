@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBrachyControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -125,6 +125,13 @@ class DCMTK_DCMRT_EXPORT DRTBrachyControlPointSequence
          */
         OFCondition getControlPointIndex(Sint32 &value, const unsigned long pos = 0) const;
 
+        /** get ControlPointOrientation (300a,0412)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getControlPointOrientation(Float32 &value, const unsigned long pos = 0) const;
+
         /** get ControlPointRelativePosition (300a,02d2)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -183,6 +190,13 @@ class DCMTK_DCMRT_EXPORT DRTBrachyControlPointSequence
          */
         OFCondition setControlPointIndex(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ControlPointOrientation (300a,0412)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=3
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setControlPointOrientation(const Float32 value, const unsigned long pos = 0);
+
         /** set ControlPointRelativePosition (300a,02d2)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -208,6 +222,8 @@ class DCMTK_DCMRT_EXPORT DRTBrachyControlPointSequence
         DcmDecimalString ControlPoint3DPosition;
         /// ControlPointIndex (300a,0112) vr=IS, vm=1, type=1
         DcmIntegerString ControlPointIndex;
+        /// ControlPointOrientation (300a,0412) vr=FL, vm=3, type=3
+        DcmFloatingPointSingle ControlPointOrientation;
         /// ControlPointRelativePosition (300a,02d2) vr=DS, vm=1, type=1
         DcmDecimalString ControlPointRelativePosition;
         /// CumulativeTimeWeight (300a,02d6) vr=DS, vm=1, type=2

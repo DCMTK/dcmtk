@@ -4,16 +4,16 @@
  *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule
+ *  Header file for class DRTIssuerOfServiceEpisodeIDSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
 
-#ifndef DRTRBASS8_H
-#define DRTRBASS8_H
+#ifndef DRTISEIS_H
+#define DRTISEIS_H
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
@@ -21,9 +21,9 @@
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 
 
-/** Interface class for ReferencedBrachyApplicationSetupSequence (300c,000a) in RTFractionSchemeModule
+/** Interface class for IssuerOfServiceEpisodeIDSequence (0038,0064)
  */
-class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule
+class DCMTK_DCMRT_EXPORT DRTIssuerOfServiceEpisodeIDSequence
   : protected DRTTypes
 {
 
@@ -90,88 +90,61 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTFraction
 
       // --- get DICOM attribute values ---
 
-        /** get BrachyApplicationSetupDose (300a,00a4)
+        /** get LocalNamespaceEntityID (0040,0031)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getBrachyApplicationSetupDose(OFString &value, const signed long pos = 0) const;
+        OFCondition getLocalNamespaceEntityID(OFString &value, const signed long pos = 0) const;
 
-        /** get BrachyApplicationSetupDose (300a,00a4)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBrachyApplicationSetupDose(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
+        /** get UniversalEntityID (0040,0032)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getBrachyApplicationSetupDoseSpecificationPoint(OFString &value, const signed long pos = 0) const;
+        OFCondition getUniversalEntityID(OFString &value, const signed long pos = 0) const;
 
-        /** get BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBrachyApplicationSetupDoseSpecificationPoint(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
-         *  @param  value  reference to variable in which the value(s) should be stored
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBrachyApplicationSetupDoseSpecificationPoint(OFVector<Float64> &value) const;
-
-        /** get ReferencedBrachyApplicationSetupNumber (300c,000c)
+        /** get UniversalEntityIDType (0040,0033)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getReferencedBrachyApplicationSetupNumber(OFString &value, const signed long pos = 0) const;
-
-        /** get ReferencedBrachyApplicationSetupNumber (300c,000c)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos = 0) const;
+        OFCondition getUniversalEntityIDType(OFString &value, const signed long pos = 0) const;
 
       // --- set DICOM attribute values ---
 
-        /** set BrachyApplicationSetupDose (300a,00a4)
+        /** set LocalNamespaceEntityID (0040,0031)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setBrachyApplicationSetupDose(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setLocalNamespaceEntityID(const OFString &value, const OFBool check = OFTrue);
 
-        /** set BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
-         *  @param  value  value to be set (possibly multi-valued) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (3) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setBrachyApplicationSetupDoseSpecificationPoint(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ReferencedBrachyApplicationSetupNumber (300c,000c)
+        /** set UniversalEntityID (0040,0032)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setUniversalEntityID(const OFString &value, const OFBool check = OFTrue);
+
+        /** set UniversalEntityIDType (0040,0033)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setUniversalEntityIDType(const OFString &value, const OFBool check = OFTrue);
 
       private:
 
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// BrachyApplicationSetupDose (300a,00a4) vr=DS, vm=1, type=3
-        DcmDecimalString BrachyApplicationSetupDose;
-        /// BrachyApplicationSetupDoseSpecificationPoint (300a,00a2) vr=DS, vm=3, type=3
-        DcmDecimalString BrachyApplicationSetupDoseSpecificationPoint;
-        /// ReferencedBrachyApplicationSetupNumber (300c,000c) vr=IS, vm=1, type=1C
-        DcmIntegerString ReferencedBrachyApplicationSetupNumber;
+        /// LocalNamespaceEntityID (0040,0031) vr=UT, vm=1, type=1C
+        DcmUnlimitedText LocalNamespaceEntityID;
+        /// UniversalEntityID (0040,0032) vr=UT, vm=1, type=1C
+        DcmUnlimitedText UniversalEntityID;
+        /// UniversalEntityIDType (0040,0033) vr=CS, vm=1, type=1C
+        DcmCodeString UniversalEntityIDType;
 
     };
 
@@ -180,21 +153,21 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTFraction
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const OFBool emptyDefaultSequence = OFFalse);
+    DRTIssuerOfServiceEpisodeIDSequence(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy);
+    DRTIssuerOfServiceEpisodeIDSequence(const DRTIssuerOfServiceEpisodeIDSequence &copy);
 
     /** destructor
      */
-    virtual ~DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule();
+    virtual ~DRTIssuerOfServiceEpisodeIDSequence();
 
     /** assigment operator
      *  @param copy sequence object to be copied
      */
-    DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &operator=(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy);
+    DRTIssuerOfServiceEpisodeIDSequence &operator=(const DRTIssuerOfServiceEpisodeIDSequence &copy);
 
   // --- general methods ---
 

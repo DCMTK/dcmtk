@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedDoseSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTReferencedDoseSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1C", "ReferencedDoseSequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1C", "ReferencedDoseSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "ReferencedDoseSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "ReferencedDoseSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTReferencedDoseSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1C", "ReferencedDoseSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1C", "ReferencedDoseSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "ReferencedDoseSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "ReferencedDoseSequence");
     }
     return result;
 }

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTTreatmentSessionIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,6 +21,7 @@
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtas7.h"    // for ApplicatorSequence
 #include "dcmtk/dcmrt/seq/drtbldls.h"  // for BeamLimitingDeviceLeafPairsSequence
+#include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
 #include "dcmtk/dcmrt/seq/drticpds.h"  // for IonControlPointDeliverySequence
 #include "dcmtk/dcmrt/seq/drtrbls.h"   // for RecordedBlockSequence
 #include "dcmtk/dcmrt/seq/drtrcos.h"   // for RecordedCompensatorSequence
@@ -515,6 +516,18 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         const DRTBeamLimitingDeviceLeafPairsSequence &getBeamLimitingDeviceLeafPairsSequence() const
             { return BeamLimitingDeviceLeafPairsSequence; }
 
+        /** get GeneralAccessorySequence (300a,0420)
+         *  @return reference to sequence element
+         */
+        DRTGeneralAccessorySequence &getGeneralAccessorySequence()
+            { return GeneralAccessorySequence; }
+
+        /** get GeneralAccessorySequence (300a,0420)
+         *  @return const reference to sequence element
+         */
+        const DRTGeneralAccessorySequence &getGeneralAccessorySequence() const
+            { return GeneralAccessorySequence; }
+
         /** get IonControlPointDeliverySequence (3008,0041)
          *  @return reference to sequence element
          */
@@ -933,6 +946,8 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         DcmFloatingPointSingle FixationLightAzimuthalAngle;
         /// FixationLightPolarAngle (300a,0358) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationLightPolarAngle;
+        /// GeneralAccessorySequence (300a,0420) vr=SQ, vm=1, type=3
+        DRTGeneralAccessorySequence GeneralAccessorySequence;
         /// IonControlPointDeliverySequence (3008,0041) vr=SQ, vm=1, type=1
         DRTIonControlPointDeliverySequence IonControlPointDeliverySequence;
         /// NumberOfBlocks (300a,00f0) vr=IS, vm=1, type=1

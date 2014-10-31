@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedFractionGroupSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -88,7 +88,7 @@ OFCondition DRTReferencedFractionGroupSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedFractionGroupNumber, "1", "1C", "ReferencedFractionGroupSequence");
+        getAndCheckElementFromDataset(item, ReferencedFractionGroupNumber, "1", "1", "ReferencedFractionGroupSequence");
         ReferencedBeamSequence.read(item, "1-n", "1C", "ReferencedFractionGroupSequence");
         ReferencedBrachyApplicationSetupSequence.read(item, "1-n", "1C", "ReferencedFractionGroupSequence");
         result = EC_Normal;
@@ -103,7 +103,7 @@ OFCondition DRTReferencedFractionGroupSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedFractionGroupNumber), "1", "1C", "ReferencedFractionGroupSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedFractionGroupNumber), "1", "1", "ReferencedFractionGroupSequence");
         if (result.good()) result = ReferencedBeamSequence.write(item, "1-n", "1C", "ReferencedFractionGroupSequence");
         if (result.good()) result = ReferencedBrachyApplicationSetupSequence.write(item, "1-n", "1C", "ReferencedFractionGroupSequence");
     }

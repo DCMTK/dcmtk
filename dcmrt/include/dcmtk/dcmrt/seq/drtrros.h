@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTRTROIObservationsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,10 +19,12 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtarics.h"  // for AdditionalRTROIIdentificationCodeSequence
 #include "dcmtk/dcmrt/seq/drtrpps.h"   // for ROIPhysicalPropertiesSequence
 #include "dcmtk/dcmrt/seq/drtrics.h"   // for RTROIIdentificationCodeSequence
 #include "dcmtk/dcmrt/seq/drtrrs.h"    // for RTRelatedROISequence
 #include "dcmtk/dcmrt/seq/drtrrros.h"  // for RelatedRTROIObservationsSequence
+#include "dcmtk/dcmrt/seq/drtspccs.h"  // for SegmentedPropertyCategoryCodeSequence
 
 
 /** Interface class for RTROIObservationsSequence (3006,0080)
@@ -159,6 +161,18 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
 
       // --- get DICOM sequence attributes ---
 
+        /** get AdditionalRTROIIdentificationCodeSequence (3006,00b9)
+         *  @return reference to sequence element
+         */
+        DRTAdditionalRTROIIdentificationCodeSequence &getAdditionalRTROIIdentificationCodeSequence()
+            { return AdditionalRTROIIdentificationCodeSequence; }
+
+        /** get AdditionalRTROIIdentificationCodeSequence (3006,00b9)
+         *  @return const reference to sequence element
+         */
+        const DRTAdditionalRTROIIdentificationCodeSequence &getAdditionalRTROIIdentificationCodeSequence() const
+            { return AdditionalRTROIIdentificationCodeSequence; }
+
         /** get ROIPhysicalPropertiesSequence (3006,00b0)
          *  @return reference to sequence element
          */
@@ -206,6 +220,18 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
          */
         const DRTRelatedRTROIObservationsSequence &getRelatedRTROIObservationsSequence() const
             { return RelatedRTROIObservationsSequence; }
+
+        /** get SegmentedPropertyCategoryCodeSequence (0062,0003)
+         *  @return reference to sequence element
+         */
+        DRTSegmentedPropertyCategoryCodeSequence &getSegmentedPropertyCategoryCodeSequence()
+            { return SegmentedPropertyCategoryCodeSequence; }
+
+        /** get SegmentedPropertyCategoryCodeSequence (0062,0003)
+         *  @return const reference to sequence element
+         */
+        const DRTSegmentedPropertyCategoryCodeSequence &getSegmentedPropertyCategoryCodeSequence() const
+            { return SegmentedPropertyCategoryCodeSequence; }
 
       // --- set DICOM attribute values ---
 
@@ -263,6 +289,8 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// AdditionalRTROIIdentificationCodeSequence (3006,00b9) vr=SQ, vm=1, type=3
+        DRTAdditionalRTROIIdentificationCodeSequence AdditionalRTROIIdentificationCodeSequence;
         /// MaterialID (300a,00e1) vr=SH, vm=1, type=3
         DcmShortString MaterialID;
         /// ObservationNumber (3006,0082) vr=IS, vm=1, type=1
@@ -285,6 +313,8 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         DcmIntegerString ReferencedROINumber;
         /// RelatedRTROIObservationsSequence (3006,00a0) vr=SQ, vm=1, type=3
         DRTRelatedRTROIObservationsSequence RelatedRTROIObservationsSequence;
+        /// SegmentedPropertyCategoryCodeSequence (0062,0003) vr=SQ, vm=1, type=3
+        DRTSegmentedPropertyCategoryCodeSequence SegmentedPropertyCategoryCodeSequence;
 
     };
 

@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTFixationDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -108,8 +108,8 @@ OFCondition DRTFixationDeviceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, FixationDeviceType, "1", "1C", "FixationDeviceSequence");
-        getAndCheckElementFromDataset(item, FixationDeviceLabel, "1", "2C", "FixationDeviceSequence");
+        getAndCheckElementFromDataset(item, FixationDeviceType, "1", "1", "FixationDeviceSequence");
+        getAndCheckElementFromDataset(item, FixationDeviceLabel, "1", "2", "FixationDeviceSequence");
         getAndCheckElementFromDataset(item, FixationDeviceDescription, "1", "3", "FixationDeviceSequence");
         getAndCheckElementFromDataset(item, FixationDevicePosition, "1", "3", "FixationDeviceSequence");
         getAndCheckElementFromDataset(item, FixationDevicePitchAngle, "1", "3", "FixationDeviceSequence");
@@ -127,8 +127,8 @@ OFCondition DRTFixationDeviceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmCodeString(FixationDeviceType), "1", "1C", "FixationDeviceSequence");
-        addElementToDataset(result, item, new DcmShortString(FixationDeviceLabel), "1", "2C", "FixationDeviceSequence");
+        addElementToDataset(result, item, new DcmCodeString(FixationDeviceType), "1", "1", "FixationDeviceSequence");
+        addElementToDataset(result, item, new DcmShortString(FixationDeviceLabel), "1", "2", "FixationDeviceSequence");
         addElementToDataset(result, item, new DcmShortText(FixationDeviceDescription), "1", "3", "FixationDeviceSequence");
         addElementToDataset(result, item, new DcmShortString(FixationDevicePosition), "1", "3", "FixationDeviceSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(FixationDevicePitchAngle), "1", "3", "FixationDeviceSequence");

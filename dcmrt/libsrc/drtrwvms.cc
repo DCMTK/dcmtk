@@ -4,218 +4,285 @@
  *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule
+ *  Source file for class DRTRealWorldValueMappingSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
-#include "dcmtk/dcmrt/seq/drtrbass8.h"
+#include "dcmtk/dcmrt/seq/drtrwvms.h"
 
 
 // --- item class ---
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::Item(const OFBool emptyDefaultItem)
+DRTRealWorldValueMappingSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    BrachyApplicationSetupDose(DCM_BrachyApplicationSetupDose),
-    BrachyApplicationSetupDoseSpecificationPoint(DCM_BrachyApplicationSetupDoseSpecificationPoint),
-    ReferencedBrachyApplicationSetupNumber(DCM_ReferencedBrachyApplicationSetupNumber)
+    LUTExplanation(DCM_LUTExplanation),
+    LUTLabel(DCM_LUTLabel),
+    MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    RealWorldValueFirstValueMapped(DCM_RealWorldValueFirstValueMapped),
+    RealWorldValueIntercept(DCM_RealWorldValueIntercept),
+    RealWorldValueLUTData(DCM_RealWorldValueLUTData),
+    RealWorldValueLastValueMapped(DCM_RealWorldValueLastValueMapped),
+    RealWorldValueSlope(DCM_RealWorldValueSlope)
 {
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::Item(const Item &copy)
+DRTRealWorldValueMappingSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    BrachyApplicationSetupDose(copy.BrachyApplicationSetupDose),
-    BrachyApplicationSetupDoseSpecificationPoint(copy.BrachyApplicationSetupDoseSpecificationPoint),
-    ReferencedBrachyApplicationSetupNumber(copy.ReferencedBrachyApplicationSetupNumber)
+    LUTExplanation(copy.LUTExplanation),
+    LUTLabel(copy.LUTLabel),
+    MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
+    RealWorldValueFirstValueMapped(copy.RealWorldValueFirstValueMapped),
+    RealWorldValueIntercept(copy.RealWorldValueIntercept),
+    RealWorldValueLUTData(copy.RealWorldValueLUTData),
+    RealWorldValueLastValueMapped(copy.RealWorldValueLastValueMapped),
+    RealWorldValueSlope(copy.RealWorldValueSlope)
 {
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::~Item()
+DRTRealWorldValueMappingSequence::Item::~Item()
 {
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::operator=(const Item &copy)
+DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        BrachyApplicationSetupDose = copy.BrachyApplicationSetupDose;
-        BrachyApplicationSetupDoseSpecificationPoint = copy.BrachyApplicationSetupDoseSpecificationPoint;
-        ReferencedBrachyApplicationSetupNumber = copy.ReferencedBrachyApplicationSetupNumber;
+        LUTExplanation = copy.LUTExplanation;
+        LUTLabel = copy.LUTLabel;
+        MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
+        RealWorldValueFirstValueMapped = copy.RealWorldValueFirstValueMapped;
+        RealWorldValueIntercept = copy.RealWorldValueIntercept;
+        RealWorldValueLUTData = copy.RealWorldValueLUTData;
+        RealWorldValueLastValueMapped = copy.RealWorldValueLastValueMapped;
+        RealWorldValueSlope = copy.RealWorldValueSlope;
     }
     return *this;
 }
 
 
-void DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::clear()
+void DRTRealWorldValueMappingSequence::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
-        ReferencedBrachyApplicationSetupNumber.clear();
-        BrachyApplicationSetupDoseSpecificationPoint.clear();
-        BrachyApplicationSetupDose.clear();
+        RealWorldValueFirstValueMapped.clear();
+        RealWorldValueLastValueMapped.clear();
+        RealWorldValueIntercept.clear();
+        RealWorldValueSlope.clear();
+        RealWorldValueLUTData.clear();
+        LUTExplanation.clear();
+        LUTLabel.clear();
+        MeasurementUnitsCodeSequence.clear();
     }
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::isEmpty()
+OFBool DRTRealWorldValueMappingSequence::Item::isEmpty()
 {
-    return ReferencedBrachyApplicationSetupNumber.isEmpty() &&
-           BrachyApplicationSetupDoseSpecificationPoint.isEmpty() &&
-           BrachyApplicationSetupDose.isEmpty();
+    return RealWorldValueFirstValueMapped.isEmpty() &&
+           RealWorldValueLastValueMapped.isEmpty() &&
+           RealWorldValueIntercept.isEmpty() &&
+           RealWorldValueSlope.isEmpty() &&
+           RealWorldValueLUTData.isEmpty() &&
+           LUTExplanation.isEmpty() &&
+           LUTLabel.isEmpty() &&
+           MeasurementUnitsCodeSequence.isEmpty();
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::isValid() const
+OFBool DRTRealWorldValueMappingSequence::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::read(DcmItem &item)
+OFCondition DRTRealWorldValueMappingSequence::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedBrachyApplicationSetupNumber, "1", "1C", "ReferencedBrachyApplicationSetupSequence");
-        getAndCheckElementFromDataset(item, BrachyApplicationSetupDoseSpecificationPoint, "3", "3", "ReferencedBrachyApplicationSetupSequence");
-        getAndCheckElementFromDataset(item, BrachyApplicationSetupDose, "1", "3", "ReferencedBrachyApplicationSetupSequence");
+        getAndCheckElementFromDataset(item, RealWorldValueFirstValueMapped, "1", "1", "RealWorldValueMappingSequence");
+        getAndCheckElementFromDataset(item, RealWorldValueLastValueMapped, "1", "1", "RealWorldValueMappingSequence");
+        getAndCheckElementFromDataset(item, RealWorldValueIntercept, "1", "1C", "RealWorldValueMappingSequence");
+        getAndCheckElementFromDataset(item, RealWorldValueSlope, "1", "1C", "RealWorldValueMappingSequence");
+        getAndCheckElementFromDataset(item, RealWorldValueLUTData, "1-n", "1C", "RealWorldValueMappingSequence");
+        getAndCheckElementFromDataset(item, LUTExplanation, "1", "1", "RealWorldValueMappingSequence");
+        getAndCheckElementFromDataset(item, LUTLabel, "1", "1", "RealWorldValueMappingSequence");
+        MeasurementUnitsCodeSequence.read(item, "1-n", "1", "RealWorldValueMappingSequence");
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::write(DcmItem &item)
+OFCondition DRTRealWorldValueMappingSequence::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedBrachyApplicationSetupNumber), "1", "1C", "ReferencedBrachyApplicationSetupSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BrachyApplicationSetupDoseSpecificationPoint), "3", "3", "ReferencedBrachyApplicationSetupSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BrachyApplicationSetupDose), "1", "3", "ReferencedBrachyApplicationSetupSequence");
+        addElementToDataset(result, item, new DcmUnsignedShort(RealWorldValueFirstValueMapped), "1", "1", "RealWorldValueMappingSequence");
+        addElementToDataset(result, item, new DcmUnsignedShort(RealWorldValueLastValueMapped), "1", "1", "RealWorldValueMappingSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(RealWorldValueIntercept), "1", "1C", "RealWorldValueMappingSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(RealWorldValueSlope), "1", "1C", "RealWorldValueMappingSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(RealWorldValueLUTData), "1-n", "1C", "RealWorldValueMappingSequence");
+        addElementToDataset(result, item, new DcmLongString(LUTExplanation), "1", "1", "RealWorldValueMappingSequence");
+        addElementToDataset(result, item, new DcmShortString(LUTLabel), "1", "1", "RealWorldValueMappingSequence");
+        if (result.good()) result = MeasurementUnitsCodeSequence.write(item, "1-n", "1", "RealWorldValueMappingSequence");
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDose(OFString &value, const signed long pos) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getLUTExplanation(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(BrachyApplicationSetupDose, value, pos);
+        return getStringValueFromElement(LUTExplanation, value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDose(Float64 &value, const unsigned long pos) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getLUTLabel(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return OFconst_cast(DcmDecimalString &, BrachyApplicationSetupDose).getFloat64(value, pos);
+        return getStringValueFromElement(LUTLabel, value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDoseSpecificationPoint(OFString &value, const signed long pos) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getRealWorldValueFirstValueMapped(Uint16 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(BrachyApplicationSetupDoseSpecificationPoint, value, pos);
+        return OFconst_cast(DcmUnsignedShort &, RealWorldValueFirstValueMapped).getUint16(value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDoseSpecificationPoint(Float64 &value, const unsigned long pos) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getRealWorldValueIntercept(Float64 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return OFconst_cast(DcmDecimalString &, BrachyApplicationSetupDoseSpecificationPoint).getFloat64(value, pos);
+        return OFconst_cast(DcmFloatingPointDouble &, RealWorldValueIntercept).getFloat64(value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDoseSpecificationPoint(OFVector<Float64> &value) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getRealWorldValueLUTData(Float64 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return OFconst_cast(DcmDecimalString &, BrachyApplicationSetupDoseSpecificationPoint).getFloat64Vector(value);
+        return OFconst_cast(DcmFloatingPointDouble &, RealWorldValueLUTData).getFloat64(value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getReferencedBrachyApplicationSetupNumber(OFString &value, const signed long pos) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getRealWorldValueLastValueMapped(Uint16 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(ReferencedBrachyApplicationSetupNumber, value, pos);
+        return OFconst_cast(DcmUnsignedShort &, RealWorldValueLastValueMapped).getUint16(value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos) const
+OFCondition DRTRealWorldValueMappingSequence::Item::getRealWorldValueSlope(Float64 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return OFconst_cast(DcmIntegerString &, ReferencedBrachyApplicationSetupNumber).getSint32(value, pos);
+        return OFconst_cast(DcmFloatingPointDouble &, RealWorldValueSlope).getFloat64(value, pos);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setBrachyApplicationSetupDose(const OFString &value, const OFBool check)
+OFCondition DRTRealWorldValueMappingSequence::Item::setLUTExplanation(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
-            result = BrachyApplicationSetupDose.putOFStringArray(value);
+            result = LUTExplanation.putOFStringArray(value);
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setBrachyApplicationSetupDoseSpecificationPoint(const OFString &value, const OFBool check)
+OFCondition DRTRealWorldValueMappingSequence::Item::setLUTLabel(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "3") : EC_Normal;
+        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
-            result = BrachyApplicationSetupDoseSpecificationPoint.putOFStringArray(value);
+            result = LUTLabel.putOFStringArray(value);
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check)
+OFCondition DRTRealWorldValueMappingSequence::Item::setRealWorldValueFirstValueMapped(const Uint16 value, const unsigned long pos)
 {
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ReferencedBrachyApplicationSetupNumber.putOFStringArray(value);
-    }
-    return result;
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RealWorldValueFirstValueMapped.putUint16(value, pos);
+}
+
+
+OFCondition DRTRealWorldValueMappingSequence::Item::setRealWorldValueIntercept(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RealWorldValueIntercept.putFloat64(value, pos);
+}
+
+
+OFCondition DRTRealWorldValueMappingSequence::Item::setRealWorldValueLUTData(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RealWorldValueLUTData.putFloat64(value, pos);
+}
+
+
+OFCondition DRTRealWorldValueMappingSequence::Item::setRealWorldValueLastValueMapped(const Uint16 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RealWorldValueLastValueMapped.putUint16(value, pos);
+}
+
+
+OFCondition DRTRealWorldValueMappingSequence::Item::setRealWorldValueSlope(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RealWorldValueSlope.putFloat64(value, pos);
 }
 
 
 // --- sequence class ---
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const OFBool emptyDefaultSequence)
+DRTRealWorldValueMappingSequence::DRTRealWorldValueMappingSequence(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -225,7 +292,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::DRTReferenc
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy)
+DRTRealWorldValueMappingSequence::DRTRealWorldValueMappingSequence(const DRTRealWorldValueMappingSequence &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -251,7 +318,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::DRTReferenc
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::operator=(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy)
+DRTRealWorldValueMappingSequence &DRTRealWorldValueMappingSequence::operator=(const DRTRealWorldValueMappingSequence &copy)
 {
     if (this != &copy)
     {
@@ -279,13 +346,13 @@ DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &DRTReferenc
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::~DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule()
+DRTRealWorldValueMappingSequence::~DRTRealWorldValueMappingSequence()
 {
     clear();
 }
 
 
-void DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::clear()
+void DRTRealWorldValueMappingSequence::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -304,25 +371,25 @@ void DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::clear(
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::isEmpty()
+OFBool DRTRealWorldValueMappingSequence::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::isValid() const
+OFBool DRTRealWorldValueMappingSequence::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-unsigned long DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getNumberOfItems() const
+unsigned long DRTRealWorldValueMappingSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoFirstItem()
+OFCondition DRTRealWorldValueMappingSequence::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -334,7 +401,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoNextItem()
+OFCondition DRTRealWorldValueMappingSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -346,7 +413,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTRealWorldValueMappingSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -366,7 +433,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTRealWorldValueMappingSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -386,13 +453,13 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoItem(const unsigned long num)
+OFCondition DRTRealWorldValueMappingSequence::gotoItem(const unsigned long num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getCurrentItem(Item *&item) const
+OFCondition DRTRealWorldValueMappingSequence::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -404,7 +471,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getCurrentItem()
+DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -413,7 +480,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTRe
 }
 
 
-const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getCurrentItem() const
+const DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -422,7 +489,7 @@ const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item 
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getItem(const unsigned long num, Item *&item)
+OFCondition DRTRealWorldValueMappingSequence::getItem(const unsigned long num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -432,7 +499,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getItem(const unsigned long num)
+DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::getItem(const unsigned long num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -442,7 +509,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTRe
 }
 
 
-const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getItem(const unsigned long num) const
+const DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::getItem(const unsigned long num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -452,19 +519,19 @@ const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item 
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::operator[](const unsigned long num)
+DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::operator[](const unsigned long num)
 {
     return getItem(num);
 }
 
 
-const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::operator[](const unsigned long num) const
+const DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::operator[](const unsigned long num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::addItem(Item *&item)
+OFCondition DRTRealWorldValueMappingSequence::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -481,7 +548,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTRealWorldValueMappingSequence::insertItem(const unsigned long pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -504,7 +571,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::removeItem(const unsigned long pos)
+OFCondition DRTRealWorldValueMappingSequence::removeItem(const unsigned long pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -522,10 +589,10 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::read(DcmItem &dataset,
-                                                                                      const OFString &card,
-                                                                                      const OFString &type,
-                                                                                      const char *moduleName)
+OFCondition DRTRealWorldValueMappingSequence::read(DcmItem &dataset,
+                                                   const OFString &card,
+                                                   const OFString &type,
+                                                   const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -534,7 +601,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_ReferencedBrachyApplicationSetupSequence, sequence);
+        result = dataset.findAndGetSequence(DCM_RealWorldValueMappingSequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -564,7 +631,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_ReferencedBrachyApplicationSetupSequence);
+            DcmSequenceOfItems element(DCM_RealWorldValueMappingSequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -572,16 +639,16 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule:
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::write(DcmItem &dataset,
-                                                                                       const OFString &card,
-                                                                                       const OFString &type,
-                                                                                       const char *moduleName)
+OFCondition DRTRealWorldValueMappingSequence::write(DcmItem &dataset,
+                                                    const OFString &card,
+                                                    const OFString &type,
+                                                    const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_ReferencedBrachyApplicationSetupSequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_RealWorldValueMappingSequence);
         if (sequence != NULL)
         {
             result = EC_Normal;

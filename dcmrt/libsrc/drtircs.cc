@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTIonRangeCompensatorSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -24,6 +24,7 @@ DRTIonRangeCompensatorSequence::Item::Item(const OFBool emptyDefaultItem)
     AccessoryCode(DCM_AccessoryCode),
     CompensatorColumnOffset(DCM_CompensatorColumnOffset),
     CompensatorColumns(DCM_CompensatorColumns),
+    CompensatorDescription(DCM_CompensatorDescription),
     CompensatorDivergence(DCM_CompensatorDivergence),
     CompensatorID(DCM_CompensatorID),
     CompensatorMillingToolDiameter(DCM_CompensatorMillingToolDiameter),
@@ -46,6 +47,7 @@ DRTIonRangeCompensatorSequence::Item::Item(const Item &copy)
     AccessoryCode(copy.AccessoryCode),
     CompensatorColumnOffset(copy.CompensatorColumnOffset),
     CompensatorColumns(copy.CompensatorColumns),
+    CompensatorDescription(copy.CompensatorDescription),
     CompensatorDivergence(copy.CompensatorDivergence),
     CompensatorID(copy.CompensatorID),
     CompensatorMillingToolDiameter(copy.CompensatorMillingToolDiameter),
@@ -76,6 +78,7 @@ DRTIonRangeCompensatorSequence::Item &DRTIonRangeCompensatorSequence::Item::oper
         AccessoryCode = copy.AccessoryCode;
         CompensatorColumnOffset = copy.CompensatorColumnOffset;
         CompensatorColumns = copy.CompensatorColumns;
+        CompensatorDescription = copy.CompensatorDescription;
         CompensatorDivergence = copy.CompensatorDivergence;
         CompensatorID = copy.CompensatorID;
         CompensatorMillingToolDiameter = copy.CompensatorMillingToolDiameter;
@@ -99,6 +102,7 @@ void DRTIonRangeCompensatorSequence::Item::clear()
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
+        CompensatorDescription.clear();
         CompensatorNumber.clear();
         MaterialID.clear();
         CompensatorID.clear();
@@ -121,7 +125,8 @@ void DRTIonRangeCompensatorSequence::Item::clear()
 
 OFBool DRTIonRangeCompensatorSequence::Item::isEmpty()
 {
-    return CompensatorNumber.isEmpty() &&
+    return CompensatorDescription.isEmpty() &&
+           CompensatorNumber.isEmpty() &&
            MaterialID.isEmpty() &&
            CompensatorID.isEmpty() &&
            AccessoryCode.isEmpty() &&
@@ -153,6 +158,7 @@ OFCondition DRTIonRangeCompensatorSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
+        getAndCheckElementFromDataset(item, CompensatorDescription, "1", "3", "IonRangeCompensatorSequence");
         getAndCheckElementFromDataset(item, CompensatorNumber, "1", "1", "IonRangeCompensatorSequence");
         getAndCheckElementFromDataset(item, MaterialID, "1", "2", "IonRangeCompensatorSequence");
         getAndCheckElementFromDataset(item, CompensatorID, "1", "3", "IonRangeCompensatorSequence");
@@ -181,6 +187,7 @@ OFCondition DRTIonRangeCompensatorSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
+        addElementToDataset(result, item, new DcmLongText(CompensatorDescription), "1", "3", "IonRangeCompensatorSequence");
         addElementToDataset(result, item, new DcmIntegerString(CompensatorNumber), "1", "1", "IonRangeCompensatorSequence");
         addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "2", "IonRangeCompensatorSequence");
         addElementToDataset(result, item, new DcmShortString(CompensatorID), "1", "3", "IonRangeCompensatorSequence");
@@ -235,6 +242,15 @@ OFCondition DRTIonRangeCompensatorSequence::Item::getCompensatorColumns(Sint32 &
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmIntegerString &, CompensatorColumns).getSint32(value, pos);
+}
+
+
+OFCondition DRTIonRangeCompensatorSequence::Item::getCompensatorDescription(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(CompensatorDescription, value, pos);
 }
 
 
@@ -457,6 +473,19 @@ OFCondition DRTIonRangeCompensatorSequence::Item::setCompensatorColumns(const OF
         result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = CompensatorColumns.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTIonRangeCompensatorSequence::Item::setCompensatorDescription(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongText::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            result = CompensatorDescription.putOFStringArray(value);
     }
     return result;
 }

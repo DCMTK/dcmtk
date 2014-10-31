@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedFractionGroupSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -150,7 +150,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedFractionGroupSequence
         DRTReferencedBeamSequenceInRTDoseModule ReferencedBeamSequence;
         /// ReferencedBrachyApplicationSetupSequence (300c,000a) vr=SQ, vm=1, type=1C
         DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule ReferencedBrachyApplicationSetupSequence;
-        /// ReferencedFractionGroupNumber (300c,0022) vr=IS, vm=1, type=1C
+        /// ReferencedFractionGroupNumber (300c,0022) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedFractionGroupNumber;
 
     };

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedFrameOfReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,7 +19,6 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtforrs.h"  // for FrameOfReferenceRelationshipSequence
 #include "dcmtk/dcmrt/seq/drtrsts.h"   // for RTReferencedStudySequence
 
 
@@ -101,18 +100,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedFrameOfReferenceSequence
 
       // --- get DICOM sequence attributes ---
 
-        /** get FrameOfReferenceRelationshipSequence (3006,00c0)
-         *  @return reference to sequence element
-         */
-        DRTFrameOfReferenceRelationshipSequence &getFrameOfReferenceRelationshipSequence()
-            { return FrameOfReferenceRelationshipSequence; }
-
-        /** get FrameOfReferenceRelationshipSequence (3006,00c0)
-         *  @return const reference to sequence element
-         */
-        const DRTFrameOfReferenceRelationshipSequence &getFrameOfReferenceRelationshipSequence() const
-            { return FrameOfReferenceRelationshipSequence; }
-
         /** get RTReferencedStudySequence (3006,0012)
          *  @return reference to sequence element
          */
@@ -139,9 +126,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedFrameOfReferenceSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// FrameOfReferenceRelationshipSequence (3006,00c0) vr=SQ, vm=1, type=3
-        DRTFrameOfReferenceRelationshipSequence FrameOfReferenceRelationshipSequence;
-        /// FrameOfReferenceUID (0020,0052) vr=UI, vm=1, type=1C
+        /// FrameOfReferenceUID (0020,0052) vr=UI, vm=1, type=1
         DcmUniqueIdentifier FrameOfReferenceUID;
         /// RTReferencedStudySequence (3006,0012) vr=SQ, vm=1, type=3
         DRTRTReferencedStudySequence RTReferencedStudySequence;

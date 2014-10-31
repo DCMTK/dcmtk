@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTContourSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -266,9 +266,9 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
 
         /// AttachedContours (3006,0049) vr=IS, vm=1-n, type=3
         DcmIntegerString AttachedContours;
-        /// ContourData (3006,0050) vr=DS, vm=3-3n, type=1C
+        /// ContourData (3006,0050) vr=DS, vm=3-3n, type=1
         DcmDecimalString ContourData;
-        /// ContourGeometricType (3006,0042) vr=CS, vm=1, type=1C
+        /// ContourGeometricType (3006,0042) vr=CS, vm=1, type=1
         DcmCodeString ContourGeometricType;
         /// ContourImageSequence (3006,0016) vr=SQ, vm=1, type=3
         DRTContourImageSequence ContourImageSequence;
@@ -278,7 +278,7 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
         DcmDecimalString ContourOffsetVector;
         /// ContourSlabThickness (3006,0044) vr=DS, vm=1, type=3
         DcmDecimalString ContourSlabThickness;
-        /// NumberOfContourPoints (3006,0046) vr=IS, vm=1, type=1C
+        /// NumberOfContourPoints (3006,0046) vr=IS, vm=1, type=1
         DcmIntegerString NumberOfContourPoints;
 
     };

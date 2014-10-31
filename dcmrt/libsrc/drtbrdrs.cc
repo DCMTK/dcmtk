@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBrachyReferencedDoseReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "1C", "BrachyReferencedDoseReferenceSequence");
-        getAndCheckElementFromDataset(item, CumulativeDoseReferenceCoefficient, "1", "1C", "BrachyReferencedDoseReferenceSequence");
+        getAndCheckElementFromDataset(item, ReferencedDoseReferenceNumber, "1", "1", "BrachyReferencedDoseReferenceSequence");
+        getAndCheckElementFromDataset(item, CumulativeDoseReferenceCoefficient, "1", "1", "BrachyReferencedDoseReferenceSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "1C", "BrachyReferencedDoseReferenceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseReferenceCoefficient), "1", "1C", "BrachyReferencedDoseReferenceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedDoseReferenceNumber), "1", "1", "BrachyReferencedDoseReferenceSequence");
+        addElementToDataset(result, item, new DcmDecimalString(CumulativeDoseReferenceCoefficient), "1", "1", "BrachyReferencedDoseReferenceSequence");
     }
     return result;
 }

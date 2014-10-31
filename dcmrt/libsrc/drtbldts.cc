@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBeamLimitingDeviceToleranceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTBeamLimitingDeviceToleranceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, RTBeamLimitingDeviceType, "1", "1C", "BeamLimitingDeviceToleranceSequence");
-        getAndCheckElementFromDataset(item, BeamLimitingDevicePositionTolerance, "1", "1C", "BeamLimitingDeviceToleranceSequence");
+        getAndCheckElementFromDataset(item, RTBeamLimitingDeviceType, "1", "1", "BeamLimitingDeviceToleranceSequence");
+        getAndCheckElementFromDataset(item, BeamLimitingDevicePositionTolerance, "1", "1", "BeamLimitingDeviceToleranceSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTBeamLimitingDeviceToleranceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmCodeString(RTBeamLimitingDeviceType), "1", "1C", "BeamLimitingDeviceToleranceSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BeamLimitingDevicePositionTolerance), "1", "1C", "BeamLimitingDeviceToleranceSequence");
+        addElementToDataset(result, item, new DcmCodeString(RTBeamLimitingDeviceType), "1", "1", "BeamLimitingDeviceToleranceSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BeamLimitingDevicePositionTolerance), "1", "1", "BeamLimitingDeviceToleranceSequence");
     }
     return result;
 }

@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTProtocolContextSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -26,9 +26,13 @@ DRTProtocolContextSequence::Item::Item(const OFBool emptyDefaultItem)
     ContentItemModifierSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     Date(DCM_Date),
     DateTime(DCM_DateTime),
+    FloatingPointValue(DCM_FloatingPointValue),
     MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumericValue(DCM_NumericValue),
     PersonName(DCM_PersonName),
+    RationalDenominatorValue(DCM_RationalDenominatorValue),
+    RationalNumeratorValue(DCM_RationalNumeratorValue),
+    ReferencedSOPSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     TextValue(DCM_TextValue),
     Time(DCM_Time),
     UID(DCM_UID),
@@ -44,9 +48,13 @@ DRTProtocolContextSequence::Item::Item(const Item &copy)
     ContentItemModifierSequence(copy.ContentItemModifierSequence),
     Date(copy.Date),
     DateTime(copy.DateTime),
+    FloatingPointValue(copy.FloatingPointValue),
     MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
     NumericValue(copy.NumericValue),
     PersonName(copy.PersonName),
+    RationalDenominatorValue(copy.RationalDenominatorValue),
+    RationalNumeratorValue(copy.RationalNumeratorValue),
+    ReferencedSOPSequence(copy.ReferencedSOPSequence),
     TextValue(copy.TextValue),
     Time(copy.Time),
     UID(copy.UID),
@@ -70,9 +78,13 @@ DRTProtocolContextSequence::Item &DRTProtocolContextSequence::Item::operator=(co
         ContentItemModifierSequence = copy.ContentItemModifierSequence;
         Date = copy.Date;
         DateTime = copy.DateTime;
+        FloatingPointValue = copy.FloatingPointValue;
         MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
         NumericValue = copy.NumericValue;
         PersonName = copy.PersonName;
+        RationalDenominatorValue = copy.RationalDenominatorValue;
+        RationalNumeratorValue = copy.RationalNumeratorValue;
+        ReferencedSOPSequence = copy.ReferencedSOPSequence;
         TextValue = copy.TextValue;
         Time = copy.Time;
         UID = copy.UID;
@@ -97,7 +109,11 @@ void DRTProtocolContextSequence::Item::clear()
         TextValue.clear();
         ConceptCodeSequence.clear();
         NumericValue.clear();
+        FloatingPointValue.clear();
+        RationalNumeratorValue.clear();
+        RationalDenominatorValue.clear();
         MeasurementUnitsCodeSequence.clear();
+        ReferencedSOPSequence.clear();
         ContentItemModifierSequence.clear();
     }
 }
@@ -115,7 +131,11 @@ OFBool DRTProtocolContextSequence::Item::isEmpty()
            TextValue.isEmpty() &&
            ConceptCodeSequence.isEmpty() &&
            NumericValue.isEmpty() &&
+           FloatingPointValue.isEmpty() &&
+           RationalNumeratorValue.isEmpty() &&
+           RationalDenominatorValue.isEmpty() &&
            MeasurementUnitsCodeSequence.isEmpty() &&
+           ReferencedSOPSequence.isEmpty() &&
            ContentItemModifierSequence.isEmpty();
 }
 
@@ -143,7 +163,11 @@ OFCondition DRTProtocolContextSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, TextValue, "1", "1C", "ProtocolContextSequence");
         ConceptCodeSequence.read(item, "1-n", "1C", "ProtocolContextSequence");
         getAndCheckElementFromDataset(item, NumericValue, "1-n", "1C", "ProtocolContextSequence");
+        getAndCheckElementFromDataset(item, FloatingPointValue, "1-n", "1C", "ProtocolContextSequence");
+        getAndCheckElementFromDataset(item, RationalNumeratorValue, "1-n", "1C", "ProtocolContextSequence");
+        getAndCheckElementFromDataset(item, RationalDenominatorValue, "1-n", "1C", "ProtocolContextSequence");
         MeasurementUnitsCodeSequence.read(item, "1-n", "1C", "ProtocolContextSequence");
+        ReferencedSOPSequence.read(item, "1-n", "1C", "ProtocolContextSequence");
         ContentItemModifierSequence.read(item, "1-n", "3", "ProtocolContextSequence");
         result = EC_Normal;
     }
@@ -167,7 +191,11 @@ OFCondition DRTProtocolContextSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUnlimitedText(TextValue), "1", "1C", "ProtocolContextSequence");
         if (result.good()) result = ConceptCodeSequence.write(item, "1-n", "1C", "ProtocolContextSequence");
         addElementToDataset(result, item, new DcmDecimalString(NumericValue), "1-n", "1C", "ProtocolContextSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(FloatingPointValue), "1-n", "1C", "ProtocolContextSequence");
+        addElementToDataset(result, item, new DcmSignedLong(RationalNumeratorValue), "1-n", "1C", "ProtocolContextSequence");
+        addElementToDataset(result, item, new DcmUnsignedLong(RationalDenominatorValue), "1-n", "1C", "ProtocolContextSequence");
         if (result.good()) result = MeasurementUnitsCodeSequence.write(item, "1-n", "1C", "ProtocolContextSequence");
+        if (result.good()) result = ReferencedSOPSequence.write(item, "1-n", "1C", "ProtocolContextSequence");
         if (result.good()) result = ContentItemModifierSequence.write(item, "1-n", "3", "ProtocolContextSequence");
     }
     return result;
@@ -189,6 +217,15 @@ OFCondition DRTProtocolContextSequence::Item::getDateTime(OFString &value, const
         return EC_IllegalCall;
     else
         return getStringValueFromElement(DateTime, value, pos);
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::getFloatingPointValue(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointDouble &, FloatingPointValue).getFloat64(value, pos);
 }
 
 
@@ -225,6 +262,24 @@ OFCondition DRTProtocolContextSequence::Item::getPersonName(OFString &value, con
         return EC_IllegalCall;
     else
         return getStringValueFromElement(PersonName, value, pos);
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::getRationalDenominatorValue(Uint32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmUnsignedLong &, RationalDenominatorValue).getUint32(value, pos);
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::getRationalNumeratorValue(Sint32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmSignedLong &, RationalNumeratorValue).getSint32(value, pos);
 }
 
 
@@ -290,6 +345,15 @@ OFCondition DRTProtocolContextSequence::Item::setDateTime(const OFString &value,
 }
 
 
+OFCondition DRTProtocolContextSequence::Item::setFloatingPointValue(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return FloatingPointValue.putFloat64(value, pos);
+}
+
+
 OFCondition DRTProtocolContextSequence::Item::setNumericValue(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -313,6 +377,24 @@ OFCondition DRTProtocolContextSequence::Item::setPersonName(const OFString &valu
             result = PersonName.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::setRationalDenominatorValue(const Uint32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RationalDenominatorValue.putUint32(value, pos);
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::setRationalNumeratorValue(const Sint32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return RationalNumeratorValue.putSint32(value, pos);
 }
 
 

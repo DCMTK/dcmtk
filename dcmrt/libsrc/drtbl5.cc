@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBlockSequenceInRTImageModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,6 +21,7 @@
 
 DRTBlockSequenceInRTImageModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    AccessoryCode(DCM_AccessoryCode),
     BlockData(DCM_BlockData),
     BlockDivergence(DCM_BlockDivergence),
     BlockMountingPosition(DCM_BlockMountingPosition),
@@ -38,6 +39,7 @@ DRTBlockSequenceInRTImageModule::Item::Item(const OFBool emptyDefaultItem)
 
 DRTBlockSequenceInRTImageModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    AccessoryCode(copy.AccessoryCode),
     BlockData(copy.BlockData),
     BlockDivergence(copy.BlockDivergence),
     BlockMountingPosition(copy.BlockMountingPosition),
@@ -63,6 +65,7 @@ DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::Item::op
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        AccessoryCode = copy.AccessoryCode;
         BlockData = copy.BlockData;
         BlockDivergence = copy.BlockDivergence;
         BlockMountingPosition = copy.BlockMountingPosition;
@@ -85,6 +88,7 @@ void DRTBlockSequenceInRTImageModule::Item::clear()
     {
         /* clear all DICOM attributes */
         BlockTrayID.clear();
+        AccessoryCode.clear();
         SourceToBlockTrayDistance.clear();
         BlockType.clear();
         BlockDivergence.clear();
@@ -102,6 +106,7 @@ void DRTBlockSequenceInRTImageModule::Item::clear()
 OFBool DRTBlockSequenceInRTImageModule::Item::isEmpty()
 {
     return BlockTrayID.isEmpty() &&
+           AccessoryCode.isEmpty() &&
            SourceToBlockTrayDistance.isEmpty() &&
            BlockType.isEmpty() &&
            BlockDivergence.isEmpty() &&
@@ -129,16 +134,17 @@ OFCondition DRTBlockSequenceInRTImageModule::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, BlockTrayID, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, SourceToBlockTrayDistance, "1", "2C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockType, "1", "1C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockDivergence, "1", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "BlockSequence");
+        getAndCheckElementFromDataset(item, SourceToBlockTrayDistance, "1", "2", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockType, "1", "1", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockDivergence, "1", "2", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockMountingPosition, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockNumber, "1", "1C", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockNumber, "1", "1", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockName, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, MaterialID, "1", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, MaterialID, "1", "2", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockThickness, "1", "3", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockNumberOfPoints, "1", "2C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockData, "2-2n", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockNumberOfPoints, "1", "2", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockData, "2-2n", "2", "BlockSequence");
         result = EC_Normal;
     }
     return result;
@@ -152,18 +158,28 @@ OFCondition DRTBlockSequenceInRTImageModule::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmShortString(BlockTrayID), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmDecimalString(SourceToBlockTrayDistance), "1", "2C", "BlockSequence");
-        addElementToDataset(result, item, new DcmCodeString(BlockType), "1", "1C", "BlockSequence");
-        addElementToDataset(result, item, new DcmCodeString(BlockDivergence), "1", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "BlockSequence");
+        addElementToDataset(result, item, new DcmDecimalString(SourceToBlockTrayDistance), "1", "2", "BlockSequence");
+        addElementToDataset(result, item, new DcmCodeString(BlockType), "1", "1", "BlockSequence");
+        addElementToDataset(result, item, new DcmCodeString(BlockDivergence), "1", "2", "BlockSequence");
         addElementToDataset(result, item, new DcmCodeString(BlockMountingPosition), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmIntegerString(BlockNumber), "1", "1C", "BlockSequence");
+        addElementToDataset(result, item, new DcmIntegerString(BlockNumber), "1", "1", "BlockSequence");
         addElementToDataset(result, item, new DcmLongString(BlockName), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "2", "BlockSequence");
         addElementToDataset(result, item, new DcmDecimalString(BlockThickness), "1", "3", "BlockSequence");
-        addElementToDataset(result, item, new DcmIntegerString(BlockNumberOfPoints), "1", "2C", "BlockSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BlockData), "2-2n", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmIntegerString(BlockNumberOfPoints), "1", "2", "BlockSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BlockData), "2-2n", "2", "BlockSequence");
     }
     return result;
+}
+
+
+OFCondition DRTBlockSequenceInRTImageModule::Item::getAccessoryCode(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(AccessoryCode, value, pos);
 }
 
 
@@ -317,6 +333,19 @@ OFCondition DRTBlockSequenceInRTImageModule::Item::getSourceToBlockTrayDistance(
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmDecimalString &, SourceToBlockTrayDistance).getFloat64(value, pos);
+}
+
+
+OFCondition DRTBlockSequenceInRTImageModule::Item::setAccessoryCode(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = AccessoryCode.putOFStringArray(value);
+    }
+    return result;
 }
 
 

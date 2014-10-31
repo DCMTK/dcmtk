@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTApplicatorSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtags.h"    // for ApplicatorGeometrySequence
 
 
 /** Interface class for ApplicatorSequence (300a,0107) in RTBeamsModule
@@ -118,6 +119,27 @@ class DCMTK_DCMRT_EXPORT DRTApplicatorSequenceInRTBeamsModule
          */
         OFCondition getApplicatorType(OFString &value, const signed long pos = 0) const;
 
+        /** get SourceToApplicatorMountingPositionDistance (300a,0436)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getSourceToApplicatorMountingPositionDistance(Float32 &value, const unsigned long pos = 0) const;
+
+      // --- get DICOM sequence attributes ---
+
+        /** get ApplicatorGeometrySequence (300a,0431)
+         *  @return reference to sequence element
+         */
+        DRTApplicatorGeometrySequence &getApplicatorGeometrySequence()
+            { return ApplicatorGeometrySequence; }
+
+        /** get ApplicatorGeometrySequence (300a,0431)
+         *  @return const reference to sequence element
+         */
+        const DRTApplicatorGeometrySequence &getApplicatorGeometrySequence() const
+            { return ApplicatorGeometrySequence; }
+
       // --- set DICOM attribute values ---
 
         /** set AccessoryCode (300a,00f9)
@@ -148,6 +170,13 @@ class DCMTK_DCMRT_EXPORT DRTApplicatorSequenceInRTBeamsModule
          */
         OFCondition setApplicatorType(const OFString &value, const OFBool check = OFTrue);
 
+        /** set SourceToApplicatorMountingPositionDistance (300a,0436)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setSourceToApplicatorMountingPositionDistance(const Float32 value, const unsigned long pos = 0);
+
       private:
 
         /// internal flag used to mark the empty default item
@@ -157,10 +186,14 @@ class DCMTK_DCMRT_EXPORT DRTApplicatorSequenceInRTBeamsModule
         DcmLongString AccessoryCode;
         /// ApplicatorDescription (300a,010a) vr=LO, vm=1, type=3
         DcmLongString ApplicatorDescription;
-        /// ApplicatorID (300a,0108) vr=SH, vm=1, type=1C
+        /// ApplicatorGeometrySequence (300a,0431) vr=SQ, vm=1, type=3
+        DRTApplicatorGeometrySequence ApplicatorGeometrySequence;
+        /// ApplicatorID (300a,0108) vr=SH, vm=1, type=1
         DcmShortString ApplicatorID;
-        /// ApplicatorType (300a,0109) vr=CS, vm=1, type=1C
+        /// ApplicatorType (300a,0109) vr=CS, vm=1, type=1
         DcmCodeString ApplicatorType;
+        /// SourceToApplicatorMountingPositionDistance (300a,0436) vr=FL, vm=1, type=3
+        DcmFloatingPointSingle SourceToApplicatorMountingPositionDistance;
 
     };
 

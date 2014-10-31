@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTWedgeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -248,17 +248,17 @@ class DCMTK_DCMRT_EXPORT DRTWedgeSequence
         DcmLongString AccessoryCode;
         /// SourceToWedgeTrayDistance (300a,00da) vr=DS, vm=1, type=3
         DcmDecimalString SourceToWedgeTrayDistance;
-        /// WedgeAngle (300a,00d5) vr=IS, vm=1, type=2C
+        /// WedgeAngle (300a,00d5) vr=IS, vm=1, type=2
         DcmIntegerString WedgeAngle;
-        /// WedgeFactor (300a,00d6) vr=DS, vm=1, type=2C
+        /// WedgeFactor (300a,00d6) vr=DS, vm=1, type=2
         DcmDecimalString WedgeFactor;
         /// WedgeID (300a,00d4) vr=SH, vm=1, type=3
         DcmShortString WedgeID;
-        /// WedgeNumber (300a,00d2) vr=IS, vm=1, type=1C
+        /// WedgeNumber (300a,00d2) vr=IS, vm=1, type=1
         DcmIntegerString WedgeNumber;
-        /// WedgeOrientation (300a,00d8) vr=DS, vm=1, type=2C
+        /// WedgeOrientation (300a,00d8) vr=DS, vm=1, type=2
         DcmDecimalString WedgeOrientation;
-        /// WedgeType (300a,00d3) vr=CS, vm=1, type=2C
+        /// WedgeType (300a,00d3) vr=CS, vm=1, type=2
         DcmCodeString WedgeType;
 
     };

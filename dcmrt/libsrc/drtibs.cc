@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -30,6 +30,7 @@ DRTIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     FinalCumulativeMetersetWeight(DCM_FinalCumulativeMetersetWeight),
     FixationLightAzimuthalAngle(DCM_FixationLightAzimuthalAngle),
     FixationLightPolarAngle(DCM_FixationLightPolarAngle),
+    GeneralAccessorySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     InstitutionAddress(DCM_InstitutionAddress),
     InstitutionName(DCM_InstitutionName),
     InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
@@ -87,6 +88,7 @@ DRTIonBeamSequence::Item::Item(const Item &copy)
     FinalCumulativeMetersetWeight(copy.FinalCumulativeMetersetWeight),
     FixationLightAzimuthalAngle(copy.FixationLightAzimuthalAngle),
     FixationLightPolarAngle(copy.FixationLightPolarAngle),
+    GeneralAccessorySequence(copy.GeneralAccessorySequence),
     InstitutionAddress(copy.InstitutionAddress),
     InstitutionName(copy.InstitutionName),
     InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
@@ -152,6 +154,7 @@ DRTIonBeamSequence::Item &DRTIonBeamSequence::Item::operator=(const Item &copy)
         FinalCumulativeMetersetWeight = copy.FinalCumulativeMetersetWeight;
         FixationLightAzimuthalAngle = copy.FixationLightAzimuthalAngle;
         FixationLightPolarAngle = copy.FixationLightPolarAngle;
+        GeneralAccessorySequence = copy.GeneralAccessorySequence;
         InstitutionAddress = copy.InstitutionAddress;
         InstitutionName = copy.InstitutionName;
         InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
@@ -241,6 +244,7 @@ void DRTIonBeamSequence::Item::clear()
         IonBlockSequence.clear();
         SnoutSequence.clear();
         ApplicatorSequence.clear();
+        GeneralAccessorySequence.clear();
         NumberOfRangeShifters.clear();
         RangeShifterSequence.clear();
         NumberOfLateralSpreadingDevices.clear();
@@ -298,6 +302,7 @@ OFBool DRTIonBeamSequence::Item::isEmpty()
            IonBlockSequence.isEmpty() &&
            SnoutSequence.isEmpty() &&
            ApplicatorSequence.isEmpty() &&
+           GeneralAccessorySequence.isEmpty() &&
            NumberOfRangeShifters.isEmpty() &&
            RangeShifterSequence.isEmpty() &&
            NumberOfLateralSpreadingDevices.isEmpty() &&
@@ -365,6 +370,7 @@ OFCondition DRTIonBeamSequence::Item::read(DcmItem &item)
         IonBlockSequence.read(item, "1-n", "1C", "IonBeamSequence");
         SnoutSequence.read(item, "1-n", "3", "IonBeamSequence");
         ApplicatorSequence.read(item, "1-n", "3", "IonBeamSequence");
+        GeneralAccessorySequence.read(item, "1-n", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, NumberOfRangeShifters, "1", "1", "IonBeamSequence");
         RangeShifterSequence.read(item, "1-n", "1C", "IonBeamSequence");
         getAndCheckElementFromDataset(item, NumberOfLateralSpreadingDevices, "1", "1", "IonBeamSequence");
@@ -428,6 +434,7 @@ OFCondition DRTIonBeamSequence::Item::write(DcmItem &item)
         if (result.good()) result = IonBlockSequence.write(item, "1-n", "1C", "IonBeamSequence");
         if (result.good()) result = SnoutSequence.write(item, "1-n", "3", "IonBeamSequence");
         if (result.good()) result = ApplicatorSequence.write(item, "1-n", "3", "IonBeamSequence");
+        if (result.good()) result = GeneralAccessorySequence.write(item, "1-n", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfRangeShifters), "1", "1", "IonBeamSequence");
         if (result.good()) result = RangeShifterSequence.write(item, "1-n", "1C", "IonBeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfLateralSpreadingDevices), "1", "1", "IonBeamSequence");

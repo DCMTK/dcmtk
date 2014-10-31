@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBeamLimitingDeviceSequenceInRTImageModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -207,13 +207,13 @@ class DCMTK_DCMRT_EXPORT DRTBeamLimitingDeviceSequenceInRTImageModule
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// LeafJawPositions (300a,011c) vr=DS, vm=2-2n, type=1C
+        /// LeafJawPositions (300a,011c) vr=DS, vm=2-2n, type=1
         DcmDecimalString LeafJawPositions;
         /// LeafPositionBoundaries (300a,00be) vr=DS, vm=3-n, type=2C
         DcmDecimalString LeafPositionBoundaries;
-        /// NumberOfLeafJawPairs (300a,00bc) vr=IS, vm=1, type=1C
+        /// NumberOfLeafJawPairs (300a,00bc) vr=IS, vm=1, type=1
         DcmIntegerString NumberOfLeafJawPairs;
-        /// RTBeamLimitingDeviceType (300a,00b8) vr=CS, vm=1, type=1C
+        /// RTBeamLimitingDeviceType (300a,00b8) vr=CS, vm=1, type=1
         DcmCodeString RTBeamLimitingDeviceType;
         /// SourceToBeamLimitingDeviceDistance (300a,00ba) vr=DS, vm=1, type=3
         DcmDecimalString SourceToBeamLimitingDeviceDistance;

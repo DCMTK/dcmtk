@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTRTReferencedStudySequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -88,9 +88,9 @@ OFCondition DRTRTReferencedStudySequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1C", "RTReferencedStudySequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1C", "RTReferencedStudySequence");
-        RTReferencedSeriesSequence.read(item, "1-n", "1C", "RTReferencedStudySequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "RTReferencedStudySequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "RTReferencedStudySequence");
+        RTReferencedSeriesSequence.read(item, "1-n", "1", "RTReferencedStudySequence");
         result = EC_Normal;
     }
     return result;
@@ -103,9 +103,9 @@ OFCondition DRTRTReferencedStudySequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1C", "RTReferencedStudySequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1C", "RTReferencedStudySequence");
-        if (result.good()) result = RTReferencedSeriesSequence.write(item, "1-n", "1C", "RTReferencedStudySequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "RTReferencedStudySequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "RTReferencedStudySequence");
+        if (result.good()) result = RTReferencedSeriesSequence.write(item, "1-n", "1", "RTReferencedStudySequence");
     }
     return result;
 }

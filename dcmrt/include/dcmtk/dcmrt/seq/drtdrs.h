@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTDoseReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -482,13 +482,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseReferenceSequence
         DcmDecimalString DeliveryWarningDose;
         /// DoseReferenceDescription (300a,0016) vr=LO, vm=1, type=3
         DcmLongString DoseReferenceDescription;
-        /// DoseReferenceNumber (300a,0012) vr=IS, vm=1, type=1C
+        /// DoseReferenceNumber (300a,0012) vr=IS, vm=1, type=1
         DcmIntegerString DoseReferenceNumber;
         /// DoseReferencePointCoordinates (300a,0018) vr=DS, vm=3, type=1C
         DcmDecimalString DoseReferencePointCoordinates;
-        /// DoseReferenceStructureType (300a,0014) vr=CS, vm=1, type=1C
+        /// DoseReferenceStructureType (300a,0014) vr=CS, vm=1, type=1
         DcmCodeString DoseReferenceStructureType;
-        /// DoseReferenceType (300a,0020) vr=CS, vm=1, type=1C
+        /// DoseReferenceType (300a,0020) vr=CS, vm=1, type=1
         DcmCodeString DoseReferenceType;
         /// DoseReferenceUID (300a,0013) vr=UI, vm=1, type=3
         DcmUniqueIdentifier DoseReferenceUID;

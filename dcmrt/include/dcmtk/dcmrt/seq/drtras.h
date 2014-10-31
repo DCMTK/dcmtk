@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTRequestAttributesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtians.h"   // for IssuerOfAccessionNumberSequence
 #include "dcmtk/dcmrt/seq/drtrrpcs.h"  // for ReasonForRequestedProcedureCodeSequence
 #include "dcmtk/dcmrt/seq/drtrss.h"    // for ReferencedStudySequence
 #include "dcmtk/dcmrt/seq/drtrpcs.h"   // for RequestedProcedureCodeSequence
@@ -145,6 +146,18 @@ class DCMTK_DCMRT_EXPORT DRTRequestAttributesSequence
 
       // --- get DICOM sequence attributes ---
 
+        /** get IssuerOfAccessionNumberSequence (0008,0051)
+         *  @return reference to sequence element
+         */
+        DRTIssuerOfAccessionNumberSequence &getIssuerOfAccessionNumberSequence()
+            { return IssuerOfAccessionNumberSequence; }
+
+        /** get IssuerOfAccessionNumberSequence (0008,0051)
+         *  @return const reference to sequence element
+         */
+        const DRTIssuerOfAccessionNumberSequence &getIssuerOfAccessionNumberSequence() const
+            { return IssuerOfAccessionNumberSequence; }
+
         /** get ReasonForRequestedProcedureCodeSequence (0040,100a)
          *  @return reference to sequence element
          */
@@ -251,6 +264,8 @@ class DCMTK_DCMRT_EXPORT DRTRequestAttributesSequence
 
         /// AccessionNumber (0008,0050) vr=SH, vm=1, type=3
         DcmShortString AccessionNumber;
+        /// IssuerOfAccessionNumberSequence (0008,0051) vr=SQ, vm=1, type=3
+        DRTIssuerOfAccessionNumberSequence IssuerOfAccessionNumberSequence;
         /// ReasonForRequestedProcedureCodeSequence (0040,100a) vr=SQ, vm=1, type=3
         DRTReasonForRequestedProcedureCodeSequence ReasonForRequestedProcedureCodeSequence;
         /// ReasonForTheRequestedProcedure (0040,1002) vr=LO, vm=1, type=3
@@ -261,11 +276,11 @@ class DCMTK_DCMRT_EXPORT DRTRequestAttributesSequence
         DRTRequestedProcedureCodeSequence RequestedProcedureCodeSequence;
         /// RequestedProcedureDescription (0032,1060) vr=LO, vm=1, type=3
         DcmLongString RequestedProcedureDescription;
-        /// RequestedProcedureID (0040,1001) vr=SH, vm=1, type=1
+        /// RequestedProcedureID (0040,1001) vr=SH, vm=1, type=1C
         DcmShortString RequestedProcedureID;
         /// ScheduledProcedureStepDescription (0040,0007) vr=LO, vm=1, type=3
         DcmLongString ScheduledProcedureStepDescription;
-        /// ScheduledProcedureStepID (0040,0009) vr=SH, vm=1, type=1
+        /// ScheduledProcedureStepID (0040,0009) vr=SH, vm=1, type=1C
         DcmShortString ScheduledProcedureStepID;
         /// ScheduledProtocolCodeSequence (0040,0008) vr=SQ, vm=1, type=3
         DRTScheduledProtocolCodeSequence ScheduledProtocolCodeSequence;

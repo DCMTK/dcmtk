@@ -1,6 +1,97 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.10.31 (riesmeier)
+
+- Updated "dcmrt" classes based on DICOM 2014b:
+  Updated automatically generated IOD and sequence c++ classes for the various
+  RT objects based on the current edition of the DICOM standard (2014b). This
+  time, the official DocBook/XML version has been be used (previously, it was
+  an unofficial version of the DICOM 2007 standard edition).
+  Please note the "known issues" that are documented in the module description.
+  Added:   dcmrt/include/dcmtk/dcmrt/seq/drtaadcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtafs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtags.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtajcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtarics.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbvcps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcctus.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcsas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdimrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdirs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfes.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtgas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiais.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtians.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtipiqs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiseis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtois.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpfms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpsics.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbs4.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrecs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrppcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrpphs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrscs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsers.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrtrs2.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrtrs4.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrwvms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtscris.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsdcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtspccs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtwrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtxrs.h
+           dcmrt/libsrc/drtaadcs.cc
+           dcmrt/libsrc/drtafs.cc
+           dcmrt/libsrc/drtags.cc
+           dcmrt/libsrc/drtajcs.cc
+           dcmrt/libsrc/drtarics.cc
+           dcmrt/libsrc/drtbvcps.cc
+           dcmrt/libsrc/drtcctus.cc
+           dcmrt/libsrc/drtcsas.cc
+           dcmrt/libsrc/drtdimrs.cc
+           dcmrt/libsrc/drtdirs.cc
+           dcmrt/libsrc/drtfes.cc
+           dcmrt/libsrc/drtgas.cc
+           dcmrt/libsrc/drtiais.cc
+           dcmrt/libsrc/drtians.cc
+           dcmrt/libsrc/drtipiqs.cc
+           dcmrt/libsrc/drtiseis.cc
+           dcmrt/libsrc/drtois.cc
+           dcmrt/libsrc/drtpfms.cc
+           dcmrt/libsrc/drtpsics.cc
+           dcmrt/libsrc/drtrbs4.cc
+           dcmrt/libsrc/drtrecs.cc
+           dcmrt/libsrc/drtrppcs.cc
+           dcmrt/libsrc/drtrpphs.cc
+           dcmrt/libsrc/drtrscs.cc
+           dcmrt/libsrc/drtrsers.cc
+           dcmrt/libsrc/drtrsrs.cc
+           dcmrt/libsrc/drtrtrs2.cc
+           dcmrt/libsrc/drtrtrs4.cc
+           dcmrt/libsrc/drtrwvms.cc
+           dcmrt/libsrc/drtscris.cc
+           dcmrt/libsrc/drtsdcs.cc
+           dcmrt/libsrc/drtspccs.cc
+           dcmrt/libsrc/drtwrs.cc
+           dcmrt/libsrc/drtxrs.cc
+  Removed: dcmrt/include/dcmtk/dcmrt/seq/drtrtrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbass8.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtforrs.h
+           dcmrt/libsrc/drtrtrs.cc
+           dcmrt/libsrc/drtrbass8.cc
+           dcmrt/libsrc/drtforrs.cc
+  Affects: COPYRIGHT
+           dcmrt/apps/Makefile.dep
+           dcmrt/apps/Makefile.in
+           dcmrt/docs/dcmrt.dox
+           dcmrt/include/dcmtk/dcmrt/*.h
+           dcmrt/libsrc/*.cc
+           dcmrt/tests/Makefile.dep
+           dcmrt/tests/Makefile.in
+
 **** Changes from 2014.10.24 (riesmeier)
 
 - Fixed wrong term "Device Driving Level":

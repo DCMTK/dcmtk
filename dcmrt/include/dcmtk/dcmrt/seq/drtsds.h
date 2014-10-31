@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTSetupDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -90,6 +90,13 @@ class DCMTK_DCMRT_EXPORT DRTSetupDeviceSequence
 
       // --- get DICOM attribute values ---
 
+        /** get AccessoryCode (300a,00f9)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getAccessoryCode(OFString &value, const signed long pos = 0) const;
+
         /** get SetupDeviceDescription (300a,01ba)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -134,6 +141,13 @@ class DCMTK_DCMRT_EXPORT DRTSetupDeviceSequence
 
       // --- set DICOM attribute values ---
 
+        /** set AccessoryCode (300a,00f9)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setAccessoryCode(const OFString &value, const OFBool check = OFTrue);
+
         /** set SetupDeviceDescription (300a,01ba)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
@@ -174,13 +188,15 @@ class DCMTK_DCMRT_EXPORT DRTSetupDeviceSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// AccessoryCode (300a,00f9) vr=LO, vm=1, type=3
+        DcmLongString AccessoryCode;
         /// SetupDeviceDescription (300a,01ba) vr=ST, vm=1, type=3
         DcmShortText SetupDeviceDescription;
-        /// SetupDeviceLabel (300a,01b8) vr=SH, vm=1, type=2C
+        /// SetupDeviceLabel (300a,01b8) vr=SH, vm=1, type=2
         DcmShortString SetupDeviceLabel;
-        /// SetupDeviceParameter (300a,01bc) vr=DS, vm=1, type=2C
+        /// SetupDeviceParameter (300a,01bc) vr=DS, vm=1, type=2
         DcmDecimalString SetupDeviceParameter;
-        /// SetupDeviceType (300a,01b6) vr=CS, vm=1, type=1C
+        /// SetupDeviceType (300a,01b6) vr=CS, vm=1, type=1
         DcmCodeString SetupDeviceType;
         /// SetupReferenceDescription (300a,01d0) vr=ST, vm=1, type=3
         DcmShortText SetupReferenceDescription;

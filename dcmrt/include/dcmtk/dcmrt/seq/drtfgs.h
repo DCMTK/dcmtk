@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTFractionGroupSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -20,7 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtrbs8.h"   // for ReferencedBeamSequence
-#include "dcmtk/dcmrt/seq/drtrbass8.h" // for ReferencedBrachyApplicationSetupSequence
+#include "dcmtk/dcmrt/seq/drtrbas8.h"  // for ReferencedBrachyApplicationSetupSequence
 #include "dcmtk/dcmrt/seq/drtrdrs8.h"  // for ReferencedDoseReferenceSequence
 #include "dcmtk/dcmrt/seq/drtrds.h"    // for ReferencedDoseSequence
 
@@ -93,6 +93,13 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSequence
         OFCondition write(DcmItem &item);
 
       // --- get DICOM attribute values ---
+
+        /** get BeamDoseMeaning (300a,008b)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBeamDoseMeaning(OFString &value, const signed long pos = 0) const;
 
         /** get FractionGroupDescription (300a,0072)
          *  @param  value  reference to variable in which the value should be stored
@@ -244,6 +251,13 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSequence
 
       // --- set DICOM attribute values ---
 
+        /** set BeamDoseMeaning (300a,008b)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setBeamDoseMeaning(const OFString &value, const OFBool check = OFTrue);
+
         /** set FractionGroupDescription (300a,0072)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -305,6 +319,8 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// BeamDoseMeaning (300a,008b) vr=CS, vm=1, type=3
+        DcmCodeString BeamDoseMeaning;
         /// FractionGroupDescription (300a,0072) vr=LO, vm=1, type=3
         DcmLongString FractionGroupDescription;
         /// FractionGroupNumber (300a,0071) vr=IS, vm=1, type=1

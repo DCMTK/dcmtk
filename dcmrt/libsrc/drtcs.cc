@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTContourSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -116,11 +116,11 @@ OFCondition DRTContourSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ContourNumber, "1", "3", "ContourSequence");
         getAndCheckElementFromDataset(item, AttachedContours, "1-n", "3", "ContourSequence");
         ContourImageSequence.read(item, "1-n", "3", "ContourSequence");
-        getAndCheckElementFromDataset(item, ContourGeometricType, "1", "1C", "ContourSequence");
+        getAndCheckElementFromDataset(item, ContourGeometricType, "1", "1", "ContourSequence");
         getAndCheckElementFromDataset(item, ContourSlabThickness, "1", "3", "ContourSequence");
         getAndCheckElementFromDataset(item, ContourOffsetVector, "3", "3", "ContourSequence");
-        getAndCheckElementFromDataset(item, NumberOfContourPoints, "1", "1C", "ContourSequence");
-        getAndCheckElementFromDataset(item, ContourData, "3-3n", "1C", "ContourSequence");
+        getAndCheckElementFromDataset(item, NumberOfContourPoints, "1", "1", "ContourSequence");
+        getAndCheckElementFromDataset(item, ContourData, "3-3n", "1", "ContourSequence");
         result = EC_Normal;
     }
     return result;
@@ -136,11 +136,11 @@ OFCondition DRTContourSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(ContourNumber), "1", "3", "ContourSequence");
         addElementToDataset(result, item, new DcmIntegerString(AttachedContours), "1-n", "3", "ContourSequence");
         if (result.good()) result = ContourImageSequence.write(item, "1-n", "3", "ContourSequence");
-        addElementToDataset(result, item, new DcmCodeString(ContourGeometricType), "1", "1C", "ContourSequence");
+        addElementToDataset(result, item, new DcmCodeString(ContourGeometricType), "1", "1", "ContourSequence");
         addElementToDataset(result, item, new DcmDecimalString(ContourSlabThickness), "1", "3", "ContourSequence");
         addElementToDataset(result, item, new DcmDecimalString(ContourOffsetVector), "3", "3", "ContourSequence");
-        addElementToDataset(result, item, new DcmIntegerString(NumberOfContourPoints), "1", "1C", "ContourSequence");
-        addElementToDataset(result, item, new DcmDecimalString(ContourData), "3-3n", "1C", "ContourSequence");
+        addElementToDataset(result, item, new DcmIntegerString(NumberOfContourPoints), "1", "1", "ContourSequence");
+        addElementToDataset(result, item, new DcmDecimalString(ContourData), "3-3n", "1", "ContourSequence");
     }
     return result;
 }

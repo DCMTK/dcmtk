@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTShieldingDeviceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -98,8 +98,8 @@ OFCondition DRTShieldingDeviceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ShieldingDeviceType, "1", "1C", "ShieldingDeviceSequence");
-        getAndCheckElementFromDataset(item, ShieldingDeviceLabel, "1", "2C", "ShieldingDeviceSequence");
+        getAndCheckElementFromDataset(item, ShieldingDeviceType, "1", "1", "ShieldingDeviceSequence");
+        getAndCheckElementFromDataset(item, ShieldingDeviceLabel, "1", "2", "ShieldingDeviceSequence");
         getAndCheckElementFromDataset(item, ShieldingDeviceDescription, "1", "3", "ShieldingDeviceSequence");
         getAndCheckElementFromDataset(item, ShieldingDevicePosition, "1", "3", "ShieldingDeviceSequence");
         getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "ShieldingDeviceSequence");
@@ -115,8 +115,8 @@ OFCondition DRTShieldingDeviceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmCodeString(ShieldingDeviceType), "1", "1C", "ShieldingDeviceSequence");
-        addElementToDataset(result, item, new DcmShortString(ShieldingDeviceLabel), "1", "2C", "ShieldingDeviceSequence");
+        addElementToDataset(result, item, new DcmCodeString(ShieldingDeviceType), "1", "1", "ShieldingDeviceSequence");
+        addElementToDataset(result, item, new DcmShortString(ShieldingDeviceLabel), "1", "2", "ShieldingDeviceSequence");
         addElementToDataset(result, item, new DcmShortText(ShieldingDeviceDescription), "1", "3", "ShieldingDeviceSequence");
         addElementToDataset(result, item, new DcmShortString(ShieldingDevicePosition), "1", "3", "ShieldingDeviceSequence");
         addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "ShieldingDeviceSequence");

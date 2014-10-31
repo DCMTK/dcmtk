@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTFractionStatusSummarySequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -93,10 +93,10 @@ OFCondition DRTFractionStatusSummarySequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedFractionNumber, "1", "1C", "FractionStatusSummarySequence");
-        getAndCheckElementFromDataset(item, TreatmentDate, "1", "2C", "FractionStatusSummarySequence");
-        getAndCheckElementFromDataset(item, TreatmentTime, "1", "2C", "FractionStatusSummarySequence");
-        getAndCheckElementFromDataset(item, TreatmentTerminationStatus, "1", "2C", "FractionStatusSummarySequence");
+        getAndCheckElementFromDataset(item, ReferencedFractionNumber, "1", "1", "FractionStatusSummarySequence");
+        getAndCheckElementFromDataset(item, TreatmentDate, "1", "2", "FractionStatusSummarySequence");
+        getAndCheckElementFromDataset(item, TreatmentTime, "1", "2", "FractionStatusSummarySequence");
+        getAndCheckElementFromDataset(item, TreatmentTerminationStatus, "1", "2", "FractionStatusSummarySequence");
         result = EC_Normal;
     }
     return result;
@@ -109,10 +109,10 @@ OFCondition DRTFractionStatusSummarySequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedFractionNumber), "1", "1C", "FractionStatusSummarySequence");
-        addElementToDataset(result, item, new DcmDate(TreatmentDate), "1", "2C", "FractionStatusSummarySequence");
-        addElementToDataset(result, item, new DcmTime(TreatmentTime), "1", "2C", "FractionStatusSummarySequence");
-        addElementToDataset(result, item, new DcmCodeString(TreatmentTerminationStatus), "1", "2C", "FractionStatusSummarySequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedFractionNumber), "1", "1", "FractionStatusSummarySequence");
+        addElementToDataset(result, item, new DcmDate(TreatmentDate), "1", "2", "FractionStatusSummarySequence");
+        addElementToDataset(result, item, new DcmTime(TreatmentTime), "1", "2", "FractionStatusSummarySequence");
+        addElementToDataset(result, item, new DcmCodeString(TreatmentTerminationStatus), "1", "2", "FractionStatusSummarySequence");
     }
     return result;
 }

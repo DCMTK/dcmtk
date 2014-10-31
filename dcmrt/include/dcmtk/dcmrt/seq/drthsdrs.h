@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTHL7StructuredDocumentReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -143,7 +143,7 @@ class DCMTK_DCMRT_EXPORT DRTHL7StructuredDocumentReferenceSequence
 
         /** set RetrieveURI (0040,e010)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (UR) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setRetrieveURI(const OFString &value, const OFBool check = OFTrue);
@@ -159,8 +159,8 @@ class DCMTK_DCMRT_EXPORT DRTHL7StructuredDocumentReferenceSequence
         DcmUniqueIdentifier ReferencedSOPClassUID;
         /// ReferencedSOPInstanceUID (0008,1155) vr=UI, vm=1, type=1
         DcmUniqueIdentifier ReferencedSOPInstanceUID;
-        /// RetrieveURI (0040,e010) vr=UT, vm=1, type=3
-        DcmUnlimitedText RetrieveURI;
+        /// RetrieveURI (0040,e010) vr=UR, vm=1, type=3
+        DcmUniversalResourceIdentifierOrLocator RetrieveURI;
 
     };
 

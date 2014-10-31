@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTFractionStatusSummarySequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -160,13 +160,13 @@ class DCMTK_DCMRT_EXPORT DRTFractionStatusSummarySequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// ReferencedFractionNumber (3008,0223) vr=IS, vm=1, type=1C
+        /// ReferencedFractionNumber (3008,0223) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedFractionNumber;
-        /// TreatmentDate (3008,0250) vr=DA, vm=1, type=2C
+        /// TreatmentDate (3008,0250) vr=DA, vm=1, type=2
         DcmDate TreatmentDate;
-        /// TreatmentTerminationStatus (3008,002a) vr=CS, vm=1, type=2C
+        /// TreatmentTerminationStatus (3008,002a) vr=CS, vm=1, type=2
         DcmCodeString TreatmentTerminationStatus;
-        /// TreatmentTime (3008,0251) vr=TM, vm=1, type=2C
+        /// TreatmentTime (3008,0251) vr=TM, vm=1, type=2
         DcmTime TreatmentTime;
 
     };

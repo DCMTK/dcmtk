@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTROIPhysicalPropertiesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,6 +21,7 @@
 
 DRTROIPhysicalPropertiesSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    ROIElementalCompositionSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ROIPhysicalProperty(DCM_ROIPhysicalProperty),
     ROIPhysicalPropertyValue(DCM_ROIPhysicalPropertyValue)
 {
@@ -29,6 +30,7 @@ DRTROIPhysicalPropertiesSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTROIPhysicalPropertiesSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    ROIElementalCompositionSequence(copy.ROIElementalCompositionSequence),
     ROIPhysicalProperty(copy.ROIPhysicalProperty),
     ROIPhysicalPropertyValue(copy.ROIPhysicalPropertyValue)
 {
@@ -45,6 +47,7 @@ DRTROIPhysicalPropertiesSequence::Item &DRTROIPhysicalPropertiesSequence::Item::
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        ROIElementalCompositionSequence = copy.ROIElementalCompositionSequence;
         ROIPhysicalProperty = copy.ROIPhysicalProperty;
         ROIPhysicalPropertyValue = copy.ROIPhysicalPropertyValue;
     }
@@ -58,6 +61,7 @@ void DRTROIPhysicalPropertiesSequence::Item::clear()
     {
         /* clear all DICOM attributes */
         ROIPhysicalProperty.clear();
+        ROIElementalCompositionSequence.clear();
         ROIPhysicalPropertyValue.clear();
     }
 }
@@ -66,6 +70,7 @@ void DRTROIPhysicalPropertiesSequence::Item::clear()
 OFBool DRTROIPhysicalPropertiesSequence::Item::isEmpty()
 {
     return ROIPhysicalProperty.isEmpty() &&
+           ROIElementalCompositionSequence.isEmpty() &&
            ROIPhysicalPropertyValue.isEmpty();
 }
 
@@ -83,8 +88,9 @@ OFCondition DRTROIPhysicalPropertiesSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ROIPhysicalProperty, "1", "1C", "ROIPhysicalPropertiesSequence");
-        getAndCheckElementFromDataset(item, ROIPhysicalPropertyValue, "1", "1C", "ROIPhysicalPropertiesSequence");
+        getAndCheckElementFromDataset(item, ROIPhysicalProperty, "1", "1", "ROIPhysicalPropertiesSequence");
+        ROIElementalCompositionSequence.read(item, "1-n", "1C", "ROIPhysicalPropertiesSequence");
+        getAndCheckElementFromDataset(item, ROIPhysicalPropertyValue, "1", "1", "ROIPhysicalPropertiesSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +103,9 @@ OFCondition DRTROIPhysicalPropertiesSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmCodeString(ROIPhysicalProperty), "1", "1C", "ROIPhysicalPropertiesSequence");
-        addElementToDataset(result, item, new DcmDecimalString(ROIPhysicalPropertyValue), "1", "1C", "ROIPhysicalPropertiesSequence");
+        addElementToDataset(result, item, new DcmCodeString(ROIPhysicalProperty), "1", "1", "ROIPhysicalPropertiesSequence");
+        if (result.good()) result = ROIElementalCompositionSequence.write(item, "1-n", "1C", "ROIPhysicalPropertiesSequence");
+        addElementToDataset(result, item, new DcmDecimalString(ROIPhysicalPropertyValue), "1", "1", "ROIPhysicalPropertiesSequence");
     }
     return result;
 }

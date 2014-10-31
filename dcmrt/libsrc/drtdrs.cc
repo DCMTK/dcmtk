@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTDoseReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -168,14 +168,14 @@ OFCondition DRTDoseReferenceSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, DoseReferenceNumber, "1", "1C", "DoseReferenceSequence");
+        getAndCheckElementFromDataset(item, DoseReferenceNumber, "1", "1", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, DoseReferenceUID, "1", "3", "DoseReferenceSequence");
-        getAndCheckElementFromDataset(item, DoseReferenceStructureType, "1", "1C", "DoseReferenceSequence");
+        getAndCheckElementFromDataset(item, DoseReferenceStructureType, "1", "1", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, DoseReferenceDescription, "1", "3", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "1C", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, DoseReferencePointCoordinates, "3", "1C", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, NominalPriorDose, "1", "3", "DoseReferenceSequence");
-        getAndCheckElementFromDataset(item, DoseReferenceType, "1", "1C", "DoseReferenceSequence");
+        getAndCheckElementFromDataset(item, DoseReferenceType, "1", "1", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, ConstraintWeight, "1", "3", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, DeliveryWarningDose, "1", "3", "DoseReferenceSequence");
         getAndCheckElementFromDataset(item, DeliveryMaximumDose, "1", "3", "DoseReferenceSequence");
@@ -199,14 +199,14 @@ OFCondition DRTDoseReferenceSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(DoseReferenceNumber), "1", "1C", "DoseReferenceSequence");
+        addElementToDataset(result, item, new DcmIntegerString(DoseReferenceNumber), "1", "1", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(DoseReferenceUID), "1", "3", "DoseReferenceSequence");
-        addElementToDataset(result, item, new DcmCodeString(DoseReferenceStructureType), "1", "1C", "DoseReferenceSequence");
+        addElementToDataset(result, item, new DcmCodeString(DoseReferenceStructureType), "1", "1", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmLongString(DoseReferenceDescription), "1", "3", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "1C", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(DoseReferencePointCoordinates), "3", "1C", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(NominalPriorDose), "1", "3", "DoseReferenceSequence");
-        addElementToDataset(result, item, new DcmCodeString(DoseReferenceType), "1", "1C", "DoseReferenceSequence");
+        addElementToDataset(result, item, new DcmCodeString(DoseReferenceType), "1", "1", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(ConstraintWeight), "1", "3", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(DeliveryWarningDose), "1", "3", "DoseReferenceSequence");
         addElementToDataset(result, item, new DcmDecimalString(DeliveryMaximumDose), "1", "3", "DoseReferenceSequence");

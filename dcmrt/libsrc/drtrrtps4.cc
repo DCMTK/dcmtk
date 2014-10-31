@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedRTPlanSequenceInRTGeneralTreatmentRecordModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,8 +83,8 @@ OFCondition DRTReferencedRTPlanSequenceInRTGeneralTreatmentRecordModule::Item::r
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1C", "ReferencedRTPlanSequence");
-        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1C", "ReferencedRTPlanSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "ReferencedRTPlanSequence");
+        getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "ReferencedRTPlanSequence");
         result = EC_Normal;
     }
     return result;
@@ -97,8 +97,8 @@ OFCondition DRTReferencedRTPlanSequenceInRTGeneralTreatmentRecordModule::Item::w
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1C", "ReferencedRTPlanSequence");
-        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1C", "ReferencedRTPlanSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "ReferencedRTPlanSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "ReferencedRTPlanSequence");
     }
     return result;
 }

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTContentItemModifierSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -22,6 +22,7 @@
 #include "dcmtk/dcmrt/seq/drtccs.h"    // for ConceptCodeSequence
 #include "dcmtk/dcmrt/seq/drtcncs.h"   // for ConceptNameCodeSequence
 #include "dcmtk/dcmrt/seq/drtmucs.h"   // for MeasurementUnitsCodeSequence
+#include "dcmtk/dcmrt/seq/drtrsos.h"   // for ReferencedSOPSequence
 
 
 /** Interface class for ContentItemModifierSequence (0040,0441)
@@ -107,6 +108,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          */
         OFCondition getDateTime(OFString &value, const signed long pos = 0) const;
 
+        /** get FloatingPointValue (0040,a161)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getFloatingPointValue(Float64 &value, const unsigned long pos = 0) const;
+
         /** get NumericValue (0040,a30a)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -133,6 +141,20 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getPersonName(OFString &value, const signed long pos = 0) const;
+
+        /** get RationalDenominatorValue (0040,a163)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getRationalDenominatorValue(Uint32 &value, const unsigned long pos = 0) const;
+
+        /** get RationalNumeratorValue (0040,a162)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getRationalNumeratorValue(Sint32 &value, const unsigned long pos = 0) const;
 
         /** get TextValue (0040,a160)
          *  @param  value  reference to variable in which the value should be stored
@@ -200,6 +222,18 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
         const DRTMeasurementUnitsCodeSequence &getMeasurementUnitsCodeSequence() const
             { return MeasurementUnitsCodeSequence; }
 
+        /** get ReferencedSOPSequence (0008,1199)
+         *  @return reference to sequence element
+         */
+        DRTReferencedSOPSequence &getReferencedSOPSequence()
+            { return ReferencedSOPSequence; }
+
+        /** get ReferencedSOPSequence (0008,1199)
+         *  @return const reference to sequence element
+         */
+        const DRTReferencedSOPSequence &getReferencedSOPSequence() const
+            { return ReferencedSOPSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set Date (0040,a121)
@@ -216,6 +250,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          */
         OFCondition setDateTime(const OFString &value, const OFBool check = OFTrue);
 
+        /** set FloatingPointValue (0040,a161)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1-n
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setFloatingPointValue(const Float64 value, const unsigned long pos = 0);
+
         /** set NumericValue (0040,a30a)
          *  @param  value  value to be set (possibly multi-valued) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1-n) if enabled
@@ -229,6 +270,20 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setPersonName(const OFString &value, const OFBool check = OFTrue);
+
+        /** set RationalDenominatorValue (0040,a163)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1-n
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setRationalDenominatorValue(const Uint32 value, const unsigned long pos = 0);
+
+        /** set RationalNumeratorValue (0040,a162)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1-n
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setRationalNumeratorValue(const Sint32 value, const unsigned long pos = 0);
 
         /** set TextValue (0040,a160)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -271,12 +326,20 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
         DcmDate Date;
         /// DateTime (0040,a120) vr=DT, vm=1, type=1C
         DcmDateTime DateTime;
+        /// FloatingPointValue (0040,a161) vr=FD, vm=1-n, type=1C
+        DcmFloatingPointDouble FloatingPointValue;
         /// MeasurementUnitsCodeSequence (0040,08ea) vr=SQ, vm=1, type=1C
         DRTMeasurementUnitsCodeSequence MeasurementUnitsCodeSequence;
         /// NumericValue (0040,a30a) vr=DS, vm=1-n, type=1C
         DcmDecimalString NumericValue;
         /// PersonName (0040,a123) vr=PN, vm=1, type=1C
         DcmPersonName PersonName;
+        /// RationalDenominatorValue (0040,a163) vr=UL, vm=1-n, type=1C
+        DcmUnsignedLong RationalDenominatorValue;
+        /// RationalNumeratorValue (0040,a162) vr=SL, vm=1-n, type=1C
+        DcmSignedLong RationalNumeratorValue;
+        /// ReferencedSOPSequence (0008,1199) vr=SQ, vm=1, type=1C
+        DRTReferencedSOPSequence ReferencedSOPSequence;
         /// TextValue (0040,a160) vr=UT, vm=1, type=1C
         DcmUnlimitedText TextValue;
         /// Time (0040,a122) vr=TM, vm=1, type=1C

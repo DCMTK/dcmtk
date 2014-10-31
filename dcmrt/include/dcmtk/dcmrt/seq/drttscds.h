@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTTreatmentSummaryCalculatedDoseReferenceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -153,7 +153,7 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryCalculatedDoseReferenceSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// CumulativeDoseToDoseReference (3008,0052) vr=DS, vm=1, type=1C
+        /// CumulativeDoseToDoseReference (3008,0052) vr=DS, vm=1, type=1
         DcmDecimalString CumulativeDoseToDoseReference;
         /// DoseReferenceDescription (300a,0016) vr=LO, vm=1, type=3
         DcmLongString DoseReferenceDescription;

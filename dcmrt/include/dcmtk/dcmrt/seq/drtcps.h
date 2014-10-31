@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -344,6 +344,34 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
          */
         OFCondition getTableTopLongitudinalPosition(Float64 &value, const unsigned long pos = 0) const;
 
+        /** get TableTopPitchAngle (300a,0140)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getTableTopPitchAngle(Float32 &value, const unsigned long pos = 0) const;
+
+        /** get TableTopPitchRotationDirection (300a,0142)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getTableTopPitchRotationDirection(OFString &value, const signed long pos = 0) const;
+
+        /** get TableTopRollAngle (300a,0144)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getTableTopRollAngle(Float32 &value, const unsigned long pos = 0) const;
+
+        /** get TableTopRollRotationDirection (300a,0146)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getTableTopRollRotationDirection(OFString &value, const signed long pos = 0) const;
+
         /** get TableTopVerticalPosition (300a,0128)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -550,6 +578,34 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
          */
         OFCondition setTableTopLongitudinalPosition(const OFString &value, const OFBool check = OFTrue);
 
+        /** set TableTopPitchAngle (300a,0140)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setTableTopPitchAngle(const Float32 value, const unsigned long pos = 0);
+
+        /** set TableTopPitchRotationDirection (300a,0142)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setTableTopPitchRotationDirection(const OFString &value, const OFBool check = OFTrue);
+
+        /** set TableTopRollAngle (300a,0144)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setTableTopRollAngle(const Float32 value, const unsigned long pos = 0);
+
+        /** set TableTopRollRotationDirection (300a,0146)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setTableTopRollRotationDirection(const OFString &value, const OFBool check = OFTrue);
+
         /** set TableTopVerticalPosition (300a,0128)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -568,9 +624,9 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
         DRTBeamLimitingDevicePositionSequence BeamLimitingDevicePositionSequence;
         /// BeamLimitingDeviceRotationDirection (300a,0121) vr=CS, vm=1, type=1C
         DcmCodeString BeamLimitingDeviceRotationDirection;
-        /// ControlPointIndex (300a,0112) vr=IS, vm=1, type=1C
+        /// ControlPointIndex (300a,0112) vr=IS, vm=1, type=1
         DcmIntegerString ControlPointIndex;
-        /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=2C
+        /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=2
         DcmDecimalString CumulativeMetersetWeight;
         /// DoseRateSet (300a,0115) vr=DS, vm=1, type=3
         DcmDecimalString DoseRateSet;
@@ -608,9 +664,17 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
         DcmDecimalString TableTopLateralPosition;
         /// TableTopLongitudinalPosition (300a,0129) vr=DS, vm=1, type=2C
         DcmDecimalString TableTopLongitudinalPosition;
+        /// TableTopPitchAngle (300a,0140) vr=FL, vm=1, type=1C
+        DcmFloatingPointSingle TableTopPitchAngle;
+        /// TableTopPitchRotationDirection (300a,0142) vr=CS, vm=1, type=1C
+        DcmCodeString TableTopPitchRotationDirection;
+        /// TableTopRollAngle (300a,0144) vr=FL, vm=1, type=1C
+        DcmFloatingPointSingle TableTopRollAngle;
+        /// TableTopRollRotationDirection (300a,0146) vr=CS, vm=1, type=1C
+        DcmCodeString TableTopRollRotationDirection;
         /// TableTopVerticalPosition (300a,0128) vr=DS, vm=1, type=2C
         DcmDecimalString TableTopVerticalPosition;
-        /// WedgePositionSequence (300a,0116) vr=SQ, vm=1, type=3
+        /// WedgePositionSequence (300a,0116) vr=SQ, vm=1, type=1C
         DRTWedgePositionSequence WedgePositionSequence;
 
     };

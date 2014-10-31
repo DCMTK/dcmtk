@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTTreatmentSummaryRecordIOD
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,8 +21,11 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD()
   : PatientName(DCM_PatientName),
     PatientID(DCM_PatientID),
     IssuerOfPatientID(DCM_IssuerOfPatientID),
+    IssuerOfPatientIDQualifiersSequence(),
     PatientBirthDate(DCM_PatientBirthDate),
     PatientSex(DCM_PatientSex),
+    ReferencedPatientPhotoSequence(),
+    QualityControlSubject(DCM_QualityControlSubject),
     ReferencedPatientSequence(),
     PatientBirthTime(DCM_PatientBirthTime),
     OtherPatientIDs(DCM_OtherPatientIDs),
@@ -48,6 +51,8 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD()
     ClinicalTrialSiteName(DCM_ClinicalTrialSiteName),
     ClinicalTrialSubjectID(DCM_ClinicalTrialSubjectID),
     ClinicalTrialSubjectReadingID(DCM_ClinicalTrialSubjectReadingID),
+    ClinicalTrialProtocolEthicsCommitteeName(DCM_ClinicalTrialProtocolEthicsCommitteeName),
+    ClinicalTrialProtocolEthicsCommitteeApprovalNumber(DCM_ClinicalTrialProtocolEthicsCommitteeApprovalNumber),
     StudyInstanceUID(DCM_StudyInstanceUID),
     StudyDate(DCM_StudyDate),
     StudyTime(DCM_StudyTime),
@@ -55,37 +60,54 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD()
     ReferringPhysicianIdentificationSequence(),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
+    IssuerOfAccessionNumberSequence(),
     StudyDescription(DCM_StudyDescription),
     PhysiciansOfRecord(DCM_PhysiciansOfRecord),
     PhysiciansOfRecordIdentificationSequence(),
     NameOfPhysiciansReadingStudy(DCM_NameOfPhysiciansReadingStudy),
     PhysiciansReadingStudyIdentificationSequence(),
+    RequestingServiceCodeSequence(),
     ReferencedStudySequence(),
     ProcedureCodeSequence(),
+    ReasonForPerformedProcedureCodeSequence(),
     AdmittingDiagnosesDescription(DCM_AdmittingDiagnosesDescription),
     AdmittingDiagnosesCodeSequence(),
     PatientAge(DCM_PatientAge),
     PatientSize(DCM_PatientSize),
     PatientWeight(DCM_PatientWeight),
+    PatientSizeCodeSequence(),
     Occupation(DCM_Occupation),
     AdditionalPatientHistory(DCM_AdditionalPatientHistory),
     AdmissionID(DCM_AdmissionID),
-    IssuerOfAdmissionID(DCM_RETIRED_IssuerOfAdmissionID),
+    IssuerOfAdmissionIDSequence(),
+    ServiceEpisodeID(DCM_ServiceEpisodeID),
+    IssuerOfServiceEpisodeIDSequence(),
+    ServiceEpisodeDescription(DCM_ServiceEpisodeDescription),
     PatientSexNeutered(DCM_PatientSexNeutered),
     ClinicalTrialTimePointID(DCM_ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(DCM_ClinicalTrialTimePointDescription),
+    ConsentForClinicalTrialUseSequence(),
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
+    SeriesDate(DCM_SeriesDate),
+    SeriesTime(DCM_SeriesTime),
     SeriesDescription(DCM_SeriesDescription),
+    SeriesDescriptionCodeSequence(),
+    OperatorsName(DCM_OperatorsName),
     ReferencedPerformedProcedureStepSequence(),
     RequestAttributesSequence(),
     PerformedProcedureStepID(DCM_PerformedProcedureStepID),
     PerformedProcedureStepStartDate(DCM_PerformedProcedureStepStartDate),
     PerformedProcedureStepStartTime(DCM_PerformedProcedureStepStartTime),
+    PerformedProcedureStepEndDate(DCM_PerformedProcedureStepEndDate),
+    PerformedProcedureStepEndTime(DCM_PerformedProcedureStepEndTime),
     PerformedProcedureStepDescription(DCM_PerformedProcedureStepDescription),
     PerformedProtocolCodeSequence(),
+    CommentsOnThePerformedProcedureStep(DCM_CommentsOnThePerformedProcedureStep),
     ClinicalTrialCoordinatingCenterName(DCM_ClinicalTrialCoordinatingCenterName),
+    ClinicalTrialSeriesID(DCM_ClinicalTrialSeriesID),
+    ClinicalTrialSeriesDescription(DCM_ClinicalTrialSeriesDescription),
     Manufacturer(DCM_Manufacturer),
     InstitutionName(DCM_InstitutionName),
     InstitutionAddress(DCM_InstitutionAddress),
@@ -116,6 +138,7 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD()
     SpecificCharacterSet(DCM_SpecificCharacterSet),
     InstanceCreationDate(DCM_InstanceCreationDate),
     InstanceCreationTime(DCM_InstanceCreationTime),
+    InstanceCoercionDateTime(DCM_InstanceCoercionDateTime),
     InstanceCreatorUID(DCM_InstanceCreatorUID),
     RelatedGeneralSOPClassUID(DCM_RelatedGeneralSOPClassUID),
     OriginalSpecializedSOPClassUID(DCM_OriginalSpecializedSOPClassUID),
@@ -130,7 +153,13 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD()
     DigitalSignaturesSequence(),
     EncryptedAttributesSequence(),
     OriginalAttributesSequence(),
-    HL7StructuredDocumentReferenceSequence()
+    HL7StructuredDocumentReferenceSequence(),
+    LongitudinalTemporalInformationModified(DCM_LongitudinalTemporalInformationModified),
+    QueryRetrieveView(DCM_QueryRetrieveView),
+    ConversionSourceAttributesSequence(),
+    ContentQualification(DCM_ContentQualification),
+    ReferencedSeriesSequence(),
+    StudiesContainingOtherReferencedInstancesSequence()
 {
     /* set initial values for a new SOP instance */
     updateAttributes();
@@ -141,8 +170,11 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD(const DRTTreatmentSum
   : PatientName(copy.PatientName),
     PatientID(copy.PatientID),
     IssuerOfPatientID(copy.IssuerOfPatientID),
+    IssuerOfPatientIDQualifiersSequence(copy.IssuerOfPatientIDQualifiersSequence),
     PatientBirthDate(copy.PatientBirthDate),
     PatientSex(copy.PatientSex),
+    ReferencedPatientPhotoSequence(copy.ReferencedPatientPhotoSequence),
+    QualityControlSubject(copy.QualityControlSubject),
     ReferencedPatientSequence(copy.ReferencedPatientSequence),
     PatientBirthTime(copy.PatientBirthTime),
     OtherPatientIDs(copy.OtherPatientIDs),
@@ -168,6 +200,8 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD(const DRTTreatmentSum
     ClinicalTrialSiteName(copy.ClinicalTrialSiteName),
     ClinicalTrialSubjectID(copy.ClinicalTrialSubjectID),
     ClinicalTrialSubjectReadingID(copy.ClinicalTrialSubjectReadingID),
+    ClinicalTrialProtocolEthicsCommitteeName(copy.ClinicalTrialProtocolEthicsCommitteeName),
+    ClinicalTrialProtocolEthicsCommitteeApprovalNumber(copy.ClinicalTrialProtocolEthicsCommitteeApprovalNumber),
     StudyInstanceUID(copy.StudyInstanceUID),
     StudyDate(copy.StudyDate),
     StudyTime(copy.StudyTime),
@@ -175,37 +209,54 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD(const DRTTreatmentSum
     ReferringPhysicianIdentificationSequence(copy.ReferringPhysicianIdentificationSequence),
     StudyID(copy.StudyID),
     AccessionNumber(copy.AccessionNumber),
+    IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
     StudyDescription(copy.StudyDescription),
     PhysiciansOfRecord(copy.PhysiciansOfRecord),
     PhysiciansOfRecordIdentificationSequence(copy.PhysiciansOfRecordIdentificationSequence),
     NameOfPhysiciansReadingStudy(copy.NameOfPhysiciansReadingStudy),
     PhysiciansReadingStudyIdentificationSequence(copy.PhysiciansReadingStudyIdentificationSequence),
+    RequestingServiceCodeSequence(copy.RequestingServiceCodeSequence),
     ReferencedStudySequence(copy.ReferencedStudySequence),
     ProcedureCodeSequence(copy.ProcedureCodeSequence),
+    ReasonForPerformedProcedureCodeSequence(copy.ReasonForPerformedProcedureCodeSequence),
     AdmittingDiagnosesDescription(copy.AdmittingDiagnosesDescription),
     AdmittingDiagnosesCodeSequence(copy.AdmittingDiagnosesCodeSequence),
     PatientAge(copy.PatientAge),
     PatientSize(copy.PatientSize),
     PatientWeight(copy.PatientWeight),
+    PatientSizeCodeSequence(copy.PatientSizeCodeSequence),
     Occupation(copy.Occupation),
     AdditionalPatientHistory(copy.AdditionalPatientHistory),
     AdmissionID(copy.AdmissionID),
-    IssuerOfAdmissionID(copy.IssuerOfAdmissionID),
+    IssuerOfAdmissionIDSequence(copy.IssuerOfAdmissionIDSequence),
+    ServiceEpisodeID(copy.ServiceEpisodeID),
+    IssuerOfServiceEpisodeIDSequence(copy.IssuerOfServiceEpisodeIDSequence),
+    ServiceEpisodeDescription(copy.ServiceEpisodeDescription),
     PatientSexNeutered(copy.PatientSexNeutered),
     ClinicalTrialTimePointID(copy.ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(copy.ClinicalTrialTimePointDescription),
+    ConsentForClinicalTrialUseSequence(copy.ConsentForClinicalTrialUseSequence),
     Modality(copy.Modality),
     SeriesInstanceUID(copy.SeriesInstanceUID),
     SeriesNumber(copy.SeriesNumber),
+    SeriesDate(copy.SeriesDate),
+    SeriesTime(copy.SeriesTime),
     SeriesDescription(copy.SeriesDescription),
+    SeriesDescriptionCodeSequence(copy.SeriesDescriptionCodeSequence),
+    OperatorsName(copy.OperatorsName),
     ReferencedPerformedProcedureStepSequence(copy.ReferencedPerformedProcedureStepSequence),
     RequestAttributesSequence(copy.RequestAttributesSequence),
     PerformedProcedureStepID(copy.PerformedProcedureStepID),
     PerformedProcedureStepStartDate(copy.PerformedProcedureStepStartDate),
     PerformedProcedureStepStartTime(copy.PerformedProcedureStepStartTime),
+    PerformedProcedureStepEndDate(copy.PerformedProcedureStepEndDate),
+    PerformedProcedureStepEndTime(copy.PerformedProcedureStepEndTime),
     PerformedProcedureStepDescription(copy.PerformedProcedureStepDescription),
     PerformedProtocolCodeSequence(copy.PerformedProtocolCodeSequence),
+    CommentsOnThePerformedProcedureStep(copy.CommentsOnThePerformedProcedureStep),
     ClinicalTrialCoordinatingCenterName(copy.ClinicalTrialCoordinatingCenterName),
+    ClinicalTrialSeriesID(copy.ClinicalTrialSeriesID),
+    ClinicalTrialSeriesDescription(copy.ClinicalTrialSeriesDescription),
     Manufacturer(copy.Manufacturer),
     InstitutionName(copy.InstitutionName),
     InstitutionAddress(copy.InstitutionAddress),
@@ -236,6 +287,7 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD(const DRTTreatmentSum
     SpecificCharacterSet(copy.SpecificCharacterSet),
     InstanceCreationDate(copy.InstanceCreationDate),
     InstanceCreationTime(copy.InstanceCreationTime),
+    InstanceCoercionDateTime(copy.InstanceCoercionDateTime),
     InstanceCreatorUID(copy.InstanceCreatorUID),
     RelatedGeneralSOPClassUID(copy.RelatedGeneralSOPClassUID),
     OriginalSpecializedSOPClassUID(copy.OriginalSpecializedSOPClassUID),
@@ -250,7 +302,13 @@ DRTTreatmentSummaryRecordIOD::DRTTreatmentSummaryRecordIOD(const DRTTreatmentSum
     DigitalSignaturesSequence(copy.DigitalSignaturesSequence),
     EncryptedAttributesSequence(copy.EncryptedAttributesSequence),
     OriginalAttributesSequence(copy.OriginalAttributesSequence),
-    HL7StructuredDocumentReferenceSequence(copy.HL7StructuredDocumentReferenceSequence)
+    HL7StructuredDocumentReferenceSequence(copy.HL7StructuredDocumentReferenceSequence),
+    LongitudinalTemporalInformationModified(copy.LongitudinalTemporalInformationModified),
+    QueryRetrieveView(copy.QueryRetrieveView),
+    ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
+    ContentQualification(copy.ContentQualification),
+    ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
+    StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence)
 {
 }
 
@@ -267,8 +325,11 @@ DRTTreatmentSummaryRecordIOD &DRTTreatmentSummaryRecordIOD::operator=(const DRTT
         PatientName = copy.PatientName;
         PatientID = copy.PatientID;
         IssuerOfPatientID = copy.IssuerOfPatientID;
+        IssuerOfPatientIDQualifiersSequence = copy.IssuerOfPatientIDQualifiersSequence;
         PatientBirthDate = copy.PatientBirthDate;
         PatientSex = copy.PatientSex;
+        ReferencedPatientPhotoSequence = copy.ReferencedPatientPhotoSequence;
+        QualityControlSubject = copy.QualityControlSubject;
         ReferencedPatientSequence = copy.ReferencedPatientSequence;
         PatientBirthTime = copy.PatientBirthTime;
         OtherPatientIDs = copy.OtherPatientIDs;
@@ -294,6 +355,8 @@ DRTTreatmentSummaryRecordIOD &DRTTreatmentSummaryRecordIOD::operator=(const DRTT
         ClinicalTrialSiteName = copy.ClinicalTrialSiteName;
         ClinicalTrialSubjectID = copy.ClinicalTrialSubjectID;
         ClinicalTrialSubjectReadingID = copy.ClinicalTrialSubjectReadingID;
+        ClinicalTrialProtocolEthicsCommitteeName = copy.ClinicalTrialProtocolEthicsCommitteeName;
+        ClinicalTrialProtocolEthicsCommitteeApprovalNumber = copy.ClinicalTrialProtocolEthicsCommitteeApprovalNumber;
         StudyInstanceUID = copy.StudyInstanceUID;
         StudyDate = copy.StudyDate;
         StudyTime = copy.StudyTime;
@@ -301,37 +364,54 @@ DRTTreatmentSummaryRecordIOD &DRTTreatmentSummaryRecordIOD::operator=(const DRTT
         ReferringPhysicianIdentificationSequence = copy.ReferringPhysicianIdentificationSequence;
         StudyID = copy.StudyID;
         AccessionNumber = copy.AccessionNumber;
+        IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
         StudyDescription = copy.StudyDescription;
         PhysiciansOfRecord = copy.PhysiciansOfRecord;
         PhysiciansOfRecordIdentificationSequence = copy.PhysiciansOfRecordIdentificationSequence;
         NameOfPhysiciansReadingStudy = copy.NameOfPhysiciansReadingStudy;
         PhysiciansReadingStudyIdentificationSequence = copy.PhysiciansReadingStudyIdentificationSequence;
+        RequestingServiceCodeSequence = copy.RequestingServiceCodeSequence;
         ReferencedStudySequence = copy.ReferencedStudySequence;
         ProcedureCodeSequence = copy.ProcedureCodeSequence;
+        ReasonForPerformedProcedureCodeSequence = copy.ReasonForPerformedProcedureCodeSequence;
         AdmittingDiagnosesDescription = copy.AdmittingDiagnosesDescription;
         AdmittingDiagnosesCodeSequence = copy.AdmittingDiagnosesCodeSequence;
         PatientAge = copy.PatientAge;
         PatientSize = copy.PatientSize;
         PatientWeight = copy.PatientWeight;
+        PatientSizeCodeSequence = copy.PatientSizeCodeSequence;
         Occupation = copy.Occupation;
         AdditionalPatientHistory = copy.AdditionalPatientHistory;
         AdmissionID = copy.AdmissionID;
-        IssuerOfAdmissionID = copy.IssuerOfAdmissionID;
+        IssuerOfAdmissionIDSequence = copy.IssuerOfAdmissionIDSequence;
+        ServiceEpisodeID = copy.ServiceEpisodeID;
+        IssuerOfServiceEpisodeIDSequence = copy.IssuerOfServiceEpisodeIDSequence;
+        ServiceEpisodeDescription = copy.ServiceEpisodeDescription;
         PatientSexNeutered = copy.PatientSexNeutered;
         ClinicalTrialTimePointID = copy.ClinicalTrialTimePointID;
         ClinicalTrialTimePointDescription = copy.ClinicalTrialTimePointDescription;
+        ConsentForClinicalTrialUseSequence = copy.ConsentForClinicalTrialUseSequence;
         Modality = copy.Modality;
         SeriesInstanceUID = copy.SeriesInstanceUID;
         SeriesNumber = copy.SeriesNumber;
+        SeriesDate = copy.SeriesDate;
+        SeriesTime = copy.SeriesTime;
         SeriesDescription = copy.SeriesDescription;
+        SeriesDescriptionCodeSequence = copy.SeriesDescriptionCodeSequence;
+        OperatorsName = copy.OperatorsName;
         ReferencedPerformedProcedureStepSequence = copy.ReferencedPerformedProcedureStepSequence;
         RequestAttributesSequence = copy.RequestAttributesSequence;
         PerformedProcedureStepID = copy.PerformedProcedureStepID;
         PerformedProcedureStepStartDate = copy.PerformedProcedureStepStartDate;
         PerformedProcedureStepStartTime = copy.PerformedProcedureStepStartTime;
+        PerformedProcedureStepEndDate = copy.PerformedProcedureStepEndDate;
+        PerformedProcedureStepEndTime = copy.PerformedProcedureStepEndTime;
         PerformedProcedureStepDescription = copy.PerformedProcedureStepDescription;
         PerformedProtocolCodeSequence = copy.PerformedProtocolCodeSequence;
+        CommentsOnThePerformedProcedureStep = copy.CommentsOnThePerformedProcedureStep;
         ClinicalTrialCoordinatingCenterName = copy.ClinicalTrialCoordinatingCenterName;
+        ClinicalTrialSeriesID = copy.ClinicalTrialSeriesID;
+        ClinicalTrialSeriesDescription = copy.ClinicalTrialSeriesDescription;
         Manufacturer = copy.Manufacturer;
         InstitutionName = copy.InstitutionName;
         InstitutionAddress = copy.InstitutionAddress;
@@ -362,6 +442,7 @@ DRTTreatmentSummaryRecordIOD &DRTTreatmentSummaryRecordIOD::operator=(const DRTT
         SpecificCharacterSet = copy.SpecificCharacterSet;
         InstanceCreationDate = copy.InstanceCreationDate;
         InstanceCreationTime = copy.InstanceCreationTime;
+        InstanceCoercionDateTime = copy.InstanceCoercionDateTime;
         InstanceCreatorUID = copy.InstanceCreatorUID;
         RelatedGeneralSOPClassUID = copy.RelatedGeneralSOPClassUID;
         OriginalSpecializedSOPClassUID = copy.OriginalSpecializedSOPClassUID;
@@ -377,6 +458,12 @@ DRTTreatmentSummaryRecordIOD &DRTTreatmentSummaryRecordIOD::operator=(const DRTT
         EncryptedAttributesSequence = copy.EncryptedAttributesSequence;
         OriginalAttributesSequence = copy.OriginalAttributesSequence;
         HL7StructuredDocumentReferenceSequence = copy.HL7StructuredDocumentReferenceSequence;
+        LongitudinalTemporalInformationModified = copy.LongitudinalTemporalInformationModified;
+        QueryRetrieveView = copy.QueryRetrieveView;
+        ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
+        ContentQualification = copy.ContentQualification;
+        ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
+        StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
     }
     return *this;
 }
@@ -388,8 +475,11 @@ void DRTTreatmentSummaryRecordIOD::clear()
     PatientName.clear();
     PatientID.clear();
     IssuerOfPatientID.clear();
+    IssuerOfPatientIDQualifiersSequence.clear();
     PatientBirthDate.clear();
     PatientSex.clear();
+    ReferencedPatientPhotoSequence.clear();
+    QualityControlSubject.clear();
     ReferencedPatientSequence.clear();
     PatientBirthTime.clear();
     OtherPatientIDs.clear();
@@ -415,6 +505,8 @@ void DRTTreatmentSummaryRecordIOD::clear()
     ClinicalTrialSiteName.clear();
     ClinicalTrialSubjectID.clear();
     ClinicalTrialSubjectReadingID.clear();
+    ClinicalTrialProtocolEthicsCommitteeName.clear();
+    ClinicalTrialProtocolEthicsCommitteeApprovalNumber.clear();
     StudyInstanceUID.clear();
     StudyDate.clear();
     StudyTime.clear();
@@ -422,37 +514,54 @@ void DRTTreatmentSummaryRecordIOD::clear()
     ReferringPhysicianIdentificationSequence.clear();
     StudyID.clear();
     AccessionNumber.clear();
+    IssuerOfAccessionNumberSequence.clear();
     StudyDescription.clear();
     PhysiciansOfRecord.clear();
     PhysiciansOfRecordIdentificationSequence.clear();
     NameOfPhysiciansReadingStudy.clear();
     PhysiciansReadingStudyIdentificationSequence.clear();
+    RequestingServiceCodeSequence.clear();
     ReferencedStudySequence.clear();
     ProcedureCodeSequence.clear();
+    ReasonForPerformedProcedureCodeSequence.clear();
     AdmittingDiagnosesDescription.clear();
     AdmittingDiagnosesCodeSequence.clear();
     PatientAge.clear();
     PatientSize.clear();
     PatientWeight.clear();
+    PatientSizeCodeSequence.clear();
     Occupation.clear();
     AdditionalPatientHistory.clear();
     AdmissionID.clear();
-    IssuerOfAdmissionID.clear();
+    IssuerOfAdmissionIDSequence.clear();
+    ServiceEpisodeID.clear();
+    IssuerOfServiceEpisodeIDSequence.clear();
+    ServiceEpisodeDescription.clear();
     PatientSexNeutered.clear();
     ClinicalTrialTimePointID.clear();
     ClinicalTrialTimePointDescription.clear();
+    ConsentForClinicalTrialUseSequence.clear();
     Modality.clear();
     SeriesInstanceUID.clear();
     SeriesNumber.clear();
+    SeriesDate.clear();
+    SeriesTime.clear();
     SeriesDescription.clear();
+    SeriesDescriptionCodeSequence.clear();
+    OperatorsName.clear();
     ReferencedPerformedProcedureStepSequence.clear();
     RequestAttributesSequence.clear();
     PerformedProcedureStepID.clear();
     PerformedProcedureStepStartDate.clear();
     PerformedProcedureStepStartTime.clear();
+    PerformedProcedureStepEndDate.clear();
+    PerformedProcedureStepEndTime.clear();
     PerformedProcedureStepDescription.clear();
     PerformedProtocolCodeSequence.clear();
+    CommentsOnThePerformedProcedureStep.clear();
     ClinicalTrialCoordinatingCenterName.clear();
+    ClinicalTrialSeriesID.clear();
+    ClinicalTrialSeriesDescription.clear();
     Manufacturer.clear();
     InstitutionName.clear();
     InstitutionAddress.clear();
@@ -483,6 +592,7 @@ void DRTTreatmentSummaryRecordIOD::clear()
     SpecificCharacterSet.clear();
     InstanceCreationDate.clear();
     InstanceCreationTime.clear();
+    InstanceCoercionDateTime.clear();
     InstanceCreatorUID.clear();
     RelatedGeneralSOPClassUID.clear();
     OriginalSpecializedSOPClassUID.clear();
@@ -498,6 +608,12 @@ void DRTTreatmentSummaryRecordIOD::clear()
     EncryptedAttributesSequence.clear();
     OriginalAttributesSequence.clear();
     HL7StructuredDocumentReferenceSequence.clear();
+    LongitudinalTemporalInformationModified.clear();
+    QueryRetrieveView.clear();
+    ConversionSourceAttributesSequence.clear();
+    ContentQualification.clear();
+    ReferencedSeriesSequence.clear();
+    StudiesContainingOtherReferencedInstancesSequence.clear();
 }
 
 
@@ -558,7 +674,7 @@ OFCondition DRTTreatmentSummaryRecordIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, SpatialResolution, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, DateOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, TimeOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
-        getAndCheckElementFromDataset(dataset, PixelPaddingValue, "1", "3", "GeneralEquipmentModule");
+        getAndCheckElementFromDataset(dataset, PixelPaddingValue, "1", "1C", "GeneralEquipmentModule");
 
         // --- RTGeneralTreatmentRecordModule (M) ---
         getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", "RTGeneralTreatmentRecordModule");
@@ -582,6 +698,7 @@ OFCondition DRTTreatmentSummaryRecordIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, InstanceCoercionDateTime, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, RelatedGeneralSOPClassUID, "1-n", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, OriginalSpecializedSOPClassUID, "1", "3", "SOPCommonModule");
@@ -598,6 +715,14 @@ OFCondition DRTTreatmentSummaryRecordIOD::read(DcmItem &dataset)
         EncryptedAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         OriginalAttributesSequence.read(dataset, "1-n", "3", "SOPCommonModule");
         HL7StructuredDocumentReferenceSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, LongitudinalTemporalInformationModified, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, QueryRetrieveView, "1", "1C", "SOPCommonModule");
+        ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
+
+        // --- CommonInstanceReferenceModule (U) ---
+        ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
+        StudiesContainingOtherReferencedInstancesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
     }
     return result;
 }
@@ -611,8 +736,11 @@ OFCondition DRTTreatmentSummaryRecordIOD::readPatientData(DcmItem &dataset)
     getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, IssuerOfPatientID, "1", "3", "PatientModule");
+    IssuerOfPatientIDQualifiersSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientSex, "1", "2", "PatientModule");
+    ReferencedPatientPhotoSequence.read(dataset, "1-n", "3", "PatientModule");
+    getAndCheckElementFromDataset(dataset, QualityControlSubject, "1", "3", "PatientModule");
     ReferencedPatientSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthTime, "1", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, OtherPatientIDs, "1-n", "3", "PatientModule");
@@ -646,6 +774,8 @@ OFCondition DRTTreatmentSummaryRecordIOD::readPatientData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, ClinicalTrialSiteName, "1", "2", "ClinicalTrialSubjectModule");
         getAndCheckElementFromDataset(dataset, ClinicalTrialSubjectID, "1", "1C", "ClinicalTrialSubjectModule");
         getAndCheckElementFromDataset(dataset, ClinicalTrialSubjectReadingID, "1", "1C", "ClinicalTrialSubjectModule");
+        getAndCheckElementFromDataset(dataset, ClinicalTrialProtocolEthicsCommitteeName, "1", "1C", "ClinicalTrialSubjectModule");
+        getAndCheckElementFromDataset(dataset, ClinicalTrialProtocolEthicsCommitteeApprovalNumber, "1", "3", "ClinicalTrialSubjectModule");
     }
     return result;
 }
@@ -665,13 +795,16 @@ OFCondition DRTTreatmentSummaryRecordIOD::readStudyData(DcmItem &dataset)
         ReferringPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
+        IssuerOfAccessionNumberSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, PhysiciansOfRecord, "1-n", "3", "GeneralStudyModule");
         PhysiciansOfRecordIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, NameOfPhysiciansReadingStudy, "1-n", "3", "GeneralStudyModule");
         PhysiciansReadingStudyIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        RequestingServiceCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         ReferencedStudySequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         ProcedureCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        ReasonForPerformedProcedureCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
 
         // --- PatientStudyModule (U) ---
         getAndCheckElementFromDataset(dataset, AdmittingDiagnosesDescription, "1-n", "3", "PatientStudyModule");
@@ -679,10 +812,14 @@ OFCondition DRTTreatmentSummaryRecordIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, PatientAge, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, PatientSize, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, PatientWeight, "1", "3", "PatientStudyModule");
+        PatientSizeCodeSequence.read(dataset, "1-n", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, Occupation, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, AdditionalPatientHistory, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, AdmissionID, "1", "3", "PatientStudyModule");
-        getAndCheckElementFromDataset(dataset, IssuerOfAdmissionID, "1", "3", "PatientStudyModule");
+        IssuerOfAdmissionIDSequence.read(dataset, "1-n", "3", "PatientStudyModule");
+        getAndCheckElementFromDataset(dataset, ServiceEpisodeID, "1", "3", "PatientStudyModule");
+        IssuerOfServiceEpisodeIDSequence.read(dataset, "1-n", "3", "PatientStudyModule");
+        getAndCheckElementFromDataset(dataset, ServiceEpisodeDescription, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, PatientSexNeutered, "1", "2C", "PatientStudyModule");
 
         // --- ClinicalTrialStudyModule (U) ---
@@ -690,6 +827,7 @@ OFCondition DRTTreatmentSummaryRecordIOD::readStudyData(DcmItem &dataset)
         {
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointID, "1", "2", "ClinicalTrialStudyModule");
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointDescription, "1", "3", "ClinicalTrialStudyModule");
+            ConsentForClinicalTrialUseSequence.read(dataset, "1-n", "3", "ClinicalTrialStudyModule");
         }
     }
     return result;
@@ -706,19 +844,28 @@ OFCondition DRTTreatmentSummaryRecordIOD::readSeriesData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, Modality, "1", "1", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "2", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, SeriesDate, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, SeriesTime, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "RTSeriesModule");
+        SeriesDescriptionCodeSequence.read(dataset, "1-n", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, OperatorsName, "1-n", "2", "RTSeriesModule");
         ReferencedPerformedProcedureStepSequence.read(dataset, "1-n", "3", "RTSeriesModule");
         RequestAttributesSequence.read(dataset, "1-n", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepID, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepStartDate, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepStartTime, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, PerformedProcedureStepEndDate, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, PerformedProcedureStepEndTime, "1", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepDescription, "1", "3", "RTSeriesModule");
         PerformedProtocolCodeSequence.read(dataset, "1-n", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, CommentsOnThePerformedProcedureStep, "1", "3", "RTSeriesModule");
 
         // --- ClinicalTrialSeriesModule (U) ---
         if (dataset.tagExists(DCM_ClinicalTrialCoordinatingCenterName))
         {
             getAndCheckElementFromDataset(dataset, ClinicalTrialCoordinatingCenterName, "1", "2", "ClinicalTrialSeriesModule");
+            getAndCheckElementFromDataset(dataset, ClinicalTrialSeriesID, "1", "3", "ClinicalTrialSeriesModule");
+            getAndCheckElementFromDataset(dataset, ClinicalTrialSeriesDescription, "1", "3", "ClinicalTrialSeriesModule");
         }
     }
     return result;
@@ -738,8 +885,11 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmPersonName(PatientName), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(PatientID), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(IssuerOfPatientID), "1", "3", "PatientModule");
+        if (result.good()) result = IssuerOfPatientIDQualifiersSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmDate(PatientBirthDate), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmCodeString(PatientSex), "1", "2", "PatientModule");
+        if (result.good()) result = ReferencedPatientPhotoSequence.write(dataset, "1-n" ,"3", "PatientModule");
+        addElementToDataset(result, dataset, new DcmCodeString(QualityControlSubject), "1", "3", "PatientModule");
         if (result.good()) result = ReferencedPatientSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmTime(PatientBirthTime), "1", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(OtherPatientIDs), "1-n", "3", "PatientModule");
@@ -769,6 +919,8 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSiteName), "1", "2", "ClinicalTrialSubjectModule");
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSubjectID), "1", "1C", "ClinicalTrialSubjectModule");
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSubjectReadingID), "1", "1C", "ClinicalTrialSubjectModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialProtocolEthicsCommitteeName), "1", "1C", "ClinicalTrialSubjectModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialProtocolEthicsCommitteeApprovalNumber), "1", "3", "ClinicalTrialSubjectModule");
         }
 
         // --- GeneralStudyModule (M) ---
@@ -779,13 +931,16 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
         if (result.good()) result = ReferringPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
+        if (result.good()) result = IssuerOfAccessionNumberSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmLongString(StudyDescription), "1", "3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(PhysiciansOfRecord), "1-n", "3", "GeneralStudyModule");
         if (result.good()) result = PhysiciansOfRecordIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(NameOfPhysiciansReadingStudy), "1-n", "3", "GeneralStudyModule");
         if (result.good()) result = PhysiciansReadingStudyIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        if (result.good()) result = RequestingServiceCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         if (result.good()) result = ReferencedStudySequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         if (result.good()) result = ProcedureCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        if (result.good()) result = ReasonForPerformedProcedureCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
 
         // --- PatientStudyModule (U) ---
         if (isPatientStudyModulePresent(OFFalse /*complete*/))
@@ -795,10 +950,14 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmAgeString(PatientAge), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmDecimalString(PatientSize), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmDecimalString(PatientWeight), "1", "3", "PatientStudyModule");
+            if (result.good()) result = PatientSizeCodeSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmShortString(Occupation), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongText(AdditionalPatientHistory), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongString(AdmissionID), "1", "3", "PatientStudyModule");
-            addElementToDataset(result, dataset, new DcmLongString(IssuerOfAdmissionID), "1", "3", "PatientStudyModule");
+            if (result.good()) result = IssuerOfAdmissionIDSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
+            addElementToDataset(result, dataset, new DcmLongString(ServiceEpisodeID), "1", "3", "PatientStudyModule");
+            if (result.good()) result = IssuerOfServiceEpisodeIDSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
+            addElementToDataset(result, dataset, new DcmLongString(ServiceEpisodeDescription), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmCodeString(PatientSexNeutered), "1", "2C", "PatientStudyModule");
         }
 
@@ -807,25 +966,35 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
         {
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialTimePointID), "1", "2", "ClinicalTrialStudyModule");
             addElementToDataset(result, dataset, new DcmShortText(ClinicalTrialTimePointDescription), "1", "3", "ClinicalTrialStudyModule");
+            if (result.good()) result = ConsentForClinicalTrialUseSequence.write(dataset, "1-n" ,"3", "ClinicalTrialStudyModule");
         }
 
         // --- RTSeriesModule (M) ---
         addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "2", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmDate(SeriesDate), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmTime(SeriesTime), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "RTSeriesModule");
+        if (result.good()) result = SeriesDescriptionCodeSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmPersonName(OperatorsName), "1-n", "2", "RTSeriesModule");
         if (result.good()) result = ReferencedPerformedProcedureStepSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
         if (result.good()) result = RequestAttributesSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmShortString(PerformedProcedureStepID), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmDate(PerformedProcedureStepStartDate), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmTime(PerformedProcedureStepStartTime), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmDate(PerformedProcedureStepEndDate), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmTime(PerformedProcedureStepEndTime), "1", "3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmLongString(PerformedProcedureStepDescription), "1", "3", "RTSeriesModule");
         if (result.good()) result = PerformedProtocolCodeSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmShortText(CommentsOnThePerformedProcedureStep), "1", "3", "RTSeriesModule");
 
         // --- ClinicalTrialSeriesModule (U) ---
         if (isClinicalTrialSeriesModulePresent(OFFalse /*complete*/))
         {
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialCoordinatingCenterName), "1", "2", "ClinicalTrialSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSeriesID), "1", "3", "ClinicalTrialSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialSeriesDescription), "1", "3", "ClinicalTrialSeriesModule");
         }
 
         // --- GeneralEquipmentModule (M) ---
@@ -841,7 +1010,7 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmDecimalString(SpatialResolution), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmDate(DateOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmTime(TimeOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
-        addElementToDataset(result, dataset, new DcmUnsignedShort(PixelPaddingValue), "1", "3", "GeneralEquipmentModule");
+        addElementToDataset(result, dataset, new DcmUnsignedShort(PixelPaddingValue), "1", "1C", "GeneralEquipmentModule");
 
         // --- RTGeneralTreatmentRecordModule (M) ---
         addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber), "1", "1", "RTGeneralTreatmentRecordModule");
@@ -865,6 +1034,7 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet), "1-n", "1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmDateTime(InstanceCoercionDateTime), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(RelatedGeneralSOPClassUID), "1-n", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(OriginalSpecializedSOPClassUID), "1", "3", "SOPCommonModule");
@@ -881,6 +1051,17 @@ OFCondition DRTTreatmentSummaryRecordIOD::write(DcmItem &dataset)
         if (result.good()) result = EncryptedAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         if (result.good()) result = OriginalAttributesSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
         if (result.good()) result = HL7StructuredDocumentReferenceSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(LongitudinalTemporalInformationModified), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(QueryRetrieveView), "1", "1C", "SOPCommonModule");
+        if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
+
+        // --- CommonInstanceReferenceModule (U) ---
+        if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
+        {
+            if (result.good()) result = ReferencedSeriesSequence.write(dataset, "1-n" ,"1C", "CommonInstanceReferenceModule");
+            if (result.good()) result = StudiesContainingOtherReferencedInstancesSequence.write(dataset, "1-n" ,"1C", "CommonInstanceReferenceModule");
+        }
     } else
         result = RT_EC_InvalidObject;
     return result;
@@ -902,7 +1083,9 @@ OFBool DRTTreatmentSummaryRecordIOD::isClinicalTrialSubjectModulePresent(const O
                !ClinicalTrialSiteID.isEmpty() ||
                !ClinicalTrialSiteName.isEmpty() ||
                !ClinicalTrialSubjectID.isEmpty() ||
-               !ClinicalTrialSubjectReadingID.isEmpty();
+               !ClinicalTrialSubjectReadingID.isEmpty() ||
+               !ClinicalTrialProtocolEthicsCommitteeName.isEmpty() ||
+               !ClinicalTrialProtocolEthicsCommitteeApprovalNumber.isEmpty();
     }
 }
 
@@ -915,10 +1098,14 @@ OFBool DRTTreatmentSummaryRecordIOD::isPatientStudyModulePresent(const OFBool /*
            !PatientAge.isEmpty() ||
            !PatientSize.isEmpty() ||
            !PatientWeight.isEmpty() ||
+           !PatientSizeCodeSequence.isEmpty() ||
            !Occupation.isEmpty() ||
            !AdditionalPatientHistory.isEmpty() ||
            !AdmissionID.isEmpty() ||
-           !IssuerOfAdmissionID.isEmpty() ||
+           !IssuerOfAdmissionIDSequence.isEmpty() ||
+           !ServiceEpisodeID.isEmpty() ||
+           !IssuerOfServiceEpisodeIDSequence.isEmpty() ||
+           !ServiceEpisodeDescription.isEmpty() ||
            !PatientSexNeutered.isEmpty();
 }
 
@@ -927,14 +1114,25 @@ OFBool DRTTreatmentSummaryRecordIOD::isClinicalTrialStudyModulePresent(const OFB
 {
     /* check whether at least one attribute is present */
     return !ClinicalTrialTimePointID.isEmpty() ||
-           !ClinicalTrialTimePointDescription.isEmpty();
+           !ClinicalTrialTimePointDescription.isEmpty() ||
+           !ConsentForClinicalTrialUseSequence.isEmpty();
 }
 
 
 OFBool DRTTreatmentSummaryRecordIOD::isClinicalTrialSeriesModulePresent(const OFBool /*complete*/)
 {
     /* check whether at least one attribute is present */
-    return !ClinicalTrialCoordinatingCenterName.isEmpty();
+    return !ClinicalTrialCoordinatingCenterName.isEmpty() ||
+           !ClinicalTrialSeriesID.isEmpty() ||
+           !ClinicalTrialSeriesDescription.isEmpty();
+}
+
+
+OFBool DRTTreatmentSummaryRecordIOD::isCommonInstanceReferenceModulePresent(const OFBool /*complete*/)
+{
+    /* check whether at least one attribute is present */
+    return !ReferencedSeriesSequence.isEmpty() ||
+           !StudiesContainingOtherReferencedInstancesSequence.isEmpty();
 }
 
 
@@ -974,6 +1172,18 @@ OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialCoordinatingCenterName
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialProtocolEthicsCommitteeApprovalNumber(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialProtocolEthicsCommitteeApprovalNumber, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialProtocolEthicsCommitteeName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialProtocolEthicsCommitteeName, value, pos);
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialProtocolID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ClinicalTrialProtocolID, value, pos);
@@ -983,6 +1193,18 @@ OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialProtocolID(OFString &v
 OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialProtocolName(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ClinicalTrialProtocolName, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialSeriesDescription(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialSeriesDescription, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialSeriesID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ClinicalTrialSeriesID, value, pos);
 }
 
 
@@ -1028,6 +1250,18 @@ OFCondition DRTTreatmentSummaryRecordIOD::getClinicalTrialTimePointID(OFString &
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::getCommentsOnThePerformedProcedureStep(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(CommentsOnThePerformedProcedureStep, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getContentQualification(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ContentQualification, value, pos);
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::getCurrentTreatmentStatus(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(CurrentTreatmentStatus, value, pos);
@@ -1067,6 +1301,12 @@ OFCondition DRTTreatmentSummaryRecordIOD::getFirstTreatmentDate(OFString &value,
 OFCondition DRTTreatmentSummaryRecordIOD::getGantryID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(GantryID, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getInstanceCoercionDateTime(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(InstanceCoercionDateTime, value, pos);
 }
 
 
@@ -1118,15 +1358,15 @@ OFCondition DRTTreatmentSummaryRecordIOD::getInstitutionalDepartmentName(OFStrin
 }
 
 
-OFCondition DRTTreatmentSummaryRecordIOD::getIssuerOfAdmissionID(OFString &value, const signed long pos) const
-{
-    return getStringValueFromElement(IssuerOfAdmissionID, value, pos);
-}
-
-
 OFCondition DRTTreatmentSummaryRecordIOD::getIssuerOfPatientID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(IssuerOfPatientID, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getLongitudinalTemporalInformationModified(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(LongitudinalTemporalInformationModified, value, pos);
 }
 
 
@@ -1163,6 +1403,12 @@ OFCondition DRTTreatmentSummaryRecordIOD::getNameOfPhysiciansReadingStudy(OFStri
 OFCondition DRTTreatmentSummaryRecordIOD::getOccupation(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(Occupation, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getOperatorsName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(OperatorsName, value, pos);
 }
 
 
@@ -1280,6 +1526,18 @@ OFCondition DRTTreatmentSummaryRecordIOD::getPerformedProcedureStepDescription(O
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::getPerformedProcedureStepEndDate(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(PerformedProcedureStepEndDate, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getPerformedProcedureStepEndTime(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(PerformedProcedureStepEndTime, value, pos);
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::getPerformedProcedureStepID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(PerformedProcedureStepID, value, pos);
@@ -1307,6 +1565,18 @@ OFCondition DRTTreatmentSummaryRecordIOD::getPhysiciansOfRecord(OFString &value,
 OFCondition DRTTreatmentSummaryRecordIOD::getPixelPaddingValue(Uint16 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmUnsignedShort &, PixelPaddingValue).getUint16(value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getQualityControlSubject(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(QualityControlSubject, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getQueryRetrieveView(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(QueryRetrieveView, value, pos);
 }
 
 
@@ -1370,6 +1640,12 @@ OFCondition DRTTreatmentSummaryRecordIOD::getSOPInstanceUID(OFString &value, con
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::getSeriesDate(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(SeriesDate, value, pos);
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::getSeriesDescription(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(SeriesDescription, value, pos);
@@ -1391,6 +1667,24 @@ OFCondition DRTTreatmentSummaryRecordIOD::getSeriesNumber(OFString &value, const
 OFCondition DRTTreatmentSummaryRecordIOD::getSeriesNumber(Sint32 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmIntegerString &, SeriesNumber).getSint32(value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getSeriesTime(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(SeriesTime, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getServiceEpisodeDescription(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ServiceEpisodeDescription, value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::getServiceEpisodeID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ServiceEpisodeID, value, pos);
 }
 
 
@@ -1538,6 +1832,24 @@ OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialCoordinatingCenterName
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialProtocolEthicsCommitteeApprovalNumber(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialProtocolEthicsCommitteeApprovalNumber.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialProtocolEthicsCommitteeName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialProtocolEthicsCommitteeName.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialProtocolID(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
@@ -1552,6 +1864,24 @@ OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialProtocolName(const OFS
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = ClinicalTrialProtocolName.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialSeriesDescription(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialSeriesDescription.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialSeriesID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ClinicalTrialSeriesID.putOFStringArray(value);
     return result;
 }
 
@@ -1619,6 +1949,24 @@ OFCondition DRTTreatmentSummaryRecordIOD::setClinicalTrialTimePointID(const OFSt
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::setCommentsOnThePerformedProcedureStep(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
+    if (result.good())
+        result = CommentsOnThePerformedProcedureStep.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setContentQualification(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ContentQualification.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::setCurrentTreatmentStatus(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
@@ -1678,6 +2026,15 @@ OFCondition DRTTreatmentSummaryRecordIOD::setGantryID(const OFString &value, con
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = GantryID.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setInstanceCoercionDateTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = InstanceCoercionDateTime.putOFStringArray(value);
     return result;
 }
 
@@ -1745,20 +2102,20 @@ OFCondition DRTTreatmentSummaryRecordIOD::setInstitutionalDepartmentName(const O
 }
 
 
-OFCondition DRTTreatmentSummaryRecordIOD::setIssuerOfAdmissionID(const OFString &value, const OFBool check)
-{
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
-    if (result.good())
-        result = IssuerOfAdmissionID.putOFStringArray(value);
-    return result;
-}
-
-
 OFCondition DRTTreatmentSummaryRecordIOD::setIssuerOfPatientID(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = IssuerOfPatientID.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setLongitudinalTemporalInformationModified(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = LongitudinalTemporalInformationModified.putOFStringArray(value);
     return result;
 }
 
@@ -1813,6 +2170,15 @@ OFCondition DRTTreatmentSummaryRecordIOD::setOccupation(const OFString &value, c
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = Occupation.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setOperatorsName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = OperatorsName.putOFStringArray(value);
     return result;
 }
 
@@ -1970,6 +2336,24 @@ OFCondition DRTTreatmentSummaryRecordIOD::setPerformedProcedureStepDescription(c
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::setPerformedProcedureStepEndDate(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PerformedProcedureStepEndDate.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setPerformedProcedureStepEndTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PerformedProcedureStepEndTime.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::setPerformedProcedureStepID(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
@@ -2009,6 +2393,24 @@ OFCondition DRTTreatmentSummaryRecordIOD::setPhysiciansOfRecord(const OFString &
 OFCondition DRTTreatmentSummaryRecordIOD::setPixelPaddingValue(const Uint16 value, const unsigned long pos)
 {
     return PixelPaddingValue.putUint16(value, pos);
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setQualityControlSubject(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = QualityControlSubject.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setQueryRetrieveView(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = QueryRetrieveView.putOFStringArray(value);
+    return result;
 }
 
 
@@ -2102,6 +2504,15 @@ OFCondition DRTTreatmentSummaryRecordIOD::setSOPInstanceUID(const OFString &valu
 }
 
 
+OFCondition DRTTreatmentSummaryRecordIOD::setSeriesDate(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesDate.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTTreatmentSummaryRecordIOD::setSeriesDescription(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
@@ -2125,6 +2536,33 @@ OFCondition DRTTreatmentSummaryRecordIOD::setSeriesNumber(const OFString &value,
     OFCondition result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = SeriesNumber.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setSeriesTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesTime.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setServiceEpisodeDescription(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ServiceEpisodeDescription.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTTreatmentSummaryRecordIOD::setServiceEpisodeID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ServiceEpisodeID.putOFStringArray(value);
     return result;
 }
 

@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedBeamSequenceInRTDoseModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -83,7 +83,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1C", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1", "ReferencedBeamSequence");
         ReferencedControlPointSequence.read(item, "1-n", "1C", "ReferencedBeamSequence");
         result = EC_Normal;
     }
@@ -97,7 +97,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1C", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1", "ReferencedBeamSequence");
         if (result.good()) result = ReferencedControlPointSequence.write(item, "1-n", "1C", "ReferencedBeamSequence");
     }
     return result;

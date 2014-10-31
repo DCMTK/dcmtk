@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedBeamSequenceInRTFractionSchemeModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,11 +21,10 @@
 
 DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    BeamDeliveryDurationLimit(DCM_BeamDeliveryDurationLimit),
     BeamDose(DCM_BeamDose),
-    BeamDosePointDepth(DCM_RETIRED_BeamDosePointDepth),
-    BeamDosePointEquivalentDepth(DCM_RETIRED_BeamDosePointEquivalentDepth),
-    BeamDosePointSSD(DCM_RETIRED_BeamDosePointSSD),
     BeamDoseSpecificationPoint(DCM_BeamDoseSpecificationPoint),
+    BeamDoseVerificationControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     BeamMeterset(DCM_BeamMeterset),
     ReferencedBeamNumber(DCM_ReferencedBeamNumber)
 {
@@ -34,11 +33,10 @@ DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::Item(const OFBool empty
 
 DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    BeamDeliveryDurationLimit(copy.BeamDeliveryDurationLimit),
     BeamDose(copy.BeamDose),
-    BeamDosePointDepth(copy.BeamDosePointDepth),
-    BeamDosePointEquivalentDepth(copy.BeamDosePointEquivalentDepth),
-    BeamDosePointSSD(copy.BeamDosePointSSD),
     BeamDoseSpecificationPoint(copy.BeamDoseSpecificationPoint),
+    BeamDoseVerificationControlPointSequence(copy.BeamDoseVerificationControlPointSequence),
     BeamMeterset(copy.BeamMeterset),
     ReferencedBeamNumber(copy.ReferencedBeamNumber)
 {
@@ -55,11 +53,10 @@ DRTReferencedBeamSequenceInRTFractionSchemeModule::Item &DRTReferencedBeamSequen
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        BeamDeliveryDurationLimit = copy.BeamDeliveryDurationLimit;
         BeamDose = copy.BeamDose;
-        BeamDosePointDepth = copy.BeamDosePointDepth;
-        BeamDosePointEquivalentDepth = copy.BeamDosePointEquivalentDepth;
-        BeamDosePointSSD = copy.BeamDosePointSSD;
         BeamDoseSpecificationPoint = copy.BeamDoseSpecificationPoint;
+        BeamDoseVerificationControlPointSequence = copy.BeamDoseVerificationControlPointSequence;
         BeamMeterset = copy.BeamMeterset;
         ReferencedBeamNumber = copy.ReferencedBeamNumber;
     }
@@ -75,10 +72,9 @@ void DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::clear()
         ReferencedBeamNumber.clear();
         BeamDoseSpecificationPoint.clear();
         BeamDose.clear();
-        BeamDosePointDepth.clear();
-        BeamDosePointEquivalentDepth.clear();
-        BeamDosePointSSD.clear();
+        BeamDoseVerificationControlPointSequence.clear();
         BeamMeterset.clear();
+        BeamDeliveryDurationLimit.clear();
     }
 }
 
@@ -88,10 +84,9 @@ OFBool DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::isEmpty()
     return ReferencedBeamNumber.isEmpty() &&
            BeamDoseSpecificationPoint.isEmpty() &&
            BeamDose.isEmpty() &&
-           BeamDosePointDepth.isEmpty() &&
-           BeamDosePointEquivalentDepth.isEmpty() &&
-           BeamDosePointSSD.isEmpty() &&
-           BeamMeterset.isEmpty();
+           BeamDoseVerificationControlPointSequence.isEmpty() &&
+           BeamMeterset.isEmpty() &&
+           BeamDeliveryDurationLimit.isEmpty();
 }
 
 
@@ -108,13 +103,12 @@ OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::read(DcmIte
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1C", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamDoseSpecificationPoint, "3", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamDose, "1", "3", "ReferencedBeamSequence");
-        getAndCheckElementFromDataset(item, BeamDosePointDepth, "1", "3", "ReferencedBeamSequence");
-        getAndCheckElementFromDataset(item, BeamDosePointEquivalentDepth, "1", "3", "ReferencedBeamSequence");
-        getAndCheckElementFromDataset(item, BeamDosePointSSD, "1", "3", "ReferencedBeamSequence");
+        BeamDoseVerificationControlPointSequence.read(item, "1-n", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamMeterset, "1", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, BeamDeliveryDurationLimit, "1", "3", "ReferencedBeamSequence");
         result = EC_Normal;
     }
     return result;
@@ -127,15 +121,23 @@ OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::write(DcmIt
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1C", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamDoseSpecificationPoint), "3", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamDose), "1", "3", "ReferencedBeamSequence");
-        addElementToDataset(result, item, new DcmFloatingPointSingle(BeamDosePointDepth), "1", "3", "ReferencedBeamSequence");
-        addElementToDataset(result, item, new DcmFloatingPointSingle(BeamDosePointEquivalentDepth), "1", "3", "ReferencedBeamSequence");
-        addElementToDataset(result, item, new DcmFloatingPointSingle(BeamDosePointSSD), "1", "3", "ReferencedBeamSequence");
+        if (result.good()) result = BeamDoseVerificationControlPointSequence.write(item, "1-n", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamMeterset), "1", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(BeamDeliveryDurationLimit), "1", "3", "ReferencedBeamSequence");
     }
     return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::getBeamDeliveryDurationLimit(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointDouble &, BeamDeliveryDurationLimit).getFloat64(value, pos);
 }
 
 
@@ -154,33 +156,6 @@ OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::getBeamDose
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmDecimalString &, BeamDose).getFloat64(value, pos);
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::getBeamDosePointDepth(Float32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmFloatingPointSingle &, BeamDosePointDepth).getFloat32(value, pos);
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::getBeamDosePointEquivalentDepth(Float32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmFloatingPointSingle &, BeamDosePointEquivalentDepth).getFloat32(value, pos);
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::getBeamDosePointSSD(Float32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmFloatingPointSingle &, BeamDosePointSSD).getFloat32(value, pos);
 }
 
 
@@ -247,6 +222,15 @@ OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::getReferenc
 }
 
 
+OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::setBeamDeliveryDurationLimit(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return BeamDeliveryDurationLimit.putFloat64(value, pos);
+}
+
+
 OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::setBeamDose(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -257,33 +241,6 @@ OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::setBeamDose
             result = BeamDose.putOFStringArray(value);
     }
     return result;
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::setBeamDosePointDepth(const Float32 value, const unsigned long pos)
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return BeamDosePointDepth.putFloat32(value, pos);
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::setBeamDosePointEquivalentDepth(const Float32 value, const unsigned long pos)
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return BeamDosePointEquivalentDepth.putFloat32(value, pos);
-}
-
-
-OFCondition DRTReferencedBeamSequenceInRTFractionSchemeModule::Item::setBeamDosePointSSD(const Float32 value, const unsigned long pos)
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return BeamDosePointSSD.putFloat32(value, pos);
 }
 
 

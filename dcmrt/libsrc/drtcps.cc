@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -44,6 +44,10 @@ DRTControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
     TableTopEccentricRotationDirection(DCM_TableTopEccentricRotationDirection),
     TableTopLateralPosition(DCM_TableTopLateralPosition),
     TableTopLongitudinalPosition(DCM_TableTopLongitudinalPosition),
+    TableTopPitchAngle(DCM_TableTopPitchAngle),
+    TableTopPitchRotationDirection(DCM_TableTopPitchRotationDirection),
+    TableTopRollAngle(DCM_TableTopRollAngle),
+    TableTopRollRotationDirection(DCM_TableTopRollRotationDirection),
     TableTopVerticalPosition(DCM_TableTopVerticalPosition),
     WedgePositionSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
@@ -75,6 +79,10 @@ DRTControlPointSequence::Item::Item(const Item &copy)
     TableTopEccentricRotationDirection(copy.TableTopEccentricRotationDirection),
     TableTopLateralPosition(copy.TableTopLateralPosition),
     TableTopLongitudinalPosition(copy.TableTopLongitudinalPosition),
+    TableTopPitchAngle(copy.TableTopPitchAngle),
+    TableTopPitchRotationDirection(copy.TableTopPitchRotationDirection),
+    TableTopRollAngle(copy.TableTopRollAngle),
+    TableTopRollRotationDirection(copy.TableTopRollRotationDirection),
     TableTopVerticalPosition(copy.TableTopVerticalPosition),
     WedgePositionSequence(copy.WedgePositionSequence)
 {
@@ -114,6 +122,10 @@ DRTControlPointSequence::Item &DRTControlPointSequence::Item::operator=(const It
         TableTopEccentricRotationDirection = copy.TableTopEccentricRotationDirection;
         TableTopLateralPosition = copy.TableTopLateralPosition;
         TableTopLongitudinalPosition = copy.TableTopLongitudinalPosition;
+        TableTopPitchAngle = copy.TableTopPitchAngle;
+        TableTopPitchRotationDirection = copy.TableTopPitchRotationDirection;
+        TableTopRollAngle = copy.TableTopRollAngle;
+        TableTopRollRotationDirection = copy.TableTopRollRotationDirection;
         TableTopVerticalPosition = copy.TableTopVerticalPosition;
         WedgePositionSequence = copy.WedgePositionSequence;
     }
@@ -145,6 +157,10 @@ void DRTControlPointSequence::Item::clear()
         TableTopEccentricAxisDistance.clear();
         TableTopEccentricAngle.clear();
         TableTopEccentricRotationDirection.clear();
+        TableTopPitchAngle.clear();
+        TableTopPitchRotationDirection.clear();
+        TableTopRollAngle.clear();
+        TableTopRollRotationDirection.clear();
         TableTopVerticalPosition.clear();
         TableTopLongitudinalPosition.clear();
         TableTopLateralPosition.clear();
@@ -176,6 +192,10 @@ OFBool DRTControlPointSequence::Item::isEmpty()
            TableTopEccentricAxisDistance.isEmpty() &&
            TableTopEccentricAngle.isEmpty() &&
            TableTopEccentricRotationDirection.isEmpty() &&
+           TableTopPitchAngle.isEmpty() &&
+           TableTopPitchRotationDirection.isEmpty() &&
+           TableTopRollAngle.isEmpty() &&
+           TableTopRollRotationDirection.isEmpty() &&
            TableTopVerticalPosition.isEmpty() &&
            TableTopLongitudinalPosition.isEmpty() &&
            TableTopLateralPosition.isEmpty() &&
@@ -198,13 +218,13 @@ OFCondition DRTControlPointSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ControlPointIndex, "1", "1C", "ControlPointSequence");
-        getAndCheckElementFromDataset(item, CumulativeMetersetWeight, "1", "2C", "ControlPointSequence");
+        getAndCheckElementFromDataset(item, ControlPointIndex, "1", "1", "ControlPointSequence");
+        getAndCheckElementFromDataset(item, CumulativeMetersetWeight, "1", "2", "ControlPointSequence");
         ReferencedDoseReferenceSequence.read(item, "1-n", "3", "ControlPointSequence");
         ReferencedDoseSequence.read(item, "1-n", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, NominalBeamEnergy, "1", "3", "ControlPointSequence");
         getAndCheckElementFromDataset(item, DoseRateSet, "1", "3", "ControlPointSequence");
-        WedgePositionSequence.read(item, "1-n", "3", "ControlPointSequence");
+        WedgePositionSequence.read(item, "1-n", "1C", "ControlPointSequence");
         BeamLimitingDevicePositionSequence.read(item, "1-n", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, GantryAngle, "1", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, GantryRotationDirection, "1", "1C", "ControlPointSequence");
@@ -217,6 +237,10 @@ OFCondition DRTControlPointSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, TableTopEccentricAxisDistance, "1", "3", "ControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopEccentricAngle, "1", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopEccentricRotationDirection, "1", "1C", "ControlPointSequence");
+        getAndCheckElementFromDataset(item, TableTopPitchAngle, "1", "1C", "ControlPointSequence");
+        getAndCheckElementFromDataset(item, TableTopPitchRotationDirection, "1", "1C", "ControlPointSequence");
+        getAndCheckElementFromDataset(item, TableTopRollAngle, "1", "1C", "ControlPointSequence");
+        getAndCheckElementFromDataset(item, TableTopRollRotationDirection, "1", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopVerticalPosition, "1", "2C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopLongitudinalPosition, "1", "2C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopLateralPosition, "1", "2C", "ControlPointSequence");
@@ -235,13 +259,13 @@ OFCondition DRTControlPointSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmIntegerString(ControlPointIndex), "1", "1C", "ControlPointSequence");
-        addElementToDataset(result, item, new DcmDecimalString(CumulativeMetersetWeight), "1", "2C", "ControlPointSequence");
+        addElementToDataset(result, item, new DcmIntegerString(ControlPointIndex), "1", "1", "ControlPointSequence");
+        addElementToDataset(result, item, new DcmDecimalString(CumulativeMetersetWeight), "1", "2", "ControlPointSequence");
         if (result.good()) result = ReferencedDoseReferenceSequence.write(item, "1-n", "3", "ControlPointSequence");
         if (result.good()) result = ReferencedDoseSequence.write(item, "1-n", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(NominalBeamEnergy), "1", "3", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(DoseRateSet), "1", "3", "ControlPointSequence");
-        if (result.good()) result = WedgePositionSequence.write(item, "1-n", "3", "ControlPointSequence");
+        if (result.good()) result = WedgePositionSequence.write(item, "1-n", "1C", "ControlPointSequence");
         if (result.good()) result = BeamLimitingDevicePositionSequence.write(item, "1-n", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(GantryAngle), "1", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmCodeString(GantryRotationDirection), "1", "1C", "ControlPointSequence");
@@ -254,6 +278,10 @@ OFCondition DRTControlPointSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(TableTopEccentricAxisDistance), "1", "3", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopEccentricAngle), "1", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmCodeString(TableTopEccentricRotationDirection), "1", "1C", "ControlPointSequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(TableTopPitchAngle), "1", "1C", "ControlPointSequence");
+        addElementToDataset(result, item, new DcmCodeString(TableTopPitchRotationDirection), "1", "1C", "ControlPointSequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(TableTopRollAngle), "1", "1C", "ControlPointSequence");
+        addElementToDataset(result, item, new DcmCodeString(TableTopRollRotationDirection), "1", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopVerticalPosition), "1", "2C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopLongitudinalPosition), "1", "2C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopLateralPosition), "1", "2C", "ControlPointSequence");
@@ -589,6 +617,42 @@ OFCondition DRTControlPointSequence::Item::getTableTopLongitudinalPosition(Float
 }
 
 
+OFCondition DRTControlPointSequence::Item::getTableTopPitchAngle(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, TableTopPitchAngle).getFloat32(value, pos);
+}
+
+
+OFCondition DRTControlPointSequence::Item::getTableTopPitchRotationDirection(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(TableTopPitchRotationDirection, value, pos);
+}
+
+
+OFCondition DRTControlPointSequence::Item::getTableTopRollAngle(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, TableTopRollAngle).getFloat32(value, pos);
+}
+
+
+OFCondition DRTControlPointSequence::Item::getTableTopRollRotationDirection(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(TableTopRollRotationDirection, value, pos);
+}
+
+
 OFCondition DRTControlPointSequence::Item::getTableTopVerticalPosition(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
@@ -858,6 +922,50 @@ OFCondition DRTControlPointSequence::Item::setTableTopLongitudinalPosition(const
         result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = TableTopLongitudinalPosition.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTControlPointSequence::Item::setTableTopPitchAngle(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return TableTopPitchAngle.putFloat32(value, pos);
+}
+
+
+OFCondition DRTControlPointSequence::Item::setTableTopPitchRotationDirection(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = TableTopPitchRotationDirection.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTControlPointSequence::Item::setTableTopRollAngle(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return TableTopRollAngle.putFloat32(value, pos);
+}
+
+
+OFCondition DRTControlPointSequence::Item::setTableTopRollRotationDirection(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = TableTopRollRotationDirection.putOFStringArray(value);
     }
     return result;
 }

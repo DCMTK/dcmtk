@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTApplicatorSequenceInRTImageModule
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -21,18 +21,24 @@
 
 DRTApplicatorSequenceInRTImageModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    AccessoryCode(DCM_AccessoryCode),
     ApplicatorDescription(DCM_ApplicatorDescription),
+    ApplicatorGeometrySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ApplicatorID(DCM_ApplicatorID),
-    ApplicatorType(DCM_ApplicatorType)
+    ApplicatorType(DCM_ApplicatorType),
+    SourceToApplicatorMountingPositionDistance(DCM_SourceToApplicatorMountingPositionDistance)
 {
 }
 
 
 DRTApplicatorSequenceInRTImageModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    AccessoryCode(copy.AccessoryCode),
     ApplicatorDescription(copy.ApplicatorDescription),
+    ApplicatorGeometrySequence(copy.ApplicatorGeometrySequence),
     ApplicatorID(copy.ApplicatorID),
-    ApplicatorType(copy.ApplicatorType)
+    ApplicatorType(copy.ApplicatorType),
+    SourceToApplicatorMountingPositionDistance(copy.SourceToApplicatorMountingPositionDistance)
 {
 }
 
@@ -47,9 +53,12 @@ DRTApplicatorSequenceInRTImageModule::Item &DRTApplicatorSequenceInRTImageModule
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        AccessoryCode = copy.AccessoryCode;
         ApplicatorDescription = copy.ApplicatorDescription;
+        ApplicatorGeometrySequence = copy.ApplicatorGeometrySequence;
         ApplicatorID = copy.ApplicatorID;
         ApplicatorType = copy.ApplicatorType;
+        SourceToApplicatorMountingPositionDistance = copy.SourceToApplicatorMountingPositionDistance;
     }
     return *this;
 }
@@ -61,7 +70,10 @@ void DRTApplicatorSequenceInRTImageModule::Item::clear()
     {
         /* clear all DICOM attributes */
         ApplicatorID.clear();
+        AccessoryCode.clear();
         ApplicatorType.clear();
+        ApplicatorGeometrySequence.clear();
+        SourceToApplicatorMountingPositionDistance.clear();
         ApplicatorDescription.clear();
     }
 }
@@ -70,7 +82,10 @@ void DRTApplicatorSequenceInRTImageModule::Item::clear()
 OFBool DRTApplicatorSequenceInRTImageModule::Item::isEmpty()
 {
     return ApplicatorID.isEmpty() &&
+           AccessoryCode.isEmpty() &&
            ApplicatorType.isEmpty() &&
+           ApplicatorGeometrySequence.isEmpty() &&
+           SourceToApplicatorMountingPositionDistance.isEmpty() &&
            ApplicatorDescription.isEmpty();
 }
 
@@ -88,8 +103,11 @@ OFCondition DRTApplicatorSequenceInRTImageModule::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, ApplicatorID, "1", "1C", "ApplicatorSequence");
-        getAndCheckElementFromDataset(item, ApplicatorType, "1", "1C", "ApplicatorSequence");
+        getAndCheckElementFromDataset(item, ApplicatorID, "1", "1", "ApplicatorSequence");
+        getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "ApplicatorSequence");
+        getAndCheckElementFromDataset(item, ApplicatorType, "1", "1", "ApplicatorSequence");
+        ApplicatorGeometrySequence.read(item, "1-n", "3", "ApplicatorSequence");
+        getAndCheckElementFromDataset(item, SourceToApplicatorMountingPositionDistance, "1", "3", "ApplicatorSequence");
         getAndCheckElementFromDataset(item, ApplicatorDescription, "1", "3", "ApplicatorSequence");
         result = EC_Normal;
     }
@@ -103,11 +121,23 @@ OFCondition DRTApplicatorSequenceInRTImageModule::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmShortString(ApplicatorID), "1", "1C", "ApplicatorSequence");
-        addElementToDataset(result, item, new DcmCodeString(ApplicatorType), "1", "1C", "ApplicatorSequence");
+        addElementToDataset(result, item, new DcmShortString(ApplicatorID), "1", "1", "ApplicatorSequence");
+        addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "ApplicatorSequence");
+        addElementToDataset(result, item, new DcmCodeString(ApplicatorType), "1", "1", "ApplicatorSequence");
+        if (result.good()) result = ApplicatorGeometrySequence.write(item, "1-n", "3", "ApplicatorSequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(SourceToApplicatorMountingPositionDistance), "1", "3", "ApplicatorSequence");
         addElementToDataset(result, item, new DcmLongString(ApplicatorDescription), "1", "3", "ApplicatorSequence");
     }
     return result;
+}
+
+
+OFCondition DRTApplicatorSequenceInRTImageModule::Item::getAccessoryCode(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(AccessoryCode, value, pos);
 }
 
 
@@ -135,6 +165,28 @@ OFCondition DRTApplicatorSequenceInRTImageModule::Item::getApplicatorType(OFStri
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ApplicatorType, value, pos);
+}
+
+
+OFCondition DRTApplicatorSequenceInRTImageModule::Item::getSourceToApplicatorMountingPositionDistance(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, SourceToApplicatorMountingPositionDistance).getFloat32(value, pos);
+}
+
+
+OFCondition DRTApplicatorSequenceInRTImageModule::Item::setAccessoryCode(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = AccessoryCode.putOFStringArray(value);
+    }
+    return result;
 }
 
 
@@ -174,6 +226,15 @@ OFCondition DRTApplicatorSequenceInRTImageModule::Item::setApplicatorType(const 
             result = ApplicatorType.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTApplicatorSequenceInRTImageModule::Item::setSourceToApplicatorMountingPositionDistance(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return SourceToApplicatorMountingPositionDistance.putFloat32(value, pos);
 }
 
 

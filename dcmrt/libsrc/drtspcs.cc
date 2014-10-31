@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTScheduledProtocolCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2007
- *  File created on 2014-03-15 16:58:36
+ *  Generated automatically from DICOM PS 3.3-2014b
+ *  File created on 2014-10-31 15:59:21
  *
  */
 
@@ -30,6 +30,7 @@ DRTScheduledProtocolCodeSequence::Item::Item(const OFBool emptyDefaultItem)
     ContextGroupLocalVersion(DCM_ContextGroupLocalVersion),
     ContextGroupVersion(DCM_ContextGroupVersion),
     ContextIdentifier(DCM_ContextIdentifier),
+    ContextUID(DCM_ContextUID),
     MappingResource(DCM_MappingResource),
     ProtocolContextSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
@@ -47,6 +48,7 @@ DRTScheduledProtocolCodeSequence::Item::Item(const Item &copy)
     ContextGroupLocalVersion(copy.ContextGroupLocalVersion),
     ContextGroupVersion(copy.ContextGroupVersion),
     ContextIdentifier(copy.ContextIdentifier),
+    ContextUID(copy.ContextUID),
     MappingResource(copy.MappingResource),
     ProtocolContextSequence(copy.ProtocolContextSequence)
 {
@@ -72,6 +74,7 @@ DRTScheduledProtocolCodeSequence::Item &DRTScheduledProtocolCodeSequence::Item::
         ContextGroupLocalVersion = copy.ContextGroupLocalVersion;
         ContextGroupVersion = copy.ContextGroupVersion;
         ContextIdentifier = copy.ContextIdentifier;
+        ContextUID = copy.ContextUID;
         MappingResource = copy.MappingResource;
         ProtocolContextSequence = copy.ProtocolContextSequence;
     }
@@ -89,6 +92,7 @@ void DRTScheduledProtocolCodeSequence::Item::clear()
         CodingSchemeVersion.clear();
         CodeMeaning.clear();
         ContextIdentifier.clear();
+        ContextUID.clear();
         MappingResource.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
@@ -106,6 +110,7 @@ OFBool DRTScheduledProtocolCodeSequence::Item::isEmpty()
            CodingSchemeVersion.isEmpty() &&
            CodeMeaning.isEmpty() &&
            ContextIdentifier.isEmpty() &&
+           ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
@@ -128,11 +133,12 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, CodeValue, "1", "1C", "ScheduledProtocolCodeSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1C", "ScheduledProtocolCodeSequence");
+        getAndCheckElementFromDataset(item, CodeValue, "1", "1", "ScheduledProtocolCodeSequence");
+        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "1C", "ScheduledProtocolCodeSequence");
-        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1C", "ScheduledProtocolCodeSequence");
+        getAndCheckElementFromDataset(item, CodeMeaning, "1", "1", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "ScheduledProtocolCodeSequence");
+        getAndCheckElementFromDataset(item, ContextUID, "1", "3", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ScheduledProtocolCodeSequence");
@@ -151,11 +157,12 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1C", "ScheduledProtocolCodeSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1C", "ScheduledProtocolCodeSequence");
+        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1", "ScheduledProtocolCodeSequence");
+        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "1C", "ScheduledProtocolCodeSequence");
-        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1C", "ScheduledProtocolCodeSequence");
+        addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "ScheduledProtocolCodeSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ScheduledProtocolCodeSequence");
@@ -245,6 +252,15 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::getContextIdentifier(OFStrin
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ContextIdentifier, value, pos);
+}
+
+
+OFCondition DRTScheduledProtocolCodeSequence::Item::getContextUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextUID, value, pos);
 }
 
 
@@ -369,6 +385,19 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::setContextIdentifier(const O
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ContextIdentifier.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTScheduledProtocolCodeSequence::Item::setContextUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextUID.putOFStringArray(value);
     }
     return result;
 }
