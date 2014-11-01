@@ -48,7 +48,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
 #define SHORTCOL 4
-#define LONGCOL 19
+#define LONGCOL 20
 
 int main(int argc, char *argv[])
 {
@@ -94,10 +94,10 @@ int main(int argc, char *argv[])
 #endif
 
     /*
-    ** Don't let dcmdata remove trailing blank padding or perform other
-    ** manipulations.  We want to see the real data.
+    ** By default. don't let "dcmdata" remove trailing padding or
+    ** perform other manipulations. We want to see the real data.
     */
-    dcmEnableAutomaticInputDataCorrection.set(OFFalse);
+    OFBool                opt_automaticDataCorrection = OFFalse;
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -123,43 +123,43 @@ int main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
    OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
-                                                      "override matching key");
+      cmd.addOption("--key",                "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
+                                                       "override matching key");
     cmd.addSubGroup("query information model:");
-      cmd.addOption("--worklist",          "-W",      "use modality worklist information model (default)");
-      cmd.addOption("--patient",           "-P",      "use patient root information model");
-      cmd.addOption("--study",             "-S",      "use study root information model");
-      cmd.addOption("--psonly",            "-O",      "use patient/study only information model");
+      cmd.addOption("--worklist",           "-W",      "use modality worklist information model (def.)");
+      cmd.addOption("--patient",            "-P",      "use patient root information model");
+      cmd.addOption("--study",              "-S",      "use study root information model");
+      cmd.addOption("--psonly",             "-O",      "use patient/study only information model");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",           "-aet", 1, "[a]etitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",            "-aet", 1, "[a]etitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", opt2.c_str());
+      cmd.addOption("--call",               "-aec", 1, "[a]etitle: string", opt2.c_str());
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",     "+u",      "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",    "-u",      "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",      "+u",      "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",     "-u",      "disable support for new VRs, convert to OB");
     cmd.addSubGroup("proposed transmission transfer syntaxes:");
-      cmd.addOption("--propose-uncompr",   "-x=",     "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
-      cmd.addOption("--propose-little",    "-xe",     "propose all uncompressed TS, explicit VR\nlittle endian first");
-      cmd.addOption("--propose-big",       "-xb",     "propose all uncompressed TS, explicit VR\nbig endian first");
+      cmd.addOption("--propose-uncompr",    "-x=",     "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
+      cmd.addOption("--propose-little",     "-xe",     "propose all uncompressed TS, explicit VR\nlittle endian first");
+      cmd.addOption("--propose-big",        "-xb",     "propose all uncompressed TS, explicit VR\nbig endian first");
 #ifdef WITH_ZLIB
-      cmd.addOption("--propose-deflated",  "-xd",     "propose deflated explicit VR little endian TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-deflated",   "-xd",     "propose deflated explicit VR little endian TS\nand all uncompressed transfer syntaxes");
 #endif
-      cmd.addOption("--propose-implicit",  "-xi",     "propose implicit VR little endian TS only");
+      cmd.addOption("--propose-implicit",   "-xi",     "propose implicit VR little endian TS only");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --propose-deflated):");
-      cmd.addOption("--compression-level", "+cl",  1, "[l]evel: integer (default: 6)",
-                                                      "0=uncompressed, 1=fastest, 9=best compression");
+      cmd.addOption("--compression-level",  "+cl",  1, "[l]evel: integer (default: 6)",
+                                                       "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
@@ -173,59 +173,62 @@ int main(int argc, char *argv[])
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
-      cmd.addOption("--timeout",           "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",      "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout",     "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-      cmd.addOption("--max-pdu",           "-pdu", 1, opt4.c_str(), opt3.c_str());
-      cmd.addOption("--repeat",                    1, "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                        "abort association instead of releasing it");
-      cmd.addOption("--cancel",                    1, "[n]umber: integer",
-                                                      "cancel after n responses (default: never)");
+      cmd.addOption("--timeout",            "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",       "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",      "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--max-pdu",            "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--repeat",                     1, "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                         "abort association instead of releasing it");
+      cmd.addOption("--cancel",                     1, "[n]umber: integer",
+                                                       "cancel after n responses (default: never)");
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
     cmd.addSubGroup("transport protocol stack:");
-      cmd.addOption("--disable-tls",       "-tls",    "use normal TCP/IP connection (default)");
-      cmd.addOption("--enable-tls",        "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
-                                                      "use authenticated secure TLS connection");
-      cmd.addOption("--anonymous-tls",     "+tla",    "use secure TLS connection without certificate");
+      cmd.addOption("--disable-tls",        "-tls",    "use normal TCP/IP connection (default)");
+      cmd.addOption("--enable-tls",         "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
+                                                       "use authenticated secure TLS connection");
+      cmd.addOption("--anonymous-tls",      "+tla",    "use secure TLS connection without certificate");
     cmd.addSubGroup("private key password (only with --enable-tls):");
-      cmd.addOption("--std-passwd",        "+ps",     "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",        "+pw",  1, "[p]assword: string ",
-                                                      "use specified password");
-      cmd.addOption("--null-passwd",       "-pw",     "use empty string as password");
+      cmd.addOption("--std-passwd",         "+ps",     "prompt user to type password on stdin (default)");
+      cmd.addOption("--use-passwd",         "+pw",  1, "[p]assword: string ",
+                                                       "use specified password");
+      cmd.addOption("--null-passwd",        "-pw",     "use empty string as password");
     cmd.addSubGroup("key and certificate file format:");
-      cmd.addOption("--pem-keys",          "-pem",    "read keys and certificates as PEM file (default)");
-      cmd.addOption("--der-keys",          "-der",    "read keys and certificates as DER file");
+      cmd.addOption("--pem-keys",           "-pem",    "read keys and certificates as PEM file (default)");
+      cmd.addOption("--der-keys",           "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
-      cmd.addOption("--add-cert-file",     "+cf",  1, "[c]ertificate filename: string",
-                                                      "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
-      cmd.addOption("--add-cert-dir",      "+cd",  1, "[c]ertificate directory: string",
-                                                      "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--add-cert-file",      "+cf",  1, "[c]ertificate filename: string",
+                                                       "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--add-cert-dir",       "+cd",  1, "[c]ertificate directory: string",
+                                                       "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addSubGroup("ciphersuite:");
-      cmd.addOption("--cipher",            "+cs",  1, "[c]iphersuite name: string",
-                                                      "add ciphersuite to list of negotiated suites");
-      cmd.addOption("--dhparam",           "+dp",  1, "[f]ilename: string",
-                                                      "read DH parameters for DH/DSS ciphersuites");
+      cmd.addOption("--cipher",             "+cs",  1, "[c]iphersuite name: string",
+                                                       "add ciphersuite to list of negotiated suites");
+      cmd.addOption("--dhparam",            "+dp",  1, "[f]ilename: string",
+                                                       "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator:");
-      cmd.addOption("--seed",              "+rs",  1, "[f]ilename: string",
-                                                      "seed random generator with contents of f");
-      cmd.addOption("--write-seed",        "+ws",     "write back modified seed (only with --seed)");
-      cmd.addOption("--write-seed-file",   "+wf",  1, "[f]ilename: string (only with --seed)",
-                                                      "write modified seed to file f");
+      cmd.addOption("--seed",               "+rs",  1, "[f]ilename: string",
+                                                       "seed random generator with contents of f");
+      cmd.addOption("--write-seed",         "+ws",     "write back modified seed (only with --seed)");
+      cmd.addOption("--write-seed-file",    "+wf",  1, "[f]ilename: string (only with --seed)",
+                                                       "write modified seed to file f");
     cmd.addSubGroup("peer authentication:");
-      cmd.addOption("--require-peer-cert", "-rc",     "verify peer certificate, fail if absent (default)");
-      cmd.addOption("--verify-peer-cert",  "-vc",     "verify peer certificate if present");
-      cmd.addOption("--ignore-peer-cert",  "-ic",     "don't verify peer certificate");
+      cmd.addOption("--require-peer-cert",  "-rc",     "verify peer certificate, fail if absent (def.)");
+      cmd.addOption("--verify-peer-cert",   "-vc",     "verify peer certificate if present");
+      cmd.addOption("--ignore-peer-cert",   "-ic",     "don't verify peer certificate");
 #endif
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
-      cmd.addOption("--output-directory",  "-od",  1, "[d]irectory: string (default: \".\")", "write output files to existing directory d");
+      cmd.addOption("--output-directory",   "-od",  1, "[d]irectory: string (default: \".\")", "write output files to existing directory d");
+    cmd.addSubGroup("automatic data correction:");
+      cmd.addOption("--enable-correction",  "+dc",     "enable automatic data correction");
+      cmd.addOption("--disable-correction", "-dc",     "disable automatic data correction (default)");
     cmd.addSubGroup("C-FIND responses:");
-      cmd.addOption("--show-responses",    "+sr",     "always output responses to the logger");
-      cmd.addOption("--hide-responses",    "-sr",     "do not output responses to the logger");
-      cmd.addOption("--extract",           "-X",      "extract responses to file (rsp0001.dcm, ...)");
+      cmd.addOption("--show-responses",     "+sr",     "always output responses to the logger");
+      cmd.addOption("--hide-responses",     "-sr",     "do not output responses to the logger");
+      cmd.addOption("--extract",            "-X",      "extract responses to file (rsp0001.dcm, ...)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -331,6 +334,11 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
 
       if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-correction")) opt_automaticDataCorrection = OFTrue;
+      if (cmd.findOption("--disable-correction")) opt_automaticDataCorrection = OFFalse;
+      cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--show-responses")) opt_outputResponsesToLogger = 1;
@@ -507,6 +515,9 @@ int main(int argc, char *argv[])
         return 1;
       }
     }
+
+    // enabled or disable removal of trailing padding
+    dcmEnableAutomaticInputDataCorrection.set(opt_automaticDataCorrection);
 
     // declare findSCU handler and initialize network
     DcmFindSCU findscu;

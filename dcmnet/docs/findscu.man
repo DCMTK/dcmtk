@@ -225,6 +225,14 @@ general:
   -od   --output-directory  [d]irectory: string (default: ".")
           write output files to existing directory d
 
+automatic data correction:
+
+  +dc   --enable-correction
+          enable automatic data correction
+
+  -dc   --disable-correction
+          disable automatic data correction (default)
+
 C-FIND responses:
 
   +sr   --show-responses

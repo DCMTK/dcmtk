@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.01 (riesmeier)
+
+- Added "data correction" options to findscu:
+  Added two new options that enable/disable the automatic data correction (e.g.
+  removal of trailing padding) to the findscu command line tool. The default
+  is still to disable the data correction, i.e. the same behavior as before.
+  Thanks to forum user "gerhardh" for the original report.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+
 **** Changes from 2014.10.31 (riesmeier)
 
 - Updated "dcmrt" classes based on DICOM 2014b:
