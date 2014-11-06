@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.06 (riesmeier)
+
+- Fixed issue when scaling certain images:
+  The image scaling methods expandPixel() and reducePixel(), which are used for
+  interpolation (c't algorithm), were not working correctly for certain sizes.
+  This commit solves an issue that was originally fixed with commit e9c3550,
+  but now in a more general and probably more robust manner.
+  Thanks to Tilman Vogel <tilman@circlecvi.com> for the original report and
+  suggested fix.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
 **** Changes from 2014.11.01 (riesmeier)
 
 - Added "data correction" options to findscu:

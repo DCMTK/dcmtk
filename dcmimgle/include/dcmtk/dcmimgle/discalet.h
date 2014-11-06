@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -727,10 +727,23 @@ class DiScaleTemplate
                 {
                     by = y_factor * OFstatic_cast(double, y);
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
+                    if (ey > this->Src_Y)
+                    {
+#ifdef DEBUG            // this output is only useful for debugging purposes
+                        DCMIMGLE_TRACE("  limiting value of 'ey' to 'Src_Y': " << ey << " -> " << this->Src_Y);
+#endif
+                        // see reducePixel()
+                        ey = this->Src_Y;
+                    }
                     byi = OFstatic_cast(int, by);
                     eyi = OFstatic_cast(int, ey);
                     if (OFstatic_cast(double, eyi) == ey)
+                    {
+#ifdef DEBUG            // this output is only useful for debugging purposes
+                        DCMIMGLE_TRACE("  decreasing value of 'eyi' by 1: " << eyi << " -> " << (eyi - 1));
+#endif
                         --eyi;
+                    }
                     y_part = OFstatic_cast(double, eyi) / y_factor;
                     b_factor = y_part - OFstatic_cast(double, y);
                     t_factor = (OFstatic_cast(double, y) + 1.0) - y_part;
@@ -739,10 +752,23 @@ class DiScaleTemplate
                         value = 0;
                         bx = x_factor * OFstatic_cast(double, x);
                         ex = x_factor * (OFstatic_cast(double, x) + 1.0);
+                        if (ex > this->Src_X)
+                        {
+#ifdef DEBUG                // this output is only useful for debugging purposes
+                            DCMIMGLE_TRACE("  limiting value of 'ex' to 'Src_X': " << ex << " -> " << this->Src_X);
+#endif
+                            // see reducePixel()
+                            ex = this->Src_X;
+                        }
                         bxi = OFstatic_cast(int, bx);
                         exi = OFstatic_cast(int, ex);
                         if (OFstatic_cast(double, exi) == ex)
+                        {
+#ifdef DEBUG                // this output is only useful for debugging purposes
+                            DCMIMGLE_TRACE("  decreasing value of 'exi' by 1: " << exi << " -> " << (exi - 1));
+#endif
                             --exi;
+                        }
                         x_part = OFstatic_cast(double, exi) / x_factor;
                         l_factor = x_part - OFstatic_cast(double, x);
                         r_factor = (OFstatic_cast(double, x) + 1.0) - x_part;
@@ -825,11 +851,21 @@ class DiScaleTemplate
                 {
                     by = y_factor * OFstatic_cast(double, y);
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
+                    if (ey > this->Src_Y)
+                    {
+#ifdef DEBUG            // this output is only useful for debugging purposes
+                        DCMIMGLE_TRACE("  limiting value of 'ey' to 'Src_Y': " << ey << " -> " << this->Src_Y);
+#endif
+                        // yes, this can happen due to rounding, e.g. double(943) / double(471) * double(471)
+                        // is something like 943.00000000000011368683772161602974 and then, the eyi == ey check
+                        // fails to bring eyi back into range!
+                        ey = this->Src_Y;
+                    }
                     byi = OFstatic_cast(int, by);
                     eyi = OFstatic_cast(int, ey);
-                    if (ey - OFstatic_cast(double, eyi) < 0.00001)      // check whether difference falls below a threshold
+                    if (OFstatic_cast(double, eyi) == ey)
                     {
-#ifdef DEBUG                                                            // this output is only useful for debugging purposes
+#ifdef DEBUG            // this output is only useful for debugging purposes
                         DCMIMGLE_TRACE("  decreasing value of 'eyi' by 1: " << eyi << " -> " << (eyi - 1));
 #endif
                         --eyi;
@@ -841,11 +877,19 @@ class DiScaleTemplate
                         value = 0;
                         bx = x_factor * OFstatic_cast(double, x);
                         ex = x_factor * (OFstatic_cast(double, x) + 1.0);
+                        if (ex > this->Src_X)
+                        {
+#ifdef DEBUG                // this output is only useful for debugging purposes
+                            DCMIMGLE_TRACE("  limiting value of 'ex' to 'Src_X': " << ex << " -> " << this->Src_X);
+#endif
+                            // see above comment
+                            ex = this->Src_X;
+                        }
                         bxi = OFstatic_cast(int, bx);
                         exi = OFstatic_cast(int, ex);
-                        if (ex - OFstatic_cast(double, exi) < 0.00001)  // check whether difference falls below a threshold
+                        if (OFstatic_cast(double, exi) == ex)
                         {
-#ifdef DEBUG                                                            // this output is only useful for debugging purposes
+#ifdef DEBUG                // this output is only useful for debugging purposes
                             DCMIMGLE_TRACE("  decreasing value of 'exi' by 1: " << exi << " -> " << (exi - 1));
 #endif
                             --exi;
