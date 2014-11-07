@@ -29,7 +29,6 @@
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofcast.h"
 
-#define INCLUDE_CASSERT
 #define INCLUDE_CSTRING             /* for strdup() */
 #define INCLUDE_CSTDLIB             /* for free() */
 #include "dcmtk/ofstd/ofstdinc.h"

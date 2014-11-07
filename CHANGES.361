@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.07 (riesmeier)
+
+- Removed unneeded header include:
+  The standard header "cassert" is not needed any longer. So do not include it.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+
 **** Changes from 2014.11.06 (riesmeier)
 
 - Fixed issue when scaling certain images:
