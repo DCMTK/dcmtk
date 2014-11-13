@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,7 +121,7 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
                     errorFlag = EC_MaximumLengthViolated;
                     if (autocorrect)
                     {
-                        /*  We are currently not removing any charaters since we do not know
+                        /*  We are currently not removing any characters since we do not know
                          *  whether a character consists of one or more bytes.  This will be
                          *  fixed in a future version.
                          */

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.13 (riesmeier)
+
+- Fixed typo in comment.
+  Affects: dcmdata/libsrc/dcchrstr.cc
+
 **** Changes from 2014.11.07 (riesmeier)
 
 - Removed unneeded header include:
