@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2014.11.13 (riesmeier)
 
+- Fixed wrong validation of PN, LO and SH values:
+  According to DICOM PS 3.5, the control characters LF, FF and CR are not
+  allowed for LO and SH element values. Also ESC is only allowed for ISO 2022
+  encoding (escape sequences), but not for the default character set (ASCII).
+  Affects: dcmwlm/libsrc/wlds.cc
+
 - Fixed typo in comment.
   Affects: dcmdata/libsrc/dcchrstr.cc
 

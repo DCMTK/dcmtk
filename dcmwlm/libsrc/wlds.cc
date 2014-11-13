@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -707,8 +707,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
     case EVR_PN:
       // get string value
       ok = GetStringValue( elem, val );
-      // check if value contains only valid characters
-      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033" ) && specificCharacterSet == "" )  // ESC=\033
+      // check if value contains only valid characters (no ESC since only allowed for ISO 2022 encoding)
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}" ) && specificCharacterSet == "" )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
@@ -722,8 +722,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
     case EVR_LO:
       // get string value
       ok = GetStringValue( elem, val );
-      // check if value contains only valid characters
-      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      // check if value contains only valid characters (no ESC since only allowed for ISO 2022 encoding)
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}" ) && specificCharacterSet == "" )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
@@ -737,8 +737,8 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
     case EVR_SH:
       // get string value
       ok = GetStringValue( elem, val );
-      // check if value contains only valid characters
-      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      // check if value contains only valid characters (no ESC since only allowed for ISO 2022 encoding)
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}" ) && specificCharacterSet == "" )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
