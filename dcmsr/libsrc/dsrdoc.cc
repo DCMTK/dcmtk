@@ -544,6 +544,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             CompletionFlagEnum = enumeratedValueToCompletionFlag(getStringValueFromElement(CompletionFlag, tmpString));
             if (CompletionFlagEnum == CF_invalid)
                 printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
+            else if ((CompletionFlagEnum == CF_Partial) && (documentType == DT_XRayRadiationDoseSR))
+                DCMSR_WARN("Invalid value for CompletionFlag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
             /* get and check VerificationFlag / VerifyingObserverSequence */
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
             if (VerificationFlagEnum == VF_invalid)
@@ -600,6 +602,10 @@ OFCondition DSRDocument::write(DcmItem &dataset,
     {
         /* update all DICOM attributes */
         updateAttributes();
+
+        /* checking particular values */
+        if ((CompletionFlagEnum == CF_Partial) && (getDocumentType() == DT_XRayRadiationDoseSR))
+            DCMSR_WARN("Invalid value for CompletionFlag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
 
         /* write general document attributes */
 
@@ -2596,8 +2602,8 @@ OFCondition DSRDocument::createRevisedVersion(const OFBool clearList)
             if (result.good())
             {
                 IdenticalDocuments.clear();
-                /* set completion flag to PARTIAL, delete description */
-                CompletionFlagEnum = CF_Partial;
+                /* reset completion flag, delete description */
+                CompletionFlagEnum = CF_invalid;
                 CompletionFlagDescription.clear();
                 /* clear content date/time, will be set automatically in updateAttributes() */
                 ContentDate.clear();

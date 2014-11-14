@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.14 (riesmeier)
+
+- Added check for requirements clarified by CP-1401:
+  Added check to read() and write() method and report a warning message if the
+  Completion Flag is not "COMPLETE" for X-Ray Radiation Dose SR objects.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2014.11.13 (riesmeier)
 
 - Fixed wrong validation of PN, LO and SH values:

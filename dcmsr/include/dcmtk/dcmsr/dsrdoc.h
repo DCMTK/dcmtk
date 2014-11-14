@@ -99,8 +99,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** read SR document from DICOM dataset.
      *  Please note that the current document is also deleted if the reading process fails.
-     *  If logging is enabled, the reason for any error might be obtained from the error/warning
-     *  output.
+     *  If logging is enabled, the reason for any error might be obtained from the log output.
+     *  Also warning and debug messages are reported if the respective logger is enabled.
      ** @param  dataset  reference to DICOM dataset from which the document should be read
      *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx).
      *                   E.g. RF_readDigitalSignatures indicates whether to read the digital
@@ -142,6 +142,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  Instead, the template identification has to be set manually for the root CONTAINER
      *  (see DSRDocumentTreeNode::setTemplateIdentification()).  This is because the template
      *  constraints cannot be checked yet.
+     *  If logging is enabled, warning and debug messages are reported to the log output.
      ** @param  dataset      reference to DICOM dataset to which the current document should be
      *                       written.  The 'dataset' is not cleared before writing to it!
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
