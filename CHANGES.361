@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.24 (riesmeier)
+
+- Updated data dictionary for DICOM 2014c edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2014-11-21.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2014.11.14 (riesmeier)
 
 - Added check for requirements clarified by CP-1401:

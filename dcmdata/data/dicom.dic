@@ -16,13 +16,13 @@
 #
 #  Purpose: This is the global standard DICOM data dictionary for the DCMTK.
 #
-# This file contains the complete data dictionary from the 2014a edition of the
+# This file contains the complete data dictionary from the 2014c edition of the
 # DICOM standard.  This also includes the non-private definitions from the
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2014b and PS 3.7-2014b
-# File created on 2014-09-18 12:24:36 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2014c and PS 3.7-2014c
+# File created on 2014-11-22 17:29:54 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
@@ -466,6 +466,38 @@
 (0014,40A2)	LO	ImageQualityIndicatorSize	1	DICOM/DICONDE
 (0014,5002)	IS	LINACEnergy	1	DICOM/DICONDE
 (0014,5004)	IS	LINACOutput	1	DICOM/DICONDE
+(0014,5100)	US	ActiveAperture	1	DICOM/DICONDE
+(0014,5101)	DS	TotalAperture	1	DICOM/DICONDE
+(0014,5102)	DS	ApertureElevation	1	DICOM/DICONDE
+(0014,5103)	DS	MainLobeAngle	1	DICOM/DICONDE
+(0014,5104)	DS	MainRoofAngle	1	DICOM/DICONDE
+(0014,5105)	CS	ConnectorType	1	DICOM/DICONDE
+(0014,5106)	SH	WedgeModelNumber	1	DICOM/DICONDE
+(0014,5107)	DS	WedgeAngleFloat	1	DICOM/DICONDE
+(0014,5108)	DS	WedgeRoofAngle	1	DICOM/DICONDE
+(0014,5109)	CS	WedgeElement1Position	1	DICOM/DICONDE
+(0014,510A)	DS	WedgeMaterialVelocity	1	DICOM/DICONDE
+(0014,510B)	SH	WedgeMaterial	1	DICOM/DICONDE
+(0014,510C)	DS	WedgeOffsetZ	1	DICOM/DICONDE
+(0014,510D)	DS	WedgeOriginOffsetX	1	DICOM/DICONDE
+(0014,510E)	DS	WedgeTimeDelay	1	DICOM/DICONDE
+(0014,510F)	SH	WedgeName	1	DICOM/DICONDE
+(0014,5110)	SH	WedgeManufacturerName	1	DICOM/DICONDE
+(0014,5111)	LO	WedgeDescription	1	DICOM/DICONDE
+(0014,5112)	DS	NominalBeamAngle	1	DICOM/DICONDE
+(0014,5113)	DS	WedgeOffsetX	1	DICOM/DICONDE
+(0014,5114)	DS	WedgeOffsetY	1	DICOM/DICONDE
+(0014,5115)	DS	WedgeTotalLength	1	DICOM/DICONDE
+(0014,5116)	DS	WedgeInContactLength	1	DICOM/DICONDE
+(0014,5117)	DS	WedgeFrontGap	1	DICOM/DICONDE
+(0014,5118)	DS	WedgeTotalHeight	1	DICOM/DICONDE
+(0014,5119)	DS	WedgeFrontHeight	1	DICOM/DICONDE
+(0014,511A)	DS	WedgeRearHeight	1	DICOM/DICONDE
+(0014,511B)	DS	WedgeTotalWidth	1	DICOM/DICONDE
+(0014,511C)	DS	WedgeInContactWidth	1	DICOM/DICONDE
+(0014,511D)	DS	WedgeChamferHeight	1	DICOM/DICONDE
+(0014,511E)	CS	WedgeCurve	1	DICOM/DICONDE
+(0014,511F)	DS	RadiusAlongWedge	1	DICOM/DICONDE
 (0018,0010)	LO	ContrastBolusAgent	1	DICOM
 (0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM
 (0018,0013)	FL	ContrastBolusT1Relaxivity	1	DICOM
@@ -1517,6 +1549,10 @@
 (0028,0109)	xs	LargestPixelValueInSeries	1	DICOM
 (0028,0120)	xs	PixelPaddingValue	1	DICOM
 (0028,0121)	xs	PixelPaddingRangeLimit	1	DICOM
+(0028,0122)	FL	FloatPixelPaddingValue	1	DICOM
+(0028,0123)	FD	DoubleFloatPixelPaddingValue	1	DICOM
+(0028,0124)	FL	FloatPixelPaddingRangeLimit	1	DICOM
+(0028,0125)	FD	DoubleFloatPixelPaddingRangeLimit	1	DICOM
 (0028,0300)	CS	QualityControlImage	1	DICOM
 (0028,0301)	CS	BurnedInAnnotation	1	DICOM
 (0028,0302)	CS	RecognizableVisualFeatures	1	DICOM
@@ -1683,6 +1719,8 @@
 (0038,0062)	LO	ServiceEpisodeDescription	1	DICOM
 (0038,0064)	SQ	IssuerOfServiceEpisodeIDSequence	1	DICOM
 (0038,0100)	SQ	PertinentDocumentsSequence	1	DICOM
+(0038,0101)	SQ	PertinentResourcesSequence	1	DICOM
+(0038,0102)	LO	ResourceDescription	1	DICOM
 (0038,0300)	LO	CurrentPatientLocation	1	DICOM
 (0038,0400)	LO	PatientInstitutionResidence	1	DICOM
 (0038,0500)	LO	PatientState	1	DICOM
@@ -1865,6 +1903,7 @@
 (0040,4051)	DT	PerformedProcedureStepEndDateTime	1	DICOM
 (0040,4052)	DT	ProcedureStepCancellationDateTime	1	DICOM
 (0040,8302)	DS	EntranceDoseInmGy	1	DICOM
+(0040,9092)	SQ	ParametricMapFrameTypeSequence	1	DICOM
 (0040,9094)	SQ	ReferencedImageRealWorldValueMappingSequence	1	DICOM
 (0040,9096)	SQ	RealWorldValueMappingSequence	1	DICOM
 (0040,9098)	SQ	PixelValueMappingCodeSequence	1	DICOM
@@ -1872,6 +1911,7 @@
 (0040,9211)	xs	RealWorldValueLastValueMapped	1	DICOM
 (0040,9212)	FD	RealWorldValueLUTData	1-n	DICOM
 (0040,9216)	xs	RealWorldValueFirstValueMapped	1	DICOM
+(0040,9220)	SQ	QuantityDefinitionSequence	1	DICOM
 (0040,9224)	FD	RealWorldValueIntercept	1	DICOM
 (0040,9225)	FD	RealWorldValueSlope	1	DICOM
 (0040,A010)	CS	RelationshipType	1	DICOM
@@ -1941,6 +1981,7 @@
 (0040,E022)	SQ	DICOMMediaRetrievalSequence	1	DICOM
 (0040,E023)	SQ	WADORetrievalSequence	1	DICOM
 (0040,E024)	SQ	XDSRetrievalSequence	1	DICOM
+(0040,E025)	SQ	WADORSRetrievalSequence	1	DICOM
 (0040,E030)	UI	RepositoryUniqueID	1	DICOM
 (0040,E031)	UI	HomeCommunityID	1	DICOM
 (0042,0010)	ST	DocumentTitle	1	DICOM
@@ -3065,6 +3106,7 @@
 (300A,00DB)	FL	WedgeThinEdgePosition	1	DICOM
 (300A,00DC)	SH	BolusID	1	DICOM
 (300A,00DD)	ST	BolusDescription	1	DICOM
+(300A,00DE)	DS	EffectiveWedgeAngle	1	DICOM
 (300A,00E0)	IS	NumberOfCompensators	1	DICOM
 (300A,00E1)	SH	MaterialID	1	DICOM
 (300A,00E2)	DS	TotalCompensatorTrayFactor	1	DICOM
@@ -3465,6 +3507,8 @@
 (6000-60FF,1303)	DS	ROIStandardDeviation	1	DICOM
 (6000-60FF,1500)	LO	OverlayLabel	1	DICOM
 (6000-60FF,3000)	ox	OverlayData	1	DICOM
+(7FE0,0008)	OF	FloatPixelData	1	DICOM
+(7FE0,0009)	OD	DoubleFloatPixelData	1	DICOM
 (7FE0,0010)	ox	PixelData	1	DICOM
 (FFFA,FFFA)	SQ	DigitalSignaturesSequence	1	DICOM
 (FFFC,FFFC)	OB	DataSetTrailingPadding	1	DICOM

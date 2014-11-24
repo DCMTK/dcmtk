@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-10-24 15:21:05
+**   Date: 2014-11-24 16:51:43
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-10-24 15:21:05"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2014-11-24 16:51:43"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3811
+** Number of entries: 3855
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -505,6 +505,38 @@
 #define DCM_ImageQualityIndicatorSize            DcmTagKey(0x0014, 0x40a2)
 #define DCM_LINACEnergy                          DcmTagKey(0x0014, 0x5002)
 #define DCM_LINACOutput                          DcmTagKey(0x0014, 0x5004)
+#define DCM_ActiveAperture                       DcmTagKey(0x0014, 0x5100)
+#define DCM_TotalAperture                        DcmTagKey(0x0014, 0x5101)
+#define DCM_ApertureElevation                    DcmTagKey(0x0014, 0x5102)
+#define DCM_MainLobeAngle                        DcmTagKey(0x0014, 0x5103)
+#define DCM_MainRoofAngle                        DcmTagKey(0x0014, 0x5104)
+#define DCM_ConnectorType                        DcmTagKey(0x0014, 0x5105)
+#define DCM_WedgeModelNumber                     DcmTagKey(0x0014, 0x5106)
+#define DCM_WedgeAngleFloat                      DcmTagKey(0x0014, 0x5107)
+#define DCM_WedgeRoofAngle                       DcmTagKey(0x0014, 0x5108)
+#define DCM_WedgeElement1Position                DcmTagKey(0x0014, 0x5109)
+#define DCM_WedgeMaterialVelocity                DcmTagKey(0x0014, 0x510a)
+#define DCM_WedgeMaterial                        DcmTagKey(0x0014, 0x510b)
+#define DCM_WedgeOffsetZ                         DcmTagKey(0x0014, 0x510c)
+#define DCM_WedgeOriginOffsetX                   DcmTagKey(0x0014, 0x510d)
+#define DCM_WedgeTimeDelay                       DcmTagKey(0x0014, 0x510e)
+#define DCM_WedgeName                            DcmTagKey(0x0014, 0x510f)
+#define DCM_WedgeManufacturerName                DcmTagKey(0x0014, 0x5110)
+#define DCM_WedgeDescription                     DcmTagKey(0x0014, 0x5111)
+#define DCM_NominalBeamAngle                     DcmTagKey(0x0014, 0x5112)
+#define DCM_WedgeOffsetX                         DcmTagKey(0x0014, 0x5113)
+#define DCM_WedgeOffsetY                         DcmTagKey(0x0014, 0x5114)
+#define DCM_WedgeTotalLength                     DcmTagKey(0x0014, 0x5115)
+#define DCM_WedgeInContactLength                 DcmTagKey(0x0014, 0x5116)
+#define DCM_WedgeFrontGap                        DcmTagKey(0x0014, 0x5117)
+#define DCM_WedgeTotalHeight                     DcmTagKey(0x0014, 0x5118)
+#define DCM_WedgeFrontHeight                     DcmTagKey(0x0014, 0x5119)
+#define DCM_WedgeRearHeight                      DcmTagKey(0x0014, 0x511a)
+#define DCM_WedgeTotalWidth                      DcmTagKey(0x0014, 0x511b)
+#define DCM_WedgeInContactWidth                  DcmTagKey(0x0014, 0x511c)
+#define DCM_WedgeChamferHeight                   DcmTagKey(0x0014, 0x511d)
+#define DCM_WedgeCurve                           DcmTagKey(0x0014, 0x511e)
+#define DCM_RadiusAlongWedge                     DcmTagKey(0x0014, 0x511f)
 #define DCM_ContrastBolusAgent                   DcmTagKey(0x0018, 0x0010)
 #define DCM_ContrastBolusAgentSequence           DcmTagKey(0x0018, 0x0012)
 #define DCM_ContrastBolusT1Relaxivity            DcmTagKey(0x0018, 0x0013)
@@ -1644,6 +1676,10 @@
 #define DCM_RETIRED_LargestImagePixelValueInPlane DcmTagKey(0x0028, 0x0111)
 #define DCM_PixelPaddingValue                    DcmTagKey(0x0028, 0x0120)
 #define DCM_PixelPaddingRangeLimit               DcmTagKey(0x0028, 0x0121)
+#define DCM_FloatPixelPaddingValue               DcmTagKey(0x0028, 0x0122)
+#define DCM_DoubleFloatPixelPaddingValue         DcmTagKey(0x0028, 0x0123)
+#define DCM_FloatPixelPaddingRangeLimit          DcmTagKey(0x0028, 0x0124)
+#define DCM_DoubleFloatPixelPaddingRangeLimit    DcmTagKey(0x0028, 0x0125)
 #define DCM_RETIRED_ImageLocation                DcmTagKey(0x0028, 0x0200)
 #define DCM_QualityControlImage                  DcmTagKey(0x0028, 0x0300)
 #define DCM_BurnedInAnnotation                   DcmTagKey(0x0028, 0x0301)
@@ -1879,6 +1915,8 @@
 #define DCM_ServiceEpisodeDescription            DcmTagKey(0x0038, 0x0062)
 #define DCM_IssuerOfServiceEpisodeIDSequence     DcmTagKey(0x0038, 0x0064)
 #define DCM_PertinentDocumentsSequence           DcmTagKey(0x0038, 0x0100)
+#define DCM_PertinentResourcesSequence           DcmTagKey(0x0038, 0x0101)
+#define DCM_ResourceDescription                  DcmTagKey(0x0038, 0x0102)
 #define DCM_CurrentPatientLocation               DcmTagKey(0x0038, 0x0300)
 #define DCM_PatientInstitutionResidence          DcmTagKey(0x0038, 0x0400)
 #define DCM_PatientState                         DcmTagKey(0x0038, 0x0500)
@@ -2088,6 +2126,7 @@
 #define DCM_PerformedProcedureStepEndDateTime    DcmTagKey(0x0040, 0x4051)
 #define DCM_ProcedureStepCancellationDateTime    DcmTagKey(0x0040, 0x4052)
 #define DCM_EntranceDoseInmGy                    DcmTagKey(0x0040, 0x8302)
+#define DCM_ParametricMapFrameTypeSequence       DcmTagKey(0x0040, 0x9092)
 #define DCM_ReferencedImageRealWorldValueMappingSequence DcmTagKey(0x0040, 0x9094)
 #define DCM_RealWorldValueMappingSequence        DcmTagKey(0x0040, 0x9096)
 #define DCM_PixelValueMappingCodeSequence        DcmTagKey(0x0040, 0x9098)
@@ -2095,6 +2134,7 @@
 #define DCM_RealWorldValueLastValueMapped        DcmTagKey(0x0040, 0x9211)
 #define DCM_RealWorldValueLUTData                DcmTagKey(0x0040, 0x9212)
 #define DCM_RealWorldValueFirstValueMapped       DcmTagKey(0x0040, 0x9216)
+#define DCM_QuantityDefinitionSequence           DcmTagKey(0x0040, 0x9220)
 #define DCM_RealWorldValueIntercept              DcmTagKey(0x0040, 0x9224)
 #define DCM_RealWorldValueSlope                  DcmTagKey(0x0040, 0x9225)
 #define DCM_RETIRED_FindingsFlagTrial            DcmTagKey(0x0040, 0xa007)
@@ -2224,6 +2264,7 @@
 #define DCM_DICOMMediaRetrievalSequence          DcmTagKey(0x0040, 0xe022)
 #define DCM_WADORetrievalSequence                DcmTagKey(0x0040, 0xe023)
 #define DCM_XDSRetrievalSequence                 DcmTagKey(0x0040, 0xe024)
+#define DCM_WADORSRetrievalSequence              DcmTagKey(0x0040, 0xe025)
 #define DCM_RepositoryUniqueID                   DcmTagKey(0x0040, 0xe030)
 #define DCM_HomeCommunityID                      DcmTagKey(0x0040, 0xe031)
 #define DCM_DocumentTitle                        DcmTagKey(0x0042, 0x0010)
@@ -3413,6 +3454,7 @@
 #define DCM_WedgeThinEdgePosition                DcmTagKey(0x300a, 0x00db)
 #define DCM_BolusID                              DcmTagKey(0x300a, 0x00dc)
 #define DCM_BolusDescription                     DcmTagKey(0x300a, 0x00dd)
+#define DCM_EffectiveWedgeAngle                  DcmTagKey(0x300a, 0x00de)
 #define DCM_NumberOfCompensators                 DcmTagKey(0x300a, 0x00e0)
 #define DCM_MaterialID                           DcmTagKey(0x300a, 0x00e1)
 #define DCM_TotalCompensatorTrayFactor           DcmTagKey(0x300a, 0x00e2)
@@ -3827,6 +3869,8 @@
 #define DCM_WaveformData                         DcmTagKey(0x5400, 0x1010)
 #define DCM_FirstOrderPhaseCorrectionAngle       DcmTagKey(0x5600, 0x0010)
 #define DCM_SpectroscopyData                     DcmTagKey(0x5600, 0x0020)
+#define DCM_FloatPixelData                       DcmTagKey(0x7fe0, 0x0008)
+#define DCM_DoubleFloatPixelData                 DcmTagKey(0x7fe0, 0x0009)
 #define DCM_PixelData                            DcmTagKey(0x7fe0, 0x0010)
 #define DCM_RETIRED_CoefficientsSDVN             DcmTagKey(0x7fe0, 0x0020)
 #define DCM_RETIRED_CoefficientsSDHN             DcmTagKey(0x7fe0, 0x0030)

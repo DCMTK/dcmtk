@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-10-24 15:21:13
+**   Date: 2014-11-24 16:51:52
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2014-10-24 15:21:13";
+const char* dcmBuiltinDictBuildDate = "2014-11-24 16:51:52";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -3345,6 +3345,134 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0014, 0x5004, 0x0014, 0x5004,
       EVR_IS, "LINACOutput", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5100, 0x0014, 0x5100,
+      EVR_US, "ActiveAperture", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5101, 0x0014, 0x5101,
+      EVR_DS, "TotalAperture", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5102, 0x0014, 0x5102,
+      EVR_DS, "ApertureElevation", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5103, 0x0014, 0x5103,
+      EVR_DS, "MainLobeAngle", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5104, 0x0014, 0x5104,
+      EVR_DS, "MainRoofAngle", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5105, 0x0014, 0x5105,
+      EVR_CS, "ConnectorType", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5106, 0x0014, 0x5106,
+      EVR_SH, "WedgeModelNumber", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5107, 0x0014, 0x5107,
+      EVR_DS, "WedgeAngleFloat", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5108, 0x0014, 0x5108,
+      EVR_DS, "WedgeRoofAngle", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5109, 0x0014, 0x5109,
+      EVR_CS, "WedgeElement1Position", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x510a, 0x0014, 0x510a,
+      EVR_DS, "WedgeMaterialVelocity", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x510b, 0x0014, 0x510b,
+      EVR_SH, "WedgeMaterial", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x510c, 0x0014, 0x510c,
+      EVR_DS, "WedgeOffsetZ", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x510d, 0x0014, 0x510d,
+      EVR_DS, "WedgeOriginOffsetX", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x510e, 0x0014, 0x510e,
+      EVR_DS, "WedgeTimeDelay", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x510f, 0x0014, 0x510f,
+      EVR_SH, "WedgeName", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5110, 0x0014, 0x5110,
+      EVR_SH, "WedgeManufacturerName", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5111, 0x0014, 0x5111,
+      EVR_LO, "WedgeDescription", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5112, 0x0014, 0x5112,
+      EVR_DS, "NominalBeamAngle", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5113, 0x0014, 0x5113,
+      EVR_DS, "WedgeOffsetX", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5114, 0x0014, 0x5114,
+      EVR_DS, "WedgeOffsetY", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5115, 0x0014, 0x5115,
+      EVR_DS, "WedgeTotalLength", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5116, 0x0014, 0x5116,
+      EVR_DS, "WedgeInContactLength", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5117, 0x0014, 0x5117,
+      EVR_DS, "WedgeFrontGap", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5118, 0x0014, 0x5118,
+      EVR_DS, "WedgeTotalHeight", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x5119, 0x0014, 0x5119,
+      EVR_DS, "WedgeFrontHeight", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x511a, 0x0014, 0x511a,
+      EVR_DS, "WedgeRearHeight", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x511b, 0x0014, 0x511b,
+      EVR_DS, "WedgeTotalWidth", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x511c, 0x0014, 0x511c,
+      EVR_DS, "WedgeInContactWidth", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x511d, 0x0014, 0x511d,
+      EVR_DS, "WedgeChamferHeight", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x511e, 0x0014, 0x511e,
+      EVR_CS, "WedgeCurve", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x511f, 0x0014, 0x511f,
+      EVR_DS, "RadiusAlongWedge", 1, 1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
@@ -14265,6 +14393,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_xs, "PixelPaddingRangeLimit", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0028, 0x0122, 0x0028, 0x0122,
+      EVR_FL, "FloatPixelPaddingValue", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x0123, 0x0028, 0x0123,
+      EVR_FD, "DoubleFloatPixelPaddingValue", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x0124, 0x0028, 0x0124,
+      EVR_FL, "FloatPixelPaddingRangeLimit", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x0125, 0x0028, 0x0125,
+      EVR_FD, "DoubleFloatPixelPaddingRangeLimit", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0028, 0x0200, 0x0028, 0x0200,
       EVR_US, "RETIRED_ImageLocation", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -16785,6 +16929,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "PertinentDocumentsSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0038, 0x0101, 0x0038, 0x0101,
+      EVR_SQ, "PertinentResourcesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0038, 0x0102, 0x0038, 0x0102,
+      EVR_LO, "ResourceDescription", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0038, 0x0300, 0x0038, 0x0300,
       EVR_LO, "CurrentPatientLocation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17643,6 +17795,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EntranceDoseInmGy", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0x9092, 0x0040, 0x9092,
+      EVR_SQ, "ParametricMapFrameTypeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0x9094, 0x0040, 0x9094,
       EVR_SQ, "ReferencedImageRealWorldValueMappingSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17669,6 +17825,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0040, 0x9216, 0x0040, 0x9216,
       EVR_xs, "RealWorldValueFirstValueMapped", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x9220, 0x0040, 0x9220,
+      EVR_SQ, "QuantityDefinitionSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x9224, 0x0040, 0x9224,
@@ -18185,6 +18345,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0040, 0xe024, 0x0040, 0xe024,
       EVR_SQ, "XDSRetrievalSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe025, 0x0040, 0xe025,
+      EVR_SQ, "WADORSRetrievalSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xe030, 0x0040, 0xe030,
@@ -24645,6 +24809,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ST, "BolusDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x00de, 0x300a, 0x00de,
+      EVR_DS, "EffectiveWedgeAngle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x00e0, 0x300a, 0x00e0,
       EVR_IS, "NumberOfCompensators", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -26433,6 +26601,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED" }
 #endif
+  , { 0x7fe0, 0x0008, 0x7fe0, 0x0008,
+      EVR_OF, "FloatPixelData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x7fe0, 0x0009, 0x7fe0, 0x0009,
+      EVR_OD, "DoubleFloatPixelData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x7fe0, 0x0010, 0x7fe0, 0x0010,
       EVR_ox, "PixelData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
