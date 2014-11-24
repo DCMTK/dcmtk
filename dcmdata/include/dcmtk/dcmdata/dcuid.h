@@ -418,6 +418,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation "1.2.840.10008.5.1.4.1.1.14.1"
 #define UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing "1.2.840.10008.5.1.4.1.1.14.2"
 #define UID_NuclearMedicineImageStorage                            "1.2.840.10008.5.1.4.1.1.20"
+#define UID_ParametricMapStorage                                   "1.2.840.10008.5.1.4.1.1.30"
 #define UID_RawDataStorage                                         "1.2.840.10008.5.1.4.1.1.66"
 #define UID_SpatialRegistrationStorage                             "1.2.840.10008.5.1.4.1.1.66.1"
 #define UID_SpatialFiducialsStorage                                "1.2.840.10008.5.1.4.1.1.66.2"
@@ -538,7 +539,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_UnifiedProcedureStepWatchSOPClass                      "1.2.840.10008.5.1.4.34.6.2"
 #define UID_UnifiedProcedureStepPullSOPClass                       "1.2.840.10008.5.1.4.34.6.3"
 #define UID_UnifiedProcedureStepEventSOPClass                      "1.2.840.10008.5.1.4.34.6.4"
-#define UID_UnifiedWorklistAndProcedureStepSOPInstance             "1.2.840.10008.5.1.4.34.5"
+#define UID_UPSGlobalSubscriptionSOPInstance                       "1.2.840.10008.5.1.4.34.5"
+#define UID_UPSFilteredGlobalSubscriptionSOPInstance               "1.2.840.10008.5.1.4.34.5.1"
 
 // Storage Commitment
 #define UID_StorageCommitmentPushModelSOPClass                     "1.2.840.10008.1.20.1"

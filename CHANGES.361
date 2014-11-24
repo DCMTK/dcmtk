@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2014.11.24 (riesmeier)
 
+- Added support for new UIDs from DICOM 2014c:
+  Added support for new SOP Class UIDs from Supplement 171 (Unified Procedure
+  Step by REpresentational State Transfer Services) and Supplement 172
+  (Parametric Map Storage). Also updated name of well-known UPS SOP instance.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 - Updated data dictionary for DICOM 2014c edition:
   Updated data dictionary for the latest edition of the DICOM standard, which
   has been released on 2014-11-21.
