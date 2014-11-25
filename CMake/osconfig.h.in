@@ -377,6 +377,9 @@
 /* Define to 1 if you have the <new.h> header file. */
 #cmakedefine HAVE_NEW_H @HAVE_NEW_H@
 
+/* Define to 1 if you have the <fenv.h> header file. */
+#cmakedefine HAVE_FENV_H @HAVE_FENV_H@
+
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
@@ -436,6 +439,9 @@
 
 /* Define if your system has a prototype for isnan in math.h */
 #cmakedefine HAVE_PROTOTYPE_ISNAN @HAVE_PROTOTYPE_ISNAN@
+
+/* Define if your system has a prototype for isnan in math.h */
+#cmakedefine HAVE_PROTOTYPE__FPCLASSF @HAVE_PROTOTYPE__FPCLASSF@
 
 /* Define if your system has a prototype for listen in sys/types.h
   sys/socket.h */

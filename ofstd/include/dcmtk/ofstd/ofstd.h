@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/oflist.h"     /* for class OFList */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
+#include "dcmtk/ofstd/oftraits.h"   /* for OFenable_if, ... */
 #include "dcmtk/ofstd/ofcond.h"     /* for OFCondition */
 
 #define INCLUDE_CSTDLIB
@@ -47,7 +48,6 @@ END_EXTERN_C
  *------------------------*/
 
 class OFFilename;
-
 
 /*---------------------*
  *  class declaration  *
@@ -706,6 +706,59 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static size_t decodeBase64(const OFString &data,
                                unsigned char *&result);
+
+
+#ifndef DOXYGEN
+    static OFBool (isnan) (float f);
+    static OFBool (isnan) (double d);
+    template<typename Integer>
+    static inline OFTypename OFenable_if<OFis_integral<Integer>::value,OFBool>::type
+    (isnan) ( const Integer i ) { return (isnan) ( OFstatic_cast( double, i ) ); }
+
+    static OFBool (isinf) (float f);
+    static OFBool (isinf) (double d);
+    template<typename Integer>
+    static inline OFTypename OFenable_if<OFis_integral<Integer>::value,OFBool>::type
+    (isinf) ( const Integer i ) { return (isinf) ( OFstatic_cast( double, i ) ); }
+#else
+    /** Determines if the given floating point number is a not-a-number (NaN) value.
+     *  @param f the floating point value to inspect.
+     *  @return OFTrue if f is a NaN, OFFalse otherwise.
+     */
+    static OFBool isnan( float f );
+
+    /** Determines if the given floating point number is a not-a-number (NaN) value.
+     *  @param d the floating point value to inspect.
+     *  @return OFTrue if d is a NaN, OFFalse otherwise.
+     */
+    static OFBool isnan( double d );
+
+    /** Casts the argument to double and calls OFStandard::isnan(double) on the result.
+     *  @param i an integer, i.e. <kbd>OFis_integral<Integer>::value</kbd> equals <kbd>OFTrue</kbd>.
+     *  @return OFStandard::isnan(OFstatic_cast(double,i)).
+     */
+    template<typename Integer>
+    static OFBool isnan( Integer i );
+
+    /** Determines if the given floating point number is a positive or negative infinity.
+     *  @param f the floating point value to inspect.
+     *  @return OFTrue if f is infinite, OFFalse otherwise.
+     */
+    static OFBool isinf( float f );
+
+    /** Determines if the given floating point number is a positive or negative infinity.
+     *  @param d the floating point value to inspect.
+     *  @return OFTrue if d is infinite, OFFalse otherwise.
+     */
+    static OFBool isinf( double d );
+
+    /** Casts the argument to double and calls OFStandard::isinf(double) on the result.
+     *  @param i an integer, i.e. <kbd>OFis_integral<Integer>::value</kbd> equals <kbd>OFTrue</kbd>.
+     *  @return OFStandard::isinf(OFstatic_cast(double,i)).
+     */
+    template<typename Integer>
+    static OFBool isinf( Integer i );
+#endif
 
     /** converts a floating-point number from an ASCII
      *  decimal representation to internal double-precision format.

@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.25 (schlamelcher)
+
+- Introduced OFnumeric_limits:
+  The template OFnumeric_limits provides a standardized way to query various
+  properties of fundamental types (e.g. the largest possible value for type
+  int is OFnumeric_limits<int>::max()).
+  OFnumeric_limits is compatible to C++11's std::numeric_limits.
+  Added:   config/arith.cc
+           ofstd/include/dcmtk/ofstd/oflimits.h
+           ofstd/tests/tlimits.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           CMakeLists.txt
+           config/Makefile.in
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/include/dcmtk/ofstd/oftraits.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.in
+           ofstd/tests/tests.cc
+
 **** Changes from 2014.11.24 (riesmeier)
 
 - Added support for new UIDs from DICOM 2014c:

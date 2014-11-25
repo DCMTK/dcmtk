@@ -56,6 +56,9 @@ template<typename... ARGS>
 using OFis_function = std::is_function<ARGS...>;
 
 template<typename... ARGS>
+using OFis_integral = std::is_integral<ARGS...>;
+
+template<typename... ARGS>
 using OFremove_reference = std::remove_reference<ARGS...>;
 
 template<typename... ARGS>
@@ -116,6 +119,9 @@ struct OFis_array : OFfalse_type {};
 
 template<typename T>
 struct OFis_function : OFfalse_type {};
+
+template<typename T>
+struct OFis_integral : OFfalse_type {};
 
 template<typename T>
 struct OFremove_reference { typedef T type; };
@@ -216,6 +222,43 @@ template<typename R,typename T0,typename T1,typename T2>
 struct OFis_function<R(T0,T1,T2,...)> : OFtrue_type {};
 
 /* TODO: handle functions with more than three arguments */
+
+template<>
+struct OFis_integral<char> : OFtrue_type {};
+
+template<>
+struct OFis_integral<signed char> : OFtrue_type {};
+
+template<>
+struct OFis_integral<unsigned char> : OFtrue_type {};
+
+template<>
+struct OFis_integral<signed short> : OFtrue_type {};
+
+template<>
+struct OFis_integral<unsigned short> : OFtrue_type {};
+
+template<>
+struct OFis_integral<signed int> : OFtrue_type {};
+
+template<>
+struct OFis_integral<unsigned int> : OFtrue_type {};
+
+template<>
+struct OFis_integral<signed long> : OFtrue_type {};
+
+template<>
+struct OFis_integral<unsigned long> : OFtrue_type {};
+
+#ifdef OFlonglong
+template<>
+struct OFis_integral<OFlonglong> : OFtrue_type {};
+#endif
+
+#ifdef OFulonglong
+template<>
+struct OFis_integral<OFulonglong> : OFtrue_type {};
+#endif
 
 template<typename T>
 struct OFremove_reference<T&> { typedef T type; };
@@ -347,6 +390,15 @@ struct OFis_array {};
  */
 template<typename T>
 struct OFis_function {};
+
+/** Metafunction to determine if a type is an integer.
+ *  OFis_integral is based on OFintegral_constant and evaluates to OFTrue if
+ *  an integral type is probed, otherwise OFis_integral<...>::value equals OFFalse.
+ *  @see http://en.cppreference.com/w/cpp/types/is_integral for details.
+ *  @tparam T The type to inspect, e.g. "int" or "long".
+ */
+template<typename T>
+struct OFis_integral {};
 
 /** Metafunction to remove the reference from a type.
  *  OFremove_reference provides a public member typedef "type" for the type

@@ -9,7 +9,7 @@ SHELL = /bin/sh
 include @common_makefile@
 
 
-all:
+all: include/dcmtk/config/arith.h
 
 install: install-doc
 
@@ -53,7 +53,13 @@ clean:
 	rm -rf $(TRASH)
 
 distclean:
-	(cd include/dcmtk/config && rm -f $(DISTTRASH) osconfig.h)
-	rm -rf $(DISTTRASH) Makefile.def lzwtest.tif
+	(cd include/dcmtk/config && rm -f $(DISTTRASH) osconfig.h arith.h)
+	rm -rf $(DISTTRASH) Makefile.def lzwtest.tif arith
 
 dependencies:
+
+include/dcmtk/config/arith.h: arith
+	./arith $@
+
+arith: arith.cc
+	$(CXX) $(CXXFLAGS) -Iinclude -I../ofstd/include -o$@ $@.cc

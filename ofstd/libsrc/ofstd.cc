@@ -1985,6 +1985,41 @@ double OFStandard::atof(const char *s, OFBool *success)
 
 #endif /* DISABLE_OFSTD_ATOF */
 
+OFBool OFStandard::isnan( float f )
+{
+#ifdef HAVE_WINDOWS_H
+  return _isnan(f);
+#else
+  return ::isnan(f);
+#endif
+}
+
+OFBool OFStandard::isnan( double d )
+{
+#ifdef HAVE_WINDOWS_H
+  return _isnan(d);
+#else
+  return ::isnan(d);
+#endif
+}
+
+OFBool OFStandard::isinf( float f )
+{
+#ifdef HAVE_ISINF
+  return ::isinf( f );
+#else
+  return my_isinf( f );
+#endif
+}
+
+OFBool OFStandard::isinf( double d )
+{
+#ifdef HAVE_ISINF
+  return ::isinf( d );
+#else
+  return my_isinf( d );
+#endif
+}
 
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define FTOA_MAXEXP          308
@@ -2025,22 +2060,14 @@ void OFStandard::ftoa(
   unsigned char fmtch = 'G';
 
   // check if val is NAN
-#ifdef HAVE_WINDOWS_H
-  if (_isnan(val))
-#else
   if (isnan(val))
-#endif
   {
     OFStandard::strlcpy(dst, "nan", siz);
     return;
   }
 
   // check if val is infinity
-#ifdef HAVE_ISINF
   if (isinf(val))
-#else
-  if (my_isinf(val))
-#endif
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);

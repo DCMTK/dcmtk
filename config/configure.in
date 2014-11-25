@@ -539,6 +539,7 @@ AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
 AC_CHECK_HEADERS(wchar.h)
 AC_CHECK_HEADERS(wctype.h)
+AC_CHECK_HEADERS(fenv.h)
 
 if test $ac_cv_header_libc_h = yes ; then
   if test $ac_cv_header_math_h = yes ; then

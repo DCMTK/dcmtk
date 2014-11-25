@@ -39,6 +39,12 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
                ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h)
 
 #-----------------------------------------------------------------------------
+# Prepare arith.h
+#-----------------------------------------------------------------------------
+
+INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES()
+
+#-----------------------------------------------------------------------------
 # Start actual compilation tasks
 #-----------------------------------------------------------------------------
 

@@ -8503,6 +8503,18 @@ fi
 
 done
 
+for ac_header in fenv.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "fenv.h" "ac_cv_header_fenv_h" "$ac_includes_default"
+if test "x$ac_cv_header_fenv_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_FENV_H 1
+_ACEOF
+
+fi
+
+done
+
 
 if test $ac_cv_header_libc_h = yes ; then
   if test $ac_cv_header_math_h = yes ; then
@@ -12397,7 +12409,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12400 "configure"
+#line 12412 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12869,7 +12881,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12872 "configure"
+#line 12884 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12941,7 +12953,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12944 "configure"
+#line 12956 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13013,7 +13025,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13016 "configure"
+#line 13028 "configure"
 #include "confdefs.h"
 
 template <class T>
