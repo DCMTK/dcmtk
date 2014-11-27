@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.27 (onken)
+
+- Documented DCMTK's C++ cast macros.
+  It is noted in particular that OFdynamic_cast should not be used in DCMTK.
+  Affects: ofstd/include/dcmtk/ofstd/ofcast.h
+
 **** Changes from 2014.11.25 (schlamelcher)
 
 - Introduced OFnumeric_limits:
