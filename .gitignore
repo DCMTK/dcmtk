@@ -11,6 +11,7 @@ Makefile
 config.status
 config.log
 config/Makefile.def
+config/include/dcmtk/config/arith.h
 config/include/dcmtk/config/osconfig.h
 
 # Directories created by autoconf
@@ -29,6 +30,7 @@ doxygen/dcmtk.tag
 
 # Built binary files
 */tests/tests
+config/arith
 config/lzwtest.tif
 dcmdata/apps/dcm2pdf
 dcmdata/apps/dcm2xml
