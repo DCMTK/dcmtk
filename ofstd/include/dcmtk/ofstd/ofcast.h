@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,7 +29,7 @@
 /** @file ofcast.h
  *  @brief DCMTK cast macros that map to C++ casts if available
  *
- *  DCMTK defines its own C++ cast macros that are used througout DCMTK
+ *  DCMTK defines its own C++ cast macros that are used throughout DCMTK
  *  instead of the original C++ cast operators. If the C++ cast operators
  *  are available on the platform the macros directly map to these. Otherwise
  *  they map to old C-style casts.
@@ -47,7 +47,7 @@
 #define OFconst_cast(x,y) ((x)(y))
 #endif
 
-// OFdynamic cast should not be used in DCMTK since DCMTK
+// OFdynamic_cast should not be used in DCMTK since DCMTK
 // avoids RTTI usage so far.
 #ifdef HAVE_DYNAMIC_CAST
 #define OFdynamic_cast(x,y) (dynamic_cast< x >(y))

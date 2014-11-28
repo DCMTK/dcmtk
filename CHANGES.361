@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.11.28 (riesmeier)
+
+- Fixed typo in comment.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diovlay.h
+           ofstd/include/dcmtk/ofstd/ofcast.h
+
 **** Changes from 2014.11.27 (onken)
 
 - Documented DCMTK's C++ cast macros.

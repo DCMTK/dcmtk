@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2014, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -97,7 +97,7 @@ class DCMTK_DCMIMGLE_EXPORT DiOverlay
     /** constructor, rotate
      *
      ** @param  overlay  pointer to reference overlay object
-     *  @param  degree   angle by which the overlayplanes should be rotated
+     *  @param  degree   angle by which the overlay planes should be rotated
      *  @param  columns  width of the surrounding image
      *  @param  rows     height of the surrounding image
      */
