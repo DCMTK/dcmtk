@@ -1347,7 +1347,7 @@ struct OFnumeric_limits<float>
     static const OFBool has_signaling_NaN           = DCMTK_FLOAT_HAS_SIGNALING_NAN;
     static const OFfloat_denorm_style has_denorm    = DCMTK_FLOAT_HAS_DENORM;
     static const OFBool has_denorm_loss             = DCMTK_FLOAT_HAS_DENORM_LOSS;
-    static const OFfloat_round_style round_style    = OFstatic_cast( OFfloat_round_style, FLT_ROUNDS );
+    static const OFfloat_round_style round_style    = OFstatic_cast( OFfloat_round_style, DCMTK_ROUND_STYLE );
     static const OFBool is_iec559                   = DCMTK_FLOAT_IS_IEC559;
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = OFFalse;
@@ -1384,7 +1384,7 @@ struct OFnumeric_limits<double>
     static const OFBool has_signaling_NaN           = DCMTK_DOUBLE_HAS_SIGNALING_NAN;
     static const OFfloat_denorm_style has_denorm    = DCMTK_DOUBLE_HAS_DENORM;
     static const OFBool has_denorm_loss             = DCMTK_DOUBLE_HAS_DENORM_LOSS;
-    static const OFfloat_round_style round_style    = OFstatic_cast( OFfloat_round_style, FLT_ROUNDS );
+    static const OFfloat_round_style round_style    = OFstatic_cast( OFfloat_round_style, DCMTK_ROUND_STYLE );
     static const OFBool is_iec559                   = DCMTK_DOUBLE_IS_IEC559;
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = OFFalse;

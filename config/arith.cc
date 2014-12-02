@@ -49,6 +49,11 @@
 #include <fenv.h>
 #endif
 
+#ifdef __APPLE__
+// For controlling floating point exceptions on OS X.
+#include <xmmintrin.h>
+#endif
+
 /***********************************************************
  "platform-independent" isinf, isnan & finite, "stolen" from
  ofstd, since we can't depend on the ofstd module!
@@ -409,6 +414,8 @@ static void provoke_snan()
 #ifdef HAVE_WINDOWS_H
     _clearfp();
     _controlfp( _controlfp(0,0) & ~_EM_INVALID, _MCW_EM );
+#elif defined(__APPLE__)
+    _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() & ~_MM_MASK_INVALID );
 #elif defined(HAVE_FENV_H)
     feenableexcept( FE_INVALID );
 #endif
@@ -431,9 +438,14 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     // Windows and Unix version.
 #ifdef HAVE_WINDOWS_H
     _clearfp();
-    _controlfp( _EM_INVALID, _MCW_EM );
+    _controlfp( _controlfp(0,0) | _EM_INVALID, _MCW_EM );
 #elif defined(HAVE_FENV_H)
     feclearexcept( FE_INVALID );
+#ifdef __APPLE__
+    _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() | _MM_MASK_INVALID );
+#else
+    fedisableexcept( FE_INVALID );
+#endif
 #endif
     // Print and return the result
     print_flag
@@ -646,6 +658,7 @@ int main( int argc, char** argv )
 
     COUT << "--";
 
+    out << "#define DCMTK_ROUND_STYLE " << FLT_ROUNDS << '\n';
     out << '\n';
     out << "#endif // CONFIG_ARITH_H" << '\n';
 

@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.12.02 (schlamelcher)
+
+- Several fixes regarding OFnumeric_limits:
+  The initialization state of FLT_ROUNDS is now dumped to DCMTK_ROUND_STYLE
+  during configuration, which can then be evaluated in a compile time
+  context. This is necessary to conform closely enough to the C++ standard
+  as required by clang.
+  Mac OS X's special floating point exception control macros are now applied
+  on that platform, instead of the GNU POSIX extensions previously employed
+  there as well.
+  The existence of '_fpclassf' on the Windows platform is now probed
+  regarding the linker as well (previously only the compile time presence was
+  tested).
+
 **** Changes from 2014.11.28 (riesmeier)
 
 - Fixed typo in comment.
