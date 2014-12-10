@@ -785,69 +785,70 @@ OFCondition DcmElement::changeValue(const void *value,
                                     const Uint32 position,
                                     const Uint32 num)
 {
-    OFBool done = OFFalse;
     errorFlag = EC_Normal;
+    // check for invalid parameter values
     if (position % num != 0 || getLengthField() % num != 0 || position > getLengthField())
         errorFlag = EC_IllegalCall;
     else if (position == getLengthField())
     {
+        // append value
         if (getLengthField() == 0)
         {
             errorFlag = putValue(value, num);
-            done = OFTrue;
         } else {
             // load value (if not loaded yet)
             if (!fValue)
-                loadValue();
-            Uint8 * newValue;
-            // allocate new memory for value
-#ifdef HAVE_STD__NOTHROW
-            // we want to use a non-throwing new here if available.
-            // If the allocation fails, we report an EC_MemoryExhausted error
-            // back to the caller.
-            newValue = new (std::nothrow) Uint8[getLengthField() + num];
-#else
-            /* make sure that the pointer is set to NULL in case of error */
-            try
-            {
-                newValue = new Uint8[getLengthField() + num];
-            }
-            catch (STD_NAMESPACE bad_alloc const &)
-            {
-                newValue = NULL;
-            }
-#endif
-            if (!newValue)
-                errorFlag = EC_MemoryExhausted;
+                errorFlag = loadValue();
             if (errorFlag.good())
             {
-                // swap to local byte order
-                swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
-                                getLengthField(), getTag().getVR().getValueWidth());
-                fByteOrder = gLocalByteOrder;
-                // copy old value in the beginning of new value
-                memcpy(newValue, fValue, size_t(getLengthField()));
-                // set parameter value in the extension
-                memcpy(&newValue[getLengthField()], OFstatic_cast(const Uint8 *, value), size_t(num));
-#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
-                // if created with the nothrow version it must also be deleted with
-                // the nothrow version else memory error.
-                operator delete[] (fValue, std::nothrow);
+                Uint8 * newValue;
+                // allocate new memory for value
+#ifdef HAVE_STD__NOTHROW
+                // we want to use a non-throwing new here if available.
+                // If the allocation fails, we report an EC_MemoryExhausted error
+                // back to the caller.
+                newValue = new (std::nothrow) Uint8[getLengthField() + num];
 #else
-                delete[] fValue;
+                /* make sure that the pointer is set to NULL in case of error */
+                try
+                {
+                    newValue = new Uint8[getLengthField() + num];
+                }
+                catch (STD_NAMESPACE bad_alloc const &)
+                {
+                    newValue = NULL;
+                }
 #endif
-                fValue = newValue;
-                setLengthField(getLengthField() + num);
+                if (!newValue)
+                    errorFlag = EC_MemoryExhausted;
+                if (errorFlag.good())
+                {
+                    // swap to local byte order
+                    swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
+                                    getLengthField(), getTag().getVR().getValueWidth());
+                    fByteOrder = gLocalByteOrder;
+                    // copy old value in the beginning of new value
+                    memcpy(newValue, fValue, size_t(getLengthField()));
+                    // copy value passed as a parameter to the end
+                    memcpy(&newValue[getLengthField()], OFstatic_cast(const Uint8 *, value), size_t(num));
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
+                    // if created with the nothrow version it must also be deleted with
+                    // the nothrow version else memory error.
+                    operator delete[] (fValue, std::nothrow);
+#else
+                    delete[] fValue;
+#endif
+                    fValue = newValue;
+                    setLengthField(getLengthField() + num);
+                } else
+                    errorFlag = EC_MemoryExhausted;
             }
-            done = OFTrue;
         }
-    }
-    // copy value at position
-    if (!done && errorFlag.good())
-    {
+    } else {
         // swap to local byte order
         swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
                         getLengthField(), getTag().getVR().getValueWidth());
+        // copy value at given position
         memcpy(&fValue[position], OFstatic_cast(const Uint8 *, value), size_t(num));
         fByteOrder = gLocalByteOrder;
     }

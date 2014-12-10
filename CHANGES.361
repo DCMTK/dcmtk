@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2014.12.10 (riesmeier)
 
+- Fixed error handling in changeValue():
+  Fixed error handling in method changeValue(), i.e. return an error code in
+  case the memory could not be allocated by new[] or loadValue() failed.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Fixed error handling in detachValueField():
   Fixed error handling in method detachValueField(), i.e. return an error code
   in case the memory could not be allocated by new.
