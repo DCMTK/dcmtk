@@ -350,23 +350,32 @@ OFCondition DcmElement::detachValueField(OFBool copy)
         {
             if (!fValue)
                 l_error = loadValue();
-            Uint8 * newValue;
+            if (l_error.good())
+            {
+                Uint8 * newValue;
 #ifdef HAVE_STD__NOTHROW
-            // we want to use a non-throwing new here if available
-            newValue = new (std::nothrow) Uint8[getLengthField()];
+                // we want to use a non-throwing new here if available
+                newValue = new (std::nothrow) Uint8[getLengthField()];
 #else
-            /* make sure that the pointer is set to NULL in case of error */
-            try
-            {
-                newValue = new Uint8[getLengthField()];
-            }
-            catch (STD_NAMESPACE bad_alloc const &)
-            {
-                newValue = NULL;
-            }
+                /* make sure that the pointer is set to NULL in case of error */
+                try
+                {
+                    newValue = new Uint8[getLengthField()];
+                }
+                catch (STD_NAMESPACE bad_alloc const &)
+                {
+                    newValue = NULL;
+                }
 #endif
-            memcpy(newValue, fValue, size_t(getLengthField()));
-            fValue = newValue;
+                if (newValue)
+                {
+                    memcpy(newValue, fValue, size_t(getLengthField()));
+                    fValue = newValue;
+                } else {
+                    /* the copy could not be created, so return an error */
+                    l_error = EC_MemoryExhausted;
+                }
+            }
         } else {
             fValue = NULL;
             setLengthField(0);
