@@ -34,6 +34,7 @@ OFTEST_REGISTER(dcmdata_decimalString_1);
 OFTEST_REGISTER(dcmdata_decimalString_2);
 OFTEST_REGISTER(dcmdata_decimalString_3);
 OFTEST_REGISTER(dcmdata_decimalString_4);
+OFTEST_REGISTER(dcmdata_floatingPointDouble);
 OFTEST_REGISTER(dcmdata_personName);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_1);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_2);

@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2014.12.10 (riesmeier)
 
+- Added new test case for VR=FD:
+  Added new test case for the VR class DcmFloatingPointDouble in order to make
+  sure that the revised version of DcmElement::changeValue(), which is e.g.
+  used by DcmFloatingPointDouble::putFloat64(), still works as expected.
+  Added:   dcmdata/tests/tvrfd.cc
+  Affects: dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 - Fixed error handling in changeValue():
   Fixed error handling in method changeValue(), i.e. return an error code in
   case the memory could not be allocated by new[] or loadValue() failed.
