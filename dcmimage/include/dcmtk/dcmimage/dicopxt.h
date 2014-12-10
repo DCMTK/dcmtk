@@ -560,7 +560,15 @@ class DiColorPixelTemplate
                 /* use a non-throwing new here (if available) because the allocated buffer can be huge */
                 Data[j] = new (std::nothrow) T[Count];
 #else
-                Data[j] = new T[Count];
+                /* make sure that the pointer is set to NULL in case of error */
+                try
+                {
+                    Data[j] = new T[Count];
+                }
+                catch (STD_NAMESPACE bad_alloc const &)
+                {
+                    Data[j] = NULL;
+                }
 #endif
                 if (Data[j] != NULL)
                 {

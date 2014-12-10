@@ -553,7 +553,15 @@ Uint8 *DcmByteString::newValueField()
         // back to the caller.
         value = new (std::nothrow) Uint8[lengthField + 2];
 #else
-        value = new Uint8[lengthField + 2];
+        /* make sure that the pointer is set to NULL in case of error */
+        try
+        {
+            value = new Uint8[lengthField + 2];
+        }
+        catch (STD_NAMESPACE bad_alloc const &)
+        {
+            value = NULL;
+        }
 #endif
 
         /* terminate string after real length */
@@ -574,7 +582,15 @@ Uint8 *DcmByteString::newValueField()
         // back to the caller.
         value = new (std::nothrow) Uint8[lengthField + 1];
 #else
-        value = new Uint8[lengthField + 1];
+        /* make sure that the pointer is set to NULL in case of error */
+        try
+        {
+            value = new Uint8[lengthField + 1];
+        }
+        catch (STD_NAMESPACE bad_alloc const &)
+        {
+            value = NULL;
+        }
 #endif
     }
     /* make sure that the string is properly terminated by a 0 byte */

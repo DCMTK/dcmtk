@@ -383,7 +383,15 @@ class DiInputPixelTemplate
             /* use a non-throwing new here (if available) because the allocated buffer can be huge */
             pixel = new (std::nothrow) T1[count_T1 + extraByte];
 #else
-            pixel = new T1[count_T1 + extraByte];
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                pixel = new T1[count_T1 + extraByte];
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                pixel = NULL;
+            }
 #endif
             if (pixel != NULL)
             {
@@ -451,7 +459,15 @@ class DiInputPixelTemplate
             /* use a non-throwing new here (if available) because the allocated buffer can be huge */
             Data = new (std::nothrow) T2[Count];
 #else
-            Data = new T2[Count];
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                Data = new T2[Count];
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                Data = NULL;
+            }
 #endif
             if (Data != NULL)
             {

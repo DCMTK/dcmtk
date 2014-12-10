@@ -64,7 +64,15 @@ class DiMonoPixelTemplate
         /* use a non-throwing new here (if available) because the allocated buffer can be huge */
         Data = new (std::nothrow) T[Count];
 #else
-        Data = new T[Count];
+        /* make sure that the pointer is set to NULL in case of error */
+        try
+        {
+            Data = new T[Count];
+        }
+        catch (STD_NAMESPACE bad_alloc const &)
+        {
+            Data = NULL;
+        }
 #endif
         if (Data == NULL)
             DCMIMGLE_DEBUG("cannot allocate memory buffer for 'Data' in DiMonoPixelTemplate constructor");

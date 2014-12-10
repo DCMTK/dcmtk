@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.12.10 (riesmeier)
+
+- Use "try and catch" block around new[]:
+  Use "try and catch" blocks in order to catch the "bad allocation" exception
+  thrown by the call of "new" when non-throwing new operator is not available.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmimage/include/dcmtk/dcmimage/dicopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+
 **** Changes from 2014.12.02 (schlamelcher)
 
 - Several fixes regarding OFnumeric_limits:
@@ -14,6 +25,9 @@ Changes between releases are documented here.
   The existence of '_fpclassf' on the Windows platform is now probed
   regarding the linker as well (previously only the compile time presence was
   tested).
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           config/arith.cc
+           ofstd/include/dcmtk/ofstd/oflimits.h
 
 **** Changes from 2014.11.28 (riesmeier)
 

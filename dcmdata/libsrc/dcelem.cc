@@ -82,7 +82,15 @@ DcmElement::DcmElement(const DcmElement &elem)
             // back to the caller.
             fValue = new (std::nothrow) Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
 #else
-            fValue = new Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                fValue = new Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                fValue = NULL;
+            }
 #endif
             if (fValue)
                 fValue[getLengthField()] = 0;
@@ -96,7 +104,15 @@ DcmElement::DcmElement(const DcmElement &elem)
             // back to the caller.
             fValue = new (std::nothrow) Uint8[getLengthField() + pad];
 #else
-            fValue = new Uint8[getLengthField() + pad];
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                fValue = new Uint8[getLengthField() + pad];
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                fValue = NULL;
+            }
 #endif
         }
 
@@ -151,7 +167,15 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
             // back to the caller.
             fValue = new (std::nothrow) Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
 #else
-            fValue = new Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                fValue = new Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                fValue = NULL;
+            }
 #endif
             if (fValue)
                 fValue[getLengthField()] = 0;
@@ -165,7 +189,15 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
             // back to the caller.
             fValue = new (std::nothrow) Uint8[getLengthField() + pad];
 #else
-            fValue = new Uint8[getLengthField() + pad];
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                fValue = new Uint8[getLengthField() + pad];
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                fValue = NULL;
+            }
 #endif
         }
 
@@ -318,11 +350,20 @@ OFCondition DcmElement::detachValueField(OFBool copy)
         {
             if (!fValue)
                 l_error = loadValue();
+            Uint8 * newValue;
 #ifdef HAVE_STD__NOTHROW
             // we want to use a non-throwing new here if available
-            Uint8 * newValue = new (std::nothrow) Uint8[getLengthField()];
+            newValue = new (std::nothrow) Uint8[getLengthField()];
 #else
-            Uint8 * newValue = new Uint8[getLengthField()];
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                newValue = new Uint8[getLengthField()];
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                newValue = NULL;
+            }
 #endif
             memcpy(newValue, fValue, size_t(getLengthField()));
             fValue = newValue;
@@ -666,7 +707,15 @@ Uint8 *DcmElement::newValueField()
         // back to the caller.
         value = new (std::nothrow) Uint8[lengthField + 1];    // protocol error: odd value length
 #else
-        value = new Uint8[lengthField + 1];    // protocol error: odd value length
+        /* make sure that the pointer is set to NULL in case of error */
+        try
+        {
+            value = new Uint8[lengthField + 1];    // protocol error: odd value length
+        }
+        catch (STD_NAMESPACE bad_alloc const &)
+        {
+            value = NULL;
+        }
 #endif
         /* if creation was successful, set last byte to 0 (in order to initialize this byte) */
         /* (no value will be assigned to this byte later, since Length was odd) */
@@ -687,7 +736,15 @@ Uint8 *DcmElement::newValueField()
         // back to the caller.
         value = new (std::nothrow) Uint8[lengthField];
 #else
-        value = new Uint8[lengthField];
+        /* make sure that the pointer is set to NULL in case of error */
+        try
+        {
+            value = new Uint8[lengthField];
+        }
+        catch (STD_NAMESPACE bad_alloc const &)
+        {
+            value = NULL;
+        }
 #endif
     /* if creation was not successful set member error flag correspondingly */
     if (!value)
@@ -733,14 +790,23 @@ OFCondition DcmElement::changeValue(const void *value,
             // load value (if not loaded yet)
             if (!fValue)
                 loadValue();
+            Uint8 * newValue;
             // allocate new memory for value
 #ifdef HAVE_STD__NOTHROW
             // we want to use a non-throwing new here if available.
             // If the allocation fails, we report an EC_MemoryExhausted error
             // back to the caller.
-            Uint8 *newValue = new (std::nothrow) Uint8[getLengthField() + num];
+            newValue = new (std::nothrow) Uint8[getLengthField() + num];
 #else
-            Uint8 *newValue = new Uint8[getLengthField() + num];
+            /* make sure that the pointer is set to NULL in case of error */
+            try
+            {
+                newValue = new Uint8[getLengthField() + num];
+            }
+            catch (STD_NAMESPACE bad_alloc const &)
+            {
+                newValue = NULL;
+            }
 #endif
             if (!newValue)
                 errorFlag = EC_MemoryExhausted;
