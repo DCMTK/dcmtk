@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2014.12.11 (riesmeier)
+
+- Changed attribute used for the "FD" test:
+  Changed attribute used for the Floating Point Double (FD) test from Physical
+  Delta X (0018,602C) to Inversion Times (0018,9079) because only the latter
+  allows for storing multiple values (value multiplicity = 1-n).
+  Affects: dcmdata/tests/tvrfd.cc
+
 **** Changes from 2014.12.10 (riesmeier)
 
 - Added new test case for VR=FD:

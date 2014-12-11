@@ -30,7 +30,7 @@
 OFTEST(dcmdata_floatingPointDouble)
 {
     Float64 value;
-    DcmFloatingPointDouble floatDouble(DCM_PhysicalDeltaX);
+    DcmFloatingPointDouble floatDouble(DCM_InversionTimes);
     /* append new values */
     OFCHECK(floatDouble.putFloat64(1.1, 0).good());
     OFCHECK(floatDouble.putFloat64(2.2, 1).good());
