@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.01.15 (schlamelcher)
+
+- Fixed possible arith.h generation problem on MinGW:
+  MinGW's custom SEH handling macros don't seem to work reliably on every
+  MinGW "distribution". Implemented an even dirtier solution not relying
+  on these macros and therefore working.
+  The detection of some floating point functions like 'isinf' gave wrong
+  results for some MinGW "distributions" in the past. This also affected
+  the respective implementation inside OFStandard.
+  Affects: config/arith.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2014.12.11 (riesmeier)
 
 - Changed attribute used for the "FD" test:

@@ -38,12 +38,6 @@
 #include <windows.h>
 #endif
 
-#ifdef __MINGW32__
-// This is MinGW's hack to catch Microsoft's SEH stuff.
-// Very, very ugly, but what can you do!
-#include <excpt.h>
-#endif
-
 #ifdef HAVE_FENV_H
 // For controlling floating point exceptions on Unix like systems.
 #include <fenv.h>
@@ -166,21 +160,6 @@ static int test_modulo()
     return min < max && min < 0 && max > 0;
 }
 
-#ifdef __MINGW32__
-// Mingw's crazy SEH stuff is crazy, so hacking
-// with global variables doesn't make this
-// any more ugly.
-int signaled;
-
-// This has to be extern "C" if you don't want
-// to watch the world burn.
-extern "C" int handler()
-{
-    signaled = 3;
-    return 1;
-}
-#endif
-
 template<typename FN>
 static int test_trap( const FN& fn )
 {
@@ -204,11 +183,6 @@ static int test_trap( const FN& fn )
     // On Visual Studio, we use their built-in
     // SEH things, they consider to be C++.
     __try
-#elif defined(__MINGW32__)
-    // On MinGW, we use this global variable
-    // and the crazy macros.
-    signaled = 0;
-    __try1(handler)
 #else
     // The rest of the world hopefully only
     // has normal exceptions.
@@ -224,10 +198,6 @@ static int test_trap( const FN& fn )
     // although it was really an exception?
     // I don't know, for now it's yes.
     __except(1){return 3;}
-#elif defined(__MINGW32__)
-    // On MinGW, we return whatever lies withing
-    // the hackish global var.
-    __except1{return signaled;}
 #else
     // The rest of the world returns 2, which
     // means "normal exception".
@@ -284,9 +254,9 @@ static int test_inf( STD_NAMESPACE ostream& out, const char* name )
     const int has_inf = print_flag
     (
         out,
-#ifdef HAVE_ISINF
+#if defined(HAVE_ISINF) || defined(HAVE_PROTOTYPE_ISINF)
         isinf(t),
-#elif defined(HAVE_FINITE) && defined(HAVE_ISNAN)
+#elif (defined(HAVE_FINITE) || defined(HAVE_PROTOTYPE_FINITE)) && (defined(HAVE_ISNAN) || defined(HAVE_PROTOTYPE_ISNAN))
         !finite(t) && !isnan(t),
 #elif defined(HAVE_WINDOWS_H)
         !_finite(t) && !_isnan(t),
@@ -317,7 +287,7 @@ static T guess_qnan()
 template<typename T>
 static int test_nan( T t )
 {
-#ifdef HAVE_ISNAN
+#if defined(HAVE_ISNAN) || defined(HAVE_PROTOTYPE_ISNAN)
     return isnan(t);
 #elif defined(HAVE_WINDOWS_H)
     return _isnan(t);
@@ -577,8 +547,28 @@ static void test_denorm_loss( STD_NAMESPACE ostream& out, const char* name )
     );
 }
 
+#ifdef HAVE_WINDOWS_H
+// MinGW's crazy SEH stuff doesn't work on all MinGW "distributions"
+// This is an even more ugly fallback implementation that seems to
+// work for now
+LONG WINAPI consume_seh_problems( struct _EXCEPTION_POINTERS* )
+{
+    _fpreset();
+    _clearfp();
+    longjmp( jbuf, 0 );
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+#endif
+
 int main( int argc, char** argv )
 {
+#ifdef HAVE_WINDOWS_H
+    // Activate the fallback workaround, it will only be used
+    // if the SEH exceptions can't be caught "the right way"
+    SetErrorMode( SEM_FAILCRITICALERRORS );
+    SetUnhandledExceptionFilter( consume_seh_problems );
+#endif
+
     COUT << "Inspecting fundamental arithmetic types... " << OFendl;
     if( argc != 2 )
     {

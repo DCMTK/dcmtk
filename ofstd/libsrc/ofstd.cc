@@ -197,6 +197,9 @@ extern "C"
 #endif
 #endif
 
+#if !defined(HAVE_ISINF) && defined(HAVE_PROTOTYPE_ISINF)
+#   define HAVE_ISINF 1
+#endif
 
 // some systems don't properly define isinf()
 #ifdef HAVE_ISINF
