@@ -459,7 +459,9 @@ static int is_subnormal( T t )
 #else
 static int is_subnormal( float f )
 {
-#ifdef HAVE_PROTOTYPE__FPCLASSF
+// Wine does not implement _fpclassf, so don't use it when cross compiling for Windows
+// (Wine would emit an exception at runtime, so it's hard to test for _fpclassf availability)
+#if defined(HAVE_PROTOTYPE__FPCLASSF) && !( defined(DCMTK_CROSS_COMPILING) && defined(_WIN32) )
     return ( _fpclassf( f ) & ( _FPCLASS_ND | _FPCLASS_PD ) ) != 0;
 #else
     return (((unsigned char*)&f)[(FLT_MANT_DIG - 1) / 8] & (1u << ((FLT_MANT_DIG - 1) % 8))) == 0;

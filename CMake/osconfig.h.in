@@ -1084,4 +1084,7 @@ typedef unsigned long ulong;
 /* Define if the compiler supports __declspec(align) */
 #cmakedefine HAVE_DECLSPEC_ALIGN
 
+/* Define if we are cross compiling */
+#cmakedefine DCMTK_CROSS_COMPILING
+
 #endif /* !OSCONFIG_H*/

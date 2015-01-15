@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2015.01.15 (schlamelcher)
 
+- Introduced basic support for assisted cross compiling:
+  Currently, assistance for cross compiling is only available when using
+  CMake and creating Windows targets utilizing the MinGW cross compiler.
+  Configure- and unit tests are executed via Wine, therefore Wine is required
+  for the build process and testing.
+  Added:   CMake/dcmtkTryRun.cmake
+           CMake/dcmtkUseWine.cmake
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/dcmtkMacros.cmake
+           CMake/osconfig.h.in
+           config/arith.cc
+
 - Fixed possible arith.h generation problem on MinGW:
   MinGW's custom SEH handling macros don't seem to work reliably on every
   MinGW "distribution". Implemented an even dirtier solution not relying

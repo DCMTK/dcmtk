@@ -5,14 +5,27 @@
 # MODULE - name of the module that we are called for
 #
 
+INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseWine.cmake)
+
 MACRO(DCMTK_ADD_TESTS MODULE)
+    IF(CMAKE_CROSSCOMPILING)
+        IF(WIN32)
+            WINE_COMMAND(${MODULE}_TEST_CMD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
+            STRING(REPLACE "\\" "\\\\" ${MODULE}_TEST_CMD "${${MODULE}_TEST_CMD}")
+        ELSE()
+            MESSAGE(WARNING "Emulation for your target platform is not available, unit tests will fail!")
+            SET(${MODULE}_TEST_CMD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
+        ENDIF()
+    ELSE(CMAKE_CROSSCOMPILING)
+        SET(${MODULE}_TEST_CMD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
+    ENDIF(CMAKE_CROSSCOMPILING)
     FILE(STRINGS tests.cc AVAIL_TESTS REGEX "OFTEST_REGISTER\\([^)]*\\)")
     FOREACH(TEST_LINE ${AVAIL_TESTS})
         # TODO: How can we parse tests.cc in a saner way?
         STRING(REGEX MATCH "OFTEST_REGISTER\\([^)]*" TEST "${TEST_LINE}")
         STRING(REPLACE "OFTEST_REGISTER(" "" TEST ${TEST})
         # This assumes that test names are globally unique
-        ADD_TEST("${TEST}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests" "${TEST}")
+        ADD_TEST("${TEST}" ${${MODULE}_TEST_CMD} "${TEST}")
         SET_PROPERTY(TEST "${TEST}" PROPERTY LABELS "${MODULE}")
     ENDFOREACH(TEST_LINE)
 ENDMACRO(DCMTK_ADD_TESTS)
