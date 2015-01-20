@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -277,7 +277,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  character codes below 128 are considered to be ASCII codes and all others are
      *  considered to be non-ASCII.
      *  @param checkAllStrings if true, also check elements with string values not affected
-     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UC
+     *    and UT
      *  @return true if object contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
@@ -285,7 +286,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /** check if this object is affected by SpecificCharacterSet at any nesting level.
      *  In detail, it is checked whether this object contains any data elements that
      *  according to their VR are affected by the SpecificCharacterSet (0008,0005)
-     *  element. This is true for the following VRs: PN, LO, LT, SH, ST and UT
+     *  element. This is true for the following VRs: PN, LO, LT, SH, ST, UC and UT
      *  @return true if object is affected by SpecificCharacterSet, false otherwise
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
@@ -585,7 +586,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    DcmStack &resultStack);
 
     /** find element and get value as a reference to a C string. NB: The string is not copied!
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UR, UT
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UC, UI,
+     *  UR, UT
      *  Since the getString() routine is called internally the resulting string reference represents
      *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
@@ -599,7 +601,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a reference to a C string. NB: The string is not copied!
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UR, UT
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UC, UI,
+     *  UR, UT
      *  Since the getString() routine is called internally the resulting string reference represents
      *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
      *  The result variable 'value' is automatically set to NULL and 'length' is set to 0 if an error
@@ -619,7 +622,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** find element and get value as a C++ string (only one component).
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OW, PN, SH, SL, SS, ST, TM, UI, UL, UR, US, UT
+     *  OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT
      *  Since the getOFString() routine is called internally the resulting string is normalized, i.e.
      *  leading and/or trailing spaces are removed according to the associated value representation,
      *  or the element value is converted to a character string (for non-string VRs) - see documentation
@@ -640,7 +643,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** find element and get value as a C++ string (all components).
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OW, PN, SH, SL, SS, ST, TM, UI, UL, UR, US, UT
+     *  OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT
      *  Since the getOFStringArray() routine is called internally the resulting string is normalized,
      *  i.e. leading and/or trailing spaces are removed according to the associated value representation
      *  or the element values are converted to character strings (for non-string VRs) - see documentation
@@ -958,7 +961,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OW, PN, SH, SL, SS, ST, TM, UI, UL, UR, US, UT
+     *  OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty or NULL)
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -970,7 +973,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OW, PN, SH, SL, SS, ST, TM, UI, UL, UR, US, UT
+     *  OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT
      *  Please note that since the length of the string has to be specified explicitly, the string
      *  can contain more than one NULL byte.
      *  @param tag DICOM tag specifying the attribute to be created
@@ -985,7 +988,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UR, UT
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UC, UI,
+     *  UR, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty)
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -1162,7 +1166,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** create a new element (with no value) and insert it into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OW, PN, SH, SL, SQ, SS, ST, TM, UI, UL, UR, US, UT
+     *  OW, PN, SH, SL, SQ, SS, ST, TM, UC, UI, UL, UR, US, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.

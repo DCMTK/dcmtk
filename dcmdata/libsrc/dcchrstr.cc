@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,8 +34,8 @@
 //
 // If the extension for > 8 bit character sets will be implemented this class
 // must be derived directly from DcmElement. This class is designed to support
-// the value representations (LO, LT, PN, SH, ST, UT). They are a problem because
-// their value width (1, 2, .. Bytes) is specified by the element
+// the value representations (LO, LT, PN, SH, ST, UC and UT). They are a problem
+// because their value width (1, 2, ... bytes) is specified by the element
 // SpecificCharacterSet (0008, 0005) and an implementation must support
 // different value widths that cannot be derived from the value representation.
 //

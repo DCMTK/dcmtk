@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014 OFFIS e.V.
+ *  Copyright (C) 2011-2015 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,6 +64,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_SQ);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_SS);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_ST);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_TM);
+OFTEST_REGISTER(dcmdata_elementLength_EVR_UC);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UI);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UL);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UN);

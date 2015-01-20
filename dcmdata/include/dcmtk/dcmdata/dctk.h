@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,13 +68,14 @@
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrur.h"
 
-// element classes for string management (8-bit and/or 16-bit in later extensions)
+// element classes for string management (8-bit and/or multi-byte)
 #include "dcmtk/dcmdata/dcchrstr.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrlt.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrst.h"
+#include "dcmtk/dcmdata/dcvruc.h"
 #include "dcmtk/dcmdata/dcvrut.h"
 
 // element class for byte and word value representations

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,6 +56,12 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGenerat
  *  VR=OB is used.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=UC, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedCharactersVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the automatic re-conversion of defined
  *  length UN elements read in an explicit VR transfer syntax, if the real
@@ -152,6 +158,9 @@ enum DcmEVR
 
     /// time string
     EVR_TM,
+
+    /// unlimited characters
+    EVR_UC,
 
     /// unique identifier
     EVR_UI,

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -308,7 +308,8 @@ public:
      *  character codes below 128 are considered to be ASCII codes and all others are
      *  considered to be non-ASCII.
      *  @param checkAllStrings if true, also check elements with string values not affected
-     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UC
+     *    and UT
      *  @return true if object contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
@@ -316,7 +317,7 @@ public:
     /** check if this object is affected by SpecificCharacterSet at any nesting level.
      *  In detail, it is checked whether this object contains any data elements that
      *  according to their VR are affected by the SpecificCharacterSet (0008,0005)
-     *  element. This is true for the following VRs: PN, LO, LT, SH, ST and UT
+     *  element. This is true for the following VRs: PN, LO, LT, SH, ST, UC and UT
      *  @return true if object is affected by SpecificCharacterSet, false otherwise
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;

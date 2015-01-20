@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,6 +60,7 @@
 #include "dcmtk/dcmdata/dcvrss.h"
 #include "dcmtk/dcmdata/dcvrst.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcvruc.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrul.h"
 #include "dcmtk/dcmdata/dcvrulup.h"
@@ -2265,6 +2266,9 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_ST :
             newElement = new DcmShortText(tag, length);
             break;
+        case EVR_UC:
+            newElement = new DcmUnlimitedCharacters(tag, length);
+            break;
         case EVR_UT:
             newElement = new DcmUnlimitedText(tag, length);
             break;
@@ -3341,6 +3345,9 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_TM:
             elem = new DcmTime(tag);
             break;
+        case EVR_UC:
+            elem = new DcmUnlimitedCharacters(tag);
+            break;
         case EVR_UI:
             elem = new DcmUniqueIdentifier(tag);
             break;
@@ -3423,6 +3430,9 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
             break;
         case EVR_TM:
             elem = new DcmTime(tag);
+            break;
+        case EVR_UC:
+            elem = new DcmUnlimitedCharacters(tag);
             break;
         case EVR_UI:
             elem = new DcmUniqueIdentifier(tag);
@@ -3963,6 +3973,9 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
             break;
         case EVR_TM:
             elem = new DcmTime(tag);
+            break;
+        case EVR_UC:
+            elem = new DcmUnlimitedCharacters(tag);
             break;
         case EVR_UI:
             elem = new DcmUniqueIdentifier(tag);

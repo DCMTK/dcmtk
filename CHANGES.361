@@ -1,6 +1,34 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.01.20 (riesmeier)
+
+- Added support for new value representation "UC":
+  Added support for new value representation "Unlimited Characters" (UC) that
+  has been introduced only recently with CP-1031 (Support long code values).
+  Added:   dcmdata/include/dcmtk/dcmdata/dcvruc.h
+           dcmdata/libsrc/dcvruc.cc
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dctk.h
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/tchval.cc
+           dcmdata/tests/telemlen.cc
+           dcmdata/tests/tests.cc
+
 **** Changes from 2015.01.15 (schlamelcher)
 
 - Introduced basic support for assisted cross compiling:

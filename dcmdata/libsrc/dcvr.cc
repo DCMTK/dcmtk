@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,6 +37,7 @@ OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableUnlimitedCharactersVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
 
 /*
@@ -49,6 +50,7 @@ void dcmEnableGenerationOfNewVRs()
     dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
     dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
+    dcmEnableUnlimitedCharactersVRGeneration.set(OFTrue);
 }
 
 void dcmDisableGenerationOfNewVRs()
@@ -58,6 +60,7 @@ void dcmDisableGenerationOfNewVRs()
     dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
     dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
+    dcmEnableUnlimitedCharactersVRGeneration.set(OFFalse);
 }
 
 
@@ -106,6 +109,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_SS, "SS", sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
     { EVR_ST, "ST", sizeof(char), DCMVR_PROP_ISASTRING, 0, 1024 },
     { EVR_TM, "TM", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
+    { EVR_UC, "UC", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_UI, "UI", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_UR, "UR", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
@@ -307,6 +311,15 @@ DcmVR::getValidEVR() const
                     evr = EVR_UN; /* handle UR as if UN */
                 else
                     evr = EVR_OB; /* handle UR as if OB */
+            }
+            break;
+        case EVR_UC:
+            if (!dcmEnableUnlimitedCharactersVRGeneration.get())
+            {
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle UC as if UN */
+                else
+                    evr = EVR_OB; /* handle UC as if OB */
             }
             break;
         default:

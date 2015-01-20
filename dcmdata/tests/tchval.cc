@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2014, OFFIS e.V.
+ *  Copyright (C) 2009-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -237,6 +237,13 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_BAD ( "TM-12", DcmTime::checkStringValue("12:30:00.123456", "1", OFFalse) )
   CHECK_GOOD( "TM-13", DcmTime::checkStringValue("12:30:00.123456", "1", OFTrue) )
   CHECK_BAD ( "TM-14", DcmTime::checkStringValue("12:30", "1", OFTrue) )
+
+  /* test "Unlimited Characters" */
+  CHECK_GOOD( "UC-01", DcmUnlimitedCharacters::checkStringValue("ABC", "1") )
+  CHECK_GOOD( "UC-02", DcmUnlimitedCharacters::checkStringValue("ABC\\123", "2") )
+  CHECK_GOOD( "UC-03", DcmUnlimitedCharacters::checkStringValue(" J\366rg Riesmeier ", "1") )
+  CHECK_GOOD( "UC-04", DcmUnlimitedCharacters::checkStringValue("ESC\033aping", "1") )
+  CHECK_BAD ( "UC-05", DcmUnlimitedCharacters::checkStringValue("not allowed: \n\010\r\014", "1") )
 
   /* test "Unique Identifier" */
   CHECK_GOOD( "UI-01", DcmUniqueIdentifier::checkStringValue("0", "1") )

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,6 +80,7 @@ normalized-lo-sh    {charset_without_control_chars}
 normalized-ae       {default_charset_without_control_chars}
 normalized-lt-st-ut {charset_with_control_chars}
 normalized-ur       {ur_chars}
+normalized-uc       {charset_without_control_chars}
 
 as       {normalized-as}
 da       {normalized-da}
@@ -99,6 +100,7 @@ lo-sh    {spaces}{normalized-lo-sh}{spaces}
 ae       {spaces}{normalized-ae}{spaces}
 lt-st-ut {normalized-lt-st-ut}{spaces}
 ur       {normalized-ur}{spaces}
+uc       {normalized-uc}{spaces}
 
 %%
 
@@ -120,6 +122,7 @@ lo{lo-sh}?(\\{lo-sh}?)*    {return 12; /* LO | SH */}
 ae{ae}?(\\{ae}?)*          {return 13; /* AE */}
 lt{lt-st-ut}               {return 14; /* LT | ST | UT */}
 ur{ur}                     {return 19; /* UR */}
+uc{uc}                     {return 20; /* UC */}
                            /* . doesn't match \n, this needs a special case! */
 \n                         |
 .                          {return 16; /* UNKNOWN */;}
