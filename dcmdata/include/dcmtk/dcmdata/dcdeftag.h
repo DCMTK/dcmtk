@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2014-11-24 16:51:43
+**   Date: 2015-01-20 13:59:30
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2014-11-24 16:51:43"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-01-20 13:59:30"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3855
+** Number of entries: 3859
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -170,6 +170,10 @@
 #define DCM_CodingSchemeName                     DcmTagKey(0x0008, 0x0115)
 #define DCM_CodingSchemeResponsibleOrganization  DcmTagKey(0x0008, 0x0116)
 #define DCM_ContextUID                           DcmTagKey(0x0008, 0x0117)
+#define DCM_MappingResourceUID                   DcmTagKey(0x0008, 0x0118)
+#define DCM_LongCodeValue                        DcmTagKey(0x0008, 0x0119)
+#define DCM_URNCodeValue                         DcmTagKey(0x0008, 0x0120)
+#define DCM_EquivalentCodeSequence               DcmTagKey(0x0008, 0x0121)
 #define DCM_TimezoneOffsetFromUTC                DcmTagKey(0x0008, 0x0201)
 #define DCM_RETIRED_NetworkID                    DcmTagKey(0x0008, 0x1000)
 #define DCM_StationName                          DcmTagKey(0x0008, 0x1010)

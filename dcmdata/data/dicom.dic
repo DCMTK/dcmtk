@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2014, OFFIS e.V.
+#  Copyright (C) 1994-2015, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -25,8 +25,8 @@
 # File created on 2014-11-22 17:29:54 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
-# supplements and correction items have been incorporated:
-# - (none)
+# supplements and correction items (CP) have been incorporated:
+# - CP 1031, 1417
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3515,6 +3515,15 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1031, 1417
+#
+(0008,0119)	UC	LongCodeValue	1	CP_1031
+(0008,0120)	UR	URNCodeValue	1	CP_1031
+(0008,0121)	SQ	EquivalentCodeSequence	1	CP_1031
+(0008,0118)	UI	MappingResourceUID	1	CP_1417
 #
 #---------------------------------------------------------------------------
 #

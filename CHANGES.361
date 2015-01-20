@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2015.01.20 (riesmeier)
 
+- Added support for recently approved CPs:
+  Added support for CP-1031 and CP-1417 to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for new value representation "UC":
   Added support for new value representation "Unlimited Characters" (UC) that
   has been introduced only recently with CP-1031 (Support long code values).
