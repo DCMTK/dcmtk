@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2015.01.20 (riesmeier)
 
+- Added Mapping Resource UID from CP-1417:
+  Added DICOM Content Mapping Resource UID introduced with CP-1417.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
 - Added support for recently approved CPs:
   Added support for CP-1031 and CP-1417 to the data dictionary.
   Affects: dcmdata/data/dicom.dic

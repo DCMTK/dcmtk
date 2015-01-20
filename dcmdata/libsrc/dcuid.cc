@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -412,6 +412,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RETIRED_BasicStudyContentNotificationSOPClass,       "RETIRED_BasicStudyContentNotificationSOPClass" },
     { UID_RETIRED_StudyComponentManagementSOPClass,            "RETIRED_StudyComponentManagementSOPClass" },
     { UID_VerificationSOPClass,                                "VerificationSOPClass" },
+
+    // Mapping Resources
+    { UID_DICOMContentMappingResource,                         "DICOMContentMappingResource" },
 
     // Coding Schemes
     { UID_DICOMControlledTerminologyCodingScheme,              "DICOMControlledTerminologyCodingScheme" },
@@ -1443,7 +1446,7 @@ static unsigned char *getMACAddress(unsigned char buffer[6])
                 varBindList.list = varBind;
                 varBind[0].name = MIB_NULL;
                 varBind[1].name = MIB_NULL;
-                /* copy in the OID to find the number of entries in the inteface table */
+                /* copy in the OID to find the number of entries in the interface table */
                 varBindList.len = 1;        /* only retrieving one item */
                 m_Copy(&varBind[0].name, &MIB_ifEntryNum);
                 ret = m_Query(SNMP_PDU_GETNEXT, &varBindList, &errorStatus, &errorIndex);

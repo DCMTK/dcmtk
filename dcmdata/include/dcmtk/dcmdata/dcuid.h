@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -641,6 +641,13 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RETIRED_BasicStudyContentNotificationSOPClass          "1.2.840.10008.1.9"
 #define UID_RETIRED_StudyComponentManagementSOPClass               "1.2.840.10008.3.1.2.3.2"
 
+/*
+** All other UIDs according to DICOM standard
+*/
+
+// Mapping Resources
+#define UID_DICOMContentMappingResource                            "1.2.840.10008.8.1.1"
+
 // Coding Schemes
 #define UID_DICOMControlledTerminologyCodingScheme                 "1.2.840.10008.2.16.4"
 #define UID_DICOMUIDRegistryCodingScheme                           "1.2.840.10008.2.6.1"
@@ -717,7 +724,9 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_HotMetalBlueColorPaletteSOPInstance                    "1.2.840.10008.1.5.3"
 #define UID_PET20StepColorPaletteSOPInstance                       "1.2.840.10008.1.5.4"
 
-// Private DCMTK UIDs
+/*
+** Private DCMTK UIDs
+*/
 
 // Private SOP Class UID used to shutdown external network applications
 #define UID_PrivateShutdownSOPClass                                "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
