@@ -36,10 +36,10 @@ if (fileformat.loadFile("test.dcm").good())
   DJ_RPLossless params; // codec parameters, we use the defaults
 
   // this causes the lossless JPEG version of the dataset to be created
-  dataset->chooseRepresentation(EXS_JPEGProcess14SV1TransferSyntax, &params);
+  dataset->chooseRepresentation(EXS_JPEGProcess14SV1, &params);
 
   // check if everything went well
-  if (dataset->canWriteXfer(EXS_JPEGProcess14SV1TransferSyntax))
+  if (dataset->canWriteXfer(EXS_JPEGProcess14SV1))
   {
     // force the meta-header UIDs to be re-generated when storing the file
     // since the UIDs in the data set may have changed
@@ -47,7 +47,7 @@ if (fileformat.loadFile("test.dcm").good())
     delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
     // store in lossless JPEG format
-    fileformat.saveFile("test_jpeg.dcm", EXS_JPEGProcess14SV1TransferSyntax);
+    fileformat.saveFile("test_jpeg.dcm", EXS_JPEGProcess14SV1);
   }
 }
 DJEncoderRegistration::cleanup(); // deregister JPEG codecs

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.01.22 (riesmeier)
+
+- Removed outdated name suffix from EXS_xxx constant:
+  Removed outdated name suffix "TransferSyntax" from EXS_xxx constant in code
+  example.
+  Affects: dcmjpeg/docs/dcmjpeg.dox
+
 **** Changes from 2015.01.20 (riesmeier)
 
 - Added Mapping Resource UID from CP-1417:
