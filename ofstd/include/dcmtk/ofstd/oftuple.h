@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/ofdefine.h"
 
 // use native classes if C++11 is supported
-#ifdef DCMTK_ENABLE_CXX11
+#ifdef DCMTK_USE_CXX11_STL
 #include <tuple>
 
 #define OFignore std::ignore

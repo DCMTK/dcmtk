@@ -27,10 +27,17 @@
 #include "dcmtk/ofstd/oftypes.h"
 
 // use native functionality if C++11 is supported
-#ifdef DCMTK_ENABLE_CXX11
+#ifdef DCMTK_USE_CXX11_STL
 
 #define OFalignof alignof
 #define OFalignas alignas
+// these helper templates automatically resolve the alignment
+// if a type is given and pass-through any numeric constant
+template<typename T>
+constexpr size_t OFalignof_or_identity_template() { return alignof(T); }
+template<size_t Size>
+constexpr size_t OFalignof_or_identity_template() { return Size; }
+#define OFalignof_or_identity(A) OFalignof_or_identity_template<A>()
 
 #elif !defined(DOXYGEN) // fallback implementations
 
@@ -53,14 +60,15 @@ OFalignas_size_helper
 #else // use sizeof instead
     sizeof(T)
 #endif
-> OFalignof_or_identity() {}
+> OFalignof_or_identity_template() {}
 template<size_t Size>
-OFalignas_size_helper<Size> OFalignof_or_identity() {}
+OFalignas_size_helper<Size> OFalignof_or_identity_template() {}
+#define OFalignof_or_identity(A) sizeof(OFalignof_or_identity_template<A>())
 
 // alignas
 #ifdef HAVE_ATTRIBUTE_ALIGNED
 
-#define OFalignas(A) __attribute__((aligned(sizeof(OFalignof_or_identity<A>()))))
+#define OFalignas(A) __attribute__((aligned(OFalignof_or_identity(A))))
 
 #elif defined(HAVE_DECLSPEC_ALIGN)
 
@@ -71,8 +79,8 @@ OFalignas_size_helper<Size> OFalignof_or_identity() {}
 // such as 2, 4, 8, 16, 32, or 64."
 // So this is fundamentally different to the real alignment specifiers
 // from GNU and C++11.
-#define OFalign(T,A) OFdeclspec_align<T>::as<sizeof(OFalignof_or_identity<A>())>::type
-#define OFalign_typename(T,A) OFTypename OFdeclspec_align<T>::template as<sizeof(OFalignof_or_identity<A>())>::type
+#define OFalign(T,A) OFdeclspec_align<T>::as<OFalignof_or_identity(A)>::type
+#define OFalign_typename(T,A) OFTypename OFdeclspec_align<T>::template as<OFalignof_or_identity(A)>::type
 
 // The trick / hack: specialize a template for every valid
 // integral expression and use an appropriate integral literal to
@@ -184,19 +192,19 @@ public:
 
 #if defined(OFalignas) && !defined(DOXYGEN)
 // OFalign based on OFalignas, so this is "platform-independent".
-#define OFalign(T,A) OFalignas_align<T>::as<sizeof(OFalignof_or_identity<A>())>::type
-#define OFalign_typename(T,A) OFTypename OFalignas_align<T>::template as<sizeof(OFalignof_or_identity<A>())>::type
+#define OFalign(T,A) OFalignas_align<T>::as<OFalignof_or_identity(A)>::type
+#define OFalign_typename(T,A) OFTypename OFalignas_align<T>::template as<OFalignof_or_identity(A)>::type
 template<typename T>
 struct OFalignas_align
 {
     template<size_t A>
-    struct as { typedef OFalignas(A) T type; };
+    struct as { typedef T type OFalignas(A); };
 };
 template<typename T,size_t S>
 struct OFalignas_align<T[S]>
 {
     template<size_t A>
-    struct as { typedef OFalignas(A) T type[S]; };
+    struct as { typedef T type[S] OFalignas(A); };
 };
 #endif
 

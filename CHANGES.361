@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.01.29 (schlamelcher)
+
+- Fixed some problems regarding DCMTK's C++11 support:
+  The GCC Version is now detected employing the same CMake macro as for
+  Clang, this works around the missing version suffix of some GCC versions
+  when using the previously employed '-dumpversion' argument.
+  Fixed evaluating the wrong macro instead of 'DCMTK_USE_CXX11_STL' within
+  OFtuple's and OFalign's implementation.
+  Fixed problems regarding OFalign's C++11 implementation.
+  Modified OFnumeric_limit's unit test to accommodate for some native
+  implementation's behavior to set 'is_modulo' to false when it can't
+  be guaranteed (e.g. for optimization purposes).
+  Affects: CMake/dcmtkPrepare.cmake
+           ofstd/include/dcmtk/ofstd/ofalign.h
+           ofstd/include/dcmtk/ofstd/oftuple.h
+           ofstd/tests/tlimits.cc
+
 **** Changes from 2015.01.26 (goldhammer)
 
 - Replaced deprecated CMake expressions:

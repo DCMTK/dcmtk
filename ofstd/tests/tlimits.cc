@@ -54,11 +54,10 @@ static void checkLimits()
     checkMinMax<T>();
     checkNaN<T>();
     checkInfinity<T>();
-    OFCHECK
-    (
-        ( OFstatic_cast( T, OFnumeric_limits<T>::max() + 1 ) == OFnumeric_limits<T>::min() )
-        == OFnumeric_limits<T>::is_modulo
-    );
+    // Only test overflow property if 'is_modulo' expands to OFTrue, since OFFalse may
+    // also mean 'undefined'.
+    if( OFnumeric_limits<T>::is_modulo )
+        OFCHECK( OFstatic_cast( T, OFnumeric_limits<T>::max() + 1 ) == OFnumeric_limits<T>::min() );
 }
 
 OFTEST(ofstd_limits)
