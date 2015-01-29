@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.01.26 (goldhammer)
+
+- Replaced deprecated CMake expressions:
+  The auto-dereference behavior of the if() command was deprecated in CMake
+  3.1.0. Replaced affected expressions with IF(DEFINED) as appropriate.
+  Thanks to Jean-Christophe Fillion-Robin <jchris.fillionr@kitware.com>
+  for the original report and suggested fix.
+  Affects: CMake/CheckFunctionWithHeaderExists.cmake
+           CMake/dcmtkTryCompile.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2015.01.22 (riesmeier)
 
 - Removed outdated name suffix from EXS_xxx constant:

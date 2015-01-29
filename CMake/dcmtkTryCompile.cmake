@@ -12,7 +12,7 @@ MACRO(DCMTK_TRY_COMPILE VAR MESSAGE SOURCE)
     SET(DCMTK_TRY_COMPILE_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/src.cxx")
 
     # Do nothing if the variable is already set
-    IF("${VAR}" MATCHES "^${VAR}$")
+    IF(NOT DEFINED "${VAR}")
         MESSAGE(STATUS "Checking whether ${MESSAGE}")
         FILE(WRITE "${DCMTK_TRY_COMPILE_FILE}" "${SOURCE}\n")
         TRY_COMPILE(${VAR}
@@ -33,5 +33,5 @@ MACRO(DCMTK_TRY_COMPILE VAR MESSAGE SOURCE)
                  "${MESSAGE} failed with the following output:\n"
                  "${OUTPUT}\n")
         ENDIF(${VAR})
-    ENDIF("${VAR}" MATCHES "^${VAR}$")
+    ENDIF(NOT DEFINED "${VAR}")
 ENDMACRO(DCMTK_TRY_COMPILE)
