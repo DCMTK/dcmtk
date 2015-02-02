@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.02 (riesmeier)
+
+- Added missing standard include for assert():
+  Added standard include that is missing when compiled with HAVE_STD_STRING and
+  HAVE_STL, i.e. without DCMTK's implementations of some C++ standard classes.
+  Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the original report.
+  Affects: ofstd/libsrc/ofuuid.cc
+
 **** Changes from 2015.01.29 (schlamelcher)
 
 - Fixed some problems regarding DCMTK's C++11 support:

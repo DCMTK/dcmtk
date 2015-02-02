@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,9 @@
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofstd.h"
+
+#define INCLUDE_CASSERT
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
