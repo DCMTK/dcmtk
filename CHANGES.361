@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.03 (riesmeier)
+
+- Fixed another CMake 3.1.x quotation issue:
+  According to the CMake documentation "CMake 3.1 and above no longer implicitly
+  dereference variables or interpret keywords in an if() command argument when
+  it is a 'Quoted Argument' or a 'Bracket Argument'" (see CMP0054 for details).
+  Commit cbfe0d7 only solved the issues for Unix-style systems. Now, CMake 3.1
+  (and above) should also run without any warnings on Windows systems.
+  Affects: CMake/dcmtkPrepare.cmake
+
 **** Changes from 2015.02.02 (riesmeier)
 
 - Added missing standard include for assert():
