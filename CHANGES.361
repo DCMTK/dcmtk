@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2015.02.03 (riesmeier)
 
+- Updated latest tested CMake version:
+  Updated information on latest CMake version that has been tested to "3.1.1".
+  Affects: CMake/dcmtkPrepare.cmake
+
 - Fixed another CMake 3.1.x quotation issue:
   According to the CMake documentation "CMake 3.1 and above no longer implicitly
   dereference variables or interpret keywords in an if() command argument when
