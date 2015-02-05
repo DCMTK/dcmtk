@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2015.02.05 (schlamelcher)
 
+- Adjusted DCMNET's default socket buffer length:
+  The previous default value of 32K was inappropriate for modern hardware,
+  the new default will be 64K for now.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and
+  suggested patch.
+  Affects: dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+
 - Added support for trusted client certificates:
   It is now possible to configure trusted client certificate authorities
   within DCMTLS.

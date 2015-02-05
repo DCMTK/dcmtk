@@ -3729,15 +3729,15 @@ setTCPBufferLength(int sock)
     int bufLen;
 
     /*
-     * Use a 32K default socket buffer length.
-     * This value has provided optimal throughput during performance testing.
-     * Test environment: Windows NT 4 (SP4), 100Mbit/s Fast Ethernet.
-     * Other environments, particularly slower networks may require different values for optimal performance.
+     * Use a 64K default socket buffer length, fitting the MTU size of the loopback device implementation
+     * in recent Linux kernel versions.
+     * Different environments, particularly slower networks may require different values for optimal
+     * performance.
      */
 #ifdef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt(...) */
 #else
-    bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
+    bufLen = 65536; // a socket buffer size of 64K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
         if (sscanf(TCPBufferLength, "%d", &bufLen) != 1)
         {
