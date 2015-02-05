@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2013, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -333,6 +333,26 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const cha
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_hash_dir());
     if (x509_lookup == NULL) return TCS_tlsError;
     if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType)) return TCS_tlsError;
+  } else return TCS_illegalCall;
+  return TCS_ok;
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(const char *fileName)
+{
+  if (transportLayerContext)
+  {
+    STACK_OF(X509_NAME) *caNames = sk_X509_NAME_dup(SSL_CTX_get_client_CA_list(transportLayerContext));
+    if (caNames == NULL)
+      caNames = sk_X509_NAME_new_null();
+    const STACK_OF(X509_NAME) *newCaNames = SSL_load_client_CA_file(fileName);
+    for (int i = 0; i < sk_X509_NAME_num(newCaNames); ++i)
+    {
+      X509_NAME *newCaName = sk_X509_NAME_value(newCaNames,i);
+      if (sk_X509_NAME_find(caNames,newCaName) == -1)
+        sk_X509_NAME_push(caNames,X509_NAME_dup(newCaName));
+    }
+    sk_X509_NAME_pop_free(newCaNames,X509_NAME_free);
+    SSL_CTX_set_client_CA_list(transportLayerContext,caNames);
   } else return TCS_illegalCall;
   return TCS_ok;
 }

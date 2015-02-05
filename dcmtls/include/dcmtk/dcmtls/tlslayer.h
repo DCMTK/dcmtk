@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2013, OFFIS e.V.
+ *  Copyright (C) 1998-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -135,6 +135,13 @@ public:
    *  @return TCS_ok if successful, an error code otherwise
    */
   DcmTransportLayerStatus addTrustedCertificateDir(const char *pathName, int fileType);
+
+  /** loads certificates from a file and adds them to the pool of trusted client
+   *  certificates.
+   *  @param fileName path to the certificate file
+   *  @return TCS_ok if successful, an error code otherwise
+   */
+  DcmTransportLayerStatus addTrustedClientCertificateFile(const char *fileName);
 
   /** sets the list of ciphersuites to negotiate.
    *  @param suites string containing the list of ciphersuites.

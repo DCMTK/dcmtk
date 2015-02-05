@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.05 (schlamelcher)
+
+- Added support for trusted client certificates:
+  It is now possible to configure trusted client certificate authorities
+  within DCMTLS.
+  Thanks to Dr. Martin Korp <Martin.Korp@ith-icoserve.com> for the suggested
+  patch.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlslayer.h
+           dcmtls/libsrc/tlslayer.cc
+
 **** Changes from 2015.02.03 (riesmeier)
 
 - Updated latest tested CMake version:
