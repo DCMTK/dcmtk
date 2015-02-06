@@ -3,7 +3,7 @@
 DCMTK ENVIRONMENT VARIABLES
 ===========================
 
-The behaviour of the DCMTK tools and libraries can be modified by a
+The behavior of the DCMTK tools and libraries can be modified by a
 number of runtime environment variables which are explained below.
 
 
@@ -34,8 +34,8 @@ DCMDICTPATH
 TCP_BUFFER_LENGTH
   Affected: dcmnet
   Explanation: By default, DCMTK uses a TCP send and receive buffer
-    length of 32K. If the environment variable TCP_BUFFER_LENGTH is set,
-    it specified an override for the TCP buffer length. The value is
+    length of 64K. If the environment variable TCP_BUFFER_LENGTH is set,
+    it specifies an override for the TCP buffer length. The value is
     specified in bytes, not in Kbytes.
 
 TCP_NODELAY
@@ -49,5 +49,5 @@ TCP_NODELAY
 TMPDIR
   Affected: dcmnet
   Explanation: Affects the implementation of the tempnam() emulation on
-    platforms where tempnam() is not defined.  See tempnam(3S) man page
+    platforms where tempnam() is not defined. See tempnam(3S) man page
     for a description.

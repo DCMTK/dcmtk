@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.06 (riesmeier)
+
+- Fixed documentation of default TCP buffer length:
+  With the previous commit (2423e3d), the default TCP send and receive buffer
+  length has been increased from 32K to 64K. This commit now updates the
+  documentation of this default value accordingly.
+  Affects: config/docs/envvars.txt
+
 **** Changes from 2015.02.05 (schlamelcher)
 
 - Adjusted DCMNET's default socket buffer length:
