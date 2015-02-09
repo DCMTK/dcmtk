@@ -21,12 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2014c and PS 3.7-2014c
-# File created on 2014-11-22 17:29:54 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2015a and PS 3.7-2015a.
+# File created on 2015-02-09 10:03:16 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - CP 1031, 1417
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -157,6 +157,10 @@
 (0008,0115)	ST	CodingSchemeName	1	DICOM
 (0008,0116)	ST	CodingSchemeResponsibleOrganization	1	DICOM
 (0008,0117)	UI	ContextUID	1	DICOM
+(0008,0118)	UI	MappingResourceUID	1	DICOM
+(0008,0119)	UC	LongCodeValue	1	DICOM
+(0008,0120)	UR	URNCodeValue	1	DICOM
+(0008,0121)	SQ	EquivalentCodeSequence	1	DICOM
 (0008,0201)	SH	TimezoneOffsetFromUTC	1	DICOM
 (0008,1010)	SH	StationName	1	DICOM
 (0008,1030)	LO	StudyDescription	1	DICOM
@@ -3515,15 +3519,6 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1031, 1417
-#
-(0008,0119)	UC	LongCodeValue	1	CP_1031
-(0008,0120)	UR	URNCodeValue	1	CP_1031
-(0008,0121)	SQ	EquivalentCodeSequence	1	CP_1031
-(0008,0118)	UI	MappingResourceUID	1	CP_1417
 #
 #---------------------------------------------------------------------------
 #

@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.09 (riesmeier)
+
+- Updated data dictionary for DICOM 2015a edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2015-02-05. Since the data dictionary was already
+  up-to-date regarding the recently approved Supplements and CPs, there are no
+  changes apart from the "Version" column.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2015.02.06 (riesmeier)
 
 - Fixed documentation of default TCP buffer length:

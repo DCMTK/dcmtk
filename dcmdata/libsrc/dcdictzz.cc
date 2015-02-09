@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-01-20 13:59:40
+**   Date: 2015-02-09 10:43:51
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2015-01-20 13:59:40";
+const char* dcmBuiltinDictBuildDate = "2015-02-09 10:43:51";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -658,19 +658,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0118, 0x0008, 0x0118,
-      EVR_UI, "MappingResourceUID", 1, 1, "CP_1417",
+      EVR_UI, "MappingResourceUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0119, 0x0008, 0x0119,
-      EVR_UC, "LongCodeValue", 1, 1, "CP_1031",
+      EVR_UC, "LongCodeValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0120, 0x0008, 0x0120,
-      EVR_UR, "URNCodeValue", 1, 1, "CP_1031",
+      EVR_UR, "URNCodeValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0121, 0x0008, 0x0121,
-      EVR_SQ, "EquivalentCodeSequence", 1, 1, "CP_1031",
+      EVR_SQ, "EquivalentCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0201, 0x0008, 0x0201,
