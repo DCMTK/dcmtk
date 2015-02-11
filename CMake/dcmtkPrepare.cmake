@@ -103,6 +103,51 @@ ENDIF(NOT WIN32)
 ENABLE_TESTING()
 
 #-----------------------------------------------------------------------------
+# Include appropriate modules and set required variables for cross compiling
+#-----------------------------------------------------------------------------
+
+IF(CMAKE_CROSSCOMPILING)
+  IF(WIN32)
+    INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseWine.cmake)
+    DCMTK_SETUP_WINE()
+  ELSEIF(ANDROID)
+    SET(DCMTK_TRY_COMPILE_REQUIRED_CMAKE_FLAGS "-DANDROID_TOOLCHAIN_CONFIG_FILE:INTERNAL=${ANDROID_TOOLCHAIN_CONFIG_FILE}")
+    INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseAndroidSDK.cmake)
+    IF(NOT DCMTK_ANDROID_TOOLCHAIN_VERIFIED)
+      # Ensure the configuration variables for the Android device emulator exist in the cache.
+      DCMTK_SETUP_ANDROID_EMULATOR()
+      SET(DCMTK_ANDROID_TOOLCHAIN_VERIFIED TRUE CACHE INTERNAL "Set to TRUE to prevent aborting configuration on first Android toolchain run")
+      MESSAGE(FATAL_ERROR
+        "Please verify your Android toolchain configuration (e.g.\"ANDROID_NATIVE_API_LEVEL\") is correct before configuring DCMTK.\n"
+        "Hit \"Configure\" again to resume configuration when you are done.\n"
+        "NOTE: set \"DCMTK_ANDROID_TOOLCHAIN_VERIFIED\" to \"TRUE\" to avoid this check (e.g. to allow automated builds), you may use"
+        "something like\n    \"cmake -DDCMTK_ANDROID_TOOLCHAIN_VERIFIED=TRUE ...\"\nto achieve that."
+      )
+    ENDIF()
+  ENDIF()
+ENDIF(CMAKE_CROSSCOMPILING)
+
+#-----------------------------------------------------------------------------
+# Generic utilities used for configuring DCMTK
+#-----------------------------------------------------------------------------
+
+INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkMacros.cmake)
+
+#-----------------------------------------------------------------------------
+# Prepare external dependencies for cross compiling
+# (i.e. start the emulator if required)
+#-----------------------------------------------------------------------------
+
+IF(CMAKE_CROSSCOMPILING)
+  UNSET(DCMTK_UNIT_TESTS_UNSUPPORTED_WARN_ONCE CACHE)
+  IF(ANDROID)
+    UNSET(DCMTK_TRY_RUN_ANDROID_RUNTIME_INSTALLED CACHE)
+    DCMTK_ANDROID_START_EMULATOR(DCMTK_ANDROID_EMULATOR_INSTANCE)
+    DCMTK_ATEXIT(DCMTK_ANDROID_STOP_EMULATOR DCMTK_ANDROID_EMULATOR_INSTANCE)
+  ENDIF()
+ENDIF(CMAKE_CROSSCOMPILING)
+
+#-----------------------------------------------------------------------------
 # Installation sub-directories
 #-----------------------------------------------------------------------------
 
@@ -333,7 +378,6 @@ INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/3rdparty.cmake)
 # DCMTK libraries
 #-----------------------------------------------------------------------------
 
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkMacros.cmake)
 INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/GenerateDCMTKConfigure.cmake)
 
 #-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -576,7 +576,7 @@ OFTEST(ofstd_thread)
 {
   // This makes sure tests are executed in the expected order
   mutex_test();
-#ifndef _DARWIN_C_SOURCE  
+#ifndef _DARWIN_C_SOURCE
   semaphore_test(); // may assume that mutexes work correctly
 #endif
   rwlock_test();    // may assume that mutexes and semaphores work correctly

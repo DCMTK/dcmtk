@@ -1,0 +1,27 @@
+#
+# This file "re-implements" some of CMake's functionality
+# that is missing inside CTest.
+#
+
+MACRO(MESSAGE_COMMAND VAR MODE)
+    IF(${MODE} STREQUAL "STATUS")
+        SET(${VAR} ${CMAKE_COMMAND} -E echo -- ${ARGN})
+    ELSEIF(${MODE} STREQUAL "WARNING")
+        SET(${VAR} ${CMAKE_COMMAND} -E echo WARNING: ${ARGN})
+    ELSEIF(${MODE} STREQUAL "AUTHOR_WARNING")
+        SET(${VAR} ${CMAKE_COMMAND} -E echo Warning: ${ARGN})
+    ELSEIF(${MODE} STREQUAL "SEND_ERROR")
+        SET(${VAR} ${CMAKE_COMMAND} -E echo Error: ${ARGN})
+    ELSEIF(${MODE} STREQUAL "FATAL_ERROR")
+        SET(${VAR} ${CMAKE_COMMAND} -E echo ERROR: ${ARGN})
+    ELSEIF(${MODE} STREQUAL "DEPRECATION")
+        SET(${VAR} ${CMAKE_COMMAND} -E echo ${ARGN})
+    ELSE()
+        SET(${VAR} ${CMAKE_COMMAND} -E echo ${MODE} ${ARGN})
+    ENDIF()
+ENDMACRO(MESSAGE_COMMAND)
+
+FUNCTION(MESSAGE)
+    MESSAGE_COMMAND(COMMAND ${ARGN})
+    EXECUTE_PROCESS(COMMAND ${COMMAND})
+ENDFUNCTION(MESSAGE)

@@ -498,6 +498,9 @@ typedef unsigned short ushort;
    arguments. */
 #undef HAVE_OLD_READDIR_R
 
+/* Define if passwd::pw_gecos is available. */
+#undef HAVE_PASSWD_GECOS
+
 /* Define to 1 if you have the `pclose' function. */
 #undef HAVE_PCLOSE
 
@@ -765,6 +768,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/file.h> header file. */
 #undef HAVE_SYS_FILE_H
 
+/* Define if your system has a prototype for gettid. */
+#undef HAVE_SYS_GETTID
+
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
 #undef HAVE_SYS_NDIR_H
@@ -786,6 +792,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <sys/syscall.h> header file. */
 #undef HAVE_SYS_SYSCALL_H
+
+/* Define to 1 if you have the <sys/systeminfo.h> header file. */
+#undef HAVE_SYS_SYSTEMINFO_H
 
 /* Define to 1 if you have the <sys/timeb.h> header file. */
 #undef HAVE_SYS_TIMEB_H

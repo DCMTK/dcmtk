@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2866,7 +2866,9 @@ OFStandard::OFPasswd::OFPasswd( passwd* const p )
         pw_passwd = p->pw_passwd;
         pw_uid    = p->pw_uid;
         pw_gid    = p->pw_gid;
+#ifdef HAVE_PASSWD_GECOS
         pw_gecos  = p->pw_gecos;
+#endif
         pw_dir    = p->pw_dir;
         pw_shell  = p->pw_shell;
     }

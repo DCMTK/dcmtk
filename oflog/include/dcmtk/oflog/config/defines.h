@@ -350,7 +350,7 @@
 #endif
 
 /* Define to 1 if you have Linux style syscall(SYS_gettid). */
-#ifdef HAVE_SYS_SYSCALL_H
+#if defined(HAVE_SYS_SYSCALL_H) && defined(HAVE_SYS_GETTID)
 #define DCMTK_LOG4CPLUS_HAVE_GETTID
 #endif
 

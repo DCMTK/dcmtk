@@ -4,28 +4,37 @@
 # DCMTK_ADD_TESTS - macro which registers all tests
 # MODULE - name of the module that we are called for
 #
-
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseWine.cmake)
-
 MACRO(DCMTK_ADD_TESTS MODULE)
     IF(CMAKE_CROSSCOMPILING)
         IF(WIN32)
             WINE_COMMAND(${MODULE}_TEST_CMD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
             STRING(REPLACE "\\" "\\\\" ${MODULE}_TEST_CMD "${${MODULE}_TEST_CMD}")
+        ELSEIF(ANDROID)
+            SET(${MODULE}_TEST_CMD -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunAndroid.cmake)
         ELSE()
-            MESSAGE(WARNING "Emulation for your target platform is not available, unit tests will fail!")
+            IF(NOT DEFINED DCMTK_UNIT_TESTS_UNSUPPORTED_WARN_ONCE)
+                SET(DCMTK_UNIT_TESTS_UNSUPPORTED_WARN_ONCE CACHE INTERNAL "")
+                MESSAGE(WARNING "Emulation for your target platform is not available, unit tests will fail!")
+            ENDIF()
             SET(${MODULE}_TEST_CMD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
         ENDIF()
     ELSE(CMAKE_CROSSCOMPILING)
         SET(${MODULE}_TEST_CMD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
     ENDIF(CMAKE_CROSSCOMPILING)
+    LIST(APPEND DCMTK_TEST_EXECUTABLES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests")
+    LIST(REMOVE_DUPLICATES DCMTK_TEST_EXECUTABLES)
+    SET(DCMTK_TEST_EXECUTABLES ${DCMTK_TEST_EXECUTABLES} CACHE INTERNAL "List of executables needed to run the unit tests")
     FILE(STRINGS tests.cc AVAIL_TESTS REGEX "OFTEST_REGISTER\\([^)]*\\)")
     FOREACH(TEST_LINE ${AVAIL_TESTS})
         # TODO: How can we parse tests.cc in a saner way?
         STRING(REGEX MATCH "OFTEST_REGISTER\\([^)]*" TEST "${TEST_LINE}")
         STRING(REPLACE "OFTEST_REGISTER(" "" TEST ${TEST})
         # This assumes that test names are globally unique
-        ADD_TEST("${TEST}" ${${MODULE}_TEST_CMD} "${TEST}")
+        IF(CMAKE_CROSSCOMPILING AND ANDROID)
+            ADD_TEST("${TEST}" ${CMAKE_COMMAND} "-DDCMTK_CTEST_TESTCASE_COMMAND=${ANDROID_TEMPORARY_FILES_LOCATION}/${MODULE}_tests\;${TEST}" ${${MODULE}_TEST_CMD})
+        ELSE()
+            ADD_TEST("${TEST}" ${${MODULE}_TEST_CMD} "${TEST}")
+        ENDIF()
         SET_PROPERTY(TEST "${TEST}" PROPERTY LABELS "${MODULE}")
     ENDFOREACH(TEST_LINE)
 ENDMACRO(DCMTK_ADD_TESTS)
@@ -125,3 +134,25 @@ ENDMACRO(DCMTK_TARGET_LINK_MODULES TARGET)
 # This is an ugly hack to simulate global variables
 SET(DCMTK_ALL_LIBRARIES CACHE INTERNAL "List of all libraries in the DCMTK.")
 SET(DCMTK_LIBRARY_DEPENDENCIES CACHE INTERNAL "Dependencies of the DCMTK libraries.")
+
+# C style atexit for CMake
+FUNCTION(DCMTK_ATEXIT_DISPATCHER)
+    # this will be called at every scope change, but CMAKE_PARENT_LIST_FILE will only
+    # be empty at exit.
+    IF(NOT CMAKE_PARENT_LIST_FILE)
+        FILE(WRITE ${CMAKE_BINARY_DIR}/CMakeTmp/atexit.cmake "${DCMTK_ATEXIT_HOOK}")
+        UNSET(DCMTK_ATEXIT_HOOK CACHE)
+        INCLUDE(${CMAKE_BINARY_DIR}/CMakeTmp/atexit.cmake NO_POLICY_SCOPE)
+        FILE(REMOVE ${CMAKE_BINARY_DIR}/CMakeTmp/atexit.cmake)
+    ENDIF()
+ENDFUNCTION(DCMTK_ATEXIT_DISPATCHER)
+
+# Necessary since it's sometimes not correctly cleaned up
+UNSET(DCMTK_ATEXIT_HOOK CACHE)
+
+MACRO(DCMTK_ATEXIT FUNCTION)
+    IF(NOT DCMTK_ATEXIT_HOOK)
+        VARIABLE_WATCH(CMAKE_PARENT_LIST_FILE DCMTK_ATEXIT_DISPATCHER)
+    ENDIF()
+    SET(DCMTK_ATEXIT_HOOK "${FUNCTION}(${ARGN})" CACHE INTERNAL "")
+ENDMACRO(DCMTK_ATEXIT)

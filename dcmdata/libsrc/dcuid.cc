@@ -79,6 +79,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofcrc32.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofnetdb.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -1283,7 +1284,7 @@ dcmIsImageStorageSOPClassUID(const char* uid)
 // ********************************
 
 #ifndef HAVE_GETHOSTID
-#ifdef HAVE_SYSINFO
+#if defined(HAVE_SYSINFO) && defined(HAVE_SYS_SYSTEMINFO_H)
 
 #include <sys/systeminfo.h>
 static long gethostid(void)
@@ -1532,7 +1533,6 @@ static long gethostid(void)
     long result = 0;
 #if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
     char name[1024];
-    struct hostent *hent = NULL;
     char **p = NULL;
     struct in_addr in;
 #ifdef HAVE_WINSOCK_H
@@ -1547,21 +1547,12 @@ static long gethostid(void)
     */
     if (gethostname(name, 1024) == 0)
     {
-#if defined(HAVE_GETHOSTBYNAME_R)
-        // use gethostbyname_r instead of gethostbyname
-        int h_errnop=0;
-        struct hostent theHostent;
-        char buffer[GETHOSTBYNAME_R_BUFSIZE];
-        if ((hent = gethostbyname_r(name, &theHostent, buffer, GETHOSTBYNAME_R_BUFSIZE, &h_errnop)) != NULL)
-#else
-        if ((hent = gethostbyname(name)) != NULL)
-#endif
+        if (OFStandard::OFHostent hent = OFStandard::getHostByName(name))
         {
-            p = hent->h_addr_list;
-            if (p && *p)
+            if (!hent.h_addr_list.empty())
             {
-                (void) memcpy(&in.s_addr, *p, sizeof(in.s_addr));
-                result = (long)in.s_addr;
+                memcpy(&in.s_addr, hent.h_addr_list.front().c_str(), sizeof(in.s_addr));
+                result = OFstatic_cast(long, in.s_addr);
             }
         }
     }

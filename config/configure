@@ -8359,6 +8359,18 @@ fi
 
 done
 
+for ac_header in sys/systeminfo.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "sys/systeminfo.h" "ac_cv_header_sys_systeminfo_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_systeminfo_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_SYSTEMINFO_H 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in sys/time.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
@@ -12409,7 +12421,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12412 "configure"
+#line 12424 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12881,7 +12893,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12884 "configure"
+#line 12896 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12953,7 +12965,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12956 "configure"
+#line 12968 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13025,7 +13037,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13028 "configure"
+#line 13040 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -14354,6 +14366,7 @@ fi
 
 
 
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __sync_add_and_fetch" >&5
 $as_echo_n "checking for __sync_add_and_fetch... " >&6; }
     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -14473,6 +14486,58 @@ $as_echo "#define HAVE_ATTRIBUTE_ALIGNED 1" >>confdefs.h
 $as_echo "no" >&6; }
     fi
 
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether struct pwd contains the field pw_gecos" >&5
+$as_echo_n "checking whether struct pwd contains the field pw_gecos... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <pwd.h>
+int
+main ()
+{
+&passwd::pw_gecos;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_PASSWD_GECOS /**/" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SYS_gettid in sys/syscall.h" >&5
+$as_echo_n "checking for SYS_gettid in sys/syscall.h... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <sys/syscall.h>
+int
+main ()
+{
+SYS_gettid;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_SYS_GETTID /**/" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"

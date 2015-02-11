@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -130,6 +130,8 @@ void OFTempFile::getTempPath(OFString& sPath)
     char buffer[BUFFER_SIZE];
     GetTempPath(BUFFER_SIZE, buffer);
     sPath = buffer;
+#elif defined(__ANDROID__)
+    sPath = ANDROID_TEMPORARY_FILES_LOCATION;
 #else
     sPath = "/tmp";
 #endif

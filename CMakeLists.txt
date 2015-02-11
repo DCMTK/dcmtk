@@ -116,3 +116,20 @@ ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FIL
           COMPONENT cmake)
 
 ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+
+#-----------------------------------------------------------------------------
+# Configure files needed for cross compiling (if any)
+#-----------------------------------------------------------------------------
+
+IF(CMAKE_CROSSCOMPILING)
+  IF(ANDROID)
+    # setup the CTestCustom.cmake file as appropriate for android
+    FILE(COPY ${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustom.cmake
+        DESTINATION ${CMAKE_BINARY_DIR}
+    )
+    # prepare the configuration for unit testing
+    CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestConfig.cmake.in
+        ${CMAKE_BINARY_DIR}/dcmtkCTestConfig.cmake @ONLY
+    )
+  ENDIF()
+ENDIF(CMAKE_CROSSCOMPILING)

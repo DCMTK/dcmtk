@@ -1,6 +1,45 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.11 (schlamelcher)
+
+- Introduced cross compiling support for Android:
+  Worked around some limitations when building for Android, for instance by
+  creating some configure tests that detect the absence of some operating
+  system functionality and enable existing or new fallback implementations in
+  their stead.
+  Added assisted cross compiling support to the CMake scripts, using a
+  specially adjusted version of an Android toolchain configuration file
+  borrowed from the OpenCV project. Also adding some code to (remote-)
+  control the Android device emulator (that is part of the official Android
+  SDK) and integrate it into the CMake build system. This allows the
+  configure- and unit tests to run on the emulated target device.
+  Added:   CMake/CTest/CTestCustom.cmake
+           CMake/CTest/dcmtkCTestConfig.cmake.in
+           CMake/CTest/dcmtkCTestMacros.cmake
+           CMake/CTest/dcmtkCTestRunAndroid.cmake.in
+           CMake/android.toolchain.cmake
+           CMake/dcmtkUseAndroidSDK.cmake
+  Affects: CMake/CheckFunctionWithHeaderExists.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/dcmtkUseWine.cmake
+           CMake/dcmtkMacros.cmake
+           CMake/dcmtkPrepare.cmake
+           CMake/dcmtkTryCompile.cmake
+           CMake/dcmtkTryRun.cmake
+           CMake/osconfig.h.in
+           CMakeLists.txt
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           dcmdata/libsrc/dcuid.cc
+           oflog/include/dcmtk/oflog/config/defines.h
+           oflog/include/dcmtk/oflog/thread/impl/syncimpl.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/libsrc/oftempf.cc
+           ofstd/libsrc/ofthread.cc
+           ofstd/tests/tthread.cc
+
 **** Changes from 2015.02.11 (riesmeier)
 
 - Fixed typos in comments and other minor issues.

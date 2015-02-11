@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,8 +52,9 @@ extern "C" {
 
 #elif defined(HAVE_PTHREAD_H) && defined(HAVE_SEMAPHORE_H)
 #define POSIX_INTERFACE
-#ifndef HAVE_PTHREAD_RWLOCK
+#if !defined(HAVE_PTHREAD_RWLOCK) || defined(__ANDROID__)
 // not all POSIX pthread implementations provide read/write locks
+// the android implementation seems to be insufficient
 #define POSIX_INTERFACE_WITHOUT_RWLOCK
 #endif
 extern "C" {

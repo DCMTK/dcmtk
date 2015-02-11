@@ -527,6 +527,7 @@ AC_CHECK_HEADERS(sys/select.h)
 AC_CHECK_HEADERS(sys/socket.h)
 AC_CHECK_HEADERS(sys/stat.h)
 AC_CHECK_HEADERS(sys/syscall.h)
+AC_CHECK_HEADERS(sys/systeminfo.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_HEADERS(sys/timeb.h)
 AC_CHECK_HEADERS(sys/types.h)
@@ -1240,10 +1241,36 @@ AC_ARG_WITH(cxx11-stl,
   AC_MSG_RESULT(no)
 )
 
+dnl -------------------------------------------------------
+dnl Test for some additional functions and keywords
+dnl -------------------------------------------------------
+
 AC_CHECK_SYNC_FN([__sync_add_and_fetch],[HAVE_SYNC_ADD_AND_FETCH])
 AC_CHECK_SYNC_FN([__sync_sub_and_fetch],[HAVE_SYNC_SUB_AND_FETCH])
 AC_CHECK_ALIGNOF([HAVE_GNU_ALIGNOF])
 AC_CHECK_ATTRIBUTE_ALIGNED([HAVE_ATTRIBUTE_ALIGNED])
+
+dnl -------------------------------------------------------
+dnl Test if passwd has the pw_gecos field
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(whether struct pwd contains the field pw_gecos)
+AC_TRY_COMPILE([#include <pwd.h>],
+  [&passwd::pw_gecos;],
+  [ AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_PASSWD_GECOS, , [Define if passwd::pw_gecos is available.]) ],
+  [AC_MSG_RESULT(no)])
+
+dnl -------------------------------------------------------
+dnl Test if SYS_gettid is available
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(for SYS_gettid in sys/syscall.h)
+AC_TRY_COMPILE([#include <sys/syscall.h>],
+  [SYS_gettid;],
+  [ AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_SYS_GETTID, , [Define if your system has a prototype for gettid.]) ],
+  [AC_MSG_RESULT(no)])
 
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
