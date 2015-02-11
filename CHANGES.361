@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.11 (riesmeier)
+
+- Fixed typos in comments and other minor issues.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvruc.h
+           dcmdata/libi2d/i2d.cc
+
 **** Changes from 2015.02.09 (riesmeier)
 
 - Updated data dictionary for DICOM 2015a edition:

@@ -42,7 +42,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnlimitedCharacters
      *  @param len length of the attribute value
      */
     DcmUnlimitedCharacters(const DcmTag &tag,
-                          const Uint32 len = 0);
+                           const Uint32 len = 0);
 
     /** copy constructor
      *  @param old element to be copied

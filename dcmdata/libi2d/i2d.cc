@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2013, OFFIS e.V.
+ *  Copyright (C) 2007-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,7 +20,7 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/libi2d/i2d.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
@@ -30,7 +30,7 @@
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
 
-OFLogger DCM_dcmdataLibi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d"); 
+OFLogger DCM_dcmdataLibi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
 
 
 Image2Dcm::Image2Dcm() : m_overrideKeys(), m_templateFile(""),
@@ -426,10 +426,10 @@ OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset,
     return cond;
   }
 
-  // store compressed frame into pixel seqeuence
+  // store compressed frame into pixel sequence
   DcmOffsetList dummyList;
   cond = pixelSequence->storeCompressedFrame(dummyList, OFreinterpret_cast(Uint8*,pixData), length, 0);
-  // storeCompressedFrame(..) does a deep copy, so the pixdata memory can be freed now
+  // storeCompressedFrame(..) does a deep copy, so the pixData memory can be freed now
   delete[] pixData;
   if (cond.bad())
   {
@@ -679,10 +679,10 @@ OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
       err += "\n";
       return err;
     }
-    //holds element to insert in item
+    // holds element to insert in item
     elem = NULL;
     DcmTag tag(key); OFBool wasError = OFFalse;
-    //if dicom element could be created, insert in to item and modify to value
+    // if DICOM element could be created, insert in to item and modify to value
     if ( newDicomElement(elem, tag).good())
     {
         if (targetDset->insert(elem, OFTrue).good())
