@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.12 (schlamelcher)
+
+- Fixed a const correctness problem within DCMTLS:
+  A recent commit regarding trusted client certificates contained a const
+  correctness problem which prevented building under OS X.
+  Affects: dcmtls/libsrc/tlslayer.cc
+
 **** Changes from 2015.02.11 (schlamelcher)
 
 - Introduced cross compiling support for Android:

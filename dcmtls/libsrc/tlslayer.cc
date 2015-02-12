@@ -344,7 +344,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(co
     STACK_OF(X509_NAME) *caNames = sk_X509_NAME_dup(SSL_CTX_get_client_CA_list(transportLayerContext));
     if (caNames == NULL)
       caNames = sk_X509_NAME_new_null();
-    const STACK_OF(X509_NAME) *newCaNames = SSL_load_client_CA_file(fileName);
+    STACK_OF(X509_NAME) *newCaNames = SSL_load_client_CA_file(fileName);
     for (int i = 0; i < sk_X509_NAME_num(newCaNames); ++i)
     {
       X509_NAME *newCaName = sk_X509_NAME_value(newCaNames,i);
