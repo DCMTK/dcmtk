@@ -3,6 +3,44 @@ Changes between releases are documented here.
 
 **** Changes from 2015.02.12 (schlamelcher)
 
+- Introduced check-exhaustive targets to Autoconf:
+  Added check-exhaustive and <module>-check-exhaustive targets to the
+  Autoconf scripts, which allow running the unit tests flagged as
+  exhaustive in addition to the fast testcases.
+  Affects: Makefile
+           config/Makefile.in
+           config/rootconf
+           dcmdata/Makefile.in
+           dcmdata/tests/Makefile.in
+           dcmimage/Makefile.in
+           dcmimage/tests/Makefile.in
+           dcmimgle/Makefile.in
+           dcmimgle/tests/Makefile.in
+           dcmjpeg/Makefile.in
+           dcmjpeg/tests/Makefile.in
+           dcmjpls/Makefile.in
+           dcmjpls/tests/Makefile.in
+           dcmnet/Makefile.in
+           dcmnet/tests/Makefile.in
+           dcmpstat/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmqrdb/Makefile.in
+           dcmqrdb/tests/Makefile.in
+           dcmrt/Makefile.in
+           dcmrt/tests/Makefile.in
+           dcmsign/Makefile.in
+           dcmsign/tests/Makefile.in
+           dcmsr/Makefile.in
+           dcmsr/tests/Makefile.in
+           dcmtls/Makefile.in
+           dcmtls/tests/Makefile.in
+           dcmwlm/Makefile.in
+           dcmwlm/tests/Makefile.in
+           oflog/Makefile.in
+           oflog/tests/Makefile.in
+           ofstd/Makefile.in
+           ofstd/tests/Makefile.in
+
 - Fixed a const correctness problem within DCMTLS:
   A recent commit regarding trusted client certificates contained a const
   correctness problem which prevented building under OS X.

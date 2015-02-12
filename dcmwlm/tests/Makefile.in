@@ -36,6 +36,8 @@ wltest: $(objs)
 
 check:
 
+check-exhaustive:
+
 install: all
 
 

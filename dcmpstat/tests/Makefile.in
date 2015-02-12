@@ -47,6 +47,8 @@ msgserv: msgserv.o
 
 check:
 
+check-exhaustive:
+
 install: all
 
 

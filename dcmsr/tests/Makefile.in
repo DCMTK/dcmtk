@@ -42,6 +42,9 @@ tests: $(tstobjs)
 check: tests
 	./tests
 
+check-exhaustive: tests
+	./tests -x
+
 install: all
 
 

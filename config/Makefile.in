@@ -30,9 +30,12 @@ install-support:
 
 libsrc-all:
 
-tests-all:
+tests-all: all
 
-check:
+
+check: tests-all
+
+check-exhaustive: tests-all
 
 
 include-install:

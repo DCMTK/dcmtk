@@ -42,6 +42,9 @@ install: all
 check: tests
 	./tests
 
+check-exhaustive: tests
+	./tests -x
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
