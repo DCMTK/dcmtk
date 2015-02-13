@@ -40,14 +40,14 @@ IF(ANDROID)
         @ONLY
     )
 
-    # Collect the list of dependant libraries
+    # Collect the list of required libraries
     IF(BUILD_SHARED_LIBS)
         FOREACH(LIBRARY ${DCMTK_ALL_LIBRARIES})
             LIST(APPEND DCMTK_CREATED_SHARED_LIBRARIES ${CMAKE_BINARY_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}${LIBRARY}${CMAKE_SHARED_LIBRARY_SUFFIX}.${DCMTK_PACKAGE_VERSION})
         ENDFOREACH()
     ENDIF(BUILD_SHARED_LIBS)
 
-    # Transmit the required executables end dependant libraries to the emulator
+    # Transmit the required executables and libraries to the emulator
     DCMTK_ANDROID_PUSH(DCMTK_ANDROID_EMULATOR_INSTANCE
         ${ANDROID_RUNTIME_LIBRARIES}
         ${DCMTK_LIBRARY_DEPENDENCIES}

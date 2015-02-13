@@ -56,7 +56,7 @@
 #  Requires cmake 2.6.3 or newer (2.8.5 or newer is recommended).
 #  See home page: https://github.com/taka-no-me/android-cmake
 #
-#  The file is mantained by the OpenCV project. The latest version can be get at
+#  The file is maintained by the OpenCV project. The latest version can be get at
 #  http://code.opencv.org/projects/opencv/repository/revisions/master/changes/android/android.toolchain.cmake
 #
 #  Usage Linux:
@@ -254,7 +254,7 @@
 #     [+] support different build flags for Release and Debug configurations
 #     [~] by default compiler flags the same as used by ndk-build (but only
 #         where reasonable)
-#     [~] ANDROID_NDK_TOOLCHAIN_ROOT is splitted to ANDROID_STANDALONE_TOOLCHAIN
+#     [~] ANDROID_NDK_TOOLCHAIN_ROOT is split to ANDROID_STANDALONE_TOOLCHAIN
 #         and ANDROID_TOOLCHAIN_ROOT
 #     [~] ARM_TARGET is renamed to ANDROID_ABI
 #     [~] ARMEABI_NDK_NAME is renamed to ANDROID_NDK_ABI_NAME
@@ -328,7 +328,7 @@
 #     [+] updated for NDK r9d
 # ------------------------------------------------------------------------------
 
-cmake_minimum_required( VERSION 2.6.3 )
+cmake_minimum_required( VERSION 2.8.3 )
 if( ${CMAKE_VERSION} VERSION_GREATER 3.1 OR ${CMAKE_VERSION} VERSION_EQUAL 3.1 )
   cmake_policy( SET CMP0054 NEW )
 endif()
@@ -355,7 +355,7 @@ set( CMAKE_SYSTEM_NAME Linux )
 # this one not so much
 set( CMAKE_SYSTEM_VERSION 1 )
 
-# rpath makes low sence for Android
+# rpath makes low sense for Android
 set( CMAKE_SKIP_RPATH TRUE CACHE BOOL "If set, runtime paths are not added when using shared libraries." )
 
 set( ANDROID_SUPPORTED_NDK_VERSIONS ${ANDROID_EXTRA_NDK_VERSIONS} -r9d -r9c -r9b -r9 -r8e -r8d -r8c -r8b -r8 -r7c -r7b -r7 -r6b -r6 -r5c -r5b -r5 "" )
@@ -1410,7 +1410,7 @@ __INIT_VARIABLE( ANDROID_RELRO                              VALUES ON )
 set( ANDROID_NO_UNDEFINED           ${ANDROID_NO_UNDEFINED}           CACHE BOOL "Show all undefined symbols as linker errors" )
 set( ANDROID_SO_UNDEFINED           ${ANDROID_SO_UNDEFINED}           CACHE BOOL "Allows or disallows undefined symbols in shared libraries" )
 set( ANDROID_FUNCTION_LEVEL_LINKING ${ANDROID_FUNCTION_LEVEL_LINKING} CACHE BOOL "Allows or disallows undefined symbols in shared libraries" )
-set( ANDROID_GOLD_LINKER            ${ANDROID_GOLD_LINKER}            CACHE BOOL "Enables gold linker (only avaialble for NDK r8b for ARM and x86 architectures on linux-86 and darwin-x86 hosts)" )
+set( ANDROID_GOLD_LINKER            ${ANDROID_GOLD_LINKER}            CACHE BOOL "Enables gold linker (only available for NDK r8b for ARM and x86 architectures on linux-86 and darwin-x86 hosts)" )
 set( ANDROID_NOEXECSTACK            ${ANDROID_NOEXECSTACK}            CACHE BOOL "Allows or disallows undefined symbols in shared libraries" )
 set( ANDROID_RELRO                  ${ANDROID_RELRO}                  CACHE BOOL "Enables RELRO - a memory corruption mitigation technique" )
 mark_as_advanced( ANDROID_NO_UNDEFINED ANDROID_SO_UNDEFINED ANDROID_FUNCTION_LEVEL_LINKING ANDROID_GOLD_LINKER ANDROID_NOEXECSTACK ANDROID_RELRO )

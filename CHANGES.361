@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.13 (schlamelcher)
+
+- Corrections regarding recent commits:
+  Corrected some typos inside the Android toolchain file and related CMake
+  scripts.
+  Added the Android toolchain file's copyright notice to the COPYRIGHT file.
+  Added workarounds for missing CMake macros and functionality in older CMake
+  versions.
+  Increased minimum required CMake version inside the Android toolchain file,
+  to reflect the actually verified requirements.
+  New CMake minimum version for assisted cross compiling: 2.8.3.
+  Affects: CMake/CTest/CTestCustom.cmake
+           CMake/CTest/dcmtkCTestConfig.cmake.in
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/android.toolchain.cmake
+           CMake/dcmtkTryRun.cmake
+           CMake/dcmtkUseAndroidSDK.cmake
+           CMake/dcmtkUseWine.cmake
+           COPYRIGHT
+
 **** Changes from 2015.02.12 (schlamelcher)
 
 - Introduced check-exhaustive targets to Autoconf:

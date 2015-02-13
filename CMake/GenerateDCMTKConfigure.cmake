@@ -505,7 +505,8 @@ INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake)
 IF(NOT DEFINED C_CHAR_UNSIGNED)
   MESSAGE(STATUS "Checking signedness of char")
   DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED ${CMAKE_BINARY_DIR}/CMakeTmp/Char
-          ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc)
+          ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc
+          COMPILE_OUTPUT_VARIABLE C_CHAR_SIGNED_COMPILE_OUTPUT)
   IF(C_CHAR_SIGNED_COMPILED)
     IF(C_CHAR_SIGNED)
       MESSAGE(STATUS "Checking signedness of char -- signed")
