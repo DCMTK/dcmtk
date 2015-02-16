@@ -2,7 +2,7 @@
 PROJECT(DCMTK)
 
 # Minimum CMake version required
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
 # Check the build system
 INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)

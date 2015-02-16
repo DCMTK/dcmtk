@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.16 (schlamelcher)
+
+- Modified CMake minimum version as required:
+  Determined the minimum CMake version supportable with minor workarounds and
+  implemented these required workarounds. Adjusted minimum CMake version
+  appropriately.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/dcmtkMacros.cmake
+           CMake/dcmtkTryCompile.cmake
+           CMake/dcmtkUseAndroidSDK.cmake
+           CMakeLists.txt
+
 **** Changes from 2015.02.13 (schlamelcher)
 
 - Corrections regarding recent commits:
