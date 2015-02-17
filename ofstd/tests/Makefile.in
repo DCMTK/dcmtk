@@ -15,7 +15,7 @@ include $(configdir)/@common_makefile@
 LOCALINCLUDES = -I$(top_srcdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc
 LOCALLIBS = -lofstd
-LOCALTRASH = *.out
+LOCALTRASH = *.out testfile.\$$\$$\$$
 
 test_objs = tests.o tatof.o tmap.o tvec.o tftoa.o tthread.o tbase64.o \
             tstring.o tlist.o tstack.o tofdatim.o tofstd.o tmarkup.o \
