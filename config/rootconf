@@ -179,13 +179,16 @@ EOF
 done
 for tag in dependencies clean distclean ; do
 	echo "${tag}:" >> $output
+	if test $tag = dependencies ; then
+		echo "	-(cd config && \$(MAKE) ${tag})" >> $output
+	fi
 	for module in $modules; do
 		echo "	(cd ${module} && \$(MAKE) ${tag})" >> $output
 	done
 	if test $tag != dependencies ; then
 		echo "	(cd doxygen && \$(MAKE) ${tag})" >> $output
+		echo "	-(cd config && \$(MAKE) ${tag})" >> $output
 	fi
-	echo "	-(cd config && \$(MAKE) ${tag})" >> $output
 	if test $tag = clean ; then
 		echo "	rm -f \$(TRASH)" >> $output
 	elif test $tag = distclean ; then

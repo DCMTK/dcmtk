@@ -718,6 +718,7 @@ dcmrt-check-exhaustive:
 	(cd dcmrt && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check-exhaustive)
 
 dependencies:
+	-(cd config && $(MAKE) dependencies)
 	(cd ofstd && $(MAKE) dependencies)
 	(cd oflog && $(MAKE) dependencies)
 	(cd dcmdata && $(MAKE) dependencies)
@@ -733,7 +734,6 @@ dependencies:
 	(cd dcmqrdb && $(MAKE) dependencies)
 	(cd dcmpstat && $(MAKE) dependencies)
 	(cd dcmrt && $(MAKE) dependencies)
-	-(cd config && $(MAKE) dependencies)
 
 clean:
 	(cd ofstd && $(MAKE) clean)
