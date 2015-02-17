@@ -1,4 +1,4 @@
-.TH "dcmdspfn" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdspfn" 1 "Mon Feb 16 2015" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdspfn \- Export standard display curves to a text file
@@ -11,7 +11,7 @@ dcmdspfn [options]
 .PP
 .SH "DESCRIPTION"
 .PP
-Command line program converts a DCMTK monitor / camera / printer / scanner characteristics file to tabbed text file describing the characteristic curve (CC), the display function and the post-standardized curve (PSC) for an 8 bit display\&. The 256 values of each curve can be visualized by a common spread sheet program\&. Above that the display curve (without CC and PSC) can also be computed for a specified luminance/OD range (min/max) and a certain number of Device Driving Levels (DDL)\&.
+Command line program converts a DCMTK monitor / camera / printer / scanner characteristics file to tabbed text file describing the characteristic curve (CC), the display function and the post-standardized curve (PSC) for an 8 bit display\&. The 256 values of each curve can be visualized by a common spread sheet program\&. Above that the display curve (without CC and PSC) can also be computed for a specified luminance/OD range (min/max) and a certain number of Digital Driving Levels (DDL)\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -89,7 +89,7 @@ dcmfile-in  DICOM input filename to be dumped
          Dmax value (default: off, only with +Ip and +Io)
 
   +Cd  --ddl-count  [n]umber of DDLs: integer
-         number of Device Driving Levels
+         number of Digital Driving Levels
          (default: 256, only with --lum/od-range)
 
   +Cf  --curve-fitting  [n]umber: integer
@@ -111,7 +111,7 @@ dcmfile-in  DICOM input filename to be dumped
 .PP
 The output file describing the CC, GSDF or CIELAB and PSC for an 8 bit display system (monitor, camera, printer or scanner) is a simple text file\&. Lines starting with a '#' are treated as comments and, therefore, skipped as well as blank lines\&. An input file can for instance be created by the command line tool \fBdconvlum\fP\&.
 .PP
-The ambient light value possibly defined in the characteristics file is also used for the calculation\&. In this case the value is part of the file comment header as well as the number of DDL (device driving level) values, the absolute luminance range (measured in candela per square meter) and the range of the JND index (just noticeable difference) in case of GSDF\&. Alternatively, the ambient light value can be specified as a command line option\&. When setting the two luminance values instead of reading a monitor characteristic file as input the luminance range is linearly divided by the number of DDLs\&.
+The ambient light value possibly defined in the characteristics file is also used for the calculation\&. In this case the value is part of the file comment header as well as the number of DDL (digital driving level) values, the absolute luminance range (measured in candela per square meter) and the range of the JND index (just noticeable difference) in case of GSDF\&. Alternatively, the ambient light value can be specified as a command line option\&. When setting the two luminance values instead of reading a monitor characteristic file as input the luminance range is linearly divided by the number of DDLs\&.
 .PP
 For printers and scanners the illumination can be specified in addition to the reflected ambient light (both in the characteristics file and on the command line)\&. The header of the output file includes the minimum and maximum Optical Density (OD) instead of the luminance range\&. Please note that the OD values in the input file have to be ordered in descending order (in contrast to the luminance values used for monitors and cameras)\&. The DDL value 0 always means black (darkest value) and the maximum DDL value means white (brightest value, clear film)\&.
 .PP

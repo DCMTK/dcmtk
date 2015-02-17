@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2015.02.17 (schlamelcher)
 
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 - Updated Autoconf dependencies:
   Fixed a problem regarding the Autoconf dependency generation and updated
   the dependencies.

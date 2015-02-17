@@ -1,4 +1,4 @@
-.TH "findscu" 1 "Tue Jun 17 2014" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Mon Feb 16 2015" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -221,6 +221,14 @@ general:
 
   -od   --output-directory  [d]irectory: string (default: ".")
           write output files to existing directory d
+
+automatic data correction:
+
+  +dc   --enable-correction
+          enable automatic data correction
+
+  -dc   --disable-correction
+          disable automatic data correction (default)
 
 C-FIND responses:
 
