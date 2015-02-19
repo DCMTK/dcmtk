@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.19 (riesmeier)
+
+- Updated Makefile dependencies again:
+  Rebuilt Makefile dependencies in order to get rid of unwanted libxml headers.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+
 **** Changes from 2015.02.17 (schlamelcher)
 
 - Updated DCMTK_ABI_VERSION for new development snapshot.
