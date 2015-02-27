@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -185,7 +185,7 @@ OFCondition DcmFindSCU::performQuery(
     DIC_NODENAME peerHost;
     OFString temp_str;
 
-    /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+    /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
     OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
     if (cond.bad()) return cond;
 
@@ -328,8 +328,8 @@ OFCondition DcmFindSCU::addPresentationContext(
     ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
     ** Some SCP implementations will just select the first transfer
     ** syntax they support (this is not part of the standard) so
-    ** organise the proposed transfer syntaxes to take advantage
-    ** of such behaviour.
+    ** organize the proposed transfer syntaxes to take advantage
+    ** of such behavior.
     **
     ** The presentation contexts proposed here are only used for
     ** C-FIND and C-MOVE, so there is no need to support compressed
@@ -455,7 +455,7 @@ OFCondition DcmFindSCU::findSCU(
         /* DcmFileFormat::getDataset() (for data set information). */
         cond = dcmff.loadFile(fname);
 
-        /* figure out if an error occured while the file was read*/
+        /* figure out if an error occurred while the file was read*/
         if (cond.bad()) {
             DCMNET_ERROR("Bad DICOM file: " << fname << ": " << cond.text());
             return cond;
@@ -507,7 +507,7 @@ OFCondition DcmFindSCU::findSCU(
     callback->setAssociation(assoc);
     callback->setPresentationContextID(presId);
 
-    /* as long as no error occured and the counter does not equal 0 */
+    /* as long as no error occurred and the counter does not equal 0 */
     cond = EC_Normal;
     while (cond.good() && n--)
     {

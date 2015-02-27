@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.02.27 (riesmeier)
+
+- Updated outdated API documentation:
+  Updated outdated documentation of parameter "overrideKeys" in private method
+  findSCU(). Also fixed some other minor documentation issues (e.g. typos).
+  Affects: dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/libsrc/dfindscu.cc
+
 **** Changes from 2015.02.19 (riesmeier)
 
 - Updated Makefile dependencies again:

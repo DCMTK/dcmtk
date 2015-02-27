@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -174,7 +174,7 @@ public:
    *  the network association should use a non-default transport layer
    *  (e.g. a TLS connection). In this case a fully initialized transport
    *  layer object must be passed with this call after a call to
-   *  initializeNetwork, but prior to any call to performQuery.
+   *  initializeNetwork(), but prior to any call to performQuery().
    *  The transport layer object will not be deleted by this class and
    *  must remain alive until this object is deleted or a new transport
    *  layer is set.
@@ -190,7 +190,7 @@ public:
 
   /** main worker method that negotiates an association, executes one or more
    *  C-FIND-RQ transactions, processes the responses and closes the association
-   *  once everything is finished (or an error has occured).
+   *  once everything is finished (or an error has occurred).
    *  @param peer hostname or IP address of peer SCP host
    *  @param port TCP port number of peer SCP host
    *  @param ourTitle calling AE title
@@ -199,7 +199,7 @@ public:
    *  @param preferredTransferSyntax May be Unknown, Implicit Little Endian, or any of the
    *    two uncompressed explicit VR transfer syntaxes. By default (unknown), local endian
    *    explicit VR is proposed first, followed by opposite endian explicit VR, followed by
-   *    implicit VR. This behaviour can be modified by explicitly specifying the preferred
+   *    implicit VR. This behavior can be modified by explicitly specifying the preferred
    *    explicit VR transfer syntax. With Little Endian Implicit, only Implicit VR is proposed.
    *  @param blockMode DIMSE blocking mode
    *  @param dimse_timeout timeout for DIMSE operations (in seconds)
@@ -218,8 +218,8 @@ public:
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
    *    (works only with default callback)
    *  @param overrideKeys list of keys/paths that override those in the query files, if any.
-   *    Either the list of query files or override keys or both should be non-empty, because the query
-   *    dataset will be empty otherwise. For path syntax see DcmPath.
+   *    Either the list of query files or override keys or both should be non-empty, because the
+   *    query dataset will be empty otherwise. For path syntax see DcmPath.
    *  @param callback user-provided non-default callback handler object.
    *    For default callback, pass NULL.
    *  @param fileNameList list of query files. Each file is expected to be a DICOM file
@@ -268,7 +268,7 @@ private:
    *  @param preferredTransferSyntax May be Unknown, Implicit Little Endian, or any of the
    *    two uncompressed explicit VR transfer syntaxes. By default (unknown), local endian
    *    explicit VR is proposed first, followed by opposite endian explicit VR, followed by
-   *    implicit VR. This behaviour can be modified by explicitly specifying the preferred
+   *    implicit VR. This behavior can be modified by explicitly specifying the preferred
    *    explicit VR transfer syntax. With Little Endian Implicit, only Implicit VR is proposed.
    *  @return EC_Normal if successful, an error code otherwise
    */
@@ -289,9 +289,9 @@ private:
    *    (works only with default callback)
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
    *    (works only with default callback)
-   *  @param overrideKeys dataset with keys that override those in the query file, if any.
-   *    Either query file or override keys or both should be non-empty, because the query
-   *    dataset will be empty otherwise.
+   *  @param overrideKeys list of keys/paths that override those in the query files, if any.
+   *    Either the list of query files or override keys or both should be non-empty, because
+   *    the query dataset will be empty otherwise. For path syntax see DcmPath.
    *  @param callback user-provided non-default callback handler object.
    *    For default callback, pass NULL.
    *  @param outputDirectory directory used to store the output files (e.g. response messages).
