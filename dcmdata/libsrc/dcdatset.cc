@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -377,7 +377,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                         break;
                 }
             }
-            else /* default behaviour */
+            else /* default behavior */
             {
                 /* If the transfer syntax which was passed equals EXS_Unknown we want to */
                 /* determine the transfer syntax from the information in the stream itself. */
@@ -475,7 +475,7 @@ OFCondition DcmDataset::write(DcmOutputStream &outStream,
     if (errorFlag.good() && getTransferState() != ERW_ready)
     {
       /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
-      /* or (if it's an unknown tranfer syntax) we use the one which is contained in OriginalXfer. */
+      /* or (if it's an unknown transfer syntax) we use the one which is contained in OriginalXfer. */
       E_TransferSyntax newXfer = oxfer;
       if (newXfer == EXS_Unknown)
         newXfer = OriginalXfer;
@@ -682,9 +682,11 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
             if (!pixelData->canChooseRepresentation(repType, repParam))
                 l_error = EC_CannotChangeRepresentation;
             pixelStack.push(resultStack);
-        }
-        else
+        } else {
+            /* something is fishy with the pixel data element (wrong class) */
+            DCMDATA_ERROR("DcmDataset: Wrong class for pixel data element, cannot change representation");
             l_error = EC_CannotChangeRepresentation;
+        }
     }
     // then call the method doing the real work for all these elements
     while (l_error.good() && (pixelStack.size() > 0))
@@ -702,7 +704,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
 
         pixelStack.pop();
     }
-    // store current transfer syntax (if conversion was successfuly)
+    // store current transfer syntax (if conversion was successfully)
     if (l_error.good())
         CurrentXfer = repType;
     return l_error;

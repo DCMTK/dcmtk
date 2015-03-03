@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.03.03 (riesmeier)
+
+- Output message to logger on wrong pixel data class:
+  Output an error message to the logger in case the internal class used for the
+  Pixel Data element has the wrong type when calling chooseRepresentation().
+  This is usually caused by a wrong VR for the Pixel Data element (not OB/OW).
+  Thanks to forum user "Shaeto" for the original report.
+  Affects: dcmdata/libsrc/dcdatset.cc
+
 **** Changes from 2015.02.27 (riesmeier)
 
 - Updated outdated API documentation:
