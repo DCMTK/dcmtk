@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.03.16 (schlamelcher)
+
+- Fixed a CMake problem with paths containing spaces.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2015.03.03 (riesmeier)
 
 - Output message to logger on wrong pixel data class:
