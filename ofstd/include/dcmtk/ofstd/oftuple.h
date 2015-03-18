@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2014-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -130,6 +130,14 @@ struct OFtuple_param<T&>
 template<typename Head = OFtuple_nil,typename Tail = void>
 class OFtuple_content : OFtuple_content_tail<Tail>::type
 {
+public:
+    // Helper typedef to resolve the matching OFtuple_content
+    // type on compilers that don't support accessing this
+    // directly (older versions of GCC).
+    // Needs to be accessible in global scope, therefore public.
+    typedef OFtuple_content content_type;
+
+private:
     // Friend declarations. OFtuple_content only has private
     // members, since these are accessed via free standing
     // functions (OFget, ...) only. Therefore this API

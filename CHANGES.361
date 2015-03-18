@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2015.03.18 (schlamelcher)
 
+- Modified fallback implementation of OFtuple:
+  OFtuple's fallback implementation now also works on older versions of GCC.
+  It was necessary to implement a workaround for accessing the type of
+  template base classes in derived classes without explicitly stating their
+  template parameters.
+  Affects: ofstd/include/dcmtk/ofstd/oftuple.h
+           ofstd/include/dcmtk/ofstd/variadic/tuple.h
+           ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h
+           ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h
+
 - Moved some utility functions inside OFStandard:
   The functions getUserName() and getHostName() are now implemented inside
   OFStandard, instead of being reimplemented everywhere they are needed.
