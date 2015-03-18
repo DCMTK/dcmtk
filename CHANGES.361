@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.03.18 (schlamelcher)
+
+- Moved some utility functions inside OFStandard:
+  The functions getUserName() and getHostName() are now implemented inside
+  OFStandard, instead of being reimplemented everywhere they are needed.
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2015.03.16 (schlamelcher)
 
 - Fixed a CMake problem with paths containing spaces.

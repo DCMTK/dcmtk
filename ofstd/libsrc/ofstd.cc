@@ -136,11 +136,15 @@ BEGIN_EXTERN_C
 #ifdef HAVE_IEEEFP_H
 #include <ieeefp.h>      /* for finite() on Solaris 2.5.1 */
 #endif
+#ifdef HAVE_SYS_UTSNAME_H
+#include <sys/utsname.h>
+#endif
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* for GetFileAttributes() */
 #include <direct.h>      /* for _mkdir() */
+#include <lm.h>          /* for NetWkstaUserGetInfo */
 
 #ifndef R_OK /* Windows defines access() but not the constants */
 #define W_OK 02 /* Write permission */
@@ -2907,3 +2911,63 @@ DCMTK_OFSTD_EXPORT const OFignore_t& OFignore( OFignore_value );
 OFtuple<> OFmake_tuple() { return OFtuple<>(); }
 OFtuple<> OFtie() { return OFtuple<>(); }
 #endif
+
+
+OFString OFStandard::getUserName()
+{
+#ifdef _WIN32
+    WKSTA_USER_INFO_0 *userinfo;
+    if( NetWkstaUserGetInfo( OFnullptr, 0, OFreinterpret_cast( LPBYTE*, &userinfo ) ) != NERR_Success )
+        return "<no-user-information-available>";
+    // Convert the Unicode full name to ANSI.
+    const WCHAR* const name = OFstatic_cast( WCHAR*, userinfo->wkui0_username );
+    OFVector<char> buf( wcslen( name ) * 2 );
+    WideCharToMultiByte
+    (
+        CP_ACP,
+        0,
+        name,
+        -1,
+        &*buf.begin(),
+        buf.size(),
+        OFnullptr,
+        OFnullptr
+    );
+    return &*buf.begin();
+#elif defined(HAVE_CUSERID)
+    char buf[L_cuserid];
+    return cuserid( buf );
+#elif defined(HAVE_GETLOGIN)
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    // use getlogin_r instead of getlogin
+    char buf[513];
+    if( getlogin_r( buf, 512 ) != 0 )
+        return "<no-utmp-entry>";
+    buf[512] = 0;
+    return buf;
+#else
+    // thread unsafe
+    if( const char* s = getlogin() )
+        return s;
+    return "<no-utmp-entry>";
+#endif
+#else
+    return "<unknown-user>";
+#endif
+}
+
+OFString OFStandard::getHostName()
+{
+#ifdef HAVE_UNAME
+    struct utsname n;
+    uname( &n );
+    return n.nodename;
+#elif defined(HAVE_GETHOSTNAME)
+    char buf[513];
+    gethostname( buf, 512 );
+    buf[512] = 0;
+    return buf;
+#else
+    return "localhost";
+#endif
+}

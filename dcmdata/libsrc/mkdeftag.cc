@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,23 +21,10 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CCTYPE
-#define INCLUDE_LIBC
-#include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef HAVE_SYS_UTSNAME_H
-#include <sys/utsname.h>
-#endif
-
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>  /* this includes either winsock.h or winsock2.h */
-#else
-#ifdef HAVE_WINSOCK_H
+#elif defined(HAVE_WINSOCK_H)
 #include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
-#endif
 #endif
 
 #ifdef HAVE_GUSI_H
@@ -48,6 +35,7 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
 static char*
@@ -130,80 +118,6 @@ printDefined(FILE* fout, const DcmDictEntry* e)
     fputs("\n", fout);
 }
 
-#ifdef HAVE_CUSERID
-static char*
-getUserName(char* userString, int /* maxLen */)
-{
-    return cuserid(userString); // thread safe, maxLen >= L_cuserid ?
-}
-#elif HAVE_GETLOGIN
-static char*
-getUserName(char* userString, int maxLen)
-{
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
-    // use getlogin_r instead of getlogin
-    if (getlogin_r(userString, maxLen) != 0)
-        strncpy(userString, "<no-utmp-entry>", maxLen);
-    return userString;
-#else
-    char* s;
-    s = getlogin(); // thread unsafe?
-    if (s == NULL) s = "<no-utmp-entry>";
-    return strncpy(userString, s, maxLen);
-#endif
-}
-
-#elif defined(_WIN32)
-
-#include <lm.h>
-
-static char*
-getUserName(char* userString, int maxLen)
-{
-    WKSTA_USER_INFO_0 *userinfo;
-    if (NetWkstaUserGetInfo(NULL, 0, (LPBYTE*)&userinfo) == NERR_Success)
-    {
-        // Convert the Unicode full name to ANSI.
-        WideCharToMultiByte( CP_ACP, 0, (WCHAR*)userinfo->wkui0_username, -1,
-            userString, maxLen, NULL, NULL );
-    } else {
-        strncpy(userString, "<no-user-information-available>", maxLen);
-    }
-    return userString;
-}
-#else
-
-static char*
-getUserName(char* userString, int maxLen)
-{
-    return strncpy(userString, "<unknown-user>", maxLen);
-}
-#endif
-
-#ifdef HAVE_UNAME
-static char*
-getHostName(char* hostString, int maxLen)
-{
-    struct utsname n;
-    uname(&n);
-    strncpy(hostString, n.nodename, maxLen);
-    return hostString;
-}
-#elif HAVE_GETHOSTNAME
-static char*
-getHostName(char* userString, int maxLen)
-{
-    gethostname(userString, maxLen);
-    return userString;
-}
-#else
-static char*
-getHostName(char* hostString, int maxLen)
-{
-    return strncpy(hostString, "localhost", maxLen);
-}
-#endif
-
 int main(int argc, char* argv[])
 {
     const char* progname = "mkdeftag";
@@ -267,11 +181,8 @@ int main(int argc, char* argv[])
      * generated new.
      */
     fputs("**\n", fout);
-    char tmpString[512];
-    getUserName(tmpString, 512);
-    fprintf(fout, "**   User: %s\n", tmpString);
-    getHostName(tmpString, 512);
-    fprintf(fout, "**   Host: %s\n", tmpString);
+    fprintf(fout, "**   User: %s\n", OFStandard::getUserName().c_str());
+    fprintf(fout, "**   Host: %s\n", OFStandard::getHostName().c_str());
     fprintf(fout, "**   Date: %s\n", dateString.c_str());
 #endif
     fprintf(fout, "**   Prog: %s\n", progname);

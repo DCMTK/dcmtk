@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -935,6 +935,16 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *    full root privileges.
      */
     static OFCondition dropPrivileges();
+
+    /** Retrieve the name of the user that started the current process.
+     *  @return the user name as an OFString value.
+     */
+    static OFString getUserName();
+
+    /** Retrieve the local domain name, e. g. 'localhost'.
+     *  @return the host name as an OFString value.
+     */
+    static OFString getHostName();
 
  private:
 
