@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -220,20 +220,8 @@ OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream &s
 
 OFCondition DSRCodingSchemeIdentificationList::addPrivateDcmtkCodingScheme()
 {
-    ItemStruct *item = NULL;
     /* add private coding scheme (if not already existent) */
-    OFCondition result = addItem(OFFIS_CODING_SCHEME_DESIGNATOR, item);
-    if (result.good())
-    {
-        /* set additional information */
-        item->CodingSchemeRegistry.clear();
-        item->CodingSchemeUID = OFFIS_CODING_SCHEME_UID;
-        item->CodingSchemeExternalID.clear();
-        item->CodingSchemeName = OFFIS_CODING_SCHEME_NAME;
-        item->CodingSchemeVersion.clear();  // there are currently no different versions
-        item->CodingSchemeResponsibleOrganization = OFFIS_CODING_SCHEME_RESPONSIBLE_ORGANIZATION;
-    }
-    return result;
+    return addItem(OFFIS_CODING_SCHEME_DESIGNATOR, OFFIS_CODING_SCHEME_UID, OFFIS_CODING_SCHEME_NAME, OFFIS_CODING_SCHEME_RESPONSIBLE_ORGANIZATION);
 }
 
 
@@ -290,6 +278,47 @@ OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSch
         ItemStruct *item = NULL;
         /* call the "real" function */
         result = addItem(codingSchemeDesignator, item);
+    }
+    return result;
+}
+
+
+OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSchemeDesignator,
+                                                       const OFString &codingSchemeUID,
+                                                       const OFString &codingSchemeName,
+                                                       const OFString &responsibleOrganization,
+                                                       const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* make sure that the mandatory designator value is non-empty */
+    if (codingSchemeDesignator.empty())
+        result = EC_IllegalParameter;
+    else if (check)
+    {
+        /* check whether the passed values are valid */
+        result = DcmShortString::checkStringValue(codingSchemeDesignator, "1");
+        if (result.good())
+            result = DcmUniqueIdentifier::checkStringValue(codingSchemeUID, "1");
+        if (result.good())
+            result = DcmShortText::checkStringValue(codingSchemeName);
+        if (result.good())
+            result = DcmShortText::checkStringValue(responsibleOrganization);
+    }
+    if (result.good())
+    {
+        ItemStruct *item = NULL;
+        /* add coding scheme (if not already existent) */
+        result = addItem(codingSchemeDesignator, item);
+        if (result.good())
+        {
+            /* set additional information */
+            item->CodingSchemeRegistry.clear();
+            item->CodingSchemeUID = codingSchemeUID;
+            item->CodingSchemeExternalID.clear();
+            item->CodingSchemeName = codingSchemeName;
+            item->CodingSchemeVersion.clear();
+            item->CodingSchemeResponsibleOrganization = responsibleOrganization;
+        }
     }
     return result;
 }

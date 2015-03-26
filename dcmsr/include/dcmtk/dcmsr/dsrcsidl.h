@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -109,7 +109,7 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
     /** add the specified coding scheme to the list.
      *  Internally, the item is inserted into the list of coding scheme designators if
      *  not already contained in the list.  In any case, the specified item is selected as
-     *  the current one.
+     *  the current one.  Additional information can be set using the below setXXX() methods.
      ** @param  codingSchemeDesignator  coding scheme designator of the item to be added.
      *                                  Designators beginning with "99" and the designator
      *                                  "L" are defined to be private or local coding schemes.
@@ -119,6 +119,34 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(const OFString &codingSchemeDesignator,
+                        const OFBool check = OFTrue);
+
+    /** add the specified coding scheme (with additional information) to the list.
+     *  Internally, the item is inserted into the list of coding scheme designators if not
+     *  already contained in the list, and the additional information is set.  In any case,
+     *  the specified item is selected as the current one.  Further information can be set
+     *  using the below setXXX() methods.
+     *  Please note that any information previously stored under the given coding scheme
+     *  designator is replaced!
+     ** @param  codingSchemeDesignator   coding scheme designator of the item to be added.
+     *                                   (VR=SH, mandatory).  Designators beginning with "99"
+     *                                   and the designator "L" are defined to be private or
+     *                                   local coding schemes.
+     *  @param  codingSchemeUID          coding scheme UID of the item to be added.  (VR=UI,
+     *                                   conditional)
+     *  @param  codingSchemeName         coding scheme name of the item to be added.  (VR=ST,
+     *                                   optional)
+     *  @param  responsibleOrganization  coding scheme responsible organization of the item to
+     *                                   be added.  (VR=ST, optional)
+     *  @param  check                    check given values for conformance with associated VR
+     *                                   and VM if enabled.  An empty 'codingSchemeDesignator'
+     *                                   is never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addItem(const OFString &codingSchemeDesignator,
+                        const OFString &codingSchemeUID,
+                        const OFString &codingSchemeName,
+                        const OFString &responsibleOrganization = "",
                         const OFBool check = OFTrue);
 
     /** remove the current item from the list.
@@ -156,7 +184,7 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
      *  Designators beginning with "99" and the designator "L" are defined to be private
      *  or local coding schemes.
      ** @param  stringValue  reference to string variable in which the result is stored
-     ** @return reference to the resulting string (might be empty)
+     ** @return reference to the resulting string (might be empty if no item is selected)
      */
     const OFString &getCodingSchemeDesignator(OFString &stringValue) const;
 

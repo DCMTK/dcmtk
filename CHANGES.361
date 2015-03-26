@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.03.26 (riesmeier)
+
+- Enhanced use of DSRCodingSchemeIdentificationList:
+  Added new method that facilitates adding coding schemes with frequently used
+  additional information to the list. This avoids calling the various setXXX()
+  methods directly after addItem().
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/libsrc/dsrcsidl.cc
+
 **** Changes from 2015.03.18 (schlamelcher)
 
 - Modified fallback implementation of OFtuple:
