@@ -243,6 +243,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLPhotographicImageStorage,                          "VLPhotographicImageStorage" },
     { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VLSlideCoordinatesMicroscopicImageStorage" },
     { UID_VLWholeSlideMicroscopyImageStorage,                  "VLWholeSlideMicroscopyImageStorage" },
+    { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage, "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage" },
+    { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage, "OphthalmicPhotography3DCoordinatesImageStorage" },
     { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,      "XAXRFGrayscaleSoftcopyPresentationStateStorage" },
     { UID_XRay3DAngiographicImageStorage,                      "XRay3DAngiographicImageStorage" },
     { UID_XRay3DCraniofacialImageStorage,                      "XRay3DCraniofacialImageStorage" },
@@ -521,7 +523,7 @@ static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeo
  *  are not included in this list.
  *
  *  THIS LIST CONTAINS ALL STORAGE SOP CLASSES INCLUDING RETIRED ONES
- *  AND IS LARGER THAN 64 ENTRIES.
+ *  AND IS (MUCH) LARGER THAN 64 ENTRIES.
  */
 
 const char* dcmAllStorageSOPClassUIDs[] = {
@@ -633,6 +635,8 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_VLWholeSlideMicroscopyImageStorage,
+    UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
+    UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
     UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,
     UID_XRay3DAngiographicImageStorage,
     UID_XRay3DCraniofacialImageStorage,
@@ -798,6 +802,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_LegacyConvertedEnhancedPETImageStorage,
 //  UID_ParametricMapStorage,
 //  UID_RadiopharmaceuticalRadiationDoseSRStorage,
+//  UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
+//  UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
     // retired
     UID_RETIRED_HardcopyColorImageStorage,
     UID_RETIRED_HardcopyGrayscaleImageStorage,
@@ -982,6 +988,8 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_VLWholeSlideMicroscopyImageStorage,
+    UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
+    UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
     UID_XRay3DAngiographicImageStorage,
     UID_XRay3DCraniofacialImageStorage,
     UID_XRayAngiographicImageStorage,
@@ -1131,6 +1139,8 @@ static const DcmModalityTable modalities[] = {
     { UID_VLPhotographicImageStorage,                              "VLp", 768 * 576 * 3 },
     { UID_VLSlideCoordinatesMicroscopicImageStorage,               "VLs", 768 * 576 * 3 },
     { UID_VLWholeSlideMicroscopyImageStorage,                      "VLw", 10000 * 10000 * 3},
+    { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage, "OWs", 768 * 576 * 3 },
+    { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage, "OW3", 768 * 576 * 3 },
     { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,          "PSx", 4096 },
     { UID_XRay3DAngiographicImageStorage,                          "XA3", 256 * 512 * 512 },
     { UID_XRay3DCraniofacialImageStorage,                          "XC3", 256 * 512 * 512 },

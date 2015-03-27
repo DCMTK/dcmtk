@@ -440,6 +440,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_OphthalmicPhotography16BitImageStorage                 "1.2.840.10008.5.1.4.1.1.77.1.5.2"
 #define UID_StereometricRelationshipStorage                        "1.2.840.10008.5.1.4.1.1.77.1.5.3"
 #define UID_OphthalmicTomographyImageStorage                       "1.2.840.10008.5.1.4.1.1.77.1.5.4"
+#define UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage "1.2.840.10008.5.1.4.1.1.77.1.5.5"
+#define UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage "1.2.840.10008.5.1.4.1.1.77.1.5.6"
 #define UID_VLWholeSlideMicroscopyImageStorage                     "1.2.840.10008.5.1.4.1.1.77.1.6"
 #define UID_RETIRED_VLMultiFrameImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
 #define UID_LensometryMeasurementsStorage                          "1.2.840.10008.5.1.4.1.1.78.1"
