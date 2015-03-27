@@ -27,7 +27,8 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - CP 1420, 1430, 1434
+# - Supplement 173.
+# - CP 1420, 1430, 1434.
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3520,6 +3521,23 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 173 (Wide Field Ophthalmic Photography Image Storage SOP Classes)
+#
+(0022,1512)	SQ	TransformationMethodCodeSequence	1	Supplement_173
+(0022,1513)	SQ	TransformationAlgorithmSequence	1	Supplement_173
+(0022,1515)	CS	OphthalmicAxialLengthMethod	1	Supplement_173
+(0022,1517)	FL	OphthalmicFOV	1	Supplement_173
+(0022,1518)	SQ	TwoDimensionalToThreeDimensionalMapSequence	1	Supplement_173
+(0022,1525)	SQ	WideFieldOphthalmicPhotographyQualityRatingSequence	1	Supplement_173
+(0022,1526)	SQ	WideFieldOphthalmicPhotographyQualityThresholdSequence	1	Supplement_173
+(0022,1527)	FL	WideFieldOphthalmicPhotographyThresholdQualityRating	1	Supplement_173
+(0022,1528)	FL	XCoordinatesCenterPixelViewAngle	1	Supplement_173
+(0022,1529)	FL	YCoordinatesCenterPixelViewAngle	1	Supplement_173
+(0022,1530)	UL	NumberOfMapPoints	1	Supplement_173
+(0022,1531)	OF	TwoDimensionalToThreeDimensionalMapData	1	Supplement_173
 #
 #---------------------------------------------------------------------------
 #

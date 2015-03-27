@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-03-27 12:33:26
+**   Date: 2015-03-27 12:45:14
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-03-27 12:33:26"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-03-27 12:45:14"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3870
+** Number of entries: 3882
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1527,6 +1527,18 @@
 #define DCM_RegisteredLocalizerBottomRightHandCorner DcmTagKey(0x0022, 0x1468)
 #define DCM_OphthalmicThicknessMapQualityRatingSequence DcmTagKey(0x0022, 0x1470)
 #define DCM_RelevantOPTAttributesSequence        DcmTagKey(0x0022, 0x1472)
+#define DCM_TransformationMethodCodeSequence     DcmTagKey(0x0022, 0x1512)
+#define DCM_TransformationAlgorithmSequence      DcmTagKey(0x0022, 0x1513)
+#define DCM_OphthalmicAxialLengthMethod          DcmTagKey(0x0022, 0x1515)
+#define DCM_OphthalmicFOV                        DcmTagKey(0x0022, 0x1517)
+#define DCM_TwoDimensionalToThreeDimensionalMapSequence DcmTagKey(0x0022, 0x1518)
+#define DCM_WideFieldOphthalmicPhotographyQualityRatingSequence DcmTagKey(0x0022, 0x1525)
+#define DCM_WideFieldOphthalmicPhotographyQualityThresholdSequence DcmTagKey(0x0022, 0x1526)
+#define DCM_WideFieldOphthalmicPhotographyThresholdQualityRating DcmTagKey(0x0022, 0x1527)
+#define DCM_XCoordinatesCenterPixelViewAngle     DcmTagKey(0x0022, 0x1528)
+#define DCM_YCoordinatesCenterPixelViewAngle     DcmTagKey(0x0022, 0x1529)
+#define DCM_NumberOfMapPoints                    DcmTagKey(0x0022, 0x1530)
+#define DCM_TwoDimensionalToThreeDimensionalMapData DcmTagKey(0x0022, 0x1531)
 #define DCM_VisualFieldHorizontalExtent          DcmTagKey(0x0024, 0x0010)
 #define DCM_VisualFieldVerticalExtent            DcmTagKey(0x0024, 0x0011)
 #define DCM_VisualFieldShape                     DcmTagKey(0x0024, 0x0012)

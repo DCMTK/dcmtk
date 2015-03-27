@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2015.03.27 (riesmeier)
 
+- Added support for Supplement 173 to dictionary:
+  Added support for the final text version of Supplement 173 (Wide Field
+  Ophthalmic Photography Image Storage SOP Classes) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for recently approved CPs:
   Added support for CP-1420, CP-1430 and CP-1434 to the data dictionary.
   Affects: dcmdata/data/dicom.dic

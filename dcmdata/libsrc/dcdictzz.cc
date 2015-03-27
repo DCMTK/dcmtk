@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-03-27 12:33:30
+**   Date: 2015-03-27 12:45:18
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2015-03-27 12:33:30";
+const char* dcmBuiltinDictBuildDate = "2015-03-27 12:45:18";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -12835,6 +12835,54 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0022, 0x1472, 0x0022, 0x1472,
       EVR_SQ, "RelevantOPTAttributesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1512, 0x0022, 0x1512,
+      EVR_SQ, "TransformationMethodCodeSequence", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1513, 0x0022, 0x1513,
+      EVR_SQ, "TransformationAlgorithmSequence", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1515, 0x0022, 0x1515,
+      EVR_CS, "OphthalmicAxialLengthMethod", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1517, 0x0022, 0x1517,
+      EVR_FL, "OphthalmicFOV", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1518, 0x0022, 0x1518,
+      EVR_SQ, "TwoDimensionalToThreeDimensionalMapSequence", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1525, 0x0022, 0x1525,
+      EVR_SQ, "WideFieldOphthalmicPhotographyQualityRatingSequence", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1526, 0x0022, 0x1526,
+      EVR_SQ, "WideFieldOphthalmicPhotographyQualityThresholdSequence", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1527, 0x0022, 0x1527,
+      EVR_FL, "WideFieldOphthalmicPhotographyThresholdQualityRating", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1528, 0x0022, 0x1528,
+      EVR_FL, "XCoordinatesCenterPixelViewAngle", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1529, 0x0022, 0x1529,
+      EVR_FL, "YCoordinatesCenterPixelViewAngle", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1530, 0x0022, 0x1530,
+      EVR_UL, "NumberOfMapPoints", 1, 1, "Supplement_173",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1531, 0x0022, 0x1531,
+      EVR_OF, "TwoDimensionalToThreeDimensionalMapData", 1, 1, "Supplement_173",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
