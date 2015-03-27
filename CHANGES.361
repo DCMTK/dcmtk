@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2015.03.27 (riesmeier)
 
+- Added further test cases for VR checker.
+  Affects: dcmdata/tests/tchval.cc
+
 - Fixed test after after implementing CP-1425:
   Since CP-1425 permits the horizontal tab character for DICOM text VRs, the
   test case "UT-03" needs to be fixed, too. Also added a new test case "UT-04",

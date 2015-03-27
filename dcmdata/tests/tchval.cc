@@ -157,7 +157,9 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_BAD ( "LO-10", DcmLongString::checkStringValue("not allowed: \r\014", "1") )
 
   /* test "Long Text" */
-  CHECK_GOOD( "LT-01", DcmLongText::checkStringValue(" Hallo \\ 12345 \\ \344\366\374\337 ") )
+  CHECK_GOOD( "LT-01", DcmLongText::checkStringValue(" Hello \\ 12345 \\ \344\366\374\337 ") )
+  CHECK_GOOD( "LT-02", DcmLongText::checkStringValue(" permitted control characters: \011 \012 \014 \015 ") )
+  CHECK_GOOD( "LT-03", DcmLongText::checkStringValue(" ") )
 
   /* test "Person Name" */
   CHECK_GOOD( "PN-01", DcmPersonName::checkStringValue("A^Riesmeier^^=R^J\366rg", "1") )
@@ -221,6 +223,8 @@ OFTEST(dcmdata_checkStringValue)
   /* test "Short Text" */
   CHECK_GOOD( "ST-01", DcmShortText::checkStringValue(" umlaut characters are allowed: \304\326\334\344\366\374\naccented characters also: \341\340\351\350\355\354\342\352\364\rand control characters, of course, including \033=ESC ") )
   CHECK_BAD ( "ST-02", DcmShortText::checkStringValue(" other control characters are not allowed: \013 \010 \200 ") )
+  CHECK_GOOD( "ST-03", DcmShortText::checkStringValue("  .  ") )
+  CHECK_GOOD( "ST-04", DcmShortText::checkStringValue("     ") )
 
   /* test "Time" */
   CHECK_GOOD( "TM-01", DcmTime::checkStringValue("0000", "1") )
@@ -237,6 +241,8 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_BAD ( "TM-12", DcmTime::checkStringValue("12:30:00.123456", "1", OFFalse) )
   CHECK_GOOD( "TM-13", DcmTime::checkStringValue("12:30:00.123456", "1", OFTrue) )
   CHECK_BAD ( "TM-14", DcmTime::checkStringValue("12:30", "1", OFTrue) )
+  CHECK_GOOD( "TM-15", DcmTime::checkStringValue("12 ", "1") )
+  CHECK_BAD ( "TM-16", DcmTime::checkStringValue(" ", "1") )
 
   /* test "Unlimited Characters" */
   CHECK_GOOD( "UC-01", DcmUnlimitedCharacters::checkStringValue("ABC", "1") )
@@ -244,6 +250,8 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "UC-03", DcmUnlimitedCharacters::checkStringValue(" J\366rg Riesmeier ", "1") )
   CHECK_GOOD( "UC-04", DcmUnlimitedCharacters::checkStringValue("ESC\033aping", "1") )
   CHECK_BAD ( "UC-05", DcmUnlimitedCharacters::checkStringValue("not allowed: \n\010\r\014", "1") )
+  CHECK_GOOD( "UC-06", DcmUnlimitedCharacters::checkStringValue(" ", "1") )
+  CHECK_GOOD( "UC-07", DcmUnlimitedCharacters::checkStringValue("A\\B", "2") )
 
   /* test "Unique Identifier" */
   CHECK_GOOD( "UI-01", DcmUniqueIdentifier::checkStringValue("0", "1") )
@@ -276,8 +284,8 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "UT-02", DcmUnlimitedText::checkStringValue(hugeString) )
 
   hugeString[hugeString.length() / 2] = '\t';
-  CHECK_GOOD ( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
+  CHECK_GOOD( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
 
   hugeString[hugeString.length() - 1] = '\v';
-  CHECK_BAD  ( "UT-04", DcmUnlimitedText::checkStringValue(hugeString) )
+  CHECK_BAD ( "UT-04", DcmUnlimitedText::checkStringValue(hugeString) )
 }
