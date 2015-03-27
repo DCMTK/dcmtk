@@ -16,17 +16,18 @@
 #
 #  Purpose: This is the global standard DICOM data dictionary for the DCMTK.
 #
-# This file contains the complete data dictionary from the 2014c edition of the
-# DICOM standard.  This also includes the non-private definitions from the
+# This file contains the complete data dictionary from the latest edition of
+# the DICOM standard.  This also includes the non-private definitions from the
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
 # Generated automatically from DICOM PS 3.6-2015a and PS 3.7-2015a.
 # File created on 2015-02-09 10:03:16 by J. Riesmeier on thinkpad.
+# File updated manually on 2015-03-27 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - CP 1420, 1430, 1434
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3519,6 +3520,22 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1420, 1430, 1434
+#
+(300A,0440)	IS	NumberOfBlockSlabItems	1	CP_1420
+(300A,0441)	SQ	BlockSlabSequence	1	CP_1420
+(300A,0442)	DS	BlockSlabThickness	1	CP_1420
+(300A,0443)	US	BlockSlabNumber	1	CP_1420
+(300A,0450)	SQ	DeviceMotionControlSequence	1	CP_1430
+(300A,0451)	CS	DeviceMotionExecutionMode	1	CP_1430
+(300A,0452)	CS	DeviceMotionObservationMode	1	CP_1430
+(300A,0453)	SQ	DeviceMotionParameterCodeSequence	1	CP_1430
+(300A,0131)	FL	AverageBeamDosePointSourceToExternalContourSurfaceDistance	1	CP_1434
+(300A,0132)	FL	SourceToExternalContourDistance	1	CP_1434
+(300A,0133)	FL	ExternalContourEntryPoint	3	CP_1434
 #
 #---------------------------------------------------------------------------
 #

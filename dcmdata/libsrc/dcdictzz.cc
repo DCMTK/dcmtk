@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-02-09 10:43:51
+**   Date: 2015-03-27 12:33:30
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2015-02-09 10:43:51";
+const char* dcmBuiltinDictBuildDate = "2015-03-27 12:33:30";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -25081,6 +25081,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "SourceToSurfaceDistance", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0131, 0x300a, 0x0131,
+      EVR_FL, "AverageBeamDosePointSourceToExternalContourSurfaceDistance", 1, 1, "CP_1434",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0132, 0x300a, 0x0132,
+      EVR_FL, "SourceToExternalContourDistance", 1, 1, "CP_1434",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0133, 0x300a, 0x0133,
+      EVR_FL, "ExternalContourEntryPoint", 3, 3, "CP_1434",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0134, 0x300a, 0x0134,
       EVR_DS, "CumulativeMetersetWeight", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -25831,6 +25843,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x0436, 0x300a, 0x0436,
       EVR_FL, "SourceToApplicatorMountingPositionDistance", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0440, 0x300a, 0x0440,
+      EVR_IS, "NumberOfBlockSlabItems", 1, 1, "CP_1420",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0441, 0x300a, 0x0441,
+      EVR_SQ, "BlockSlabSequence", 1, 1, "CP_1420",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0442, 0x300a, 0x0442,
+      EVR_DS, "BlockSlabThickness", 1, 1, "CP_1420",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0443, 0x300a, 0x0443,
+      EVR_US, "BlockSlabNumber", 1, 1, "CP_1420",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0450, 0x300a, 0x0450,
+      EVR_SQ, "DeviceMotionControlSequence", 1, 1, "CP_1430",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0451, 0x300a, 0x0451,
+      EVR_CS, "DeviceMotionExecutionMode", 1, 1, "CP_1430",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0452, 0x300a, 0x0452,
+      EVR_CS, "DeviceMotionObservationMode", 1, 1, "CP_1430",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0453, 0x300a, 0x0453,
+      EVR_SQ, "DeviceMotionParameterCodeSequence", 1, 1, "CP_1430",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0002, 0x300c, 0x0002,

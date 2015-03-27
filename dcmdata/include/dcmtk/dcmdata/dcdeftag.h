@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-02-09 10:43:47
+**   Date: 2015-03-27 12:33:26
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-02-09 10:43:47"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-03-27 12:33:26"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3859
+** Number of entries: 3870
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -3522,6 +3522,9 @@
 #define DCM_IsocenterPosition                    DcmTagKey(0x300a, 0x012c)
 #define DCM_SurfaceEntryPoint                    DcmTagKey(0x300a, 0x012e)
 #define DCM_SourceToSurfaceDistance              DcmTagKey(0x300a, 0x0130)
+#define DCM_AverageBeamDosePointSourceToExternalContourSurfaceDistance DcmTagKey(0x300a, 0x0131)
+#define DCM_SourceToExternalContourDistance      DcmTagKey(0x300a, 0x0132)
+#define DCM_ExternalContourEntryPoint            DcmTagKey(0x300a, 0x0133)
 #define DCM_CumulativeMetersetWeight             DcmTagKey(0x300a, 0x0134)
 #define DCM_TableTopPitchAngle                   DcmTagKey(0x300a, 0x0140)
 #define DCM_TableTopPitchRotationDirection       DcmTagKey(0x300a, 0x0142)
@@ -3710,6 +3713,14 @@
 #define DCM_ApplicatorOpeningX                   DcmTagKey(0x300a, 0x0434)
 #define DCM_ApplicatorOpeningY                   DcmTagKey(0x300a, 0x0435)
 #define DCM_SourceToApplicatorMountingPositionDistance DcmTagKey(0x300a, 0x0436)
+#define DCM_NumberOfBlockSlabItems               DcmTagKey(0x300a, 0x0440)
+#define DCM_BlockSlabSequence                    DcmTagKey(0x300a, 0x0441)
+#define DCM_BlockSlabThickness                   DcmTagKey(0x300a, 0x0442)
+#define DCM_BlockSlabNumber                      DcmTagKey(0x300a, 0x0443)
+#define DCM_DeviceMotionControlSequence          DcmTagKey(0x300a, 0x0450)
+#define DCM_DeviceMotionExecutionMode            DcmTagKey(0x300a, 0x0451)
+#define DCM_DeviceMotionObservationMode          DcmTagKey(0x300a, 0x0452)
+#define DCM_DeviceMotionParameterCodeSequence    DcmTagKey(0x300a, 0x0453)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)
 #define DCM_ReferencedBeamNumber                 DcmTagKey(0x300c, 0x0006)
