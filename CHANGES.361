@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2015.03.27 (riesmeier)
 
+- Fixed test after after implementing CP-1425:
+  Since CP-1425 permits the horizontal tab character for DICOM text VRs, the
+  test case "UT-03" needs to be fixed, too. Also added a new test case "UT-04",
+  which checks for the (still invalid) vertical tab character,
+  Affects: dcmdata/tests/tchval.cc
+
 - Added support for recently approved CP-1425:
   The recently approved CP-1425 permits the horizontal tab character (HT) in
   DICOM's text VRs (LT, ST, UT). Adapted the VR scanner and the character set

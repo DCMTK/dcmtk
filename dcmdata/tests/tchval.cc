@@ -276,5 +276,8 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "UT-02", DcmUnlimitedText::checkStringValue(hugeString) )
 
   hugeString[hugeString.length() / 2] = '\t';
-  CHECK_BAD ( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
+  CHECK_GOOD ( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
+
+  hugeString[hugeString.length() - 1] = '\v';
+  CHECK_BAD  ( "UT-04", DcmUnlimitedText::checkStringValue(hugeString) )
 }
