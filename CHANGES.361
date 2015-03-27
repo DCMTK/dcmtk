@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2015.03.27 (riesmeier)
 
+- Added support for recently approved CP-1425:
+  The recently approved CP-1425 permits the horizontal tab character (HT) in
+  DICOM's text VRs (LT, ST, UT). Adapted the VR scanner and the character set
+  conversion code (handling of additional control character) accordingly.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/dcspchrs.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.l
+
 - Added support for new UIDs from Supplement 173:
   Added support for new Storage SOP Class UIDs from Supplement 173 (Wide Field
   Ophthalmic Photography Image Storage SOP Classes).

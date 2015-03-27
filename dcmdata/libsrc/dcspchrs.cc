@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: Class for supporting the Specfic Character Set attribute
+ *  Purpose: Class for supporting the Specific Character Set attribute
  *
  */
 
@@ -49,7 +49,7 @@ DcmSpecificCharacterSet::DcmSpecificCharacterSet()
 
 DcmSpecificCharacterSet::~DcmSpecificCharacterSet()
 {
-    // this frees all previously allocated ressources
+    // this frees all previously allocated resources
     closeConversionDescriptors();
 }
 
@@ -511,10 +511,10 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
         while ((pos < fromLength) && status.good())
         {
             const char c0 = *currentChar++;
-            // check for characters ESC, LF, FF, CR or any other specified delimiter
+            // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
             // (the PN delimiters '^' and '=' require the default character set or ASCII)
             const OFBool isEscape = (c0 == '\033');
-            const OFBool isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
+            const OFBool isDelimiter = (c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
                 ((delimiters.find(c0) != OFString_npos) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
             if (isEscape || isDelimiter)
             {

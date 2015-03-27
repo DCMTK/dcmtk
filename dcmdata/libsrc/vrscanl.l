@@ -41,7 +41,7 @@
 
 default_charset_without_control_chars [\041-\133\135-\176][\040-\133\135-\176]*
 charset_without_control_chars         [\040-\133\135-\176\240-\377\033]+
-charset_with_control_chars            [\040-\176\240-\377\012\014\015\033]+
+charset_with_control_chars            [\040-\176\240-\377\011\012\014\015\033]+
 spaces                                [ ]*
 dt_offset                             (\-1200)|(\+1400)|(((\-((0[1-9])|(1[0-1])))|(\+((0[1-9])|(1[0-3])))){tm_minute})
 da_year                               (18[5-9][0-9])|(19[0-9]{2})|(20[0-4][0-9])
