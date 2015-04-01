@@ -692,13 +692,13 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
             DCMSR_DEBUG("Ignoring content item error because of read flag");
             result = EC_Normal;
         }
-        /* content item is not valid */
+        /* content item is not valid (see above) */
         else if (result.good())
         {
             result = SR_EC_InvalidValue;
         }
         /* accept invalid content item value if flag is set */
-        else if ((result == SR_EC_InvalidValue) && (flags & RF_acceptInvalidContentItemValue))
+        if ((result == SR_EC_InvalidValue) && (flags & RF_acceptInvalidContentItemValue))
         {
             DCMSR_DEBUG("Ignoring invalid content item value because of read flag");
             result = EC_Normal;

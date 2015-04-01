@@ -143,13 +143,14 @@ OFCondition DSRCompositeReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
-                                                 const size_t /*flags*/)
+                                                 const size_t flags)
 {
+    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue);
     /* read ReferencedSOPClassUID */
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", "ReferencedSOPSequence");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", "ReferencedSOPSequence", acceptViolation);
     /* read ReferencedSOPInstanceUID */
     if (result.good())
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", "ReferencedSOPSequence");
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", "ReferencedSOPSequence", acceptViolation);
     return result;
 }
 

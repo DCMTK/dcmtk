@@ -1254,14 +1254,16 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                const OFBool allowEmpty = OFTrue);
 
     /** check element value for correct value multiplicity and type.
-     ** @param  delem       pointer to DICOM element to be checked (might be NULL)
-     *  @param  tagKey      DICOM tag of the DICOM element then parameter 'delem' points to
-     *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
-     *                      (See DcmElement::checkVM() for a list of valid values.)
-     *                      Interpreted as cardinality (number of items) for sequence attributes.
-     *  @param  type        value type (valid value: "1", "1C", "2", something else)
-     *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
-     *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
+     ** @param  delem            pointer to DICOM element to be checked (might be NULL)
+     *  @param  tagKey           DICOM tag of the DICOM element the parameter 'delem' points to
+     *  @param  vm               value multiplicity (according to the data dictionary) to be checked
+     *                           for.  (See DcmElement::checkVM() for a list of valid values.)
+     *                           Interpreted as cardinality (number of items) for sequence attributes.
+     *  @param  type             value type (valid value: "1", "1C", "2", something else)
+     *  @param  searchCond       optional flag indicating the status of a previous search() call
+     *  @param  moduleName       optional module name to be printed (default: "SR document" if NULL)
+     *  @param  acceptViolation  accept certain violations regarding the VR and VM if OFTrue.
+     *                           A warning message will always be reported if the value in incorrect.
      ** @return OFTrue if element value is correct, OFFalse otherwise
      */
     static OFBool checkElementValue(DcmElement *delem,
@@ -1269,62 +1271,77 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                     const OFString &vm,
                                     const OFString &type,
                                     const OFCondition &searchCond = EC_Normal,
-                                    const char *moduleName = NULL);
+                                    const char *moduleName = NULL,
+                                    const OFBool acceptViolation = OFFalse);
 
     /** check element value for correct value multiplicity and type.
-     ** @param  delem       DICOM element to be checked
-     *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
-     *                      (See DcmElement::checkVM() for a list of valid values.)
-     *                      Interpreted as cardinality (number of items) for sequence attributes.
-     *  @param  type        value type (valid value: "1", "1C", "2", something else)
-     *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
-     *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
+     ** @param  delem            DICOM element to be checked
+     *  @param  vm               value multiplicity (according to the data dictionary) to be checked
+     *                           for.  (See DcmElement::checkVM() for a list of valid values.)
+     *                           Interpreted as cardinality (number of items) for sequence attributes.
+     *  @param  type             value type (valid value: "1", "1C", "2", something else)
+     *  @param  searchCond       optional flag indicating the status of a previous search() call
+     *  @param  moduleName       optional module name to be printed (default: "SR document" if NULL)
+     *  @param  acceptViolation  accept certain violations regarding the VR and VM if OFTrue.
+     *                           A warning message will always be reported if the value in incorrect.
      ** @return OFTrue if element value is correct, OFFalse otherwise
      */
     static OFBool checkElementValue(DcmElement &delem,
                                     const OFString &vm,
                                     const OFString &type,
                                     const OFCondition &searchCond = EC_Normal,
-                                    const char *moduleName = NULL);
+                                    const char *moduleName = NULL,
+                                    const OFBool acceptViolation = OFFalse);
 
     /** get element from dataset and check it for correct value multiplicity and type.
-     ** @param  dataset     DICOM dataset from which the element should be retrieved.
-     *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
-     *  @param  delem       DICOM element used to store the value (always creates a copy!)
-     *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
-     *                      (See DcmElement::checkVM() for a list of valid values.)
-     *                      Interpreted as cardinality (number of items) for sequence attributes.
-     *  @param  type        value type (valid value: "1", "1C", "2", something else which is not checked)
-     *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
-     ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
+     ** @param  dataset          DICOM dataset from which the element should be retrieved.  (Would be
+     *                           'const' if the methods from 'dcmdata' would also be 'const'.)
+     *  @param  delem            DICOM element used to store the value (always creates a copy!)
+     *  @param  vm               value multiplicity (according to the data dictionary) to be checked
+     *                           for.  (See DcmElement::checkVM() for a list of valid values.)
+     *                           Interpreted as cardinality (number of items) for sequence attributes.
+     *  @param  type             value type (valid value: "1", "1C", "2", something else which is not
+     *                           checked)
+     *  @param  moduleName       optional module name to be printed (default: "SR document" if NULL)
+     *  @param  acceptViolation  accept certain violations regarding the VR and VM if OFTrue.
+     *                           A warning message will always be reported if the value in incorrect.
+     ** @return status, EC_Normal if element could be retrieved and value is correct, an error code
+     *          otherwise
      */
     static OFCondition getAndCheckElementFromDataset(DcmItem &dataset,
                                                      DcmElement &delem,
                                                      const OFString &vm,
                                                      const OFString &type,
-                                                     const char *moduleName = NULL);
+                                                     const char *moduleName = NULL,
+                                                     const OFBool acceptViolation = OFFalse);
 
     /** get string value from dataset and check it for correct value multiplicity and type.
-     ** @param  dataset      DICOM dataset from which the element should be retrieved.
-     *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
-     *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
-     *  @param  stringValue  reference to variable in which the result should be stored.
-     *                       (This parameter is automatically cleared if the tag could not be found.
-     *                        It is not cleared if the retrieved string is invalid, e.g. violates VR or
-     *                        VM definition.)
-     *  @param  vm           value multiplicity (according to the data dictionary) to be checked for.
-     *                       (See DcmElement::checkVM() for a list of valid values.)
-     *                       Interpreted as cardinality (number of items) for sequence attributes.
-     *  @param  type         value type (valid value: "1", "1C", "2", something else which is not checked)
-     *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
-     ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
+     ** @param  dataset          DICOM dataset from which the element should be retrieved.  (Would be
+     *                           'const' if the methods from 'dcmdata' would also be 'const'.)
+     *  @param  tagKey           DICOM tag specifying the attribute from which the string should be
+     *                           retrieved
+     *  @param  stringValue      reference to variable in which the result should be stored.
+     *                           (This parameter is automatically cleared if the tag could not be found.
+     *                           It is not cleared if the retrieved string is invalid, e.g. violates VR
+     *                           or VM definition.)
+     *  @param  vm               value multiplicity (according to the data dictionary) to be checked
+     *                           for.  (See DcmElement::checkVM() for a list of valid values.)
+     *                           Interpreted as cardinality (number of items) for sequence attributes.
+     *  @param  type             value type (valid value: "1", "1C", "2", something else which is not
+     *                           checked)
+     *  @param  moduleName       optional module name to be printed (default: "SR document" if NULL)
+     *  @param  acceptViolation  accept certain violations regarding the VR and VM if OFTrue.
+     *                           A warning message will always be reported if the value in incorrect.
+     ** @return status, EC_Normal if element could be retrieved and value is correct, an error code
+     *          otherwise
      */
     static OFCondition getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                          const DcmTagKey &tagKey,
                                                          OFString &stringValue,
                                                          const OFString &vm,
                                                          const OFString &type,
-                                                         const char *moduleName = NULL);
+                                                         const char *moduleName = NULL,
+                                                         const OFBool acceptViolation = OFFalse);
 
   // --- output functions ---
 

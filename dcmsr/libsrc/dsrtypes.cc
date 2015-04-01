@@ -981,7 +981,8 @@ OFBool DSRTypes::checkElementValue(DcmElement *delem,
                                    const OFString &vm,
                                    const OFString &type,
                                    const OFCondition &searchCond,
-                                   const char *moduleName)
+                                   const char *moduleName,
+                                   const OFBool acceptViolation)
 {
     OFBool result = OFTrue;
     const OFString tagName = DcmTag(tagKey).getTagName();
@@ -1005,18 +1006,18 @@ OFBool DSRTypes::checkElementValue(DcmElement *delem,
         if (checkResult == EC_ValueRepresentationViolated)
         {
             DCMSR_WARN(tagName << " " << tagKey << " violates VR definition in " << module);
-            result = OFFalse;
+            result = acceptViolation;
         }
         else if (checkResult == EC_ValueMultiplicityViolated)
         {
             const OFString vmText = (delem->getVR() == EVR_SQ) ? " #items" : " VM";
             DCMSR_WARN(tagName << " " << tagKey << vmText << " != " << vm << " in " << module);
-            result = OFFalse;
+            result = acceptViolation;
         }
         else if (checkResult == EC_MaximumLengthViolated)
         {
             DCMSR_WARN(tagName << " " << tagKey << " violates maximum VR length in " << module);
-            result = OFFalse;
+            result = acceptViolation;
         }
         else if (checkResult.bad())
         {
@@ -1031,10 +1032,11 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const OFString &vm,
                                    const OFString &type,
                                    const OFCondition &searchCond,
-                                   const char *moduleName)
+                                   const char *moduleName,
+                                   const OFBool acceptViolation)
 {
     /* call the real function */
-    return checkElementValue(&delem, delem.getTag(), vm, type, searchCond, moduleName);
+    return checkElementValue(&delem, delem.getTag(), vm, type, searchCond, moduleName, acceptViolation);
 }
 
 
@@ -1042,7 +1044,8 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
                                                     DcmElement &delem,
                                                     const OFString &vm,
                                                     const OFString &type,
-                                                    const char *moduleName)
+                                                    const char *moduleName,
+                                                    const OFBool acceptViolation)
 {
     DcmStack stack;
     const DcmTagKey tagKey = delem.getTag();
@@ -1052,11 +1055,11 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
         /* copy object from search stack */
         result = delem.copyFrom(*stack.top());
         /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-        if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName))
+        if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, acceptViolation))
             result = SR_EC_InvalidValue;
     }
     /* the element could not be found in the dataset */
-    else if (!checkElementValue(delem, vm, type, result, moduleName))
+    else if (!checkElementValue(delem, vm, type, result, moduleName, acceptViolation))
         result = SR_EC_InvalidValue;
     return result;
 }
@@ -1067,7 +1070,8 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                         OFString &stringValue,
                                                         const OFString &vm,
                                                         const OFString &type,
-                                                        const char *moduleName)
+                                                        const char *moduleName,
+                                                        const OFBool acceptViolation)
 {
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
@@ -1075,7 +1079,7 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
     {
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-        if (!checkElementValue(delem, tagKey, vm, type, result, moduleName))
+        if (!checkElementValue(delem, tagKey, vm, type, result, moduleName, acceptViolation))
             result = SR_EC_InvalidValue;
         delem->getOFString(stringValue, 0);
     } else {

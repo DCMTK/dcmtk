@@ -182,16 +182,17 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
                                          const char *moduleName,
-                                         const size_t /*flags*/)
+                                         const size_t flags)
 {
+    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue);
     /* read "Basic Coded Entry Attributes" */
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", moduleName);
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", moduleName, acceptViolation);
     if (result.good())
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", moduleName);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", moduleName, acceptViolation);
     if (result.good())                                              /* conditional (type 1C) */
         DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", moduleName);
     if (result.good())
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", moduleName);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", moduleName, acceptViolation);
     /* read "Enhanced Encoding Mode" */
     if (result.good())                                              /* optional or conditional */
     {

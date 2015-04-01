@@ -87,10 +87,11 @@ void DSRStringValue::print(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRStringValue::read(DcmItem &dataset,
                                  const DcmTagKey &tagKey,
-                                 const size_t /*flags*/)
+                                 const size_t flags)
 {
+    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue);
     /* read value */
-    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", "content item");
+    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", "content item", acceptViolation);
 }
 
 

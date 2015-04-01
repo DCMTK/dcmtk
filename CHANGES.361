@@ -3,6 +3,22 @@ Changes between releases are documented here.
 
 **** Changes from 2015.04.01 (riesmeier)
 
+- Optionally accept invalid content item values:
+  If a certain read flag is set, further violations of the DICOM standard are
+  accepted when reading an invalid SR document. For example, when the numeric
+  value of a NUM content item violates the maximum length. This might be useful
+  in order to make sure that the other information of the content item is read
+  (like the measurement unit).
+  Thanks to forum user "ichimura.t" for the original report.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrsc3vl.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 - Added read flag to all readXXX() methods:
   Added "flag" parameter used to customize the reading process of all read() and
   readXML() methods. This will facilitate the handling of incorrectly encoded SR

@@ -239,8 +239,9 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
 OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
                                                  const size_t flags)
 {
+    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue);
     /* read NumericValue */
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", "MeasuredValueSequence");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", "MeasuredValueSequence", acceptViolation);
     if (result.good())
     {
         /* read some optional attributes */
