@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -109,10 +109,11 @@ OFCondition DSRWaveformReferenceValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRWaveformReferenceValue::readXML(const DSRXMLDocument &doc,
-                                               DSRXMLCursor cursor)
+                                               DSRXMLCursor cursor,
+                                               const size_t flags)
 {
     /* first read general composite reference information */
-    OFCondition result = DSRCompositeReferenceValue::readXML(doc, cursor);
+    OFCondition result = DSRCompositeReferenceValue::readXML(doc, cursor, flags);
     /* then read waveform related XML tags */
     if (result.good())
     {
@@ -143,13 +144,14 @@ OFCondition DSRWaveformReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset)
+OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
+                                                const size_t flags)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    OFCondition result = DSRCompositeReferenceValue::readItem(dataset);
+    OFCondition result = DSRCompositeReferenceValue::readItem(dataset, flags);
     /* read ReferencedWaveformChannels (conditional) */
     if (result.good())
-        ChannelList.read(dataset);
+        ChannelList.read(dataset, flags);
     return result;
 }
 

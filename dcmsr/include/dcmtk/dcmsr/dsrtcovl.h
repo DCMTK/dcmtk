@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,10 +104,12 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     /** read temporal coordinates value from XML document
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readXML(const DSRXMLDocument &doc,
-                                DSRXMLCursor cursor);
+                                DSRXMLCursor cursor,
+                                const size_t flags);
 
     /** write temporal coordinates value in XML format
      ** @param  stream  output stream to which the XML document is written
@@ -214,9 +216,11 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
      *  Please note that all three lists are (tried to) read from the dataset.  If more than
      *  one list is present a warning message is reported.
      ** @param  dataset  DICOM dataset from which the value should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition read(DcmItem &dataset);
+    virtual OFCondition read(DcmItem &dataset,
+                             const size_t flags);
 
     /** write temporal coordinates reference value to dataset.
      *  Please note that only one of the three lists is actually written to the dataset.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,7 +83,8 @@ OFCondition DSRCodeTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRCodeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                DSRXMLCursor cursor)
+                                                DSRXMLCursor cursor,
+                                                const size_t flags)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
@@ -94,9 +95,9 @@ OFCondition DSRCodeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
         {
             /* check whether code is stored as XML elements or attributes */
             if (doc.hasAttribute(childCursor, "codValue"))
-                result = DSRCodedEntryValue::readXML(doc, childCursor);
+                result = DSRCodedEntryValue::readXML(doc, childCursor, flags);
             else
-                result = DSRCodedEntryValue::readXML(doc, cursor);
+                result = DSRCodedEntryValue::readXML(doc, cursor, flags);
         }
     }
     return result;
@@ -121,10 +122,11 @@ OFCondition DSRCodeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRCodeTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
+                                             const size_t flags)
 {
     /* read ConceptCodeSequence */
-    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /*type*/);
+    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /*type*/, flags);
 }
 
 

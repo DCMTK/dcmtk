@@ -176,7 +176,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
             }
         }
         /* read concept name (not required in some cases) */
-        ConceptName.readXML(doc, doc.getNamedNode(cursor.getChild(), "concept", OFFalse /*required*/));
+        ConceptName.readXML(doc, doc.getNamedNode(cursor.getChild(), "concept", OFFalse /*required*/), flags);
         /* read observation UID and date/time (optional) */
         const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "observation", OFFalse /*required*/);
         if (childCursor.valid())
@@ -185,7 +185,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
             DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor.getChild(), "datetime", OFFalse /*required*/), ObservationDateTime);
         }
         /* read node content (depends on value type) */
-        result = readXMLContentItem(doc, cursor);
+        result = readXMLContentItem(doc, cursor, flags);
         /* goto first child node */
         cursor.gotoChild();
         /* iterate over all child content items */
@@ -241,7 +241,8 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRDocumentTreeNode::readXMLContentItem(const DSRXMLDocument & /*doc*/,
-                                                    DSRXMLCursor /*cursor*/)
+                                                    DSRXMLCursor /*cursor*/,
+                                                    const size_t /*flags*/)
 {
     return EC_IllegalCall;
 }
@@ -496,7 +497,8 @@ void DSRDocumentTreeNode::removeSignatures()
 }
 
 
-OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /*dataset*/)
+OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /*dataset*/,
+                                                 const size_t /*flags*/)
 {
     /* no content to read */
     return EC_Normal;
@@ -668,17 +670,17 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
     if (RelationshipType == RT_isRoot)
     {
         /* the concept name is required for the root container */
-        result = ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1" /*type*/);
+        result = ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1" /*type*/, flags);
     } else {
         /* the concept name might be empty for all other content items */
-        ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/);
+        ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/, flags);
     }
     if (result.good() || (flags & RF_ignoreContentItemErrors))
     {
         if (result.bad())
             DCMSR_DEBUG("Ignoring content item error because of read flag");
         /* read ContentItem (depending on ValueType) */
-        result = readContentItem(dataset);
+        result = readContentItem(dataset, flags);
     }
     /* check for validity, after reading */
     if (result.bad() || !isValid())
@@ -824,7 +826,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     if (result.good())
                     {
                         newNode = node;
-                        result = node->readContentItem(*ditem);
+                        result = node->readContentItem(*ditem, flags);
                     }
                 } else {
                     /* read ValueType (from DocumentContentMacro) - required to create new node */

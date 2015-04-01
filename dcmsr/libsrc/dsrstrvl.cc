@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -86,7 +86,8 @@ void DSRStringValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRStringValue::read(DcmItem &dataset,
-                                 const DcmTagKey &tagKey)
+                                 const DcmTagKey &tagKey,
+                                 const size_t /*flags*/)
 {
     /* read value */
     return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", "content item");
@@ -103,6 +104,7 @@ OFCondition DSRStringValue::write(DcmItem &dataset,
 
 OFCondition DSRStringValue::readXML(const DSRXMLDocument &doc,
                                     DSRXMLCursor cursor,
+                                    const size_t /*flags*/,
                                     const OFBool encoding)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;

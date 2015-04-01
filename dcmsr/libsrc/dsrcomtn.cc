@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -97,10 +97,11 @@ OFCondition DSRCompositeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRCompositeTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
+                                                  const size_t flags)
 {
     /* read ReferencedSOPSequence */
-    return DSRCompositeReferenceValue::readSequence(dataset, DCM_ReferencedSOPSequence, "1" /* type */);
+    return DSRCompositeReferenceValue::readSequence(dataset, DCM_ReferencedSOPSequence, "1" /* type */, flags);
 }
 
 
@@ -112,10 +113,11 @@ OFCondition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRCompositeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                     DSRXMLCursor cursor)
+                                                     DSRXMLCursor cursor,
+                                                     const size_t flags)
 {
     /* retrieve value from XML element "value" */
-    return DSRCompositeReferenceValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
+    return DSRCompositeReferenceValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"), flags);
 }
 
 

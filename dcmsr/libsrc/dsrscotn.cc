@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -101,10 +101,11 @@ OFCondition DSRSCoordTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRSCoordTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRSCoordTreeNode::readContentItem(DcmItem &dataset,
+                                               const size_t flags)
 {
     /* read SpatialCoordinates */
-    return DSRSpatialCoordinatesValue::read(dataset);
+    return DSRSpatialCoordinatesValue::read(dataset, flags);
 }
 
 
@@ -116,7 +117,8 @@ OFCondition DSRSCoordTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRSCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                  DSRXMLCursor cursor)
+                                                  DSRXMLCursor cursor,
+                                                  const size_t flags)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
@@ -127,7 +129,7 @@ OFCondition DSRSCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
         if (result.good())
         {
             /* proceed reading the spatial coordinates */
-            result = DSRSpatialCoordinatesValue::readXML(doc, cursor);
+            result = DSRSpatialCoordinatesValue::readXML(doc, cursor, flags);
         } else
             printUnknownValueWarningMessage("SCOORD type", tmpString.c_str());
     }

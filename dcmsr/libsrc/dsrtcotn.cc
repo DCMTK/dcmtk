@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -101,10 +101,11 @@ OFCondition DSRTCoordTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRTCoordTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRTCoordTreeNode::readContentItem(DcmItem &dataset,
+                                               const size_t flags)
 {
     /* read TemporalCoordinates */
-    return DSRTemporalCoordinatesValue::read(dataset);
+    return DSRTemporalCoordinatesValue::read(dataset, flags);
 }
 
 
@@ -116,7 +117,8 @@ OFCondition DSRTCoordTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRTCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                  DSRXMLCursor cursor)
+                                                  DSRXMLCursor cursor,
+                                                  const size_t flags)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
@@ -127,7 +129,7 @@ OFCondition DSRTCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
         if (result.good())
         {
             /* proceed reading the temporal coordinates */
-            result = DSRTemporalCoordinatesValue::readXML(doc, cursor);
+            result = DSRTemporalCoordinatesValue::readXML(doc, cursor, flags);
         } else
             printUnknownValueWarningMessage("TCOORD type", tmpString.c_str());
     }

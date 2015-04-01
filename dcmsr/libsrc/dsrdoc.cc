@@ -450,10 +450,10 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
-        CodingSchemeIdentification.read(dataset);
+        CodingSchemeIdentification.read(dataset, flags);
 
         // --- General Study and Patient Module ---
-        readStudyData(dataset);
+        readStudyData(dataset, flags);
 
         if (requiresEnhancedEquipmentModule(documentType))
         {
@@ -513,15 +513,15 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", "SRDocumentGeneralModule");
             getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", "SRDocumentGeneralModule");
             obsSearchCond = getElementFromDataset(dataset, VerifyingObserver);
-            PredecessorDocuments.read(dataset);
+            PredecessorDocuments.read(dataset, flags);
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, PerformedProcedureCode);
             checkElementValue(PerformedProcedureCode, "1", "2", searchCond, "SRDocumentGeneralModule");
-            PertinentOtherEvidence.read(dataset);
-            ReferencedInstances.read(dataset);
+            PertinentOtherEvidence.read(dataset, flags);
+            ReferencedInstances.read(dataset, flags);
         }
-        IdenticalDocuments.read(dataset);
-        CurrentRequestedProcedureEvidence.read(dataset);
+        IdenticalDocuments.read(dataset, flags);
+        CurrentRequestedProcedureEvidence.read(dataset, flags);
         /* remove possible signature sequences */
         removeAttributeFromSequence(VerifyingObserver, DCM_MACParametersSequence);
         removeAttributeFromSequence(VerifyingObserver, DCM_DigitalSignaturesSequence);
@@ -566,7 +566,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
 }
 
 
-OFCondition DSRDocument::readPatientData(DcmItem &dataset)
+OFCondition DSRDocument::readPatientData(DcmItem &dataset,
+                                         const size_t /*flags*/)
 {
     // --- Patient Module ---
     getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
@@ -578,7 +579,8 @@ OFCondition DSRDocument::readPatientData(DcmItem &dataset)
 }
 
 
-OFCondition DSRDocument::readStudyData(DcmItem &dataset)
+OFCondition DSRDocument::readStudyData(DcmItem &dataset,
+                                       const size_t flags)
 {
     // --- General Study Module ---
     getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", "GeneralStudyModule");
@@ -589,7 +591,7 @@ OFCondition DSRDocument::readStudyData(DcmItem &dataset)
     getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
     getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
     /* also read data from Patient Module */
-    return readPatientData(dataset);
+    return readPatientData(dataset, flags);
 }
 
 
@@ -1108,7 +1110,7 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
 
 OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                                                       DSRXMLCursor cursor,
-                                                      const size_t /*flags*/)
+                                                      const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
@@ -1133,7 +1135,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                         if (doc.matchNode(childCursor, "code"))
                         {
                             /* Verifying Observer Code */
-                            codeValue.readXML(doc, childCursor);
+                            codeValue.readXML(doc, childCursor, flags);
                         }
                         else if (doc.matchNode(childCursor, "name"))
                         {

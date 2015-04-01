@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,7 +71,8 @@ size_t DSRReferencedInstanceList::getNumberOfItems() const
 }
 
 
-OFCondition DSRReferencedInstanceList::read(DcmItem &dataset)
+OFCondition DSRReferencedInstanceList::read(DcmItem &dataset,
+                                            const size_t flags)
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_ReferencedInstanceSequence);
@@ -94,7 +95,7 @@ OFCondition DSRReferencedInstanceList::read(DcmItem &dataset)
                 if (addItem(sopClassUID, instanceUID, item).good())
                 {
                     /* read additional information */
-                    item->PurposeOfReference.readSequence(*ditem, DCM_PurposeOfReferenceCodeSequence, "1");
+                    item->PurposeOfReference.readSequence(*ditem, DCM_PurposeOfReferenceCodeSequence, "1", flags);
                 }
             }
         }
@@ -135,7 +136,7 @@ OFCondition DSRReferencedInstanceList::write(DcmItem &dataset) const
 
 OFCondition DSRReferencedInstanceList::readXML(const DSRXMLDocument &doc,
                                                DSRXMLCursor cursor,
-                                               const size_t /*flags*/)
+                                               const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     ItemStruct *item = NULL;
@@ -160,7 +161,7 @@ OFCondition DSRReferencedInstanceList::readXML(const DSRXMLDocument &doc,
                     {
                         /* check for known element tags */
                         if (doc.matchNode(childCursor, "purpose"))
-                            item->PurposeOfReference.readXML(doc, childCursor);
+                            item->PurposeOfReference.readXML(doc, childCursor, flags);
                         /* proceed with next node */
                         childCursor.gotoNext();
                     }

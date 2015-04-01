@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -88,7 +88,8 @@ OFCondition DSRWaveformChannelList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRWaveformChannelList::read(DcmItem &dataset)
+OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
+                                         const size_t /*flags*/)
 {
     /* get integer array from dataset */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);

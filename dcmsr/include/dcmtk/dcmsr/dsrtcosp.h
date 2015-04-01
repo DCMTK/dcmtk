@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,9 +74,11 @@ class DCMTK_DCMSR_EXPORT DSRReferencedSamplePositionList
 
     /** read list of referenced sample positions
      ** @param  dataset  DICOM dataset from which the list should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset);
+    OFCondition read(DcmItem &dataset,
+                     const size_t flags);
 
     /** write list of referenced sample positions
      ** @param  dataset  DICOM dataset to which the list should be written

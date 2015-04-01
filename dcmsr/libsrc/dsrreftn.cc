@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,8 @@ OFCondition DSRByReferenceTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
+                                                    const size_t /*flags*/)
 {
     DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
     /* clear before reading */
@@ -170,7 +171,8 @@ OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRByReferenceTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                       DSRXMLCursor cursor)
+                                                       DSRXMLCursor cursor,
+                                                       const size_t /*flags*/)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())

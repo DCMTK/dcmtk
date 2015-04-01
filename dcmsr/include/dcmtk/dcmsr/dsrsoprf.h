@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,9 +79,11 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      *  i.e. the structure might look different when written back to a dataset.  However,
      *  the content is identical and this way of storing information saves storage space.
      ** @param  dataset  DICOM dataset from which the data should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset);
+    OFCondition read(DcmItem &dataset,
+                     const size_t flags);
 
     /** write list of referenced SOP instances.
      *  Does nothing if list is empty.
@@ -97,7 +99,7 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      *  the content is identical and this way of storing information saves storage space.
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXML(const DSRXMLDocument &doc,
@@ -106,11 +108,11 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 
     /** write current list of references in XML format
      ** @param  stream  output stream to which the XML data is written
-     *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                         const size_t flags = 0) const;
+                         const size_t flags) const;
 
     /** add the specified item to the list of references.
      *  Before adding the item, the given UID values are usually checked.  If one of the
@@ -356,9 +358,11 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 
         /** read instance level attributes from dataset
          ** @param  dataset  DICOM dataset from which the list should be read
+         *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition read(DcmItem &dataset);
+        OFCondition read(DcmItem &dataset,
+                         const size_t flags);
 
         /** write series and instance level attributes to dataset
          ** @param  dataset  DICOM dataset to which the list should be written
@@ -369,18 +373,20 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
         /** read series and instance level attributes from XML document
          ** @param  doc     document containing the XML file content
          *  @param  cursor  cursor pointing to the starting node
+         *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition readXML(const DSRXMLDocument &doc,
-                            DSRXMLCursor cursor);
+                            DSRXMLCursor cursor,
+                            const size_t flags);
 
         /** write series and instance level attributes in XML format
          ** @param  stream  output stream to which the XML document is written
-         *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+         *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                             const size_t flags = 0) const;
+                             const size_t flags) const;
 
         /** set cursor to the specified instance (if existent)
          ** @param  instanceUID  SOP instance UID of the entry to be searched for
@@ -456,9 +462,11 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
 
         /** read series and instance level from dataset
          ** @param  dataset  DICOM dataset from which the list should be read
+         *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition read(DcmItem &dataset);
+        OFCondition read(DcmItem &dataset,
+                         const size_t flags);
 
         /** write study, series and instance level attributes to dataset
          ** @param  dataset  DICOM dataset to which the list should be written
@@ -469,18 +477,20 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
         /** read study, series and instance level attributes from XML document
          ** @param  doc     document containing the XML file content
          *  @param  cursor  cursor pointing to the starting node
+         *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition readXML(const DSRXMLDocument &doc,
-                            DSRXMLCursor cursor);
+                            DSRXMLCursor cursor,
+                            const size_t flags);
 
         /** write study, series and instance level attributes in XML format
          ** @param  stream  output stream to which the XML document is written
-         *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+         *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                             const size_t flags = 0) const;
+                             const size_t flags) const;
 
         /** set cursor to the specified series entry (if existent)
          ** @param  seriesUID  series instance UID of the entry to be searched for

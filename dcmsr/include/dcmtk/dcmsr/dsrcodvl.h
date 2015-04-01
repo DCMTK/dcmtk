@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -154,11 +154,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  @param  type     value type of the sequence (valid value: "1", "2", something else).
      *                   This parameter is used for checking purpose, any difference is
      *                   reported.
+     *  @param  flags    optional flag used to customize the reading process (see
+     *                   DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readSequence(DcmItem &dataset,
                              const DcmTagKey &tagKey,
-                             const OFString &type);
+                             const OFString &type,
+                             const size_t flags = 0);
 
     /** write code sequence to dataset
      ** @param  dataset  DICOM dataset to which the code sequence should be written
@@ -173,10 +176,12 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  Please note that only the "Basic Coded Entry Attributes" are supported by this method.
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXML(const DSRXMLDocument &doc,
-                        DSRXMLCursor cursor);
+                        DSRXMLCursor cursor,
+                        const size_t flags);
 
     /** write code in XML format.
      *  Please note that only the "Basic Coded Entry Attributes" are supported by this method.
@@ -463,11 +468,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     /** read code from dataset.
      *  This method also supports the attributes from the "Enhanced Encoding Mode".
      ** @param  dataset     DICOM dataset from which the code should be read
-     *  @param  moduleName  optional module name (sequence) from which the item is read
+     *  @param  moduleName  module name (sequence) from which the item is read.  If NULL,
+     *                      the default value "SR document" is used for output messages.
+     *  @param  flags       flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readItem(DcmItem &dataset,
-                         const char *moduleName = NULL);
+                         const char *moduleName,
+                         const size_t flags);
 
     /** write code to dataset.
      *  This method also supports the attributes from the "Enhanced Encoding Mode".

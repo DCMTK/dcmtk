@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -158,8 +158,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      ** @param  doc           document containing the XML file content
      *  @param  cursor        cursor pointing to the starting node
      *  @param  documentType  type of the document to be read (used for debug output only)
-     *  @param  flags         optional flag used to customize the reading process
-     *                        (see DSRTypes::XF_xxx)
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readXML(const DSRXMLDocument &doc,
@@ -460,9 +459,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  This method does nothing for this base class, but derived classes overwrite it to read
      *  the contents according to their value type.
      ** @param  dataset  DICOM dataset from which the content item should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readContentItem(DcmItem &dataset);
+    virtual OFCondition readContentItem(DcmItem &dataset,
+                                        const size_t flags);
 
     /** write content item (value) to dataset.
      *  This method does nothing for this base class, but derived classes overwrite it to write
@@ -477,10 +478,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  the contents according to their value type.
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
-                                           DSRXMLCursor cursor);
+                                           DSRXMLCursor cursor,
+                                           const size_t flags);
 
     /** render content item (value) in HTML/XHTML format.
      *  This method does nothing for this base class, but derived classes overwrite it to render

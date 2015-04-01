@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2014, OFFIS e.V.
+ *  Copyright (C) 2010-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -107,9 +107,11 @@ class DCMTK_DCMSR_EXPORT DSRSCoord3DTreeNode
 
     /** read content item (value) from dataset
      ** @param  dataset  DICOM dataset from which the content item should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readContentItem(DcmItem &dataset);
+    virtual OFCondition readContentItem(DcmItem &dataset,
+                                        const size_t flags);
 
     /** write content item (value) to dataset
      ** @param  dataset  DICOM dataset to which the content item should be written
@@ -120,10 +122,12 @@ class DCMTK_DCMSR_EXPORT DSRSCoord3DTreeNode
     /** read content item specific XML data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
-                                           DSRXMLCursor cursor);
+                                           DSRXMLCursor cursor,
+                                           const size_t flags);
 
     /** render content item (value) in HTML/XHTML format
      ** @param  docStream     output stream to which the main HTML/XHTML document is written

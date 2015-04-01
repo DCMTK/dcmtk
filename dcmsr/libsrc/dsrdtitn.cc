@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -107,10 +107,11 @@ OFCondition DSRDateTimeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRDateTimeTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRDateTimeTreeNode::readContentItem(DcmItem &dataset,
+                                                 const size_t flags)
 {
     /* read DateTime */
-    return DSRStringValue::read(dataset, DCM_DateTime);
+    return DSRStringValue::read(dataset, DCM_DateTime, flags);
 }
 
 
@@ -122,7 +123,8 @@ OFCondition DSRDateTimeTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRDateTimeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                    DSRXMLCursor cursor)
+                                                    DSRXMLCursor cursor,
+                                                    const size_t /*flags*/)
 {
     OFString tmpString;
     /* retrieve value from XML element "value" */

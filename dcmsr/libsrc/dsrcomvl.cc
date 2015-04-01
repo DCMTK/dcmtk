@@ -110,7 +110,8 @@ OFCondition DSRCompositeReferenceValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRCompositeReferenceValue::readXML(const DSRXMLDocument &doc,
-                                                DSRXMLCursor cursor)
+                                                DSRXMLCursor cursor,
+                                                const size_t /*flags*/)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     /* go one node level down */
@@ -141,7 +142,8 @@ OFCondition DSRCompositeReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset)
+OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
+                                                 const size_t /*flags*/)
 {
     /* read ReferencedSOPClassUID */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", "ReferencedSOPSequence");
@@ -165,7 +167,8 @@ OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset) const
 
 OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
                                                      const DcmTagKey &tagKey,
-                                                     const OFString &type)
+                                                     const OFString &type,
+                                                     const size_t flags)
 {
     /* read specified sequence with its item */
     DcmSequenceOfItems *dseq = NULL;
@@ -176,7 +179,7 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
         /* read first item */
         DcmItem *ditem = dseq->getItem(0);
         if (ditem != NULL)
-            result = readItem(*ditem);
+            result = readItem(*ditem, flags);
         else
             result = SR_EC_InvalidDocumentTree;
     }

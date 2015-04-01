@@ -71,7 +71,8 @@ size_t DSRCodingSchemeIdentificationList::getNumberOfItems() const
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
+OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset,
+                                                    const size_t /*flags*/)
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems *sequence = NULL;

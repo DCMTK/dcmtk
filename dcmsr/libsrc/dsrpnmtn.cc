@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -107,10 +107,11 @@ OFCondition DSRPNameTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRPNameTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRPNameTreeNode::readContentItem(DcmItem &dataset,
+                                              const size_t flags)
 {
     /* read PName */
-    return DSRStringValue::read(dataset, DCM_PersonName);
+    return DSRStringValue::read(dataset, DCM_PersonName, flags);
 }
 
 
@@ -122,7 +123,8 @@ OFCondition DSRPNameTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRPNameTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                 DSRXMLCursor cursor)
+                                                 DSRXMLCursor cursor,
+                                                 const size_t /*flags*/)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())

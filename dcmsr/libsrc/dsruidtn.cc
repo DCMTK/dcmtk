@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -103,10 +103,11 @@ OFCondition DSRUIDRefTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset,
+                                               const size_t flags)
 {
     /* read UID */
-    return DSRStringValue::read(dataset, DCM_UID);
+    return DSRStringValue::read(dataset, DCM_UID, flags);
 }
 
 
@@ -118,10 +119,11 @@ OFCondition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRUIDRefTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                                  DSRXMLCursor cursor)
+                                                  DSRXMLCursor cursor,
+                                                  const size_t flags)
 {
     /* retrieve value from XML element "value" */
-    return DSRStringValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
+    return DSRStringValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"), flags, OFFalse /*encoding*/);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -215,10 +215,11 @@ OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
-                                            DSRXMLCursor cursor)
+                                            DSRXMLCursor cursor,
+                                            const size_t flags)
 {
     /* first read general composite reference information */
-    OFCondition result = DSRCompositeReferenceValue::readXML(doc, cursor);
+    OFCondition result = DSRCompositeReferenceValue::readXML(doc, cursor, flags);
     /* then read image related XML tags */
     if (result.good())
     {
@@ -244,14 +245,14 @@ OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
             /* presentation state object (optional) */
             childCursor = doc.getNamedNode(cursor, "pstate", OFFalse /*required*/);
             if (childCursor.valid())
-                result = PresentationState.readXML(doc, childCursor);
+                result = PresentationState.readXML(doc, childCursor, flags);
         }
         if (result.good())
         {
             /* real world value mapping object (optional) */
             childCursor = doc.getNamedNode(cursor, "mapping", OFFalse /*required*/);
             if (childCursor.valid())
-                result = RealWorldValueMapping.readXML(doc, childCursor);
+                result = RealWorldValueMapping.readXML(doc, childCursor, flags);
         }
     }
     return result;
@@ -295,22 +296,23 @@ OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
+OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset,
+                                             const size_t flags)
 {
     /* be very careful, delete any previously created icon image (should never apply) */
     deleteIconImage();
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    OFCondition result = DSRCompositeReferenceValue::readItem(dataset);
+    OFCondition result = DSRCompositeReferenceValue::readItem(dataset, flags);
     if (result.good())
     {
         /* read ReferencedFrameNumber (conditional) */
-        FrameList.read(dataset);
+        FrameList.read(dataset, flags);
         /* read ReferencedSegmentNumber (conditional) */
-        SegmentList.read(dataset);
+        SegmentList.read(dataset, flags);
         /* read ReferencedSOPSequence (Presentation State, optional) */
-        PresentationState.readSequence(dataset, DCM_ReferencedSOPSequence, "3" /*type*/);
+        PresentationState.readSequence(dataset, DCM_ReferencedSOPSequence, "3" /*type*/, flags);
         /* read ReferencedRealWorldValueMappingInstanceSequence (optional) */
-        RealWorldValueMapping.readSequence(dataset, DCM_ReferencedRealWorldValueMappingInstanceSequence, "3" /*type*/);
+        RealWorldValueMapping.readSequence(dataset, DCM_ReferencedRealWorldValueMappingInstanceSequence, "3" /*type*/, flags);
         /* read IconImageSequence (optional) */
         DcmSequenceOfItems *dseq = NULL;
         /* use local status variable since the sequence is optional */

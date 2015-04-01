@@ -69,9 +69,11 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
 
     /** read list of items from the coding scheme identification sequence
      ** @param  dataset  DICOM dataset from which the data should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset);
+    OFCondition read(DcmItem &dataset,
+                     const size_t flags);
 
     /** write list of items to the coding scheme identification sequence.
      *  Does nothing if list is empty.
@@ -83,8 +85,7 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
     /** read list of items from XML document
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process
-     *                  (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXML(const DSRXMLDocument &doc,
@@ -93,11 +94,11 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
 
     /** write current list in XML format
      ** @param  stream  output stream to which the XML data is written
-     *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                         const size_t flags = 0) const;
+                         const size_t flags) const;
 
     /** add private OFFIS DCMTK coding scheme entry to the list.
      *  Please note that any information previously stored under the defined coding scheme

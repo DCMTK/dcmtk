@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,7 +87,8 @@ OFCondition DSRImageFrameList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRImageFrameList::read(DcmItem &dataset)
+OFCondition DSRImageFrameList::read(DcmItem &dataset,
+                                    const size_t /*flags*/)
 {
     /* get integer string from dataset */
     DcmIntegerString delem(DCM_ReferencedFrameNumber);

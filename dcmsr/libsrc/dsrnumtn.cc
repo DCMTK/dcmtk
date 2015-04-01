@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -94,9 +94,10 @@ OFCondition DSRNumTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRNumTreeNode::readContentItem(DcmItem &dataset)
+OFCondition DSRNumTreeNode::readContentItem(DcmItem &dataset,
+                                            const size_t flags)
 {
-    return DSRNumericMeasurementValue::readSequence(dataset);
+    return DSRNumericMeasurementValue::readSequence(dataset, flags);
 }
 
 
@@ -107,9 +108,10 @@ OFCondition DSRNumTreeNode::writeContentItem(DcmItem &dataset) const
 
 
 OFCondition DSRNumTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
-                                               DSRXMLCursor cursor)
+                                               DSRXMLCursor cursor,
+                                               const size_t flags)
 {
-    return DSRNumericMeasurementValue::readXML(doc, cursor);
+    return DSRNumericMeasurementValue::readXML(doc, cursor, flags);
 }
 
 

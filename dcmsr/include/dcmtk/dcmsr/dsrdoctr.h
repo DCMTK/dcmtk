@@ -110,7 +110,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     /** read XML document tree
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readXML(const DSRXMLDocument &doc,
@@ -128,7 +128,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     /** render current SR document tree in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
      *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  flags        optional flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,

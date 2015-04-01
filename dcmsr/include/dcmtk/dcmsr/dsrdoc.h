@@ -123,18 +123,22 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  member variable section of this class.  Other data is not changed, so be careful
      *  when using this method.
      *  @param  dataset  reference to DICOM dataset from which the data should be read
+     *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readPatientData(DcmItem &dataset);
+    virtual OFCondition readPatientData(DcmItem &dataset,
+                                        const size_t flags = 0);
 
     /** read study data from DICOM dataset. Also reads patient data.
      *  The list of data elements that are read can be found under "Patient Module" and
      *  "General Study Module" in the member variable section of this class.  Other data
      *  is not changed, so be careful when using this method.
      *  @param  dataset  reference to DICOM dataset from which the data should be read
+     *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readStudyData(DcmItem &dataset);
+    virtual OFCondition readStudyData(DcmItem &dataset,
+                                      const size_t flags = 0);
 
     /** write current SR document to DICOM dataset.
      *  Please note that the ContentTemplateSequence for the root content item is not written
@@ -1027,7 +1031,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML document header
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLDocumentHeader(DSRXMLDocument &doc,
@@ -1037,7 +1041,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML "patient" data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLPatientData(const DSRXMLDocument &doc,
@@ -1047,7 +1051,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML "study" data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLStudyData(const DSRXMLDocument &doc,
@@ -1057,7 +1061,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML "series" data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLSeriesData(const DSRXMLDocument &doc,
@@ -1067,7 +1071,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML "instance" data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLInstanceData(const DSRXMLDocument &doc,
@@ -1077,7 +1081,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML "document" data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLDocumentData(const DSRXMLDocument &doc,
@@ -1087,7 +1091,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** read XML verifying observer data
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
-     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXMLVerifyingObserverData(const DSRXMLDocument &doc,

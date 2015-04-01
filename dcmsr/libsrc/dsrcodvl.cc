@@ -181,7 +181,8 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
-                                         const char *moduleName)
+                                         const char *moduleName,
+                                         const size_t /*flags*/)
 {
     /* read "Basic Coded Entry Attributes" */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", moduleName);
@@ -253,7 +254,8 @@ OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset) const
 
 OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
                                              const DcmTagKey &tagKey,
-                                             const OFString &type)
+                                             const OFString &type,
+                                             const size_t flags)
 {
     /* read CodeSequence */
     DcmSequenceOfItems *dseq = NULL;
@@ -265,7 +267,7 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
         if (ditem != NULL)
         {
             /* read Code */
-            result = readItem(*ditem, DcmTag(tagKey).getTagName());
+            result = readItem(*ditem, DcmTag(tagKey).getTagName(), flags);
         } else
             result = SR_EC_InvalidDocumentTree;
     }
@@ -309,7 +311,8 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
 
 
 OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
-                                        DSRXMLCursor cursor)
+                                        DSRXMLCursor cursor,
+                                        const size_t /*flags*/)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())

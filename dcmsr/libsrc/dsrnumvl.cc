@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -143,7 +143,8 @@ OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
-                                                DSRXMLCursor cursor)
+                                                DSRXMLCursor cursor,
+                                                const size_t flags)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
@@ -161,13 +162,13 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
                 doc.getElementFromNodeContent(doc.getNamedNode(childNode, "denominator"), RationalDenominatorValue);
             }
             /* get "unit" element (only if "value" present) */
-            result = MeasurementUnit.readXML(doc, doc.getNamedNode(cursor, "unit"));
+            result = MeasurementUnit.readXML(doc, doc.getNamedNode(cursor, "unit"), flags);
         } else
             result = EC_Normal;
         if (result.good())
         {
             /* get "qualifier" element (optional, do not report if absent or erroneous) */
-            ValueQualifier.readXML(doc, doc.getNamedNode(cursor, "qualifier", OFFalse /*required*/));
+            ValueQualifier.readXML(doc, doc.getNamedNode(cursor, "qualifier", OFFalse /*required*/), flags);
         }
         if (!isValid())
             result = SR_EC_InvalidValue;
@@ -235,7 +236,8 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset)
+OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
+                                                 const size_t flags)
 {
     /* read NumericValue */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", "MeasuredValueSequence");
@@ -246,7 +248,7 @@ OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset)
         if (DSRTypes::getAndCheckElementFromDataset(dataset, RationalNumeratorValue, "1", "1C", "MeasuredValueSequence").good())
             DSRTypes::getAndCheckElementFromDataset(dataset, RationalDenominatorValue, "1", "1" /* was 1C */, "MeasuredValueSequence");
         /* read MeasurementUnitsCodeSequence */
-        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /*type*/);
+        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /*type*/, flags);
     }
     return result;
 }
@@ -267,7 +269,8 @@ OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset) const
 }
 
 
-OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset)
+OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
+                                                     const size_t flags)
 {
     /* read MeasuredValueSequence */
     DcmSequenceOfItems *dseq = NULL;
@@ -281,7 +284,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset)
             /* read first item */
             DcmItem *ditem = dseq->getItem(0);
             if (ditem != NULL)
-                result = readItem(*ditem);
+                result = readItem(*ditem, flags);
             else
                 result = SR_EC_InvalidDocumentTree;
         }
@@ -289,7 +292,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset)
     if (result.good())
     {
         /* read NumericValueQualifierCodeSequence (optional) */
-        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /*type*/);
+        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /*type*/, flags);
     }
     return result;
 }

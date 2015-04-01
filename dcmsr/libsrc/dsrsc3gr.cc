@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2014, OFFIS e.V.
+ *  Copyright (C) 2010-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,7 +92,8 @@ OFCondition DSRGraphicData3DList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRGraphicData3DList::read(DcmItem &dataset)
+OFCondition DSRGraphicData3DList::read(DcmItem &dataset,
+                                       const size_t /*flags*/)
 {
     /* get floating point string from dataset */
     DcmFloatingPointSingle delem(DCM_GraphicData);

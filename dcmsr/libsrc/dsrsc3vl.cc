@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2014, OFFIS e.V.
+ *  Copyright (C) 2010-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,7 +111,8 @@ OFCondition DSRSpatialCoordinates3DValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRSpatialCoordinates3DValue::readXML(const DSRXMLDocument &doc,
-                                                  DSRXMLCursor cursor)
+                                                  DSRXMLCursor cursor,
+                                                  const size_t /*flags*/)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
@@ -152,7 +153,8 @@ OFCondition DSRSpatialCoordinates3DValue::writeXML(STD_NAMESPACE ostream &stream
 }
 
 
-OFCondition DSRSpatialCoordinates3DValue::read(DcmItem &dataset)
+OFCondition DSRSpatialCoordinates3DValue::read(DcmItem &dataset,
+                                               const size_t flags)
 {
     /* read ReferencedFrameOfReferenceUID */
     OFString tmpString;
@@ -167,7 +169,7 @@ OFCondition DSRSpatialCoordinates3DValue::read(DcmItem &dataset)
         if (GraphicType == DSRTypes::GT3_invalid)
             DSRTypes::printUnknownValueWarningMessage("GraphicType", tmpString.c_str());
         /* read GraphicData */
-        result = GraphicDataList.read(dataset);
+        result = GraphicDataList.read(dataset, flags);
         /* read optional attributes */
         if (result.good())
             DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_FiducialUID, FiducialUID, "1", "3", "SCOORD3D content item");

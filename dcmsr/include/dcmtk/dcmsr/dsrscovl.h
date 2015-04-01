@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -100,9 +100,11 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinatesValue
 
     /** read spatial coordinates value from dataset
      ** @param  dataset  DICOM dataset from which the value should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition read(DcmItem &dataset);
+    virtual OFCondition read(DcmItem &dataset,
+                             const size_t flags);
 
     /** write spatial coordinates reference value to dataset
      ** @param  dataset  DICOM dataset to which the value should be written
@@ -113,10 +115,12 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinatesValue
     /** read spatial coordinates value from XML document
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readXML(const DSRXMLDocument &doc,
-                                DSRXMLCursor cursor);
+                                DSRXMLCursor cursor,
+                                const size_t flags);
 
     /** write spatial coordinates value in XML format
      ** @param  stream  output stream to which the XML document is written

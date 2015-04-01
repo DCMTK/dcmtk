@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,7 +111,8 @@ OFCondition DSRTemporalCoordinatesValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
-                                                 DSRXMLCursor cursor)
+                                                 DSRXMLCursor cursor,
+                                                 const size_t /*flags*/)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (cursor.valid())
@@ -176,7 +177,8 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset)
+OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
+                                              const size_t flags)
 {
     /* read TemporalRangeType */
     OFString tmpString;
@@ -188,9 +190,9 @@ OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset)
         if (TemporalRangeType == DSRTypes::TRT_invalid)
             DSRTypes::printUnknownValueWarningMessage("TemporalRangeType", tmpString.c_str());
         /* first read data (all three lists) */
-        SamplePositionList.read(dataset);
-        TimeOffsetList.read(dataset);
-        DateTimeList.read(dataset);
+        SamplePositionList.read(dataset, flags);
+        TimeOffsetList.read(dataset, flags);
+        DateTimeList.read(dataset, flags);
         /* then check data and report warnings if any */
         checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DateTimeList, OFTrue /*reportWarnings*/);
     }

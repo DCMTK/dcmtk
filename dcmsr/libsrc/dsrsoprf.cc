@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,7 +83,8 @@ size_t DSRSOPInstanceReferenceList::SeriesStruct::getNumberOfInstances() const
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset,
+                                                            const size_t flags)
 {
     /* first, read optional attributes on series level */
     getAndCheckStringValueFromDataset(dataset, DCM_RetrieveAETitle, RetrieveAETitle, "1-n", "3", "ReferencedSeriesSequence");
@@ -119,7 +120,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
                         /* set cursor to new position */
                         Iterator = --InstanceList.end();
                         /* read additional information */
-                        instance->PurposeOfReference.readSequence(*item, DCM_PurposeOfReferenceCodeSequence, "3");
+                        instance->PurposeOfReference.readSequence(*item, DCM_PurposeOfReferenceCodeSequence, "3", flags);
                     } else {
                         result = EC_MemoryExhausted;
                         break;
@@ -177,7 +178,8 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::write(DcmItem &dataset) c
 
 
 OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocument &doc,
-                                                               DSRXMLCursor cursor)
+                                                               DSRXMLCursor cursor,
+                                                               const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
@@ -221,7 +223,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocum
                             {
                                 /* check for known element tags */
                                 if (doc.matchNode(instanceCursor, "purpose"))
-                                    instance->PurposeOfReference.readXML(doc, instanceCursor);
+                                    instance->PurposeOfReference.readXML(doc, instanceCursor, flags);
                                 /* proceed with next node */
                                 instanceCursor.gotoNext();
                             }
@@ -443,7 +445,8 @@ size_t DSRSOPInstanceReferenceList::StudyStruct::getNumberOfInstances() const
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset)
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset,
+                                                           const size_t flags)
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems *sequence = NULL;
@@ -481,7 +484,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset)
                     /* set cursor to new position */
                     Iterator = --SeriesList.end();
                     /* read further attributes on series level and the instance level */
-                    result = series->read(*item);
+                    result = series->read(*item, flags);
                 }
             }
         }
@@ -518,7 +521,8 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::write(DcmItem &dataset) co
 
 
 OFCondition DSRSOPInstanceReferenceList::StudyStruct::readXML(const DSRXMLDocument &doc,
-                                                              DSRXMLCursor cursor)
+                                                              DSRXMLCursor cursor,
+                                                              const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
@@ -552,7 +556,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::readXML(const DSRXMLDocume
                         /* set cursor to new position */
                         Iterator = --SeriesList.end();
                         /* read further attributes on series level and the instance level */
-                        result = series->readXML(doc, cursor.getChild());
+                        result = series->readXML(doc, cursor.getChild(), flags);
                     }
                 }
             }
@@ -816,7 +820,8 @@ size_t DSRSOPInstanceReferenceList::getNumberOfInstances() const
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset)
+OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset,
+                                              const size_t flags)
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems *sequence = NULL;
@@ -855,7 +860,7 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset)
                     /* set cursor to new position */
                     Iterator = --StudyList.end();
                     /* read attributes on series and instance level */
-                    result = study->read(*item);
+                    result = study->read(*item, flags);
                 }
             }
         }
@@ -893,7 +898,7 @@ OFCondition DSRSOPInstanceReferenceList::write(DcmItem &dataset) const
 
 OFCondition DSRSOPInstanceReferenceList::readXML(const DSRXMLDocument &doc,
                                                  DSRXMLCursor cursor,
-                                                 const size_t /*flags*/)
+                                                 const size_t flags)
 {
     /* default: no error, e.g. for empty list of references */
     OFCondition result = EC_Normal;
@@ -928,7 +933,7 @@ OFCondition DSRSOPInstanceReferenceList::readXML(const DSRXMLDocument &doc,
                         /* set cursor to new position */
                         Iterator = --StudyList.end();
                         /* read attributes on series and instance level */
-                        result = study->readXML(doc, cursor.getChild());
+                        result = study->readXML(doc, cursor.getChild(), flags);
                     }
                 }
             }

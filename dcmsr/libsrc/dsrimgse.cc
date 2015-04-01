@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2014, OFFIS e.V.
+ *  Copyright (C) 2013-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,7 +87,8 @@ OFCondition DSRImageSegmentList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRImageSegmentList::read(DcmItem &dataset)
+OFCondition DSRImageSegmentList::read(DcmItem &dataset,
+                                      const size_t /*flags*/)
 {
     /* get integer array from dataset */
     DcmUnsignedShort delem(DCM_ReferencedSegmentNumber);

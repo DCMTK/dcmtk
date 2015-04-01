@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,10 +98,12 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
      *  does not conform with the type (1), value multiplicity (1) and/or value representation.
      ** @param  dataset  DICOM dataset from which the string value should be read
      *  @param  tagKey   DICOM tag specifying the attribute which should be read
+     *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition read(DcmItem &dataset,
-                     const DcmTagKey &tagKey);
+                     const DcmTagKey &tagKey,
+                     const size_t flags);
 
     /** write string value to dataset
      ** @param  dataset  DICOM dataset to which the string value should be written
@@ -114,11 +116,13 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
     /** read string value from XML document
      ** @param  doc       document containing the XML file content
      *  @param  cursor    cursor pointing to the starting node
+     *  @param  flags     flag used to customize the reading process (see DSRTypes::XF_xxx)
      *  @param  encoding  use encoding handler if OFTrue, ignore character set otherwise
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readXML(const DSRXMLDocument &doc,
                         DSRXMLCursor cursor,
+                        const size_t flags,
                         const OFBool encoding = OFFalse);
 
     /** render string value in HTML/XHTML format
