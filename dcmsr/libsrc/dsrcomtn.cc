@@ -64,7 +64,13 @@ void DSRCompositeTreeNode::clear()
 
 OFBool DSRCompositeTreeNode::isValid() const
 {
-    return DSRDocumentTreeNode::isValid() && DSRCompositeReferenceValue::isValid();
+    return DSRDocumentTreeNode::isValid() && hasValidValue();
+}
+
+
+OFBool DSRCompositeTreeNode::hasValidValue() const
+{
+    return DSRCompositeReferenceValue::isValid();
 }
 
 

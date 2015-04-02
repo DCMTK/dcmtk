@@ -63,7 +63,13 @@ void DSRNumTreeNode::clear()
 OFBool DSRNumTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRNumericMeasurementValue::isValid() && getConceptName().isValid();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && hasValidValue();
+}
+
+
+OFBool DSRNumTreeNode::hasValidValue() const
+{
+    return DSRNumericMeasurementValue::isValid();
 }
 
 

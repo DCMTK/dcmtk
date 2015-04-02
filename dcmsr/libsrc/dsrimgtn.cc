@@ -62,7 +62,13 @@ void DSRImageTreeNode::clear()
 
 OFBool DSRImageTreeNode::isValid() const
 {
-    return DSRDocumentTreeNode::isValid() && DSRImageReferenceValue::isValid();
+    return DSRDocumentTreeNode::isValid() && hasValidValue();
+}
+
+
+OFBool DSRImageTreeNode::hasValidValue() const
+{
+    return DSRImageReferenceValue::isValid();
 }
 
 

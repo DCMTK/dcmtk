@@ -104,11 +104,15 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the relationship type and the value type are both not
-     *  invalid.
+     *  The content item is valid if the relationship type and the value type are both not invalid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item is valid.  See derived classes for details.
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** check whether the content is short.
      *  This method is used to check whether the rendered output of this content item can be

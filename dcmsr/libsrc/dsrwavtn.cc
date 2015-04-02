@@ -62,7 +62,13 @@ void DSRWaveformTreeNode::clear()
 
 OFBool DSRWaveformTreeNode::isValid() const
 {
-    return DSRDocumentTreeNode::isValid() && DSRWaveformReferenceValue::isValid();
+    return DSRDocumentTreeNode::isValid() && hasValidValue();
+}
+
+
+OFBool DSRWaveformTreeNode::hasValidValue() const
+{
+    return DSRWaveformReferenceValue::isValid();
 }
 
 

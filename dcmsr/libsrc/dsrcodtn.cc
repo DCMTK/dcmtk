@@ -63,7 +63,13 @@ void DSRCodeTreeNode::clear()
 OFBool DSRCodeTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && DSRCodedEntryValue::isValid() && getConceptName().isValid();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && hasValidValue();
+}
+
+
+OFBool DSRCodeTreeNode::hasValidValue() const
+{
+    return DSRCodedEntryValue::isValid();
 }
 
 

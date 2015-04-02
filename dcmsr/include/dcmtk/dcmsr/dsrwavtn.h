@@ -72,10 +72,16 @@ class DCMTK_DCMSR_EXPORT DSRWaveformTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes are valid.
+     *  The content item is valid if the two base classes are valid.  This check includes the value
+     *  of the content item, which can also be checked separately with hasValidValue().
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item, i.e.\ the waveform reference value, is valid
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** check whether the content is short.
      *  The method isShort() from the base class DSRWaveformReferenceValue is called.

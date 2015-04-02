@@ -84,11 +84,16 @@ class DCMTK_DCMSR_EXPORT DSRUIDRefTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the base classes, the concept name and the currently
-     *  stored date value are valid.
+     *  The content item is valid if the base classes, the concept name and the currently stored
+     *  value (see hasValidValue()) are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item, i.e.\ the stored UID reference, is valid
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** print content item.
      *  A typical output looks like this:  contains UIDREF:(,,"Code")="1.2.3.4.5"

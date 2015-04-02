@@ -63,8 +63,14 @@ void DSRContainerTreeNode::clear()
 OFBool DSRContainerTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required for root node container */
-    return DSRDocumentTreeNode::isValid() && (ContinuityOfContent != COC_invalid) &&
+    return DSRDocumentTreeNode::isValid() && hasValidValue() &&
         ((getRelationshipType() != RT_isRoot) || getConceptName().isValid());
+}
+
+
+OFBool DSRContainerTreeNode::hasValidValue() const
+{
+    return (ContinuityOfContent != COC_invalid);
 }
 
 

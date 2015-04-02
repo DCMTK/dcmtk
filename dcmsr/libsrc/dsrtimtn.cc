@@ -72,7 +72,13 @@ void DSRTimeTreeNode::clear()
 OFBool DSRTimeTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && hasValidValue();
+}
+
+
+OFBool DSRTimeTreeNode::hasValidValue() const
+{
+    return checkCurrentValue().good();
 }
 
 

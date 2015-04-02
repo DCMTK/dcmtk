@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -275,6 +275,7 @@ makeOFConditionConst(SR_EC_IncompatibleDocumentTree,         OFM_dcmsr, 21, OF_e
 makeOFConditionConst(SR_EC_ContentItemNotFound,              OFM_dcmsr, 22, OF_error, "Content Item not found");
 makeOFConditionConst(SR_EC_CannotRemoveSubTree,              OFM_dcmsr, 23, OF_error, "Cannot remove Subtree");
 makeOFConditionConst(SR_EC_EmptyDocumentTree,                OFM_dcmsr, 24, OF_error, "Empty Document Tree");
+makeOFConditionConst(SR_EC_InvalidContentItem,               OFM_dcmsr, 25, OF_error, "Invalid Content Item");
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =

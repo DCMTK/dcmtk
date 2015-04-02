@@ -73,11 +73,16 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the base class is valid, the continuity of content
-     *  flag is valid, and the concept name is valid or the content item is not the root item.
+     *  The content item is valid if the base class is valid, the value is valid (see hasValidValue()),
+     *  and the concept name is valid or the content item is not the root item.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item, i.e.\ the continuity of content flag, is valid
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** check whether the content is short.
      *  A container content item is defined to be never short (return always OFFalse).

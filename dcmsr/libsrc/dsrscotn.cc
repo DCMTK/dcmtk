@@ -62,7 +62,13 @@ void DSRSCoordTreeNode::clear()
 
 OFBool DSRSCoordTreeNode::isValid() const
 {
-    return DSRDocumentTreeNode::isValid() && DSRSpatialCoordinatesValue::isValid();
+    return DSRDocumentTreeNode::isValid() && hasValidValue();
+}
+
+
+OFBool DSRSCoordTreeNode::hasValidValue() const
+{
+    return DSRSpatialCoordinatesValue::isValid();
 }
 
 

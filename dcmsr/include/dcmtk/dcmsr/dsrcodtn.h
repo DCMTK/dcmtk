@@ -73,9 +73,16 @@ class DCMTK_DCMSR_EXPORT DSRCodeTreeNode
 
     /** check whether the content item is valid.
      *  The content item is valid if the two base classes and the concept name are valid.
+     *  This check includes the value of the content item, which can also be checked separately
+     *  with hasValidValue().
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item, i.e.\ the coded entry value, is valid
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** print content item.
      *  A typical output looks like this: has concept mod CODE:(,,"Code")=(1234,99_OFFIS_DCMTK,

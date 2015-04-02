@@ -84,7 +84,13 @@ void DSRByReferenceTreeNode::clear()
 OFBool DSRByReferenceTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence not allowed */
-    return DSRDocumentTreeNode::isValid() && getConceptName().isEmpty() && ValidReference;
+    return DSRDocumentTreeNode::isValid() && getConceptName().isEmpty() && hasValidValue();
+}
+
+
+OFBool DSRByReferenceTreeNode::hasValidValue() const
+{
+    return ValidReference;
 }
 
 

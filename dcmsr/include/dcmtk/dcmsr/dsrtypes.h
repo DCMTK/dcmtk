@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,7 +128,7 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidDocumentTree;
 /// error: a mandatory attribute is missing
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_MandatoryAttributeMissing;
 
-/// error: a value is invalid according to the standard
+/// error: a value is invalid according to the DICOM standard
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidValue;
 
 /// error: a value is not supported by this implementation
@@ -187,6 +187,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotRemoveSubTree;
 
 /// error: the document tree is empty (and this is not allowed in this context)
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_EmptyDocumentTree;
+
+/// error: the content item is invalid, e.g. the concept name or the stored value
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidContentItem;
 //@}
 
 

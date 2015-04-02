@@ -87,11 +87,17 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the base class is valid, the concept name is
-     *  empty and the reference (checked from outside this class) is valid.
+     *  The content item is valid if the base class is valid, the concept name is empty and
+     *  the reference (see hasValidValue()) is valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item, i.e.\ the reference (which has been checked
+     *  from outside of this class), is valid
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** print content item.
      *  A typical output looks like this: inferred from 1.2.3

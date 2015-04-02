@@ -72,7 +72,13 @@ void DSRPNameTreeNode::clear()
 OFBool DSRPNameTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
-    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && checkCurrentValue().good();;
+    return DSRDocumentTreeNode::isValid() && getConceptName().isValid() && hasValidValue();
+}
+
+
+OFBool DSRPNameTreeNode::hasValidValue() const
+{
+    return checkCurrentValue().good();
 }
 
 

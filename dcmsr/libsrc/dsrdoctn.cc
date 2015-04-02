@@ -92,6 +92,12 @@ OFBool DSRDocumentTreeNode::isValid() const
 }
 
 
+OFBool DSRDocumentTreeNode::hasValidValue() const
+{
+    return OFTrue;
+}
+
+
 OFBool DSRDocumentTreeNode::isShort(const size_t /*flags*/) const
 {
     return OFTrue;
@@ -695,7 +701,8 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
         /* content item is not valid (see above) */
         else if (result.good())
         {
-            result = SR_EC_InvalidValue;
+            /* check whether only the value or the entire content item is invalid */
+            result = (!hasValidValue()) ? SR_EC_InvalidValue : SR_EC_InvalidContentItem;
         }
         /* accept invalid content item value if flag is set */
         if ((result == SR_EC_InvalidValue) && (flags & RF_acceptInvalidContentItemValue))

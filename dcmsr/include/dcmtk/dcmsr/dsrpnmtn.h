@@ -85,10 +85,15 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
 
     /** check whether the content item is valid.
      *  The content item is valid if the base classes, the concept name and the currently
-     *  stored date value are valid.
+     *  stored value (see hasValidValue()) are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
+
+    /** check whether the value of the content item, i.e.\ the stored person name, is valid
+     ** @return OFTrue if the value is valid, OFFalse otherwise
+     */
+    virtual OFBool hasValidValue() const;
 
     /** print content item.
      *  A typical output looks like this: contains PNAME:(,,"Code")="Riesmeier^Joerg"
