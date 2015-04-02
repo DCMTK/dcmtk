@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2015.04.02 (riesmeier)
 
+- Enhanced output to debug logger:
+  Output invalid template and context identifier to debug logger (if enabled).
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrdoctn.cc
+
 - Distinguish b/w invalid content items and values:
   Distinguish more clearly between invalid content items and invalid values of
   content items, which is of some interest when dealing with incorrectly encoded

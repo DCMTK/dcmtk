@@ -202,7 +202,10 @@ OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
             OFString extensionFlag;
             /* check for a common error: Context Group Identifier includes "CID" prefix */
             if ((ContextIdentifier.find_first_not_of("0123456789") != OFString_npos) || (ContextIdentifier.at(0) == '0'))
+            {
+                DCMSR_DEBUG("Reading invalid ContextIdentifier (" << ContextIdentifier << ")");
                 DCMSR_WARN("ContextIdentifier shall be a string of digits without leading zeros");
+            }
             DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_MappingResource, MappingResource, "1", "1" /* was 1C */, moduleName);
             DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextGroupVersion, ContextGroupVersion, "1", "1" /* was 1C */, moduleName);
             DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ContextGroupExtensionFlag, extensionFlag, "1", "3", moduleName);

@@ -586,7 +586,10 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         if ((MappingResource == "DCMR") && !TemplateIdentifier.empty())
         {
             if ((TemplateIdentifier.find_first_not_of("0123456789") != OFString_npos) || (TemplateIdentifier.at(0) == '0'))
+            {
+                DCMSR_DEBUG("Reading invalid TemplateIdentifier (" << TemplateIdentifier << ")");
                 DCMSR_WARN("TemplateIdentifier shall be a string of digits without leading zeros");
+            }
         }
         /* check whether the expected template (if known) has been used */
         if (!expectedTemplateIdentifier.empty())
