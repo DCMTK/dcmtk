@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2015.04.08 (riesmeier)
 
+- Added regression test for DSRTree::getPosition():
+  Added regression test for checking that DSRTree::getPosition() still works
+  correctly after adding a new tree node below the current one.
+  Affects: dcmsr/tests/tests.cc
+           dcmsr/tests/tsrtree.cc
+
 - Fixed wrong position counter in tree node:
   Fixed issue with position counter not being incremented correctly when adding
   a new tree node below the current one. This mainly showed up when checking

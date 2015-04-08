@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2014, OFFIS e.V.
+ *  Copyright (C) 2012-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,6 +82,25 @@ OFTEST(dcmsr_addTreeNode)
     tree.clear();
     OFCHECK(tree.isEmpty());
     OFCHECK_EQUAL(tree.countNodes(), 0);
+}
+
+
+OFTEST(dcmsr_getPosition)
+{
+    DSRTree<> tree;
+    OFString posString;
+    const size_t nodeID = tree.getNextNodeID();
+    /* create a simple tree of 4 nodes and directly check the position strings */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
+    OFCHECK_EQUAL(tree.getPosition(posString), "1");
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.getPosition(posString), "1.1");
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.getPosition(posString), "1.2");
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.getPosition(posString), "1.3");
 }
 
 
