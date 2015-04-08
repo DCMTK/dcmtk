@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2015.04.08 (riesmeier)
 
+- Added method for counting number of child nodes:
+  Added method that counts the number of children of a particular tree node.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrtree.cc
+
 - Added regression test for DSRTree::getPosition():
   Added regression test for checking that DSRTree::getPosition() still works
   correctly after adding a new tree node below the current one.

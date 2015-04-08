@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,6 +91,15 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     virtual OFBool isValid() const;
 
+    /** count number of children of the current node.
+     *  This method iterates over all children of the current node, either on all
+     *  sub-levels or on the first child level only.
+     ** @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the first child level only
+     ** @return number of children of the current node, 0 if none
+     */
+    size_t countChildNodes(const OFBool searchIntoSub = OFTrue) const;
+
     /** check whether the current node has a parent
      ** @return OFTrue if the current node has a parent, OFFalse otherwise
      */
@@ -179,7 +188,7 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
 
     /** iterate over all nodes. Starts from current position!
      ** @param  searchIntoSub  flag indicating whether to search into sub-trees
-                               ("deep search") or on the current level only
+     *                         ("deep search") or on the current level only
      ** @return ID of the next node if successful, 0 otherwise
      */
     size_t iterate(const OFBool searchIntoSub = OFTrue);
@@ -335,6 +344,26 @@ void DSRTreeNodeCursor<T>::clearNodeCursorStack()
 {
     while (!NodeCursorStack.empty())
         NodeCursorStack.pop();
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::countChildNodes(const OFBool searchIntoSub) const
+{
+    size_t count = 0;
+    if (NodeCursor != NULL)
+    {
+        /* do we have any children at all? */
+        DSRTreeNodeCursor<T> cursor(NodeCursor->getDown());
+        if (cursor.isValid())
+        {
+            /* iterate over all child nodes */
+            do {
+                ++count;
+            } while (cursor.iterate(searchIntoSub));
+        }
+    }
+    return count;
 }
 
 

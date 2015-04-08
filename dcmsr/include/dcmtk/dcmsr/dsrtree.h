@@ -284,7 +284,7 @@ template<typename T = DSRTreeNode> class DSRTree
      *  This also means that the caller is responsible for deleting the allocated memory.
      ** @return pointer to root node, might be NULL (empty tree)
      */
-    virtual T* getAndRemoveRootNode();
+    virtual T *getAndRemoveRootNode();
 
 
   private:
@@ -750,7 +750,7 @@ T *DSRTree<T>::getRoot() const
 template<typename T>
 T *DSRTree<T>::getAndRemoveRootNode()
 {
-    T* root = RootNode;
+    T *root = RootNode;
     /* "forget" reference to root node */
     RootNode = NULL;
     return root;

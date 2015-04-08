@@ -25,6 +25,7 @@
 
 OFTEST_REGISTER(dcmsr_addTreeNode);
 OFTEST_REGISTER(dcmsr_getPosition);
+OFTEST_REGISTER(dcmsr_countChildNodes);
 OFTEST_REGISTER(dcmsr_treeWithoutRoot);
 OFTEST_REGISTER(dcmsr_copyTree);
 OFTEST_REGISTER(dcmsr_cloneSubTree_1);
