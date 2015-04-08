@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.04.08 (riesmeier)
+
+- Fixed wrong position counter in tree node:
+  Fixed issue with position counter not being incremented correctly when adding
+  a new tree node below the current one. This mainly showed up when checking
+  the position string directly after adding the new node to the tree.
+  Thanks to Timothy Pitt <tim@vaquita.co.uk> for the report and suggested fix.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtree.h
+
 **** Changes from 2015.04.02 (riesmeier)
 
 - Enhanced output to debug logger:
