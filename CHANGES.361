@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.04.17 (riesmeier)
+
+- Fixed issue with VR checker for PN values:
+  Fixed issue with VR checker reporting empty Person Name (PN) values or values
+  like "Unspecified^^^^=^^^^=^^^^" as an error. Also added further test cases.
+  Affects: dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+           dcmdata/tests/tchval.cc
+
 **** Changes from 2015.04.08 (riesmeier)
 
 - Added method for counting number of child nodes:

@@ -167,9 +167,9 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_BAD ( "PN-03", DcmPersonName::checkStringValue("A^Riesmeier^^=R^J\366rg\\", "1") )
   CHECK_GOOD( "PN-04", DcmPersonName::checkStringValue("Eichelberg^Marco^^Dr.=Onken^Michael^=Riesmeier^J\366rg^^Dr.^", "1") )
   CHECK_GOOD( "PN-05", DcmPersonName::checkStringValue("Eichelberg\\Onken\\Riesmeier", "3") )
-  CHECK_BAD ( "PN-06", DcmPersonName::checkStringValue(" ") )
+  CHECK_GOOD( "PN-06", DcmPersonName::checkStringValue(" ") )
   CHECK_GOOD( "PN-07", DcmPersonName::checkStringValue(" A") )
-  CHECK_BAD ( "PN-08", DcmPersonName::checkStringValue("^^^^") )
+  CHECK_GOOD( "PN-08", DcmPersonName::checkStringValue("^^^^") )
   CHECK_GOOD( "PN-09", DcmPersonName::checkStringValue("^ J\366rg ^") )
   CHECK_GOOD( "PN-10", DcmPersonName::checkStringValue("^^^^MD ") )
   CHECK_BAD ( "PN-11", DcmPersonName::checkStringValue("^^^^^") )
@@ -180,31 +180,15 @@ OFTEST(dcmdata_checkStringValue)
    */
   CHECK_GOOD( "PN-13", DcmPersonName::checkStringValue("==Test") )
   CHECK_GOOD( "PN-14", DcmPersonName::checkStringValue("Test==") )
-  CHECK_BAD ( "PN-15", DcmPersonName::checkStringValue("==") )
+  CHECK_GOOD( "PN-15", DcmPersonName::checkStringValue("==") )
   CHECK_BAD ( "PN-16", DcmPersonName::checkStringValue("===") )
   CHECK_BAD ( "PN-17", DcmPersonName::checkStringValue("^=^=^=^") )
-  CHECK_GOOD( "PN-18", DcmPersonName::checkStringValue("") )
-
-  /* test "Old Person Name", same tests as for PN (and thus has some duplicates) */
-  const int old_pn = 15;
-  OFCHECK( old_pn != vrscan::scan("oldpn", "A^Riesmeier^^=R^J\366rg") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "A^Riesmeier^^=R^J\366rg\\") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "A^Riesmeier^^=R^J\366rg\\") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "Eichelberg^Marco^^Dr.=Onken^Michael^=Riesmeier^J\366rg^^Dr.^") );
-  OFCHECK( old_pn == vrscan::scan("oldpn", "Eichelberg\\Onken\\Riesmeier") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", " ") );
-  OFCHECK( old_pn == vrscan::scan("oldpn", " A") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "^^^^") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "^ J\366rg ^") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "^^^^MD ") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "^^^^^") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "A^B^C^D^E=F^G^H^I^J=K^L^M^N^O") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "==Test") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "Test==") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "==") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "===") );
-  OFCHECK( old_pn != vrscan::scan("oldpn", "^=^=^=^") );
-  OFCHECK( old_pn == vrscan::scan("oldpn", "") );
+  CHECK_GOOD( "PN-18", DcmPersonName::checkStringValue("^^^^=^^^^=^^^^") )
+  CHECK_GOOD( "PN-19", DcmPersonName::checkStringValue("") )
+  /* further tests for component groups */
+  CHECK_GOOD( "PN-20", DcmPersonName::checkStringValue("Unspecified^^^^=^^^^=^^^^") )
+  CHECK_GOOD( "PN-21", DcmPersonName::checkStringValue("^^^^=^^Unspecified^^=^^^^") )
+  CHECK_GOOD( "PN-22", DcmPersonName::checkStringValue("^^^^=^^^^=^^^^Unspecified") )
 
   /* test "Short String" */
   CHECK_GOOD( "SH-01", DcmShortString::checkStringValue(" ", "1") )
