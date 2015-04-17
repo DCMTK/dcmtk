@@ -89,7 +89,7 @@ OFCondition DSRStringValue::read(DcmItem &dataset,
                                  const DcmTagKey &tagKey,
                                  const size_t flags)
 {
-    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue);
+    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue) > 0;
     /* read value */
     return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", "content item", acceptViolation);
 }

@@ -156,7 +156,7 @@ OFCondition DSRSpatialCoordinates3DValue::writeXML(STD_NAMESPACE ostream &stream
 OFCondition DSRSpatialCoordinates3DValue::read(DcmItem &dataset,
                                                const size_t flags)
 {
-    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue);
+    const OFBool acceptViolation = (flags & DSRTypes::RF_acceptInvalidContentItemValue) > 0;
     /* read ReferencedFrameOfReferenceUID */
     OFString tmpString;
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedFrameOfReferenceUID, FrameOfReferenceUID, "1", "1", "SCOORD3D content item", acceptViolation);

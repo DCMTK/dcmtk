@@ -1995,7 +1995,7 @@ double OFStandard::atof(const char *s, OFBool *success)
 OFBool OFStandard::isnan( float f )
 {
 #ifdef HAVE_WINDOWS_H
-  return _isnan(f);
+  return _isnan(f) != 0;
 #else
   return ::isnan(f);
 #endif
@@ -2004,7 +2004,7 @@ OFBool OFStandard::isnan( float f )
 OFBool OFStandard::isnan( double d )
 {
 #ifdef HAVE_WINDOWS_H
-  return _isnan(d);
+  return _isnan(d) != 0;
 #else
   return ::isnan(d);
 #endif
@@ -2015,7 +2015,7 @@ OFBool OFStandard::isinf( float f )
 #ifdef HAVE_ISINF
   return ::isinf( f );
 #else
-  return my_isinf( f );
+  return my_isinf( f ) != 0;
 #endif
 }
 
@@ -2024,7 +2024,7 @@ OFBool OFStandard::isinf( double d )
 #ifdef HAVE_ISINF
   return ::isinf( d );
 #else
-  return my_isinf( d );
+  return my_isinf( d ) != 0;
 #endif
 }
 

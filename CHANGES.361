@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2015.04.17 (riesmeier)
 
+- Fixed warning C4800 reported by Visual Studio:
+  Fixed warning message "C4800: 'int': forcing value to bool 'true' or 'false'
+  (performance warning)" reported by Microsoft Visual Studio.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrsc3vl.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           ofstd/libsrc/ofstd.cc
+
 - Fixed issue with VR checker for PN values:
   Fixed issue with VR checker reporting empty Person Name (PN) values or values
   like "Unspecified^^^^=^^^^=^^^^" as an error. Also added further test cases.
