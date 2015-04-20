@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-03-27 12:45:18
+**   Date: 2015-04-20 11:22:28
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2015-03-27 12:45:18";
+const char* dcmBuiltinDictBuildDate = "2015-04-20 11:22:28";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -12838,51 +12838,51 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1512, 0x0022, 0x1512,
-      EVR_SQ, "TransformationMethodCodeSequence", 1, 1, "Supplement_173",
+      EVR_SQ, "TransformationMethodCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1513, 0x0022, 0x1513,
-      EVR_SQ, "TransformationAlgorithmSequence", 1, 1, "Supplement_173",
+      EVR_SQ, "TransformationAlgorithmSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1515, 0x0022, 0x1515,
-      EVR_CS, "OphthalmicAxialLengthMethod", 1, 1, "Supplement_173",
+      EVR_CS, "OphthalmicAxialLengthMethod", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1517, 0x0022, 0x1517,
-      EVR_FL, "OphthalmicFOV", 1, 1, "Supplement_173",
+      EVR_FL, "OphthalmicFOV", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1518, 0x0022, 0x1518,
-      EVR_SQ, "TwoDimensionalToThreeDimensionalMapSequence", 1, 1, "Supplement_173",
+      EVR_SQ, "TwoDimensionalToThreeDimensionalMapSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1525, 0x0022, 0x1525,
-      EVR_SQ, "WideFieldOphthalmicPhotographyQualityRatingSequence", 1, 1, "Supplement_173",
+      EVR_SQ, "WideFieldOphthalmicPhotographyQualityRatingSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1526, 0x0022, 0x1526,
-      EVR_SQ, "WideFieldOphthalmicPhotographyQualityThresholdSequence", 1, 1, "Supplement_173",
+      EVR_SQ, "WideFieldOphthalmicPhotographyQualityThresholdSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1527, 0x0022, 0x1527,
-      EVR_FL, "WideFieldOphthalmicPhotographyThresholdQualityRating", 1, 1, "Supplement_173",
+      EVR_FL, "WideFieldOphthalmicPhotographyThresholdQualityRating", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1528, 0x0022, 0x1528,
-      EVR_FL, "XCoordinatesCenterPixelViewAngle", 1, 1, "Supplement_173",
+      EVR_FL, "XCoordinatesCenterPixelViewAngle", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1529, 0x0022, 0x1529,
-      EVR_FL, "YCoordinatesCenterPixelViewAngle", 1, 1, "Supplement_173",
+      EVR_FL, "YCoordinatesCenterPixelViewAngle", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1530, 0x0022, 0x1530,
-      EVR_UL, "NumberOfMapPoints", 1, 1, "Supplement_173",
+      EVR_UL, "NumberOfMapPoints", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1531, 0x0022, 0x1531,
-      EVR_OF, "TwoDimensionalToThreeDimensionalMapData", 1, 1, "Supplement_173",
+      EVR_OF, "TwoDimensionalToThreeDimensionalMapData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
@@ -25130,15 +25130,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0131, 0x300a, 0x0131,
-      EVR_FL, "AverageBeamDosePointSourceToExternalContourSurfaceDistance", 1, 1, "CP_1434",
+      EVR_FL, "AverageBeamDosePointSourceToExternalContourSurfaceDistance", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0132, 0x300a, 0x0132,
-      EVR_FL, "SourceToExternalContourDistance", 1, 1, "CP_1434",
+      EVR_FL, "SourceToExternalContourDistance", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0133, 0x300a, 0x0133,
-      EVR_FL, "ExternalContourEntryPoint", 3, 3, "CP_1434",
+      EVR_FL, "ExternalContourEntryPoint", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0134, 0x300a, 0x0134,
@@ -25894,35 +25894,35 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0440, 0x300a, 0x0440,
-      EVR_IS, "NumberOfBlockSlabItems", 1, 1, "CP_1420",
+      EVR_IS, "NumberOfBlockSlabItems", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0441, 0x300a, 0x0441,
-      EVR_SQ, "BlockSlabSequence", 1, 1, "CP_1420",
+      EVR_SQ, "BlockSlabSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0442, 0x300a, 0x0442,
-      EVR_DS, "BlockSlabThickness", 1, 1, "CP_1420",
+      EVR_DS, "BlockSlabThickness", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0443, 0x300a, 0x0443,
-      EVR_US, "BlockSlabNumber", 1, 1, "CP_1420",
+      EVR_US, "BlockSlabNumber", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0450, 0x300a, 0x0450,
-      EVR_SQ, "DeviceMotionControlSequence", 1, 1, "CP_1430",
+      EVR_SQ, "DeviceMotionControlSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0451, 0x300a, 0x0451,
-      EVR_CS, "DeviceMotionExecutionMode", 1, 1, "CP_1430",
+      EVR_CS, "DeviceMotionExecutionMode", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0452, 0x300a, 0x0452,
-      EVR_CS, "DeviceMotionObservationMode", 1, 1, "CP_1430",
+      EVR_CS, "DeviceMotionObservationMode", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0453, 0x300a, 0x0453,
-      EVR_SQ, "DeviceMotionParameterCodeSequence", 1, 1, "CP_1430",
+      EVR_SQ, "DeviceMotionParameterCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0002, 0x300c, 0x0002,

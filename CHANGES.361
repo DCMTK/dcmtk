@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.04.20 (riesmeier)
+
+- Updated data dictionary for DICOM 2015b edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2015-04-16. Since the data dictionary was already
+  up-to-date regarding the recently approved Supplements and CPs, there are no
+  changes apart from the "Version" column.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2015.04.17 (riesmeier)
 
 - Fixed warning C4800 reported by Visual Studio:

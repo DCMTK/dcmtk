@@ -21,14 +21,13 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2015a and PS 3.7-2015a.
-# File created on 2015-02-09 10:03:16 by J. Riesmeier on thinkpad.
-# File updated manually on 2015-03-27 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2015b and PS 3.7-2015b.
+# File created on 2015-04-20 11:12:50 by J. Riesmeier on thinkpad.
+# File updated manually on 2015-04-20 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 173.
-# - CP 1420, 1430, 1434.
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -1429,6 +1428,18 @@
 (0022,1468)	FL	RegisteredLocalizerBottomRightHandCorner	2	DICOM
 (0022,1470)	SQ	OphthalmicThicknessMapQualityRatingSequence	1	DICOM
 (0022,1472)	SQ	RelevantOPTAttributesSequence	1	DICOM
+(0022,1512)	SQ	TransformationMethodCodeSequence	1	DICOM
+(0022,1513)	SQ	TransformationAlgorithmSequence	1	DICOM
+(0022,1515)	CS	OphthalmicAxialLengthMethod	1	DICOM
+(0022,1517)	FL	OphthalmicFOV	1	DICOM
+(0022,1518)	SQ	TwoDimensionalToThreeDimensionalMapSequence	1	DICOM
+(0022,1525)	SQ	WideFieldOphthalmicPhotographyQualityRatingSequence	1	DICOM
+(0022,1526)	SQ	WideFieldOphthalmicPhotographyQualityThresholdSequence	1	DICOM
+(0022,1527)	FL	WideFieldOphthalmicPhotographyThresholdQualityRating	1	DICOM
+(0022,1528)	FL	XCoordinatesCenterPixelViewAngle	1	DICOM
+(0022,1529)	FL	YCoordinatesCenterPixelViewAngle	1	DICOM
+(0022,1530)	UL	NumberOfMapPoints	1	DICOM
+(0022,1531)	OF	TwoDimensionalToThreeDimensionalMapData	1	DICOM
 (0024,0010)	FL	VisualFieldHorizontalExtent	1	DICOM
 (0024,0011)	FL	VisualFieldVerticalExtent	1	DICOM
 (0024,0012)	CS	VisualFieldShape	1	DICOM
@@ -3176,6 +3187,9 @@
 (300A,012C)	DS	IsocenterPosition	3	DICOM
 (300A,012E)	DS	SurfaceEntryPoint	3	DICOM
 (300A,0130)	DS	SourceToSurfaceDistance	1	DICOM
+(300A,0131)	FL	AverageBeamDosePointSourceToExternalContourSurfaceDistance	1	DICOM
+(300A,0132)	FL	SourceToExternalContourDistance	1	DICOM
+(300A,0133)	FL	ExternalContourEntryPoint	3	DICOM
 (300A,0134)	DS	CumulativeMetersetWeight	1	DICOM
 (300A,0140)	FL	TableTopPitchAngle	1	DICOM
 (300A,0142)	CS	TableTopPitchRotationDirection	1	DICOM
@@ -3364,6 +3378,14 @@
 (300A,0434)	FL	ApplicatorOpeningX	1	DICOM
 (300A,0435)	FL	ApplicatorOpeningY	1	DICOM
 (300A,0436)	FL	SourceToApplicatorMountingPositionDistance	1	DICOM
+(300A,0440)	IS	NumberOfBlockSlabItems	1	DICOM
+(300A,0441)	SQ	BlockSlabSequence	1	DICOM
+(300A,0442)	DS	BlockSlabThickness	1	DICOM
+(300A,0443)	US	BlockSlabNumber	1	DICOM
+(300A,0450)	SQ	DeviceMotionControlSequence	1	DICOM
+(300A,0451)	CS	DeviceMotionExecutionMode	1	DICOM
+(300A,0452)	CS	DeviceMotionObservationMode	1	DICOM
+(300A,0453)	SQ	DeviceMotionParameterCodeSequence	1	DICOM
 (300C,0002)	SQ	ReferencedRTPlanSequence	1	DICOM
 (300C,0004)	SQ	ReferencedBeamSequence	1	DICOM
 (300C,0006)	IS	ReferencedBeamNumber	1	DICOM
@@ -3521,39 +3543,6 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 173 (Wide Field Ophthalmic Photography Image Storage SOP Classes)
-#
-(0022,1512)	SQ	TransformationMethodCodeSequence	1	Supplement_173
-(0022,1513)	SQ	TransformationAlgorithmSequence	1	Supplement_173
-(0022,1515)	CS	OphthalmicAxialLengthMethod	1	Supplement_173
-(0022,1517)	FL	OphthalmicFOV	1	Supplement_173
-(0022,1518)	SQ	TwoDimensionalToThreeDimensionalMapSequence	1	Supplement_173
-(0022,1525)	SQ	WideFieldOphthalmicPhotographyQualityRatingSequence	1	Supplement_173
-(0022,1526)	SQ	WideFieldOphthalmicPhotographyQualityThresholdSequence	1	Supplement_173
-(0022,1527)	FL	WideFieldOphthalmicPhotographyThresholdQualityRating	1	Supplement_173
-(0022,1528)	FL	XCoordinatesCenterPixelViewAngle	1	Supplement_173
-(0022,1529)	FL	YCoordinatesCenterPixelViewAngle	1	Supplement_173
-(0022,1530)	UL	NumberOfMapPoints	1	Supplement_173
-(0022,1531)	OF	TwoDimensionalToThreeDimensionalMapData	1	Supplement_173
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1420, 1430, 1434
-#
-(300A,0440)	IS	NumberOfBlockSlabItems	1	CP_1420
-(300A,0441)	SQ	BlockSlabSequence	1	CP_1420
-(300A,0442)	DS	BlockSlabThickness	1	CP_1420
-(300A,0443)	US	BlockSlabNumber	1	CP_1420
-(300A,0450)	SQ	DeviceMotionControlSequence	1	CP_1430
-(300A,0451)	CS	DeviceMotionExecutionMode	1	CP_1430
-(300A,0452)	CS	DeviceMotionObservationMode	1	CP_1430
-(300A,0453)	SQ	DeviceMotionParameterCodeSequence	1	CP_1430
-(300A,0131)	FL	AverageBeamDosePointSourceToExternalContourSurfaceDistance	1	CP_1434
-(300A,0132)	FL	SourceToExternalContourDistance	1	CP_1434
-(300A,0133)	FL	ExternalContourEntryPoint	3	CP_1434
 #
 #---------------------------------------------------------------------------
 #
