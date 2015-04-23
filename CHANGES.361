@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.04.23 (eichelberg)
+
+- Updated makefile to always use the dicom.dic provided in dcmdata/docs
+  for the dcmdata unit tests, even if an installed dictionary exists elsewhere.
+  Avoids a failure of two tests due to an old dictionary file being used.
+  Affects: dcmdata/tests/Makefile.in
+
 **** Changes from 2015.04.22 (eichelberg)
 
 - Fixed minor bug in DICOM upper layer FSM that affected the situation where

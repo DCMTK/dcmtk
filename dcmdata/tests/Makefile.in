@@ -34,10 +34,10 @@ tests: $(objs)
 
 
 check: tests
-	./tests
+	DCMDICTPATH=../data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../data/dicom.dic ./tests -x
 
 
 install: all
