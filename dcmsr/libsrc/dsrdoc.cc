@@ -779,9 +779,13 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     OFString tmpString;
                     /* check for known character set */
                     setSpecificCharacterSet(doc.getStringFromNodeContent(cursor, tmpString));
-                    const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
-                    if ((strcmp(encString, "?") == 0) || doc.setEncodingHandler(encString).bad())
-                        DCMSR_WARN("Character set '" << tmpString << "' not supported");
+                    if (tmpString.empty())
+                        DCMSR_WARN("Empty value for 'charset' ... ignoring");
+                    else {
+                        const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
+                        if ((strcmp(encString, "?") == 0) || doc.setEncodingHandler(encString).bad())
+                            DCMSR_WARN("Character set '" << tmpString << "' not supported");
+                    }
                 } else {
                     /* only one "charset" node allowed */
                     doc.printUnexpectedNodeWarning(cursor);

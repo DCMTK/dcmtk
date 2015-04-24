@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.04.24 (riesmeier)
+
+- Ignore empty value for XML element 'charset':
+  Ignore empty value for element 'charset' when reading an SR document from XML
+  file. Report a more appropriate warning than "Character Set '' not supported".
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2015.04.23 (eichelberg)
 
 - Updated makefile to always use the dicom.dic provided in dcmdata/docs
