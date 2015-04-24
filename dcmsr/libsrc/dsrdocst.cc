@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,15 +153,21 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                 if (flags & PF_printTemplateIdentification)
                 {
                     /* check for template identification */
-                    OFString templateIdentifier, mappingResource;
-                    if (node->getTemplateIdentification(templateIdentifier, mappingResource).good())
+                    OFString templateIdentifier;
+                    OFString mappingResource;
+                    OFString mappingResourceUID;
+                    if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
                     {
                         if (!templateIdentifier.empty() && !mappingResource.empty())
                         {
                             DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                             stream << "  # ";
                             DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
-                            stream << "TID " << templateIdentifier << " (" << mappingResource << ")";
+                            stream << "TID " << templateIdentifier;
+                            stream << " (" << mappingResource;
+                            if (!mappingResourceUID.empty())
+                                stream << ", " << mappingResourceUID;
+                            stream << ")";
                         }
                     }
                 }

@@ -3,6 +3,21 @@ Changes between releases are documented here.
 
 **** Changes from 2015.04.24 (riesmeier)
 
+- Added support for optional Mapping Resource UID:
+  Added support for the optional Mapping Resource UID (0008,0118) to DICOM SR
+  implementation. This attribute has been introduced only recently with CP-1417
+  (Clarify use and declaration of private mapping resource).
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrreftn.cc
+
 - Ignore empty value for XML element 'charset':
   Ignore empty value for element 'charset' when reading an SR document from XML
   file. Report a more appropriate warning than "Character Set '' not supported".

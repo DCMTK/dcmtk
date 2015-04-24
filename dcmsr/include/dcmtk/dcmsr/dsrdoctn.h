@@ -367,7 +367,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 
     /** get template identifier and mapping resource.
      *  This value pair identifies the template that was used to create this content item
-     *  (and its children).  According to the DICOM standard it is "required if a template
+     *  (and its children).  According to the DICOM standard, it is "required if a template
      *  was used to define the content of this Item, and the template consists of a single
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
      *  nested templates that start with the same CONTAINER."  The identification is valid
@@ -379,19 +379,37 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     virtual OFCondition getTemplateIdentification(OFString &templateIdentifier,
                                                   OFString &mappingResource) const;
 
+    /** get template identifier, mapping resource and optional mapping resource UID.
+     *  This value triple identifies the template that was used to create this content item
+     *  (and its children).  According to the DICOM standard, it is "required if a template
+     *  was used to define the content of this Item, and the template consists of a single
+     *  CONTAINER with nested content, and it is the outermost invocation of a set of
+     *  nested templates that start with the same CONTAINER."  The identification is valid
+     *  if the first two values are either present (non-empty) or all three are absent (empty).
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template (might be empty)
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                                  OFString &mappingResource,
+                                                  OFString &mappingResourceUID) const;
+
     /** set template identifier and mapping resource.
-     *  The identification is valid if both values are either present (non-empty) or absent
-     *  (empty).  See getTemplateIdentification() for details.
+     *  The identification is valid if the first two values are either present (non-empty) or
+     *  all three values are absent (empty).  See getTemplateIdentification() for details.
      *  A warning message is reported to the logger if a template identification is specified
      *  for a content item that is not a CONTAINER.
      ** @param  templateIdentifier  identifier of the template to be set
      *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
      *  @param  check               check 'templateIdentifier' and 'mappingResource' for
      *                              conformance with VR (CS) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
                                                   const OFString &mappingResource,
+                                                  const OFString &mappingResourceUID = "",
                                                   const OFBool check = OFTrue);
 
     /** remove digital signatures from content item.
@@ -638,6 +656,18 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
                                                OFString &relationshipText,
                                                const size_t flags);
 
+    /** check the specified template identification values for validity.
+     *  The identification is valid if the first two values are either present (non-empty) or
+     *  absent (empty).  In the latter case, the third (optional) parameter also has to be empty.
+     ** @param  templateIdentifier  identifier of the template
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
+     ** @return OFTrue if template identification is valid, OFFalse otherwise
+     */
+    static OFBool checkTemplateIdentification(const OFString &templateIdentifier,
+                                              const OFString &mappingResource,
+                                              const OFString &mappingResourceUID);
+
 
   private:
 
@@ -664,6 +694,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     OFString           TemplateIdentifier;
     /// mapping resource (VR=CS, mandatory in ContentTemplateSequence)
     OFString           MappingResource;
+    /// mapping resource UID (VR=UI, optional in ContentTemplateSequence)
+    OFString           MappingResourceUID;
 
     /// MAC parameters sequence (VR=SQ, optional)
     DcmSequenceOfItems MACParameters;

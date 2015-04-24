@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,7 +140,9 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
     /* we assume that 'cursor' points to the "content" element */
     if (cursor.valid())
     {
-        OFString templateIdentifier, mappingResource;
+        OFString mappingResource;
+        OFString mappingResourceUID;
+        OFString templateIdentifier;
         /* template identification information expected "outside" content item */
         if (flags & XF_templateElementEnclosesItems)
         {
@@ -149,6 +151,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
             if (childCursor.valid())
             {
                 doc.getStringFromAttribute(childCursor, mappingResource, "resource");
+                doc.getStringFromAttribute(childCursor, mappingResourceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                 doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
                 /* get first child of the "template" element */
                 cursor = childCursor.getChild();
@@ -171,7 +174,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                     if (flags & XF_templateElementEnclosesItems)
                     {
                         /* set template identification (if any) */
-                        if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                        if (node->setTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).bad())
                             DCMSR_WARN("Root content item has invalid/incomplete template identification");
                     }
                     /* ... and let the node read the rest of the document */
@@ -346,11 +349,18 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
                 {
                     OFString templateIdentifier;
                     OFString mappingResource;
-                    if (getRoot()->getTemplateIdentification(templateIdentifier, mappingResource).good())
+                    OFString mappingResourceUID;
+                    if (getRoot()->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
                     {
                         /* check for DICOM Content Mapping Resource */
                         if (mappingResource == "DCMR")
                         {
+                            /* check whether the correct Mapping Resource UID is used (if present) */
+                            if (!mappingResourceUID.empty() && (mappingResourceUID != UID_DICOMContentMappingResource))
+                            {
+                                DCMSR_WARN("Incorrect value for MappingResourceUID (" << mappingResourceUID << "), "
+                                    << UID_DICOMContentMappingResource << " expected");
+                            }
                             /* compare with expected TID */
                             if (templateIdentifier != expectedTemplateIdentifier)
                             {

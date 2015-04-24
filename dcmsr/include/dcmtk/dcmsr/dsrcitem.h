@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -391,8 +391,9 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      *  (and its children).  According to the DICOM standard this is "required if a template
      *  was used to define the content of this Item, and the template consists of a single
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
-     *  nested templates that start with the same CONTAINER."  The identification is valid
-     *  if both values are either present (non-empty) or absent (empty).
+     *  nested templates that start with the same CONTAINER."
+     *  The identification is valid if both values are either present (non-empty) or absent
+     *  (empty).
      *
      *  Applicable to: CONTAINER
      ** @param  templateIdentifier  identifier of the template (might be empty)
@@ -403,18 +404,42 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     OFCondition getTemplateIdentification(OFString &templateIdentifier,
                                           OFString &mappingResource) const;
 
+    /** get template identifier and mapping resource and optional mapping resource UID.
+     *  This value triple identifies the template that was used to create this content item
+     *  (and its children).  According to the DICOM standard, this is "required if a template
+     *  was used to define the content of this Item, and the template consists of a single
+     *  CONTAINER with nested content, and it is the outermost invocation of a set of
+     *  nested templates that start with the same CONTAINER."
+     *  The identification is valid if the first two values are either present (non-empty) or
+     *  all three are absent (empty).
+     *
+     *  Applicable to: CONTAINER
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template
+     *                              (might be empty)
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource
+     *                              (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                          OFString &mappingResource,
+                                          OFString &mappingResourceUID) const;
+
     /** set template identifier and mapping resource.
-     *  The identification is valid if both values are either present (non-empty) or absent
-     *  (empty).  See getTemplateIdentification() for details.
-     *  Please use the correct DICOM format for both values (VR=CS).
+     *  The identification is valid if the first two values are either present (non-empty)
+     *  or all three values are absent (empty).  See getTemplateIdentification() for details.
+     *  Please use the correct DICOM format for all values (VR=CS,CS,UI).
+     *
      *  Applicable to: CONTAINER
      ** @param  templateIdentifier  identifier of the template to be set
      *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
      *  @param  check               if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setTemplateIdentification(const OFString &templateIdentifier,
                                           const OFString &mappingResource,
+                                          const OFString &mappingResourceUID = "",
                                           const OFBool check = OFTrue);
 
     /** get pointer to concept name.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -639,15 +639,30 @@ OFCondition DSRContentItem::getTemplateIdentification(OFString &templateIdentifi
 }
 
 
+OFCondition DSRContentItem::getTemplateIdentification(OFString &templateIdentifier,
+                                                      OFString &mappingResource,
+                                                      OFString &mappingResourceUID) const
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Container)
+            result = TreeNode->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID);
+    }
+    return result;
+}
+
+
 OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateIdentifier,
                                                       const OFString &mappingResource,
+                                                      const OFString &mappingResourceUID,
                                                       const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Container)
-            result = TreeNode->setTemplateIdentification(templateIdentifier, mappingResource, check);
+            result = TreeNode->setTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID, check);
     }
     return result;
 }

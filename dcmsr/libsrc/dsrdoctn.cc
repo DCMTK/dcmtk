@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,6 +44,7 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipTy
     ObservationUID(),
     TemplateIdentifier(),
     MappingResource(),
+    MappingResourceUID(),
     MACParameters(DCM_MACParametersSequence),
     DigitalSignatures(DCM_DigitalSignaturesSequence)
 {
@@ -61,6 +62,7 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const DSRDocumentTreeNode &node)
     ObservationUID(node.ObservationUID),
     TemplateIdentifier(node.TemplateIdentifier),
     MappingResource(node.MappingResource),
+    MappingResourceUID(node.MappingResourceUID),
     MACParameters(DCM_MACParametersSequence),
     DigitalSignatures(DCM_DigitalSignaturesSequence)
 {
@@ -81,6 +83,7 @@ void DSRDocumentTreeNode::clear()
     ObservationUID.clear();
     TemplateIdentifier.clear();
     MappingResource.clear();
+    MappingResourceUID.clear();
     MACParameters.clear();
     DigitalSignatures.clear();
 }
@@ -151,7 +154,9 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
     if (cursor.valid())
     {
         OFString idAttr;
-        OFString templateIdentifier, mappingResource;
+        OFString mappingResource;
+        OFString mappingResourceUID;
+        OFString templateIdentifier;
         /* important: NULL indicates first child node */
         DSRDocumentTreeNode *node = NULL;
         /* read "id" attribute (optional) and compare with expected value */
@@ -172,12 +177,18 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 if (doc.hasAttribute(childCursor, "tid"))
                 {
                     doc.getStringFromAttribute(childCursor, mappingResource, "resource");
+                    doc.getStringFromAttribute(childCursor, mappingResourceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                     doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
                 } else {
-                    doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "resource"), mappingResource);
+                    const DSRXMLCursor resourceCursor = doc.getNamedNode(childCursor.getChild(), "resource");
+                    if (resourceCursor.valid())
+                    {
+                        doc.getStringFromAttribute(resourceCursor, mappingResourceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
+                        doc.getStringFromNodeContent(resourceCursor, mappingResource);
+                    }
                     doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "id"), templateIdentifier);
                 }
-                if (setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                if (setTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).bad())
                     DCMSR_WARN("Content item has invalid/incomplete template identification");
             }
         }
@@ -204,6 +215,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 if (doc.matchNode(cursor, "template"))
                 {
                     doc.getStringFromAttribute(cursor, mappingResource, "resource");
+                    doc.getStringFromAttribute(cursor, mappingResourceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                     doc.getStringFromAttribute(cursor, templateIdentifier, "tid");
                     /* goto first child of the "template" element */
                     cursor.gotoChild();
@@ -223,7 +235,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     if ((flags & XF_templateElementEnclosesItems) && (valueType != VT_byReference))
                     {
                         /* set template identification (if any) */
-                        if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                        if (node->setTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).bad())
                             DCMSR_WARN("Content item has invalid/incomplete template identification");
                     }
                     /* proceed with reading child nodes */
@@ -267,11 +279,17 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
         {
             if (flags & XF_templateIdentifierAsAttribute)
-                stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\"/>" << OFendl;
-            else
             {
+                stream << "<template resource=\"" << MappingResource << "\"";
+                if (!MappingResourceUID.empty())
+                    stream << " uid=\"" << MappingResourceUID << "\"";
+                stream << " tid=\"" << TemplateIdentifier << "\"/>" << OFendl;
+            } else {
                 stream << "<template>" << OFendl;
-                writeStringValueToXML(stream, MappingResource, "resource");
+                stream << "<resource";
+                if (!MappingResourceUID.empty())
+                    stream << " uid=\"" << MappingResourceUID << "\"";
+                stream << ">" << MappingResource << "</resource>" << OFendl;
                 writeStringValueToXML(stream, TemplateIdentifier, "id");
                 stream << "</template>" << OFendl;
             }
@@ -334,7 +352,12 @@ void DSRDocumentTreeNode::writeXMLItemStart(STD_NAMESPACE ostream &stream,
     if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
-            stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\">" << OFendl;
+        {
+            stream << "<template resource=\"" << MappingResource << "\"";
+            if (!MappingResourceUID.empty())
+                stream << " uid=\"" << MappingResourceUID << "\"";
+            stream << " tid=\"" << TemplateIdentifier << "\">" << OFendl;
+        }
     }
     /* write content item */
     if (flags & XF_valueTypeAsAttribute)
@@ -459,7 +482,7 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
 {
     OFCondition result = SR_EC_InvalidValue;
     /* check for valid value pair */
-    if (TemplateIdentifier.empty() == MappingResource.empty())
+    if (checkTemplateIdentification(templateIdentifier, mappingResource, "" /*mappingResourceUID*/))
     {
         templateIdentifier = TemplateIdentifier;
         mappingResource = MappingResource;
@@ -469,20 +492,40 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
 }
 
 
+OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIdentifier,
+                                                           OFString &mappingResource,
+                                                           OFString &mappingResourceUID) const
+{
+    OFCondition result = SR_EC_InvalidValue;
+    /* check for valid pair/triple */
+    if (checkTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID))
+    {
+        templateIdentifier = TemplateIdentifier;
+        mappingResource = MappingResource;
+        mappingResourceUID = MappingResourceUID;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templateIdentifier,
                                                            const OFString &mappingResource,
+                                                           const OFString &mappingResourceUID,
                                                            const OFBool check)
 {
     OFCondition result = EC_Normal;
-    /* check for valid value pair */
-    if (templateIdentifier.empty() != mappingResource.empty())
+    /* basic check for validity (empty or non-empty) */
+    if (!checkTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID))
         result = EC_IllegalParameter;
-    /* check whether the passed value is valid */
+    /* check more thoroughly whether the passed values are valid */
     else if (check)
     {
         result = DcmCodeString::checkStringValue(templateIdentifier, "1");
         if (result.good())
             result = DcmCodeString::checkStringValue(mappingResource, "1");
+        if (result.good())
+            result = DcmUniqueIdentifier::checkStringValue(mappingResourceUID, "1");
     }
     if (result.good())
     {
@@ -491,6 +534,7 @@ OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templ
         /* set current values, might be empty */
         TemplateIdentifier = templateIdentifier;
         MappingResource = mappingResource;
+        MappingResourceUID = mappingResourceUID;
     }
     return result;
 }
@@ -581,14 +625,25 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         if (ValueType != VT_Container)
             DCMSR_WARN("Found ContentTemplateSequence for content item that is not a CONTAINER");
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", "ContentTemplateSequence");
+        getAndCheckStringValueFromDataset(*ditem, DCM_MappingResourceUID, MappingResourceUID, "1", "3", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", "ContentTemplateSequence");
-        /* check for a common error: Template Identifier includes "TID" prefix */
-        if ((MappingResource == "DCMR") && !TemplateIdentifier.empty())
+        /* in case the DICOM Content Mapping Resource (DCMR) is used */
+        if (MappingResource == "DCMR")
         {
-            if ((TemplateIdentifier.find_first_not_of("0123456789") != OFString_npos) || (TemplateIdentifier.at(0) == '0'))
+            /* check whether the correct Mapping Resource UID is used (if present) */
+            if (!MappingResourceUID.empty() && (MappingResourceUID != UID_DICOMContentMappingResource))
             {
-                DCMSR_DEBUG("Reading invalid TemplateIdentifier (" << TemplateIdentifier << ")");
-                DCMSR_WARN("TemplateIdentifier shall be a string of digits without leading zeros");
+                DCMSR_WARN("Incorrect value for MappingResourceUID (" << MappingResourceUID << "), "
+                    << UID_DICOMContentMappingResource << " expected");
+            }
+            /* check for a common error: Template Identifier includes "TID" prefix */
+            if (!TemplateIdentifier.empty())
+            {
+                if ((TemplateIdentifier.find_first_not_of("0123456789") != OFString_npos) || (TemplateIdentifier.at(0) == '0'))
+                {
+                    DCMSR_DEBUG("Reading invalid TemplateIdentifier (" << TemplateIdentifier << ")");
+                    DCMSR_WARN("TemplateIdentifier shall be a string of digits without leading zeros");
+                }
             }
         }
         /* check whether the expected template (if known) has been used */
@@ -656,8 +711,9 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
                 if (ValueType != VT_Container)
                     DCMSR_WARN("Writing ContentTemplateSequence for content item that is not a CONTAINER");
                 /* write item data */
-                putStringValueToDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier);
                 putStringValueToDataset(*ditem, DCM_MappingResource, MappingResource);
+                putStringValueToDataset(*ditem, DCM_MappingResourceUID, MappingResourceUID, OFFalse /*allowEmpty*/);
+                putStringValueToDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier);
             }
         }
     }
@@ -1223,4 +1279,18 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
             break;
     }
     return relationshipText;
+}
+
+
+OFBool DSRDocumentTreeNode::checkTemplateIdentification(const OFString &templateIdentifier,
+                                                        const OFString &mappingResource,
+                                                        const OFString &mappingResourceUID)
+{
+    OFBool result = OFFalse;
+    /* either all three values are empty or the first two are both non-empty */
+    if (templateIdentifier.empty() && mappingResource.empty() && mappingResourceUID.empty())
+        result = OFTrue;
+    else if (!templateIdentifier.empty() && !mappingResource.empty())
+        result = OFTrue;
+    return result;
 }

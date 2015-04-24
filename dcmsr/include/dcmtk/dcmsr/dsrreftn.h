@@ -145,12 +145,14 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
     /** set template identifier and mapping resource
      ** @param  templateIdentifier  dummy parameter
      *  @param  mappingResource     dummy parameter
+     *  @param  mappingResourceUID  dummy parameter
      *  @param  check               dummy parameter
      ** @return always returns EC_IllegalCall, since this content item has no template
      *          identification (part of Document Relationship Macro)
      */
     virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
                                                   const OFString &mappingResource,
+                                                  const OFString &mappingResourceUID = "",
                                                   const OFBool check = OFTrue);
 
     /** get ID of the referenced node (target content item)

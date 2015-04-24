@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2014, OFFIS e.V.
+      Copyright (C) 2003-2015, OFFIS e.V.
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -243,7 +243,7 @@
 
   <xsd:complexType name="Template">
     <xsd:sequence>
-      <xsd:element name="resource" type="dsr:CodeString"/>
+      <xsd:element name="resource" type="dsr:MappingResource"/>
       <xsd:element name="id" type="dsr:CodeString"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -264,6 +264,16 @@
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Complex Types (5th level) -->
+
+  <xsd:complexType name="MappingResource">
+    <xsd:simpleContent>
+      <xsd:extension base="dsr:CodeString">
+        <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
+      </xsd:extension>
+    </xsd:simpleContent>
   </xsd:complexType>
 
   <!-- Groups -->

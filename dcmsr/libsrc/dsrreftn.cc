@@ -235,6 +235,7 @@ OFCondition DSRByReferenceTreeNode::setObservationUID(const OFString & /*observa
 
 OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /*templateIdentifier*/,
                                                               const OFString & /*mappingResource*/,
+                                                              const OFString & /*mappingResourceUID*/,
                                                               const OFBool /*check*/)
 {
     /* invalid: no template identification allowed */
