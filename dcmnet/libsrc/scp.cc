@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2014, OFFIS e.V.
+ *  Copyright (C) 2009-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1625,11 +1625,11 @@ void DcmSCP::setMaxReceivePDULength(const Uint32 maxRecPDU)
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCP::addPresentationContext(const OFString &abstractSyntax,
-                                           const OFList<OFString> xferSyntaxes,
+                                           const OFList<OFString> &xferSyntaxes,
                                            const T_ASC_SC_ROLE role,
                                            const OFString &profile)
 {
-  return m_cfg->addPresentationContext(abstractSyntax,xferSyntaxes,role,profile);
+  return m_cfg->addPresentationContext(abstractSyntax, xferSyntaxes, role, profile);
 }
 
 // ----------------------------------------------------------------------------

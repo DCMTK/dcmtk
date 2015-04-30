@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2014, OFFIS e.V.
+ *  Copyright (C) 2009-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -167,7 +167,7 @@ public:
    *  @return EC_Normal if adding was successful, an error code otherwise
    */
   virtual OFCondition addPresentationContext(const OFString &abstractSyntax,
-                                             const OFList<OFString> xferSyntaxes,
+                                             const OFList<OFString> &xferSyntaxes,
                                              const T_ASC_SC_ROLE role = ASC_SC_ROLE_DEFAULT,
                                              const OFString &profile = "DEFAULT");
 

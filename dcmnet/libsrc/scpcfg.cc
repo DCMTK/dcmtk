@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2014, OFFIS e.V.
+ *  Copyright (C) 2012-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -349,7 +349,7 @@ OFCondition DcmSCPConfig::setAndCheckAssociationProfile(const OFString &profileN
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCPConfig::addPresentationContext(const OFString &abstractSyntax,
-                                                 const OFList<OFString> xferSyntaxes,
+                                                 const OFList<OFString> &xferSyntaxes,
                                                  const T_ASC_SC_ROLE role,
                                                  const OFString &profile)
 {

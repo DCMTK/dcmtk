@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.04.30 (riesmeier)
+
+- Pass OFList parameter by-reference not by-value.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scpcfg.cc
+
 **** Changes from 2015.04.24 (riesmeier)
 
 - Added support for optional Mapping Resource UID:
