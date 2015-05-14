@@ -107,6 +107,13 @@ OFBool DSRDocumentTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
+OFBool DSRDocumentTreeNode::hasTemplateIdentification() const
+{
+    /* mapping resource UID is optional, so do not check it */
+    return !TemplateIdentifier.empty() && !MappingResource.empty();
+}
+
+
 OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream &stream,
                                        const size_t flags) const
 {

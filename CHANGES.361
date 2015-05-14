@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2015.05.14 (riesmeier)
 
+- Added hasTemplateIdentification() method:
+  Added hasTemplateIdentification() helper method to document tree node class.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctn.cc
+
 - Fixed issue with interpolation algorithm:
   Fixed integer overflow issue with bilinear interpolation algorithm (image
   magnification), i.e. if "interpolate" parameter of createScaledImage() is 3.

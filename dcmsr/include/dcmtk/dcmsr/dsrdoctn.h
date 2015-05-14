@@ -122,6 +122,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     virtual OFBool isShort(const size_t flags) const;
 
+    /** check whether template identification is set
+     ** @return OFTrue if set, OFFalse otherwise
+     */
+    virtual OFBool hasTemplateIdentification() const;
+
     /** print content item.
      *  The output of a content item depends on its value type.  This general method prints
      *  only those parts which all derived classes (= value types) do have in common, i.e. the
@@ -403,8 +408,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      ** @param  templateIdentifier  identifier of the template to be set
      *  @param  mappingResource     mapping resource that defines the template
      *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
-     *  @param  check               check 'templateIdentifier' and 'mappingResource' for
-     *                              conformance with VR (CS) and VM (1) if enabled
+     *  @param  check               check 'templateIdentifier', 'mappingResource' and
+     *                              'mappingResourceUID' for conformance with VR (CS,UI) and
+     *                              VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,

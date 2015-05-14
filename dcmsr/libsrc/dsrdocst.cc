@@ -153,12 +153,12 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                 if (flags & PF_printTemplateIdentification)
                 {
                     /* check for template identification */
-                    OFString templateIdentifier;
-                    OFString mappingResource;
-                    OFString mappingResourceUID;
-                    if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
+                    if (node->hasTemplateIdentification())
                     {
-                        if (!templateIdentifier.empty() && !mappingResource.empty())
+                        OFString templateIdentifier;
+                        OFString mappingResource;
+                        OFString mappingResourceUID;
+                        if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
                         {
                             DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                             stream << "  # ";
