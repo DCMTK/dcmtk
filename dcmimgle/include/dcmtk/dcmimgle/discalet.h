@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -228,7 +228,7 @@ class DiScaleTemplate
             else if ((this->Dest_X % this->Src_X == 0) && (this->Dest_Y % this->Src_Y == 0))
                 replicatePixel(src, dest);                                            // replication
             else if ((this->Src_X % this->Dest_X == 0) && (this->Src_Y % this->Dest_Y == 0))
-                suppressPixel(src, dest);                                             // supression
+                suppressPixel(src, dest);                                             // suppression
             else
                 scalePixel(src, dest);                                                // general scaling
         }
@@ -987,7 +987,10 @@ class DiScaleTemplate
                         dOff = (1.0 < dOff) ? 1.0 : dOff;
                         for (y = 0; y < this->Src_Y; ++y)
                         {
-                            *(pCurrTemp) = OFstatic_cast(T, *(pCurrSrc) + (*(pCurrSrc + 1) - *(pCurrSrc)) * dOff);
+                            // use floating points in order to avoid possible integer overflow
+                            const double v1 = OFstatic_cast(double, *(pCurrSrc));
+                            const double v2 = OFstatic_cast(double, *(pCurrSrc + 1));
+                            *(pCurrTemp) = OFstatic_cast(T, v1 + (v2 - v1) * dOff);
                             pCurrSrc += Columns;
                             pCurrTemp += this->Dest_X;
                         }
@@ -1020,7 +1023,10 @@ class DiScaleTemplate
                         dOff = (1.0 < dOff) ? 1.0 : dOff;
                         for (x = this->Dest_X; x != 0; --x)
                         {
-                            *(pD++) = OFstatic_cast(T, *(pCurrTemp) + (*(pCurrTemp + this->Dest_X) - *(pCurrTemp)) * dOff);
+                            // use floating points in order to avoid possible integer overflow
+                            const double v1 = OFstatic_cast(double, *(pCurrTemp));
+                            const double v2 = OFstatic_cast(double, *(pCurrTemp + this->Dest_X));
+                            *(pD++) = OFstatic_cast(T, v1 + (v2 - v1) * dOff);
                             pCurrTemp++;
                         }
                         // don't go beyond the source data
