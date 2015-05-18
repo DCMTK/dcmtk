@@ -53,6 +53,14 @@ DSRDocumentTree::~DSRDocumentTree()
 }
 
 
+DSRDocumentTree &DSRDocumentTree::operator=(DSRDocumentTree tree)
+{
+    /* by-value parameter serves as a temporary */
+    swap(tree);
+    return *this;
+}
+
+
 DSRDocumentTree *DSRDocumentTree::clone() const
 {
     return new DSRDocumentTree(*this);
@@ -414,4 +422,17 @@ void DSRDocumentTree::removeSignatures()
                 node->removeSignatures();
         } while (cursor.iterate());
     }
+}
+
+
+// protected methods
+
+void DSRDocumentTree::swap(DSRDocumentTree &tree)
+{
+    /* call inherited method */
+    DSRDocumentSubTree::swap(tree);
+    /* swap other members */
+    const E_DocumentType docType = DocumentType;
+    DocumentType = tree.DocumentType;
+    tree.DocumentType = docType;
 }

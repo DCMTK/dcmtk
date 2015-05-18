@@ -168,6 +168,14 @@ template<typename T = DSRTreeNode> class DSRTree
      */
     virtual ~DSRTree();
 
+    /** assignment operator.
+     *  Please note that internally the copy constructor is used, so the same comments
+     *  apply.
+     ** @param  tree  tree to be copied
+     ** @return reference to this tree after copying
+     */
+    DSRTree &operator=(DSRTree<T> tree);
+
     /** clear all member variables
      */
     virtual void clear();
@@ -274,6 +282,12 @@ template<typename T = DSRTreeNode> class DSRTree
     DSRTree(const DSRTreeNodeCursor<T> &startCursor,
             size_t stopAfterNodeID);
 
+    /** fast, non-throwing swap function.
+     *  The time complexity of this function is constant.
+     ** @param  tree  tree to swap with
+     */
+    void swap(DSRTree<T> &tree);
+
     /** get pointer to root node
      ** @return pointer to root node, might be NULL (empty tree)
      */
@@ -291,11 +305,6 @@ template<typename T = DSRTreeNode> class DSRTree
 
     /// pointer to the root tree node
     T *RootNode;
-
-
- // --- declaration of assignment operator
-
-    DSRTree &operator=(const DSRTree<T> &);
 };
 
 
@@ -459,6 +468,15 @@ template<typename T>
 DSRTree<T>::~DSRTree()
 {
     clear();
+}
+
+
+template<typename T>
+DSRTree<T> &DSRTree<T>::operator=(DSRTree<T> tree)
+{
+    /* by-value parameter serves as a temporary */
+    swap(tree);
+    return *this;
 }
 
 
@@ -739,6 +757,16 @@ DSRTree<T> *DSRTree<T>::cloneSubTree(const size_t stopAfterNodeID) const
 
 
 // protected methods
+
+template<typename T>
+void DSRTree<T>::swap(DSRTree<T> &tree)
+{
+    /* swap pointer to the root tree node */
+    T *root = RootNode;
+    RootNode = tree.RootNode;
+    tree.RootNode = root;
+}
+
 
 template<typename T>
 T *DSRTree<T>::getRoot() const

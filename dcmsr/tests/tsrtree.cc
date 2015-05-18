@@ -209,6 +209,26 @@ OFTEST(dcmsr_copyTree)
 }
 
 
+OFTEST(dcmsr_assignTree)
+{
+    DSRTree<> tree;
+    const size_t nodeID = tree.getNextNodeID();
+    /* first, create a simple tree of 6 nodes (with a single root node) */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
+    OFCHECK_EQUAL(tree.countNodes(), 6);
+    /* then, assign this tree to a new variable and check the nodes */
+    DSRTree<> newTree = tree;
+    OFCHECK_EQUAL(tree.countNodes(), 6);
+    OFCHECK_EQUAL(newTree.countNodes(), 6);
+}
+
+
 OFTEST(dcmsr_cloneSubTree_1)
 {
     DSRTree<> tree;

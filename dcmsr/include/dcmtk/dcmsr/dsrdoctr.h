@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,6 +63,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     /** destructor
      */
     virtual ~DSRDocumentTree();
+
+    /** assignment operator.
+     *  Please note that internally the copy constructor is used, so the same comments
+     *  apply.
+     ** @param  tree  tree to be copied
+     ** @return reference to this tree after copying
+     */
+    DSRDocumentTree &operator=(DSRDocumentTree tree);
 
     /** clone this tree.
      *  Internally, the copy constructor is used, so the corresponding comments apply.
@@ -220,16 +228,24 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     void removeSignatures();
 
 
+  protected:
+
+    /** fast, non-throwing swap function.
+     *  The time complexity of this function is constant.
+     ** @param  tree  tree to swap with
+     */
+    void swap(DSRDocumentTree &tree);
+
+
   private:
 
     /// document type of the associated SR document
     E_DocumentType DocumentType;
 
 
- // --- declaration of default constructor and assignment operator
+ // --- declaration of default constructor
 
     DSRDocumentTree();
-    DSRDocumentTree &operator=(const DSRDocumentTree &);
 };
 
 

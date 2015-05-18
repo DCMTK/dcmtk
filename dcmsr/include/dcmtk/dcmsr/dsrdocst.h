@@ -72,6 +72,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual ~DSRDocumentSubTree();
 
+    /** assignment operator.
+     *  Please note that internally the copy constructor is used, so the same comments apply.
+     ** @param  tree  subtree to be copied
+     ** @return reference to this subtree after copying
+     */
+    DSRDocumentSubTree &operator=(DSRDocumentSubTree tree);
+
     /** clone this subtree.
      *  Internally, the copy constructor is used, so the corresponding comments apply.
      ** @return copy of this subtree
@@ -351,6 +358,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     DSRDocumentSubTree(const DSRDocumentTreeNodeCursor &startCursor,
                        size_t stopAfterNodeID);
 
+    /** fast, non-throwing swap function.
+     *  The time complexity of this function is constant.
+     ** @param  tree  subtree to swap with
+     */
+    void swap(DSRDocumentSubTree &tree);
+
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node
      *  has to be created with new() - do not use a reference to a local variable.
@@ -420,11 +433,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
     /// current content item.  Introduced to avoid the external use of pointers.
     DSRContentItem CurrentContentItem;
-
-
- // --- declaration of assignment operator
-
-    DSRDocumentSubTree &operator=(const DSRDocumentSubTree &);
 };
 
 

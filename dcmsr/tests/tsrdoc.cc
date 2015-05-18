@@ -67,3 +67,32 @@ OFTEST(dcmsr_changeDocumentType_2)
     OFCHECK(doc.changeDocumentType(DSRTypes::DT_Comprehensive3DSR).good());
     OFCHECK(doc.changeDocumentType(DSRTypes::DT_ComprehensiveSR).good());
 }
+
+
+OFTEST(dcmsr_setDocumentTree)
+{
+    /* first, create an SR document to get an empty SR tree */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    OFCHECK_EQUAL(tree.countNodes(), 5);
+    OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_ComprehensiveSR);
+    /* create another SR tree (with less content items) */
+    DSRDocumentTree newTree(DSRTypes::DT_EnhancedSR);
+    OFCHECK(newTree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container, DSRCodedEntryValue("121111", "DCM", "Summary")).good());
+    OFCHECK(newTree.addChildContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(newTree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRCodedEntryValue("1234", "99_PRV", "NOS")).good());
+    OFCHECK_EQUAL(newTree.countNodes(), 3);
+    OFCHECK_EQUAL(newTree.getDocumentType(), DSRTypes::DT_EnhancedSR);
+    /* and, replace the SR tree of the SR document */
+    OFCHECK(doc.setTree(newTree).good());
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 3);
+    OFCHECK_EQUAL(newTree.countNodes(), 3);
+    OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_EnhancedSR);
+}

@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.05.18 (riesmeier)
+
+- Replace the document tree of an SR document:
+  Added method that allows one to replace the document tree of an SR document.
+  Therefore, introduced an assignment operator to the various tree classes.
+  This is another step towards the enhanced support for DICOM SR templates.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoc.cc
+           dcmsr/tests/tsrtree.cc
+
 **** Changes from 2015.05.14 (riesmeier)
 
 - Added hasTemplateIdentification() method:

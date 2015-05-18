@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -207,6 +207,16 @@ class DCMTK_DCMSR_EXPORT DSRDocument
         return DocumentTree;
     }
 
+    /** set document tree.
+     *  Replace the currently stored document tree with the given one.  Please note that the
+     *  given 'tree' is checked before setting it, i.e. only a valid document tree is accepted.
+     *  However, a new SOP instance is never created.  If needed, this has to be done with
+     *  createNewSOPInstance() in addition to or with createNewDocument() before this method.
+     ** @param  tree  document tree to be set (content will be copied)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTree(const DSRDocumentTree &tree);
+
     /** get specific character set type.
      *  If the type is unknown the original DICOM defined term can be retrieved
      *  with the method getSpecificCharacterSet().  Please note that only the
@@ -231,6 +241,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** set document preliminary flag.
      *  According to the DICOM standard, the concept of "completeness" is independent of the
      *  concept of "preliminary" or "final".  Therefore, this flag can be specified separately.
+     *  @note Not applicable to Key Object Selection Documents.
      ** @param  flag  preliminary flag to be set (use PF_invalid to omit this optional value)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -1134,10 +1145,11 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     OFCondition checkDatasetForReading(DcmItem &dataset,
                                        E_DocumentType &documentType);
 
-    /** update several DICOM attributes.
-     *  (e.g. set the modality attribute, generate a new SOP instance UID if required, set date/time, etc.)
-     ** @param  updateAll  flag indicating whether all DICOM attributes should be updated or only the
-     *                     completion and verification flag. (set DICOM defined terms from enum values)
+    /** update various DICOM attributes.
+     *  (e.g. set the modality and SOP class UID, generate a new Study, Series and SOP instance UID
+     *  if required, set date/time values, etc.)
+     ** @param  updateAll  flag indicating whether all DICOM attributes should be updated or only
+     *                     the IOD-specific ones. (e.g. set DICOM defined terms from enum values)
      */
     void updateAttributes(const OFBool updateAll = OFTrue);
 

@@ -72,6 +72,14 @@ DSRDocumentSubTree::~DSRDocumentSubTree()
 }
 
 
+DSRDocumentSubTree &DSRDocumentSubTree::operator=(DSRDocumentSubTree tree)
+{
+    /* by-value parameter serves as a temporary */
+    swap(tree);
+    return *this;
+}
+
+
 DSRDocumentSubTree *DSRDocumentSubTree::clone() const
 {
     return new DSRDocumentSubTree(*this);
@@ -568,6 +576,14 @@ DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeI
 
 
 // protected methods
+
+void DSRDocumentSubTree::swap(DSRDocumentSubTree &tree)
+{
+    /* call inherited method */
+    DSRTree<DSRDocumentTreeNode>::swap(tree);
+    /* nothing else to do? */
+}
+
 
 size_t DSRDocumentSubTree::addNode(DSRDocumentTreeNode *node,
                                    const E_AddMode addMode)

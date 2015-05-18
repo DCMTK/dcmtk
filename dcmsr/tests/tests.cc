@@ -28,6 +28,7 @@ OFTEST_REGISTER(dcmsr_getPosition);
 OFTEST_REGISTER(dcmsr_countChildNodes);
 OFTEST_REGISTER(dcmsr_treeWithoutRoot);
 OFTEST_REGISTER(dcmsr_copyTree);
+OFTEST_REGISTER(dcmsr_assignTree);
 OFTEST_REGISTER(dcmsr_cloneSubTree_1);
 OFTEST_REGISTER(dcmsr_cloneSubTree_2);
 OFTEST_REGISTER(dcmsr_extractSubTree);
@@ -47,4 +48,5 @@ OFTEST_REGISTER(dcmsr_extractAndInsertDocSubTree_1);
 OFTEST_REGISTER(dcmsr_extractAndInsertDocSubTree_2);
 OFTEST_REGISTER(dcmsr_changeDocumentType_1);
 OFTEST_REGISTER(dcmsr_changeDocumentType_2);
+OFTEST_REGISTER(dcmsr_setDocumentTree);
 OFTEST_MAIN("dcmsr")

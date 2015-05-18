@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1185,7 +1185,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
     {
         /* used for multiple purposes */
         OFString tmpString;
-        /* update DICOM attributes */
+        /* update all DICOM attributes */
         updateAttributes();
 
         // --- XML document structure (start) ---
@@ -1886,6 +1886,21 @@ DSRTypes::E_DocumentType DSRDocument::getDocumentType() const
 }
 
 
+OFCondition DSRDocument::setTree(const DSRDocumentTree &tree)
+{
+    OFCondition result = SR_EC_InvalidDocumentTree;
+    /* make sure that the new tree is valid */
+    if (tree.isValid())
+    {
+        /* replace current tree with given one */
+        DocumentTree = tree;
+        /* update IOD-specific DICOM attributes */
+        updateAttributes(OFFalse /*updateAll*/);
+        result = EC_Normal;
+    }
+    return result;
+}
+
 
 DSRTypes::E_CharacterSet DSRDocument::getSpecificCharacterSetType() const
 {
@@ -2583,8 +2598,14 @@ OFCondition DSRDocument::createNewDocument(const E_DocumentType documentType)
 
 OFCondition DSRDocument::changeDocumentType(const E_DocumentType documentType)
 {
-    /* tbc: do we need further checks for Key Object Selection Documents? */
-    return DocumentTree.changeDocumentType(documentType, OFFalse /*deleteTree*/);
+    /* document type is stored only once (namely in the document tree) */
+    OFCondition result = DocumentTree.changeDocumentType(documentType, OFFalse /*deleteTree*/);
+    if (result.good())
+    {
+        /* update IOD-specific DICOM attributes */
+        updateAttributes(OFFalse /*updateAll*/);
+    }
+    return result;
 }
 
 
@@ -2762,13 +2783,13 @@ OFCondition DSRDocument::finalizeDocument()
 
 void DSRDocument::updateAttributes(const OFBool updateAll)
 {
+    const E_DocumentType documentType = getDocumentType();
+    /* retrieve SOP class UID from internal document type */
+    SOPClassUID.putString(documentTypeToSOPClassUID(documentType));
+    /* put modality string depending on document type */
+    Modality.putString(documentTypeToModality(documentType));
     if (updateAll)
     {
-        /* retrieve SOP class UID from internal document type */
-        SOPClassUID.putString(documentTypeToSOPClassUID(getDocumentType()));
-        /* put modality string depending on document type */
-        Modality.putString(documentTypeToModality(getDocumentType()));
-
         /* create new instance number if required (type 1) */
         if (InstanceNumber.isEmpty())
             InstanceNumber.putString("1");
@@ -2803,8 +2824,18 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         if (ContentTime.isEmpty())
             ContentTime.putString(getStringValueFromElement(InstanceCreationTime));
     }
-    if (getDocumentType() != DT_KeyObjectSelectionDocument)
+    if (documentType == DT_KeyObjectSelectionDocument)
     {
+        /* these flags are not used for Key Object Selection Documents */
+        PreliminaryFlagEnum = PF_invalid;
+        CompletionFlagEnum = CF_invalid;
+        VerificationFlagEnum = VF_invalid;
+        PreliminaryFlag.clear();
+        CompletionFlag.clear();
+        CompletionFlagDescription.clear();
+        VerificationFlag.clear();
+        VerifyingObserver.clear();
+    } else {
         /* set preliminary flag */
         PreliminaryFlag.putString(preliminaryFlagToEnumeratedValue(PreliminaryFlagEnum));
         /* check and adjust completion flag if required */
