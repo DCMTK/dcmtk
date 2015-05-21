@@ -430,8 +430,8 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
 OFCondition DSRDocumentTreeNode::setRelationshipType(const E_RelationshipType relationshipType)
 {
     OFCondition result = EC_Normal;
-    /* check parameter before setting the value */
-    if ((relationshipType != RT_invalid) && (relationshipType != RT_unknown) && (relationshipType != RT_isRoot))
+    /* check parameter before setting the value, "RT_isRoot" is allowed! */
+    if ((relationshipType != RT_invalid) && (relationshipType != RT_unknown))
     {
         /* only "unknown" relationship types can be replaced */
         if (RelationshipType == RT_unknown)
@@ -489,7 +489,7 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
 {
     OFCondition result = SR_EC_InvalidValue;
     /* check for valid value pair */
-    if (checkTemplateIdentification(templateIdentifier, mappingResource, "" /*mappingResourceUID*/))
+    if (checkTemplateIdentification(TemplateIdentifier, MappingResource, "" /*mappingResourceUID*/))
     {
         templateIdentifier = TemplateIdentifier;
         mappingResource = MappingResource;
@@ -505,7 +505,7 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
 {
     OFCondition result = SR_EC_InvalidValue;
     /* check for valid pair/triple */
-    if (checkTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID))
+    if (checkTemplateIdentification(TemplateIdentifier, MappingResource, MappingResourceUID))
     {
         templateIdentifier = TemplateIdentifier;
         mappingResource = MappingResource;

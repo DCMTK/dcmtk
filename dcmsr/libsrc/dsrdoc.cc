@@ -1902,6 +1902,13 @@ OFCondition DSRDocument::setTree(const DSRDocumentTree &tree)
 }
 
 
+OFCondition DSRDocument::setTreeFromRootTemplate(DSRRootTemplate &rootTemplate)
+{
+    /* call the functions doing the real work */
+    return setTree(rootTemplate.getTree());
+}
+
+
 DSRTypes::E_CharacterSet DSRDocument::getSpecificCharacterSetType() const
 {
     return SpecificCharacterSetEnum;

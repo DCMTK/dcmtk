@@ -27,6 +27,7 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrdoctr.h"
+#include "dcmtk/dcmsr/dsrrtpl.h"
 #include "dcmtk/dcmsr/dsrsoprf.h"
 #include "dcmtk/dcmsr/dsrrefin.h"
 #include "dcmtk/dcmsr/dsrcsidl.h"
@@ -216,6 +217,18 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setTree(const DSRDocumentTree &tree);
+
+    /** set document tree from root template.
+     *  Replace the currently stored document tree with the one from the given root template.
+     *  This is just a convenience function, so the additional comments on the above setTree()
+     *  method also apply.
+     ** @param  rootTemplate  template specifying the document tree to be set (content will be
+     *                        copied).  This parameter cannot be "const" because of
+     *                        DSRRootTemplate::getTree(), which is called internally and which
+     *                        modifies the tree.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTreeFromRootTemplate(DSRRootTemplate &rootTemplate);
 
     /** get specific character set type.
      *  If the type is unknown the original DICOM defined term can be retrieved

@@ -123,7 +123,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     virtual OFBool isShort(const size_t flags) const;
 
     /** check whether template identification is set
-     ** @return OFTrue if set, OFFalse otherwise
+     ** @return OFTrue if template identification is set, OFFalse otherwise
      */
     virtual OFBool hasTemplateIdentification() const;
 
@@ -284,9 +284,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  constructor of this class) only works if the current value is DSRTypes::RT_unknown.
      *  This is needed for inserting document subtrees where the top-level nodes might have an
      *  "unknown" relationship to the parent node (see DSRDocumentSubTree::insertSubTree()).
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be DSRTypes::RT_invalid, DSRTypes::RT_unknown or
-     *                            DSRTypes::RT_isRoot.
+     ** @param  relationshipType  type of relationship to the parent tree node.  Should not be
+     *                            DSRTypes::RT_invalid or DSRTypes::RT_unknown.  Be careful
+     *                            with DSRTypes::RT_isRoot, use it for root nodes only.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setRelationshipType(const E_RelationshipType relationshipType);

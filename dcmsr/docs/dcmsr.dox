@@ -14,6 +14,10 @@ The main interface classes are:
 \li \b DSRContentItem
 \li \b DSRCodedEntryValue
 
+Here are some further classes that are useful when implementing SR templates:
+\li \b DSRRootTemplate
+\li \b DSRSubTemplate
+
 \section Tools
 
 This module contains the following command line tools:

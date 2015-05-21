@@ -122,7 +122,7 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnknownDocumentType;
 /// error: the document status is invalid
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidDocument;
 
-/// error: the document tree is invalid (corrupted structure)
+/// error: the document tree is invalid (e.g. corrupted structure)
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidDocumentTree;
 
 /// error: a mandatory attribute is missing
@@ -190,6 +190,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_EmptyDocumentTree;
 
 /// error: the content item is invalid, e.g. the concept name or the stored value
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidContentItem;
+
+/// error: template identification cannot be used, i.e. requirements are not fulfilled
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotUseTemplateIdentification;
 //@}
 
 

@@ -1,6 +1,40 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.05.21 (riesmeier)
+
+- Added initial support for SR templates:
+  Added initial support for SR templates by introducing two general classes for
+  root and non-root templates. These general classes can e.g. be used to derive
+  specific classes for particular templates from DICOM Part 16 (DCMR).
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrctpl.h
+           dcmsr/include/dcmtk/dcmsr/dsrrtpl.h
+           dcmsr/include/dcmtk/dcmsr/dsrstpl.h
+           dcmsr/libsrc/dsrctpl.cc
+           dcmsr/libsrc/dsrrtpl.cc
+           dcmsr/libsrc/dsrstpl.cc
+           dcmsr/tests/tsrtpl.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/docs/dcmsr.dox
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/Makefile.in
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
 **** Changes from 2015.05.18 (riesmeier)
 
 - Replace the document tree of an SR document:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,6 +104,20 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @return OFTrue if subtree is a valid document tree, OFFalse otherwise
      */
     virtual OFBool isValidDocumentTree(const E_RelationshipType defaultRelType = RT_unknown) const;
+
+    /** check whether template identification is set
+     ** @return OFTrue if template identification is set, OFFalse otherwise
+     */
+    virtual OFBool hasTemplateIdentification() const;
+
+    /** check whether template identification is possible at all.
+     *  According to the DICOM standard, it can be used if "the template consists of a single
+     *  CONTAINER with nested content, and it is the outermost invocation of a set of nested
+     *  templates that start with the same CONTAINER."
+     *  With other words, the tree should have a single root node with value type "CONTAINER".
+     ** @return OFTrue if template identification is possible, OFFalse otherwise
+     */
+    virtual OFBool canUseTemplateIdentification() const;
 
     /** print current SR document tree to specified output stream
      ** @param  stream  output stream
@@ -342,6 +356,50 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual DSRDocumentSubTree *cloneSubTree(const size_t stopAfterNodeID = 0) const;
 
+    /** get template identifier and mapping resource from the root node of this tree.  See
+     *  DSRDocumentTreeNode::getTemplateIdentification() for details on template identification.
+     *  Please note that the template identification is only retrieved if there is a single node
+     *  at the root of the tree and its value type is CONTAINER.
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                                  OFString &mappingResource) const;
+
+    /** get template identifier, mapping resource and optional mapping resource UID from the
+     *  root node of this tree.  See DSRDocumentTreeNode::getTemplateIdentification() for
+     *  details on template identification.
+     *  Please note that the template identification is only retrieved if there is a single node
+     *  at the root of the tree and its value type is CONTAINER.
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template (might be empty)
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                                  OFString &mappingResource,
+                                                  OFString &mappingResourceUID) const;
+
+    /** set template identifier and mapping resource to the root node of this tree.
+     *  The identification is valid if the first two values are either present (non-empty) or
+     *  all three values are absent (empty).  See DSRDocumentTreeNode::getTemplateIdentification()
+     *  for details.
+     *  Please note that the template identification is only set if there is a single node at
+     *  the root of the tree and its value type is CONTAINER.
+     ** @param  templateIdentifier  identifier of the template to be set
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
+     *  @param  check               check 'templateIdentifier', 'mappingResource' and
+     *                              'mappingResourceUID' for conformance with VR (CS,UI) and
+     *                              VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
+                                                  const OFString &mappingResource,
+                                                  const OFString &mappingResourceUID = "",
+                                                  const OFBool check = OFTrue);
+
 
   protected:
 
@@ -415,6 +473,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  This function calls 'setReferenceTarget(OFFalse)' for all content items.
      */
     virtual void resetReferenceTargetFlag();
+
+    /** update the tree for subsequent output, e.g.\ for being printed or added to an SR
+     *  document.  By default, this virtual function does nothing but is called automatically
+     *  by the affected output methods and should be overwritten in derived classes.
+     */
+    virtual void updateTreeForOutput();
 
     /** check whether the given subtree complies with the constraints of the given checker
      ** @param  tree     pointer to subtree that should be checked

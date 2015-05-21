@@ -119,6 +119,33 @@ OFBool DSRDocumentSubTree::isValidDocumentTree(const E_RelationshipType defaultR
 }
 
 
+OFBool DSRDocumentSubTree::hasTemplateIdentification() const
+{
+    OFBool result = OFFalse;
+    /* check whether template identification is possible */
+    if (canUseTemplateIdentification())
+    {
+        /* check whether template identification is set */
+        result = getRoot()->hasTemplateIdentification();
+    }
+    return result;
+}
+
+
+OFBool DSRDocumentSubTree::canUseTemplateIdentification() const
+{
+    OFBool result = OFFalse;
+    /* check root node */
+    const DSRDocumentTreeNode *node = getRoot();
+    if (node != NULL)
+    {
+        /* make sure that there is a single root node only, with type "CONTAINER" */
+        result = (node->getValueType() == VT_Container) && !node->hasSiblingNodes();
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                                       const size_t flags)
 {
@@ -128,6 +155,8 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
     {
         /* check and update by-reference relationships (if applicable) */
         checkByReferenceRelationships(CM_updatePositionString);
+        /* update the document tree for output (if needed) */
+        updateTreeForOutput();
         OFString tmpString;
         size_t level = 0;
         const DSRDocumentTreeNode *node = NULL;
@@ -575,6 +604,51 @@ DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeI
 }
 
 
+OFCondition DSRDocumentSubTree::getTemplateIdentification(OFString &templateIdentifier,
+                                                          OFString &mappingResource) const
+{
+    OFCondition result = SR_EC_CannotUseTemplateIdentification;
+    /* check whether template identification is possible */
+    if (canUseTemplateIdentification())
+    {
+        /* get template identification from root CONTAINER */
+        result = getRoot()->getTemplateIdentification(templateIdentifier, mappingResource);
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::getTemplateIdentification(OFString &templateIdentifier,
+                                                          OFString &mappingResource,
+                                                          OFString &mappingResourceUID) const
+{
+    OFCondition result = SR_EC_CannotUseTemplateIdentification;
+    /* check whether template identification is possible */
+    if (canUseTemplateIdentification())
+    {
+        /* get template identification from root CONTAINER */
+        result = getRoot()->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID);
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::setTemplateIdentification(const OFString &templateIdentifier,
+                                                          const OFString &mappingResource,
+                                                          const OFString &mappingResourceUID,
+                                                          const OFBool check)
+{
+    OFCondition result = SR_EC_CannotUseTemplateIdentification;
+    /* check whether template identification is possible */
+    if (canUseTemplateIdentification())
+    {
+        /* mark root CONTAINER with given template identification */
+        result = getRoot()->setTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID, check);
+    }
+    return result;
+}
+
+
 // protected methods
 
 void DSRDocumentSubTree::swap(DSRDocumentSubTree &tree)
@@ -736,6 +810,12 @@ void DSRDocumentSubTree::resetReferenceTargetFlag()
                 node->setReferenceTarget(OFFalse);
         } while (cursor.iterate());
     }
+}
+
+
+void DSRDocumentSubTree::updateTreeForOutput()
+{
+    /* nothing to do for this class, might be overwritten in derived classes */
 }
 
 

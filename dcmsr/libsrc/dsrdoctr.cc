@@ -214,6 +214,8 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
         {
             /* check and update by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_updatePositionString);
+            /* update the document tree for output (if needed) */
+            updateTreeForOutput();
             /* start writing from root node */
             result = node->write(dataset, markedItems);
         }
@@ -235,6 +237,8 @@ OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream &stream,
         {
             /* check by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+            /* update the document tree for output (if needed) */
+            updateTreeForOutput();
             /* start writing from root node */
             result = node->writeXML(stream, flags);
         }
@@ -257,6 +261,8 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
         {
             /* check by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+            /* update the document tree for output (if needed) */
+            updateTreeForOutput();
             size_t annexNumber = 1;
             /* start rendering from root node */
             result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly);
