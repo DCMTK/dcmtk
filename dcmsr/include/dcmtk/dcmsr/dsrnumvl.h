@@ -304,6 +304,25 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
     OFCondition setNumericValue(const OFString &numericValue,
                                 const OFBool check = OFTrue);
 
+    /** set numeric value from dataset.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the current
+     *  value is not replaced and remains unchanged.  If the value is replaced, the optional
+     *  floating point and rational representations are cleared, i.e. they have to be set
+     *  manually if needed.
+     ** @param  dataset  DICOM dataset from which the numeric value should be retrieved
+     *  @param  tagKey   DICOM tag specifying the attribute from which the value should be
+     *                   retrieved.  The search is limited to the top-level of the dataset.
+     *  @param  pos      index of the value in case of multi-valued elements (0..vm-1)
+     *  @param  check    if enabled, check numeric value for validity before setting it.
+     *                   See checkNumericValue() method for details.  An empty value is
+     *                   never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setNumericValue(DcmItem &dataset,
+                                const DcmTagKey &tagKey,
+                                const unsigned long pos = 0,
+                                const OFBool check = OFTrue);
+
     /** set measurement unit.
      *  Before setting the code, it is usually checked.  If the code is invalid the current
      *  code is not replaced and remains unchanged.

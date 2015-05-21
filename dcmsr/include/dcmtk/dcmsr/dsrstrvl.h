@@ -146,11 +146,27 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
      *  current value is not replaced and remains unchanged.  Use the clear() method to empty
      *  the string value (which becomes invalid afterwards).
      ** @param  stringValue  value to be set (various VRs, mandatory)
-     *  @param  check        check 'stringValue' for conformance with VR and VM if enabled.
-     *                       An empty value is never accepted.
+     *  @param  check        if enabled, check value for validity before setting it.  See
+     *                       checkValue() method for details.  An empty value is never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setValue(const OFString &stringValue,
+                         const OFBool check = OFTrue);
+
+    /** set string value from dataset.
+     *  Before setting the string value, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
+     ** @param  dataset  DICOM dataset from which the string value should be retrieved
+     *  @param  tagKey   DICOM tag specifying the attribute from which the value should be
+     *                   retrieved.  The search is limited to the top-level of the dataset.
+     *  @param  pos      index of the value in case of multi-valued elements (0..vm-1)
+     *  @param  check    if enabled, check string value for validity before setting it.  See
+     *                   checkValue() method for details.  An empty value is never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setValue(DcmItem &dataset,
+                         const DcmTagKey &tagKey,
+                         const unsigned long pos = 0,
                          const OFBool check = OFTrue);
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -288,6 +288,23 @@ OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassU
 }
 
 
+OFCondition DSRCompositeReferenceValue::setSOPClassUID(DcmItem &dataset,
+                                                       const DcmTagKey &tagKey,
+                                                       const unsigned long pos,
+                                                       const OFBool check)
+{
+    OFString sopClassUID;
+    /* first, get the element value from the dataset */
+    OFCondition result = dataset.findAndGetOFString(tagKey, sopClassUID, pos, OFFalse /*searchIntoSub*/);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setSOPClassUID(sopClassUID, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID,
                                                           const OFBool check)
 {
@@ -302,6 +319,23 @@ OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopIns
     }
     if (result.good())
         SOPInstanceUID = sopInstanceUID;
+    return result;
+}
+
+
+OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(DcmItem &dataset,
+                                                          const DcmTagKey &tagKey,
+                                                          const unsigned long pos,
+                                                          const OFBool check)
+{
+    OFString sopInstanceUID;
+    /* first, get the element value from the dataset */
+    OFCondition result = dataset.findAndGetOFString(tagKey, sopInstanceUID, pos, OFFalse /*searchIntoSub*/);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setSOPInstanceUID(sopInstanceUID, check);
+    }
     return result;
 }
 

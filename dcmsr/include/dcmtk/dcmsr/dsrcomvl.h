@@ -220,11 +220,27 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *  value is not replaced and remains unchanged.
      ** @param  sopClassUID  SOP class UID to be set
      *  @param  check        if enabled, check 'sopClassUID' for validity before setting it.
-     *                       See checkSOPClassUID() for details.  Empty values are never
+     *                       See checkSOPClassUID() for details.  Am empty value is never
      *                       accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setSOPClassUID(const OFString &sopClassUID,
+                               const OFBool check = OFTrue);
+
+    /** set SOP class UID value from dataset.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the current
+     *  value is not replaced and remains unchanged.
+     ** @param  dataset  DICOM dataset from which the UID value should be retrieved
+     *  @param  tagKey   DICOM tag specifying the attribute from which the value should be
+     *                   retrieved.  The search is limited to the top-level of the dataset.
+     *  @param  pos      index of the value in case of multi-valued elements (0..vm-1)
+     *  @param  check    if enabled, check UID value for validity before setting it.  See
+     *                   checkSOPClassUID() for details.  An empty value is never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setSOPClassUID(DcmItem &dataset,
+                               const DcmTagKey &tagKey,
+                               const unsigned long pos = 0,
                                const OFBool check = OFTrue);
 
     /** set SOP instance UID value.
@@ -232,11 +248,27 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *  value is not replaced and remains unchanged.
      ** @param  sopInstanceUID  SOP instance UID to be set
      *  @param  check           if enabled, check 'sopInstanceUID' for validity before setting
-     *                          it.  See checkSOPInstanceUID() for details.  Empty values are
+     *                          it.  See checkSOPInstanceUID() for details.  An empty value is
      *                          never accepted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setSOPInstanceUID(const OFString &sopInstanceUID,
+                                  const OFBool check = OFTrue);
+
+    /** set SOP instance UID value from dataset.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the current
+     *  value is not replaced and remains unchanged.
+     ** @param  dataset  DICOM dataset from which the UID value should be retrieved
+     *  @param  tagKey   DICOM tag specifying the attribute from which the value should be
+     *                   retrieved.  The search is limited to the top-level of the dataset.
+     *  @param  pos      index of the value in case of multi-valued elements (0..vm-1)
+     *  @param  check    if enabled, check UID value for validity before setting it.  See
+     *                   checkSOPInstanceUID() for details.  An empty value is never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setSOPInstanceUID(DcmItem &dataset,
+                                  const DcmTagKey &tagKey,
+                                  const unsigned long pos = 0,
                                   const OFBool check = OFTrue);
 
 

@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2015.05.21 (riesmeier)
 
+- Added helpers for setting a value from dataset:
+  Added helper methods that allow for setting a string value of an SR content
+  item from a dataset, i.e. by specifying the attribute tag of a data element.
+  This works for the following value types (at least for certain aspects):
+  COMPOSITE, DATE, DATETIME, IMAGE, NUM, PNAME, TEXT, TIME, UIDREF, WAVEFORM.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrstrvl.h
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrstrvl.cc
+
 - Added initial support for SR templates:
   Added initial support for SR templates by introducing two general classes for
   root and non-root templates. These general classes can e.g. be used to derive

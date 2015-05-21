@@ -549,6 +549,23 @@ OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericV
 }
 
 
+OFCondition DSRNumericMeasurementValue::setNumericValue(DcmItem &dataset,
+                                                        const DcmTagKey &tagKey,
+                                                        const unsigned long pos,
+                                                        const OFBool check)
+{
+    OFString numericValue;
+    /* first, get the element value from the dataset */
+    OFCondition result = dataset.findAndGetOFString(tagKey, numericValue, pos, OFFalse /*searchIntoSub*/);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setNumericValue(numericValue, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryValue &measurementUnit,
                                                            const OFBool check)
 {

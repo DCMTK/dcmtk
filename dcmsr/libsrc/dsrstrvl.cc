@@ -163,6 +163,23 @@ OFCondition DSRStringValue::setValue(const OFString &stringValue,
 }
 
 
+OFCondition DSRStringValue::setValue(DcmItem &dataset,
+                                     const DcmTagKey &tagKey,
+                                     const unsigned long pos,
+                                     const OFBool check)
+{
+    OFString stringValue;
+    /* first, get the element value from the dataset */
+    OFCondition result = dataset.findAndGetOFString(tagKey, stringValue, pos, OFFalse /*searchIntoSub*/);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setValue(stringValue, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRStringValue::checkValue(const OFString &stringValue) const
 {
     /* all corresponding DICOM attributes are type 1, i.e. mandatory */
