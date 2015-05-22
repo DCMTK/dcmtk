@@ -288,6 +288,22 @@ OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassU
 }
 
 
+OFCondition DSRCompositeReferenceValue::setSOPClassUID(const DcmElement &delem,
+                                                       const unsigned long pos,
+                                                       const OFBool check)
+{
+    OFString sopClassUID;
+    /* first, get the value from the element (need to cast away "const") */
+    OFCondition result = OFconst_cast(DcmElement &, delem).getOFString(sopClassUID, pos);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setSOPClassUID(sopClassUID, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRCompositeReferenceValue::setSOPClassUID(DcmItem &dataset,
                                                        const DcmTagKey &tagKey,
                                                        const unsigned long pos,
@@ -319,6 +335,22 @@ OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopIns
     }
     if (result.good())
         SOPInstanceUID = sopInstanceUID;
+    return result;
+}
+
+
+OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const DcmElement &delem,
+                                                          const unsigned long pos,
+                                                          const OFBool check)
+{
+    OFString sopInstanceUID;
+    /* first, get the value from the element (need to cast away "const") */
+    OFCondition result = OFconst_cast(DcmElement &, delem).getOFString(sopInstanceUID, pos);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setSOPInstanceUID(sopInstanceUID, check);
+    }
     return result;
 }
 

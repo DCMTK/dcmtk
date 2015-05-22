@@ -549,6 +549,22 @@ OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericV
 }
 
 
+OFCondition DSRNumericMeasurementValue::setNumericValue(const DcmElement &delem,
+                                                        const unsigned long pos,
+                                                        const OFBool check)
+{
+    OFString numericValue;
+    /* first, get the value from the element (need to cast away "const") */
+    OFCondition result = OFconst_cast(DcmElement &, delem).getOFString(numericValue, pos);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setNumericValue(numericValue, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRNumericMeasurementValue::setNumericValue(DcmItem &dataset,
                                                         const DcmTagKey &tagKey,
                                                         const unsigned long pos,

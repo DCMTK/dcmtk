@@ -163,6 +163,22 @@ OFCondition DSRStringValue::setValue(const OFString &stringValue,
 }
 
 
+OFCondition DSRStringValue::setValue(const DcmElement &delem,
+                                     const unsigned long pos,
+                                     const OFBool check)
+{
+    OFString stringValue;
+    /* first, get the value from the element (need to cast away "const") */
+    OFCondition result = OFconst_cast(DcmElement &, delem).getOFString(stringValue, pos);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setValue(stringValue, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRStringValue::setValue(DcmItem &dataset,
                                      const DcmTagKey &tagKey,
                                      const unsigned long pos,

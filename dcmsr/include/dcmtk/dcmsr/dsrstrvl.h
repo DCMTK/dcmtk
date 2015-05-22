@@ -153,6 +153,19 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
     OFCondition setValue(const OFString &stringValue,
                          const OFBool check = OFTrue);
 
+    /** set string value from element.
+     *  Before setting the string value, it is usually checked.  If the value is invalid, the
+     *  current value is not replaced and remains unchanged.
+     ** @param  delem  DICOM element from which the string value should be retrieved
+     *  @param  pos    index of the value in case of multi-valued elements (0..vm-1)
+     *  @param  check  if enabled, check string value for validity before setting it.  See
+     *                 checkValue() method for details.  An empty value is never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setValue(const DcmElement &delem,
+                         const unsigned long pos = 0,
+                         const OFBool check = OFTrue);
+
     /** set string value from dataset.
      *  Before setting the string value, it is usually checked.  If the value is invalid, the
      *  current value is not replaced and remains unchanged.

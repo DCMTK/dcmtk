@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2015.05.22 (riesmeier)
 
+- Added helpers for setting a value from element:
+  Added helper methods that allow for setting a string value of an SR content
+  item from a given data element. This works for the following value types:
+  COMPOSITE, DATE, DATETIME, IMAGE, NUM, PNAME, TEXT, TIME, UIDREF, WAVEFORM.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrstrvl.h
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrstrvl.cc
+
 - Moved various methods to protected section:
   Moved inherited methods that cannot be used for by-reference relationships
   and that always return EC_IllegalCall to the protected section of the class.
