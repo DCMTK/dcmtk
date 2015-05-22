@@ -349,6 +349,19 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
                                                const OFBool check = OFTrue);
 
+    /** set observation date/time from element.
+     *  This is the date and time on which this content item was completed.  Might be empty
+     *  if the date and time do not differ from the content date and time, see DSRDocument.
+     ** @param  delem  DICOM element from which the date/time value should be retrieved
+     *  @param  pos    index of the value in case of multi-valued elements (0..vm-1)
+     *  @param  check  check date/time value for conformance with VR (DT) and VM (1) if
+     *                 enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setObservationDateTime(const DcmElement &delem,
+                                               const unsigned long pos = 0,
+                                               const OFBool check = OFTrue);
+
     /** set observation date/time from dataset.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.

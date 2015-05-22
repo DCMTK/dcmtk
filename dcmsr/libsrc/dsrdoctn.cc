@@ -474,6 +474,22 @@ OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observat
 }
 
 
+OFCondition DSRDocumentTreeNode::setObservationDateTime(const DcmElement &delem,
+                                                        const unsigned long pos,
+                                                        const OFBool check)
+{
+    OFString observationDateTime;
+    /* first, get the value from the element (need to cast away "const") */
+    OFCondition result = OFconst_cast(DcmElement &, delem).getOFString(observationDateTime, pos);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setObservationDateTime(observationDateTime, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentTreeNode::setObservationDateTime(DcmItem &dataset,
                                                         const DcmTagKey &tagKey,
                                                         const unsigned long pos,

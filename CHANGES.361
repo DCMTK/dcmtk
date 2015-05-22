@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2015.05.22 (riesmeier)
 
+- Set observation date/time from element:
+  Added helper method thats allows for setting the observation date/time of an
+  SR content item from a given data element.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrreftn.cc
+
 - Added helpers for setting a value from element:
   Added helper methods that allow for setting a string value of an SR content
   item from a given data element. This works for the following value types:

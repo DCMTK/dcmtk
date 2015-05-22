@@ -254,6 +254,15 @@ OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*ob
 }
 
 
+OFCondition DSRByReferenceTreeNode::setObservationDateTime(const DcmElement & /*delem*/,
+                                                           const unsigned long /*pos*/,
+                                                           const OFBool /*check*/)
+{
+    /* invalid: no observation date/time allowed */
+    return EC_IllegalCall;
+}
+
+
 OFCondition DSRByReferenceTreeNode::setObservationDateTime(DcmItem & /*dataset*/,
                                                            const DcmTagKey & /*tagKey*/,
                                                            const unsigned long /*pos*/,

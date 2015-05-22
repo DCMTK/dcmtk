@@ -224,6 +224,16 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
                                                const OFBool check = OFTrue);
 
+    /** set observation date/time from element
+     ** @param  delem  dummy parameter
+     *  @param  pos    dummy parameter
+     *  @param  check  dummy parameter
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setObservationDateTime(const DcmElement &delem,
+                                               const unsigned long pos = 0,
+                                               const OFBool check = OFTrue);
+
     /** set observation date/time from dataset
      ** @param  dataset  dummy parameter
      *  @param  tagKey   dummy parameter
