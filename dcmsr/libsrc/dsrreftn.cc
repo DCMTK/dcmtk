@@ -118,6 +118,35 @@ OFCondition DSRByReferenceTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
+void DSRByReferenceTreeNode::invalidateReference()
+{
+    ValidReference = OFFalse;
+}
+
+
+OFBool DSRByReferenceTreeNode::updateReference(const size_t referencedNodeID,
+                                               const E_ValueType targetValueType)
+{
+    ReferencedNodeID = referencedNodeID;
+    TargetValueType = targetValueType;
+    /* check whether the given reference is valid */
+    ValidReference = (ReferencedNodeID > 0);
+    return ValidReference;
+}
+
+
+OFBool DSRByReferenceTreeNode::updateReference(const OFString &referencedContentItem)
+{
+
+    ReferencedContentItem = referencedContentItem;
+    /* tbd: check for valid reference could be more strict */
+    ValidReference = checkForValidReference(ReferencedContentItem);
+    return ValidReference;
+}
+
+
+// protected methods
+
 OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
                                                     const size_t /*flags*/)
 {
@@ -225,6 +254,16 @@ OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*ob
 }
 
 
+OFCondition DSRByReferenceTreeNode::setObservationDateTime(DcmItem & /*dataset*/,
+                                                           const DcmTagKey & /*tagKey*/,
+                                                           const unsigned long /*pos*/,
+                                                           const OFBool /*check*/)
+{
+    /* invalid: no observation date/time allowed */
+    return EC_IllegalCall;
+}
+
+
 OFCondition DSRByReferenceTreeNode::setObservationUID(const OFString & /*observationUID*/,
                                                       const OFBool /*check*/)
 {
@@ -240,31 +279,4 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 {
     /* invalid: no template identification allowed */
     return EC_IllegalCall;
-}
-
-
-void DSRByReferenceTreeNode::invalidateReference()
-{
-    ValidReference = OFFalse;
-}
-
-
-OFBool DSRByReferenceTreeNode::updateReference(const size_t referencedNodeID,
-                                               const E_ValueType targetValueType)
-{
-    ReferencedNodeID = referencedNodeID;
-    TargetValueType = targetValueType;
-    /* check whether the given reference is valid */
-    ValidReference = (ReferencedNodeID > 0);
-    return ValidReference;
-}
-
-
-OFBool DSRByReferenceTreeNode::updateReference(const OFString &referencedContentItem)
-{
-
-    ReferencedContentItem = referencedContentItem;
-    /* tbd: check for valid reference could be more strict */
-    ValidReference = checkForValidReference(ReferencedContentItem);
-    return ValidReference;
 }

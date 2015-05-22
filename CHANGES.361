@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2015.05.22 (riesmeier)
 
+- Moved various methods to protected section:
+  Moved inherited methods that cannot be used for by-reference relationships
+  and that always return EC_IllegalCall to the protected section of the class.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/dsrreftn.cc
+
 - Set observation date/time from dataset:
   Added helper method thats allows for setting the observation date/time of an
   SR content item from a dataset (by specifying the tag of the data element).

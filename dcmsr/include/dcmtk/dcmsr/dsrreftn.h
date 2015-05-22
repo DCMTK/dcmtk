@@ -116,45 +116,6 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
                                  const size_t flags) const;
 
-    /** set the concept name
-     ** @param  conceptName  dummy parameter
-     *  @param  check        dummy parameter
-     ** @return always returns EC_IllegalCall, since this content item has no concept name
-     */
-    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName,
-                                       const OFBool check = OFTrue);
-
-    /** set observation date/time
-     ** @param  observationDateTime  dummy parameter
-     *  @param  check                dummy parameter
-     ** @return always returns EC_IllegalCall, since this content item has no observation
-     *          date and time (part of Document Relationship Macro)
-     */
-    virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
-                                               const OFBool check = OFTrue);
-
-    /** set observation unique identifier
-     ** @param  observationUID  dummy parameter
-     *  @param  check           dummy parameter
-     ** @return always returns EC_IllegalCall, since this content item has no observation
-     *          unique identifier (part of Document Relationship Macro)
-     */
-    virtual OFCondition setObservationUID(const OFString &observationUID,
-                                          const OFBool check = OFTrue);
-
-    /** set template identifier and mapping resource
-     ** @param  templateIdentifier  dummy parameter
-     *  @param  mappingResource     dummy parameter
-     *  @param  mappingResourceUID  dummy parameter
-     *  @param  check               dummy parameter
-     ** @return always returns EC_IllegalCall, since this content item has no template
-     *          identification (part of Document Relationship Macro)
-     */
-    virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
-                                                  const OFString &mappingResource,
-                                                  const OFString &mappingResourceUID = "",
-                                                  const OFBool check = OFTrue);
-
     /** get ID of the referenced node (target content item)
      ** @return ID of the referenced node if valid, 0 otherwise
      */
@@ -245,6 +206,58 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
                                               const size_t flags) const;
+
+    /** set the concept name
+     ** @param  conceptName  dummy parameter
+     *  @param  check        dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no concept name
+     */
+    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName,
+                                       const OFBool check = OFTrue);
+
+    /** set observation date/time
+     ** @param  observationDateTime  dummy parameter
+     *  @param  check                dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no observation
+     *          date and time (part of Document Relationship Macro)
+     */
+    virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
+                                               const OFBool check = OFTrue);
+
+    /** set observation date/time from dataset
+     ** @param  dataset  dummy parameter
+     *  @param  tagKey   dummy parameter
+     *  @param  pos      dummy parameter
+     *  @param  check    dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no observation
+     *          date and time (part of Document Relationship Macro)
+     */
+    virtual OFCondition setObservationDateTime(DcmItem &dataset,
+                                               const DcmTagKey &tagKey,
+                                               const unsigned long pos = 0,
+                                               const OFBool check = OFTrue);
+
+    /** set observation unique identifier
+     ** @param  observationUID  dummy parameter
+     *  @param  check           dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no observation
+     *          unique identifier (part of Document Relationship Macro)
+     */
+    virtual OFCondition setObservationUID(const OFString &observationUID,
+                                          const OFBool check = OFTrue);
+
+    /** set template identifier and mapping resource
+     ** @param  templateIdentifier  dummy parameter
+     *  @param  mappingResource     dummy parameter
+     *  @param  mappingResourceUID  dummy parameter
+     *  @param  check               dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no template
+     *          identification (part of Document Relationship Macro)
+     */
+    virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
+                                                  const OFString &mappingResource,
+                                                  const OFString &mappingResourceUID = "",
+                                                  const OFBool check = OFTrue);
 
 
   private:
