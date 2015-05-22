@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.05.22 (riesmeier)
+
+- Set observation date/time from dataset:
+  Added helper method thats allows for setting the observation date/time of an
+  SR content item from a dataset (by specifying the tag of the data element).
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/libsrc/dsrdoctn.cc
+
 **** Changes from 2015.05.21 (riesmeier)
 
 - Added helpers for setting a value from dataset:

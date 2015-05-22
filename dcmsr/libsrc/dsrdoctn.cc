@@ -474,6 +474,23 @@ OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observat
 }
 
 
+OFCondition DSRDocumentTreeNode::setObservationDateTime(DcmItem &dataset,
+                                                        const DcmTagKey &tagKey,
+                                                        const unsigned long pos,
+                                                        const OFBool check)
+{
+    OFString observationDateTime;
+    /* first, get the element value from the dataset */
+    OFCondition result = dataset.findAndGetOFString(tagKey, observationDateTime, pos, OFFalse /*searchIntoSub*/);
+    if (result.good())
+    {
+        /* then, check and set the value */
+        result = setObservationDateTime(observationDateTime, check);
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentTreeNode::setObservationUID(const OFString &observationUID,
                                                    const OFBool check)
 {
