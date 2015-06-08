@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,6 +67,26 @@ DcmTransferSyntaxMap& DcmTransferSyntaxMap::operator=(const DcmTransferSyntaxMap
   return *this;
 }
 
+OFMap<OFString, DcmTransferSyntaxList*>::const_iterator DcmTransferSyntaxMap::begin()
+{
+  return map_.begin();
+}
+
+OFMap<OFString, DcmTransferSyntaxList*>::const_iterator DcmTransferSyntaxMap::end()
+{
+  return map_.end();
+}
+
+const DcmTransferSyntaxList* DcmTransferSyntaxMap::getTSList(const OFString& ts)
+{
+  OFMap<OFString, DcmTransferSyntaxList*>::const_iterator it = map_.begin();
+  if ( it == map_.end() )
+  {
+    return NULL;
+  }
+  return (*it).second;
+}
+
 void DcmTransferSyntaxMap::clear()
 {
   while (map_.size () != 0)
@@ -75,6 +95,12 @@ void DcmTransferSyntaxMap::clear()
     delete (*first).second;
     map_.erase(first);
   }
+}
+
+
+size_t DcmTransferSyntaxMap::size() const
+{
+  return map_.size();
 }
 
 OFCondition DcmTransferSyntaxMap::add(

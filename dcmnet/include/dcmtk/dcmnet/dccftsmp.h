@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,9 +53,30 @@ public:
   /// Copy assignment operator, performs deep copy
   DcmTransferSyntaxMap& operator=(const DcmTransferSyntaxMap& arg);
 
+  /** const iterator pointing to start of transfer syntax map
+   *  @return iterator to start of profile map
+   */
+  OFMap<OFString, DcmTransferSyntaxList*>::const_iterator begin();
+
+  /** const iterator pointing to end of transfer syntax map (behind last entry)
+   *  @return iterator to end of profile map
+   */
+  OFMap<OFString, DcmTransferSyntaxList*>::const_iterator end();
+
+  /** get transfer syntax list denoted by given key
+   *  @param ts the name of the transfer syntax list
+   *  @param the transfer syntax list
+   */
+  const DcmTransferSyntaxList* getTSList(const OFString& ts);
+
   /** Resets DcmTransferSyntaxMap and frees any allocated memory
    */
   void clear();
+
+  /** Returns number of entries in transfer syntax map
+   *  @return the number of entries in transfer syntax map
+   */
+  size_t size() const;
 
   /** add new entry to list within map.
    *  If key is new, new list is created. Otherwise transfer syntax

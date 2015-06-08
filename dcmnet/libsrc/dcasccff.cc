@@ -482,4 +482,5 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
 
   return result;
 }
+
 #undef TO_UCHAR

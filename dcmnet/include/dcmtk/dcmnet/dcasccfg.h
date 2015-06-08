@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2013, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,8 +33,21 @@
 #include "dcmtk/dcmnet/dccfprmp.h" /* for class DcmProfileMap */
 
 
-/** this class maintains a list of association negotiation profiles
- *  that can be addressed by symbolic keys.
+/** This class maintains a list of association negotiation configuration
+ *  profiles. A profile is a combination of the following components:
+ *  A list of presentation contexts, an optional list of SCP/SCU role
+ *  selection items and an optional list of extended negotiation items.
+ *  A presentation context itself consist of an abstract syntax and
+ *  a list of transfer syntaxes, the latter each being separate components.
+ *  Role selection and extended negotation items are atomic (i.e. they do not
+ *  reference other components). All components are identified by a
+ *  unique symbolic name.
+ *  All components are re-usable since they are only referenced from a
+ *  profile by their respective symbolic names. E.g. a list of transfer
+ *  syntaxes can be referenced from various presentation contexts. This
+ *  approach has been taken in order to save memory since, for instance,
+ * in many presentation contexts, the list of supported transfer syntaxes
+ *  will be the same.
  */
 class DCMTK_DCMNET_EXPORT DcmAssociationConfiguration
 {
@@ -156,6 +169,12 @@ public:
    */
   OFBool isKnownProfile(const char *key) const;
 
+  /** returns profile identified by given name
+   *  @param profileName the name of the profile to look for
+   *  @return the profile if existant, otherwise NULL
+   */
+  const DcmProfileEntry* getProfileEntry(const OFString& profileName);
+
   /** checks if the profile is suitable for use by an SCP.
    *  A profile is suitable for use by an SCP if each SOP class in the
    *  list of presentation contexts appears at most once.
@@ -163,6 +182,37 @@ public:
    *  @return true if profile is suitable for use by an SCP, false otherwise
    */
   OFBool isValidSCPProfile(const char *key) const;
+
+  /** find a list of transfer syntaxes that matches the given list and return
+   *  its name. A match is only found if the number of transfer syntaxes is
+   *  the same, each transfer syntax exists in the other list and the order
+   *  is preserved.
+   *  @param tslist the list of transfer syntaxes to look for
+   *  @return the symbolic name of the list found. If nomatch is found,
+   *     an empty string is returned.
+   */
+  OFString findTSKey(const OFList<OFString>& tslist);
+
+  /** dumps all profiles or a selected profile to the given output stream.
+   *  Mainly useful for debugging.
+   *  @param out output stream to be used
+   *  @param profileName if not empty, only the profile defined by the given is
+   *     dumped. Otherwise, all profiles are dumped.
+   */
+  void dumpProfiles(STD_NAMESPACE ostream &out,
+                    const OFString& profileName = "");
+
+protected:
+
+  /** dump a single association profile, mainly interesting for
+   *  debugging purposes.
+   *  @param out output stream to be used
+   *  @param profile profile to dump
+   *  @param profileName name of the profile to dump (used for debug output)
+   */
+  void dumpProfile(STD_NAMESPACE ostream &out,
+                   const DcmProfileEntry* profile,
+                   const OFString& profileName);
 
 private:
 

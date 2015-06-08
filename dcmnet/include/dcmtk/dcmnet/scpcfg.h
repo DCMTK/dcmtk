@@ -268,7 +268,39 @@ public:
    */
   OFBool getProgressNotificationMode() const;
 
+  /** Dump presentation contexts to given output stream, useful for debugging.
+   *  @param out [out] The output stream
+   *  @param profileName [in] The profile to dump. If empty (default), the currently
+   *                     selected profile is dumped.
+   */
+  void dumpPresentationContexts(STD_NAMESPACE ostream &out,
+                                OFString profileName = "");
+
 protected:
+
+  /** Mangles a given string into valid profile name.
+   *  Removes all spaces, and converts lower case to upper case
+   *  characters.
+   *  @param profile [in] The unmangled profile name
+   *  @return The mangled profile name
+   */
+  OFString mangleProfileName(const OFString& profile) const;
+
+  /** Convert number to string
+   *  @param num [in] The integer number to convert
+   *  @return The string representing the given number
+   */
+  OFString numToString(const size_t num) const;
+
+  /** Add given list of transfers syntaxes under given name to SCP's
+   *  association configuration.
+   *  @param tsListName [in] The name of the transfer syntax list
+   *                    to create
+   *  @param ts [in] The list of transfer snytaxes to add
+   *  @return EC_Normal if adding was successful, error otherwise
+   */
+  OFCondition addNewTSList(const OFString& tsListName,
+                           const OFList<OFString>& ts);
 
   /// Association configuration. May be filled from association configuration file or by
   /// adding presentation contexts by calling addPresentationContext() (or both)

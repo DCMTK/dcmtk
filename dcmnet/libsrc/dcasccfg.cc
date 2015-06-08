@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2013, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -152,6 +152,21 @@ OFCondition DcmAssociationConfiguration::addProfile(
 OFBool DcmAssociationConfiguration::isKnownProfile(const char *key) const
 {
   return profiles_.isKnownKey(key);
+}
+
+
+const DcmProfileEntry* DcmAssociationConfiguration::getProfileEntry(const OFString& profileName)
+{
+  OFMap<OFString, DcmProfileEntry*>::const_iterator it =  profiles_.begin();
+  while ( it != profiles_.end() )
+  {
+    if ( (*it).first == profileName )
+    {
+      return (*it).second;
+    }
+    it++;
+  }
+  return NULL;
 }
 
 
@@ -476,7 +491,9 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
         return makeOFCondition(OFM_dcmnet, 1073, OF_error, s.c_str());
       }
 
-      // look up SCP/SCU role for this abstract syntax
+      // look up SCP/SCU role for this abstract syntax in configuration.
+      // default is no role selection, thus, default role applies, i.e.
+      // no role selection item would be sent back
       acceptedRole = ASC_SC_ROLE_DEFAULT;
       if (roleSelectionList)
       {
@@ -488,7 +505,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
         {
           if ((*rsfirst).matches(uid))
           {
-            // found abstract syntax, set role accordingly
+            // found explicit role for this abstract syntax in configuration, set role accordingly
             acceptedRole = (*rsfirst).getRole();
             break; /* out of while loop */
           }
@@ -570,4 +587,192 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
   }
 
   return result;
+}
+
+
+void DcmAssociationConfiguration::dumpProfiles(
+    STD_NAMESPACE ostream &out,
+    const OFString& profileName)
+{
+  const DcmProfileEntry* profile = NULL;
+  // dump single profile if desired
+  if ( !profileName.empty() )
+  {
+    profile = profiles_.getProfile(profileName);
+    if (profile == NULL)
+    {
+      out << "No such profile: " << profileName << OFendl;
+      return;
+    }
+    else
+    {
+      dumpProfile(out, profile, profileName);
+    }
+  }
+  else
+  {
+    // no profile given: dump all profiles
+    OFMap<OFString, DcmProfileEntry*>::const_iterator it = profiles_.begin();
+    OFMap<OFString, DcmProfileEntry*>::const_iterator end = profiles_.end();
+    if ( it == end )
+    {
+      out << "No profiles defined" << OFendl;
+      return;
+    }
+    while ( it != end )
+    {
+      dumpProfile(out, (*it).second, profileName);
+      it++;
+    }
+  }
+  return;
+}
+
+
+void DcmAssociationConfiguration::dumpProfile(
+  STD_NAMESPACE ostream &out,
+  const DcmProfileEntry* profile,
+  const OFString& profileName)
+{
+  if ( profile == NULL )
+  {
+    out << "No such profile (NULL)" << OFendl;
+    return;
+  }
+  // print header for this profile
+  out << "-----------------------------------------------------------" << OFendl;
+  out << "Dumping Profile: " << profileName << OFendl;
+
+  OFString presContext = profile->getPresentationContextKey();
+  if ( presContext.empty() )
+  {
+    out << "Presentation context list name empty, no presentation contexts configured" << OFendl;
+  }
+  else
+  {
+    // print all presentation contexts
+    const DcmPresentationContextList* pclist = contexts_.getPresentationContextList(presContext);
+    if ( pclist != NULL )
+    {
+      out << "Dumping presentation context list " << presContext << ": " << OFendl;
+      size_t count = 1;
+      // for each presentation context, list all of its configured transfer syntaxes
+      OFListConstIterator(DcmPresentationContextItem) pc = pclist->begin();
+      while ( pc != pclist->end() )
+      {
+        OFString ts = (*pc).getTransferSyntaxKey();
+        const DcmTransferSyntaxList *tsList = NULL;
+        if (!ts.empty())
+        {
+          tsList = xferSyntaxes_.getTransferSyntaxList(ts.c_str());
+        }
+        out << "Presentation Context #" << count << ", abstract syntax: " << pc->getAbstractSyntax() << OFendl;
+        out << "Dumping Transfer Syntaxes list " << ts << OFendl;
+        if ( ts.empty() || (tsList == NULL) || (tsList->empty()))
+        {
+          out << "None defined" << OFendl;
+        }
+        else
+        {
+          OFListConstIterator(DcmUIDHandler) uid = tsList->begin();
+          size_t tsnum = 1;
+          while ( uid != tsList->end() )
+          {
+            out << "  Transfer Syntax #" << tsnum << ": " << (uid)->c_str() << OFendl;
+            uid++;
+          }
+        }
+        pc++;
+        count++;
+      }
+    }
+    else
+    {
+       out << "No such presentation context list with that name: " << presContext << OFendl;
+    }
+  }
+  // dump extended negotiation items
+  const char * ext = profile->getExtendedNegotiationKey();
+  if ( ext )
+  {
+    out << "Extended negotiation " << ext << " configured (not dumped)" << OFendl;
+  }
+  else
+  {
+    out << "No extended negotiation configured" << OFendl;
+  }
+  // dump role selection items
+  const char* role = profile->getRoleSelectionKey();
+  if ( role )
+  {
+     out << "Dumping Role selection items " << role << OFendl;
+     const DcmRoleSelectionList* roleList = roleselection_.getRoleSelectionList(role);
+     if ( roleList )
+     {
+       OFListConstIterator(DcmRoleSelectionItem) item = roleList->begin();
+       size_t count = 1;
+       while ( item != roleList->end() )
+       {
+         out << "  Item #" << count << ": Abstract syntax " << (*item).getAbstractSyntax().str() << ", role " << ASC_role2String((*item).getRole()) << OFendl;
+         item++; count++;
+       }
+     }
+     else
+     {
+       out << "Error: Role list is configured but empty" << OFendl;
+     }
+  }
+  else
+  {
+    out << "No role selection items configured" << OFendl;
+  }
+  // print footer for this profile
+  out << "-----------------------------------------------------------" << OFendl;
+}
+
+OFString DcmAssociationConfiguration::findTSKey(
+  const OFList<OFString>& tslist)
+{
+  if ( tslist.empty() )
+    return "";
+
+  // loop over all transfer syntax lists configured
+  OFMap<OFString, DcmTransferSyntaxList*>:: iterator configIT = xferSyntaxes_.begin();
+  while (configIT !=  xferSyntaxes_.end())
+  {
+    // loop over transfer syntaxes in one of the configured lists
+    // lists must have at least the same size, otherwise this is not a match
+    if ( (*configIT).second->size() == tslist.size())
+    {
+      OFListIterator(DcmUIDHandler) configTS = (*configIT).second->begin(); // single configured ts
+      OFListIterator(OFString) inputTS = tslist.begin(); // single input ts
+      OFBool isMatch = OFTrue;
+      // now compare each configured ts in list with each input ts pairwise.
+      // this works since size is the same and order is significant
+      while (configTS !=  (*configIT).second->end())
+      {
+        // as long as we ts match, continue
+        if ( (*configTS).str() == *inputTS )
+        {
+          configTS++;
+          inputTS++;
+        }
+        else
+        {
+          isMatch = OFFalse;
+          break;
+        }
+      }
+      // if we found a match, return the ts key of the matching list
+      if ( isMatch )
+      {
+        return (*configIT).first;
+      }
+    } // else ts list sizes differ -> no match
+    // try next configured ts list
+    configIT++;
+  }
+
+  // no matching ts list found, return empty key
+  return "";
 }

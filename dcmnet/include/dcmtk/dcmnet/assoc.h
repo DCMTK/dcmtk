@@ -635,5 +635,12 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD
 DCMTK_DCMNET_EXPORT void
 ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream);
 
+/** Converts given ASC role to string (e.g. for printing)
+ *  @param  role The role to vconvert
+    @return The role as a string
+ */
+DCMTK_DCMNET_EXPORT const char*
+ASC_role2String(T_ASC_SC_ROLE role);
+
 
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -582,8 +582,8 @@ ascRole2dulRole(T_ASC_SC_ROLE role)
     return dr;
 }
 
-static const char*
-ascRole2String(T_ASC_SC_ROLE role)
+const char*
+ASC_role2String(T_ASC_SC_ROLE role)
 {
     const char* s = NULL;
     switch (role) {
@@ -873,8 +873,8 @@ ASC_acceptPresentationContext(
             {
                 proposedContext->result = ASC_P_NOREASON;
                 DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, proposed ("
-                    << ascRole2String(dulRole2ascRole(proposedContext->proposedSCRole))
-                    << ") and accepted role (" << ascRole2String(acceptedRole) << ") are incompatible");
+                    << ASC_role2String(dulRole2ascRole(proposedContext->proposedSCRole))
+                    << ") and accepted role (" << ASC_role2String(acceptedRole) << ") are incompatible");
                 return ASC_SCPSCUROLESELECTIONFAILED;
             }
         }
@@ -1460,11 +1460,11 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
     }
 
     outstream << "    Proposed SCP/SCU Role: "
-        << ascRole2String(p->proposedRole) << OFendl;
+        << ASC_role2String(p->proposedRole) << OFendl;
 
     if (p->resultReason != ASC_P_NOTYETNEGOTIATED) {
         outstream << "    Accepted SCP/SCU Role: "
-            << ascRole2String(p->acceptedRole) << OFendl;
+            << ASC_role2String(p->acceptedRole) << OFendl;
     }
 
     if (p->resultReason == ASC_P_ACCEPTANCE) {

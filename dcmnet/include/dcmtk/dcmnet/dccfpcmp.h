@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,6 +128,22 @@ public:
 
   /// Copy assignment operator, creates deep copy
   DcmPresentationContextMap& operator=(const DcmPresentationContextMap& arg);
+
+  /** const iterator pointing to start of presentation context map
+   *  @return iterator to start of presentation context map
+   */
+  OFMap<OFString, DcmPresentationContextList*>::const_iterator begin();
+
+  /** const iterator pointing to end of presentation context map (behind last entry)
+   *  @return iterator to end of presentation context map
+   */
+  OFMap<OFString, DcmPresentationContextList*>::const_iterator end();
+
+  /** get list of presentation contexts given the corresponding symbolic name
+   *  @param pcName the symbolic name of the pc list
+   *  @return the requested presentation context list (or NULL, if not existing)
+   */
+  const DcmPresentationContextList* getPresentationContextList(const OFString& pcName);
 
   /** add new entry to list within map.
    *  If key is new, new list is created. Otherwise value

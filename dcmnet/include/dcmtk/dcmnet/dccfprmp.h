@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -107,11 +107,27 @@ public:
   /// destructor
   ~DcmProfileMap();
 
-  /// Copy constructor, creates deep copy
+  /// copy constructor, creates deep copy
   DcmProfileMap(const DcmProfileMap& arg);
 
-  /// Copy constructor, creates deep copy
+  /// copy constructor, creates deep copy
   DcmProfileMap& operator=(const DcmProfileMap& arg);
+
+  /** const iterator pointing to start of profile map
+   *  @return iterator to start of profile map
+   */
+  OFMap<OFString, DcmProfileEntry*>::const_iterator begin();
+
+  /** const iterator pointing to end of profile map (behind last profile entry)
+   *  @return iterator to end of profile map
+   */
+  OFMap<OFString, DcmProfileEntry*>::const_iterator end();
+
+  /** return profile entry from profile map by its name
+   *  @param name The name of the profile, empty if unknown
+   *  @return the profile
+   */
+  const DcmProfileEntry* getProfile(const OFString& name);
 
   /** Resets DcmProfileMap and frees any allocated memory
    */

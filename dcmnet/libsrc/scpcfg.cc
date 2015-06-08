@@ -346,38 +346,74 @@ OFCondition DcmSCPConfig::setAndCheckAssociationProfile(const OFString &profileN
   return result;
 }
 
-// ----------------------------------------------------------------------------
 
 OFCondition DcmSCPConfig::addPresentationContext(const OFString &abstractSyntax,
                                                  const OFList<OFString> &xferSyntaxes,
                                                  const T_ASC_SC_ROLE role,
                                                  const OFString &profile)
 {
-  if (profile.empty())
+  const OFString profileName = mangleProfileName(profile);
+  if (profileName.empty() || xferSyntaxes.empty() || (role == ASC_SC_ROLE_NONE) || abstractSyntax.empty())
     return EC_IllegalParameter;
-
-  const char *DCMSCP_TS_KEY = "DCMSCP_GEN_TS_KEY";
-  const char *DCMSCP_PC_KEY = "DCMSCP_GEN_PC_KEY";
-  const char *DCMSCP_RO_KEY = "DCMSCP_GEN_RO_KEY";
-  OFListConstIterator(OFString) it = xferSyntaxes.begin();
-  OFListConstIterator(OFString) endOfList = xferSyntaxes.end();
   OFCondition result;
-  // the association configuration needs key names for transfer syntaxes,
-  // presentation contexts and roles. Use predefined key names.
-  while ((it != endOfList) && result.good())
+
+  // check whether we already have a matching ts list and otherwise create one
+  OFString DCMSCP_TS_KEY = m_assocConfig.findTSKey(xferSyntaxes);
+  if ( DCMSCP_TS_KEY.empty() )
   {
-    result = m_assocConfig.addTransferSyntax(DCMSCP_TS_KEY, (*it).c_str());
-    it++;
+    // use counter in order to create unique configuration keys if required.
+    // increment counter in all cases since we could have produced a broken
+    // ts list that we do not want use in another call to this function.
+    static size_t count = 0;
+    DCMSCP_TS_KEY += "TSKEY_";
+    DCMSCP_TS_KEY += numToString(count);
+    result = addNewTSList(DCMSCP_TS_KEY, xferSyntaxes);
+    count++;
   }
-  if (result.good())
+
+  // create role key and amend configuration (if required)
+  OFString DCMSCP_RO_KEY;
+  if ( role != ASC_SC_ROLE_DEFAULT )
   {
-    result = m_assocConfig.addPresentationContext(DCMSCP_PC_KEY, abstractSyntax.c_str(), DCMSCP_TS_KEY);
+    DCMSCP_RO_KEY = profileName;
+    DCMSCP_RO_KEY += "_ROLEKEY";
+    result = m_assocConfig.addRole(DCMSCP_RO_KEY.c_str(), abstractSyntax.c_str(), role);
   }
-  if (result.good())
+
+  // create new profile if required and add presentation context as just defined.
+  // we always use the same presentation context list.
+  OFString DCMSCP_PC_KEY = profileName; DCMSCP_PC_KEY += "_PCKEY";
+  const DcmProfileEntry* pEntry = NULL;
+  if ( result.good() )
   {
-    result = m_assocConfig.addRole(DCMSCP_RO_KEY, abstractSyntax.c_str(), role);
+    pEntry = m_assocConfig.getProfileEntry(profileName);
+    if ( pEntry == NULL)
+    {
+      // finally add new presentation context to list and profile to configuration
+      if ( result.good() ) result = m_assocConfig.addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
+      if ( result.good() ) result = m_assocConfig.addProfile(profileName.c_str(), DCMSCP_PC_KEY.c_str(), DCMSCP_RO_KEY.empty() ? NULL : DCMSCP_RO_KEY.c_str());
+    }
+    else
+    {
+      // finally, add presentation context to existing profile
+      result = m_assocConfig.addPresentationContext(pEntry->getPresentationContextKey(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
+    }
   }
-  /* perform name mangling for config file key */
+  return result;
+}
+
+
+void DcmSCPConfig::dumpPresentationContexts(STD_NAMESPACE ostream &out,
+                                            OFString profileName)
+{
+  if ( profileName.empty() ) profileName = m_assocCfgProfileName;
+  m_assocConfig.dumpProfiles(out, profileName);
+}
+
+
+OFString DcmSCPConfig::mangleProfileName(const OFString& profile) const
+{
+  /* perform name mangling for config profile key */
   const unsigned char *c = OFreinterpret_cast(const unsigned char *, profile.c_str());
   OFString mangledName;
   while (*c)
@@ -385,10 +421,35 @@ OFCondition DcmSCPConfig::addPresentationContext(const OFString &abstractSyntax,
     if (! isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
     ++c;
   }
-  if (result.good() && !m_assocConfig.isKnownProfile(mangledName.c_str()))
-  {
-    result = m_assocConfig.addProfile(mangledName.c_str(), DCMSCP_PC_KEY, DCMSCP_RO_KEY);
-  }
+  return mangledName;
+}
 
+OFString DcmSCPConfig::numToString(const size_t num) const
+{
+  OFString result;
+  OFStringStream stream;
+  stream << num;
+  stream << OFStringStream_ends;
+  OFSTRINGSTREAM_GETSTR(stream, buffStr)
+  result = buffStr;
+  OFSTRINGSTREAM_FREESTR(buffStr)
+  OFStringStream_ends;
+  return result;
+}
+
+OFCondition DcmSCPConfig::addNewTSList(
+  const OFString& tsListName,
+  const OFList<OFString>& ts)
+{
+  // add ts to new ts list
+  OFCondition result;
+  OFListConstIterator(OFString) it = ts.begin();
+  OFListConstIterator(OFString) endOfList = ts.end();
+  while ((it != endOfList) && result.good())
+  {
+    result = m_assocConfig.addTransferSyntax(tsListName.c_str(), (*it).c_str());
+    if ( result.bad() ) return result;
+    it++;
+  }
   return result;
 }

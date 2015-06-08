@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -114,6 +114,26 @@ DcmProfileMap& DcmProfileMap::operator=(const DcmProfileMap& arg)
     }
   }
   return *this;
+}
+
+OFMap<OFString, DcmProfileEntry*>::const_iterator DcmProfileMap::begin()
+{
+  return map_.begin();
+}
+
+OFMap<OFString, DcmProfileEntry*>::const_iterator DcmProfileMap::end()
+{
+  return map_.end();
+}
+
+const DcmProfileEntry* DcmProfileMap::getProfile(const OFString& name)
+{
+  OFMap<OFString,DcmProfileEntry*>::const_iterator it = map_.find(name);
+  if ( it != map_.end() )
+  {
+    return (*it).second;
+  }
+  return NULL;
 }
 
 void DcmProfileMap::clear()
