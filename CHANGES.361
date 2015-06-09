@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.06.09 (riesmeier)
+
+- Avoid using "check" parameter of SR code class:
+  Do not use the "check" parameter from the constructor of DSRCodedEntryValue
+  (explicitly) but rely on the default value.
+  This is because the order of parameters will change in a subsequent commit.
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 2015.05.22 (riesmeier)
 
 - Set observation date/time from element:

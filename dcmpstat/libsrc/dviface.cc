@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2013, OFFIS e.V.
+ *  Copyright (C) 1998-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -4119,7 +4119,7 @@ OFCondition DVInterface::verifyAndSignStructuredReport(const char *userID, const
     OFString userOrg(getUserOrganization(userID));
     OFString userCV, userCSD, userCSV, userCM;
     DSRCodedEntryValue userCode(getUserCodeValue(userID, userCV), getUserCodingSchemeDesignator(userID, userCSD),
-                                getUserCodingSchemeVersion(userID, userCSV), getUserCodeMeaning(userID, userCM), OFTrue /*check*/);
+                                getUserCodingSchemeVersion(userID, userCSV), getUserCodeMeaning(userID, userCM));
     /* verify document */
     if (pReport->verifyDocument(userName, userCode, userOrg) == EC_Normal)
     {
