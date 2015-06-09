@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2015.06.09 (riesmeier)
 
+- Fixed source code and/or comment formatting.
+  Affects: dcmdata/libsrc/dcvrda.cc
+           dcmsr/tests/tsrtpl.cc
+
 - Introduced new error code "Unknow VR":
   Introduced new error code for "Unknow VR: Tag not found in data dictionary"
   in order to avoid getting a generic "Illegal Call" when an old version of the

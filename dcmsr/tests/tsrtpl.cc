@@ -29,7 +29,7 @@
 #include "dcmtk/dcmsr/dsrstpl.h"
 
 
-/* minimal test class for root templates (Basic Diagnostic Imaging Report)*/
+/* minimal test class for root templates (Basic Diagnostic Imaging Report) */
 class SRTestTemplate2000
   : public DSRRootTemplate
 {

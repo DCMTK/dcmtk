@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -184,7 +184,7 @@ OFCondition DcmDate::getCurrentDate(OFString &dicomDate)
 
 
 OFCondition DcmDate::getDicomDateFromOFDate(const OFDate &dateValue,
-	                                    OFString &dicomDate)
+                                            OFString &dicomDate)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* convert OFDate value to DICOM DA format */
