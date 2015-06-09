@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,31 +74,31 @@ const unsigned short OFM_dcmenc   = 28;
  *  defined in module ofstd.
  */
 //@{
-/// invalid tag
+/// Invalid tag
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidTag;
-/// tag not found
+/// Tag not found
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_TagNotFound;
-/// invalid VR
+/// Invalid VR
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidVR;
-/// invalid stream
+/// Invalid stream
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidStream;
-/// end of stream
+/// End of stream
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_EndOfStream;
-/// corrupted data
+/// Corrupted data
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CorruptedData;
-/// illegal call, perhaps wrong parameters
+/// Illegal call, perhaps wrong parameters
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_IllegalCall;
-/// sequence end
+/// Sequence end
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SequEnd;
-/// doubled tag
+/// Doubled tag
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_DoubledTag;
 /// I/O suspension or premature end of stream
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_StreamNotifyClient;
-/// stream mode (R/W, random/sequence) is wrong
+/// Stream mode (R/W, random/sequence) is wrong
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_WrongStreamMode;
-/// item end
+/// Item end
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemEnd;
-/// compressed/uncompressed pixel representation not found
+/// Compressed/uncompressed pixel representation not found
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_RepresentationNotFound;
 /// Pixel representation cannot be changed to requested transfer syntax
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotChangeRepresentation;
@@ -138,6 +138,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemDelimitationItemMissin
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PrematureSequDelimitationItem;
 /// Invalid DICOMDIR, e.g. corrupted data structures
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidDICOMDIR;
+/// Unknown VR, e.g. tag not found in data dictionary
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownVR;
 //@}
 
 // status code constants

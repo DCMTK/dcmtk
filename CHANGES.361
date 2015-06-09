@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2015.06.09 (riesmeier)
 
+- Introduced new error code "Unknow VR":
+  Introduced new error code for "Unknow VR: Tag not found in data dictionary"
+  in order to avoid getting a generic "Illegal Call" when an old version of the
+  data dictionary is used that does not yet contain the requested attribute tag
+  passed to one of DcmItem's putAndInsertXXX() methods or insertEmptyElement().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcitem.cc
+
 - Avoid using "check" parameter of SR code class:
   Do not use the "check" parameter from the constructor of DSRCodedEntryValue
   (explicitly) but rely on the default value.

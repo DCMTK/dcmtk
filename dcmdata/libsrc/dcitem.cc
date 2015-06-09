@@ -3363,6 +3363,10 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3443,6 +3447,10 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3486,6 +3494,10 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
             } else
                 elem = new DcmPolymorphOBOW(tag);
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3523,6 +3535,10 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
         case EVR_xs:
             /* special handling */
             elem = new DcmUnsignedShort(DcmTag(tag, EVR_US));
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
             break;
         default:
             status = EC_IllegalCall;
@@ -3575,6 +3591,10 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
             /* special handling */
             elem = new DcmUnsignedShort(DcmTag(tag, EVR_US));
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3612,6 +3632,10 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
         case EVR_xs:
             /* special handling */
             elem = new DcmSignedShort(DcmTag(tag, EVR_SS));
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
             break;
         default:
             status = EC_IllegalCall;
@@ -3651,6 +3675,10 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
             /* special handling */
             elem = new DcmSignedShort(DcmTag(tag, EVR_SS));
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3676,24 +3704,34 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
-    if (tag.getEVR() == EVR_UL)
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmUnsignedLong(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putUint32(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_UL:
+            elem = new DcmUnsignedLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint32(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -3703,24 +3741,34 @@ OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
-    if (tag.getEVR() == EVR_SL)
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmSignedLong(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putSint32(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_SL:
+            elem = new DcmSignedLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putSint32(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -3740,6 +3788,10 @@ OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
             break;
         case EVR_OF:
             elem = new DcmOtherFloat(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
             break;
         default:
             status = EC_IllegalCall;
@@ -3777,6 +3829,10 @@ OFCondition DcmItem::putAndInsertFloat32Array(const DcmTag& tag,
         case EVR_OF:
             elem = new DcmOtherFloat(tag);
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3812,6 +3868,10 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
             break;
         case EVR_OD:
             elem = new DcmOtherDouble(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
             break;
         default:
             status = EC_IllegalCall;
@@ -3849,6 +3909,10 @@ OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag& tag,
         case EVR_OD:
             elem = new DcmOtherDouble(tag);
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3874,24 +3938,34 @@ OFCondition DcmItem::putAndInsertTagKey(const DcmTag& tag,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
-    if (tag.getEVR() == EVR_AT)
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmAttributeTag(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putTagVal(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_AT:
+            elem = new DcmAttributeTag(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putTagVal(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -3991,6 +4065,10 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
             break;
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
             break;
         default:
             status = EC_IllegalCall;
