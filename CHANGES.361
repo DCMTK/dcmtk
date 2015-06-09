@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2015.06.09 (riesmeier)
 
+- Do not check invalid UID values for IMAGE node:
+  Disable check of invalid UID values ("0") for IMAGE node in key image note
+  (ki) and simple image report (si) DICOM SR sample document.
+  Affects: dcmsr/tests/mkreport.cc
+
 - Fixed source code and/or comment formatting.
   Affects: dcmdata/libsrc/dcvrda.cc
            dcmsr/tests/tsrtpl.cc

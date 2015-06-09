@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -233,7 +233,7 @@ static void generate_ki(DSRDocument *doc,
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", OFFIS_CODING_SCHEME_DESIGNATOR, "Image Reference"));
-    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0"));
+    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0", OFFalse /*check*/), OFFalse /*check*/);
 }
 
 
@@ -277,13 +277,13 @@ static void generate_si(DSRDocument *doc,
 
     doc->getTree().addContentItem(DSRTypes::RT_inferredFrom, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", OFFIS_CODING_SCHEME_DESIGNATOR, "Image Reference"));
-    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0"));
+    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0", OFFalse /*check*/), OFFalse /*check*/);
 
     doc->getTree().goUp();
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", OFFIS_CODING_SCHEME_DESIGNATOR, "Image Reference"));
-    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0"));
+    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0", OFFalse /*check*/), OFFalse /*check*/);
 }
 
 
