@@ -25,7 +25,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
 	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
-tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrtpl.o
+tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrtpl.o tsrcodvl.o
 objs = mkreport.o $(tstobjs)
 progs = mkreport tests
 
@@ -40,10 +40,10 @@ tests: $(tstobjs)
 
 
 check: tests
-	./tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
 install: all
 

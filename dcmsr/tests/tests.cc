@@ -52,4 +52,7 @@ OFTEST_REGISTER(dcmsr_setDocumentTree);
 OFTEST_REGISTER(dcmsr_rootTemplate);
 OFTEST_REGISTER(dcmsr_subTemplate_1);
 OFTEST_REGISTER(dcmsr_subTemplate_2);
+OFTEST_REGISTER(dcmsr_setCodeValueType);
+OFTEST_REGISTER(dcmsr_determineCodeValueType);
+OFTEST_REGISTER(dcmsr_writeCodeSequence);
 OFTEST_MAIN("dcmsr")

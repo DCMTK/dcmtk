@@ -3,6 +3,24 @@ Changes between releases are documented here.
 
 **** Changes from 2015.06.09 (riesmeier)
 
+- Added support for long code values (CP-1031):
+  Added initial support for long code values according to CP-1031. By default,
+  the type of a code value (short, long or URN) is determined automatically,
+  e.g. when setting the value of a DSRCodedEntryValue instance. However, the
+  type can also be specified manually. Please note that for some methods, the
+  position of the optional "check" parameter moved after the new "codeValueType"
+  parameter. Support for the optional Equivalent Code Sequence (0008,0121) is
+  still missing.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Added:   dcmsr/tests/tsrcodvl.cc
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/Makefile.in
+           dcmsr/tests/tests.cc
+
 - Do not check invalid UID values for IMAGE node:
   Disable check of invalid UID values ("0") for IMAGE node in key image note
   (ki) and simple image report (si) DICOM SR sample document.

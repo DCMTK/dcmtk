@@ -721,6 +721,20 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         CS_last = CS_UTF8
     };
 
+    /** Code value type
+     */
+    enum E_CodeValueType
+    {
+        /// determine code value type automatically
+        CVT_auto,
+        /// short code value (VR=SH)
+        CVT_Short,
+        /// long code value (VR=UC)
+        CVT_Long,
+        /// URN code value (VR=UR)
+        CVT_URN
+    };
+
     /** Add node mode
      */
     enum E_AddMode
