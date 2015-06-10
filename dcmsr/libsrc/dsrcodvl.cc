@@ -16,7 +16,7 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRCodedEntryValue
+ *    classes: DSRBasicCodedEntry, DSRCodedEntryValue
  *
  */
 
@@ -27,6 +27,37 @@
 #include "dcmtk/dcmsr/dsrcodvl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+
+// implementation of class DSRBasicCodedEntry
+
+DSRBasicCodedEntry::DSRBasicCodedEntry(const OFString &codeValue,
+                                       const OFString &codingSchemeDesignator,
+                                       const OFString &codeMeaning,
+                                       const DSRTypes::E_CodeValueType codeValueType)
+  : CodeValueType(codeValueType),
+    CodeValue(codeValue),
+    CodingSchemeDesignator(codingSchemeDesignator),
+    CodingSchemeVersion(),
+    CodeMeaning(codeMeaning)
+{
+}
+
+
+DSRBasicCodedEntry::DSRBasicCodedEntry(const OFString &codeValue,
+                                       const OFString &codingSchemeDesignator,
+                                       const OFString &codingSchemeVersion,
+                                       const OFString &codeMeaning,
+                                       const DSRTypes::E_CodeValueType codeValueType)
+  : CodeValueType(codeValueType),
+    CodeValue(codeValue),
+    CodingSchemeDesignator(codingSchemeDesignator),
+    CodingSchemeVersion(codingSchemeVersion),
+    CodeMeaning(codeMeaning)
+{
+}
+
+
+// implementation of class DSRCodedEntryValue
 
 DSRCodedEntryValue::DSRCodedEntryValue()
   : CodeValueType(DSRTypes::CVT_auto),
@@ -41,6 +72,25 @@ DSRCodedEntryValue::DSRCodedEntryValue()
     ContextGroupLocalVersion(),
     ContextGroupExtensionCreatorUID()
 {
+}
+
+
+DSRCodedEntryValue::DSRCodedEntryValue(const DSRBasicCodedEntry &basicCodedEntry,
+                                       const OFBool check)
+  : CodeValueType(DSRTypes::CVT_auto),
+    CodeValue(),
+    CodingSchemeDesignator(),
+    CodingSchemeVersion(),
+    CodeMeaning(),
+    ContextIdentifier(),
+    ContextUID(),
+    MappingResource(),
+    ContextGroupVersion(),
+    ContextGroupLocalVersion(),
+    ContextGroupExtensionCreatorUID()
+{
+    /* check code (if not disabled) */
+    setCode(basicCodedEntry, check);
 }
 
 
@@ -491,12 +541,22 @@ OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryVal
 }
 
 
+OFCondition DSRCodedEntryValue::setCode(const DSRBasicCodedEntry &basicCodedEntry,
+                                        const OFBool check)
+{
+    /* set "Basic Coded Entry Attributes" */
+    return setCode(basicCodedEntry.CodeValue, basicCodedEntry.CodingSchemeDesignator, basicCodedEntry.CodingSchemeVersion,
+                   basicCodedEntry.CodeMeaning, basicCodedEntry.CodeValueType, check);
+}
+
+
 OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
                                         const OFString &codingSchemeDesignator,
                                         const OFString &codeMeaning,
                                         const DSRTypes::E_CodeValueType codeValueType,
                                         const OFExplicitBool check)
 {
+    /* call the real function */
     return setCode(codeValue, codingSchemeDesignator, "" /*codingSchemeVersion*/, codeMeaning, codeValueType, check);
 }
 
@@ -623,6 +683,7 @@ OFCondition DSRCodedEntryValue::setEnhancedEncodingMode(const OFString &contextI
 
 OFCondition DSRCodedEntryValue::checkCurrentValue() const
 {
+    /* call the real function */
     return checkCode(CodeValue, CodingSchemeDesignator, CodingSchemeVersion, CodeMeaning, CodeValueType);
 }
 

@@ -16,7 +16,7 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRCodedEntryValue
+ *    classes: DSRBasicCodedEntry, DSRCodedEntryValue
  *
  */
 
@@ -32,11 +32,83 @@
 #include "dcmtk/ofstd/ofexbl.h"
 
 
-/*---------------------*
- *  class declaration  *
- *---------------------*/
+/*----------------------*
+ *  class declarations  *
+ *----------------------*/
 
-/** Class for coded entry values
+/** Class for storing the "Basic Coded Entry Attributes".
+ *  This class should be used to define code constants since it is a lightweight structure
+ *  that does not carry any overhead and also does not perform any unnecessary checks on the
+ *  data passed to it.  Furthermore, the individual values cannot be modified after an instance
+ *  of this class has been constructed.  Therefore, the members can be accessed publicly.
+ */
+class DCMTK_DCMSR_EXPORT DSRBasicCodedEntry
+{
+  public:
+
+    /** constructor.
+     *  To be used when the code to be set consists of three values (code value, coding scheme
+     *  designator and code meaning).
+     ** @param  codeValue               identifier of the code to be set that is unambiguous
+     *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
+     *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
+     *                                  a term is defined.  (VR=SH, mandatory)
+     *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
+     *                                  used for display when code dictionary is not available.
+     *                                  (VR=LO, mandatory)
+     *  @param  codeValueType           type of 'codeValue' (short, long or URN) used to map
+     *                                  the value to the correct DICOM value representation
+     *                                  (VR).  The default value is the one most often used
+     *                                  (DSRTypes::CVT_Short).
+     */
+    DSRBasicCodedEntry(const OFString &codeValue,
+                       const OFString &codingSchemeDesignator,
+                       const OFString &codeMeaning,
+                       const DSRTypes::E_CodeValueType codeValueType = DSRTypes::CVT_Short);
+
+    /** constructor.
+     *  To be used when the code to be set consists of four values (code value, coding scheme
+     *  designator, coding scheme version and code meaning).
+     ** @param  codeValue               identifier of the code to be set that is unambiguous
+     *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
+     *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
+     *                                  a term is defined.  (VR=SH, mandatory)
+     *  @param  codingSchemeVersion     version of the coding scheme.  May be used to identify
+     *                                  the version of a coding scheme if necessary to resolve
+     *                                  ambiguity in the 'codeValue' or 'codeMeaning'.  (VR=SH,
+     *                                  optional)
+     *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
+     *                                  used for display when code dictionary is not available.
+     *                                  (VR=LO, mandatory)
+     *  @param  codeValueType           type of 'codeValue' (short, long or URN) used to map
+     *                                  the value to the correct DICOM value representation
+     *                                  (VR).  The default value is the one most often used
+     *                                  (DSRTypes::CVT_Short).
+     */
+    DSRBasicCodedEntry(const OFString &codeValue,
+                       const OFString &codingSchemeDesignator,
+                       const OFString &codingSchemeVersion,
+                       const OFString &codeMeaning,
+                       const DSRTypes::E_CodeValueType codeValueType = DSRTypes::CVT_Short);
+
+  // --- public but constant members
+
+    /// type of 'CodeValue': short (SH), long (UC) or Uniform Resource Name (UR)
+    const DSRTypes::E_CodeValueType CodeValueType;
+    /// Code Value (VR=SH/UC/UR, type 1)
+    const OFString CodeValue;
+    /// Coding Scheme Designator (VR=SH, type 1)
+    const OFString CodingSchemeDesignator;
+    /// Coding Scheme Version (VR=SH, 1C)
+    const OFString CodingSchemeVersion;
+    /// Code Meaning (VR=LO, type 1)
+    const OFString CodeMeaning;
+};
+
+
+/** Class for handling coded entry values, i.e.\ unambiguous machine-readable codes.
+ *  This class supports both the "Basic Coded Entry Attributes" and the "Enhanced Encoding
+ *  Mode".  There are also some basic checks that make sure that a given code is valid.
  */
 class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 {
@@ -49,7 +121,18 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     DSRCodedEntryValue();
 
-    /** constructor
+    /** constructor.
+     *  To be used for code constants defined by an instance of the DSRBasicCodedEntry class.
+     ** @param  basicCodedEntry  code to be set, defined by its "Basic Coded Entry Attributes"
+     *  @param  check            if enabled, check code for validity before setting it.
+     *                           See checkCode() for details.  Empty values are never accepted.
+     */
+    DSRCodedEntryValue(const DSRBasicCodedEntry &basicCodedEntry,
+                       const OFBool check = OFFalse);
+
+    /** constructor.
+     *  To be used when the code to be set consists of three values (code value, coding scheme
+     *  designator and code meaning).
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
@@ -71,7 +154,9 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
                        const DSRTypes::E_CodeValueType codeValueType = DSRTypes::CVT_auto,
                        const OFExplicitBool check = OFTrue);
 
-    /** constructor
+    /** constructor.
+     *  To be used when the code to be set consists of four values (code value, coding scheme
+     *  designator, coding scheme version and code meaning).
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
@@ -346,8 +431,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
     /** set code.
      *  Before setting the code, it is usually checked.  If the code is invalid, the current
-     *  code is not replaced and remains unchanged.  The attributes from the "Enhanced
-     *  Encoding Mode" are set by one of the setEnhancedEncodingMode() methods.
+     *  code is not replaced and remains unchanged.
      ** @param  codedEntryValue  code to be set
      *  @param  check            if enabled, check code for validity before setting it.
      *                           See checkCode() for details.  Empty values are only accepted
@@ -358,6 +442,19 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
                          const OFBool check = OFTrue);
 
     /** set code.
+     *  To be used for code constants defined by an instance of the DSRBasicCodedEntry class.
+     ** @param  basicCodedEntry  code to be set, defined by its "Basic Coded Entry Attributes"
+     *  @param  check            if enabled, check code for validity before setting it.
+     *                           See checkCode() for details.  Empty values are never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setCode(const DSRBasicCodedEntry &basicCodedEntry,
+                        const OFBool check = OFFalse);
+
+    /** set code.
+     *  To be used when the code to be set consists of three values (code value, coding scheme
+     *  designator and code meaning).  The attributes from the "Enhanced Encoding Mode" are set
+     *  by one of the setEnhancedEncodingMode() methods.
      *  Before setting the code, it is usually checked.  If the code is invalid, the current
      *  code is not replaced and remains unchanged.  Additional information on the coding
      *  scheme can be provided via the DSRDocument::getCodingSchemeIdentification() method
@@ -387,6 +484,9 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
                         const OFExplicitBool check = OFTrue);
 
     /** set code.
+     *  To be used when the code to be set consists of four values (code value, coding scheme
+     *  designator, coding scheme version and code meaning).  The attributes from the "Enhanced
+     *  Encoding Mode" are set by one of the setEnhancedEncodingMode() methods.
      *  Before setting the code, it is usually checked.  If the code is invalid, the current
      *  code is not replaced and remains unchanged.  Additional information on the coding
      *  scheme can be provided via the DSRDocument::getCodingSchemeIdentification() method

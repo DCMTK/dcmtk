@@ -16,7 +16,7 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    test program for class DSRCodedEntryValue
+ *    test program for classes DSRBasicCodedEntry and DSRCodedEntryValue
  *
  */
 
@@ -87,4 +87,40 @@ OFTEST(dcmsr_writeCodeSequence)
     OFCHECK(!dataset.tagExists(DCM_CodeValue, OFTrue /*searchIntoSub*/));
     OFCHECK(!dataset.tagExists(DCM_LongCodeValue, OFTrue /*searchIntoSub*/));
     OFCHECK(dataset.tagExistsWithValue(DCM_URNCodeValue, OFTrue /*searchIntoSub*/));
+}
+
+
+OFTEST(dcmsr_useBasicCodedEntry)
+{
+    /* first, define some code constants */
+    const DSRBasicCodedEntry code1("121206", "DCM", "Distance");
+    const DSRBasicCodedEntry code2("621566751000087104", "SCT", "Invasive diagnostic procedure", DSRTypes::CVT_auto);
+    const DSRBasicCodedEntry code3("urn:lex:us:federal:codified.regulation:2013-04-25;45CFR164", "99TEST", "HIPAA Privacy Rule", DSRTypes::CVT_auto);
+    /* then, use them as a coded entry value */
+    DSRCodedEntryValue codedEntry(code1);
+    OFCHECK(codedEntry.isValid());
+    OFCHECK(!codedEntry.usesEnhancedEncodingMode());
+    OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_Short);
+    OFCHECK_EQUAL(codedEntry.getCodeValue(), "121206");
+    OFCHECK_EQUAL(codedEntry.getCodingSchemeDesignator(), "DCM");
+    OFCHECK_EQUAL(codedEntry.getCodingSchemeVersion(), "" /*empty*/);
+    OFCHECK_EQUAL(codedEntry.getCodeMeaning(), "Distance");
+    /* use setCode() method */
+    OFCHECK(codedEntry.setCode(code2, OFTrue /*check*/).good());
+    OFCHECK(codedEntry.isValid());
+    OFCHECK(!codedEntry.usesEnhancedEncodingMode());
+    OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_Long);
+    OFCHECK_EQUAL(codedEntry.getCodeValue(), "621566751000087104");
+    OFCHECK_EQUAL(codedEntry.getCodingSchemeDesignator(), "SCT");
+    OFCHECK_EQUAL(codedEntry.getCodingSchemeVersion(), "" /*empty*/);
+    OFCHECK_EQUAL(codedEntry.getCodeMeaning(), "Invasive diagnostic procedure");
+    /* use assignment operator (implicitly convert DSRBasicCodedEntry to DSRCodedEntryValue) */
+    codedEntry = code3;
+    OFCHECK(codedEntry.isValid());
+    OFCHECK(!codedEntry.usesEnhancedEncodingMode());
+    OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_URN);
+    OFCHECK_EQUAL(codedEntry.getCodeValue(), "urn:lex:us:federal:codified.regulation:2013-04-25;45CFR164");
+    OFCHECK_EQUAL(codedEntry.getCodingSchemeDesignator(), "99TEST");
+    OFCHECK_EQUAL(codedEntry.getCodingSchemeVersion(), "" /*empty*/);
+    OFCHECK_EQUAL(codedEntry.getCodeMeaning(), "HIPAA Privacy Rule");
 }

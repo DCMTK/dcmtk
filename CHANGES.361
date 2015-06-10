@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.06.10 (riesmeier)
+
+- New class for "Basic Coded Entry Attributes":
+  Introduced new class for the "Basic Coded Entry Attributes" (according to the
+  DICOM standard). This class should be used to define code constants since it
+  is a lightweight structure that does not carry any overhead and also does not
+  perform any unnecessary checks. Enhanced documentation of existing code class.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrcodvl.cc
+
 **** Changes from 2015.06.09 (riesmeier)
 
 - Added support for long code values (CP-1031):
