@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -254,7 +254,7 @@ OFBool OFTime::setTimeInSeconds(const double seconds,
     if (normalize || ((seconds >= 0) && (seconds < 86400)))
     {
         /* first normalize the value first to the valid range of [0.0,86400.0[ */
-        const double normalSeconds = (normalize) ? seconds + OFstatic_cast(double, OFstatic_cast(signed long, seconds / 86400) * 86400) : seconds;
+        const double normalSeconds = (normalize) ? seconds - OFstatic_cast(double, OFstatic_cast(signed long, seconds / 86400) * 86400) : seconds;
         /* compute time from given number of seconds since "00:00:00" */
         const unsigned int newHour = OFstatic_cast(unsigned int, normalSeconds / 3600);
         const unsigned int newMinute = OFstatic_cast(unsigned int, (normalSeconds - OFstatic_cast(double, newHour) * 3600) / 60);
@@ -274,7 +274,7 @@ OFBool OFTime::setTimeInHours(const double hours,
     if (normalize || ((hours >= 0) && (hours < 24)))
     {
         /* first normalize the value to the valid range of [0.0,24.0[ */
-        const double normalHours = (normalize) ? hours + OFstatic_cast(double, OFstatic_cast(signed long, hours / 24) * 24) : hours;
+        const double normalHours = (normalize) ? hours - OFstatic_cast(double, OFstatic_cast(signed long, hours / 24) * 24) : hours;
         /* compute time from given number of hours since "00:00:00" */
         const unsigned int newHour = OFstatic_cast(unsigned int, normalHours);
         const unsigned int newMinute = OFstatic_cast(unsigned int, (normalHours - OFstatic_cast(double, newHour)) * 60);

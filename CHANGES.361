@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.06.14 (riesmeier)
+
+- Fixed bug in time normalization code:
+  Fixed bug in methods setTimeInSeconds() and setTimeInHours() that showed up
+  when the parameter "normalize" is true (which is the default) and the given
+  time value is not within the valid range.
+  Thanks to forum user "sfzhang" for the bug report and suggested fix.
+  Affects: ofstd/libsrc/oftime.cc
+           ofstd/tests/tofdatim.cc
+
 **** Changes from 2015.06.10 (riesmeier)
 
 - New class for "Basic Coded Entry Attributes":
