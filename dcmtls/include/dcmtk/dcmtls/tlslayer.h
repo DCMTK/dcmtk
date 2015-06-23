@@ -74,6 +74,11 @@ class DCMTK_DCMTLS_EXPORT DcmTLSTransportLayer: public DcmTransportLayer
 {
 public:
 
+  /** a type alias for the type of the underlying OpenSSL context handle to be
+   *  used in conjunction with the getNativeHandle() member function.
+   */
+  typedef SSL_CTX* native_handle_type;
+
   /** constructor.
    *  @param networkRole network role to be used by the application, influences
    *    the choice of the secure transport layer code.
@@ -142,6 +147,17 @@ public:
    *  @return TCS_ok if successful, an error code otherwise
    */
   DcmTransportLayerStatus addTrustedClientCertificateFile(const char *fileName);
+
+  /** appends the given verification flags to the existing ones in this OpenSSL context
+   *  (using binary or).
+   *  @warning Documentation for the underlying OpenSSL functions is not available,
+   *    therefore, these semantics were guessed based on looking at the OpenSSL source
+   *    code!
+   *  @param flags the verification flags to append, e. g. X509_V_FLAG_CRL_CHECK.
+   *  @return TCS_ok if the flags were appended to the existing ones, TCS_unspecifiedError
+   *    if OpenSSL returns an (unspecified, since the documentation is missing) error.
+   */
+  DcmTransportLayerStatus addVerificationFlags(unsigned long flags);
 
   /** sets the list of ciphersuites to negotiate.
    *  @param suites string containing the list of ciphersuites.
@@ -235,6 +251,29 @@ public:
    *  @return a string describing the certificate
    */
   static OFString dumpX509Certificate(X509 *peerCertificate);
+
+  /** provides access to the underlying OpenSSL context handle for implementing
+   *  custom functionality not accessible by the existing member functions of
+   *  DcmTLSTransportLayer.
+   *  @return the underlying OpenSSL context handle.
+   *  @details
+   *  <h4>Usage Example</h4>
+   *  @code{.cpp}
+   *  DcmTLSTransportLayer tLayer(DICOM_APPLICATION_REQUESTOR, "random.dat");
+   *  ...
+   *  DcmTLSTransportLayer::native_handle_type native = tlayer.getNativeHandle();
+   *  X509_VERIFY_PARAM* param = SSL_CTX_get0_param(native);
+   *
+   *  // Enable automatic hostname checks
+   *  X509_VERIFY_PARAM_set_hostflags(param, X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
+   *  X509_VERIFY_PARAM_set1_host(param, "www.example.com", 0);
+   *
+   *  // Configure a non-zero callback if desired
+   *  SSL_CTX_set_verify(native, SSL_VERIFY_PEER, 0);
+   *  ...
+   *  @endcode
+   */
+  native_handle_type getNativeHandle();
 
 private:
 

@@ -1,6 +1,25 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.06.23 (schlamelcher)
+
+- Added additional configuration methods for DCMTLS:
+  Introduced the methods addVerificationFlags() and getNativeHandle() to
+  DCMTLS for fine-tuning the OpenSSL settings and/or implementing missing
+  functionality by directly accessing the underlying OpenSSL context handle.
+  Thanks to Dr. Martin Korp <Martin.Korp@ith-icoserve.com> and
+  Peter Klotz <Peter.Klotz@ith-icoserve.com> for the suggestions and their
+  assistance during implementation.
+  Affects: CMake/CheckFunctionWithHeaderExists.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           dcmtls/include/dcmtk/dcmtls/tlslayer.h
+           dcmtls/libsrc/tlslayer.cc
+
 **** Changes from 2015.06.14 (riesmeier)
 
 - Fixed bug in time normalization code:

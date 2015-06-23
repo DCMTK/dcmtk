@@ -42,6 +42,12 @@ END_EXTERN_C
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmnet/dicom.h"
 
+#ifdef HAVE_SSL_CTX_GET0_PARAM
+#define DCMTK_SSL_CTX_get0_param SSL_CTX_get0_param
+#else
+#define DCMTK_SSL_CTX_get0_param(A) A->param;
+#endif
+
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
 OFLogger DCM_dcmtlsLogger = OFLog::getLogger("dcmtk.dcmtls");
@@ -313,6 +319,12 @@ OFBool DcmTLSTransportLayer::checkPrivateKeyMatchesCertificate()
   return OFFalse;
 }
 
+DcmTransportLayerStatus DcmTLSTransportLayer::addVerificationFlags(unsigned long flags)
+{
+  X509_VERIFY_PARAM* const parameter = DCMTK_SSL_CTX_get0_param(transportLayerContext);
+  return parameter && X509_VERIFY_PARAM_set_flags(parameter,flags) ? TCS_ok : TCS_unspecifiedError;
+}
+
 DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const char *fileName, int fileType)
 {
   /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
@@ -480,6 +492,11 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
   } else {
     return "No X.509 Certificate.";
   }
+}
+
+DcmTLSTransportLayer::native_handle_type DcmTLSTransportLayer::getNativeHandle()
+{
+  return transportLayerContext;
 }
 
 #else  /* WITH_OPENSSL */

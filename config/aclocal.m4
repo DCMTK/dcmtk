@@ -1875,3 +1875,28 @@ AC_DEFUN([AC_MY_SYMBOL_EXISTS],
         AC_DEFINE([HAVE_$1_MACRO])
     fi
 ])
+
+dnl
+dnl This macro checks if OpenSSL provides the SSL_CTX_get0_param function
+dnl
+dnl AC_CHECK_SSL_CTX_GET0_PARAM
+AC_DEFUN([AC_CHECK_SSL_CTX_GET0_PARAM],
+[
+    AH_TEMPLATE([HAVE_SSL_CTX_GET0_PARAM], [Define if OpenSSL provides the SSL_CTX_get0_param function.])dnl
+    SAVELIBS=$LIBS
+    HAVE_SSL_CTX_GET0_PARAM=yes
+    LIBS="$LIBS $OPENSSLLIBS"
+    AC_MSG_CHECKING([whether OpenSSL provides the SSL_CTX_get0_param function])
+    AC_COMPILE_IFELSE(
+    [
+        AC_LANG_PROGRAM([[#include <openssl/ssl.h>]],[[&SSL_CTX_get0_param;]])
+    ],
+    [
+        AC_MSG_RESULT([yes])
+        AC_DEFINE([HAVE_SSL_CTX_GET0_PARAM])
+    ],
+    [
+        AC_MSG_RESULT([no])
+    ])
+    LIBS=$SAVELIBS
+])

@@ -1069,6 +1069,9 @@ typedef unsigned long ulong;
 /* Define if your system uses _pclose instead of pclose */
 #cmakedefine HAVE_PCLOSE @HAVE_PCLOSE@
 
+/* Define if your OpenSSL library provides the SSL_CTX_GET0_PARAM function */
+#cmakedefine HAVE_SSL_CTX_GET0_PARAM @HAVE_SSL_CTX_GET0_PARAM@
+
 /* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
 #define STDIO_NAMESPACE ::
 

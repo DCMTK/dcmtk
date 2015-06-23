@@ -664,6 +664,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 
+/* Define if OpenSSL provides the SSL_CTX_get0_param function. */
+#undef HAVE_SSL_CTX_GET0_PARAM
+
 /* Define to 1 if you have the <sstream> header file. */
 #undef HAVE_SSTREAM
 

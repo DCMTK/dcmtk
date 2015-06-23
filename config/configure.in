@@ -938,6 +938,8 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
+AC_CHECK_SSL_CTX_GET0_PARAM
+
 dnl -------------------------------------------------------
 dnl Check for libjpeg, which is needed by libtiff on some platforms
 dnl -------------------------------------------------------
