@@ -290,7 +290,6 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvsighdl.h \
  ../../dcmsign/include/dcmtk/dcmsign/sicertvf.h \
  ../../dcmsign/include/dcmtk/dcmsign/sitypes.h \
- ../../dcmsign/include/dcmtk/dcmsign/sidefine.h \
  ../../dcmsign/include/dcmtk/dcmsign/dcsignat.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdoc.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdoctr.h \
@@ -320,6 +319,8 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrimgse.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrwavvl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrwavch.h \
+ ../../dcmsr/include/dcmtk/dcmsr/dsrrtpl.h \
+ ../../dcmsr/include/dcmtk/dcmsr/dsrctpl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrsoprf.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrrefin.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrcsidl.h \
@@ -335,12 +336,7 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsda.h ../include/dcmtk/dcmpstat/dvpssv.h \
  ../include/dcmtk/dcmpstat/dvpsrs.h ../include/dcmtk/dcmpstat/dvpstx.h \
  ../include/dcmtk/dcmpstat/dvpsgr.h ../include/dcmtk/dcmpstat/dvpsri.h \
- ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbs.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
+ ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbs.h
 dvpsab.o: dvpsab.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -4560,13 +4556,15 @@ dvsighdl.o: dvsighdl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../dcmsign/include/dcmtk/dcmsign/sicertvf.h \
  ../../dcmsign/include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmsign/include/dcmtk/dcmsign/sidefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmsign/include/dcmtk/dcmsign/dcsignat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -4595,13 +4593,10 @@ dvsighdl.o: dvsighdl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \

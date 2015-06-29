@@ -75,8 +75,7 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlfsim.h \
  ../include/dcmtk/dcmwlm/wlmactmg.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h wlcefs.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h wlcefs.h
 wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \

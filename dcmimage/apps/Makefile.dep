@@ -132,10 +132,7 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
  ../include/dcmtk/dcmimage/diregist.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diregbas.h \
- ../include/dcmtk/dcmimage/dicdefin.h \
- ../include/dcmtk/dcmimage/dipitiff.h \
- ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
- ../include/dcmtk/dcmimage/dipipng.h
+ ../include/dcmtk/dcmimage/dicdefin.h
 dcmquant.o: dcmquant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \

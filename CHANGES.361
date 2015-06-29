@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.06.29 (schlamelcher)
+
+- Updated Makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+
 **** Changes from 2015.06.23 (schlamelcher)
 
 - Added additional configuration methods for DCMTLS:
