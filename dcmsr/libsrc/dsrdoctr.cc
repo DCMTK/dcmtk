@@ -438,7 +438,5 @@ void DSRDocumentTree::swap(DSRDocumentTree &tree)
     /* call inherited method */
     DSRDocumentSubTree::swap(tree);
     /* swap other members */
-    const E_DocumentType docType = DocumentType;
-    DocumentType = tree.DocumentType;
-    tree.DocumentType = docType;
+    OFswap(DocumentType, tree.DocumentType);
 }

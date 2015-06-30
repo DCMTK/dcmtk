@@ -740,3 +740,13 @@ OFCondition DSRContentItem::setObservationUID(const OFString &observationUID,
         result = TreeNode->setObservationUID(observationUID, check);
     return result;
 }
+
+
+// protected methods
+
+void DSRContentItem::swap(DSRContentItem &item)
+{
+    /* swap members */
+    OFswap(TreeNode, item.TreeNode);
+    OFswap(DeleteTreeNode, item.DeleteTreeNode);
+}

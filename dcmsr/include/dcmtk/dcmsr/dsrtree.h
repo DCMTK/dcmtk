@@ -780,9 +780,7 @@ template<typename T>
 void DSRTree<T>::swap(DSRTree<T> &tree)
 {
     /* swap pointer to the root tree node */
-    T *root = RootNode;
-    RootNode = tree.RootNode;
-    tree.RootNode = root;
+    OFswap(RootNode, tree.RootNode);
 }
 
 

@@ -658,7 +658,9 @@ void DSRDocumentSubTree::swap(DSRDocumentSubTree &tree)
 {
     /* call inherited method */
     DSRTree<DSRDocumentTreeNode>::swap(tree);
-    /* nothing else to do? */
+    /* swap other members */
+    CurrentContentItem.swap(tree.CurrentContentItem);
+    OFswap(ConstraintChecker, tree.ConstraintChecker);
 }
 
 

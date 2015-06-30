@@ -543,13 +543,19 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
         TreeNode = node;
     }
 
+    /** fast, non-throwing swap function.
+     *  The time complexity of this function is constant.
+     ** @param  item  content item to swap with
+     */
+    void swap(DSRContentItem &item);
+
 
   private:
 
     /// internal tree node pointer to current content item
     DSRDocumentTreeNode *TreeNode;
     /// flag indicating whether to delete the 'TreeNode' during destruction (or not)
-    const OFBool DeleteTreeNode;
+    /*const*/ OFBool DeleteTreeNode;    // removed "const" to support swap() method
 
     /// empty numeric measurement value. Used as default return value for getNumericValue().
     /// A static member variable (as for the other values below) cannot be used because this
