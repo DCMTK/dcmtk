@@ -442,6 +442,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual DSRDocumentTreeNode *extractNode();
 
+    /** get pointer to root node and "forget" the internal reference to this node.
+     *  In other words: after calling this method, the stored tree will be empty.
+     *  This also means that the caller is responsible for deleting the allocated memory.
+     ** @return pointer to root node, might be NULL (empty tree)
+     */
+    virtual DSRDocumentTreeNode *getAndRemoveRootNode();
+
     /** remove current node from tree.
      *  Please note that not only the specified node but also all of his child nodes are
      *  removed from the tree and deleted afterwards.  The cursor is set automatically to

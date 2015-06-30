@@ -242,6 +242,13 @@ template<typename T = DSRTreeNode> class DSRTree
      */
     virtual T *extractNode();
 
+    /** get pointer to root node and "forget" the internal reference to this node.
+     *  In other words: after calling this method, the stored tree will be empty.
+     *  This also means that the caller is responsible for deleting the allocated memory.
+     ** @return pointer to root node, might be NULL (empty tree)
+     */
+    virtual T *getAndRemoveRootNode();
+
     /** remove current node from tree.
      *  Please note that not only the specified node but also all of its child nodes are
      *  removed from the tree and then deleted.  The cursor is set automatically to a new
@@ -292,13 +299,6 @@ template<typename T = DSRTreeNode> class DSRTree
      ** @return pointer to root node, might be NULL (empty tree)
      */
     virtual T *getRoot() const;
-
-    /** get pointer to root node and "forget" the internal reference to this node.
-     *  In other words: after calling this method, the stored tree will be empty.
-     *  This also means that the caller is responsible for deleting the allocated memory.
-     ** @return pointer to root node, might be NULL (empty tree)
-     */
-    virtual T *getAndRemoveRootNode();
 
 
   private:
@@ -698,6 +698,16 @@ T *DSRTree<T>::extractNode()
 
 
 template<typename T>
+T *DSRTree<T>::getAndRemoveRootNode()
+{
+    T *root = RootNode;
+    /* "forget" reference to root node */
+    RootNode = NULL;
+    return root;
+}
+
+
+template<typename T>
 size_t DSRTree<T>::removeNode()
 {
     size_t nodeID = 0;
@@ -772,16 +782,6 @@ template<typename T>
 T *DSRTree<T>::getRoot() const
 {
     return RootNode;
-}
-
-
-template<typename T>
-T *DSRTree<T>::getAndRemoveRootNode()
-{
-    T *root = RootNode;
-    /* "forget" reference to root node */
-    RootNode = NULL;
-    return root;
 }
 
 

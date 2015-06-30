@@ -677,6 +677,13 @@ DSRDocumentTreeNode *DSRDocumentSubTree::extractNode()
 }
 
 
+DSRDocumentTreeNode *DSRDocumentSubTree::getAndRemoveRootNode()
+{
+    /* might add further checks later on */
+    return DSRTree<DSRDocumentTreeNode>::getAndRemoveRootNode();
+}
+
+
 size_t DSRDocumentSubTree::removeNode()
 {
     /* might add further checks later on */
