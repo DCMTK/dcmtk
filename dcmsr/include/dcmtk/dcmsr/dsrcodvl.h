@@ -206,6 +206,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     OFBool operator==(const DSRCodedEntryValue &codedEntryValue) const;
 
+    /** comparison operator.
+     *  Two codes are equal if the code value, coding scheme designator and the (optional)
+     *  coding scheme version are equal.  The code meaning is not relevant for this check.
+     ** @param  basicCodedEntry  code which should be compared to the current one
+     ** @return OFTrue if both codes are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRBasicCodedEntry &basicCodedEntry) const;
+
     /** clear all internal variables.
      *  Since an empty code is invalid the code becomes invalid afterwards.
      */
