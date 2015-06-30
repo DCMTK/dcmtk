@@ -144,7 +144,9 @@ OFTEST(dcmsr_subTemplate_2)
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     /* then, create an almost empty "Basic Diagnostic Imaging Report" (TID 2000) */
     SRTestTemplate2000 templ1;
-    /* and an almost empty "Person Observer Identifying Attributes" (TID 1003) */
+    /* and make it extensible (only needed for this test) */
+    templ1.setExtensible();
+    /* also create an almost empty "Person Observer Identifying Attributes" (TID 1003) */
     SRTestTemplate1003 templ2;
     /* perform some basic checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_ComprehensiveSR);

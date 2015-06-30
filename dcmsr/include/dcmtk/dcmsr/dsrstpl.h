@@ -109,6 +109,7 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
 
     /** insert tree from given template to internally stored subtree.
      *  If possible, this method adds a copy of the given tree to the current content item.
+     *  However, in case this template is non-extensible, an error code will be returned.
      ** @param  subTemplate     template that contains the tree that should be inserted
      *  @param  addMode         flag specifying at which position to add the new subtree.
      *                          Possible values: DSRTypes::AM_afterCurrent,

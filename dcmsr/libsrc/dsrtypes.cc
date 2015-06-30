@@ -278,6 +278,7 @@ makeOFConditionConst(SR_EC_CannotRemoveSubTree,              OFM_dcmsr, 23, OF_e
 makeOFConditionConst(SR_EC_EmptyDocumentTree,                OFM_dcmsr, 24, OF_error, "Empty Document Tree");
 makeOFConditionConst(SR_EC_InvalidContentItem,               OFM_dcmsr, 25, OF_error, "Invalid Content Item");
 makeOFConditionConst(SR_EC_CannotUseTemplateIdentification,  OFM_dcmsr, 26, OF_error, "Cannot use Template Identification");
+makeOFConditionConst(SR_EC_NonExtensibleTemplate,            OFM_dcmsr, 27, OF_error, "Non-extensible Template");
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =

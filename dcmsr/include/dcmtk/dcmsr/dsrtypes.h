@@ -193,6 +193,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidContentItem;
 
 /// error: template identification cannot be used, i.e. requirements are not fulfilled
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotUseTemplateIdentification;
+
+/// error: cannot add content item or insert subtree to non-extensible template
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_NonExtensibleTemplate;
 //@}
 
 

@@ -90,8 +90,14 @@ OFCondition DSRSubTemplate::insertTemplate(const DSRSubTemplate &subTemplate,
                                            const E_AddMode addMode,
                                            const E_RelationshipType defaultRelType)
 {
-    /* call the functions doing the real work */
-    return insertSubTree(subTemplate.cloneTree(), addMode, defaultRelType, OFTrue /*deleteIfFail*/);
+    OFCondition result = SR_EC_NonExtensibleTemplate;
+    /* check whether this template is extensible */
+    if (isExtensible())
+    {
+        /* call the function doing the real work */
+        result = insertSubTree(subTemplate.cloneTree(), addMode, defaultRelType, OFTrue /*deleteIfFail*/);
+    }
+    return result;
 }
 
 

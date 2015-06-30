@@ -34,6 +34,7 @@ DSRTemplateCommon::DSRTemplateCommon(const OFString &templateIdentifier,
     MappingResourceUID(mappingResourceUID),
     ExtensibleMode(OFFalse)
 {
+    /* by default, a template is non-extensible */
 }
 
 
