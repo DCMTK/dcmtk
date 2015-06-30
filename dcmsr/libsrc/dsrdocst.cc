@@ -165,6 +165,9 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
             node = cursor.getNode();
             if (node != NULL)
             {
+                /* print node ID (might be useful for debugging purposes) */
+                if (flags & PF_printNodeID)
+                    stream << "id:" << node->getNodeID() << " ";
                 /* print node position */
                 if (flags & PF_printItemPosition)
                 {

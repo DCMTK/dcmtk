@@ -402,6 +402,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// print code triple for invalid codes (instead of the text "invalid code")
     static const size_t PF_printInvalidCodes;
 
+    /// print node ID at the beginning of each line (might be useful for debugging purposes)
+    static const size_t PF_printNodeID;
+
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
     //@}

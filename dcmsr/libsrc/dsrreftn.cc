@@ -101,6 +101,12 @@ OFCondition DSRByReferenceTreeNode::print(STD_NAMESPACE ostream &stream,
     stream << relationshipTypeToReadableName(getRelationshipType()) << " ";
     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
     stream << ReferencedContentItem;
+    /* print node ID (might be useful for debugging purposes) */
+    if (flags & PF_printNodeID)
+    {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
+        stream << " = id:" << ReferencedNodeID;
+    }
     return EC_Normal;
 }
 
