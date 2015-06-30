@@ -570,31 +570,39 @@ size_t DSRTree<T>::addNode(T *node,
                            const E_AddMode addMode)
 {
     size_t nodeID = 0;
-    if (node != NULL)
+    /* make sure that 'node' points to a single node or to the "root" of a subtree */
+    if ((node != NULL) && (node->Prev == NULL))
     {
         if (this->NodeCursor != NULL)
         {
+            DSRTreeNode *lastNode = node;
             /* update references based on 'addMode' */
             switch (addMode)
             {
                 case AM_afterCurrent:
                     node->Prev = this->NodeCursor;
-                    node->Next = this->NodeCursor->Next;
+                    /* goto last node (sibling), if any */
+                    while (lastNode->Next != NULL)
+                        lastNode = lastNode->Next;
+                    lastNode->Next = this->NodeCursor->Next;
                     /* connect to current node */
                     if (this->NodeCursor->Next != NULL)
-                        (this->NodeCursor->Next)->Prev = node;
+                        (this->NodeCursor->Next)->Prev = lastNode;
                     this->NodeCursor->Next = node;
                     ++this->Position;
                     break;
                 case AM_beforeCurrent:
                     node->Prev = this->NodeCursor->Prev;
-                    node->Next = this->NodeCursor;
+                    /* goto last node (sibling), if any */
+                    while (lastNode->Next != NULL)
+                        lastNode = lastNode->Next;
+                    lastNode->Next = this->NodeCursor;
                     /* connect to current node */
                     if ((this->NodeCursor->Prev != NULL) && (this->Position > 1))
                         (this->NodeCursor->Prev)->Next = node;
                     else if (!this->NodeCursorStack.empty() && (this->Position == 1))
                         this->NodeCursorStack.top()->Down = node;
-                    this->NodeCursor->Prev = node;
+                    this->NodeCursor->Prev = lastNode;
                     break;
                 case AM_belowCurrent:
                     /* store old position */
