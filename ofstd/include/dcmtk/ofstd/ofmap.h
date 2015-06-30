@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2014, OFFIS e.V.
+ *  Copyright (C) 2009-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,6 +156,11 @@ public:
 
         return it;
     }
+
+    /** returns whether this map is empty (i.e.\ whether its size is 0)
+     *  @return OFTrue if this map is empty, OFFalse otherwise
+     */
+    OFBool empty() const { return values_.size() == 0; }
 
     /** returns the number of elements saved in this map
      *  @return the number of elements saved in this map
