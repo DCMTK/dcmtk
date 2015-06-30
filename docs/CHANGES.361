@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2015.06.30 (schlamelcher)
+
+- Moved CHANGES.361 to /docs:
+  Starting after the latest snapshot (DCMTK-3.6.1_20150629) the CHANGES.361
+  file is no longer maintained manually. From now on it will resided inside
+  /docs and will only be updated for each snapshot (based on the Git commit
+  messages).
+  Added:   docs/CHANGES.361
+  Removed: CHANGES.361
+
 **** Changes from 2015.06.29 (schlamelcher)
 
 - Updated DCMTK_ABI_VERSION for new development snapshot.
