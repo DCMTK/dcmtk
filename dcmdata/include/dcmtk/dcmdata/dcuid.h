@@ -460,6 +460,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_EnhancedSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.22"
 #define UID_ComprehensiveSRStorage                                 "1.2.840.10008.5.1.4.1.1.88.33"
 #define UID_Comprehensive3DSRStorage                               "1.2.840.10008.5.1.4.1.1.88.34"
+#define UID_ExtensibleSRStorage                                    "1.2.840.10008.5.1.4.1.1.88.35"
 #define UID_ProcedureLogStorage                                    "1.2.840.10008.5.1.4.1.1.88.40"
 #define UID_MammographyCADSRStorage                                "1.2.840.10008.5.1.4.1.1.88.50"
 #define UID_KeyObjectSelectionDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.59"

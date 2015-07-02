@@ -641,6 +641,7 @@ BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
 ComprehensiveSRStorage                               1.2.840.10008.5.1.4.1.1.88.33
 Comprehensive3DSRStorage                             1.2.840.10008.5.1.4.1.1.88.34
+ExtensibleSRStorage                                  1.2.840.10008.5.1.4.1.1.88.35
 ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59

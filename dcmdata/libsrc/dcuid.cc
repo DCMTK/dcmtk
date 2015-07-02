@@ -170,6 +170,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_EnhancedUSVolumeStorage,                             "EnhancedUSVolumeStorage" },
     { UID_EnhancedXAImageStorage,                              "EnhancedXAImageStorage" },
     { UID_EnhancedXRFImageStorage,                             "EnhancedXRFImageStorage" },
+    { UID_ExtensibleSRStorage,                                 "ExtensibleSRStorage" },
     { UID_GeneralAudioWaveformStorage,                         "GeneralAudioWaveformStorage" },
     { UID_GeneralECGWaveformStorage,                           "GeneralECGWaveformStorage" },
     { UID_GenericImplantTemplateStorage,                       "GenericImplantTemplateStorage" },
@@ -563,6 +564,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_EnhancedUSVolumeStorage,
     UID_EnhancedXAImageStorage,
     UID_EnhancedXRFImageStorage,
+    UID_ExtensibleSRStorage,
     UID_GeneralAudioWaveformStorage,
     UID_GeneralECGWaveformStorage,
     UID_GenericImplantTemplateStorage,
@@ -797,6 +799,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_BreastProjectionXRayImageStorageForPresentation,
 //  UID_BreastProjectionXRayImageStorageForProcessing,
 //  UID_CornealTopographyMapStorage,
+//  UID_ExtensibleSRStorage,
 //  UID_LegacyConvertedEnhancedCTImageStorage,
 //  UID_LegacyConvertedEnhancedMRImageStorage,
 //  UID_LegacyConvertedEnhancedPETImageStorage,
@@ -1067,6 +1070,7 @@ static const DcmModalityTable modalities[] = {
     { UID_EnhancedUSVolumeStorage,                                 "USe", 512 * 512 },
     { UID_EnhancedXAImageStorage,                                  "XAe", 256 * 512 * 512 },
     { UID_EnhancedXRFImageStorage,                                 "RFe", 256 * 512 * 512 },
+    { UID_ExtensibleSRStorage,                                     "SRx", 4096 },
     { UID_GeneralAudioWaveformStorage,                             "AUG", 4096 },
     { UID_GeneralECGWaveformStorage,                               "ECG", 4096 },
     { UID_GenericImplantTemplateStorage,                           "IT",  4096 },
@@ -1164,10 +1168,10 @@ static const DcmModalityTable modalities[] = {
     { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,             "XB",  512 * 512 * 2 },
     // draft
     { UID_DRAFT_RTBeamsDeliveryInstructionStorage,                 "RBd", 4096 },
-    { UID_DRAFT_SRAudioStorage,                                    "SRw", 4096 },
-    { UID_DRAFT_SRComprehensiveStorage,                            "SRx", 4096 },
-    { UID_DRAFT_SRDetailStorage,                                   "SRy", 4096 },
-    { UID_DRAFT_SRTextStorage,                                     "SRz", 4096 },
+    { UID_DRAFT_SRAudioStorage,                                    "SR_", 4096 },  /* was "SRw" */
+    { UID_DRAFT_SRComprehensiveStorage,                            "SR_", 4096 },  /* was "SRx" */
+    { UID_DRAFT_SRDetailStorage,                                   "SR_", 4096 },  /* was "SRy" */
+    { UID_DRAFT_SRTextStorage,                                     "SR_", 4096 },  /* was "SRz" */
     { UID_DRAFT_WaveformStorage,                                   "WVd", 4096 },
     // DICOS
     { UID_DICOS_CTImageStorage,                                    "CTs", 512 * 512 * 2 },

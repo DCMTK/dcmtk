@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -651,6 +651,7 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_EnhancedSRStorage) ||
              compare(sopClass, UID_ComprehensiveSRStorage) ||
              compare(sopClass, UID_Comprehensive3DSRStorage) ||
+             compare(sopClass, UID_ExtensibleSRStorage) ||
              compare(sopClass, UID_ProcedureLogStorage) ||
              compare(sopClass, UID_MammographyCADSRStorage) ||
              compare(sopClass, UID_ChestCADSRStorage) ||
@@ -1518,6 +1519,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_EnhancedSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ComprehensiveSRStorage) ||
                                 compare(mediaSOPClassUID, UID_Comprehensive3DSRStorage) ||
+                                compare(mediaSOPClassUID, UID_ExtensibleSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
                                 compare(mediaSOPClassUID, UID_MammographyCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2014, OFFIS e.V.
+ *  Copyright (C) 1993-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2939,6 +2939,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                    (strcmp(SOPClassUID, UID_EnhancedSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_ComprehensiveSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_Comprehensive3DSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ExtensibleSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_ProcedureLogStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_MammographyCADSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_KeyObjectSelectionDocumentStorage) == 0) ||
