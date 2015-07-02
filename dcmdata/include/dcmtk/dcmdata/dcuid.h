@@ -337,6 +337,12 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_MPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102"
 /// MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
 #define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103"
+/// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
+#define UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax "1.2.840.10008.1.2.4.104"
+/// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
+#define UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax "1.2.840.10008.1.2.4.105"
+/// MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
+#define UID_MPEG4StereoHighProfileLevel4_2TransferSyntax "1.2.840.10008.1.2.4.106"
 /// RLE Lossless
 #define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
 

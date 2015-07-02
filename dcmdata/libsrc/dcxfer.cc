@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -366,6 +366,36 @@ const S_XferNames XferNames[] =
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
       EXS_MPEG4BDcompatibleHighProfileLevel4_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
+      "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
+      EXS_MPEG4HighProfileLevel4_2_For2DVideo,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
+      "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
+      EXS_MPEG4HighProfileLevel4_2_For3DVideo,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
+      "MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
+      EXS_MPEG4StereoHighProfileLevel4_2,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,

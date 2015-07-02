@@ -99,7 +99,10 @@ static const char* transferSyntaxes[] = {
       UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
       UID_MPEG4HighProfileLevel4_1TransferSyntax,
-      UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax
+      UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
+      UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
+      UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
+      UID_MPEG4StereoHighProfileLevel4_2TransferSyntax
 };
 
 // ********************************************

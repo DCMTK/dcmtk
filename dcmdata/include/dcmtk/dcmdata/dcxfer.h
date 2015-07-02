@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -95,14 +95,20 @@ typedef enum {
     EXS_MPEG4HighProfileLevel4_1 = 30,
     /// MPEG4 BD-compatible High Profile / Level 4.1
     EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 31,
+    /// MPEG4 High Profile / Level 4.2 For 2D Video
+    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 32,
+    /// MPEG4 High Profile / Level 4.2 For 3D Video
+    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 33,
+    /// MPEG4 Stereo High Profile / Level 4.2
+    EXS_MPEG4StereoHighProfileLevel4_2 = 34,
     /// JPEG 2000 part 2 multi-component extensions (lossless)
-    EXS_JPEG2000MulticomponentLosslessOnly = 32,
+    EXS_JPEG2000MulticomponentLosslessOnly = 35,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 33,
+    EXS_JPEG2000Multicomponent = 36,
     /// JPIP Referenced
-    EXS_JPIPReferenced = 34,
+    EXS_JPIPReferenced = 37,
     /// JPIP Referenced Deflate
-    EXS_JPIPReferencedDeflate = 35
+    EXS_JPIPReferencedDeflate = 38
 } E_TransferSyntax;
 
 /** enumeration of byte orders
