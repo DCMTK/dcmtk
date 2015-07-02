@@ -1,7 +1,8 @@
-.TH "dcmodify" 1 "Mon Feb 16 2015" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "Thu Jul 2 2015" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
+
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -412,7 +413,7 @@ The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurrences of
        but -nmu avoids, that dcmodify adjusts the
        MediaStorageSOPInstanceUID in the metaheader, too..fi
 .PP
-.SH "Error Handling"
+.SH "ERROR HANDLING"
 .PP
 \fBdcmodify\fP tries executing each modify operation given on command line: If one returns an error, the others are being performed anyway\&. However in case of any error, the modified file is not saved, unless the \fI--ignore-errors\fP option is specified\&. If that option is selected, \fBdcmodify\fP also continues modifying further files specified on command line; otherwise \fBdcmodify\fP exits after the first file that had modification errors\&.
 .PP
