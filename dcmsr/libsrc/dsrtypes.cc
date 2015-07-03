@@ -252,33 +252,37 @@ struct S_CharacterSetNameMap
  *---------------------------------*/
 
 // conditions
-makeOFConditionConst(SR_EC_UnknownDocumentType,              OFM_dcmsr,  1, OF_error, "Unknown Document Type");
-makeOFConditionConst(SR_EC_InvalidDocument,                  OFM_dcmsr,  2, OF_error, "Invalid Document");
-makeOFConditionConst(SR_EC_InvalidDocumentTree,              OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
-makeOFConditionConst(SR_EC_MandatoryAttributeMissing,        OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
-makeOFConditionConst(SR_EC_InvalidValue,                     OFM_dcmsr,  5, OF_error, "Invalid Value");
-makeOFConditionConst(SR_EC_UnsupportedValue,                 OFM_dcmsr,  6, OF_error, "Unsupported Value");
-makeOFConditionConst(SR_EC_UnknownValueType,                 OFM_dcmsr,  7, OF_error, "Unknown Value Type");
-makeOFConditionConst(SR_EC_UnknownRelationshipType,          OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
-makeOFConditionConst(SR_EC_InvalidByValueRelationship,       OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
-makeOFConditionConst(SR_EC_InvalidByReferenceRelationship,   OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
-makeOFConditionConst(SR_EC_SOPInstanceNotFound,              OFM_dcmsr, 11, OF_error, "SOP Instance not found");
-makeOFConditionConst(SR_EC_DifferentSOPClassesForAnInstance, OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
-makeOFConditionConst(SR_EC_CodingSchemeNotFound,             OFM_dcmsr, 13, OF_error, "Coding Scheme Designator not found");
-makeOFConditionConst(SR_EC_CorruptedXMLStructure,            OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
-makeOFConditionConst(SR_EC_RepresentationNotAvailable,       OFM_dcmsr, 15, OF_error, "Representation not available");
-makeOFConditionConst(SR_EC_CannotCreateIconImage,            OFM_dcmsr, 16, OF_error, "Cannot create Icon Image");
-makeOFConditionConst(SR_EC_CannotAddContentItem,             OFM_dcmsr, 17, OF_error, "Cannot add Content Item");
-makeOFConditionConst(SR_EC_InvalidConceptName,               OFM_dcmsr, 18, OF_error, "Invalid Concept Name");
-makeOFConditionConst(SR_EC_CannotInsertSubTree,              OFM_dcmsr, 19, OF_error, "Cannot insert Subtree");
-makeOFConditionConst(SR_EC_CannotChangeRelationshipType,     OFM_dcmsr, 20, OF_error, "Cannot change Relationship Type");
-makeOFConditionConst(SR_EC_IncompatibleDocumentTree,         OFM_dcmsr, 21, OF_error, "Incompatible Document Tree");
-makeOFConditionConst(SR_EC_ContentItemNotFound,              OFM_dcmsr, 22, OF_error, "Content Item not found");
-makeOFConditionConst(SR_EC_CannotRemoveSubTree,              OFM_dcmsr, 23, OF_error, "Cannot remove Subtree");
-makeOFConditionConst(SR_EC_EmptyDocumentTree,                OFM_dcmsr, 24, OF_error, "Empty Document Tree");
-makeOFConditionConst(SR_EC_InvalidContentItem,               OFM_dcmsr, 25, OF_error, "Invalid Content Item");
-makeOFConditionConst(SR_EC_CannotUseTemplateIdentification,  OFM_dcmsr, 26, OF_error, "Cannot use Template Identification");
-makeOFConditionConst(SR_EC_NonExtensibleTemplate,            OFM_dcmsr, 27, OF_error, "Non-extensible Template");
+makeOFConditionConst(SR_EC_UnknownDocumentType,                 OFM_dcmsr,  1, OF_error, "Unknown Document Type");
+makeOFConditionConst(SR_EC_InvalidDocument,                     OFM_dcmsr,  2, OF_error, "Invalid Document");
+makeOFConditionConst(SR_EC_InvalidDocumentTree,                 OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
+makeOFConditionConst(SR_EC_MandatoryAttributeMissing,           OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
+makeOFConditionConst(SR_EC_InvalidValue,                        OFM_dcmsr,  5, OF_error, "Invalid Value");
+makeOFConditionConst(SR_EC_UnsupportedValue,                    OFM_dcmsr,  6, OF_error, "Unsupported Value");
+makeOFConditionConst(SR_EC_UnknownValueType,                    OFM_dcmsr,  7, OF_error, "Unknown Value Type");
+makeOFConditionConst(SR_EC_UnknownRelationshipType,             OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
+makeOFConditionConst(SR_EC_InvalidByValueRelationship,          OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
+makeOFConditionConst(SR_EC_InvalidByReferenceRelationship,      OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
+makeOFConditionConst(SR_EC_SOPInstanceNotFound,                 OFM_dcmsr, 11, OF_error, "SOP Instance not found");
+makeOFConditionConst(SR_EC_DifferentSOPClassesForAnInstance,    OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
+makeOFConditionConst(SR_EC_CodingSchemeNotFound,                OFM_dcmsr, 13, OF_error, "Coding Scheme Designator not found");
+makeOFConditionConst(SR_EC_CorruptedXMLStructure,               OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
+makeOFConditionConst(SR_EC_RepresentationNotAvailable,          OFM_dcmsr, 15, OF_error, "Representation not available");
+makeOFConditionConst(SR_EC_CannotCreateIconImage,               OFM_dcmsr, 16, OF_error, "Cannot create Icon Image");
+makeOFConditionConst(SR_EC_CannotAddContentItem,                OFM_dcmsr, 17, OF_error, "Cannot add Content Item");
+makeOFConditionConst(SR_EC_InvalidConceptName,                  OFM_dcmsr, 18, OF_error, "Invalid Concept Name");
+makeOFConditionConst(SR_EC_CannotInsertSubTree,                 OFM_dcmsr, 19, OF_error, "Cannot insert Subtree");
+makeOFConditionConst(SR_EC_CannotChangeRelationshipType,        OFM_dcmsr, 20, OF_error, "Cannot change Relationship Type");
+makeOFConditionConst(SR_EC_IncompatibleDocumentTree,            OFM_dcmsr, 21, OF_error, "Incompatible Document Tree");
+makeOFConditionConst(SR_EC_ContentItemNotFound,                 OFM_dcmsr, 22, OF_error, "Content Item not found");
+makeOFConditionConst(SR_EC_CannotRemoveSubTree,                 OFM_dcmsr, 23, OF_error, "Cannot remove Subtree");
+makeOFConditionConst(SR_EC_EmptyDocumentTree,                   OFM_dcmsr, 24, OF_error, "Empty Document Tree");
+makeOFConditionConst(SR_EC_InvalidContentItem,                  OFM_dcmsr, 25, OF_error, "Invalid Content Item");
+makeOFConditionConst(SR_EC_CannotUseTemplateIdentification,     OFM_dcmsr, 26, OF_error, "Cannot use Template Identification");
+makeOFConditionConst(SR_EC_NonExtensibleTemplate,               OFM_dcmsr, 27, OF_error, "Non-extensible Template");
+makeOFConditionConst(SR_EC_NonExtensibleContextGroup,           OFM_dcmsr, 28, OF_error, "Non-extensible Context Group");
+makeOFConditionConst(SR_EC_CodedEntryNotInContextGroup,         OFM_dcmsr, 29, OF_error, "Coded Entry not in Context Group");
+makeOFConditionConst(SR_EC_CodedEntryInStandardContextGroup,    OFM_dcmsr, 30, OF_ok,    "Coded Entry in Context Group (Standard)");
+makeOFConditionConst(SR_EC_CodedEntryIsExtensionOfContextGroup, OFM_dcmsr, 31, OF_ok,    "Coded Entry in Context Group (Extension)");
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =

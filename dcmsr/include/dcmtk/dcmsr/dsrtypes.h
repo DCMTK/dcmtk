@@ -196,6 +196,18 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotUseTemplateIdentifi
 
 /// error: cannot add content item or insert subtree to non-extensible template
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_NonExtensibleTemplate;
+
+/// error: cannot add coded entry to non-extensible context group
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_NonExtensibleContextGroup;
+
+/// error: a given coded entry in not contained in the context group
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryNotInContextGroup;
+
+/// normal: a given coded entry is contained in the context group (i.e. a standard code)
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryInStandardContextGroup;
+
+/// normal: a given coded entry is known as an extension of the context group
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryIsExtensionOfContextGroup;
 //@}
 
 

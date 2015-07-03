@@ -15,6 +15,8 @@ The main interface classes are:
 \li \b DSRCodedEntryValue
 
 Here are some further classes that are useful when implementing SR templates:
+\li \b DSRBasicCodedEntry
+\li \b DSRContextGroup
 \li \b DSRRootTemplate
 \li \b DSRSubTemplate
 
