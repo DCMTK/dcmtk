@@ -127,7 +127,7 @@ OFCondition DSRRootTemplate::readXML(const DSRXMLDocument & /*doc*/,
 void DSRRootTemplate::updateTreeForOutput()
 {
     /* mark root CONTAINER with template identification (if applicable) */
-    OFCondition result = DSRDocumentTree::setTemplateIdentification(getTemplateIdentifier(), getMappingResource(), getMappingResourceUID());
+    OFCondition result = setTemplateIdentification(getTemplateIdentifier(), getMappingResource(), getMappingResourceUID());
     /* in case of error, output some useful debug information */
     if (result.bad())
     {

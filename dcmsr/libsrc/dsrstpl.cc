@@ -106,7 +106,7 @@ OFCondition DSRSubTemplate::insertTemplate(const DSRSubTemplate &subTemplate,
 void DSRSubTemplate::updateTreeForOutput()
 {
     /* mark root CONTAINER with template identification (if applicable) */
-    OFCondition result = DSRDocumentSubTree::setTemplateIdentification(getTemplateIdentifier(), getMappingResource(), getMappingResourceUID());
+    OFCondition result = setTemplateIdentification(getTemplateIdentifier(), getMappingResource(), getMappingResourceUID());
     /* in case of error, output some useful debug information */
     if (result.bad())
     {
