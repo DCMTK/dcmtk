@@ -37,23 +37,9 @@
  *  This class is used as a base class only.
  */
 class DCMTK_DCMSR_EXPORT DSRTemplateCommon
-  : public DSRTypes
 {
 
   public:
-
-    /** constructor
-     ** @param  templateIdentifier  identifier of the template
-     *  @param  mappingResource     mapping resource that defines the template
-     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
-     */
-    DSRTemplateCommon(const OFString &templateIdentifier,
-                      const OFString &mappingResource,
-                      const OFString &mappingResourceUID = "");
-
-    /** destructor
-     */
-    virtual ~DSRTemplateCommon();
 
     /** check whether template identification is set
      ** @return OFTrue if set, OFFalse otherwise
@@ -106,6 +92,22 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
     {
         ExtensibleMode = mode;
     }
+
+
+  protected:
+
+    /** constructor
+     ** @param  templateIdentifier  identifier of the template
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional)
+     */
+    DSRTemplateCommon(const OFString &templateIdentifier,
+                      const OFString &mappingResource,
+                      const OFString &mappingResourceUID = "");
+
+    /** destructor
+     */
+    virtual ~DSRTemplateCommon();
 
 
   private:
