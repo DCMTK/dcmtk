@@ -29,6 +29,13 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 
 
+/*-----------------------*
+ *  forward declaration  *
+ *-----------------------*/
+
+class DSRDocumentSubTree;
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -109,6 +116,38 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
      */
     virtual ~DSRTemplateCommon();
 
+    /** reserve a certain number of entries in the list of node IDs.  Using this method
+     *  can help to avoid unwanted memory allocations and copying of list entries.
+     ** @param  count  number of entries to be reserved (for later use)
+     */
+    void reserveEntriesInNodeList(const size_t count);
+
+    /** store given entry at a certain position in the list of node IDs
+     ** @param  pos     index of the list entry to use for storage (starting from 0)
+     *  @param  nodeID  ID of the node that should be stored at the given position
+     */
+    void storeEntryInNodeList(const size_t pos,
+                              const size_t nodeID);
+
+    /** get a particular entry from the list of node IDs
+     ** @param  pos  index of the list entry to retrieve (starting from 0)
+     ** @return node ID that is stored at the given position, 0 if not found or set
+     */
+    size_t getEntryFromNodeList(const size_t pos) const;
+
+    /** set internal cursor of a given document tree to particular node.
+     *  The node is determined from the list of node IDs, starting from the entry
+     *  specified by the parameter 'lastPos'.  The reverse search stops if either an
+     *  entry with a non-zero value (valid node ID) is found or the first list entry
+     *  is reached.  This approach in particular supports handling of template tables
+     *  where the order of content items is significant.
+     ** @param  tree     pointer to document tree where nodes and cursor are stored
+     *  @param  lastPos  index of the last node list entry to start searching from
+     ** @return ID of the new current node within the tree if successful, 0 otherwise
+     */
+    size_t gotoLastEntryFromNodeList(DSRDocumentSubTree *tree,
+                                     const size_t lastPos);
+
 
   private:
 
@@ -120,6 +159,9 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
     const OFString MappingResourceUID;
     /// mode indicating whether template is extensible (default: false)
     OFBool ExtensibleMode;
+
+    /// list of node IDs used to remember certain positions in the template
+    OFVector<size_t> NodeList;
 
  // --- declaration of default constructor and assignment operator
  // --- (the assignment operator is defined implicitly)

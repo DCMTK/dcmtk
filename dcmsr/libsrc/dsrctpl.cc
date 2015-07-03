@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrctpl.h"
+#include "dcmtk/dcmsr/dsrdocst.h"
 
 
 DSRTemplateCommon::DSRTemplateCommon(const OFString &templateIdentifier,
@@ -32,7 +33,8 @@ DSRTemplateCommon::DSRTemplateCommon(const OFString &templateIdentifier,
   : TemplateIdentifier(templateIdentifier),
     MappingResource(mappingResource),
     MappingResourceUID(mappingResourceUID),
-    ExtensibleMode(OFFalse)
+    ExtensibleMode(OFFalse),
+    NodeList()
 {
     /* by default, a template is non-extensible */
 }
@@ -72,4 +74,50 @@ OFBool DSRTemplateCommon::isTemplateIdentificationValid(const OFBool check) cons
             result = OFTrue;
     }
     return result;
+}
+
+
+// protected methods
+
+void DSRTemplateCommon::reserveEntriesInNodeList(const size_t count)
+{
+    NodeList.reserve(count);
+}
+
+
+void DSRTemplateCommon::storeEntryInNodeList(const size_t pos,
+                                             const size_t nodeID)
+{
+    /* make sure that entry can be stored */
+    if (pos >= NodeList.size())
+        NodeList.resize(pos + 1, 0);
+    NodeList[pos] = nodeID;
+}
+
+
+size_t DSRTemplateCommon::getEntryFromNodeList(const size_t pos) const
+{
+    size_t nodeID = 0;
+    /* make sure that entry exists */
+    if (pos < NodeList.size())
+        nodeID = NodeList[pos];
+    return nodeID;
+}
+
+
+size_t DSRTemplateCommon::gotoLastEntryFromNodeList(DSRDocumentSubTree *tree,
+                                                    const size_t lastPos)
+{
+    size_t nodeID = 0;
+    /* make sure that tree is valid and list entry exists */
+    if ((tree != NULL) && (lastPos < NodeList.size()))
+    {
+        size_t pos = lastPos + 1;
+        while ((pos > 0) && (nodeID == 0))
+            nodeID = NodeList[--pos];
+        /* check whether current node is already the right one */
+        if (tree->getNodeID() != nodeID)
+            nodeID = tree->gotoNode(nodeID, OFTrue /*startFromRoot*/);
+    }
+    return nodeID;
 }
