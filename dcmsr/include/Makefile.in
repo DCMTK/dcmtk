@@ -12,12 +12,14 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-all: 
+all:
 
-install: 
-	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmsr
-	for file in dcmtk/dcmsr/*.h ; do \
-		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmsr ;\
+install:
+	for dir in dcmsr dcmsr/codes ; do \
+		$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/$$dir ;\
+		for file in dcmtk/$$dir/*.h ; do \
+			$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/$$dir ;\
+		done \
 	done
 
 clean:
