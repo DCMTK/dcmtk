@@ -58,4 +58,7 @@ OFTEST_REGISTER(dcmsr_setCodeValueType);
 OFTEST_REGISTER(dcmsr_determineCodeValueType);
 OFTEST_REGISTER(dcmsr_writeCodeSequence);
 OFTEST_REGISTER(dcmsr_useBasicCodedEntry);
+OFTEST_REGISTER(dcmsr_CID7445_DeviceParticipatingRoles);
+OFTEST_REGISTER(dcmsr_TID1001_ObservationContext);
+OFTEST_REGISTER(dcmsr_TID1204_LanguageOfContentItemAndDescendants);
 OFTEST_MAIN("dcmsr")

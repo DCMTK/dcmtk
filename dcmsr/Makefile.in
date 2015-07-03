@@ -37,6 +37,7 @@ include-all:
 
 libsrc-all: include-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" all)
+	(cd libcmr && $(MAKE) ARCH="$(ARCH)" all)
 
 apps-all: libsrc-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" all)
@@ -57,6 +58,7 @@ include-install:
 
 libsrc-install: libsrc-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install)
+	(cd libcmr && $(MAKE) ARCH="$(ARCH)" install)
 
 apps-install: apps-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" install)
@@ -74,6 +76,7 @@ etc-install:
 clean:
 	(cd include && $(MAKE) clean)
 	(cd libsrc && $(MAKE) clean)
+	(cd libcmr && $(MAKE) clean)
 	(cd apps && $(MAKE) clean)
 	(cd tests && $(MAKE) clean)
 	(cd docs && $(MAKE) clean)
@@ -84,6 +87,7 @@ clean:
 distclean:
 	(cd include && $(MAKE) distclean)
 	(cd libsrc && $(MAKE) distclean)
+	(cd libcmr && $(MAKE) distclean)
 	(cd apps && $(MAKE) distclean)
 	(cd tests && $(MAKE) distclean)
 	(cd docs && $(MAKE) distclean)
@@ -93,5 +97,6 @@ distclean:
 
 dependencies:
 	(cd libsrc && touch $(DEP) && $(MAKE) dependencies)
+	(cd libcmr && touch $(DEP) && $(MAKE) dependencies)
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
 	(cd tests && touch $(DEP) && $(MAKE) dependencies)

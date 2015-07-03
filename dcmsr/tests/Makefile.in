@@ -20,12 +20,13 @@ dcmimagedir = $(top_srcdir)/../dcmimage
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include \
 	-I$(dcmimgledir)/include -I$(dcmimagedir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
-	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmimagedir)/libsrc
-LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
+LIBDIRS = -L$(top_srcdir)/libcmr -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
+	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc \
+	-L$(dcmimagedir)/libsrc
+LOCALLIBS = -lcmr -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
 	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
-tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrtpl.o tsrcodvl.o
+tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrtpl.o tsrcodvl.o tsrcmr.o
 objs = mkreport.o $(tstobjs)
 progs = mkreport tests
 

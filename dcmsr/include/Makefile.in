@@ -15,7 +15,7 @@ include $(configdir)/@common_makefile@
 all:
 
 install:
-	for dir in dcmsr dcmsr/codes ; do \
+	for dir in dcmsr dcmsr/cmr dcmsr/codes ; do \
 		$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/$$dir ;\
 		for file in dcmtk/$$dir/*.h ; do \
 			$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/$$dir ;\
