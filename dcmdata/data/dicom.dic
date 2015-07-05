@@ -21,9 +21,9 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2015b and PS 3.7-2015b.
-# File created on 2015-04-20 11:12:50 by J. Riesmeier on thinkpad.
-# File updated manually on 2015-04-20 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2015c and PS 3.7-2015c.
+# File created on 2015-07-05 12:23:01 by J. Riesmeier on thinkpad.
+# File updated manually on 2015-07-05 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -139,6 +139,8 @@
 (0008,0092)	ST	ReferringPhysicianAddress	1	DICOM
 (0008,0094)	SH	ReferringPhysicianTelephoneNumbers	1-n	DICOM
 (0008,0096)	SQ	ReferringPhysicianIdentificationSequence	1	DICOM
+(0008,009C)	PN	ConsultingPhysicianName	1-n	DICOM
+(0008,009D)	SQ	ConsultingPhysicianIdentificationSequence	1	DICOM
 (0008,0100)	SH	CodeValue	1	DICOM
 (0008,0101)	LO	ExtendedCodeValue	1	DICOM/DICOS
 (0008,0102)	SH	CodingSchemeDesignator	1	DICOM
@@ -163,6 +165,14 @@
 (0008,0120)	UR	URNCodeValue	1	DICOM
 (0008,0121)	SQ	EquivalentCodeSequence	1	DICOM
 (0008,0201)	SH	TimezoneOffsetFromUTC	1	DICOM
+(0008,0300)	SQ	PrivateDataElementCharacteristicsSequence	1	DICOM
+(0008,0301)	US	PrivateGroupReference	1	DICOM
+(0008,0302)	LO	PrivateCreatorReference	1	DICOM
+(0008,0303)	CS	BlockIdentifyingInformationStatus	1	DICOM
+(0008,0304)	US	NonidentifyingPrivateElements	1-n	DICOM
+(0008,0305)	SQ	DeidentificationActionSequence	1	DICOM
+(0008,0306)	US	IdentifyingPrivateElements	1-n	DICOM
+(0008,0307)	CS	DeidentificationAction	1	DICOM
 (0008,1010)	SH	StationName	1	DICOM
 (0008,1030)	LO	StudyDescription	1	DICOM
 (0008,1032)	SQ	ProcedureCodeSequence	1	DICOM
@@ -282,6 +292,7 @@
 (0010,2150)	LO	CountryOfResidence	1	DICOM
 (0010,2152)	LO	RegionOfResidence	1	DICOM
 (0010,2154)	SH	PatientTelephoneNumbers	1-n	DICOM
+(0010,2155)	LT	PatientTelecomInformation	1	DICOM
 (0010,2160)	SH	EthnicGroup	1	DICOM
 (0010,2180)	SH	Occupation	1	DICOM
 (0010,21A0)	CS	SmokingStatus	1	DICOM
@@ -1333,6 +1344,7 @@
 (0022,0020)	SQ	StereoPairsSequence	1	DICOM
 (0022,0021)	SQ	LeftImageSequence	1	DICOM
 (0022,0022)	SQ	RightImageSequence	1	DICOM
+(0022,0028)	CS	StereoPairsPresent	1	DICOM
 (0022,0030)	FL	AxialLengthOfTheEye	1	DICOM
 (0022,0031)	SQ	OphthalmicFrameLocationSequence	1	DICOM
 (0022,0032)	FL	ReferenceCoordinates	2-2n	DICOM
@@ -1884,12 +1896,14 @@
 (0040,1101)	SQ	PersonIdentificationCodeSequence	1	DICOM
 (0040,1102)	ST	PersonAddress	1	DICOM
 (0040,1103)	LO	PersonTelephoneNumbers	1-n	DICOM
+(0040,1104)	LT	PersonTelecomInformation	1	DICOM
 (0040,1400)	LT	RequestedProcedureComments	1	DICOM
 (0040,2004)	DA	IssueDateOfImagingServiceRequest	1	DICOM
 (0040,2005)	TM	IssueTimeOfImagingServiceRequest	1	DICOM
 (0040,2008)	PN	OrderEnteredBy	1	DICOM
 (0040,2009)	SH	OrderEntererLocation	1	DICOM
 (0040,2010)	SH	OrderCallbackPhoneNumber	1	DICOM
+(0040,2011)	LT	OrderCallbackTelecomInformation	1	DICOM
 (0040,2016)	LO	PlacerOrderNumberImagingServiceRequest	1	DICOM
 (0040,2017)	LO	FillerOrderNumberImagingServiceRequest	1	DICOM
 (0040,2400)	LT	ImagingServiceRequestComments	1	DICOM
@@ -2549,6 +2563,7 @@
 (0072,007A)	US	SelectorUSValue	1-n	DICOM
 (0072,007C)	SL	SelectorSLValue	1-n	DICOM
 (0072,007E)	SS	SelectorSSValue	1-n	DICOM
+(0072,007F)	UI	SelectorUIValue	1-n	DICOM
 (0072,0080)	SQ	SelectorCodeSequenceValue	1	DICOM
 (0072,0100)	US	NumberOfScreens	1	DICOM
 (0072,0102)	SQ	NominalScreenDefinitionSequence	1	DICOM
@@ -3417,6 +3432,9 @@
 (300C,0100)	IS	ReferencedRangeShifterNumber	1	DICOM
 (300C,0102)	IS	ReferencedLateralSpreadingDeviceNumber	1	DICOM
 (300C,0104)	IS	ReferencedRangeModulatorNumber	1	DICOM
+(300C,0111)	SQ	OmittedBeamTaskSequence	1	DICOM
+(300C,0112)	CS	ReasonForOmission	1	DICOM
+(300C,0113)	LO	ReasonForOmissionDescription	1	DICOM
 (300E,0002)	CS	ApprovalStatus	1	DICOM
 (300E,0004)	DA	ReviewDate	1	DICOM
 (300E,0005)	TM	ReviewTime	1	DICOM

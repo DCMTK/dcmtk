@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-04-20 11:22:28
+**   Date: 2015-07-05 12:33:40
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2015-04-20 11:22:28";
+const char* dcmBuiltinDictBuildDate = "2015-07-05 12:33:40";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -581,6 +581,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ReferringPhysicianIdentificationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0008, 0x009c, 0x0008, 0x009c,
+      EVR_PN, "ConsultingPhysicianName", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x009d, 0x0008, 0x009d,
+      EVR_SQ, "ConsultingPhysicianIdentificationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0008, 0x0100, 0x0008, 0x0100,
       EVR_SH, "CodeValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -675,6 +683,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x0201, 0x0008, 0x0201,
       EVR_SH, "TimezoneOffsetFromUTC", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0300, 0x0008, 0x0300,
+      EVR_SQ, "PrivateDataElementCharacteristicsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0301, 0x0008, 0x0301,
+      EVR_US, "PrivateGroupReference", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0302, 0x0008, 0x0302,
+      EVR_LO, "PrivateCreatorReference", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0303, 0x0008, 0x0303,
+      EVR_CS, "BlockIdentifyingInformationStatus", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0304, 0x0008, 0x0304,
+      EVR_US, "NonidentifyingPrivateElements", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0305, 0x0008, 0x0305,
+      EVR_SQ, "DeidentificationActionSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0306, 0x0008, 0x0306,
+      EVR_US, "IdentifyingPrivateElements", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0307, 0x0008, 0x0307,
+      EVR_CS, "DeidentificationAction", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1000, 0x0008, 0x1000,
@@ -2037,6 +2077,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0010, 0x2154, 0x0010, 0x2154,
       EVR_SH, "PatientTelephoneNumbers", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x2155, 0x0010, 0x2155,
+      EVR_LT, "PatientTelecomInformation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x2160, 0x0010, 0x2160,
@@ -12441,6 +12485,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "RightImageSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0022, 0x0028, 0x0022, 0x0028,
+      EVR_CS, "StereoPairsPresent", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0022, 0x0030, 0x0022, 0x0030,
       EVR_FL, "AxialLengthOfTheEye", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17659,6 +17707,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "PersonTelephoneNumbers", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0x1104, 0x0040, 0x1104,
+      EVR_LT, "PersonTelecomInformation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0x1400, 0x0040, 0x1400,
       EVR_LT, "RequestedProcedureComments", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17693,6 +17745,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0040, 0x2010, 0x0040, 0x2010,
       EVR_SH, "OrderCallbackPhoneNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x2011, 0x0040, 0x2011,
+      EVR_LT, "OrderCallbackTelecomInformation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x2016, 0x0040, 0x2016,
@@ -21669,6 +21725,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0072, 0x007e, 0x0072, 0x007e,
       EVR_SS, "SelectorSSValue", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0072, 0x007f, 0x0072, 0x007f,
+      EVR_UI, "SelectorUIValue", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0072, 0x0080, 0x0072, 0x0080,
@@ -26047,6 +26107,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300c, 0x0104, 0x300c, 0x0104,
       EVR_IS, "ReferencedRangeModulatorNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300c, 0x0111, 0x300c, 0x0111,
+      EVR_SQ, "OmittedBeamTaskSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300c, 0x0112, 0x300c, 0x0112,
+      EVR_CS, "ReasonForOmission", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300c, 0x0113, 0x300c, 0x0113,
+      EVR_LO, "ReasonForOmissionDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300e, 0x0002, 0x300e, 0x0002,

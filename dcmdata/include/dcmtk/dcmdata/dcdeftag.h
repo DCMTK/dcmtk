@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-04-20 11:22:29
+**   Date: 2015-07-05 12:33:39
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-04-20 11:22:29"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-07-05 12:33:39"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3882
+** Number of entries: 3900
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -151,6 +151,8 @@
 #define DCM_ReferringPhysicianAddress            DcmTagKey(0x0008, 0x0092)
 #define DCM_ReferringPhysicianTelephoneNumbers   DcmTagKey(0x0008, 0x0094)
 #define DCM_ReferringPhysicianIdentificationSequence DcmTagKey(0x0008, 0x0096)
+#define DCM_ConsultingPhysicianName              DcmTagKey(0x0008, 0x009c)
+#define DCM_ConsultingPhysicianIdentificationSequence DcmTagKey(0x0008, 0x009d)
 #define DCM_CodeValue                            DcmTagKey(0x0008, 0x0100)
 #define DCM_ExtendedCodeValue                    DcmTagKey(0x0008, 0x0101)
 #define DCM_CodingSchemeDesignator               DcmTagKey(0x0008, 0x0102)
@@ -175,6 +177,14 @@
 #define DCM_URNCodeValue                         DcmTagKey(0x0008, 0x0120)
 #define DCM_EquivalentCodeSequence               DcmTagKey(0x0008, 0x0121)
 #define DCM_TimezoneOffsetFromUTC                DcmTagKey(0x0008, 0x0201)
+#define DCM_PrivateDataElementCharacteristicsSequence DcmTagKey(0x0008, 0x0300)
+#define DCM_PrivateGroupReference                DcmTagKey(0x0008, 0x0301)
+#define DCM_PrivateCreatorReference              DcmTagKey(0x0008, 0x0302)
+#define DCM_BlockIdentifyingInformationStatus    DcmTagKey(0x0008, 0x0303)
+#define DCM_NonidentifyingPrivateElements        DcmTagKey(0x0008, 0x0304)
+#define DCM_DeidentificationActionSequence       DcmTagKey(0x0008, 0x0305)
+#define DCM_IdentifyingPrivateElements           DcmTagKey(0x0008, 0x0306)
+#define DCM_DeidentificationAction               DcmTagKey(0x0008, 0x0307)
 #define DCM_RETIRED_NetworkID                    DcmTagKey(0x0008, 0x1000)
 #define DCM_StationName                          DcmTagKey(0x0008, 0x1010)
 #define DCM_StudyDescription                     DcmTagKey(0x0008, 0x1030)
@@ -317,6 +327,7 @@
 #define DCM_CountryOfResidence                   DcmTagKey(0x0010, 0x2150)
 #define DCM_RegionOfResidence                    DcmTagKey(0x0010, 0x2152)
 #define DCM_PatientTelephoneNumbers              DcmTagKey(0x0010, 0x2154)
+#define DCM_PatientTelecomInformation            DcmTagKey(0x0010, 0x2155)
 #define DCM_EthnicGroup                          DcmTagKey(0x0010, 0x2160)
 #define DCM_Occupation                           DcmTagKey(0x0010, 0x2180)
 #define DCM_SmokingStatus                        DcmTagKey(0x0010, 0x21a0)
@@ -1428,6 +1439,7 @@
 #define DCM_StereoPairsSequence                  DcmTagKey(0x0022, 0x0020)
 #define DCM_LeftImageSequence                    DcmTagKey(0x0022, 0x0021)
 #define DCM_RightImageSequence                   DcmTagKey(0x0022, 0x0022)
+#define DCM_StereoPairsPresent                   DcmTagKey(0x0022, 0x0028)
 #define DCM_AxialLengthOfTheEye                  DcmTagKey(0x0022, 0x0030)
 #define DCM_OphthalmicFrameLocationSequence      DcmTagKey(0x0022, 0x0031)
 #define DCM_ReferenceCoordinates                 DcmTagKey(0x0022, 0x0032)
@@ -2092,6 +2104,7 @@
 #define DCM_PersonIdentificationCodeSequence     DcmTagKey(0x0040, 0x1101)
 #define DCM_PersonAddress                        DcmTagKey(0x0040, 0x1102)
 #define DCM_PersonTelephoneNumbers               DcmTagKey(0x0040, 0x1103)
+#define DCM_PersonTelecomInformation             DcmTagKey(0x0040, 0x1104)
 #define DCM_RequestedProcedureComments           DcmTagKey(0x0040, 0x1400)
 #define DCM_RETIRED_ReasonForTheImagingServiceRequest DcmTagKey(0x0040, 0x2001)
 #define DCM_IssueDateOfImagingServiceRequest     DcmTagKey(0x0040, 0x2004)
@@ -2101,6 +2114,7 @@
 #define DCM_OrderEnteredBy                       DcmTagKey(0x0040, 0x2008)
 #define DCM_OrderEntererLocation                 DcmTagKey(0x0040, 0x2009)
 #define DCM_OrderCallbackPhoneNumber             DcmTagKey(0x0040, 0x2010)
+#define DCM_OrderCallbackTelecomInformation      DcmTagKey(0x0040, 0x2011)
 #define DCM_PlacerOrderNumberImagingServiceRequest DcmTagKey(0x0040, 0x2016)
 #define DCM_FillerOrderNumberImagingServiceRequest DcmTagKey(0x0040, 0x2017)
 #define DCM_ImagingServiceRequestComments        DcmTagKey(0x0040, 0x2400)
@@ -2837,6 +2851,7 @@
 #define DCM_SelectorUSValue                      DcmTagKey(0x0072, 0x007a)
 #define DCM_SelectorSLValue                      DcmTagKey(0x0072, 0x007c)
 #define DCM_SelectorSSValue                      DcmTagKey(0x0072, 0x007e)
+#define DCM_SelectorUIValue                      DcmTagKey(0x0072, 0x007f)
 #define DCM_SelectorCodeSequenceValue            DcmTagKey(0x0072, 0x0080)
 #define DCM_NumberOfScreens                      DcmTagKey(0x0072, 0x0100)
 #define DCM_NominalScreenDefinitionSequence      DcmTagKey(0x0072, 0x0102)
@@ -3764,6 +3779,9 @@
 #define DCM_ReferencedRangeShifterNumber         DcmTagKey(0x300c, 0x0100)
 #define DCM_ReferencedLateralSpreadingDeviceNumber DcmTagKey(0x300c, 0x0102)
 #define DCM_ReferencedRangeModulatorNumber       DcmTagKey(0x300c, 0x0104)
+#define DCM_OmittedBeamTaskSequence              DcmTagKey(0x300c, 0x0111)
+#define DCM_ReasonForOmission                    DcmTagKey(0x300c, 0x0112)
+#define DCM_ReasonForOmissionDescription         DcmTagKey(0x300c, 0x0113)
 #define DCM_ApprovalStatus                       DcmTagKey(0x300e, 0x0002)
 #define DCM_ReviewDate                           DcmTagKey(0x300e, 0x0004)
 #define DCM_ReviewTime                           DcmTagKey(0x300e, 0x0005)
