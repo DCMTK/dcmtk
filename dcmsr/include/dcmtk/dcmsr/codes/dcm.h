@@ -19,7 +19,7 @@
  *    DICOM Controlled Terminology Definitions (Coding Scheme "DCM", Version "01")
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-03 14:04:41 by J. Riesmeier
+ *    File created on 2015-07-05 12:22:22 by J. Riesmeier
  *
  */
 
@@ -36,7 +36,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3154
+// total number of codes: 3156
 // - retired: 143
 // - no name: 27
 // - not unique: 14
@@ -89,6 +89,7 @@
 #define CODE_DCM_HardCopy                                                  DSRBasicCodedEntry("HC", "DCM", "Hard Copy")
 #define CODE_DCM_HemodynamicWaveform                                       DSRBasicCodedEntry("HD", "DCM", "Hemodynamic Waveform")
 #define CODE_DCM_IntraOralRadiography                                      DSRBasicCodedEntry("IO", "DCM", "Intra-oral Radiography")
+#define CODE_DCM_IntravascularOpticalCoherenceTomography                   DSRBasicCodedEntry("IVOCT", "DCM", "Intravascular Optical Coherence Tomography")
 #define CODE_DCM_IntravascularUltrasound                                   DSRBasicCodedEntry("IVUS", "DCM", "Intravascular Ultrasound")
 #define CODE_DCM_Keratometry                                               DSRBasicCodedEntry("KER", "DCM", "Keratometry")
 #define CODE_DCM_KeyObjectSelection                                        DSRBasicCodedEntry("KO", "DCM", "Key Object Selection")
@@ -116,6 +117,7 @@
 #define CODE_DCM_OphthalmicRefraction                                      DSRBasicCodedEntry("OPR", "DCM", "Ophthalmic Refraction")
 #define CODE_DCM_OphthalmicTomography                                      DSRBasicCodedEntry("OPT", "DCM", "Ophthalmic Tomography")
 #define CODE_DCM_OphthalmicVisualField                                     DSRBasicCodedEntry("OPV", "DCM", "Ophthalmic Visual Field")
+#define CODE_DCM_OpticalSurfaceScanner                                     DSRBasicCodedEntry("OSS", "DCM", "Optical Surface Scanner")
 #define CODE_DCM_OtherModality                                             DSRBasicCodedEntry("OT", "DCM", "Other Modality")
 #define CODE_DCM_PresentationState                                         DSRBasicCodedEntry("PR", "DCM", "Presentation State")
 #define CODE_DCM_HardCopyPrintServer                                       DSRBasicCodedEntry("PRINT", "DCM", "Hard Copy Print Server")
@@ -3193,16 +3195,16 @@
 #define CODE_DCM_Nifene_F18                                                DSRBasicCodedEntry("126714", "DCM", "Nifene F^18^")
 #define CODE_DCM_CLR1404_I124                                              DSRBasicCodedEntry("126715", "DCM", "CLR1404 I^124^")
 #define CODE_DCM_CLR1404_I131                                              DSRBasicCodedEntry("126716", "DCM", "CLR1404 I^131^")
-#define CODE_DCM_IEC6127PatientSupportContinuousAngle                      DSRBasicCodedEntry("126801", "DCM", "IEC6127 Patient Support Continuous Angle")
-#define CODE_DCM_IEC6127TableTopContinuousPitchAngle                       DSRBasicCodedEntry("126802", "DCM", "IEC6127 Table Top Continuous Pitch Angle")
-#define CODE_DCM_IEC6127TableTopContinuousRollAngle                        DSRBasicCodedEntry("126803", "DCM", "IEC6127 Table Top Continuous Roll Angle")
-#define CODE_DCM_IEC6127TableTopEccentricAxisDistance                      DSRBasicCodedEntry("126804", "DCM", "IEC6127 Table Top Eccentric Axis Distance")
-#define CODE_DCM_IEC6127TableTopContinuousEccentricAngle                   DSRBasicCodedEntry("126805", "DCM", "IEC6127 Table Top Continuous Eccentric Angle")
-#define CODE_DCM_IEC6127TableTopLateralPosition                            DSRBasicCodedEntry("126806", "DCM", "IEC6127 Table Top Lateral Position")
-#define CODE_DCM_IEC6127TableTopLongitudinalPosition                       DSRBasicCodedEntry("126807", "DCM", "IEC6127 Table Top Longitudinal Position")
-#define CODE_DCM_IEC6127TableTopVerticalPosition                           DSRBasicCodedEntry("126808", "DCM", "IEC6127 Table Top Vertical Position")
-#define CODE_DCM_IEC6127GantryContinuousRollAngle                          DSRBasicCodedEntry("126809", "DCM", "IEC6127 Gantry Continuous Roll Angle")
-#define CODE_DCM_IEC6127GantryContinuousPitchAngle                         DSRBasicCodedEntry("126810", "DCM", "IEC6127 Gantry Continuous Pitch Angle")
-#define CODE_DCM_IEC6127GantryContinuousYawAngle                           DSRBasicCodedEntry("126811", "DCM", "IEC6127 Gantry Continuous Yaw Angle")
+#define CODE_DCM_IEC61217PatientSupportContinuousAngle                     DSRBasicCodedEntry("126801", "DCM", "IEC61217 Patient Support Continuous Angle")
+#define CODE_DCM_IEC61217TableTopContinuousPitchAngle                      DSRBasicCodedEntry("126802", "DCM", "IEC61217 Table Top Continuous Pitch Angle")
+#define CODE_DCM_IEC61217TableTopContinuousRollAngle                       DSRBasicCodedEntry("126803", "DCM", "IEC61217 Table Top Continuous Roll Angle")
+#define CODE_DCM_IEC61217TableTopEccentricAxisDistance                     DSRBasicCodedEntry("126804", "DCM", "IEC61217 Table Top Eccentric Axis Distance")
+#define CODE_DCM_IEC61217TableTopContinuousEccentricAngle                  DSRBasicCodedEntry("126805", "DCM", "IEC61217 Table Top Continuous Eccentric Angle")
+#define CODE_DCM_IEC61217TableTopLateralPosition                           DSRBasicCodedEntry("126806", "DCM", "IEC61217 Table Top Lateral Position")
+#define CODE_DCM_IEC61217TableTopLongitudinalPosition                      DSRBasicCodedEntry("126807", "DCM", "IEC61217 Table Top Longitudinal Position")
+#define CODE_DCM_IEC61217TableTopVerticalPosition                          DSRBasicCodedEntry("126808", "DCM", "IEC61217 Table Top Vertical Position")
+#define CODE_DCM_IEC61217GantryContinuousRollAngle                         DSRBasicCodedEntry("126809", "DCM", "IEC61217 Gantry Continuous Roll Angle")
+#define CODE_DCM_IEC61217GantryContinuousPitchAngle                        DSRBasicCodedEntry("126810", "DCM", "IEC61217 Gantry Continuous Pitch Angle")
+#define CODE_DCM_IEC61217GantryContinuousYawAngle                          DSRBasicCodedEntry("126811", "DCM", "IEC61217 Gantry Continuous Yaw Angle")
 
 #endif
