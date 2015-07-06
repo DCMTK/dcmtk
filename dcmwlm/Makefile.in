@@ -13,7 +13,7 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-all: include-all libsrc-all apps-all wwwapps-all tests-all
+all: include-all libsrc-all apps-all tests-all
 
 install: install-bin install-doc install-support
 
@@ -41,9 +41,6 @@ libsrc-all: include-all
 apps-all: libsrc-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" all)
 
-wwwapps-all: libsrc-all
-	(cd wwwapps && $(MAKE) ARCH="$(ARCH)" all)
-
 tests-all: libsrc-all
 	(cd tests && $(MAKE) ARCH="$(ARCH)" all)
 
@@ -64,9 +61,6 @@ libsrc-install: libsrc-all
 apps-install: apps-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" install)
 
-wwwapps-install: wwwapps-all
-	(cd wwwapps && $(MAKE) ARCH="$(ARCH)" install)
-
 docs-install:
 	(cd docs && $(MAKE) install)
 
@@ -81,7 +75,6 @@ clean:
 	(cd include && $(MAKE) clean)
 	(cd libsrc && $(MAKE) clean)
 	(cd apps && $(MAKE) clean)
-	(cd wwwapps && $(MAKE) clean)
 	(cd tests && $(MAKE) clean)
 	(cd docs && $(MAKE) clean)
 	(cd data && $(MAKE) clean)
@@ -92,7 +85,6 @@ distclean:
 	(cd include && $(MAKE) distclean)
 	(cd libsrc && $(MAKE) distclean)
 	(cd apps && $(MAKE) distclean)
-	(cd wwwapps && $(MAKE) distclean)
 	(cd tests && $(MAKE) distclean)
 	(cd docs && $(MAKE) distclean)
 	(cd data && $(MAKE) distclean)
@@ -102,5 +94,4 @@ distclean:
 dependencies:
 	(cd libsrc && touch $(DEP) && $(MAKE) dependencies)
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
-	(cd wwwapps && touch $(DEP) && $(MAKE) dependencies)
 	(cd tests && touch $(DEP) && $(MAKE) dependencies)

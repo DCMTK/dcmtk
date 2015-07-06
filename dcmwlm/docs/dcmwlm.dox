@@ -19,11 +19,6 @@ The main interface classes are:
 This module contains the following command line tool:
 \li \ref wlmscpfs
 
-\section Files
-
-The following file provides further documentation:
-\li \ref file_wwwapp
-
 \section Examples
 
 For an example of how to use the main interface classes of this module, see
@@ -31,9 +26,4 @@ file 'wlmscpfs.cc' (containing the main function of the corresponding tool) and
 file 'wlcefs.cc' (making use of the WlmActivityManager class that manages all
 activities a corresponding SCP has to manage).
 
-*/
-
-/*!
-    \page file_wwwapp wwwapp.txt file
-    \verbinclude wwwapp.txt
 */

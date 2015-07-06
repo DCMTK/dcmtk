@@ -11,16 +11,10 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-files = wwwapp.txt
-
 
 all:
 
 install:
-	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
-	for file in $(files); do \
-		$(INSTALL_DATA) $$file $(DESTDIR)$(docdir) ;\
-	done
 
 clean:
 	rm -f $(TRASH)
