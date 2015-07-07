@@ -19,7 +19,7 @@
  *    classes: CID7445_DeviceParticipatingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-03 13:07:51 by J. Riesmeier
+ *    File created on 2015-07-07 12:50:35 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
 #define CONTEXT_GROUP_NUMBER  "7445"
 #define CONTEXT_GROUP_VERSION "20120406"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1042"
-#define CONTEXT_GROUP_TYPE    "OFTrue"  /* extensible */
+#define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 
 CID7445_DeviceParticipatingRoles::CID7445_DeviceParticipatingRoles(const DSRCodedEntryValue &selectedValue)

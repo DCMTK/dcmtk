@@ -19,7 +19,7 @@
  *    classes: CID7452_OrganizationalRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-03 13:07:53 by J. Riesmeier
+ *    File created on 2015-07-07 12:50:36 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
 #define CONTEXT_GROUP_NUMBER  "7452"
 #define CONTEXT_GROUP_VERSION "20150602"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.516"
-#define CONTEXT_GROUP_TYPE    "OFTrue"  /* extensible */
+#define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 
 CID7452_OrganizationalRoles::CID7452_OrganizationalRoles(const DSRCodedEntryValue &selectedValue)
