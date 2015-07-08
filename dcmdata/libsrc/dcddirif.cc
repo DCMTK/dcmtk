@@ -2680,7 +2680,7 @@ OFCondition DicomDirInterface::checkDicomFile(const OFFilename &filename,
                                               const OFFilename &directory,
                                               const OFBool checkFilename)
 {
-    /* define fileformat object for the DICOM file to be loaded */
+    /* define file format object for the DICOM file to be loaded */
     DcmFileFormat fileformat;
     /* call the "real" function */
     return loadAndCheckDicomFile(filename, directory, fileformat, checkFilename);
@@ -4691,7 +4691,7 @@ OFCondition DicomDirInterface::addDicomFile(const OFFilename &filename,
 }
 
 
-// set the fileset descriptor and character set
+// set the file-set descriptor and character set
 OFCondition DicomDirInterface::setFilesetDescriptor(const char *filename,
                                                     const char *charset)
 {
@@ -5144,7 +5144,7 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
 }
 
 
-// check whether given fileset ID is valid
+// check whether given file-set ID is valid
 OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
 {
     OFBool result = OFTrue;
@@ -5159,7 +5159,7 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
                 << OFString(37 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
-        /* ensure that fileset ID is not too large */
+        /* ensure that file-set ID is not too large */
         if (isComponentTooLarge(filesetID, OFstatic_cast(size_t, DcmVR(EVR_CS).getMaxValueLength()), MapFilenamesMode))
         {
             DCMDATA_ERROR("file-set ID too large: " << filesetID);

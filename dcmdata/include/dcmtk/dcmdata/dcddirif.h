@@ -32,9 +32,9 @@
  *  constant declarations and macros  *
  *------------------------------------*/
 
-// default fileset ID
+// default file-set ID
 #define DEFAULT_FILESETID "DCMTK_MEDIA_DEMO"
-// default specific character set of fileset descriptor file
+// default specific character set of file-set descriptor file
 #define DEFAULT_DESCRIPTOR_CHARSET "ISO_IR 100"
 
 
@@ -295,13 +295,13 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFCondition addDicomFile(const OFFilename &filename,
                              const OFFilename &directory = OFFilename());
 
-    /** set the fileset descriptor file ID and character set.
+    /** set the file-set descriptor file ID and character set.
      *  Prior to any internal modification both 'filename' and 'charset' are checked
      *  using the above checking routines.  Existence of 'filename' is not checked.
      *  Requires a DICOMDIR object to exist (see createNewDicomDir(), appendToDicomDir()
      *  or updateDicomDir()).
-     *  @param filename name of the fileset descriptor file to be set
-     *  @param charset character set of the fileset descriptor file to be set.
+     *  @param filename name of the file-set descriptor file to be set
+     *  @param charset character set of the file-set descriptor file to be set.
      *    default: ISO Latin 1 ("ISO_IR 100"), use NULL or empty string to omit value.
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -1233,8 +1233,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                            const OFFilename &sourceFilename,
                                            const OFBool abortCheck = OFFalse);
 
-    /** check whether given fileset ID is valid
-     *  @param filesetID fileset ID to be checked
+    /** check whether given file-set ID is valid
+     *  @param filesetID file-set ID to be checked
      *  @return OFTrue if ID is valid, OFFalse otherwise
      */
     OFBool checkFilesetID(const OFString &filesetID);
@@ -1516,7 +1516,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool ConsistencyCheck;
     /// create icon images
     OFBool IconImageMode;
-    /// update existing fileset
+    /// update existing file-set
     OFBool FilesetUpdateMode;
 
     /// name of the DICOMDIR backup file
