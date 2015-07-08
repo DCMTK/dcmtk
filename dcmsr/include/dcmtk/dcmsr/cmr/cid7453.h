@@ -19,7 +19,7 @@
  *    classes: CID7453_PerformingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-03 13:40:16 by J. Riesmeier
+ *    File created on 2015-07-08 11:57:33 by J. Riesmeier
  *
  */
 
@@ -106,7 +106,16 @@ class DCMTK_CMR_EXPORT CID7453_PerformingRoles
      */
    virtual OFCondition findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const;
 
-  // --- static helper function ---
+  // --- static helper functions ---
+
+    /** initialize this context group explicitly.  Internally, the list of standard coded
+     *  entries is created and initialized by calling getCodes().
+     ** @note This function can be called multiple times but in case of multi-threaded
+     *        applications should be called at least once before any instance of this class
+     *        is actually used.  For single-threaded applications, there is no need to call
+     *        it since the initialization is done implicitly.
+     */
+    static void initialize();
 
     /** map a given type to the associated coded entry
      ** @param  value  type that should be mapped to a coded entry
@@ -136,6 +145,8 @@ class DCMTK_CMR_EXPORT CID7453_PerformingRoles
 
     /** get list of standard coded entries that are managed by this context group.
      *  Internally, the singleton pattern is used, so the list is initialized only once.
+     *  Please note that this function is not thread-safe.  Therefore, the initialize()
+     *  function can be called before any instance of this class is actually used.
      ** @return reference to list of coded entries managed by this context group
      */
     static CodeList &getCodes();

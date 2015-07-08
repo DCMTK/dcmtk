@@ -102,6 +102,13 @@ void CID5001_Countries::printCodes(STD_NAMESPACE ostream &stream) const
 
 // static functions
 
+void CID5001_Countries::initialize()
+{
+    /* create and initialize code list */
+    getCodes();
+}
+
+
 DSRCodedEntryValue CID5001_Countries::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {

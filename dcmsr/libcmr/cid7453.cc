@@ -19,7 +19,7 @@
  *    classes: CID7453_PerformingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-07 12:50:38 by J. Riesmeier
+ *    File created on 2015-07-08 11:49:44 by J. Riesmeier
  *
  */
 
@@ -104,6 +104,13 @@ void CID7453_PerformingRoles::printCodes(STD_NAMESPACE ostream &stream) const
 
 
 // static functions
+
+void CID7453_PerformingRoles::initialize()
+{
+    /* create and initialize code list */
+    getCodes();
+}
+
 
 DSRCodedEntryValue CID7453_PerformingRoles::getCodedEntry(const EnumType value,
                                                           const OFBool enhancedEncodingMode)

@@ -19,7 +19,7 @@
  *    classes: CID7452_OrganizationalRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-07 12:50:36 by J. Riesmeier
+ *    File created on 2015-07-08 11:49:43 by J. Riesmeier
  *
  */
 
@@ -104,6 +104,13 @@ void CID7452_OrganizationalRoles::printCodes(STD_NAMESPACE ostream &stream) cons
 
 
 // static functions
+
+void CID7452_OrganizationalRoles::initialize()
+{
+    /* create and initialize code list */
+    getCodes();
+}
+
 
 DSRCodedEntryValue CID7452_OrganizationalRoles::getCodedEntry(const EnumType value,
                                                               const OFBool enhancedEncodingMode)

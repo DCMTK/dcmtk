@@ -102,6 +102,13 @@ void CID5000_Languages::printCodes(STD_NAMESPACE ostream &stream) const
 
 // static functions
 
+void CID5000_Languages::initialize()
+{
+    /* create and initialize code list */
+    getCodes();
+}
+
+
 DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {

@@ -107,7 +107,16 @@ class DCMTK_CMR_EXPORT CID5000_Languages
      */
     virtual OFCondition findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const;
 
-  // --- static helper function ---
+  // --- static helper functions ---
+
+    /** initialize this context group explicitly.  Internally, the list of standard coded
+     *  entries is created and initialized by calling getCodes().
+     ** @note This function can be called multiple times but in case of multi-threaded
+     *        applications should be called at least once before any instance of this class
+     *        is actually used.  For single-threaded applications, there is no need to call
+     *        it since the initialization is done implicitly.
+     */
+    static void initialize();
 
     /** map a given language to the associated coded entry
      ** @param  value                 language that should be mapped to a coded entry
@@ -137,6 +146,8 @@ class DCMTK_CMR_EXPORT CID5000_Languages
 
     /** get list of standard coded entries that are managed by this context group.
      *  Internally, the singleton pattern is used, so the list is initialized only once.
+     *  Please note that this function is not thread-safe.  Therefore, the initialize()
+     *  function can be called before any instance of this class is actually used.
      ** @return reference to list of coded entries managed by this context group
      */
     static CodeList &getCodes();

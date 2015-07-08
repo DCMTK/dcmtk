@@ -19,7 +19,7 @@
  *    classes: CID7445_DeviceParticipatingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-07 12:50:35 by J. Riesmeier
+ *    File created on 2015-07-08 11:49:41 by J. Riesmeier
  *
  */
 
@@ -104,6 +104,13 @@ void CID7445_DeviceParticipatingRoles::printCodes(STD_NAMESPACE ostream &stream)
 
 
 // static functions
+
+void CID7445_DeviceParticipatingRoles::initialize()
+{
+    /* create and initialize code list */
+    getCodes();
+}
+
 
 DSRCodedEntryValue CID7445_DeviceParticipatingRoles::getCodedEntry(const EnumType value,
                                                                    const OFBool enhancedEncodingMode)
