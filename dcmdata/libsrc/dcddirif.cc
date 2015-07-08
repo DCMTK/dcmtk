@@ -1061,6 +1061,7 @@ DicomDirInterface::DicomDirInterface()
     EncodingCheck(OFTrue),
     ResolutionCheck(OFTrue),
     TransferSyntaxCheck(OFTrue),
+    FileFormatCheck(OFTrue),
     ConsistencyCheck(OFTrue),
     IconImageMode(OFFalse),
     FilesetUpdateMode(OFFalse),
@@ -2707,12 +2708,27 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const OFFilename &filename,
         {
             /* check for correct part 10 file format */
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
+            DcmDataset *dataset = fileformat.getDataset();
             if ((metainfo == NULL) || (metainfo->card() == 0))
             {
-                DCMDATA_ERROR("file not in part 10 format (no file meta information): " << filename);
-                result = EC_InvalidStream;
+                /* create error message */
+                OFOStringStream oss;
+                oss << "file not in part 10 format (no file meta information): " << filename
+                    << OFStringStream_ends;
+                OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                /* file meta information is required */
+                if (FileFormatCheck)
+                {
+                    DCMDATA_ERROR(tmpString);
+                    result = EC_FileMetaInfoHeaderMissing;
+                } else {
+                    DCMDATA_WARN(tmpString);
+                    /* add missing file meta information */
+                    if (dataset != NULL)
+                        fileformat.validateMetaInfo(dataset->getOriginalXfer());
+                }
+                OFSTRINGSTREAM_FREESTR(tmpString)
             }
-            DcmDataset *dataset = fileformat.getDataset();
             /* check for empty dataset */
             if ((dataset == NULL) || (dataset->card() == 0))
             {
@@ -4889,6 +4905,19 @@ OFBool DicomDirInterface::disableTransferSyntaxCheck(const OFBool newMode)
     OFBool oldMode = TransferSyntaxCheck;
     /* set new mode */
     TransferSyntaxCheck = newMode;
+    /* return old mode */
+    return oldMode;
+}
+
+
+// enable/disable DICOM file format check, i.e. whether the file is checked for the
+// presence of the file meta information (according to DICOM part 10)
+OFBool DicomDirInterface::disableFileFormatCheck(const OFBool newMode)
+{
+    /* save current mode */
+    OFBool oldMode = FileFormatCheck;
+    /* set new mode */
+    FileFormatCheck = newMode;
     /* return old mode */
     return oldMode;
 }

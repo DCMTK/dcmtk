@@ -425,6 +425,15 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
         return TransferSyntaxCheck;
     }
 
+    /** get current status of the "DICOM file format check" mode.
+     *  See disableFileFormatCheck() for more details.
+     *  @return OFTrue if check is enabled, OFFalse otherwise
+     */
+    OFBool fileFormatCheck() const
+    {
+        return FileFormatCheck;
+    }
+
     /** get current status of the "consistency check" mode.
      *  See disableConsistencyCheck() for more details.
      *  @return OFTrue if check is enabled, OFFalse otherwise
@@ -533,6 +542,18 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @return previously stored value
      */
     OFBool disableTransferSyntaxCheck(const OFBool newMode = OFFalse);
+
+    /** disable/enable the "DICOM file format check".
+     *  If this mode is disabled, it is not checked whether the file to be added
+     *  contains file meta information (according to DICOM part 10).
+     *  Default: on, check DICOM file format
+     *  @warning Please use this switch with care since the resulting DICOMDIR will
+     *    violate the rules of the DICOM standard if it references files that are
+     *    missing the file meta information.
+     *  @param newMode disable check if OFFalse, enable if OFTrue
+     *  @return previously stored value
+     */
+    OFBool disableFileFormatCheck(const OFBool newMode = OFFalse);
 
     /** disable/enable the "consistency check".
      *  If this mode is disabled, the consistency of newly added records with
@@ -1512,6 +1533,8 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool ResolutionCheck;
     /// check transfer syntax
     OFBool TransferSyntaxCheck;
+    /// check DICOM file format
+    OFBool FileFormatCheck;
     /// check consistency of newly added record
     OFBool ConsistencyCheck;
     /// create icon images
