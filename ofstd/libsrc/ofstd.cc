@@ -782,8 +782,8 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
             OFFilename tmpDirName(result);
             result.set(tmpDirName.getCharPointer(), OFTrue /*convert*/);
         }
-        /* check file name */
-        if ((strLength > 0) && (strValue[0] != L'.'))
+        /* check file name (ignore empty string and ".") */
+        if ((strLength > 1) || ((strLength == 1) && (strValue[0] != L'.')))
         {
             if (result.isEmpty())
                 result.set(strValue, OFTrue /*convert*/);
@@ -835,8 +835,8 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
         /* we only get here, if we don't have an absolute directory in "fileName" */
         /* now normalize the directory name */
         normalizeDirName(result, dirName, allowEmptyDirName);
-        /* check file name */
-        if ((strLength > 0) && (strValue[0] != '.'))
+        /* check file name (ignore empty string and ".") */
+        if ((strLength > 1) || ((strLength == 1) && (strValue[0] != '.')))
         {
             if (result.isEmpty())
                 result.set(strValue);
@@ -1142,7 +1142,7 @@ size_t OFStandard::searchDirectoryRecursively(const OFFilename &directory,
         while ((entry = readdir(dirPtr)) != NULL)
 #endif
         {
-            /* filter out current and parent directory */
+            /* filter out current (".") and parent directory ("..") */
             if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
             {
                 /* avoid leading "." */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -163,6 +163,10 @@ OFTEST(ofstd_testPaths_1)
 
     OFStandard::combineDirAndFilename(result, "", "", OFTrue /*allowEmptyDirName*/);
     OFCHECK_EQUAL(result, "");
+
+    // hidden files/directories start with a "." (on Unix systems)
+    OFStandard::combineDirAndFilename(result, "", ".hidden", OFTrue /*allowEmptyDirName*/);
+    OFCHECK_EQUAL(result, ".hidden");
 }
 
 OFTEST(ofstd_testPaths_2)
