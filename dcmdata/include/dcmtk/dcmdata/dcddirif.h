@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -435,7 +435,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     }
 
     /** enable/disable the "abort on first error" mode.
-     *  If the mode is enabled addDicomFile() reports an error message and
+     *  If the mode is enabled, addDicomFile() reports an error message and
      *  returns with an error status code if something went wrong.
      *  Default: off, do not abort
      *  @param newMode enable mode if OFTrue, disable if OFFalse
@@ -444,7 +444,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool enableAbortMode(const OFBool newMode = OFTrue);
 
     /** enable/disable the "map filenames" mode.
-     *  If the mode is enabled filenames are automatically mapped to DICOM format
+     *  If the mode is enabled, filenames are automatically mapped to DICOM format
      *  (convert lower case to upper case characters and remove trailing period).
      *  Default: off, do not map filenames
      *  @param newMode enable mode if OFTrue, disable if OFFalse
@@ -453,7 +453,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool enableMapFilenamesMode(const OFBool newMode = OFTrue);
 
     /** enable/disable the "invent missing values" mode.
-     *  If the mode is enabled required DICOMDIR attributes (type 1) are
+     *  If the mode is enabled, required DICOMDIR attributes (type 1) are
      *  invented when missing in the DICOM file.
      *  Default: off, do not invent attribute values
      *  @param newMode enable mode if OFTrue, disable if OFFalse
@@ -462,7 +462,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool enableInventMode(const OFBool newMode = OFTrue);
 
     /** enable/disable the "invent new patient ID" mode.
-     *  If the mode is enabled a new PatientID is invented in case of
+     *  If the mode is enabled, a new PatientID is invented in case of
      *  inconsistent PatientName attributes, i.e. when different patients
      *  share the same ID.
      *  Default: off, do not invent new patient ID
@@ -472,7 +472,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool enableInventPatientIDMode(const OFBool newMode = OFTrue);
 
     /** enable/disable the "retired SOP class support" mode.
-     *  If the mode is enabled retired SOP classes defined in previous editions
+     *  If the mode is enabled, retired SOP classes defined in previous editions
      *  of the DICOM standard are also accepted.
      *  Default: off, do not accept retired SOP classes
      *  @param newMode enable mode if OFTrue, disable if OFFalse
@@ -481,7 +481,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool enableRetiredSOPClassSupport(const OFBool newMode = OFTrue);
 
     /** enable/disable the "create icon images" mode.
-     *  If the mode is enabled icon images are created for each IMAGE record.
+     *  If the mode is enabled, icon images are created for each IMAGE record.
      *  Please note that particular application profiles (e.g. Basic Cardiac)
      *  require an icon images to be present.  Therefore, this mode does not
      *  affect the icon images creation of such profiles.
@@ -492,7 +492,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool enableIconImageMode(const OFBool newMode = OFTrue);
 
     /** disable/enable the "create backup file" mode.
-     *  If this mode is disabled no backup file of an existing DICOMDIR is created.
+     *  If this mode is disabled, no backup file of an existing DICOMDIR is created.
      *  However, when appending new files to an existing DICOMDIR a _temporary_
      *  backup file "<dicomdir>.$$$" is always created.
      *  Default: on, create a backup file "<dicomdir>.BAK"
@@ -502,40 +502,40 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     OFBool disableBackupMode(const OFBool newMode = OFFalse);
 
     /** disable/enable the "pixel encoding check".
-     *  If this mode is disabled the pixel encoding is not check for compliance
-     *  with the selected application profile.  Please use this switch with care
-     *  since the resulting DICOMDIR will probably violate the rules for the
-     *  selected application profile.
+     *  If this mode is disabled, the pixel encoding is not check for compliance
+     *  with the selected application profile.
      *  Default: on, check pixel encoding (bits allocated/stored, high bit)
+     *  @warning Please use this switch with care since the resulting DICOMDIR will
+     *    probably violate the rules for the selected application profile.
      *  @param newMode disable check if OFFalse, enable if OFTrue
      *  @return previously stored value
      */
     OFBool disableEncodingCheck(const OFBool newMode = OFFalse);
 
     /** disable/enable the "spatial resolution check".
-     *  If this mode is disabled the spatial resolution is not check for compliance
-     *  with the selected application profile.  Please use this switch with care
-     *  since the resulting DICOMDIR will probably violate the rules for the
-     *  selected application profile.
+     *  If this mode is disabled, the spatial resolution is not check for compliance
+     *  with the selected application profile.
      *  Default: on, check spatial resolution
+     *  @warning Please use this switch with care since the resulting DICOMDIR will
+     *    probably violate the rules for the selected application profile.
      *  @param newMode disable check if OFFalse, enable if OFTrue
      *  @return previously stored value
      */
     OFBool disableResolutionCheck(const OFBool newMode = OFFalse);
 
     /** disable/enable the "transfer syntax check".
-     *  If this mode is disabled the transfer syntax is not check for compliance
-     *  with the selected application profile.  Please use this switch with care
-     *  since the resulting DICOMDIR will probably violate the rules for the
-     *  selected application profile.
+     *  If this mode is disabled, the transfer syntax is not check for compliance
+     *  with the selected application profile.
      *  Default: on, check transfer syntax
+     *  @warning Please use this switch with care since the resulting DICOMDIR will
+     *    probably violate the rules for the selected application profile.
      *  @param newMode disable check if OFFalse, enable if OFTrue
      *  @return previously stored value
      */
     OFBool disableTransferSyntaxCheck(const OFBool newMode = OFFalse);
 
     /** disable/enable the "consistency check".
-     *  If this mode is disabled the consistency of newly added records with
+     *  If this mode is disabled, the consistency of newly added records with
      *  already existing ones is not checked (see warnAboutInconsistentAttributes()
      *  for details).
      *  Default: on, perform consistency check
