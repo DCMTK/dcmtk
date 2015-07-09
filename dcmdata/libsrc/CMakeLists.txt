@@ -1,5 +1,15 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(dcmdata cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcddirif dcdicdir dcdicent dcdict dcdictzz dcdirrec dcelem dcerror dcfilefo dchashdi dcistrma dcistrmb dcistrmf dcistrmz dcitem dclist dcmetinf dcobject dcostrma dcostrmb dcostrmf dcostrmz dcpcache dcpixel dcpixseq dcpxitem dcrleccd dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag dctagkey dctypes dcuid dcwcache dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrof dcvrod dcvrpn dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvruc dcvrui dcvrul dcvrulup dcvrur dcvrus dcvrut dcxfer dcpath modhelp vrscan vrscanl dcfilter)
+
+# built-in dictionary is only used on windows.
+IF(WIN32 OR MINGW)
+  # add built-in dictionary
+  set(DICTIONARY_OBJ dcdictzz)
+ELSE()
+  # add empty dummy dictionary
+  set(DICTIONARY_OBJ dcdictbi)
+ENDIF(WIN32 OR MINGW)
+
+DCMTK_ADD_LIBRARY(dcmdata cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcddirif dcdicdir dcdicent dcdict ${DICTIONARY_OBJ} dcdirrec dcelem dcerror dcfilefo dchashdi dcistrma dcistrmb dcistrmf dcistrmz dcitem dclist dcmetinf dcobject dcostrma dcostrmb dcostrmf dcostrmz dcpcache dcpixel dcpixseq dcpxitem dcrleccd dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag dctagkey dctypes dcuid dcwcache dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrof dcvrod dcvrpn dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvruc dcvrui dcvrul dcvrulup dcvrur dcvrus dcvrut dcxfer dcpath modhelp vrscan vrscanl dcfilter)
 
 DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
 DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS})
