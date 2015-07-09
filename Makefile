@@ -45,7 +45,7 @@ check-nosilent-exhaustive:  config-check-exhaustive ofstd-check-exhaustive oflog
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
-	for file in ANNOUNCE.$(PACKAGE_VERSION_NUMBER) CHANGES.$(PACKAGE_VERSION_NUMBER) COPYRIGHT FAQ HISTORY VERSION; do \
+	for file in ANNOUNCE.$(PACKAGE_VERSION_NUMBER) CHANGES COPYRIGHT FAQ HISTORY VERSION; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(docdir) ;\
 	done
 
