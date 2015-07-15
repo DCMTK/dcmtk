@@ -23,20 +23,12 @@
 //       although it is part of configure testing itself.
 //       Therefore, ensure osconfig.h has already been generated
 //       before this program is used.
-#include "dcmtk/config/osconfig.h"
-
 #define INCLUDE_CLIMITS
 #define INCLUDE_CFLOAT
 #define INCLUDE_CMATH
 #define INCLUDE_CSETJMP
 #define INCLUDE_CSIGNAL
-#include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofcast.h"
-
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif
+#include "ofmath.cc"
 
 #ifdef HAVE_FENV_H
 // For controlling floating point exceptions on Unix like systems.
@@ -46,49 +38,6 @@
 #ifdef __APPLE__
 // For controlling floating point exceptions on OS X.
 #include <xmmintrin.h>
-#endif
-
-/***********************************************************
- "platform-independent" isinf, isnan & finite, "stolen" from
- ofstd, since we can't depend on the ofstd module!
-***********************************************************/
-
-/* Some MacOS X versions define isinf() and isnan() in <math.h> but not in <cmath> */
-#if defined(__APPLE__) && defined(__MACH__) && !defined (__INTEL_COMPILER)
-#undef HAVE_PROTOTYPE_ISINF
-#undef HAVE_PROTOTYPE_ISNAN
-#endif
-
-// some systems don't properly define isnan()
-#ifdef HAVE_ISNAN
-#ifndef HAVE_PROTOTYPE_ISNAN
-extern "C"
-{
-  int isnan(double value);
-}
-#endif
-#endif
-
-
-// some systems don't properly define finite()
-#ifdef HAVE_FINITE
-#ifndef HAVE_PROTOTYPE_FINITE
-extern "C"
-{
-  int finite(double value);
-}
-#endif
-#endif
-
-
-// some systems don't properly define isinf()
-#ifdef HAVE_ISINF
-#ifndef HAVE_PROTOTYPE_ISINF
-extern "C"
-{
-  int isinf(double value);
-}
-#endif
 #endif
 
 // hackish definition of cout, as we can't depend on
@@ -254,15 +203,7 @@ static int test_inf( STD_NAMESPACE ostream& out, const char* name )
     const int has_inf = print_flag
     (
         out,
-#if defined(HAVE_ISINF) || defined(HAVE_PROTOTYPE_ISINF)
-        isinf(t),
-#elif (defined(HAVE_FINITE) || defined(HAVE_PROTOTYPE_FINITE)) && (defined(HAVE_ISNAN) || defined(HAVE_PROTOTYPE_ISNAN))
-        !finite(t) && !isnan(t),
-#elif defined(HAVE_WINDOWS_H)
-        !_finite(t) && !_isnan(t),
-#else
-        0,
-#endif
+        OFStandard::isinf(t),
         "HAS_INFINITY",
         name,
         7
@@ -285,25 +226,13 @@ static T guess_qnan()
 }
 
 template<typename T>
-static int test_nan( T t )
-{
-#if defined(HAVE_ISNAN) || defined(HAVE_PROTOTYPE_ISNAN)
-    return isnan(t);
-#elif defined(HAVE_WINDOWS_H)
-    return _isnan(t);
-#else
-    return 0;
-#endif
-}
-
-template<typename T>
 static int test_qnan( STD_NAMESPACE ostream& out, const char* name )
 {
     const T t = guess_qnan<T>();
     const int has_qnan = print_flag
     (
         out,
-        test_nan( t ),
+        OFStandard::isnan( t ),
         "HAS_QUIET_NAN",
         name,
         7
@@ -403,7 +332,7 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
 {
     // Create signaling NaNs and test if they really are signaling NaNs
     const T& t = guess<T>::snan();
-    int flag = test_nan( t ) && test_trap( &provoke_snan<T> );
+    int flag = OFStandard::isnan( t ) && test_trap( &provoke_snan<T> );
     // Disable floating point exceptions that have been enabled for the test,
     // Windows and Unix version.
 #ifdef HAVE_WINDOWS_H

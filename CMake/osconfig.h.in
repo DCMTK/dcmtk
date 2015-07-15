@@ -335,6 +335,9 @@
 /* Define to 1 if you have the <math.h> header file. */
 #cmakedefine HAVE_MATH_H @HAVE_MATH_H@
 
+/* Define to 1 if you have the <cmath> header file. */
+#cmakedefine HAVE_CMATH @HAVE_CMATH@
+
 /* Define to 1 if you have the `mbstowcs' function. */
 #cmakedefine HAVE_MBSTOWCS @HAVE_MBSTOWCS@
 
@@ -406,6 +409,9 @@
 /* Define if your system has a prototype for finite in math.h */
 #cmakedefine HAVE_PROTOTYPE_FINITE @HAVE_PROTOTYPE_FINITE@
 
+/* Define if your system has a prototype for std::finite in cmath */
+#cmakedefine HAVE_PROTOTYPE_STD__FINITE @HAVE_PROTOTYPE_STD__FINITE@
+
 /* Define if your system has a prototype for flock in sys/file.h */
 #cmakedefine HAVE_PROTOTYPE_FLOCK @HAVE_PROTOTYPE_FLOCK@
 
@@ -443,7 +449,13 @@
 /* Define if your system has a prototype for isnan in math.h */
 #cmakedefine HAVE_PROTOTYPE_ISNAN @HAVE_PROTOTYPE_ISNAN@
 
-/* Define if your system has a prototype for isnan in math.h */
+/* Define if your system has a prototype for std::isinf in cmath */
+#cmakedefine HAVE_PROTOTYPE_STD__ISINF @HAVE_PROTOTYPE_STD__ISINF@
+
+/* Define if your system has a prototype for std::isnan in cmath */
+#cmakedefine HAVE_PROTOTYPE_STD__ISNAN @HAVE_PROTOTYPE_STD__ISNAN@
+
+/* Define if your system has a prototype for fpclassf in math.h */
 #cmakedefine HAVE_PROTOTYPE__FPCLASSF @HAVE_PROTOTYPE__FPCLASSF@
 
 /* Define if your system has a prototype for listen in sys/types.h

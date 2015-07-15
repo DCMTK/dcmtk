@@ -97,6 +97,9 @@
 /* Define to 1 if you have the <climits> header file. */
 #undef HAVE_CLIMITS
 
+/* Define to 1 if you have the <cmath> header file. */
+#undef HAVE_CMATH
+
 /* Define to 1 if you have the `connect' function. */
 #undef HAVE_CONNECT
 
@@ -589,6 +592,15 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for socket in sys/types.h
    sys/socket.h */
 #undef HAVE_PROTOTYPE_SOCKET
+
+/* Define if your system has a prototype for std::finite in cmath */
+#undef HAVE_PROTOTYPE_STD__FINITE
+
+/* Define if your system has a prototype for std::isinf in cmath */
+#undef HAVE_PROTOTYPE_STD__ISINF
+
+/* Define if your system has a prototype for std::isnan in cmath */
+#undef HAVE_PROTOTYPE_STD__ISNAN
 
 /* Define if your system has a prototype for std::vfprintf in stdarg.h stdio.h
    */

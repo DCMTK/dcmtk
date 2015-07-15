@@ -7963,6 +7963,18 @@ fi
 
 done
 
+for ac_header in cmath
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "cmath" "ac_cv_header_cmath" "$ac_includes_default"
+if test "x$ac_cv_header_cmath" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CMATH 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in new
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "new" "ac_cv_header_new" "$ac_includes_default"
@@ -10450,6 +10462,195 @@ else
 $as_echo "no" >&6; }
 fi
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for std::finite (in cmath)" >&5
+$as_echo_n "checking prototype for std::finite (in cmath)... " >&6; }
+
+:
+
+ac_includes=""
+for ac_header in cmath
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done
+tmp_save_1=`echo std::finite | tr ' :' '__'`
+if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+dummyStruct std::finite(dummyStruct);
+
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "ac_cv_prototype_$tmp_save_1=no"
+else
+  eval "ac_cv_prototype_$tmp_save_1=yes"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_prototype 1
+_ACEOF
+
+  :
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for std::isinf (in cmath)" >&5
+$as_echo_n "checking prototype for std::isinf (in cmath)... " >&6; }
+
+:
+
+ac_includes=""
+for ac_header in cmath
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done
+tmp_save_1=`echo std::isinf | tr ' :' '__'`
+if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+dummyStruct std::isinf(dummyStruct);
+
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "ac_cv_prototype_$tmp_save_1=no"
+else
+  eval "ac_cv_prototype_$tmp_save_1=yes"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_prototype 1
+_ACEOF
+
+  :
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for std::isnan (in cmath)" >&5
+$as_echo_n "checking prototype for std::isnan (in cmath)... " >&6; }
+
+:
+
+ac_includes=""
+for ac_header in cmath
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done
+tmp_save_1=`echo std::isnan | tr ' :' '__'`
+if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+dummyStruct std::isnan(dummyStruct);
+
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "ac_cv_prototype_$tmp_save_1=no"
+else
+  eval "ac_cv_prototype_$tmp_save_1=yes"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_prototype 1
+_ACEOF
+
+  :
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for flock (in sys/file.h)" >&5
 $as_echo_n "checking prototype for flock (in sys/file.h)... " >&6; }
 
@@ -12425,7 +12626,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12428 "configure"
+#line 12629 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12897,7 +13098,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12900 "configure"
+#line 13101 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12969,7 +13170,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12972 "configure"
+#line 13173 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13041,7 +13242,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13044 "configure"
+#line 13245 "configure"
 #include "confdefs.h"
 
 template <class T>

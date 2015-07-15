@@ -215,7 +215,7 @@ END_EXTERN_C
 
 // define INCLUDE_CMATH to include <cmath> or <math.h> if available
 #ifdef INCLUDE_CMATH
-#ifdef USE_STD_CXX_INCLUDES
+#ifdef HAVE_CMATH
 #include <cmath>
 #elif defined(HAVE_MATH_H)
 #ifndef INCLUDE_MATH_H_AS_CXX

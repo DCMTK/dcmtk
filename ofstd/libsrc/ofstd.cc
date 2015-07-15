@@ -172,64 +172,6 @@ const unsigned int OFStandard::ftoa_alternate = 0x08;
 const unsigned int OFStandard::ftoa_leftadj   = 0x10;
 const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
-
-/* Some MacOS X versions define isinf() and isnan() in <math.h> but not in <cmath> */
-#if defined(__APPLE__) && defined(__MACH__) && !defined (__INTEL_COMPILER)
-#undef HAVE_PROTOTYPE_ISINF
-#undef HAVE_PROTOTYPE_ISNAN
-#endif
-
-
-// some systems don't properly define isnan()
-#ifdef HAVE_ISNAN
-#ifndef HAVE_PROTOTYPE_ISNAN
-extern "C"
-{
-  int isnan(double value);
-}
-#endif
-#endif
-
-
-// some systems don't properly define finite()
-#ifdef HAVE_FINITE
-#ifndef HAVE_PROTOTYPE_FINITE
-extern "C"
-{
-  int finite(double value);
-}
-#endif
-#endif
-
-#if !defined(HAVE_ISINF) && defined(HAVE_PROTOTYPE_ISINF)
-#   define HAVE_ISINF 1
-#endif
-
-// some systems don't properly define isinf()
-#ifdef HAVE_ISINF
-#ifndef HAVE_PROTOTYPE_ISINF
-extern "C"
-{
-  int isinf(double value);
-}
-#endif
-
-#else /* HAVE_ISINF */
-
-static int my_isinf(double x)
-{
-#if defined(DCMTK_USE_CXX11_STL) || ( defined(__MINGW32__) && __cplusplus >= 201103L )
-  return STD_NAMESPACE isinf(x);
-#elif defined(HAVE_WINDOWS_H)
-  return (! _finite(x)) && (! _isnan(x));
-#else
-  // Solaris 2.5.1 has finite() and isnan() but not isinf().
-  return (! finite(x)) && (! isnan(x));
-#endif
-}
-#endif /* HAVE_ISINF */
-
-
 // --- string functions ---
 
 #ifndef HAVE_STRLCPY
@@ -1991,42 +1933,6 @@ double OFStandard::atof(const char *s, OFBool *success)
 }
 
 #endif /* DISABLE_OFSTD_ATOF */
-
-OFBool OFStandard::isnan( float f )
-{
-#ifdef HAVE_WINDOWS_H
-  return _isnan(f) != 0;
-#else
-  return ::isnan(f);
-#endif
-}
-
-OFBool OFStandard::isnan( double d )
-{
-#ifdef HAVE_WINDOWS_H
-  return _isnan(d) != 0;
-#else
-  return ::isnan(d);
-#endif
-}
-
-OFBool OFStandard::isinf( float f )
-{
-#ifdef HAVE_ISINF
-  return ::isinf( f );
-#else
-  return my_isinf( f ) != 0;
-#endif
-}
-
-OFBool OFStandard::isinf( double d )
-{
-#ifdef HAVE_ISINF
-  return ::isinf( d );
-#else
-  return my_isinf( d ) != 0;
-#endif
-}
 
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define FTOA_MAXEXP          308
