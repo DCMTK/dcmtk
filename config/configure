@@ -8947,6 +8947,8 @@ $as_echo "#define HAVE_PTHREAD_RWLOCK /**/" >>confdefs.h
 	  ;;
 	*-*-openbsd4*)
 	  ;;
+	*-*-openbsd5*)
+	  ;;
 	*-*-freebsd*)
 	  ;;
 	*-*-netbsdelf2*)
@@ -8956,8 +8958,8 @@ $as_echo "#define HAVE_PTHREAD_RWLOCK /**/" >>confdefs.h
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  ;;
 	*)
-	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
+	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
+	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
     esac
 
@@ -8996,6 +8998,8 @@ $as_echo "#define HAVE_PTHREAD_RWLOCK /**/" >>confdefs.h
 	  ;;
 	*-*-openbsd4*)
 	  ;;
+	*-*-openbsd5*)
+	  ;;
 	*-*-freebsd*)
 	  ;;
 	*-*-netbsdelf2*)
@@ -9005,8 +9009,8 @@ $as_echo "#define HAVE_PTHREAD_RWLOCK /**/" >>confdefs.h
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  ;;
 	*)
-	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
+	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
+	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
     esac
 
@@ -12421,7 +12425,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12424 "configure"
+#line 12428 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12893,7 +12897,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12896 "configure"
+#line 12900 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12965,7 +12969,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12968 "configure"
+#line 12972 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13037,7 +13041,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13040 "configure"
+#line 13044 "configure"
 #include "confdefs.h"
 
 template <class T>
