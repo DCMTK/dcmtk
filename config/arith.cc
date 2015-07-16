@@ -24,7 +24,6 @@
 //       Therefore, ensure osconfig.h has already been generated
 //       before this program is used.
 #define INCLUDE_CLIMITS
-#define INCLUDE_CFLOAT
 #define INCLUDE_CMATH
 #define INCLUDE_CSETJMP
 #define INCLUDE_CSIGNAL

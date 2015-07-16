@@ -23,10 +23,10 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofstd.h"
-
 #define INCLUDE_CMATH
+#define INCLUDE_CFLOAT
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN

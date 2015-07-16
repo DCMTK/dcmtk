@@ -2398,24 +2398,14 @@ void OFStandard::ftoa(
   if (!dst || !siz) return;
 
   // check if val is NAN
-#if defined(DCMTK_USE_CXX11_STL) || ( defined(__MINGW32__) && __cplusplus >= 201103L )
-  if (STD_NAMESPACE isnan(val))
-#elif defined(HAVE_WINDOWS_H)
-  if (_isnan(val))
-#else
-  if (isnan(val))
-#endif
+  if (OFStandard::isnan(val))
   {
     OFStandard::strlcpy(dst, "nan", siz);
     return;
   }
 
   // check if val is infinity
-#ifdef HAVE_ISINF
-  if (isinf(val))
-#else
-  if (my_isinf(val))
-#endif
+  if (OFStandard::isinf(val))
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
