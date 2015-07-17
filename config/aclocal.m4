@@ -1861,6 +1861,59 @@ AC_DEFUN([AC_CHECK_ATTRIBUTE_ALIGNED],
     fi
 ])
 
+AC_DEFUN([AC_CHECK_ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES],
+[
+    AC_MSG_CHECKING([whether __attribute__((aligned)) supports templates])
+    AC_LINK_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            template<typename T>
+            struct test { typedef T type[[16]] __attribute__((aligned(4))); };
+            int main()
+            {
+                test<char>::type i;
+                return 0;
+            }
+        ])
+    ],
+    [dcmtk_attribute_aligned_supports_templates=[yes]],
+    [dcmtk_attribute_aligned_supports_templates=[no]]
+    )
+    if test "$dcmtk_attribute_aligned_supports_templates" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($1,[1],[Define if __attribute__((aligned)) supports templates])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
+
+AC_DEFUN([AC_CHECK_ALIGNAS_SUPPORTS_TYPEDEFS],
+[
+    AC_MSG_CHECKING([whether alignas supports typedefs])
+    AC_LINK_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            int main()
+            {
+                typedef char type[[16]] alignas(4);
+                return 0;
+            }
+        ])
+    ],
+    [dcmtk_alignas_supports_typedefs=[yes]],
+    [dcmtk_alignas_supports_typedefs=[no]]
+    )
+    if test "$dcmtk_alignas_supports_typedefs" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($1,[1],[Define if alignas supports typedefs])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
+
+
 dnl
 dnl This macro checks if a given preprocessor symbol exists and is a string
 dnl

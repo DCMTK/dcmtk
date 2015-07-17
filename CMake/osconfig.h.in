@@ -1105,8 +1105,14 @@ typedef unsigned long ulong;
 /* Define if the compiler supports __alignof */
 #cmakedefine HAVE_MS_ALIGNOF
 
-/* Define if the compiler supports __attribute__(aligned) */
+/* Define if the compiler supports __attribute__((aligned)) */
 #cmakedefine HAVE_ATTRIBUTE_ALIGNED
+
+/* Define if __attribute__((aligned)) supports templates */
+#cmakedefine ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES
+
+/* Define if alignas supports typedefs */
+#cmakedefine ALIGNAS_SUPPORTS_TYPEDEFS
 
 /* Define if the compiler supports __declspec(align) */
 #cmakedefine HAVE_DECLSPEC_ALIGN

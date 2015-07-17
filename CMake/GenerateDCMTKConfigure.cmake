@@ -749,6 +749,22 @@ DCMTK_TRY_COMPILE(HAVE_ATTRIBUTE_ALIGNED "__attribute__((aligned)) is supported"
     return 0;
 }")
 
+DCMTK_TRY_COMPILE(ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES "__attribute__((aligned)) supports templates"
+    "template<typename T>
+struct test { typedef T type[16] __attribute__((aligned(4))); };
+int main()
+{
+    test<char>::type i;
+    return 0;
+}")
+
+DCMTK_TRY_COMPILE(ALIGNAS_SUPPORTS_TYPEDEFS "alignas supports typedefs"
+    "int main()
+{
+    typedef char type[16] alignas(4);
+    return 0;
+}")
+
 DCMTK_TRY_COMPILE(HAVE_DECLSPEC_ALIGN "__declspec(align) is supported"
     "int main()
 {

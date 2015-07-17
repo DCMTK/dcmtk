@@ -30,7 +30,6 @@
 #ifdef DCMTK_USE_CXX11_STL
 
 #define OFalignof alignof
-#define OFalignas alignas
 // these helper templates automatically resolve the alignment
 // if a type is given and pass-through any numeric constant
 template<typename T>
@@ -64,65 +63,6 @@ OFalignas_size_helper
 template<size_t Size>
 OFalignas_size_helper<Size> OFalignof_or_identity_template() {}
 #define OFalignof_or_identity(A) sizeof(OFalignof_or_identity_template<A>())
-
-// alignas
-#ifdef HAVE_ATTRIBUTE_ALIGNED
-
-#define OFalignas(A) __attribute__((aligned(OFalignof_or_identity(A))))
-
-#elif defined(HAVE_DECLSPEC_ALIGN)
-
-// Microsoft workaround: OFalign and OFalign_typename macros
-// __declspec(align) does not understand integral expressions
-// but instead requires an integral literal, Microsoft says:
-// "Valid entries are integer powers of two from 1 to 8192 (bytes),
-// such as 2, 4, 8, 16, 32, or 64."
-// So this is fundamentally different to the real alignment specifiers
-// from GNU and C++11.
-#define OFalign(T,A) OFdeclspec_align<T>::as<OFalignof_or_identity(A)>::type
-#define OFalign_typename(T,A) OFTypename OFdeclspec_align<T>::template as<OFalignof_or_identity(A)>::type
-
-// The trick / hack: specialize a template for every valid
-// integral expression and use an appropriate integral literal to
-// define the desired type. At least Microsoft allows us to
-// typedef this stuff, but the API is still fundamentally different
-// to the favored "OFalignas".
-// This also requires a specialization for arrays, since making
-// an array from an aligned type is not the same as making an
-// aligned array.
-#define DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( N )\
-template<typename T>\
-struct make_type<T,N> { typedef __declspec(align(N)) T type; };\
-template<typename T,size_t S>\
-struct make_type<T[S],N> { typedef __declspec(align(N)) T type[S]; }
-
-template<typename X>
-class OFdeclspec_align
-{
-    template<typename T,size_t>
-    struct make_type { typedef T type; };
-    template<typename T,size_t S,size_t A>
-    struct make_type<T[S],A> { typedef T type[S]; };
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 1 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 2 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 4 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 8 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 16 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 32 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 64 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 128 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 256 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 512 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 1024 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 2048 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 4096 );
-    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 8192 );
-
-public:
-    template<size_t A>
-    struct as { typedef OFTypename make_type<X,A>::type type; };
-};
-#endif
 
 #else // DOXYGEN
 
@@ -189,6 +129,69 @@ public:
 #define OFalign_typename OFTypename <unspecified>
 
 #endif // C++11
+
+// alignas
+#if defined(DCMTK_USE_CXX11_STL) && defined(ALIGNAS_SUPPORTS_TYPEDEFS)
+
+#define OFalignas alignas
+
+#elif defined(HAVE_ATTRIBUTE_ALIGNED) && defined(ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES)
+
+#define OFalignas(A) __attribute__((aligned(OFalignof_or_identity(A))))
+
+#elif defined(HAVE_DECLSPEC_ALIGN)
+
+// Microsoft workaround: OFalign and OFalign_typename macros
+// __declspec(align) does not understand integral expressions
+// but instead requires an integral literal, Microsoft says:
+// "Valid entries are integer powers of two from 1 to 8192 (bytes),
+// such as 2, 4, 8, 16, 32, or 64."
+// So this is fundamentally different to the real alignment specifiers
+// from GNU and C++11.
+#define OFalign(T,A) OFdeclspec_align<T>::as<OFalignof_or_identity(A)>::type
+#define OFalign_typename(T,A) OFTypename OFdeclspec_align<T>::template as<OFalignof_or_identity(A)>::type
+
+// The trick / hack: specialize a template for every valid
+// integral expression and use an appropriate integral literal to
+// define the desired type. At least Microsoft allows us to
+// typedef this stuff, but the API is still fundamentally different
+// to the favored "OFalignas".
+// This also requires a specialization for arrays, since making
+// an array from an aligned type is not the same as making an
+// aligned array.
+#define DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( N )\
+template<typename T>\
+struct make_type<T,N> { typedef __declspec(align(N)) T type; };\
+template<typename T,size_t S>\
+struct make_type<T[S],N> { typedef __declspec(align(N)) T type[S]; }
+
+template<typename X>
+class OFdeclspec_align
+{
+    template<typename T,size_t>
+    struct make_type { typedef T type; };
+    template<typename T,size_t S,size_t A>
+    struct make_type<T[S],A> { typedef T type[S]; };
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 1 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 2 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 4 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 8 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 16 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 32 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 64 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 128 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 256 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 512 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 1024 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 2048 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 4096 );
+    DCMTK_OFALIGN_HACK_CONSTANT_BY_SPECIALIZATION( 8192 );
+
+public:
+    template<size_t A>
+    struct as { typedef OFTypename make_type<X,A>::type type; };
+};
+#endif
 
 #if defined(OFalignas) && !defined(DOXYGEN)
 // OFalign based on OFalignas, so this is "platform-independent".

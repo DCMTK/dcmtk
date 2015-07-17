@@ -734,7 +734,7 @@ XMLSTR stringDup(XMLCSTR lpszData, int cbData)
     if (lpszNew)
     {
         memcpy(lpszNew, lpszData, (cbData) * sizeof(XMLCHAR));
-        lpszNew[cbData] = OFstatic_cast(XMLCHAR, NULL);
+        lpszNew[cbData] = OFstatic_cast(XMLCHAR, 0);
     }
     return lpszNew;
 }
