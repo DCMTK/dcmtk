@@ -5645,6 +5645,18 @@ _ACEOF
 fi
 
 
+ac_fn_c_check_type "$LINENO" "sigjmp_buf" "ac_cv_type_sigjmp_buf" "#include <setjmp.h>
+"
+if test "x$ac_cv_type_sigjmp_buf" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_SIGJMP_BUF 1
+_ACEOF
+
+
+fi
+
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working memcmp" >&5
 $as_echo_n "checking for working memcmp... " >&6; }
@@ -12626,7 +12638,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12629 "configure"
+#line 12641 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13098,7 +13110,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13101 "configure"
+#line 13113 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13170,7 +13182,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13173 "configure"
+#line 13185 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13242,7 +13254,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13245 "configure"
+#line 13257 "configure"
 #include "confdefs.h"
 
 template <class T>

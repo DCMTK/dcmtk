@@ -667,6 +667,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `setuid' function. */
 #undef HAVE_SETUID
 
+/* Define to 1 if the system has the type `sigjmp_buf'. */
+#undef HAVE_SIGJMP_BUF
+
 /* Define to 1 if you have the <signal.h> header file. */
 #undef HAVE_SIGNAL_H
 

@@ -1081,6 +1081,9 @@ typedef unsigned long ulong;
 /* Define if your system uses _pclose instead of pclose */
 #cmakedefine HAVE_PCLOSE @HAVE_PCLOSE@
 
+/* Define if your system provides sigjmp_buf as conditional jmp_buf alternative */
+#cmakedefine HAVE_SIGJMP_BUF @HAVE_SIGJMP_BUF@
+
 /* Define if your OpenSSL library provides the SSL_CTX_GET0_PARAM function */
 #cmakedefine HAVE_SSL_CTX_GET0_PARAM @HAVE_SSL_CTX_GET0_PARAM@
 

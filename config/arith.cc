@@ -43,9 +43,14 @@
 // OFConsole.
 #define COUT STD_NAMESPACE cout
 
+// define sigjmp_buf if it isn't already
+#ifndef HAVE_SIGJMP_BUF
+typedef jmp_buf sigjmp_buf;
+#endif
+
 // longjmp env (jump destination), ugly global var we
 // need to recover from traps.
-jmp_buf jbuf;
+sigjmp_buf jbuf;
 
 // signal handler that "jumps back in time" to before
 // the error occurred and fixes what has gone wrong
