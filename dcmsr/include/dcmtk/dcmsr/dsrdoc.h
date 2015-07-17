@@ -905,7 +905,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  be created (this is the case if the study instance UID or series instance UID has
      *  changed as well as any other attribute within the SR Document General Module or
      *  SR Document Content Module, see DICOM standard for details).
-     *  This method also updates the other DICOM header attributes (calling updateAttributes()).
+     *  This method also updates other DICOM header attributes (by calling updateAttributes()).
+     *  However, instance-level attributes other than the SOP instance UID are usually not
+     *  changed (if already set), e.g. the current instance number or content date/time.
      */
     virtual void createNewSOPInstance();
 
