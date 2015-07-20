@@ -26,10 +26,21 @@
 
 #include "dcmtk/ofstd/oftest.h"
 
+#include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
+#include "dcmtk/dcmsr/cmr/cid42.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
 #include "dcmtk/dcmsr/cmr/tid1204.h"
+
+
+OFTEST(dcmsr_CID42_NumericValueQualifier)
+{
+    DSRNumericMeasurementValue numValue;
+    /* set coded entry from context group and check the value */
+    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CID42_NumericValueQualifier::NotANumber)).good());
+    OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_NotANumber);
+}
 
 
 OFTEST(dcmsr_CID7445_DeviceParticipatingRoles)

@@ -16,16 +16,16 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: CID7453_PerformingRoles
+ *    classes: CID42_NumericValueQualifier
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-20 09:43:09 by J. Riesmeier
+ *    File created on 2015-07-20 09:43:00 by J. Riesmeier
  *
  */
 
 
-#ifndef CMR_CID7453_H
-#define CMR_CID7453_H
+#ifndef CMR_CID42_H
+#define CMR_CID42_H
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
@@ -38,39 +38,43 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 7453 - Performing Roles.
- *  (type: extensible, version: 20141110)
+ *  CID 42 - Numeric Value Qualifier.
+ *  (type: extensible, version: 20020114)
  */
-class DCMTK_CMR_EXPORT CID7453_PerformingRoles
+class DCMTK_CMR_EXPORT CID42_NumericValueQualifier
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of performing roles
+    /** types of numeric value qualifier
      */
     enum EnumType
     {
-        /// (121094,DCM,"Performing")
-        Performing,
-        /// (C1709880,UMLS,"Referring")
-        Referring,
-        /// (121096,DCM,"Requesting")
-        Requesting,
-        /// (121097,DCM,"Recording")
-        Recording,
-        /// (121098,DCM,"Verifying")
-        Verifying,
-        /// (121099,DCM,"Assisting")
-        Assisting,
-        /// (J-0714B,SRT,"Circulating Nurse")
-        CirculatingNurse,
-        /// (121101,DCM,"Standby")
-        Standby,
-        /// (113850,DCM,"Irradiation Authorizing")
-        IrradiationAuthorizing,
-        /// (113851,DCM,"Irradiation Administering")
-        IrradiationAdministering
+        /// (114000,DCM,"Not a number")
+        NotANumber,
+        /// (114001,DCM,"Negative Infinity")
+        NegativeInfinity,
+        /// (114002,DCM,"Positive Infinity")
+        PositiveInfinity,
+        /// (114003,DCM,"Divide by zero")
+        DivideByZero,
+        /// (114004,DCM,"Underflow")
+        Underflow,
+        /// (114005,DCM,"Overflow")
+        Overflow,
+        /// (114006,DCM,"Measurement failure")
+        MeasurementFailure,
+        /// (114007,DCM,"Measurement not attempted")
+        MeasurementNotAttempted,
+        /// (114008,DCM,"Calculation failure")
+        CalculationFailure,
+        /// (114009,DCM,"Value out of range")
+        ValueOutOfRange,
+        /// (114010,DCM,"Value unknown")
+        ValueUnknown,
+        /// (114011,DCM,"Value indeterminate")
+        ValueIndeterminate
     };
 
     /** (default) constructor
@@ -79,15 +83,15 @@ class DCMTK_CMR_EXPORT CID7453_PerformingRoles
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID7453_PerformingRoles(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID42_NumericValueQualifier(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID7453_PerformingRoles(const EnumType selectedValue,
-                            const OFBool enhancedEncodingMode = OFFalse);
+    CID42_NumericValueQualifier(const EnumType selectedValue,
+                                const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the

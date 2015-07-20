@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2015, OFFIS e.V.
- *  All right reserved.  See COPYRIGHT file for details.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,7 +19,7 @@
  *    classes: CID7452_OrganizationalRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-08 11:49:43 by J. Riesmeier
+ *    File created on 2015-07-20 09:43:08 by J. Riesmeier
  *
  */
 
@@ -29,7 +29,7 @@
 #include "dcmtk/dcmsr/cmr/cid7452.h"
 
 
-// number of version of 7452 (Organizational Roles)
+// general information on CID 7452 (Organizational Roles)
 #define CONTEXT_GROUP_NUMBER  "7452"
 #define CONTEXT_GROUP_VERSION "20150602"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.516"

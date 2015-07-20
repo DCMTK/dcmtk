@@ -26,7 +26,7 @@
 #include "dcmtk/dcmsr/cmr/cid5001.h"
 
 
-// number and version of CID 5001 (Countries)
+// general information on CID 5001 (Countries)
 #define CONTEXT_GROUP_NUMBER  "5001"
 #define CONTEXT_GROUP_VERSION ""      /* unknown */
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.329"

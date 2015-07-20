@@ -16,47 +16,50 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: CID5000_Languages
+ *    classes: CID42_NumericValueQualifier
+ *
+ *    Generated automatically from DICOM PS 3.16-2015c
+ *    File created on 2015-07-20 09:43:00 by J. Riesmeier
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmsr/cmr/cid5000.h"
+#include "dcmtk/dcmsr/cmr/cid42.h"
 
 
-// general information on CID 5000 (Languages)
-#define CONTEXT_GROUP_NUMBER  "5000"
-#define CONTEXT_GROUP_VERSION ""      /* unknown */
-#define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.328"
-#define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
+// general information on CID 42 (Numeric Value Qualifier)
+#define CONTEXT_GROUP_NUMBER  "42"
+#define CONTEXT_GROUP_VERSION "20020114"
+#define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.22"
+#define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 
-CID5000_Languages::CID5000_Languages(const DSRCodedEntryValue &selectedValue)
+CID42_NumericValueQualifier::CID42_NumericValueQualifier(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID5000_Languages::CID5000_Languages(const EnumType selectedValue,
-                                     const OFBool enhancedEncodingMode)
+CID42_NumericValueQualifier::CID42_NumericValueQualifier(const EnumType selectedValue,
+                                                         const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID5000_Languages::selectValue(const EnumType selectedValue,
-                                           const OFBool enhancedEncodingMode)
+OFCondition CID42_NumericValueQualifier::selectValue(const EnumType selectedValue,
+                                                     const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID5000_Languages::findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const
+OFCondition CID42_NumericValueQualifier::findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -80,7 +83,7 @@ OFCondition CID5000_Languages::findCodedEntry(const DSRCodedEntryValue &codedEnt
 }
 
 
-void CID5000_Languages::printCodes(STD_NAMESPACE ostream &stream) const
+void CID42_NumericValueQualifier::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -102,15 +105,15 @@ void CID5000_Languages::printCodes(STD_NAMESPACE ostream &stream) const
 
 // static functions
 
-void CID5000_Languages::initialize()
+void CID42_NumericValueQualifier::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
-                                                    const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID42_NumericValueQualifier::getCodedEntry(const EnumType value,
+                                                              const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -127,7 +130,7 @@ DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
 }
 
 
-CID5000_Languages::CodeList &CID5000_Languages::getCodes()
+CID42_NumericValueQualifier::CodeList &CID42_NumericValueQualifier::getCodes()
 {
     /* use a static variable for singleton pattern */
     static CodeList *codes = NULL;
@@ -137,18 +140,18 @@ CID5000_Languages::CodeList &CID5000_Languages::getCodes()
         /* create a new code list (should never fail) */
         codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_US, DSRBasicCodedEntry("en-US", "IETF4646", "English (US)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French, DSRBasicCodedEntry("fra", "IETF4646", "French")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CA, DSRBasicCodedEntry("fr-CA", "IETF4646", "French (CA)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CH, DSRBasicCodedEntry("fr-CH", "IETF4646", "French (CH)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_FR, DSRBasicCodedEntry("fr-FR", "IETF4646", "French (FR)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German, DSRBasicCodedEntry("deu", "IETF4646", "German")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_AT, DSRBasicCodedEntry("de-AT", "IETF4646", "German (AT)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_CH, DSRBasicCodedEntry("de-CH", "IETF4646", "German (CH)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_DE, DSRBasicCodedEntry("de-DE", "IETF4646", "German (DE)")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(NotANumber, DSRBasicCodedEntry("114000", "DCM", "Not a number")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(NegativeInfinity, DSRBasicCodedEntry("114001", "DCM", "Negative Infinity")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(PositiveInfinity, DSRBasicCodedEntry("114002", "DCM", "Positive Infinity")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(DivideByZero, DSRBasicCodedEntry("114003", "DCM", "Divide by zero")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Underflow, DSRBasicCodedEntry("114004", "DCM", "Underflow")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Overflow, DSRBasicCodedEntry("114005", "DCM", "Overflow")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(MeasurementFailure, DSRBasicCodedEntry("114006", "DCM", "Measurement failure")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(MeasurementNotAttempted, DSRBasicCodedEntry("114007", "DCM", "Measurement not attempted")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(CalculationFailure, DSRBasicCodedEntry("114008", "DCM", "Calculation failure")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ValueOutOfRange, DSRBasicCodedEntry("114009", "DCM", "Value out of range")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ValueUnknown, DSRBasicCodedEntry("114010", "DCM", "Value unknown")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ValueIndeterminate, DSRBasicCodedEntry("114011", "DCM", "Value indeterminate")));
     }
     /* should never be NULL */
     return *codes;

@@ -103,7 +103,8 @@ class DCMTK_CMR_EXPORT CID5000_Languages
      *  entry (standard or extension) is returned.
      *  See DSRContextGroup::findCodedEntry() for details.
      ** @param  codedEntryValue  coded entry to be searched for
-     ** @return result of the search process.  Use OFCondition::good() or OFCondition::bad().
+     ** @return result of the search process.  Use OFCondition::good() or OFCondition::bad()
+     *          to check whether the coded entry has been found or not.
      */
     virtual OFCondition findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const;
 

@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2015, OFFIS e.V.
- *  All right reserved.  See COPYRIGHT file for details.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,7 +19,7 @@
  *    classes: CID7453_PerformingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-08 11:49:44 by J. Riesmeier
+ *    File created on 2015-07-20 09:43:09 by J. Riesmeier
  *
  */
 
@@ -29,7 +29,7 @@
 #include "dcmtk/dcmsr/cmr/cid7453.h"
 
 
-// number of version of 7453 (Performing Roles)
+// general information on CID 7453 (Performing Roles)
 #define CONTEXT_GROUP_NUMBER  "7453"
 #define CONTEXT_GROUP_VERSION "20141110"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.517"

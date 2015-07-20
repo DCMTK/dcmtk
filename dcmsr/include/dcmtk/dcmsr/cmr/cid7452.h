@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2015, OFFIS e.V.
- *  All right reserved.  See COPYRIGHT file for details.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,7 +19,7 @@
  *    classes: CID7452_OrganizationalRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-08 11:57:31 by J. Riesmeier
+ *    File created on 2015-07-20 09:43:08 by J. Riesmeier
  *
  */
 
@@ -118,7 +118,8 @@ class DCMTK_CMR_EXPORT CID7452_OrganizationalRoles
      *  entry (standard or extension) is returned.
      *  See DSRContextGroup::findCodedEntry() for details.
      ** @param  codedEntryValue  coded entry to be searched for
-     ** @return result of the search process.  Use OFCondition::good() or OFCondition::bad().
+     ** @return result of the search process.  Use OFCondition::good() or OFCondition::bad()
+     *          to check whether the coded entry has been found or not.
      */
    virtual OFCondition findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const;
 
@@ -134,7 +135,7 @@ class DCMTK_CMR_EXPORT CID7452_OrganizationalRoles
     static void initialize();
 
     /** map a given type to the associated coded entry
-     ** @param  value  type that should be mapped to a coded entry
+     ** @param  value                 type that should be mapped to a coded entry
      *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      ** @return coded entry that is associated with the given type
      */
