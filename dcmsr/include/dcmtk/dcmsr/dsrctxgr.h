@@ -41,6 +41,14 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
 
   public:
 
+    /** conversion operator that returns the currently selected coded entry value
+     *  (might be empty if none is selected)
+     */
+    operator DSRCodedEntryValue() const
+    {
+        return getSelectedValue();
+    }
+
     /** clear list of extended coded entries and forget about the currently selected
      *  coded entry
      */
