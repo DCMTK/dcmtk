@@ -21,7 +21,8 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 	-I$(dcmsr)/include
 LOCALDEFS =
 
-objs = tid1001.o tid1204.o cid42.o cid5000.o cid5001.o cid7445.o cid7452.o cid7453.o
+objs = init.o tid1001.o tid1204.o cid42.o cid5000.o cid5001.o cid7445.o cid7452.o \
+	cid7453.o
 library = libcmr.$(LIBEXT)
 
 
