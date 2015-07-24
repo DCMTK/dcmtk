@@ -394,7 +394,9 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
 #endif
   if (randFile)
   {
+#ifdef HAVE_RAND_EGD
     if (RAND_egd(randFile) <= 0)
+#endif
     {
       RAND_load_file(randFile ,-1);
     }

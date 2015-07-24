@@ -128,14 +128,15 @@ class OFdefault_optional_traits
     // types for detecting T's default constructibility via sfinae
     struct no_type {};
     struct yes_type {double d;};
-#ifndef _MSC_VER
+#ifdef HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE
     // helper class to create an argument out of size_t
     template<size_t>
     struct consume{};
     // sfinae overload working for default constructible Xs
     template<typename X>
     static yes_type sfinae(consume<sizeof *new X>*);
-#elif _MSC_VER < 1700
+#elif defined(_MSC_VER)
+#if _MSC_VER < 1700
     // Workaround bug in Visual Studio.
     // On these broken compilers, the argument is not evaluated
     // unless we require them to evaluate it for choosing which
@@ -149,11 +150,12 @@ class OFdefault_optional_traits
     template<typename X>
     static yes_type sfinae(typename consume<sizeof X(),sizeof X()>::type*);
 #else
-    // Visual Stuio 2012 is completely broken, but it has std::is_defaul_constructible
+    // Visual Studio 2012 is completely broken, but it has std::is_default_constructible
     // Note: this tests constructibility, but not if WE can construct this.
     template<typename X>
     static yes_type sfinae(typename OFenable_if<std::is_default_constructible<X>::value>::type*);
-#endif
+#endif // _MSC_VER
+#endif // HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE
     // most general sfinae overload, chosen only if everything else fails
     template<typename X>
     static no_type sfinae(...);

@@ -512,6 +512,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
 IF(DCMTK_WITH_OPENSSL)
   # Check if OpenSSL provides the SSL_CTX_get0_param function
   CHECK_FUNCTIONWITHHEADER_EXISTS("SSL_CTX_get0_param" "openssl/ssl.h" HAVE_SSL_CTX_GET0_PARAM ${OPENSSL_LIBS})
+  CHECK_FUNCTIONWITHHEADER_EXISTS("RAND_egd" "openssl/rand.h" HAVE_RAND_EGD ${OPENSSL_LIBS})
 ENDIF(DCMTK_WITH_OPENSSL)
 
 # Tests that require a try-compile
@@ -751,7 +752,7 @@ DCMTK_TRY_COMPILE(HAVE_ATTRIBUTE_ALIGNED "__attribute__((aligned)) is supported"
 
 DCMTK_TRY_COMPILE(ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES "__attribute__((aligned)) supports templates"
     "template<typename T>
-struct test { typedef T type[16] __attribute__((aligned(4))); };
+struct test { typedef T type __attribute__((aligned(4))); };
 int main()
 {
     test<char>::type i;
@@ -770,6 +771,21 @@ DCMTK_TRY_COMPILE(HAVE_DECLSPEC_ALIGN "__declspec(align) is supported"
 {
     __declspec(align(4)) char c[16];
     return 0;
+}")
+
+DCMTK_TRY_COMPILE(HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE "the compiler supports default constructor detection via SFINAE"
+    "struct no_type {};
+struct yes_type {double d;};
+template<unsigned>
+struct consume{};
+template<typename X>
+static yes_type sfinae(consume<sizeof *new X>*);
+template<typename X>
+static no_type sfinae(...);
+struct test { test( int ); };
+int main()
+{
+    return sizeof(sfinae<test>(0)) == sizeof(yes_type);
 }")
 
 # Compile config/arith.cc and generate config/arith.h

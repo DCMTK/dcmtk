@@ -10,8 +10,10 @@ STD_NAMESPACE istream& operator>>( STD_NAMESPACE istream& in, const test& ) { in
 
 OFTEST(ofstd_optional)
 {
+#if defined(HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE) || defined(_MSC_VER)
     OFCHECK( OFoptional_traits<int>::is_default_constructible::value );
     OFCHECK( !OFoptional_traits<test>::is_default_constructible::value );
+#endif
 
     OFoptional<int> o0( 3 ), o1, o2( OFnullopt );
 
@@ -40,6 +42,7 @@ OFTEST(ofstd_optional)
     OFCHECK( o1 >= 1 );
     OFCHECK( 1 <= o1 );
 
+#if defined(HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE) || defined(_MSC_VER)
     OFStringStream s( "42" );
     o1 = OFnullopt;
     OFCHECK( !o1 );
@@ -59,6 +62,7 @@ OFTEST(ofstd_optional)
     s.str("23");
     s >> o1;
     OFCHECK( o1 && *o1 == 23 );
+#endif
 
 #ifdef DCMTK_USE_CXX11_STL
     OFoptional<test> o3( 2, OFFalse );
@@ -67,6 +71,7 @@ OFTEST(ofstd_optional)
 #endif // NOT C++11
     OFCHECK( o3 && o3->doit() );
 
+#if defined(HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE) || defined(_MSC_VER)
     s.clear();
     s.str( "test" );
     // if everything works, this sets the failbit
@@ -78,6 +83,7 @@ OFTEST(ofstd_optional)
     s.clear();
     OFCHECK( !(s >> o3).fail() ); // no fail, since no-call
     OFCHECK( !o3 );
+#endif
 
 #ifdef DCMTK_USE_CXX11_STL
     o3.emplace( 0, OFFalse );

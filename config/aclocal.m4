@@ -1869,7 +1869,7 @@ AC_DEFUN([AC_CHECK_ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES],
         AC_LANG_SOURCE(
         [
             template<typename T>
-            struct test { typedef T type[[16]] __attribute__((aligned(4))); };
+            struct test { typedef T type __attribute__((aligned(4))); };
             int main()
             {
                 test<char>::type i;
@@ -1913,6 +1913,39 @@ AC_DEFUN([AC_CHECK_ALIGNAS_SUPPORTS_TYPEDEFS],
     fi
 ])
 
+AC_DEFUN([AC_CHECK_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE],
+[
+    AC_MSG_CHECKING([whether the compiler supports default constructor detection via SFINAE])
+    AC_LINK_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            struct no_type {};
+            struct yes_type {double d;};
+            template<unsigned>
+            struct consume{};
+            template<typename X>
+            static yes_type sfinae(consume<sizeof *new X>*);
+            template<typename X>
+            static no_type sfinae(...);
+            struct test { test( int ); };
+            int main()
+            {
+                return sizeof(sfinae<test>(0)) == sizeof(yes_type);
+            }
+        ])
+    ],
+    [dcmtk_default_constructor_detection_via_sfinae=[yes]],
+    [dcmtk_default_constructor_detection_via_sfinae=[no]]
+    )
+    if test "$dcmtk_default_constructor_detection_via_sfinae" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($1,[1],[Define if the compiler supports default constructor detection via SFINAE])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
+
 
 dnl
 dnl This macro checks if a given preprocessor symbol exists and is a string
@@ -1947,6 +1980,31 @@ AC_DEFUN([AC_CHECK_SSL_CTX_GET0_PARAM],
     [
         AC_MSG_RESULT([yes])
         AC_DEFINE([HAVE_SSL_CTX_GET0_PARAM])
+    ],
+    [
+        AC_MSG_RESULT([no])
+    ])
+    LIBS=$SAVELIBS
+])
+
+dnl
+dnl This macro checks if OpenSSL provides the RAND_egd function
+dnl
+dnl AC_CHECK_RAND_EGD
+AC_DEFUN([AC_CHECK_RAND_EGD],
+[
+    AH_TEMPLATE([HAVE_RAND_EGD], [Define if OpenSSL provides the RAND_egd function.])dnl
+    SAVELIBS=$LIBS
+    HAVE_RAND_EGD=yes
+    LIBS="$LIBS $OPENSSLLIBS"
+    AC_MSG_CHECKING([whether OpenSSL provides the RAND_egd function])
+    AC_COMPILE_IFELSE(
+    [
+        AC_LANG_PROGRAM([[#include <openssl/rand.h>]],[[&RAND_egd;]])
+    ],
+    [
+        AC_MSG_RESULT([yes])
+        AC_DEFINE([HAVE_RAND_EGD])
     ],
     [
         AC_MSG_RESULT([no])

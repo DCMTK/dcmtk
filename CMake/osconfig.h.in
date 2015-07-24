@@ -1087,6 +1087,9 @@ typedef unsigned long ulong;
 /* Define if your OpenSSL library provides the SSL_CTX_GET0_PARAM function */
 #cmakedefine HAVE_SSL_CTX_GET0_PARAM @HAVE_SSL_CTX_GET0_PARAM@
 
+/* Define if your OpenSSL library provides the RAND_egd function */
+#cmakedefine HAVE_RAND_EGD @HAVE_RAND_EGD@
+
 /* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
 #define STDIO_NAMESPACE ::
 
@@ -1116,6 +1119,9 @@ typedef unsigned long ulong;
 
 /* Define if the compiler supports __declspec(align) */
 #cmakedefine HAVE_DECLSPEC_ALIGN @HAVE_DECLSPEC_ALIGN@
+
+/* Define if the compiler supports default constructor detection via SFINAE */
+#cmakedefine HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE @HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE@
 
 /* Define if we are cross compiling */
 #cmakedefine DCMTK_CROSS_COMPILING @DCMTK_CROSS_COMPILING@

@@ -13723,6 +13723,41 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     LIBS=$SAVELIBS
 
 
+        SAVELIBS=$LIBS
+    HAVE_RAND_EGD=yes
+    LIBS="$LIBS $OPENSSLLIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether OpenSSL provides the RAND_egd function" >&5
+$as_echo_n "checking whether OpenSSL provides the RAND_egd function... " >&6; }
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+        #include <openssl/rand.h>
+int
+main ()
+{
+&RAND_egd;
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+        $as_echo "#define HAVE_RAND_EGD 1" >>confdefs.h
+
+
+else
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    LIBS=$SAVELIBS
+
+
 
 JPEGLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for jpeg_set_defaults in -ljpeg" >&5
@@ -14747,7 +14782,7 @@ $as_echo_n "checking whether __attribute__((aligned)) supports templates... " >&
 
 
             template<typename T>
-            struct test { typedef T type[16] __attribute__((aligned(4))); };
+            struct test { typedef T type __attribute__((aligned(4))); };
             int main()
             {
                 test<char>::type i;
@@ -14803,6 +14838,48 @@ rm -f core conftest.err conftest.$ac_objext \
 $as_echo "yes" >&6; }
 
 $as_echo "#define ALIGNAS_SUPPORTS_TYPEDEFS 1" >>confdefs.h
+
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports default constructor detection via SFINAE" >&5
+$as_echo_n "checking whether the compiler supports default constructor detection via SFINAE... " >&6; }
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+            struct no_type {};
+            struct yes_type {double d;};
+            template<unsigned>
+            struct consume{};
+            template<typename X>
+            static yes_type sfinae(consume<sizeof *new X>*);
+            template<typename X>
+            static no_type sfinae(...);
+            struct test { test( int ); };
+            int main()
+            {
+                return sizeof(sfinae<test>(0)) == sizeof(yes_type);
+            }
+
+
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  dcmtk_default_constructor_detection_via_sfinae=yes
+else
+  dcmtk_default_constructor_detection_via_sfinae=no
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+    if test "$dcmtk_default_constructor_detection_via_sfinae" = yes; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE 1" >>confdefs.h
 
     else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5

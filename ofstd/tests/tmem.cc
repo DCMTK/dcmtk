@@ -28,7 +28,8 @@
 
 OFrvalue<OFunique_ptr<int> > testMove()
 {
-    return OFunique_ptr<int>( new int( 27 ) );
+    OFunique_ptr<int> pT( new int( 27 ) );
+    return OFmove( pT );
 }
 
 OFTEST(ofstd_memory)

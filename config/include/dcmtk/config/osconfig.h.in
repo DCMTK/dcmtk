@@ -151,6 +151,9 @@
    utime.h sys/utime.h */
 #undef HAVE_DECLARATION_STRUCT_UTIMBUF
 
+/* Define if the compiler supports default constructor detection via SFINAE */
+#undef HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE
+
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H
@@ -651,6 +654,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
+
+/* Define if OpenSSL provides the RAND_egd function. */
+#undef HAVE_RAND_EGD
 
 /* define if the compiler supports reinterpret_cast<> */
 #undef HAVE_REINTERPRET_CAST

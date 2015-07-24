@@ -949,6 +949,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
   LIBS="$SAVELIBS"] )
 
 AC_CHECK_SSL_CTX_GET0_PARAM
+AC_CHECK_RAND_EGD
 
 dnl -------------------------------------------------------
 dnl Check for libjpeg, which is needed by libtiff on some platforms
@@ -1263,6 +1264,7 @@ AC_CHECK_ALIGNOF([HAVE_GNU_ALIGNOF])
 AC_CHECK_ATTRIBUTE_ALIGNED([HAVE_ATTRIBUTE_ALIGNED])
 AC_CHECK_ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES([ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES])
 AC_CHECK_ALIGNAS_SUPPORTS_TYPEDEFS([ALIGNAS_SUPPORTS_TYPEDEFS])
+AC_CHECK_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE([HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE])
 
 dnl -------------------------------------------------------
 dnl Test if passwd has the pw_gecos field

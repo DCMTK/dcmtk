@@ -137,6 +137,18 @@ public:
  *  . . .
  *  OFunique_ptr<DcmDataset> pDataset = getDataset();
  *  @endcode
+ *  @warning Some compilers might require you to use the following
+ *    code instead, as older versions of the C++ standard allowed
+ *    the compiler to use the copy constructor for binding an
+ *    rvalue to an lvalue reference.
+ *    Use this code template instead to achieve maximum portability:
+ *  @code
+ *  OFrvalue<OFunique_ptr<DcmDataset> > getDataset()
+ *  {
+ *    OFunique_ptr<DcmDataset> pDataset( new DcmDataset );
+ *    return OFmove( pDataset );
+ *  }
+ *  @endcode
  */
 template<typename T>
 struct OFrvalue : OFrvalue_base<T>::type
