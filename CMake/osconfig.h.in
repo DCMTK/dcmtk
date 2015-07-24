@@ -1091,7 +1091,7 @@ typedef unsigned long ulong;
 #define STDIO_NAMESPACE ::
 
 /* Enable or disable C++11 while building DCMTK */
-#cmakedefine DCMTK_USE_CXX11_STL
+#cmakedefine DCMTK_USE_CXX11_STL @DCMTK_USE_CXX11_STL@
 
 #if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
 #error\
@@ -1100,25 +1100,25 @@ typedef unsigned long ulong;
 #endif
 
 /* Define if the compiler supports __alignof__ */
-#cmakedefine HAVE_GNU_ALIGNOF
+#cmakedefine HAVE_GNU_ALIGNOF @HAVE_GNU_ALIGNOF@
 
 /* Define if the compiler supports __alignof */
-#cmakedefine HAVE_MS_ALIGNOF
+#cmakedefine HAVE_MS_ALIGNOF @HAVE_MS_ALIGNOF@
 
 /* Define if the compiler supports __attribute__((aligned)) */
-#cmakedefine HAVE_ATTRIBUTE_ALIGNED
+#cmakedefine HAVE_ATTRIBUTE_ALIGNED @HAVE_ATTRIBUTE_ALIGNED@
 
 /* Define if __attribute__((aligned)) supports templates */
-#cmakedefine ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES
+#cmakedefine ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES @ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES@
 
 /* Define if alignas supports typedefs */
-#cmakedefine ALIGNAS_SUPPORTS_TYPEDEFS
+#cmakedefine ALIGNAS_SUPPORTS_TYPEDEFS @ALIGNAS_SUPPORTS_TYPEDEFS@
 
 /* Define if the compiler supports __declspec(align) */
-#cmakedefine HAVE_DECLSPEC_ALIGN
+#cmakedefine HAVE_DECLSPEC_ALIGN @HAVE_DECLSPEC_ALIGN@
 
 /* Define if we are cross compiling */
-#cmakedefine DCMTK_CROSS_COMPILING
+#cmakedefine DCMTK_CROSS_COMPILING @DCMTK_CROSS_COMPILING@
 
 /* The path on the Android device that should be used for temporary files */
 #cmakedefine ANDROID_TEMPORARY_FILES_LOCATION "@ANDROID_TEMPORARY_FILES_LOCATION@"
