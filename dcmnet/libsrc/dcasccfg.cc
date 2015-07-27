@@ -737,7 +737,7 @@ OFString DcmAssociationConfiguration::findTSKey(
     return "";
 
   // loop over all transfer syntax lists configured
-  OFMap<OFString, DcmTransferSyntaxList*>:: iterator configIT = xferSyntaxes_.begin();
+  OFMap<OFString, DcmTransferSyntaxList*>::const_iterator configIT = xferSyntaxes_.begin();
   while (configIT !=  xferSyntaxes_.end())
   {
     // loop over transfer syntaxes in one of the configured lists
@@ -745,7 +745,7 @@ OFString DcmAssociationConfiguration::findTSKey(
     if ( (*configIT).second->size() == tslist.size())
     {
       OFListIterator(DcmUIDHandler) configTS = (*configIT).second->begin(); // single configured ts
-      OFListIterator(OFString) inputTS = tslist.begin(); // single input ts
+      OFListConstIterator(OFString) inputTS = tslist.begin(); // single input ts
       OFBool isMatch = OFTrue;
       // now compare each configured ts in list with each input ts pairwise.
       // this works since size is the same and order is significant
