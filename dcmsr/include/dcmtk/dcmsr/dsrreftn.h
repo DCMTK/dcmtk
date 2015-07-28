@@ -228,7 +228,8 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
      ** @param  delem  dummy parameter
      *  @param  pos    dummy parameter
      *  @param  check  dummy parameter
-     ** @return status, EC_Normal if successful, an error code otherwise
+     ** @return always returns EC_IllegalCall, since this content item has no observation
+     *          date and time (part of Document Relationship Macro)
      */
     virtual OFCondition setObservationDateTime(const DcmElement &delem,
                                                const unsigned long pos = 0,
