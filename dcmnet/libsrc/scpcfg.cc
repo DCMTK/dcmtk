@@ -199,7 +199,6 @@ void DcmSCPConfig::setProgressNotificationMode(const OFBool mode)
 
 /* Get methods for SCP settings and current association information */
 
-
 OFBool DcmSCPConfig::getRefuseAssociation() const
 {
   return m_refuseAssociation;
@@ -424,6 +423,7 @@ OFString DcmSCPConfig::mangleProfileName(const OFString& profile) const
   return mangledName;
 }
 
+
 OFString DcmSCPConfig::numToString(const size_t num) const
 {
   OFString result;
@@ -433,9 +433,9 @@ OFString DcmSCPConfig::numToString(const size_t num) const
   OFSTRINGSTREAM_GETSTR(stream, buffStr)
   result = buffStr;
   OFSTRINGSTREAM_FREESTR(buffStr)
-  OFStringStream_ends;
   return result;
 }
+
 
 OFCondition DcmSCPConfig::addNewTSList(
   const OFString& tsListName,
