@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2013, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -559,10 +559,14 @@ int main(int argc, char *argv[])
                         result = 3;
                 }
             }
-        } else
+        } else {
             OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname);
-    } else
+            result = 5;
+        }
+    } else {
         OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
+        result = 6;
+    }
 
     return result;
 }
