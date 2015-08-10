@@ -45,12 +45,18 @@ class DCMTK_CMR_EXPORT ContentMappingResource
 
     /** initialize \e all supported context groups of the "Content Mapping Resource"
      *  explicitly.  Currently, the following context group classes are supported:
+     *  - CID11_RouteOfAdministration
      *  - CID42_NumericValueQualifier
+     *  - CID4020_PETRadionuclide
+     *  - CID4021_PETRadiopharmaceutical
+     *  - CID4031_CommonAnatomicRegions
      *  - CID5000_Languages
      *  - CID5001_Countries
      *  - CID7445_DeviceParticipatingRoles
      *  - CID7452_OrganizationalRoles
      *  - CID7453_PerformingRoles
+     *  - CID10013_CTAcquisitionType
+     *  - CID10033_CTReconstructionAlgorithm
      *
      ** @note In case of multi-threaded applications, this function could be called
      *        before any context group is actually used.  This might be easier than

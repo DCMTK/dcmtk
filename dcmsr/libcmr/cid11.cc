@@ -1,0 +1,167 @@
+/*
+ *
+ *  Copyright (C) 2015, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *
+ *  Module: dcmsr
+ *
+ *  Author: Joerg Riesmeier
+ *
+ *  Purpose:
+ *    classes: CID11_RouteOfAdministration
+ *
+ *    Generated automatically from DICOM PS 3.16-2015c
+ *    File created on 2015-08-10 16:46:51 by J. Riesmeier
+ *
+ */
+
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/dcmsr/cmr/cid11.h"
+
+
+// general information on CID 11 (Route of Administration)
+#define CONTEXT_GROUP_NUMBER  "11"
+#define CONTEXT_GROUP_VERSION "20100608"
+#define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.9"
+#define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
+
+
+CID11_RouteOfAdministration::CID11_RouteOfAdministration(const DSRCodedEntryValue &selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+{
+    setExtensible(CONTEXT_GROUP_TYPE);
+}
+
+
+CID11_RouteOfAdministration::CID11_RouteOfAdministration(const EnumType selectedValue,
+                                                         const OFBool enhancedEncodingMode)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+{
+    setExtensible(CONTEXT_GROUP_TYPE);
+}
+
+
+OFCondition CID11_RouteOfAdministration::selectValue(const EnumType selectedValue,
+                                                     const OFBool enhancedEncodingMode)
+{
+    /* never check the coded entry */
+    return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
+}
+
+
+OFCondition CID11_RouteOfAdministration::findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const
+{
+    OFCondition result = SR_EC_CodedEntryNotInContextGroup;
+    /* first, search for standard codes */
+    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
+    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    /* iterate over coded entry list */
+    while (iter != last)
+    {
+        /* if found, exit loop */
+        if (codedEntryValue == iter->second)
+        {
+            result = SR_EC_CodedEntryInStandardContextGroup;
+            break;
+        }
+        ++iter;
+    }
+    /* if not, continue with extended codes */
+    if (result.bad())
+        result = DSRContextGroup::findCodedEntry(codedEntryValue);
+    return result;
+}
+
+
+void CID11_RouteOfAdministration::printCodes(STD_NAMESPACE ostream &stream) const
+{
+    /* print standard codes */
+    stream << "Standard codes:" << OFendl;
+    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
+    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    /* iterate over coded entry list */
+    while (iter != last)
+    {
+        stream << "  ";
+        /* print coded entry */
+        DSRCodedEntryValue(iter->second).print(stream);
+        stream << OFendl;
+        ++iter;
+    }
+    /* print extended codes */
+    DSRContextGroup::printCodes(stream);
+}
+
+
+// static functions
+
+void CID11_RouteOfAdministration::initialize()
+{
+    /* create and initialize code list */
+    getCodes();
+}
+
+
+DSRCodedEntryValue CID11_RouteOfAdministration::getCodedEntry(const EnumType value,
+                                                              const OFBool enhancedEncodingMode)
+{
+    DSRCodedEntryValue codedEntry;
+    /* search for given enumerated value */
+    CodeList::iterator iter = getCodes().find(value);
+    /* if found, set the coded entry */
+    if (iter != getCodes().end())
+    {
+        codedEntry = iter->second;
+        /* also set enhanced encoding mode (if enabled) */
+        if (!codedEntry.isEmpty() && enhancedEncodingMode)
+            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+    }
+    return codedEntry;
+}
+
+
+CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
+{
+    /* use a static variable for singleton pattern */
+    static CodeList *codes = NULL;
+    /* check whether code list has already been created and initialized */
+    if (codes == NULL)
+    {
+        /* create a new code list (should never fail) */
+        codes = new CodeList();
+        /* and initialize it by adding the coded entries */
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntravenousRoute, DSRBasicCodedEntry("G-D101", "SRT", "Intravenous route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraArterialRoute, DSRBasicCodedEntry("G-D102", "SRT", "Intra-arterial route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntramuscularRoute, DSRBasicCodedEntry("G-D103", "SRT", "Intramuscular route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SubcutaneousRoute, DSRBasicCodedEntry("G-D104", "SRT", "Subcutaneous route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracutaneousRoute, DSRBasicCodedEntry("G-D105", "SRT", "Intracutaneous route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraperitonealRoute, DSRBasicCodedEntry("G-D106", "SRT", "Intraperitoneal route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntramedullaryRoute, DSRBasicCodedEntry("G-D107", "SRT", "Intramedullary route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntrathecalRoute, DSRBasicCodedEntry("G-D108", "SRT", "Intrathecal route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraArticularRoute, DSRBasicCodedEntry("G-D109", "SRT", "Intra-articular route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraepithelialRoute, DSRBasicCodedEntry("G-D111", "SRT", "Intraepithelial route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(TopicalRoute, DSRBasicCodedEntry("G-D112", "SRT", "Topical route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(OralRoute, DSRBasicCodedEntry("G-D140", "SRT", "Oral route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(TransluminalRoute, DSRBasicCodedEntry("G-D142", "SRT", "Transluminal route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraluminalRoute, DSRBasicCodedEntry("G-D144", "SRT", "Intraluminal route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ExtraluminalRoute, DSRBasicCodedEntry("G-D146", "SRT", "Extraluminal route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ByInhalation, DSRBasicCodedEntry("G-D150", "SRT", "By inhalation")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(PerRectum, DSRBasicCodedEntry("G-D160", "SRT", "Per rectum")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(VaginalRoute, DSRBasicCodedEntry("G-D164", "SRT", "Vaginal route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracoronaryRoute, DSRBasicCodedEntry("G-D17C", "SRT", "Intracoronary route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracardiacRoute, DSRBasicCodedEntry("G-D173", "SRT", "Intracardiac route")));
+        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraventricularRouteCardiac, DSRBasicCodedEntry("R-F2C86", "SRT", "Intraventricular route - cardiac")));
+    }
+    /* should never be NULL */
+    return *codes;
+}
