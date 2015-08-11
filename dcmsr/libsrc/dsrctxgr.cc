@@ -39,7 +39,7 @@ DSRContextGroup::DSRContextGroup(const OFString &contextIdentifier,
     ExtensibleMode(OFFalse),
     ExtendedCodes()
 {
-    /* by default, a context group non-extensible */
+    /* by default, a context group is non-extensible */
 }
 
 

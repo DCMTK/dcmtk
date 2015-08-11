@@ -187,7 +187,7 @@ template<typename T = DSRTreeNode> class DSRTree
 
     /** count number of nodes in the tree.
      *  This method iterates over all nodes that are stored in the tree.
-     *  @return number of nodes, 0 if tree is empty
+     ** @return number of nodes, 0 if tree is empty
      */
     size_t countNodes() const;
 

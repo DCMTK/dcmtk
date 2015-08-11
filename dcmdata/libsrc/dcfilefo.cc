@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -249,7 +249,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
     /* if there is meta header information and also data set information, do something */
     if ((metainfo != NULL) && (dataset != NULL))
     {
-        /* intitialize variables */
+        /* initialize variables */
         DcmStack stack;
         DcmTag tag(atagkey);
         if (obj != NULL)
@@ -258,7 +258,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
         DcmTagKey xtag = tag.getXTag();
         DcmElement *elem = OFstatic_cast(DcmElement *, obj);
 
-        /* go ahaed and scrutinize one particular data element (depending on xtag) */
+        /* go ahead and scrutinize one particular data element (depending on xtag) */
         if (xtag == DCM_FileMetaInformationGroupLength)     // (0002,0000)
         {
             if (elem == NULL)
@@ -765,7 +765,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
         DcmDataset *dataset = getDataset();
         DcmMetaInfo *metainfo = getMetaInfo();
         /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
-        /* or (if it's an unknown tranfer syntax) we use the data set's original transfer syntax. */
+        /* or (if it's an unknown transfer syntax) we use the data set's original transfer syntax. */
         E_TransferSyntax outxfer = oxfer;
         if (outxfer == EXS_Unknown && dataset)
             outxfer = dataset->getOriginalXfer();
