@@ -27,11 +27,13 @@
 #include "dcmtk/ofstd/oftest.h"
 
 #include "dcmtk/dcmsr/dsrnumvl.h"
+#include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
 #include "dcmtk/dcmsr/cmr/tid1204.h"
+#include "dcmtk/dcmsr/cmr/srnumvl.h"
 
 
 OFTEST(dcmsr_CID42_NumericValueQualifier)
@@ -104,4 +106,26 @@ OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
     OFCHECK(lang.setLanguage(CID5000_Languages::German, CID5001_Countries::Germany).good());
     OFCHECK(lang.isValid());
     OFCHECK_EQUAL(lang.countNodes(), 2);
+}
+
+
+OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
+{
+    CMR_SRNumericMeasurementValue numValue;
+    /* set coded entry from context group and check the value */
+    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CID42_NumericValueQualifier::NotANumber)).good());
+    OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_NotANumber);
+    OFCHECK(numValue.isValid());
+    /* set coded entry from context group (using its type) and check the value */
+    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier::ValueUnknown).good());
+    OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_ValueUnknown);
+    OFCHECK(numValue.isValid());
+    /* set numeric measurement value to tree node */
+    DSRNumTreeNode numNode(DSRTypes::RT_hasProperties);
+    OFCHECK(numNode.setValue(numValue, OFTrue /*check*/).good());
+    /* set coded entry that is not part of the context group */
+    OFCHECK(numValue.setNumericValueQualifier(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), OFTrue /*check*/) == SR_EC_CodedEntryNotInContextGroup);
+    OFCHECK(numValue.isValid());
+    OFCHECK(numValue.setNumericValueQualifier(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), OFFalse /*check*/).good());
+    OFCHECK(!numValue.isValid());
 }

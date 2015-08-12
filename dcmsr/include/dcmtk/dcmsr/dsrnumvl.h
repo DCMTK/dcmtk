@@ -52,8 +52,8 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      ** @param  numericValue     numeric measurement value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  check            if enabled, check 'numericValue' and 'measurementUnit' for
-     *                           validity before setting them.  See checkXXX() methods for
-     *                           details.  Empty values are never accepted.
+     *                           validity before setting them.  See corresponding setValue()
+     *                           method for details.
      */
     DSRNumericMeasurementValue(const OFString &numericValue,
                                const DSRCodedEntryValue &measurementUnit,
@@ -67,8 +67,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      *                           the measured value sequence (where 'numericValue' and
      *                           'measurementUnit' are stored).
      *  @param  check            if enabled, check values for validity before setting them.
-     *                           See checkXXX() for details.  Empty values are only accepted
-     *                           for non-mandatory attributes.
+     *                           See corresponding setValue() method for details.
      */
     DSRNumericMeasurementValue(const OFString &numericValue,
                                const DSRCodedEntryValue &measurementUnit,
@@ -440,7 +439,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      ** @param  numericValue  numeric value to be checked
      ** @return status, EC_Normal if numeric value is valid, an error code otherwise
      */
-    OFCondition checkNumericValue(const OFString &numericValue) const;
+    virtual OFCondition checkNumericValue(const OFString &numericValue) const;
 
     /** check the specified measurement unit for validity.
      *  Internally, the methods DSRCodedEntryValue::isEmpty() and
@@ -449,16 +448,17 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      ** @param  measurementUnit  measurement unit to be checked
      ** @return status, EC_Normal if measurement unit is valid, an error code otherwise
      */
-    OFCondition checkMeasurementUnit(const DSRCodedEntryValue &measurementUnit) const;
+    virtual OFCondition checkMeasurementUnit(const DSRCodedEntryValue &measurementUnit) const;
 
     /** check the specified numeric value qualifier for validity.
-     *  Internally, the methods DSRCodedEntryValue::isEmpty() and
-     *  DSRCodedEntryValue::checkCurrentValue() are used for this purpose.  Conformance
-     *  with the Context Group 42 (as defined in the DICOM standard) is not yet checked.
+     *  Internally, DSRCodedEntryValue::isEmpty() and DSRCodedEntryValue::checkCurrentValue()
+     *  are used for this purpose.  Conformance with the Context Group 42 (as defined in the
+     *  DICOM standard) is not checked; see class CMR_SRNumericMeasurementValue if needed,
+     *  which supports such additional checks.
      ** @param  valueQualifier  numeric value qualifier to be checked
      ** @return status, EC_Normal if value qualifier is valid, an error code otherwise
      */
-    OFCondition checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const;
+    virtual OFCondition checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const;
 
     /** check the specified rational representation for validity.
      *  The only check that is performed is that the 'rationalDenominator' is not zero, i.e.
@@ -468,21 +468,21 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      *  @param  rationalDenominator  denominator of a rational representation to be checked
      ** @return status, EC_Normal if rational representation is valid, an error code otherwise
      */
-    OFCondition checkRationalRepresentation(const Sint32 rationalNumerator,
-                                            const Uint32 rationalDenominator) const;
+    virtual OFCondition checkRationalRepresentation(const Sint32 rationalNumerator,
+                                                    const Uint32 rationalDenominator) const;
 
     /** check the currently stored numeric measurement value for validity.
      *  See above checkXXX() methods for details.
      ** @return status, EC_Normal if current value is valid, an error code otherwise
      */
-    OFCondition checkCurrentValue() const;
+    virtual OFCondition checkCurrentValue() const;
 
 
   private:
 
-    /// Numeric Value (VR=DS, type 1)
+    /// Numeric Value (VR=DS, type 1 within a type 2 sequence)
     OFString               NumericValue;
-    /// Measurement Unit (type 2)
+    /// Measurement Unit (type 1 within a type 2 sequence)
     DSRCodedEntryValue     MeasurementUnit;
     /// Numeric Value Qualifier (type 3)
     DSRCodedEntryValue     ValueQualifier;

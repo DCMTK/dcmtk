@@ -63,4 +63,5 @@ OFTEST_REGISTER(dcmsr_CID42_NumericValueQualifier);
 OFTEST_REGISTER(dcmsr_CID7445_DeviceParticipatingRoles);
 OFTEST_REGISTER(dcmsr_TID1001_ObservationContext);
 OFTEST_REGISTER(dcmsr_TID1204_LanguageOfContentItemAndDescendants);
+OFTEST_REGISTER(dcmsr_CMR_SRNumericMeasurementValue);
 OFTEST_MAIN("dcmsr")
