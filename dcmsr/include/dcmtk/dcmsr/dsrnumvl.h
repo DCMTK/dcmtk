@@ -64,7 +64,8 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  valueQualifier   code representing the numeric value qualifier (optional).
      *                           Can also be used to specify the reason for the absence of
-     *                           the measured value sequence.
+     *                           the measured value sequence (where 'numericValue' and
+     *                           'measurementUnit' are stored).
      *  @param  check            if enabled, check values for validity before setting them.
      *                           See checkXXX() for details.  Empty values are only accepted
      *                           for non-mandatory attributes.
@@ -95,9 +96,10 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
     virtual void clear();
 
     /** check whether the current numeric measurement value is valid.
-     *  The value is valid if isEmpty() is true or all three values (numeric value, measurement
-     *  unit and value qualifier) do contain valid values (see checkXXX() methods).  The
-     *  possibly available additional representations of the numeric value are never checked.
+     *  The value is valid if isEmpty() is true or both the numeric value and the measurement
+     *  unit contain a valid value, and the value qualifier is valid (see checkXXX() methods).
+     *  The possibly available additional representations of the numeric value are never
+     *  checked.
      ** @return OFTrue if value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -255,10 +257,11 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
                          const OFBool check = OFTrue);
 
     /** set numeric value and measurement unit.
-     *  Before setting the values, they are usually checked.  If the value pair is invalid,
-     *  the current value pair is not replaced and remains unchanged.  If the value pair is
-     *  replaced, the optional floating point and rational representations are cleared, i.e.
-     *  they have to be set manually if needed.
+     *  Before setting the values, they are usually checked.  Please note that both values
+     *  (i.e. 'numericValue' and 'measurementUnit') either have to be empty or non-empty.
+     *  If the value pair is invalid, the current value pair is not replaced and remains
+     *  unchanged.  If the value pair is replaced, the optional floating point and rational
+     *  representations are cleared, i.e. they have to be set manually if needed.
      ** @param  numericValue     numeric value to be set (VR=DS, mandatory)
      *  @param  measurementUnit  measurement unit to be set (mandatory)
      *  @param  check            if enabled, check values for validity before setting them.
@@ -270,19 +273,20 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
                          const OFBool check = OFTrue);
 
     /** set numeric value, measurement unit and numeric value qualifier.
-     *  Before setting the values, they are usually checked.  If one of the three values is
-     *  invalid, the current numeric measurement value is not replaced and remains unchanged.
-     *  If the values are replaced, the optional floating point and rational representations
-     *  are cleared, i.e. they have to be set manually if needed.
+     *  Before setting the values, they are usually checked.  Please note that both
+     *  'numericValue' and 'measurementUnit' either have to be empty or non-empty.
+     *  If one of the three values is invalid, the current numeric measurement value is not
+     *  replaced and remains unchanged.  If the values are replaced, the optional floating
+     *  point and rational representations are cleared, i.e. they have to be set manually if
+     *  needed.
      ** @param  numericValue     numeric value to be set (VR=DS, mandatory)
      *  @param  measurementUnit  measurement unit to be set (mandatory)
      *  @param  valueQualifier   numeric value qualifier to be set (optional).  Can also be
      *                           used to specify the reason for the absence of the measured
-     *                           value sequence.  Use an empty code to remove the current
-     *                           value.
+     *                           value sequence (where 'numericValue' and 'measurementUnit'
+     *                           are stored).  Use an empty code to remove the current value.
      *  @param  check            if enabled, check values for validity before setting them.
-     *                           See checkXXX() methods for details.  Empty values are only
-     *                           accepted for non-mandatory attributes.
+     *                           See checkXXX() methods for details.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setValue(const OFString &numericValue,
@@ -298,7 +302,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      ** @param  numericValue  numeric value to be set (VR=DS, mandatory)
      *  @param  check         if enabled, check value for validity before setting it.
      *                        See checkNumericValue() method for details.  An empty value is
-     *                        never accepted.
+     *                        never accepted, use the clear() method instead.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setNumericValue(const OFString &numericValue,
@@ -345,7 +349,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      ** @param  measurementUnit  measurement unit to be set (mandatory)
      *  @param  check            if enabled, check value for validity before setting it.
      *                           See checkMeasurementUnit() method for details.  An empty
-     *                           value is never accepted.
+     *                           value is never accepted, use the clear() method instead.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setMeasurementUnit(const DSRCodedEntryValue &measurementUnit,

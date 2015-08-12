@@ -114,9 +114,8 @@ void DSRNumericMeasurementValue::clear()
 OFBool DSRNumericMeasurementValue::isValid() const
 {
     /* the MeasuredValueSequence can be empty (type 2) */
-    return isEmpty() || (checkNumericValue(NumericValue).good() &&
-                         checkMeasurementUnit(MeasurementUnit).good() &&
-                         checkNumericValueQualifier(ValueQualifier).good());
+    return (isEmpty() || (checkNumericValue(NumericValue).good() && checkMeasurementUnit(MeasurementUnit).good()))
+        && checkNumericValueQualifier(ValueQualifier).good();
 }
 
 
@@ -466,28 +465,9 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
                                                  const DSRCodedEntryValue &measurementUnit,
                                                  const OFBool check)
 {
-    OFCondition result = EC_Normal;
-    if (check)
-    {
-        /* check whether the passed values are valid */
-        result = checkNumericValue(numericValue);
-        if (result.good())
-            result = checkMeasurementUnit(measurementUnit);
-    } else {
-        /* make sure that the mandatory values are non-empty */
-        if (measurementUnit.isEmpty())
-            result = EC_IllegalParameter;
-    }
-    if (result.good())
-    {
-        NumericValue = numericValue;
-        MeasurementUnit = measurementUnit;
-        /* clear additional representations */
-        FloatingPointValue.clear();
-        RationalNumeratorValue.clear();
-        RationalDenominatorValue.clear();
-    }
-    return result;
+    const DSRCodedEntryValue valueQualifier;
+    /* call the function doing the real work */
+    return setValue(numericValue, measurementUnit, valueQualifier, check);
 }
 
 
@@ -499,15 +479,19 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
     OFCondition result = EC_Normal;
     if (check)
     {
-        /* check whether the passed values are valid */
-        result = checkNumericValue(numericValue);
-        if (result.good())
-            result = checkMeasurementUnit(measurementUnit);
+        /* only check if at least one of the two values is non-empty */
+        if (!numericValue.empty() || !measurementUnit.isEmpty())
+        {
+            /* check whether the passed values are valid */
+            result = checkNumericValue(numericValue);
+            if (result.good())
+                result = checkMeasurementUnit(measurementUnit);
+        }
         if (result.good())
             result = checkNumericValueQualifier(valueQualifier);
     } else {
-        /* make sure that the mandatory values are non-empty */
-        if (numericValue.empty() || measurementUnit.isEmpty())
+        /* make sure that both values are either empty or non-empty */
+        if (numericValue.empty() != measurementUnit.isEmpty())
             result = EC_IllegalParameter;
     }
     if (result.good())
