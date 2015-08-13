@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2015, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
+ *  This software and supporting documentation are maintained by
  *
  *    OFFIS e.V.
  *    R&D Division Health
@@ -11,7 +11,7 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmdata
+ *  Module:  dcmiod
  *
  *  Author:  Michael Onken, Andriy Fedorov
  *
@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
 
+#include "dcmtk/dcmiod/ioddef.h"
 // forward declarations
 class DcmTagKey;
 class DcmItem;
@@ -35,7 +36,7 @@ class DcmItem;
  *  @note The attribute lists per module are taken from the final text version
  *        of DICOM 2013.
  */
-class DcmModuleHelpers {
+class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
   protected:
 
@@ -200,6 +201,7 @@ class DcmModuleHelpers {
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
+
      *               destination item.
      */
     static void copyGeneralImageModule(DcmItem& src, DcmItem& dest);

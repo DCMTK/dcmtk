@@ -66,6 +66,10 @@ const unsigned short OFM_dcmstscp = 25;
 const unsigned short OFM_dcmqrdbx = 26;
 const unsigned short OFM_dcmkosel = 27;
 const unsigned short OFM_dcmenc   = 28;
+const unsigned short OFM_dcmiod   = 29;
+const unsigned short OFM_dcmseg   = 30;
+const unsigned short OFM_dcmfg    = 31;
+
 
 // condition constants
 
@@ -140,6 +144,20 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PrematureSequDelimitationI
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidDICOMDIR;
 /// Unknown VR, e.g. tag not found in data dictionary
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownVR;
+/// Invalid value, e.g. element value has been provided that does not match the VR
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidValue;
+/// An expected Item was not found
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemNotFound;
+/// Given transfersyntax is unknown
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownTransferSyntax;
+/// Cannot check
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotCheck;
+/// Missing value, e.g. element must contain a value but is empty
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_MissingValue;
+/// Missing attribute
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_MissingAttribute;
+/// Internal error
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InternalError;
 //@}
 
 // status code constants

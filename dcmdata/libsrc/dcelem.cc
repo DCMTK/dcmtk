@@ -2038,7 +2038,7 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 256) result = EC_ValueMultiplicityViolated;
     }
-    else if (vmStr != "1-n")
+    else if ( (vmStr != "1-n") && (vmStr != "0-n") )
     {
       // given value of 'vmStr' not (yet) supported
       result = EC_IllegalParameter;

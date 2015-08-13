@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 #include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/dcmdata/dccodec.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmnet/dstorscu.h"
 #include "dcmtk/dcmnet/diutil.h"
 
@@ -370,7 +371,7 @@ OFCondition DcmStorageSCU::addDicomFile(const OFString &filename,
         OFBool isDICOMDIR = OFFalse;
         // get relevant information from the DICOM file
         OFString sopClassUID, sopInstanceUID, transferSyntaxUID;
-        status = getSOPInstanceFromFile(filename, sopClassUID, sopInstanceUID, transferSyntaxUID, readMode);
+        status = DcmDataUtil::getSOPInstanceFromFile(filename, sopClassUID, sopInstanceUID, transferSyntaxUID, readMode);
         if (status.good())
         {
             // check whether it is a DICOMDIR and should be treated in a special manner
@@ -432,7 +433,7 @@ OFCondition DcmStorageSCU::addDataset(DcmDataset *dataset,
         DCMNET_DEBUG("adding DICOM dataset");
         // get relevant information from the DICOM dataset
         OFString sopClassUID, sopInstanceUID, transferSyntaxUID;
-        status = getSOPInstanceFromDataset(dataset, datasetXfer, sopClassUID, sopInstanceUID, transferSyntaxUID);
+        status = DcmDataUtil::getSOPInstanceFromDataset(dataset, datasetXfer, sopClassUID, sopInstanceUID, transferSyntaxUID);
         if (status.good())
         {
             // check the SOP instance before adding it
@@ -838,7 +839,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     {
                         DCMNET_DEBUG("checking whether SOP Class UID and SOP Instance UID in dataset are consistent with transfer list");
                         OFString sopClassUID, sopInstanceUID, transferSyntaxUID;
-                        if (getSOPInstanceFromDataset(dataset, dataset->getOriginalXfer(), sopClassUID, sopInstanceUID, transferSyntaxUID).good())
+                        if (DcmDataUtil::getSOPInstanceFromDataset(dataset, dataset->getOriginalXfer(), sopClassUID, sopInstanceUID, transferSyntaxUID).good())
                         {
                             // differences are usually a result of inconsistent values in meta-header and dataset
                             if ((*CurrentTransferEntry)->SOPClassUID != sopClassUID)
@@ -1084,112 +1085,6 @@ OFCondition DcmStorageSCU::createReportFile(const OFString &filename) const
     } else {
         // report an error to the caller
         status = EC_IllegalParameter;
-    }
-    return status;
-}
-
-
-OFCondition DcmStorageSCU::getSOPInstanceFromFile(const OFString &filename,
-                                                  OFString &sopClassUID,
-                                                  OFString &sopInstanceUID,
-                                                  OFString &transferSyntaxUID,
-                                                  const E_FileReadMode readMode)
-{
-    OFCondition status = EC_IllegalParameter;
-    if (!filename.empty())
-    {
-        DCMNET_DEBUG("getting SOP Class UID, SOP Instance UID and Transfer Syntax UID from DICOM file");
-        sopClassUID.clear();
-        sopInstanceUID.clear();
-        transferSyntaxUID.clear();
-        // prefer to load file meta information header only (since this is more efficient)
-        if (readMode != ERM_dataset)
-        {
-            DcmMetaInfo metaInfo;
-            status = metaInfo.loadFile(filename.c_str());
-            if (status.good())
-            {
-                // try to get the UIDs from the meta-header
-                DCMNET_DEBUG("trying to get SOP Class UID, SOP Instance UID and Transfer Syntax UID from meta-header");
-                metaInfo.findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, sopClassUID);
-                metaInfo.findAndGetOFStringArray(DCM_MediaStorageSOPInstanceUID, sopInstanceUID);
-                metaInfo.findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntaxUID);
-            }
-        }
-        // alternatively, get UIDs from the dataset (if required and desired)
-        if ((readMode != ERM_fileOnly) && (readMode != ERM_metaOnly))
-        {
-            if (sopClassUID.empty() || sopInstanceUID.empty())
-                DCMNET_DEBUG("no SOP Class UID and/or SOP Instance UID found in meta-header, checking dataset instead");
-            if (status.bad() || sopClassUID.empty() || sopInstanceUID.empty() || transferSyntaxUID.empty())
-            {
-                DcmFileFormat fileformat;
-                status = fileformat.loadFile(filename.c_str(), EXS_Unknown, EGL_noChange, 256 /* maxReadLength */, readMode);
-                if (status.good())
-                {
-                    DcmDataset *dataset = fileformat.getDataset();
-                    if (dataset != NULL)
-                    {
-                        if (sopClassUID.empty())
-                            dataset->findAndGetOFStringArray(DCM_SOPClassUID, sopClassUID);
-                        if (sopInstanceUID.empty())
-                            dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, sopInstanceUID);
-                        if (transferSyntaxUID.empty())
-                        {
-                            DCMNET_DEBUG("no Transfer Syntax UID found in meta-header, trying to determine from dataset instead");
-                            // empty string in case of unknown/unsupported transfer syntax
-                            transferSyntaxUID = DcmXfer(dataset->getOriginalXfer()).getXferID();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return status;
-}
-
-
-OFCondition DcmStorageSCU::getSOPInstanceFromDataset(DcmDataset *dataset,
-                                                     const E_TransferSyntax datasetXfer,
-                                                     OFString &sopClassUID,
-                                                     OFString &sopInstanceUID,
-                                                     OFString &transferSyntaxUID)
-{
-    OFCondition status = EC_IllegalParameter;
-    // check for invalid dataset pointer
-    if (dataset != NULL)
-    {
-        DCMNET_DEBUG("getting SOP Class UID, SOP Instance UID and Transfer Syntax UID from DICOM dataset");
-        sopClassUID.clear();
-        sopInstanceUID.clear();
-        transferSyntaxUID.clear();
-        // check for correct class type
-        if (dataset->ident() == EVR_dataset)
-        {
-            // try to determine the transfer syntax of the dataset
-            E_TransferSyntax xfer = datasetXfer;
-            if (xfer == EXS_Unknown)
-                xfer = dataset->getOriginalXfer();
-            if (xfer == EXS_Unknown)
-            {
-                // update the internally stored transfer syntax based on the pixel data (if any)
-                dataset->updateOriginalXfer();
-                xfer = dataset->getOriginalXfer();
-            }
-            if (xfer != EXS_Unknown)
-            {
-                status = EC_Normal;
-                // store UID of the transfers syntax in result variable
-                transferSyntaxUID = DcmXfer(xfer).getXferID();
-                // get other UIDs directly from the dataset
-                dataset->findAndGetOFStringArray(DCM_SOPClassUID, sopClassUID);
-                dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, sopInstanceUID);
-            } else {
-                DCMNET_DEBUG("unable to determine transfer syntax from dataset");
-                status = NET_EC_UnknownTransferSyntax;
-            }
-        } else
-            status = EC_CorruptedData;
     }
     return status;
 }

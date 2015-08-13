@@ -519,7 +519,12 @@ dcmprscp.o: dcmprscp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsspl.h ../include/dcmtk/dcmpstat/dvpshlp.h \
  ../../oflog/include/dcmtk/oflog/fileap.h \
  ../../oflog/include/dcmtk/oflog/fstreams.h \
- ../../oflog/include/dcmtk/oflog/helpers/timehelp.h
+ ../../oflog/include/dcmtk/oflog/helpers/timehelp.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
 dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
@@ -676,7 +681,12 @@ dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
  ../include/dcmtk/dcmpstat/dvpspr.h ../include/dcmtk/dcmpstat/dvpssp.h \
  ../include/dcmtk/dcmpstat/dvpspll.h ../include/dcmtk/dcmpstat/dvpsibl.h \
- ../include/dcmtk/dcmpstat/dvpsabl.h ../include/dcmtk/dcmpstat/dvpshlp.h
+ ../include/dcmtk/dcmpstat/dvpsabl.h ../include/dcmtk/dcmpstat/dvpshlp.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
 dcmpschk.o: dcmpschk.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
@@ -1221,7 +1231,11 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsgal.h ../include/dcmtk/dcmpstat/dvpscul.h \
  ../include/dcmtk/dcmpstat/dvpsvll.h ../include/dcmtk/dcmpstat/dvpsvwl.h \
  ../include/dcmtk/dcmpstat/dvpsdal.h ../include/dcmtk/dcmpstat/dvpssvl.h \
- ../include/dcmtk/dcmpstat/dvpspl.h
+ ../include/dcmtk/dcmpstat/dvpspl.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
 dcmpssnd.o: dcmpssnd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsdef.h ../include/dcmtk/dcmpstat/dpdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -1303,4 +1317,9 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/qrdefine.h \
  ../../ofstd/include/dcmtk/ofstd/offname.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbs.h \
- ../include/dcmtk/dcmpstat/dvpsmsg.h
+ ../include/dcmtk/dcmpstat/dvpsmsg.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h

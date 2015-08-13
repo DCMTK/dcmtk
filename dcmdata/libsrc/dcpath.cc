@@ -882,36 +882,60 @@ DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKe
 }
 
 
-OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item /* in */,
-                                                         DcmTag& tag /* inout */)
+OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item,
+                                                         const DcmTagKey& tagKey,
+                                                         const OFString& privateCreator)
 {
   // if this is already a private reservation, there is nothing to do
-  if (m_checkPrivateReservations && !tag.isPrivateReservation())
+  if (!tagKey.isPrivateReservation())
   {
-    DcmTagKey reservationKey = calcPrivateReservationTag(tag);
+    DcmTagKey reservationKey = calcPrivateReservationTag(tagKey);
     if (reservationKey == DCM_UndefinedTagKey)
     {
-      OFString msg("Path evaluation error: Unable to compute private reservation for tag: "); msg += tag.toString();
+      OFString msg("Unable to compute private reservation for tag: "); msg += tagKey.toString();
       return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
     }
     if (!item->tagExists(reservationKey))
     {
-      OFString msg("Invalid path: No private reservation found for tag: "); msg += tag.toString();
+      OFString msg("Private reservation missing for tag: "); msg += tagKey.toString();
       return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
     }
     else
     {
       // set private creator for new element
-      OFString privCreator;
-      if (item->findAndGetOFString(reservationKey, privCreator).bad() || (privCreator.empty()))
+      OFString actualPrivateCreator;
+      if (item->findAndGetOFString(reservationKey, actualPrivateCreator).bad() || (actualPrivateCreator.empty()))
       {
-        privCreator = "Invalid or empty private creator tag: "; privCreator += reservationKey.toString();
-        return makeOFCondition(OFM_dcmdata, 25, OF_error, privCreator.c_str());
+        OFString msg = "Invalid or empty private creator tag: "; msg += reservationKey.toString();
+        return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
       }
-      // tell tag that its private creator and VR
-      tag.setPrivateCreator(privCreator.c_str());
-      tag.lookupVRinDictionary(); // not done automatically when saving
+      else if (!privateCreator.empty())
+      {
+        // check whether private creator is correct
+        if (actualPrivateCreator != privateCreator)
+        {
+          OFString msg = "Private creator string ("; msg += actualPrivateCreator; msg += ") other than expected ( "; msg += privateCreator; msg += privateCreator;
+          return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
+        }
+      }
     }
   }
   return EC_Normal;
 }
+
+
+
+OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item /* in */,
+                                                         DcmTag& tag /* inout */,
+                                                         const OFString& privateCreator)
+{
+  OFCondition result = checkPrivateTagReservation(item, tag.getXTag(), privateCreator);
+  if (result.good())
+  {
+    // tell tag its private creator and VR
+    tag.setPrivateCreator(privateCreator.c_str());
+    tag.lookupVRinDictionary(); // not done automatically when saving
+  }
+  return result;
+}
+

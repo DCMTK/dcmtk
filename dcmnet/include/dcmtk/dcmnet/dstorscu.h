@@ -456,50 +456,6 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 
     // --- static methods ---
 
-    /** get SOP Class UID, SOP Instance UID and Transfer Syntax UID from a DICOM file.  The
-     *  first two UID values are either copied from the meta-header (preferred) or from the
-     *  dataset.  The latter is either copied from the meta-header (preferred) or determined
-     *  automatically (if possible).
-     *  @param  filename           name of the DICOM file from which the SOP Class UID and SOP
-     *                             Instance UID values are retrieved
-     *  @param  sopClassUID        variable in which the value of the SOP Class UID is stored
-     *  @param  sopInstanceUID     variable in which the value of the SOP Instance UID is
-     *                             stored
-     *  @param  transferSyntaxUID  variable in which the value of the Transfer Syntax UID is
-     *                             stored
-     *  @param  readMode           read mode passed to the DcmFileFormat::loadFile() method.
-     *                             If ERM_fileOnly, only the file meta information header is
-     *                             loaded, i.e. the behavior is identical to using
-     *                             ERM_metaOnly.
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    static OFCondition getSOPInstanceFromFile(const OFString &filename,
-                                              OFString &sopClassUID,
-                                              OFString &sopInstanceUID,
-                                              OFString &transferSyntaxUID,
-                                              const E_FileReadMode readMode);
-
-    /** get SOP Class UID, SOP Instance UID and Transfer Syntax UID from a DICOM dataset.
-     *  The first two UID values are directly copied from the dataset.  The latter is either
-     *  taken from the parameter 'datasetXfer' or, if it is unknown, determined automatically
-     *  from the dataset (if possible).
-     *  @param  dataset            DICOM dataset from which the SOP Class UID and SOP Instance
-     *                             UID values are retrieved
-     *  @param  datasetXfer        transfer syntax of the dataset (if known, otherwise it is
-     *                             determined automatically)
-     *  @param  sopClassUID        variable in which the value of the SOP Class UID is stored
-     *  @param  sopInstanceUID     variable in which the value of the SOP Instance UID is
-     *                             stored
-     *  @param  transferSyntaxUID  variable in which the value of the Transfer Syntax UID is
-     *                             stored
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    static OFCondition getSOPInstanceFromDataset(DcmDataset *dataset,
-                                                 const E_TransferSyntax datasetXfer,
-                                                 OFString &sopClassUID,
-                                                 OFString &sopInstanceUID,
-                                                 OFString &transferSyntaxUID);
-
     /** check given SOP Class UID, SOP Instance UID and Transfer Syntax UID for validity and
      *  conformance to the DICOM standard.  For all UID values, the compliance with the
      *  requirements of the value representation "Unique Identifier" (UI) and value

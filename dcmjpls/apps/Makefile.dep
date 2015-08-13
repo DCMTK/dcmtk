@@ -371,4 +371,7 @@ dcml2pnm.o: dcml2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
  ../../dcmimgle/include/dcmtk/dcmimgle/diregbas.h \
  ../../dcmimage/include/dcmtk/dcmimage/dicdefin.h \
  ../include/dcmtk/dcmjpls/djdecode.h ../include/dcmtk/dcmjpls/djlsutil.h \
- ../include/dcmtk/dcmjpls/dldefine.h
+ ../include/dcmtk/dcmjpls/dldefine.h \
+ ../../dcmimage/include/dcmtk/dcmimage/dipitiff.h \
+ ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
+ ../../dcmimage/include/dcmtk/dcmimage/dipipng.h

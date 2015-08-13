@@ -281,6 +281,22 @@ struct OFremove_cv
     typedef typename OFremove_volatile<typename OFremove_const<T>::type>::type type;
 };
 
+template< class T > struct OFremove_pointer                    {
+    typedef T type;
+};
+template< class T > struct OFremove_pointer<T*>                {
+    typedef T type;
+};
+template< class T > struct OFremove_pointer<T* const>          {
+    typedef T type;
+};
+template< class T > struct OFremove_pointer<T* volatile>       {
+    typedef T type;
+};
+template< class T > struct OFremove_pointer<T* const volatile> {
+    typedef T type;
+};
+
 template<typename T>
 struct OFadd_pointer
 {

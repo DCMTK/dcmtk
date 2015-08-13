@@ -237,6 +237,34 @@ public:
    */
   void checkPrivateReservations(const OFBool doChecking);
 
+  /** Checks in item, whether a private reservation for a given
+   *  tag key exists.
+   *  @param item   [in] The item to search in
+   *  @param tagKey [in/out] The tag to be checked.
+   *  @param privateCreator [in] The private creator to check for (if known,
+   *                        can be left empty)
+   *  @return Return EC_Normal if reservation checking was successful.
+   *          Otherwise an error code is returned.
+   */
+  static OFCondition checkPrivateTagReservation(DcmItem* item,
+                                                const DcmTagKey& tagKey,
+                                                const OFString& privateCreator = "");
+
+  /** Checks in item, whether a private reservation for a given
+   *  tag key. If so, a dictionary lookup is performed and the VR and private
+   *  creator of the tag is updated correspondingly.
+   *  @param item [in] The item to search in
+   *  @param tag [in/out] The tag to be checked. Will be updated with VR and
+   *                      private creator.
+   *  @param privateCreator [in] The private creator to check for (if known,
+   *                        can be left empty)
+   *  @return Return EC_Normal if reservation checking and updating the
+   *          tag was successful. Otherwise an error code is returned.
+   */
+  static OFCondition checkPrivateTagReservation(DcmItem* item,
+                                                DcmTag& tag,
+                                                const OFString& privateCreator = "");
+
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
    *  pointers for each successfully found or inserted paths. Every list
@@ -441,17 +469,6 @@ protected:
                                             DcmPath* path,
                                             DcmPathNode* toDelete);
 
-  /** Checks in item, whether a private reservation for a given
-   *  tag key exists (if not disabled). If so, a dictionary lookup is performed
-   *  and the VR and private creator of the tag is updated correspondingly.
-   *  @param item [in] The item to search in
-   *  @param tag [in/out] The tag to be checked. Will be updated with VR and
-   *                      private creator.
-   *  @return Return EC_Normal if reservation checking and updating the
-   *          tag was successful. Otherwise an error code is returned.
-   */
-  OFCondition checkPrivateTagReservation(DcmItem* item,
-                                         DcmTag& tag);
   /** Returns the private reservation tag key for a given private tag
    *  @param privateKey [in] The private key to calculate reservation tag for
    *  @return The reservation key. If given key is not private or an error,

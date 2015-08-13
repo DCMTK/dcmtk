@@ -10,8 +10,10 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 
 \li \ref mod_config
 \li \ref mod_dcmdata
+\li \ref mod_dcmfg
 \li \ref mod_dcmimage
 \li \ref mod_dcmimgle
+\li \ref mod_dcmiod
 \li \ref mod_dcmjpeg
 \li \ref mod_dcmjpls
 \li \ref mod_dcmnet
@@ -19,6 +21,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmrt
 \li \ref mod_dcmsign
 \li \ref mod_dcmsr
+\li \ref mod_dcmseg
 \li \ref mod_dcmtls
 \li \ref mod_dcmwlm
 \li \ref mod_dcmqrdb

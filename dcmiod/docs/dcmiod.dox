@@ -1,0 +1,23 @@
+/*!
+
+\page mod_dcmiod dcmiod: a library of working with DICOM IODs and modules
+
+This module contains classes that represent DICOM IOD (Image Object Definitions)
+from part 3 of the DICOM Standard, including their modules and the elements
+contained thererin. They should ease reading, modifying and writing IODs by
+offering an explicit API for this purpose. The requirements regarding existance
+of elements and their values are pre-configured and can be adapted during
+runtime.
+
+The main classes are (in alphabetical order):
+\li \b DcmIODCommon
+\li \b DcmIODImage
+\li \b IODFoRModule
+\li \b IODGeneralImageModule
+\li \b IODGeneralSeriesModule
+\li \b IODGeneralStudyModule
+\li \b IODImagePixelModule
+\li \b IODPatientModule
+\li \b IODSOPCommonModule
+
+*/

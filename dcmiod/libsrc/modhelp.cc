@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2015, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
+ *  This software and supporting documentation are maintained by
  *
  *    OFFIS e.V.
  *    R&D Division Health
@@ -11,18 +11,16 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmdata
+ *  Module:  dcmiod
  *
- *  Author:  Michael Onken, Andriy Fedorov
+ *  Author: Michael Onken
  *
  *  Purpose: Helper functions for copying common modules between datasets
  *
  */
 
-
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/dcmdata/modhelp.h"
+#include "dcmtk/dcmiod/modhelp.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 

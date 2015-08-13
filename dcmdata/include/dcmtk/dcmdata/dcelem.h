@@ -746,6 +746,17 @@ class DCMTK_DCMDATA_EXPORT DcmElement
                                      const size_t pos,
                                      const size_t len,
                                      OFString &val);
+    /** check for correct value multiplicity (VM)
+     *  @param vmNum value multiplicity of the value to be checked.
+     *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e. no error).
+     *  @param vmStr value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "5", "5-n", "6", "7", "7-7n", "8", "9",
+     *                   "16", "24", "32", "256")
+     *  @return status of the check, EC_ValueMultiplicityViolated in case of error
+     */
+    static OFCondition checkVM(const unsigned long vmNum,
+                               const OFString &vmStr);
 
   protected:
 
@@ -838,20 +849,6 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @param val byte order of the value field
      */
     void setByteOrder(E_ByteOrder val) { fByteOrder = val; }
-
-    /* --- static helper functions --- */
-
-    /** check for correct value multiplicity (VM)
-     *  @param vmNum value multiplicity of the value to be checked.
-     *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e. no error).
-     *  @param vmStr value multiplicity (according to the data dictionary) to be checked for.
-     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "5", "5-n", "6", "7", "7-7n", "8", "9",
-     *                   "16", "24", "32", "256")
-     *  @return status of the check, EC_ValueMultiplicityViolated in case of error
-     */
-    static OFCondition checkVM(const unsigned long vmNum,
-                               const OFString &vmStr);
 
   private:
 

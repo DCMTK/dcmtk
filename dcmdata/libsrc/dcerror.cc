@@ -64,6 +64,13 @@ makeOFConditionConst(EC_ItemDelimitationItemMissing,     OFM_dcmdata, 38, OF_err
 makeOFConditionConst(EC_PrematureSequDelimitationItem,   OFM_dcmdata, 39, OF_error, "Sequence Delimitation Item occurred before Item was completely read" );
 makeOFConditionConst(EC_InvalidDICOMDIR,                 OFM_dcmdata, 40, OF_error, "Invalid DICOMDIR" );
 makeOFConditionConst(EC_UnknownVR,                       OFM_dcmdata, 41, OF_error, "Unknown VR: Tag not found in data dictionary" );
+makeOFConditionConst(EC_InvalidValue,                    OFM_dcmdata, 42, OF_error, "Invalid Value");
+makeOFConditionConst(EC_ItemNotFound,                    OFM_dcmdata, 43, OF_error, "Item not found");
+makeOFConditionConst(EC_UnknownTransferSyntax,           OFM_dcmdata, 44, OF_error, "Unknown Transfer Syntax");
+makeOFConditionConst(EC_CannotCheck,                     OFM_dcmdata, 45, OF_error, "Cannot perform check");
+makeOFConditionConst(EC_MissingValue,                    OFM_dcmdata, 46, OF_error, "Missing value");
+makeOFConditionConst(EC_MissingAttribute,                OFM_dcmdata, 47, OF_error, "Missing attribute");
+makeOFConditionConst(EC_InternalError,                   OFM_dcmdata, 48, OF_error, "Internal error");
 
 const unsigned short EC_CODE_CannotSelectCharacterSet  = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet = 36;
