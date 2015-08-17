@@ -46,6 +46,7 @@ class DCMTK_CMR_EXPORT ContentMappingResource
     /** initialize \e all supported context groups of the "Content Mapping Resource"
      *  explicitly.  Currently, the following context group classes are supported:
      *  - CID11_RouteOfAdministration
+     *  - CID29_AcquisitionModality
      *  - CID42_NumericValueQualifier
      *  - CID4020_PETRadionuclide
      *  - CID4021_PETRadiopharmaceutical
