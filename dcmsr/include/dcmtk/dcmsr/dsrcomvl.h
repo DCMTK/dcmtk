@@ -215,6 +215,18 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
                              const OFString &sopInstanceUID,
                              const OFBool check = OFTrue);
 
+    /** set SOP class UID and SOP instance UID value from dataset.
+     *  Internally, the methods setSOPClassUID() and setSOPInstanceUID() are called with the
+     *  given 'dataset' and the tags DCM_SOPClassUID and DCM_SOPInstanceUID, respectively.
+     *  I.e., the SOP class UID might be set even if the SOP instance UID value is invalid.
+     ** @param  dataset  DICOM dataset from which the UID values should be retrieved
+     *  @param  check    if enabled, check retrieved UID values for validity before setting
+     *                   them.  See checkXXX() for details. Empty values are never accepted.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setReference(DcmItem &dataset,
+                             const OFBool check = OFTrue);
+
     /** set SOP class UID value.
      *  Before setting the value, it is usually checked.  If the value is invalid, the current
      *  value is not replaced and remains unchanged.

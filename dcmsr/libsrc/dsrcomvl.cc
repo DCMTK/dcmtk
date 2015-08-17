@@ -270,6 +270,16 @@ OFCondition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID
 }
 
 
+OFCondition DSRCompositeReferenceValue::setReference(DcmItem &dataset,
+                                                     const OFBool check)
+{
+    OFCondition result = setSOPClassUID(dataset, DCM_SOPClassUID, 0 /*pos*/, check);
+    if (result.good())
+        result = setSOPInstanceUID(dataset, DCM_SOPInstanceUID, 0 /*pos*/, check);
+    return result;
+}
+
+
 OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID,
                                                        const OFBool check)
 {
