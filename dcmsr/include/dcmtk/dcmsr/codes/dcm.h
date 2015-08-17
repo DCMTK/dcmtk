@@ -16,10 +16,10 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    DICOM Controlled Terminology Definitions (Coding Scheme "DCM", Version "01")
+ *    DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-07-05 12:22:22 by J. Riesmeier
+ *    File created on 2015-08-17 14:25:12 by J. Riesmeier
  *
  */
 
@@ -30,6 +30,16 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrcodvl.h"
+
+
+/*-----------------------*
+ *  general information  *
+ *-----------------------*/
+
+#define CODE_DCM_CodingSchemeDesignator  "DCM"
+#define CODE_DCM_CodingSchemeName        "DICOM"
+#define CODE_DCM_CodingSchemeDescription "DICOM Controlled Terminology"
+#define CODE_DCM_CodingSchemeUID         "1.2.840.10008.2.16.4"
 
 
 /*--------------------*
