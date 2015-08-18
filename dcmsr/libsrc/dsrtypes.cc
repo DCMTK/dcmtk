@@ -284,6 +284,9 @@ makeOFConditionConst(SR_EC_CodedEntryNotInContextGroup,         OFM_dcmsr, 29, O
 makeOFConditionConst(SR_EC_CodedEntryInStandardContextGroup,    OFM_dcmsr, 30, OF_ok,    "Coded Entry in Context Group (Standard)");
 makeOFConditionConst(SR_EC_CodedEntryIsExtensionOfContextGroup, OFM_dcmsr, 31, OF_ok,    "Coded Entry in Context Group (Extension)");
 
+// NOTE:
+// error codes 1000 and above are reserved for the submodule "cmr"
+
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
