@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,6 +39,7 @@ makeOFConditionConst(EC_DirectoryNotWritable,          0, 12, OF_error,   "Direc
 makeOFConditionConst(EC_CouldNotGenerateFilename,      0, 14, OF_error,   "Could not generate filename");
 makeOFConditionConst(EC_CouldNotGenerateDirectoryName, 0, 15, OF_error,   "Could not generate directory name");
 makeOFConditionConst(EC_setuidFailed,                  0, 16, OF_error,   "Call to setuid() failed");
+makeOFConditionConst(EC_NotYetImplemented,             0, 17, OF_error,   "Not yet implemented");
 
 // NOTE:
 // error codes 1024..2047 are reserved for inter-process communication

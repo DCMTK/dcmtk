@@ -103,12 +103,12 @@ class DCMTK_CMR_EXPORT TID1001_ObservationContext
                                   const OFBool check = OFTrue);
 
     /** add content items for TID 1005 (Procedure Context)
-     ** @return always returns EC_IllegalCall since this methods has not been implemented yet
+     ** @return always returns EC_NotYetImplemented since this methods has not been implemented yet
      */
     OFCondition addProcedureContext();
 
     /** add content items for TID 1006 (Subject Context), and included TID 1007-1010
-     ** @return always returns EC_IllegalCall since this methods has not been implemented yet
+     ** @return always returns EC_NotYetImplemented since this methods has not been implemented yet
      */
     OFCondition addSubjectContext();
 };

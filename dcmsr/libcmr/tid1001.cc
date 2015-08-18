@@ -88,7 +88,7 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
             /* insert subtree at current position */
             result = insertSubTree(subTree, AM_afterCurrent);
             /* store ID of recently added node for later use */
-            if(result.good())
+            if (result.good())
                 storeEntryInNodeList(LAST_PERSON_OBSERVER, lastNode);
         }
         /* in case of error, make sure that memory is freed */
@@ -185,12 +185,12 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
 OFCondition TID1001_ObservationContext::addProcedureContext()
 {
     /* tbd: not yet implemented */
-    return EC_IllegalCall;
+    return EC_NotYetImplemented;
 }
 
 
 OFCondition TID1001_ObservationContext::addSubjectContext()
 {
     /* tbd: not yet implemented */
-    return EC_IllegalCall;
+    return EC_NotYetImplemented;
 }

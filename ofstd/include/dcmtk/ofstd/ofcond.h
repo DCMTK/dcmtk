@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -131,6 +131,9 @@ extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryNotWritable;
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotGenerateDirectoryName;
 /// condition constant: error, call to setuid() failed
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_setuidFailed;
+
+/// condition constant: error, function not yet implemented
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_NotYetImplemented;
 
 /// status code constant: error, cannot open character encoding
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotOpenEncoding;
