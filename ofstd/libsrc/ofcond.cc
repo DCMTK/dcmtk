@@ -35,7 +35,7 @@ makeOFConditionConst(EC_CouldNotCreateTemporaryFile,   0,  9, OF_error,   "Could
 makeOFConditionConst(EC_InvalidFilename,               0, 10, OF_error,   "Invalid filename");
 makeOFConditionConst(EC_DirectoryDoesNotExist,         0, 11, OF_error,   "Directory does not exist");
 makeOFConditionConst(EC_DirectoryNotWritable,          0, 12, OF_error,   "Directory is not writable");
-// codes 13 is for dynamically created error messages (see constants below)
+// code 13 is for dynamically created error messages (see constant below)
 makeOFConditionConst(EC_CouldNotGenerateFilename,      0, 14, OF_error,   "Could not generate filename");
 makeOFConditionConst(EC_CouldNotGenerateDirectoryName, 0, 15, OF_error,   "Could not generate directory name");
 makeOFConditionConst(EC_setuidFailed,                  0, 16, OF_error,   "Call to setuid() failed");
