@@ -380,9 +380,12 @@ OFCondition DSRDocumentSubTree::addContentItem(const E_RelationshipType relation
     /* call the functions doing the real work */
     if (addContentItem(relationshipType, valueType, AM_afterCurrent) > 0)
     {
-        /* use a more appropriate error code than the one returned */
-        if (getCurrentContentItem().setConceptName(conceptName).bad())
-            result = SR_EC_InvalidConceptName;
+        if (!conceptName.isEmpty())
+        {
+            /* use a more appropriate error code than the one returned */
+            if (getCurrentContentItem().setConceptName(conceptName).bad())
+                result = SR_EC_InvalidConceptName;
+        }
     } else
         result = SR_EC_CannotAddContentItem;
     return result;
@@ -397,9 +400,12 @@ OFCondition DSRDocumentSubTree::addChildContentItem(const E_RelationshipType rel
     /* call the functions doing the real work */
     if (addContentItem(relationshipType, valueType, AM_belowCurrent) > 0)
     {
-        /* use a more appropriate error code than the one returned */
-        if (getCurrentContentItem().setConceptName(conceptName).bad())
-            result = SR_EC_InvalidConceptName;
+        if (!conceptName.isEmpty())
+        {
+            /* use a more appropriate error code than the one returned */
+            if (getCurrentContentItem().setConceptName(conceptName).bad())
+                result = SR_EC_InvalidConceptName;
+        }
     } else
         result = SR_EC_CannotAddContentItem;
     return result;
