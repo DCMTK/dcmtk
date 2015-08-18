@@ -56,7 +56,9 @@ OFCondition CID5001_Countries::selectValue(const EnumType selectedValue,
 }
 
 
-OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const
+OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                              DSRCodedEntryValue *foundCodedEntry,
+                                              const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -66,8 +68,16 @@ OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &codedEnt
     while (iter != last)
     {
         /* if found, exit loop */
-        if (codedEntryValue == iter->second)
+        if (searchForCodedEntry == iter->second)
         {
+            /* return coded entry (if requested) */
+            if (foundCodedEntry != NULL)
+            {
+                *foundCodedEntry = iter->second;
+                /* also set enhanced encoding mode (if enabled) */
+                if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
+                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
         }
@@ -75,7 +85,10 @@ OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &codedEnt
     }
     /* if not, continue with extended codes */
     if (result.bad())
-        result = DSRContextGroup::findCodedEntry(codedEntryValue);
+    {
+        result = DSRContextGroup::findCodedEntry(searchForCodedEntry, foundCodedEntry);
+        /* tbd: set "enhanced encoding mode" to mark a local/extended version? */
+    }
     return result;
 }
 

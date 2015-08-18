@@ -159,6 +159,19 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
      */
     virtual OFCondition addCodedEntry(const DSRCodedEntryValue &codedEntryValue);
 
+    /** search for a given coded entry in this context group and, if found, replace its
+     *  value with the one found in the context group.  This method can, therefore, be
+     *  used to lookup the "official" code meaning or to set the "enhanced encoding mode".
+     ** @param  codedEntryValue       coded entry to be searched for.  Should be a valid
+     *                                code, i.e. at least the three mandatory components
+     *                                have to be non-empty. Also used to store the retrieved
+     *                                coded entry.
+     *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
+     ** @return result of the search process, see findCodedEntry() for details
+     */
+    virtual OFCondition lookupCodedEntry(DSRCodedEntryValue &codedEntryValue,
+                                         const OFBool enhancedEncodingMode = OFFalse) const;
+
     /** print contents of this context group, i.e.\ a general header, the currently
      *  selected coded entry value (if any) and all coded entries that are contained
      *  in this context group (both standard and extended ones).
@@ -210,6 +223,18 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
      ** @param  stream  stream to which the output should be printed
      */
     virtual void printCodes(STD_NAMESPACE ostream &stream) const;
+
+    /** search for a given coded entry in this context group
+     ** @param  searchForCodedEntry   coded entry to be searched for
+     *  @param  foundCodedEntry       pointer to variable that will store the coded entry
+     *                                (if found and pointer is not NULL)
+     *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry
+     *                                (not used for this class, only in derived classes)
+     ** @return result of the search process, also defines the type of the entry
+     */
+    virtual OFCondition findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                       DSRCodedEntryValue *foundCodedEntry,
+                                       const OFBool enhancedEncodingMode = OFFalse) const;
 
     /** check whether the currently selected coded entry is valid.
      *  Internally, the method hasCodedEntry() is used if 'definedContextGroup' is OFTrue.

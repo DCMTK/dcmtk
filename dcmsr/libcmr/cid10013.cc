@@ -19,7 +19,7 @@
  *    classes: CID10013_CTAcquisitionType
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-10 16:47:05 by J. Riesmeier
+ *    File created on 2015-08-18 17:27:41 by J. Riesmeier
  *
  */
 
@@ -59,7 +59,9 @@ OFCondition CID10013_CTAcquisitionType::selectValue(const EnumType selectedValue
 }
 
 
-OFCondition CID10013_CTAcquisitionType::findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const
+OFCondition CID10013_CTAcquisitionType::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                       DSRCodedEntryValue *foundCodedEntry,
+                                                       const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -69,8 +71,16 @@ OFCondition CID10013_CTAcquisitionType::findCodedEntry(const DSRCodedEntryValue 
     while (iter != last)
     {
         /* if found, exit loop */
-        if (codedEntryValue == iter->second)
+        if (searchForCodedEntry == iter->second)
         {
+            /* return coded entry (if requested) */
+            if (foundCodedEntry != NULL)
+            {
+                *foundCodedEntry = iter->second;
+                /* also set enhanced encoding mode (if enabled) */
+                if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
+                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
         }
@@ -78,7 +88,10 @@ OFCondition CID10013_CTAcquisitionType::findCodedEntry(const DSRCodedEntryValue 
     }
     /* if not, continue with extended codes */
     if (result.bad())
-        result = DSRContextGroup::findCodedEntry(codedEntryValue);
+    {
+        result = DSRContextGroup::findCodedEntry(searchForCodedEntry, foundCodedEntry);
+        /* tbd: set "enhanced encoding mode" to mark a local/extended version? */
+    }
     return result;
 }
 

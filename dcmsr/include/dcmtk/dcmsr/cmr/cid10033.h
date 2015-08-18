@@ -19,7 +19,7 @@
  *    classes: CID10033_CTReconstructionAlgorithm
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-10 16:47:07 by J. Riesmeier
+ *    File created on 2015-08-18 17:27:42 by J. Riesmeier
  *
  */
 
@@ -82,15 +82,6 @@ class DCMTK_CMR_EXPORT CID10033_CTReconstructionAlgorithm
    virtual OFCondition selectValue(const EnumType selectedValue,
                                    const OFBool enhancedEncodingMode = OFFalse);
 
-    /** search for a given coded entry in this context group.  If found, the type of the
-     *  entry (standard or extension) is returned.
-     *  See DSRContextGroup::findCodedEntry() for details.
-     ** @param  codedEntryValue  coded entry to be searched for
-     ** @return result of the search process.  Use OFCondition::good() or OFCondition::bad()
-     *          to check whether the coded entry has been found or not.
-     */
-   virtual OFCondition findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const;
-
   // --- static helper functions ---
 
     /** initialize this context group explicitly.  Internally, the list of standard coded
@@ -110,9 +101,10 @@ class DCMTK_CMR_EXPORT CID10033_CTReconstructionAlgorithm
     static DSRCodedEntryValue getCodedEntry(const EnumType value,
                                             const OFBool enhancedEncodingMode = OFFalse);
 
-  // --- reintroduce method from base class
+  // --- reintroduce methods from base class
 
      using DSRContextGroup::selectValue;
+     using DSRContextGroup::findCodedEntry;
 
 
   protected:
@@ -125,6 +117,17 @@ class DCMTK_CMR_EXPORT CID10033_CTReconstructionAlgorithm
      ** @param  stream  stream to which the output should be printed
      */
     virtual void printCodes(STD_NAMESPACE ostream &stream) const;
+
+    /** search for a given coded entry in this context group
+     ** @param  searchForCodedEntry   coded entry to be searched for
+     *  @param  foundCodedEntry       pointer to variable that will store the coded entry
+     *                                (if found and pointer is not NULL)
+     *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
+     ** @return result of the search process, also defines the type of the entry
+     */
+   virtual OFCondition findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                      DSRCodedEntryValue *foundCodedEntry,
+                                      const OFBool enhancedEncodingMode = OFFalse) const;
 
   // --- static helper function ---
 

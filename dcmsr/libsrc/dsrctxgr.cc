@@ -82,21 +82,8 @@ OFBool DSRContextGroup::hasCodedEntry(const DSRCodedEntryValue &codedEntryValue)
 
 OFCondition DSRContextGroup::findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const
 {
-    OFCondition result = SR_EC_CodedEntryNotInContextGroup;
-    OFListConstIterator(DSRCodedEntryValue) iter = ExtendedCodes.begin();
-    OFListConstIterator(DSRCodedEntryValue) last = ExtendedCodes.end();
-    /* iterate over coded entry list */
-    while (iter != last)
-    {
-        /* if found, exit loop */
-        if (*iter == codedEntryValue)
-        {
-            result = SR_EC_CodedEntryIsExtensionOfContextGroup;
-            break;
-        }
-        ++iter;
-    }
-    return result;
+    /* not interested in the coded entry that was found */
+    return findCodedEntry(codedEntryValue, NULL /*foundCodedEntry*/);
 }
 
 
@@ -113,6 +100,14 @@ OFCondition DSRContextGroup::addCodedEntry(const DSRCodedEntryValue &codedEntryV
         result = SR_EC_NonExtensibleContextGroup;
     }
     return result;
+}
+
+
+OFCondition DSRContextGroup::lookupCodedEntry(DSRCodedEntryValue &codedEntryValue,
+                                              const OFBool enhancedEncodingMode) const
+{
+    /* store coded entry that was found in given parameter */
+    return findCodedEntry(codedEntryValue, &codedEntryValue, enhancedEncodingMode);
 }
 
 
@@ -172,6 +167,31 @@ void DSRContextGroup::printCodes(STD_NAMESPACE ostream &stream) const
             ++iter;
         }
     }
+}
+
+
+OFCondition DSRContextGroup::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                            DSRCodedEntryValue *foundCodedEntry,
+                                            const OFBool /* enhancedEncodingMode */) const
+{
+    OFCondition result = SR_EC_CodedEntryNotInContextGroup;
+    OFListConstIterator(DSRCodedEntryValue) iter = ExtendedCodes.begin();
+    OFListConstIterator(DSRCodedEntryValue) last = ExtendedCodes.end();
+    /* iterate over coded entry list */
+    while (iter != last)
+    {
+        /* if found, exit loop */
+        if (*iter == searchForCodedEntry)
+        {
+            /* return coded entry (if requested) */
+            if (foundCodedEntry != NULL)
+                *foundCodedEntry = *iter;
+            result = SR_EC_CodedEntryIsExtensionOfContextGroup;
+            break;
+        }
+        ++iter;
+    }
+    return result;
 }
 
 
