@@ -135,7 +135,15 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
      */
     size_t getEntryFromNodeList(const size_t pos) const;
 
-    /** set internal cursor of a given document tree to particular node.
+    /** set internal cursor of a given document tree to a specific node
+     ** @param  tree  pointer to document tree where nodes and cursor are stored
+     *  @param  pos   index of the list entry that stores the ID of the node
+     ** @return ID of the new current node within the tree if successful, 0 otherwise
+     */
+    size_t gotoEntryFromNodeList(DSRDocumentSubTree *tree,
+                                 const size_t pos);
+
+    /** set internal cursor of a given document tree to a particular node.
      *  The node is determined from the list of node IDs, starting from the entry
      *  specified by the parameter 'lastPos'.  The reverse search stops if either an
      *  entry with a non-zero value (valid node ID) is found or the first list entry

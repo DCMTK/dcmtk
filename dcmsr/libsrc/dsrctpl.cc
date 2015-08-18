@@ -105,6 +105,22 @@ size_t DSRTemplateCommon::getEntryFromNodeList(const size_t pos) const
 }
 
 
+size_t DSRTemplateCommon::gotoEntryFromNodeList(DSRDocumentSubTree *tree,
+                                                const size_t pos)
+{
+    size_t nodeID = 0;
+    /* make sure that tree is valid and list entry exists */
+    if ((tree != NULL) && (pos < NodeList.size()))
+    {
+        nodeID = NodeList[pos];
+        /* check whether current node is already the right one */
+        if (tree->getNodeID() != nodeID)
+            nodeID = tree->gotoNode(nodeID, OFTrue /*startFromRoot*/);
+    }
+    return nodeID;
+}
+
+
 size_t DSRTemplateCommon::gotoLastEntryFromNodeList(DSRDocumentSubTree *tree,
                                                     const size_t lastPos)
 {
