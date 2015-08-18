@@ -148,9 +148,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownVR;
 extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotSelectCharacterSet;
 /// error, cannot convert specific character set
 extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertCharacterSet;
-
 /// error, cannot convert to XML
-extern const unsigned short EC_CODE_CannotConvertToXML;
+extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertToXML;
 
 
 #endif /* !DCERROR_H */
