@@ -3118,7 +3118,7 @@ OFCondition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
               if (pHardcopyImage->getStatus() == EIS_Normal)
               {
                 /* set display function for calibrated output */
-                if (displayFunction != NULL)
+                if (displayFunction[DVPSD_GSDF] != NULL)
                   pHardcopyImage->setDisplayFunction(displayFunction[DVPSD_GSDF]);
                 /* adapt polarity if necessary */
                 const char *polarity = pPrint->getImagePolarity(idx);
