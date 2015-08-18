@@ -227,9 +227,7 @@ template<typename T = DSRTreeNode> class DSRTree
      *  should be created with new() - do not use a reference to a local variable.
      *  If the node could be added successfully the cursor is set to it automatically.
      ** @param  node     pointer to the new node to be added
-     *  @param  addMode  flag specifying at which position to add the new node.
-     *                   Possible values: DSRTypes::AM_afterCurrent,
-     *                   DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent)
+     *  @param  addMode  flag specifying at which position to add the new node
      ** @return ID of the new added node if successful, 0 otherwise
      */
     virtual size_t addNode(T *node,
@@ -622,11 +620,32 @@ size_t DSRTree<T>::addNode(T *node,
                             tempNode = tempNode->Next;
                             ++this->Position;
                         }
+                        /* connect to last child */
                         tempNode->Next = node;
                         node->Prev = tempNode;
                         ++this->Position;
                     } else
                         this->NodeCursor->Down = node;
+                    break;
+                case AM_belowCurrentBeforeFirstChild:
+                    /* store old position */
+                    if (this->Position > 0)
+                    {
+                        this->PositionList.push_back(this->Position);
+                        this->Position = 1;
+                    }
+                    this->NodeCursorStack.push(this->NodeCursor);
+                    /* parent node has already child nodes */
+                    if (this->NodeCursor->Down != NULL)
+                    {
+                        /* goto last node (sibling), if any */
+                        while (lastNode->Next != NULL)
+                            lastNode = lastNode->Next;
+                        /* connect to (current) first child */
+                        lastNode->Next = this->NodeCursor->Down;
+                        (this->NodeCursor->Down)->Prev = lastNode;
+                    }
+                    this->NodeCursor->Down = node;
                     break;
             }
             this->NodeCursor = node;

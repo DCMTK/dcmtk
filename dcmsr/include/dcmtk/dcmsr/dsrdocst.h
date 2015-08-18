@@ -167,8 +167,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *                            the current one
      *  @param  valueType         value type of node to be checked
      *  @param  addMode           flag specifying at which position the new node would
-     *                            be added.  Possible values: DSRTypes::AM_afterCurrent,
-     *                            DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *                            be added (e.g. after or below the current node)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddContentItem(const E_RelationshipType relationshipType,
@@ -193,9 +192,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @param  relationshipType  relationship type of node to be added with regard to
      *                            the current one
      *  @param  valueType         value type of node to be added
-     *  @param  addMode           flag specifying at which position to add the new node.
-     *                            Possible values: DSRTypes::AM_afterCurrent,
-     *                            DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  addMode           flag specifying at which position to add the new node
+     *                            (e.g. after or below the current node)
      ** @return ID of new node if successful, 0 otherwise
      */
     virtual size_t addContentItem(const E_RelationshipType relationshipType,
@@ -211,9 +209,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  not use a reference to a local variable and do not delete it a second time.
      ** @param  node          pointer to the new node to be added (should not be empty).
      *                        Reference remains valid after successful insertion.
-     *  @param  addMode       flag specifying at which position to add the new node.
-     *                        Possible values: DSRTypes::AM_afterCurrent,
-     *                        DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  addMode       flag specifying at which position to add the new node
+     *                        (e.g. after or below the current node)
      *  @param  deleteIfFail  flag specifying whether to delete the given 'node' if
      *                        adding fails.  By default, the item is not deleted, i.e.
      *                        in case of error it has to be deleted by the caller.
@@ -273,8 +270,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  compliance with the relationship content constraints of the underlying SR IOD.
      ** @param  tree            pointer to new subtree to be inserted (should not be empty)
      *  @param  addMode         flag specifying at which position the new subtree would
-     *                          be added.  Possible values: DSRTypes::AM_afterCurrent,
-     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *                          be added (e.g. after or below the current node)
      *  @param  defaultRelType  default relationship type between the top-level nodes of
      *                          the given subtree and the current node.  This relationship
      *                          type is used if the one of a top-level node is "unknown".
@@ -292,9 +288,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  local variable and do not delete it a second time.
      ** @param  tree            pointer to new subtree to be inserted (should not be empty).
      *                          Reference becomes invalid after successful insertion!
-     *  @param  addMode         flag specifying at which position to add the new subtree.
-     *                          Possible values: DSRTypes::AM_afterCurrent,
-     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  addMode         flag specifying at which position to add the new subtree
+     *                          (e.g. after or below the current node)
      *  @param  defaultRelType  default relationship type between the top-level nodes of
      *                          the given subtree and the current node.  This relationship
      *                          type is used if the one of a top-level node is "unknown".
@@ -427,9 +422,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  has to be created with new() - do not use a reference to a local variable.
      *  If the node could be added successfully, the cursor is set to it automatically.
      ** @param  node     pointer to the new node to be added
-     *  @param  addMode  flag specifying at which position to add the new node.
-     *                   Possible values: DSRTypes::AM_afterCurrent,
-     *                   DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  addMode  flag specifying at which position to add the new node
+     *                   (e.g. after or below the current node)
      ** @return ID of the new added node if successful, 0 otherwise
      */
     virtual size_t addNode(DSRDocumentTreeNode *node,

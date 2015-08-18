@@ -208,6 +208,7 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryInStandardConte
 
 /// normal: a given coded entry is known as an extension of the context group
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryIsExtensionOfContextGroup;
+
 //@}
 
 
@@ -762,7 +763,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         /// add new node before current one (sibling)
         AM_beforeCurrent,
         /// add new node below current one (after last child)
-        AM_belowCurrent
+        AM_belowCurrent,
+        /// add new node below current one (before first child)
+        AM_belowCurrentBeforeFirstChild
     };
 
 

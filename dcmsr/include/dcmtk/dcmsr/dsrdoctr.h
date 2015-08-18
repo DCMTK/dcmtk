@@ -178,8 +178,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      *                            to the current one
      *  @param  valueType         value type of node to be checked
      *  @param  addMode           flag specifying at which position the new node would
-     *                            be added.  Possible values: DSRTypes::AM_afterCurrent,
-     *                            DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *                            be added (e.g. after or below the current node)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddContentItem(const E_RelationshipType relationshipType,
@@ -193,8 +192,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      *  In all other cases, the method DSRDocumentSubTree::canInsertSubTree() is called.
      ** @param  tree            pointer to new subtree to be inserted (should not be empty)
      *  @param  addMode         flag specifying at which position the new subtree would
-     *                          be added.  Possible values: DSRTypes::AM_afterCurrent,
-     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *                          be added (e.g. after or below the current node)
      *  @param  defaultRelType  default relationship type between the top-level nodes of
      *                          the given subtree and the current node.  This relationship
      *                          type is used if the one of a top-level node is "unknown".

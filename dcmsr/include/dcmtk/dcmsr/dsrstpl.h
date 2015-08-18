@@ -111,9 +111,8 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
      *  If possible, this method adds a copy of the given tree to the current content item.
      *  However, in case this template is non-extensible, an error code will be returned.
      ** @param  subTemplate     template that contains the tree that should be inserted
-     *  @param  addMode         flag specifying at which position to add the new subtree.
-     *                          Possible values: DSRTypes::AM_afterCurrent,
-     *                          DSRTypes::AM_beforeCurrent, DSRTypes::AM_belowCurrent
+     *  @param  addMode         flag specifying at which position to add the new subtree
+     *                          (e.g. after or below the current node)
      *  @param  defaultRelType  default relationship type between the top-level nodes of
      *                          the given subtree and the current node.  This relationship
      *                          type is used if the one of a top-level node is "unknown".
