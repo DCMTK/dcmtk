@@ -1,13 +1,13 @@
 /*
  *
- *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (c) 2008-2015, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTTypes
  *
- *  Generated manually based on DRTTypes.cc
+ *  Generated manually based on dsrtypes.cc
  *  File created on 2008-12-05
- *  Last modified on 2012-01-06 by Riesmeier
+ *  Last modified on 2015-08-18 by Riesmeier
  *
  */
 
@@ -35,7 +35,7 @@ makeOFConditionConst(RT_EC_InvalidObject,    OFM_dcmrt, 3, OF_error, "Invalid Ob
 
 
 /*--------------------*
- *  helper functions  *
+ *  global variables  *
  *--------------------*/
 
 OFLogger DCM_dcmrtLogger = OFLog::getLogger("dcmtk.dcmrt");
