@@ -181,6 +181,14 @@ printing values:
   +Pt   --print-template-id
           print template identification information
 
+enhanced encoding mode:
+
+  +Pe   --indicate-enhanced
+          indicate that enhanced mode is used for codes
+
+  -Pe   --no-enhanced-mode
+          do not indicate enhanced mode (default)
+
 color:
 
   +C    --print-color
@@ -280,6 +288,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2015 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

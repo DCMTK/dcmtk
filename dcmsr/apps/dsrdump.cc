@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -191,6 +191,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-invalid-codes",  "+Pi",  "print invalid codes (for debugging purposes)");
         cmd.addOption("--no-invalid-codes",     "-Pi",  "print text \"invalid code\" instead (default)");
         cmd.addOption("--print-template-id",    "+Pt",  "print template identification information");
+      cmd.addSubGroup("enhanced encoding mode:");
+        cmd.addOption("--indicate-enhanced",    "+Pe",  "indicate that enhanced mode is used for codes");
+        cmd.addOption("--no-enhanced-mode",     "-Pe",  "do not indicate enhanced mode (default)");
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
       cmd.addSubGroup("color:");
         cmd.addOption("--print-color",          "+C",   "use ANSI escape codes for colored output");
@@ -321,6 +324,13 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--print-template-id"))
             opt_printFlags |= DSRTypes::PF_printTemplateIdentification;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--indicate-enhanced"))
+            opt_printFlags |= DSRTypes::PF_indicateEnhancedEncodingMode;
+        if (cmd.findOption("--no-enhanced-mode"))
+            opt_printFlags &= ~DSRTypes::PF_indicateEnhancedEncodingMode;
+        cmd.endOptionBlock();
 
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
         cmd.beginOptionBlock();
