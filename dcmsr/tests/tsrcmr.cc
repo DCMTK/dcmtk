@@ -42,6 +42,12 @@ OFTEST(dcmsr_CID42_NumericValueQualifier)
     /* set coded entry from context group and check the value */
     OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CID42_NumericValueQualifier::NotANumber)).good());
     OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_NotANumber);
+    /* perform some tests with invalid coded entries */
+    CID42_NumericValueQualifier ctxGroup;
+    OFCHECK(ctxGroup.addCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "Meaning")).good());
+    OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("", "99TEST", "Some invalid test code")).bad());
+    OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "-")).good());
+    OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("", "", "")).bad());
 }
 
 

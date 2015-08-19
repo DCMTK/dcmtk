@@ -152,9 +152,8 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
 
     /** add a coded entry to this context group as an extension, i.e.\ as a non-standard
      *  code.  Adding a new coded entry by this method only works for extensible context
-     *  groups.
+     *  groups.  Please note that the 'codedEntryValue' is not checked for validity.
      ** @param  codedEntryValue  coded entry to be added to this context group
-     *                           (as an extension)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition addCodedEntry(const DSRCodedEntryValue &codedEntryValue);

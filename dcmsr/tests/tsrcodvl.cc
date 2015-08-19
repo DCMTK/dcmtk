@@ -90,6 +90,14 @@ OFTEST(dcmsr_writeCodeSequence)
 }
 
 
+OFTEST(dcmsr_compareCodedEntry)
+{
+    DSRCodedEntryValue codedEntry("121206", "DCM", "Distance");
+    OFCHECK(codedEntry == DSRCodedEntryValue("121206", "DCM", "Wrong meaning"));
+    OFCHECK(!(codedEntry == DSRCodedEntryValue("" /*empty*/, "DCM", "Distance")));
+}
+
+
 OFTEST(dcmsr_useBasicCodedEntry)
 {
     /* first, define some code constants */

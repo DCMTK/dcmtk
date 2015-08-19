@@ -59,6 +59,7 @@ OFTEST_REGISTER(dcmsr_subTemplate_2);
 OFTEST_REGISTER(dcmsr_setCodeValueType);
 OFTEST_REGISTER(dcmsr_determineCodeValueType);
 OFTEST_REGISTER(dcmsr_writeCodeSequence);
+OFTEST_REGISTER(dcmsr_compareCodedEntry);
 OFTEST_REGISTER(dcmsr_useBasicCodedEntry);
 OFTEST_REGISTER(dcmsr_setNumericMeasurementValue);
 OFTEST_REGISTER(dcmsr_CID42_NumericValueQualifier);
