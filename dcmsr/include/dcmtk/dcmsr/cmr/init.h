@@ -48,6 +48,7 @@ class DCMTK_CMR_EXPORT ContentMappingResource
      *  - CID11_RouteOfAdministration
      *  - CID29_AcquisitionModality
      *  - CID42_NumericValueQualifier
+     *  - CID244_Laterality
      *  - CID4020_PETRadionuclide
      *  - CID4021_PETRadiopharmaceutical
      *  - CID4031_CommonAnatomicRegions

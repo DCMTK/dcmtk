@@ -28,6 +28,7 @@
 #include "dcmtk/dcmsr/cmr/cid11.h"
 #include "dcmtk/dcmsr/cmr/cid29.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
+#include "dcmtk/dcmsr/cmr/cid244.h"
 #include "dcmtk/dcmsr/cmr/cid4020.h"
 #include "dcmtk/dcmsr/cmr/cid4021.h"
 #include "dcmtk/dcmsr/cmr/cid4031.h"
@@ -50,6 +51,7 @@ void ContentMappingResource::initializeAllContextGroups()
     CID11_RouteOfAdministration::initialize();
     CID29_AcquisitionModality::initialize();
     CID42_NumericValueQualifier::initialize();
+    CID244_Laterality::initialize();
     CID4020_PETRadionuclide::initialize();
     CID4021_PETRadiopharmaceutical::initialize();
     CID4031_CommonAnatomicRegions::initialize();
