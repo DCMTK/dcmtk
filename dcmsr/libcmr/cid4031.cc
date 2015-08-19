@@ -19,7 +19,7 @@
  *    classes: CID4031_CommonAnatomicRegions
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:34 by J. Riesmeier
+ *    File created on 2015-08-19 16:32:49 by J. Riesmeier
  *
  */
 
@@ -79,7 +79,7 @@ OFCondition CID4031_CommonAnatomicRegions::findCodedEntry(const DSRCodedEntryVal
                 *foundCodedEntry = iter->second;
                 /* also set enhanced encoding mode (if enabled) */
                 if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
-                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+                    setEnhancedEncodingMode(*foundCodedEntry);
             }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
@@ -137,7 +137,7 @@ DSRCodedEntryValue CID4031_CommonAnatomicRegions::getCodedEntry(const EnumType v
         codedEntry = iter->second;
         /* also set enhanced encoding mode (if enabled) */
         if (!codedEntry.isEmpty() && enhancedEncodingMode)
-            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            setEnhancedEncodingMode(codedEntry);
     }
     return codedEntry;
 }
@@ -263,4 +263,10 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
     }
     /* should never be NULL */
     return *codes;
+}
+
+
+OFCondition CID4031_CommonAnatomicRegions::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+{
+    return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

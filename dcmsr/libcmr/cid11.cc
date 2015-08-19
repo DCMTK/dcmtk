@@ -19,7 +19,7 @@
  *    classes: CID11_RouteOfAdministration
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:25 by J. Riesmeier
+ *    File created on 2015-08-19 16:32:39 by J. Riesmeier
  *
  */
 
@@ -79,7 +79,7 @@ OFCondition CID11_RouteOfAdministration::findCodedEntry(const DSRCodedEntryValue
                 *foundCodedEntry = iter->second;
                 /* also set enhanced encoding mode (if enabled) */
                 if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
-                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+                    setEnhancedEncodingMode(*foundCodedEntry);
             }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
@@ -137,7 +137,7 @@ DSRCodedEntryValue CID11_RouteOfAdministration::getCodedEntry(const EnumType val
         codedEntry = iter->second;
         /* also set enhanced encoding mode (if enabled) */
         if (!codedEntry.isEmpty() && enhancedEncodingMode)
-            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            setEnhancedEncodingMode(codedEntry);
     }
     return codedEntry;
 }
@@ -177,4 +177,10 @@ CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
     }
     /* should never be NULL */
     return *codes;
+}
+
+
+OFCondition CID11_RouteOfAdministration::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+{
+    return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

@@ -19,7 +19,7 @@
  *    classes: CID4021_PETRadiopharmaceutical
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:32 by J. Riesmeier
+ *    File created on 2015-08-19 16:31:14 by J. Riesmeier
  *
  */
 
@@ -286,6 +286,12 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
      ** @return reference to list of coded entries managed by this context group
      */
     static CodeList &getCodes();
+
+    /** set the "Enhanced Encoding Mode" for a given coded entry
+     ** @param  codedEntryValue  coded entry for which the enhanced encoding mode is set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue);
 };
 
 #endif

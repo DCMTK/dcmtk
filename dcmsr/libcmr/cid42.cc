@@ -19,7 +19,7 @@
  *    classes: CID42_NumericValueQualifier
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:29 by J. Riesmeier
+ *    File created on 2015-08-19 16:32:42 by J. Riesmeier
  *
  */
 
@@ -79,7 +79,7 @@ OFCondition CID42_NumericValueQualifier::findCodedEntry(const DSRCodedEntryValue
                 *foundCodedEntry = iter->second;
                 /* also set enhanced encoding mode (if enabled) */
                 if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
-                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+                    setEnhancedEncodingMode(*foundCodedEntry);
             }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
@@ -137,7 +137,7 @@ DSRCodedEntryValue CID42_NumericValueQualifier::getCodedEntry(const EnumType val
         codedEntry = iter->second;
         /* also set enhanced encoding mode (if enabled) */
         if (!codedEntry.isEmpty() && enhancedEncodingMode)
-            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            setEnhancedEncodingMode(codedEntry);
     }
     return codedEntry;
 }
@@ -168,4 +168,10 @@ CID42_NumericValueQualifier::CodeList &CID42_NumericValueQualifier::getCodes()
     }
     /* should never be NULL */
     return *codes;
+}
+
+
+OFCondition CID42_NumericValueQualifier::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+{
+    return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

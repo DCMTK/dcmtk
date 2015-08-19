@@ -144,6 +144,12 @@ class DCMTK_CMR_EXPORT CID5001_Countries
      ** @return reference to list of coded entries managed by this context group
      */
     static CodeList &getCodes();
+
+    /** set the "Enhanced Encoding Mode" for a given coded entry
+     ** @param  codedEntryValue  coded entry for which the enhanced encoding mode is set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue);
 };
 
 #endif

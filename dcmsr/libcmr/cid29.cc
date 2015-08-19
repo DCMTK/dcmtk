@@ -19,7 +19,7 @@
  *    classes: CID29_AcquisitionModality
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:27 by J. Riesmeier
+ *    File created on 2015-08-19 16:32:40 by J. Riesmeier
  *
  */
 
@@ -79,7 +79,7 @@ OFCondition CID29_AcquisitionModality::findCodedEntry(const DSRCodedEntryValue &
                 *foundCodedEntry = iter->second;
                 /* also set enhanced encoding mode (if enabled) */
                 if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
-                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+                    setEnhancedEncodingMode(*foundCodedEntry);
             }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
@@ -137,7 +137,7 @@ DSRCodedEntryValue CID29_AcquisitionModality::getCodedEntry(const EnumType value
         codedEntry = iter->second;
         /* also set enhanced encoding mode (if enabled) */
         if (!codedEntry.isEmpty() && enhancedEncodingMode)
-            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            setEnhancedEncodingMode(codedEntry);
     }
     return codedEntry;
 }
@@ -193,4 +193,10 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
     }
     /* should never be NULL */
     return *codes;
+}
+
+
+OFCondition CID29_AcquisitionModality::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+{
+    return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

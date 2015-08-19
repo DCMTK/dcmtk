@@ -19,7 +19,7 @@
  *    classes: CID10033_CTReconstructionAlgorithm
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:42 by J. Riesmeier
+ *    File created on 2015-08-19 16:32:57 by J. Riesmeier
  *
  */
 
@@ -79,7 +79,7 @@ OFCondition CID10033_CTReconstructionAlgorithm::findCodedEntry(const DSRCodedEnt
                 *foundCodedEntry = iter->second;
                 /* also set enhanced encoding mode (if enabled) */
                 if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
-                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+                    setEnhancedEncodingMode(*foundCodedEntry);
             }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
@@ -137,7 +137,7 @@ DSRCodedEntryValue CID10033_CTReconstructionAlgorithm::getCodedEntry(const EnumT
         codedEntry = iter->second;
         /* also set enhanced encoding mode (if enabled) */
         if (!codedEntry.isEmpty() && enhancedEncodingMode)
-            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            setEnhancedEncodingMode(codedEntry);
     }
     return codedEntry;
 }
@@ -158,4 +158,10 @@ CID10033_CTReconstructionAlgorithm::CodeList &CID10033_CTReconstructionAlgorithm
     }
     /* should never be NULL */
     return *codes;
+}
+
+
+OFCondition CID10033_CTReconstructionAlgorithm::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+{
+    return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

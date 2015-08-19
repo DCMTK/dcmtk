@@ -19,7 +19,7 @@
  *    classes: CID7445_DeviceParticipatingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-18 17:27:36 by J. Riesmeier
+ *    File created on 2015-08-19 16:32:51 by J. Riesmeier
  *
  */
 
@@ -79,7 +79,7 @@ OFCondition CID7445_DeviceParticipatingRoles::findCodedEntry(const DSRCodedEntry
                 *foundCodedEntry = iter->second;
                 /* also set enhanced encoding mode (if enabled) */
                 if (!foundCodedEntry->isEmpty() && enhancedEncodingMode)
-                    foundCodedEntry->setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+                    setEnhancedEncodingMode(*foundCodedEntry);
             }
             result = SR_EC_CodedEntryInStandardContextGroup;
             break;
@@ -137,7 +137,7 @@ DSRCodedEntryValue CID7445_DeviceParticipatingRoles::getCodedEntry(const EnumTyp
         codedEntry = iter->second;
         /* also set enhanced encoding mode (if enabled) */
         if (!codedEntry.isEmpty() && enhancedEncodingMode)
-            codedEntry.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
+            setEnhancedEncodingMode(codedEntry);
     }
     return codedEntry;
 }
@@ -159,4 +159,10 @@ CID7445_DeviceParticipatingRoles::CodeList &CID7445_DeviceParticipatingRoles::ge
     }
     /* should never be NULL */
     return *codes;
+}
+
+
+OFCondition CID7445_DeviceParticipatingRoles::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+{
+    return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }
