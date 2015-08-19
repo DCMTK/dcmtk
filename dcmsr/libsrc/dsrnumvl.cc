@@ -556,7 +556,7 @@ OFCondition DSRNumericMeasurementValue::setNumericValue(DcmItem &dataset,
 {
     OFString numericValue;
     /* first, get the element value from the dataset */
-    OFCondition result = dataset.findAndGetOFString(tagKey, numericValue, pos, OFFalse /*searchIntoSub*/);
+    OFCondition result = DSRTypes::getStringValueFromDataset(dataset, tagKey, numericValue, pos);
     if (result.good())
     {
         /* then, check and set the value */

@@ -496,7 +496,7 @@ OFCondition DSRDocumentTreeNode::setObservationDateTime(DcmItem &dataset,
 {
     OFString observationDateTime;
     /* first, get the element value from the dataset */
-    OFCondition result = dataset.findAndGetOFString(tagKey, observationDateTime, pos, OFFalse /*searchIntoSub*/);
+    OFCondition result = getStringValueFromDataset(dataset, tagKey, observationDateTime, pos);
     if (result.good())
     {
         /* then, check and set the value */

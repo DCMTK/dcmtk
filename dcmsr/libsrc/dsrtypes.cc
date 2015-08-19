@@ -970,9 +970,15 @@ const OFString &DSRTypes::getMarkupStringFromElement(const DcmElement &delem,
 
 OFCondition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
                                                 const DcmTagKey &tagKey,
-                                                OFString &stringValue)
+                                                OFString &stringValue,
+                                                const signed long pos)
 {
-    return dataset.findAndGetOFString(tagKey, stringValue, 0, OFFalse /*searchIntoSub*/);
+    OFCondition result = EC_Normal;
+    if (pos < 0)
+        result = dataset.findAndGetOFStringArray(tagKey, stringValue, OFFalse /*searchIntoSub*/);
+    else
+        result = dataset.findAndGetOFString(tagKey, stringValue, OFstatic_cast(unsigned long, pos), OFFalse /*searchIntoSub*/);
+    return result;
 }
 
 

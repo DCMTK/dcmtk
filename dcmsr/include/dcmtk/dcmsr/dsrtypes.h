@@ -1245,7 +1245,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** get string value from element
      ** @param  delem        DICOM element from which the string value should be retrieved
-     *  @param  stringValue  reference to variable in which the result should be stored.
+     *  @param  stringValue  reference to variable in which the result should be stored
      *                       (This parameter is automatically cleared if an error occurs.)
      *  @param  pos          index of the value to get (0..vm-1), -1 for all components
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -1274,18 +1274,19 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                       OFString &stringValue,
                                                       const OFBool convertNonASCII = OFFalse);
 
-    /** get string value from dataset.
-     *  Please note that only the first element value is retrieved (in case of multiple values).
+    /** get string value from dataset
      ** @param  dataset      DICOM dataset from which the string should be retrieved.
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
-     *  @param  stringValue  reference to variable in which the result should be stored.
+     *  @param  stringValue  reference to variable in which the result should be stored
      *                       (This parameter is automatically cleared if the tag could not be found.)
+     *  @param  pos          index of the value to get (0..vm-1), -1 for all components
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition getStringValueFromDataset(DcmItem &dataset,
                                                  const DcmTagKey &tagKey,
-                                                 OFString &stringValue);
+                                                 OFString &stringValue,
+                                                 const signed long pos = 0);
 
     /** put string value to dataset
      ** @param  dataset      reference to DICOM dataset to which the string should be put.

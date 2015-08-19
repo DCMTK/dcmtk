@@ -186,7 +186,7 @@ OFCondition DSRStringValue::setValue(DcmItem &dataset,
 {
     OFString stringValue;
     /* first, get the element value from the dataset */
-    OFCondition result = dataset.findAndGetOFString(tagKey, stringValue, pos, OFFalse /*searchIntoSub*/);
+    OFCondition result = DSRTypes::getStringValueFromDataset(dataset, tagKey, stringValue, pos);
     if (result.good())
     {
         /* then, check and set the value */

@@ -321,7 +321,7 @@ OFCondition DSRCompositeReferenceValue::setSOPClassUID(DcmItem &dataset,
 {
     OFString sopClassUID;
     /* first, get the element value from the dataset */
-    OFCondition result = dataset.findAndGetOFString(tagKey, sopClassUID, pos, OFFalse /*searchIntoSub*/);
+    OFCondition result = DSRTypes::getStringValueFromDataset(dataset, tagKey, sopClassUID, pos);
     if (result.good())
     {
         /* then, check and set the value */
@@ -372,7 +372,7 @@ OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(DcmItem &dataset,
 {
     OFString sopInstanceUID;
     /* first, get the element value from the dataset */
-    OFCondition result = dataset.findAndGetOFString(tagKey, sopInstanceUID, pos, OFFalse /*searchIntoSub*/);
+    OFCondition result = DSRTypes::getStringValueFromDataset(dataset, tagKey, sopInstanceUID, pos);
     if (result.good())
     {
         /* then, check and set the value */

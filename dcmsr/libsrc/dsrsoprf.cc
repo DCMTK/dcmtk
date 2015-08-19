@@ -1037,10 +1037,10 @@ OFCondition DSRSOPInstanceReferenceList::addItem(DcmItem &dataset,
 {
     OFString studyUID, seriesUID, sopClassUID, instanceUID;
     /* retrieve element values from dataset */
-    dataset.findAndGetOFString(DCM_StudyInstanceUID, studyUID);
-    dataset.findAndGetOFString(DCM_SeriesInstanceUID, seriesUID);
-    dataset.findAndGetOFString(DCM_SOPClassUID, sopClassUID);
-    dataset.findAndGetOFString(DCM_SOPInstanceUID, instanceUID);
+    getStringValueFromDataset(dataset, DCM_StudyInstanceUID, studyUID);
+    getStringValueFromDataset(dataset, DCM_SeriesInstanceUID, seriesUID);
+    getStringValueFromDataset(dataset, DCM_SOPClassUID, sopClassUID);
+    getStringValueFromDataset(dataset, DCM_SOPInstanceUID, instanceUID);
     /* add new item to the list of references (if valid) */
     return addItem(studyUID, seriesUID, sopClassUID, instanceUID, check);
 }
