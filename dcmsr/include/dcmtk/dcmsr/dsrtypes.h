@@ -421,7 +421,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// print node ID at the beginning of each line (might be useful for debugging purposes)
     static const size_t PF_printNodeID;
 
-    /// shortcut: print all codes
+    /// indicate with a "*" that the "enhanced encoding mode" is used for codes
+    static const size_t PF_indicateEnhancedEncodingMode;
+
+    /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;
     //@}
 

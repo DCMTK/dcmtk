@@ -227,9 +227,9 @@ OFBool DSRCodedEntryValue::isEmpty() const
 
 void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
                                const OFBool printCodeValue,
-                               const OFBool printInvalid) const
+                               const size_t flags) const
 {
-    if (printInvalid || isValid())
+    if ((flags & DSRTypes::PF_printInvalidCodes) || isValid())
     {
         OFString printString;
         stream << "(";
@@ -242,6 +242,8 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
         } else
             stream << ",";
         stream << ",\"" << DSRTypes::convertToPrintString(CodeMeaning, printString) << "\")";
+        if ((flags & DSRTypes::PF_indicateEnhancedEncodingMode) && usesEnhancedEncodingMode())
+            stream << "*";
     } else
         stream << "invalid code";
 }

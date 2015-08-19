@@ -238,14 +238,13 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  Please note that only the "Basic Coded Entry Attributes" are supported by this method.
      ** @param  stream          output stream to which the code should be printed
      *  @param  printCodeValue  flag indicating whether the code value and coding scheme
-     *                          designator should be printed (default) or not.  If OFFalse the
-     *                          output looks like this: (,,"Code Meaning")
-     *  @param  printInvalid    flag indicating whether the text "invalid code" should be
-     *                          printed for invalid codes (default) or the actual code triple
+     *                          designator should be printed (default) or not.  If OFFalse,
+     *                          the output looks like this: (,,"Code Meaning")
+     *  @param  flags           flag used to customize the output (see DSRTypes::PF_xxx)
      */
     void print(STD_NAMESPACE ostream &stream,
                const OFBool printCodeValue = OFTrue,
-               const OFBool printInvalid = OFFalse) const;
+               const size_t flags = 0) const;
 
     /** read code sequence from dataset.
      *  The number of items within the code sequence is checked.  If error/warning output are

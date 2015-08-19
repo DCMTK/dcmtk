@@ -138,6 +138,7 @@ const size_t DSRTypes::PF_printLongSOPClassName          = 1 << 7;
 const size_t DSRTypes::PF_printSOPClassUID               = 1 << 8;
 const size_t DSRTypes::PF_printInvalidCodes              = 1 << 9;
 const size_t DSRTypes::PF_printNodeID                    = 1 << 10;
+const size_t DSRTypes::PF_indicateEnhancedEncodingMode   = 1 << 11;
 /* shortcuts */
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 

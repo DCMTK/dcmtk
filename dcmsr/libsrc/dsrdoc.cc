@@ -346,8 +346,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                         if (obsCode.isValid() || (flags & PF_printInvalidCodes))
                         {
                             stream << " ";
-                            obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/,
-                                                  (flags & PF_printInvalidCodes) > 0 /*printInvalid*/);
+                            obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/, flags);
                         }
                         stream << ", " << organization;
                         DCMSR_PRINT_HEADER_FIELD_END

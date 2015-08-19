@@ -135,7 +135,7 @@ OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream &stream,
     } else {
         OFString printString;
         stream << "\"" << DSRTypes::convertToPrintString(NumericValue, printString) << "\" ";
-        MeasurementUnit.print(stream, OFTrue /*printCodeValue*/, (flags & DSRTypes::PF_printInvalidCodes) > 0 /*printInvalid*/);
+        MeasurementUnit.print(stream, OFTrue /*printCodeValue*/, flags);
     }
     return EC_Normal;
 }

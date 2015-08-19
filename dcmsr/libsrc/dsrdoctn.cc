@@ -130,8 +130,7 @@ OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream &stream,
     if (ConceptName.isValid() || (flags & PF_printInvalidCodes))
     {
         DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_CONCEPT_NAME)
-        ConceptName.print(stream, (flags & PF_printConceptNameCodes) > 0 /*printCodeValue*/,
-                                  (flags & PF_printInvalidCodes) > 0 /*printInvalid*/);
+        ConceptName.print(stream, (flags & PF_printConceptNameCodes) > 0 /*printCodeValue*/, flags);
     }
     return EC_Normal;
 }
