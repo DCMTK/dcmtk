@@ -35,6 +35,9 @@
 
 #include "dcmtk/dcmsr/dsdefine.h"
 
+
+// global definitions for logging mechanism provided by the oflog module
+
 extern DCMTK_DCMSR_EXPORT OFLogger DCM_dcmsrLogger;
 
 #define DCMSR_TRACE(msg) OFLOG_TRACE(DCM_dcmsrLogger, msg)

@@ -1619,6 +1619,47 @@ init.o: init.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid7453.h \
  ../include/dcmtk/dcmsr/cmr/cid10013.h \
  ../include/dcmtk/dcmsr/cmr/cid10033.h
+logger.o: logger.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsr/cmr/logger.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../include/dcmtk/dcmsr/cmr/define.h
 srnumvl.o: srnumvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/srnumvl.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrcodvl.h ../include/dcmtk/dcmsr/dsrtypes.h \
