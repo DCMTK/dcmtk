@@ -486,8 +486,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_Comprehensive3DSR,
         /// DICOM IOD: Radiopharmaceutical Radiation Dose SR
         DT_RadiopharmaceuticalRadiationDoseSR,
+        /// DICOM IOD: Extensible SR (not yet implemented)
+        DT_ExtensibleSR,
         /// internal type used to mark the last entry
-        DT_last = DT_RadiopharmaceuticalRadiationDoseSR
+        DT_last = DT_ExtensibleSR
     };
 
     /** SR relationship types

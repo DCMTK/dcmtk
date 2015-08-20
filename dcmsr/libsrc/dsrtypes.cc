@@ -306,7 +306,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_MacularGridThicknessAndVolumeReport, UID_MacularGridThicknessAndVolumeReportStorage, OFTrue,  "SR", "Macular Grid Thickness and Volume Report"},
     {DSRTypes::DT_ImplantationPlanSRDocument,          UID_ImplantationPlanSRDocumentStorage,          OFTrue,  "SR", "Implantation Plan SR Document"},
     {DSRTypes::DT_Comprehensive3DSR,                   UID_Comprehensive3DSRStorage,                   OFFalse, "SR", "Comprehensive 3D SR"},
-    {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,  UID_RadiopharmaceuticalRadiationDoseSRStorage,  OFTrue,  "SR", "Radiopharmaceutical Radiation Dose SR"}
+    {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,  UID_RadiopharmaceuticalRadiationDoseSRStorage,  OFTrue,  "SR", "Radiopharmaceutical Radiation Dose SR"},
+    {DSRTypes::DT_ExtensibleSR,                        UID_ExtensibleSRStorage,                        OFTrue,  "SR", "Extensible SR"}
 };
 
 
@@ -850,7 +851,7 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR);
 }
 
 
@@ -1413,6 +1414,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             break;
         case DT_RadiopharmaceuticalRadiationDoseSR:
             checker = new DSRRadiopharmaceuticalRadiationDoseConstraintChecker();
+            break;
+        case DT_ExtensibleSR:
+            /* not yet supported */
             break;
         case DT_invalid:
             /* nothing to do */
