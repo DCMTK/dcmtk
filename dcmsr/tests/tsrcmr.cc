@@ -29,11 +29,28 @@
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
+#include "dcmtk/dcmsr/cmr/cid29e.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
+#include "dcmtk/dcmsr/cmr/cid244e.h"
+#include "dcmtk/dcmsr/cmr/cid4031e.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
 #include "dcmtk/dcmsr/cmr/tid1204.h"
 #include "dcmtk/dcmsr/cmr/srnumvl.h"
+
+
+OFTEST(dcmsr_CID29e_AcquisitionModality)
+{
+    CID29e_AcquisitionModality ctxGroup;
+    DSRCodedEntryValue codedEntry;
+    OFCHECK(!ctxGroup.hasSelectedValue());
+    OFCHECK(ctxGroup.mapModality("CT").isValid());
+    OFCHECK_EQUAL(ctxGroup.mapModality("MR").getCodeMeaning(), "Magnetic Resonance");
+    /* invalid/unknown defined terms */
+    OFCHECK(ctxGroup.mapModality("XYZ").isEmpty());
+    OFCHECK(ctxGroup.mapModality("ABC", codedEntry) == SR_EC_UnsupportedValue);
+    OFCHECK(ctxGroup.selectValue("").bad());
+}
 
 
 OFTEST(dcmsr_CID42_NumericValueQualifier)
@@ -48,6 +65,35 @@ OFTEST(dcmsr_CID42_NumericValueQualifier)
     OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("", "99TEST", "Some invalid test code")).bad());
     OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "-")).good());
     OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("", "", "")).bad());
+}
+
+
+OFTEST(dcmsr_CID244e_Laterality)
+{
+    CID244e_Laterality ctxGroup;
+    DSRCodedEntryValue codedEntry;
+    OFCHECK(!ctxGroup.hasSelectedValue());
+    OFCHECK_EQUAL(ctxGroup.mapImageLaterality("R").getCodeValue(), "G-A100");
+    OFCHECK(ctxGroup.mapImageLaterality("B", codedEntry).good());
+    OFCHECK(ctxGroup.selectValue("L").good());
+    /* invalid/unknown enumerated values */
+    OFCHECK(!ctxGroup.mapImageLaterality("XYZ").isValid());
+    OFCHECK(ctxGroup.mapImageLaterality("ABC", codedEntry) == SR_EC_InvalidValue);
+    OFCHECK(ctxGroup.selectValue("").bad());
+}
+
+
+OFTEST(dcmsr_CID4031e_CommonAnatomicRegions)
+{
+    CID4031e_CommonAnatomicRegions ctxGroup("HEART");
+    OFCHECK(ctxGroup.hasSelectedValue());
+    OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("ABDOMEN").getCodeMeaning(), "Abdomen");
+    OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("KNEE").getCodeMeaning(), "Knee");
+    OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("ZYGOMA").getCodeMeaning(), "Zygoma");
+    /* invalid/unknown defined terms */
+    OFCHECK(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("XYZ").isEmpty());
+    OFCHECK(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("").isEmpty());
+    OFCHECK(ctxGroup.selectValue("XYZ").bad());
 }
 
 
