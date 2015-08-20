@@ -19,7 +19,7 @@
  *    classes: CID7445_DeviceParticipatingRoles
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-19 16:32:51 by J. Riesmeier
+ *    File created on 2015-08-20 14:53:57 by J. Riesmeier
  *
  */
 
@@ -34,6 +34,9 @@
 #define CONTEXT_GROUP_VERSION "20120406"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1042"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
+
+// initialize global/static variable
+CID7445_DeviceParticipatingRoles::CodeList *CID7445_DeviceParticipatingRoles::Codes = NULL;
 
 
 CID7445_DeviceParticipatingRoles::CID7445_DeviceParticipatingRoles(const DSRCodedEntryValue &selectedValue)
@@ -125,6 +128,14 @@ void CID7445_DeviceParticipatingRoles::initialize()
 }
 
 
+void CID7445_DeviceParticipatingRoles::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID7445_DeviceParticipatingRoles::getCodedEntry(const EnumType value,
                                                                    const OFBool enhancedEncodingMode)
 {
@@ -145,20 +156,18 @@ DSRCodedEntryValue CID7445_DeviceParticipatingRoles::getCodedEntry(const EnumTyp
 
 CID7445_DeviceParticipatingRoles::CodeList &CID7445_DeviceParticipatingRoles::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
+        Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IrradiatingDevice, DSRBasicCodedEntry("113859", "DCM", "Irradiating Device")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Recording, DSRBasicCodedEntry("121097", "DCM", "Recording")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(XRayReadingDevice, DSRBasicCodedEntry("113942", "DCM", "X-Ray Reading Device")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IrradiatingDevice, DSRBasicCodedEntry("113859", "DCM", "Irradiating Device")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Recording, DSRBasicCodedEntry("121097", "DCM", "Recording")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(XRayReadingDevice, DSRBasicCodedEntry("113942", "DCM", "X-Ray Reading Device")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 

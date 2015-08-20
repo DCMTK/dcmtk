@@ -110,6 +110,13 @@ class DCMTK_CMR_EXPORT CID5000_Languages
      */
     static void initialize();
 
+    /** cleanup this context group, i.e.\ delete the internal list of standard coded entries.
+     *  Usually, there is no need to call this method, but it might be useful in order to
+     *  explicitly free the associated memory, e.g. when checking for memory leaks.  The list
+     *  will be recreated automatically when needed (or when initialize() is called).
+     */
+    static void cleanup();
+
     /** map a given language to the associated coded entry
      ** @param  value                 language that should be mapped to a coded entry
      *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
@@ -161,6 +168,12 @@ class DCMTK_CMR_EXPORT CID5000_Languages
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue);
+
+
+  private:
+
+    /// pointer to internal code list (use a static variable for singleton pattern)
+    static CodeList *Codes;
 };
 
 #endif

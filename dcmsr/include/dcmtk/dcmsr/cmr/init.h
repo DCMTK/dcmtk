@@ -69,6 +69,13 @@ class DCMTK_CMR_EXPORT ContentMappingResource
      *        recommended to call the individual initialize() functions instead.
      */
     static void initializeAllContextGroups();
+
+    /** cleanup \e all supported context groups of the "Content Mapping Resource".
+     *  Usually, there is no need to call this method, but it might be useful in order
+     *  to explicitly free the associated memory, e.g. when checking for memory leaks.
+     *  See initializeAllContextGroups() for a list of supported context groups.
+     */
+    static void cleanupAllContextGroups();
 };
 
 #endif

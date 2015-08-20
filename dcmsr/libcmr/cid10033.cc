@@ -19,7 +19,7 @@
  *    classes: CID10033_CTReconstructionAlgorithm
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-19 16:32:57 by J. Riesmeier
+ *    File created on 2015-08-20 14:54:03 by J. Riesmeier
  *
  */
 
@@ -34,6 +34,9 @@
 #define CONTEXT_GROUP_VERSION "20130207"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.958"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
+
+// initialize global/static variable
+CID10033_CTReconstructionAlgorithm::CodeList *CID10033_CTReconstructionAlgorithm::Codes = NULL;
 
 
 CID10033_CTReconstructionAlgorithm::CID10033_CTReconstructionAlgorithm(const DSRCodedEntryValue &selectedValue)
@@ -125,6 +128,14 @@ void CID10033_CTReconstructionAlgorithm::initialize()
 }
 
 
+void CID10033_CTReconstructionAlgorithm::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID10033_CTReconstructionAlgorithm::getCodedEntry(const EnumType value,
                                                                      const OFBool enhancedEncodingMode)
 {
@@ -145,19 +156,17 @@ DSRCodedEntryValue CID10033_CTReconstructionAlgorithm::getCodedEntry(const EnumT
 
 CID10033_CTReconstructionAlgorithm::CodeList &CID10033_CTReconstructionAlgorithm::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
+        Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(FilteredBackProjection, DSRBasicCodedEntry("113962", "DCM", "Filtered Back Projection")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IterativeReconstruction, DSRBasicCodedEntry("113963", "DCM", "Iterative Reconstruction")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(FilteredBackProjection, DSRBasicCodedEntry("113962", "DCM", "Filtered Back Projection")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IterativeReconstruction, DSRBasicCodedEntry("113963", "DCM", "Iterative Reconstruction")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 

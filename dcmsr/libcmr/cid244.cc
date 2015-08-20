@@ -19,7 +19,7 @@
  *    classes: CID244_Laterality
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-19 16:32:44 by J. Riesmeier
+ *    File created on 2015-08-20 14:53:50 by J. Riesmeier
  *
  */
 
@@ -34,6 +34,9 @@
 #define CONTEXT_GROUP_VERSION "20030108"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.37"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
+
+// initialize global/static variable
+CID244_Laterality::CodeList *CID244_Laterality::Codes = NULL;
 
 
 CID244_Laterality::CID244_Laterality(const DSRCodedEntryValue &selectedValue)
@@ -125,6 +128,14 @@ void CID244_Laterality::initialize()
 }
 
 
+void CID244_Laterality::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID244_Laterality::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {
@@ -145,21 +156,19 @@ DSRCodedEntryValue CID244_Laterality::getCodedEntry(const EnumType value,
 
 CID244_Laterality::CodeList &CID244_Laterality::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
+        Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Right, DSRBasicCodedEntry("G-A100", "SRT", "Right")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Left, DSRBasicCodedEntry("G-A101", "SRT", "Left")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(RightAndLeft, DSRBasicCodedEntry("G-A102", "SRT", "Right and left")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Unilateral, DSRBasicCodedEntry("G-A103", "SRT", "Unilateral")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Right, DSRBasicCodedEntry("G-A100", "SRT", "Right")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Left, DSRBasicCodedEntry("G-A101", "SRT", "Left")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(RightAndLeft, DSRBasicCodedEntry("G-A102", "SRT", "Right and left")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Unilateral, DSRBasicCodedEntry("G-A103", "SRT", "Unilateral")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 

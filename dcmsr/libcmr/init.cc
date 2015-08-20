@@ -63,3 +63,23 @@ void ContentMappingResource::initializeAllContextGroups()
     CID10013_CTAcquisitionType::initialize();
     CID10033_CTReconstructionAlgorithm::initialize();
 }
+
+
+void ContentMappingResource::cleanupAllContextGroups()
+{
+    /* cleanup all context groups, one after the other */
+    CID11_RouteOfAdministration::cleanup();
+    CID29_AcquisitionModality::cleanup();
+    CID42_NumericValueQualifier::cleanup();
+    CID244_Laterality::cleanup();
+    CID4020_PETRadionuclide::cleanup();
+    CID4021_PETRadiopharmaceutical::cleanup();
+    CID4031_CommonAnatomicRegions::cleanup();
+    CID5000_Languages::cleanup();
+    CID5001_Countries::cleanup();
+    CID7445_DeviceParticipatingRoles::cleanup();
+    CID7452_OrganizationalRoles::cleanup();
+    CID7453_PerformingRoles::cleanup();
+    CID10013_CTAcquisitionType::cleanup();
+    CID10033_CTReconstructionAlgorithm::cleanup();
+}

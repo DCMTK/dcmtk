@@ -19,7 +19,7 @@
  *    classes: CID11_RouteOfAdministration
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-19 16:32:39 by J. Riesmeier
+ *    File created on 2015-08-20 14:53:46 by J. Riesmeier
  *
  */
 
@@ -34,6 +34,9 @@
 #define CONTEXT_GROUP_VERSION "20100608"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.9"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
+
+// initialize global/static variable
+CID11_RouteOfAdministration::CodeList *CID11_RouteOfAdministration::Codes = NULL;
 
 
 CID11_RouteOfAdministration::CID11_RouteOfAdministration(const DSRCodedEntryValue &selectedValue)
@@ -125,6 +128,14 @@ void CID11_RouteOfAdministration::initialize()
 }
 
 
+void CID11_RouteOfAdministration::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID11_RouteOfAdministration::getCodedEntry(const EnumType value,
                                                               const OFBool enhancedEncodingMode)
 {
@@ -145,38 +156,36 @@ DSRCodedEntryValue CID11_RouteOfAdministration::getCodedEntry(const EnumType val
 
 CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
+        Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntravenousRoute, DSRBasicCodedEntry("G-D101", "SRT", "Intravenous route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraArterialRoute, DSRBasicCodedEntry("G-D102", "SRT", "Intra-arterial route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntramuscularRoute, DSRBasicCodedEntry("G-D103", "SRT", "Intramuscular route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SubcutaneousRoute, DSRBasicCodedEntry("G-D104", "SRT", "Subcutaneous route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracutaneousRoute, DSRBasicCodedEntry("G-D105", "SRT", "Intracutaneous route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraperitonealRoute, DSRBasicCodedEntry("G-D106", "SRT", "Intraperitoneal route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntramedullaryRoute, DSRBasicCodedEntry("G-D107", "SRT", "Intramedullary route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntrathecalRoute, DSRBasicCodedEntry("G-D108", "SRT", "Intrathecal route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraArticularRoute, DSRBasicCodedEntry("G-D109", "SRT", "Intra-articular route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraepithelialRoute, DSRBasicCodedEntry("G-D111", "SRT", "Intraepithelial route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(TopicalRoute, DSRBasicCodedEntry("G-D112", "SRT", "Topical route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(OralRoute, DSRBasicCodedEntry("G-D140", "SRT", "Oral route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(TransluminalRoute, DSRBasicCodedEntry("G-D142", "SRT", "Transluminal route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraluminalRoute, DSRBasicCodedEntry("G-D144", "SRT", "Intraluminal route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ExtraluminalRoute, DSRBasicCodedEntry("G-D146", "SRT", "Extraluminal route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ByInhalation, DSRBasicCodedEntry("G-D150", "SRT", "By inhalation")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(PerRectum, DSRBasicCodedEntry("G-D160", "SRT", "Per rectum")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(VaginalRoute, DSRBasicCodedEntry("G-D164", "SRT", "Vaginal route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracoronaryRoute, DSRBasicCodedEntry("G-D17C", "SRT", "Intracoronary route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracardiacRoute, DSRBasicCodedEntry("G-D173", "SRT", "Intracardiac route")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraventricularRouteCardiac, DSRBasicCodedEntry("R-F2C86", "SRT", "Intraventricular route - cardiac")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntravenousRoute, DSRBasicCodedEntry("G-D101", "SRT", "Intravenous route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraArterialRoute, DSRBasicCodedEntry("G-D102", "SRT", "Intra-arterial route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntramuscularRoute, DSRBasicCodedEntry("G-D103", "SRT", "Intramuscular route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SubcutaneousRoute, DSRBasicCodedEntry("G-D104", "SRT", "Subcutaneous route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracutaneousRoute, DSRBasicCodedEntry("G-D105", "SRT", "Intracutaneous route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraperitonealRoute, DSRBasicCodedEntry("G-D106", "SRT", "Intraperitoneal route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntramedullaryRoute, DSRBasicCodedEntry("G-D107", "SRT", "Intramedullary route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntrathecalRoute, DSRBasicCodedEntry("G-D108", "SRT", "Intrathecal route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraArticularRoute, DSRBasicCodedEntry("G-D109", "SRT", "Intra-articular route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraepithelialRoute, DSRBasicCodedEntry("G-D111", "SRT", "Intraepithelial route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(TopicalRoute, DSRBasicCodedEntry("G-D112", "SRT", "Topical route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(OralRoute, DSRBasicCodedEntry("G-D140", "SRT", "Oral route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(TransluminalRoute, DSRBasicCodedEntry("G-D142", "SRT", "Transluminal route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraluminalRoute, DSRBasicCodedEntry("G-D144", "SRT", "Intraluminal route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ExtraluminalRoute, DSRBasicCodedEntry("G-D146", "SRT", "Extraluminal route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ByInhalation, DSRBasicCodedEntry("G-D150", "SRT", "By inhalation")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(PerRectum, DSRBasicCodedEntry("G-D160", "SRT", "Per rectum")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(VaginalRoute, DSRBasicCodedEntry("G-D164", "SRT", "Vaginal route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracoronaryRoute, DSRBasicCodedEntry("G-D17C", "SRT", "Intracoronary route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntracardiacRoute, DSRBasicCodedEntry("G-D173", "SRT", "Intracardiac route")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IntraventricularRouteCardiac, DSRBasicCodedEntry("R-F2C86", "SRT", "Intraventricular route - cardiac")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 

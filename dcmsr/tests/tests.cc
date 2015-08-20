@@ -70,4 +70,6 @@ OFTEST_REGISTER(dcmsr_CID7445_DeviceParticipatingRoles);
 OFTEST_REGISTER(dcmsr_TID1001_ObservationContext);
 OFTEST_REGISTER(dcmsr_TID1204_LanguageOfContentItemAndDescendants);
 OFTEST_REGISTER(dcmsr_CMR_SRNumericMeasurementValue);
+/* the following should be the last test case */
+OFTEST_REGISTER(dcmsr_cleanupContentMappingResource);
 OFTEST_MAIN("dcmsr")

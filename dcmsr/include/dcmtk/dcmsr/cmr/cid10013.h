@@ -19,7 +19,7 @@
  *    classes: CID10013_CTAcquisitionType
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-19 16:31:22 by J. Riesmeier
+ *    File created on 2015-08-20 14:54:01 by J. Riesmeier
  *
  */
 
@@ -85,8 +85,8 @@ class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
      *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-   virtual OFCondition selectValue(const EnumType selectedValue,
-                                   const OFBool enhancedEncodingMode = OFFalse);
+    virtual OFCondition selectValue(const EnumType selectedValue,
+                                    const OFBool enhancedEncodingMode = OFFalse);
 
   // --- static helper functions ---
 
@@ -98,6 +98,13 @@ class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
      *        it since the initialization is done implicitly.
      */
     static void initialize();
+
+    /** cleanup this context group, i.e.\ delete the internal list of standard coded entries.
+     *  Usually, there is no need to call this method, but it might be useful in order to
+     *  explicitly free the associated memory, e.g. when checking for memory leaks.  The list
+     *  will be recreated automatically when needed (or when initialize() is called).
+     */
+    static void cleanup();
 
     /** map a given type to the associated coded entry
      ** @param  value                 type that should be mapped to a coded entry
@@ -131,9 +138,9 @@ class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
      *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      ** @return result of the search process, also defines the type of the entry
      */
-   virtual OFCondition findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                      DSRCodedEntryValue *foundCodedEntry,
-                                      const OFBool enhancedEncodingMode = OFFalse) const;
+    virtual OFCondition findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                       DSRCodedEntryValue *foundCodedEntry,
+                                       const OFBool enhancedEncodingMode = OFFalse) const;
 
   // --- static helper function ---
 
@@ -150,6 +157,12 @@ class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue);
+
+
+  private:
+
+    /// pointer to internal code list (use a static variable for singleton pattern)
+    static CodeList *Codes;
 };
 
 #endif

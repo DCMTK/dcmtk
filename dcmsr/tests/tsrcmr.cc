@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
+#include "dcmtk/dcmsr/cmr/init.h"
 #include "dcmtk/dcmsr/cmr/cid29e.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
 #include "dcmtk/dcmsr/cmr/cid244e.h"
@@ -180,4 +181,11 @@ OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
     OFCHECK(numValue.isValid());
     OFCHECK(numValue.setNumericValueQualifier(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), OFFalse /*check*/).good());
     OFCHECK(!numValue.isValid());
+}
+
+
+OFTEST(dcmsr_cleanupContentMappingResource)
+{
+    /* cleanup the internal code lists explicitly (should be the last test case) */
+    ContentMappingResource::cleanupAllContextGroups();
 }

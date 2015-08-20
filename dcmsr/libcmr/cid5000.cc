@@ -32,6 +32,9 @@
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.328"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
 
+// initialize global/static variable
+CID5000_Languages::CodeList *CID5000_Languages::Codes = NULL;
+
 
 CID5000_Languages::CID5000_Languages(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
@@ -122,6 +125,14 @@ void CID5000_Languages::initialize()
 }
 
 
+void CID5000_Languages::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {
@@ -142,29 +153,27 @@ DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
 
 CID5000_Languages::CodeList &CID5000_Languages::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
-        /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_US, DSRBasicCodedEntry("en-US", "IETF4646", "English (US)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French, DSRBasicCodedEntry("fra", "IETF4646", "French")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CA, DSRBasicCodedEntry("fr-CA", "IETF4646", "French (CA)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CH, DSRBasicCodedEntry("fr-CH", "IETF4646", "French (CH)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_FR, DSRBasicCodedEntry("fr-FR", "IETF4646", "French (FR)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German, DSRBasicCodedEntry("deu", "IETF4646", "German")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_AT, DSRBasicCodedEntry("de-AT", "IETF4646", "German (AT)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_CH, DSRBasicCodedEntry("de-CH", "IETF4646", "German (CH)")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_DE, DSRBasicCodedEntry("de-DE", "IETF4646", "German (DE)")));
+        Codes = new CodeList();
+        /*Codes and initialize it by adding the coded entries */
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_US, DSRBasicCodedEntry("en-US", "IETF4646", "English (US)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French, DSRBasicCodedEntry("fra", "IETF4646", "French")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CA, DSRBasicCodedEntry("fr-CA", "IETF4646", "French (CA)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CH, DSRBasicCodedEntry("fr-CH", "IETF4646", "French (CH)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_FR, DSRBasicCodedEntry("fr-FR", "IETF4646", "French (FR)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German, DSRBasicCodedEntry("deu", "IETF4646", "German")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_AT, DSRBasicCodedEntry("de-AT", "IETF4646", "German (AT)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_CH, DSRBasicCodedEntry("de-CH", "IETF4646", "German (CH)")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_DE, DSRBasicCodedEntry("de-DE", "IETF4646", "German (DE)")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 

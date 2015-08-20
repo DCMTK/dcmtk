@@ -32,6 +32,9 @@
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.329"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
 
+// initialize global/static variable
+CID5001_Countries::CodeList *CID5001_Countries::Codes = NULL;
+
 
 CID5001_Countries::CID5001_Countries(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
@@ -122,6 +125,14 @@ void CID5001_Countries::initialize()
 }
 
 
+void CID5001_Countries::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID5001_Countries::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {
@@ -142,24 +153,22 @@ DSRCodedEntryValue CID5001_Countries::getCodedEntry(const EnumType value,
 
 CID5001_Countries::CodeList &CID5001_Countries::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
+        Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Austria, DSRBasicCodedEntry("AT", "ISO3166_1", "Austria")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Canada, DSRBasicCodedEntry("CA", "ISO3166_1", "Canada")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(France, DSRBasicCodedEntry("FR", "ISO3166_1", "France")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Germany, DSRBasicCodedEntry("DE", "ISO3166_1", "Germany")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Switzerland, DSRBasicCodedEntry("CH", "ISO3166_1", "Switzerland")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(UnitedKingdom, DSRBasicCodedEntry("GB", "ISO3166_1", "United Kingdom of Great Britain and Northern Ireland")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(UnitedStates, DSRBasicCodedEntry("US", "ISO3166_1", "United States of America")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Austria, DSRBasicCodedEntry("AT", "ISO3166_1", "Austria")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Canada, DSRBasicCodedEntry("CA", "ISO3166_1", "Canada")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(France, DSRBasicCodedEntry("FR", "ISO3166_1", "France")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Germany, DSRBasicCodedEntry("DE", "ISO3166_1", "Germany")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Switzerland, DSRBasicCodedEntry("CH", "ISO3166_1", "Switzerland")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(UnitedKingdom, DSRBasicCodedEntry("GB", "ISO3166_1", "United Kingdom of Great Britain and Northern Ireland")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(UnitedStates, DSRBasicCodedEntry("US", "ISO3166_1", "United States of America")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 

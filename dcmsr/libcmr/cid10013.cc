@@ -19,7 +19,7 @@
  *    classes: CID10013_CTAcquisitionType
  *
  *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-19 16:32:56 by J. Riesmeier
+ *    File created on 2015-08-20 14:54:01 by J. Riesmeier
  *
  */
 
@@ -34,6 +34,9 @@
 #define CONTEXT_GROUP_VERSION "20071031"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.545"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
+
+// initialize global/static variable
+CID10013_CTAcquisitionType::CodeList *CID10013_CTAcquisitionType::Codes = NULL;
 
 
 CID10013_CTAcquisitionType::CID10013_CTAcquisitionType(const DSRCodedEntryValue &selectedValue)
@@ -125,6 +128,14 @@ void CID10013_CTAcquisitionType::initialize()
 }
 
 
+void CID10013_CTAcquisitionType::cleanup()
+{
+    /* delete code list, it will be recreated automatically when needed */
+    delete Codes;
+    Codes = NULL;
+}
+
+
 DSRCodedEntryValue CID10013_CTAcquisitionType::getCodedEntry(const EnumType value,
                                                              const OFBool enhancedEncodingMode)
 {
@@ -145,22 +156,20 @@ DSRCodedEntryValue CID10013_CTAcquisitionType::getCodedEntry(const EnumType valu
 
 CID10013_CTAcquisitionType::CodeList &CID10013_CTAcquisitionType::getCodes()
 {
-    /* use a static variable for singleton pattern */
-    static CodeList *codes = NULL;
     /* check whether code list has already been created and initialized */
-    if (codes == NULL)
+    if (Codes == NULL)
     {
         /* create a new code list (should never fail) */
-        codes = new CodeList();
+        Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SequencedAcquisition, DSRBasicCodedEntry("113804", "DCM", "Sequenced Acquisition")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SpiralAcquisition, DSRBasicCodedEntry("P5-08001", "SRT", "Spiral Acquisition")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ConstantAngleAcquisition, DSRBasicCodedEntry("113805", "DCM", "Constant Angle Acquisition")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(StationaryAcquisition, DSRBasicCodedEntry("113806", "DCM", "Stationary Acquisition")));
-        codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(FreeAcquisition, DSRBasicCodedEntry("113807", "DCM", "Free Acquisition")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SequencedAcquisition, DSRBasicCodedEntry("113804", "DCM", "Sequenced Acquisition")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SpiralAcquisition, DSRBasicCodedEntry("P5-08001", "SRT", "Spiral Acquisition")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ConstantAngleAcquisition, DSRBasicCodedEntry("113805", "DCM", "Constant Angle Acquisition")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(StationaryAcquisition, DSRBasicCodedEntry("113806", "DCM", "Stationary Acquisition")));
+        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(FreeAcquisition, DSRBasicCodedEntry("113807", "DCM", "Free Acquisition")));
     }
     /* should never be NULL */
-    return *codes;
+    return *Codes;
 }
 
 
