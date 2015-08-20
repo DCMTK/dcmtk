@@ -6804,7 +6804,8 @@ dsrtypes.o: dsrtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrchecc.h ../include/dcmtk/dcmsr/dsrcolcc.h \
  ../include/dcmtk/dcmsr/dsrprocc.h ../include/dcmtk/dcmsr/dsrxrdcc.h \
  ../include/dcmtk/dcmsr/dsrspecc.h ../include/dcmtk/dcmsr/dsrmaccc.h \
- ../include/dcmtk/dcmsr/dsrimpcc.h ../include/dcmtk/dcmsr/dsrc3dcc.h
+ ../include/dcmtk/dcmsr/dsrimpcc.h ../include/dcmtk/dcmsr/dsrc3dcc.h \
+ ../include/dcmtk/dcmsr/dsrrrdcc.h
 dsruidtn.o: dsruidtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \

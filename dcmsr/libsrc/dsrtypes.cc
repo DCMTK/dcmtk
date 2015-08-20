@@ -53,6 +53,7 @@
 #include "dcmtk/dcmsr/dsrmaccc.h"
 #include "dcmtk/dcmsr/dsrimpcc.h"
 #include "dcmtk/dcmsr/dsrc3dcc.h"
+#include "dcmtk/dcmsr/dsrrrdcc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -1410,7 +1411,11 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_Comprehensive3DSR:
             checker = new DSRComprehensive3DSRConstraintChecker();
             break;
-        default:
+        case DT_RadiopharmaceuticalRadiationDoseSR:
+            checker = new DSRRadiopharmaceuticalRadiationDoseConstraintChecker();
+            break;
+        case DT_invalid:
+            /* nothing to do */
             break;
     }
     return checker;
