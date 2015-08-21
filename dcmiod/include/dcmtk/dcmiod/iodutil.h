@@ -623,7 +623,7 @@ public:
         typename Container::iterator it = source.begin();
         while ( it != source.end() && result.good() )
         {
-          if (it != NULL)
+          if ( (*it) != NULL)
           {
             DcmItem *localItem = NULL;
             // If item is NULL result.bad() is always true.
