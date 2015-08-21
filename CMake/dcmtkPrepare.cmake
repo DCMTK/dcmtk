@@ -88,6 +88,25 @@ OPTION(DCMTK_GENERATE_DOXYGEN_TAGFILE "Generate a tag file with DOXYGEN." OFF)
 OPTION(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
 
+# Built-in (compiled-in)  dictionary enabled on Windows per default, otherwise
+# disabled. Loading of external dictionary via run-time is, per default,
+# configured the the opposite way since most users won't be interested in using
+# the external default dictionary if it already compiled in.
+IF(WIN32 OR MINGW)
+  OPTION(DCMTK_WITH_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary" ON)
+  OPTION(DCMTK_WITH_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup" OFF)
+ELSE(WIN23 or MINGW) # built-in dictionary turned off on Unix per default
+  OPTION(DCMTK_WITH_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary" OFF)
+  OPTION(DCMTK_WITH_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup" ON)
+ENDIF(WIN32 OR MINGW)
+if (NOT DCMTK_WITH_EXTERNAL_DICTIONARY AND NOT DCMTK_WITH_BUILTIN_DICTIONARY)
+  MESSAGE(WARNING "Either external or built-in dictionary should be enabled, otherwise dicionary must be loaded manually on startup!")
+ENDIF(NOT DCMTK_WITH_EXTERNAL_DICTIONARY AND NOT DCMTK_WITH_BUILTIN_DICTIONARY)
+# If no external dictionary is loaded on startup, one cannot ask for loading private.dic either
+IF(NOT DCMTK_WITH_EXTERNAL_DICTIONARY AND DCMTK_WITH_PRIVATE_TAGS)
+  MESSAGE(SEND_ERROR "In order to load private dictionary on startup, DCMTK_WITH_EXTERNAL_DICTIONARY must be enabled, too!")
+ENDIF(NOT DCMTK_WITH_EXTERNAL_DICTIONARY AND DCMTK_WITH_PRIVATE_TAGS)
+
 # Mark various settings as "advanced"
 MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
 MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)

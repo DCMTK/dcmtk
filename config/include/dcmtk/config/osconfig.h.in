@@ -49,7 +49,7 @@
 /* Enable or disable C++11 while building DCMTK. */
 #undef DCMTK_USE_CXX11_STL
 
-/* Define the default data dictionary path for the dcmdata library package. */
+/* Empty default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 
 /* Define the default directory where configuration files reside. */
@@ -1019,6 +1019,10 @@ typedef unsigned short ushort;
 # undef __EXTENSIONS__
 #endif
 
+
+/* Define if we are compiling for loading external dictionary from default
+   path. */
+#undef WITH_EXTERNAL_DICTIONARY
 
 /* Define if we are compiling with libiconv support. */
 #undef WITH_LIBICONV

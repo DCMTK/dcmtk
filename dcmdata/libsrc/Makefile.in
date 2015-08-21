@@ -32,7 +32,19 @@ DCMDICTPATH =
 dicomdic = $(top_srcdir)/data/dicom.dic
 privatedic = $(top_srcdir)/data/private.dic
 
-dictobjs = dctagkey.o dcdicent.o dcdict.o dcdictbi.o dcvr.o dchashdi.o
+# Dictionary objects to include into the dcmdata library. If a builtin
+# dictionary should be used, then dicdictzz must be built and included,
+# otherwise the dummy built-in dictionary dcdictbi comes into play
+
+ifdef WITH_BUILTIN_DICTIONARY
+dict_objs = dcdictzz.o dctagkey.o dcdicent.o dcdict.o dcvr.o dchashdi.o
+else
+dict_objs = dcdictbi.o dctagkey.o dcdicent.o dcdict.o dcvr.o dchashdi.o
+endif
+
+# Dictionary objects for building the helper tools mkdeftag and mkdictbi
+dict_tools_objs = dctagkey.o dcdicent.o dcdict.o dcdictbi.o dcvr.o dchashdi.o
+
 objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
 	dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o dcdatutl.o dcspchrs.o \
@@ -42,10 +54,10 @@ objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
 	dcvrfd.o dcvrpobw.o dcvrof.o dcvrod.o dcdirrec.o dcdicdir.o \
 	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
-	$(dictobjs) cmdlnarg.o dcvrut.o dcvrur.o dcvruc.o dctypes.o dcpcache.o \
-	dcddirif.o dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
-	dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o dcwcache.o dcpath.o \
-	vrscan.o vrscanl.o dcfilter.o
+	$(dict_objs) cmdlnarg.o dcvrut.o dcvrur.o dcvruc.o \
+	dctypes.o dcpcache.o dcddirif.o dcistrma.o dcistrmb.o dcistrmf.o \
+	dcistrmz.o dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o dcwcache.o \
+	dcpath.o vrscan.o vrscanl.o dcfilter.o
 
 support_objs = mkdeftag.o mkdictbi.o dcdictzz.o
 support_progs = mkdeftag mkdictbi
@@ -70,11 +82,11 @@ $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
-mkdeftag: mkdeftag.o $(dictobjs) $(support_progs_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
+mkdeftag: mkdeftag.o $(dict_tools_objs) $(support_progs_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(dict_tools_objs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
-mkdictbi: mkdictbi.o $(dictobjs) $(support_progs_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
+mkdictbi: mkdictbi.o $(dict_tools_objs) $(support_progs_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(dict_tools_objs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
 mkvrscan:
 	flex -8 --header-file=vrscanl.h --outfile=vrscanl.c vrscanl.l

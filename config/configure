@@ -624,6 +624,7 @@ ac_includes_default="\
 #endif"
 
 ac_subst_vars='LTLIBOBJS
+WITH_BUILTIN_DICTIONARY
 DEBUG
 ICONVLIBS
 SNDFILELIBS
@@ -718,6 +719,8 @@ enable_threads
 enable_lfs
 enable_std_includes
 with_private_tags
+with_external_dict
+with_builtin_dict
 enable_rpath
 with_opensslinc
 with_openssl
@@ -1378,6 +1381,10 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-private-tags     enable private tag dictionary
   --without-private-tags  don't enable private tag dictionary (default)
+  --with-external-dict    enable loading of external dictionary (default)
+  --without-external-dict don't load external dictionary
+  --with-builtin-dict     enable loading of built-in dictionary (default)
+  --without-builtin-dict  don't load built-in dictionary
   --with-opensslinc=DIR   location of OpenSSL includes and libraries
   --with-openssl          include OpenSSL support (default: auto)
   --without-openssl       don't include OpenSSL support
@@ -12638,7 +12645,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12641 "configure"
+#line 12648 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13110,7 +13117,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13113 "configure"
+#line 13120 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13182,7 +13189,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13185 "configure"
+#line 13192 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13254,7 +13261,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13257 "configure"
+#line 13264 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13558,6 +13565,64 @@ cat >>confdefs.h <<_ACEOF
 #define DCM_DICT_DEFAULT_PATH "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic"
 _ACEOF
 
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    ;;
+  esac
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+fi
+
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable loading external dictionary from default path" >&5
+$as_echo_n "checking whether to enable loading external dictionary from default path... " >&6; }
+
+# Check whether --with-external-dict was given.
+if test "${with_external_dict+set}" = set; then :
+  withval=$with_external_dict;  case "$withval" in
+  yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define WITH_EXTERNAL_DICTIONARY /**/" >>confdefs.h
+
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+cat >>confdefs.h <<_ACEOF
+#define DCM_DICT_DEFAULT_PATH ""
+_ACEOF
+
+    ;;
+  esac
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define WITH_EXTERNAL_DICTIONARY /**/" >>confdefs.h
+
+
+fi
+
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable built-in dictionary loading" >&5
+$as_echo_n "checking whether to enable built-in dictionary loading... " >&6; }
+
+# Check whether --with-builtin-dict was given.
+if test "${with_builtin_dict+set}" = set; then :
+  withval=$with_builtin_dict;  case "$withval" in
+  yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                WITH_BUILTIN_DICTIONARY=true
     ;;
   *)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -14886,7 +14951,7 @@ $as_echo "#define HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE 1" >>confdefs.h
 $as_echo "no" >&6; }
     fi
 
-
+o
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether struct pwd contains the field pw_gecos" >&5
 $as_echo_n "checking whether struct pwd contains the field pw_gecos... " >&6; }
@@ -14941,6 +15006,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
+
 
 
 

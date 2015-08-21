@@ -920,6 +920,52 @@ AC_ARG_WITH(private-tags,
 )
 
 dnl -------------------------------------------------------
+dnl Check for External Dictionary support
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(whether to enable loading external dictionary from default path)
+AC_ARG_WITH(external-dict,
+[  --with-external-dict    enable loading of external dictionary (default)
+  --without-external-dict don't load external dictionary],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    dnl Reset default path so the dictionary is not loaded automatically on startup
+    AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "", [Empty default data dictionary path for the dcmdata library package.])
+    ;;
+  esac ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(WITH_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
+)
+
+dnl -------------------------------------------------------
+dnl Check for Built-in (compiled-in) Dictionary support
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(whether to enable built-in dictionary loading)
+AC_ARG_WITH(builtin-dict,
+[  --with-builtin-dict     enable loading of built-in dictionary (default)
+  --without-builtin-dict  don't load built-in dictionary],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    dnl Remember for later evaluation when building dcmdata libary, i.e. for
+    dnl including the populated  dnl dictionary object (dcdictzz.o) and not the
+    dnl dummy dictionary (dcdictbi.o) in dcmdata
+    WITH_BUILTIN_DICTIONARY=true
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Check for OpenSSL support
 dnl -------------------------------------------------------
 
@@ -1265,7 +1311,7 @@ AC_CHECK_ATTRIBUTE_ALIGNED([HAVE_ATTRIBUTE_ALIGNED])
 AC_CHECK_ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES([ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES])
 AC_CHECK_ALIGNAS_SUPPORTS_TYPEDEFS([ALIGNAS_SUPPORTS_TYPEDEFS])
 AC_CHECK_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE([HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE])
-
+o
 dnl -------------------------------------------------------
 dnl Test if passwd has the pw_gecos field
 dnl -------------------------------------------------------
@@ -1308,6 +1354,7 @@ AC_SUBST(TCPWRAPPERLIBS)
 AC_SUBST(SNDFILELIBS)
 AC_SUBST(ICONVLIBS)
 AC_SUBST(DEBUG)
+AC_SUBST(WITH_BUILTIN_DICTIONARY)
 
 AC_OUTPUT(Makefile.def Makefile)
 

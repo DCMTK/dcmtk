@@ -207,11 +207,11 @@ private:
 };
 
 
-/** encapsulates a data dictionary with access methods which allow safe
- *  read and write access from multiple threads in parallel.
- *  A read/write lock is used to protect threads from each other.
- *  This allows parallel read-only access by multiple threads, which is
- *  the most common case.
+/** global singleton dicom dictionary that is used by DCMTK in order to lookup
+ *  attribute VR, tag names and so on.  The dictionary is internally created
+ *  on first use, if the user accesses it via rdlock() or wrlock().  The
+ *  dictionary allows safe read (shared) and write (exclusive) access from
+ *  multiple threads in parallel.
  */
 class DCMTK_DCMDATA_EXPORT GlobalDcmDataDictionary
 {
@@ -263,8 +263,8 @@ private:
    */
   GlobalDcmDataDictionary(const GlobalDcmDataDictionary &);
 
-  /** create the data dictionary instance for this class.
-   * The caller must not have dataDictLock locked.
+  /** create the data dictionary instance for this class. Used for first
+   * intialization.  The caller must not have dataDictLock locked.
    */
   void createDataDict();
 

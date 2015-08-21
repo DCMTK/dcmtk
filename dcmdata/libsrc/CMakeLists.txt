@@ -1,13 +1,13 @@
 # create library from source files
 
-# built-in dictionary is only used on windows.
-IF(WIN32 OR MINGW)
+# built-in dictionary is only used if explicitly enabled
+IF(DCMTK_WITH_BUILTIN_DICTIONARY)
   # add built-in dictionary
   set(DICTIONARY_OBJ dcdictzz)
-ELSE()
+ELSE(DCMTK_WITH_BUILTIN_DICTIONARY)
   # add empty dummy dictionary
   set(DICTIONARY_OBJ dcdictbi)
-ENDIF(WIN32 OR MINGW)
+ENDIF(DCMTK_WITH_BUILTIN_DICTIONARY)
 
 DCMTK_ADD_LIBRARY(dcmdata cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdatutl dcddirif dcdicdir dcdicent dcdict ${DICTIONARY_OBJ} dcdirrec dcelem dcerror dcfilefo dchashdi dcistrma dcistrmb dcistrmf dcistrmz dcitem dclist dcmetinf dcobject dcostrma dcostrmb dcostrmf dcostrmz dcpcache dcpixel dcpixseq dcpxitem dcrleccd dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag dctagkey dctypes dcuid dcwcache dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrof dcvrod dcvrpn dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvruc dcvrui dcvrul dcvrulup dcvrur dcvrus dcvrut dcxfer dcpath vrscan vrscanl dcfilter)
 

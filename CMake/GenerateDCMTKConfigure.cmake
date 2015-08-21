@@ -1,3 +1,22 @@
+# Compiled-in dictionary support
+IF(DCMTK_WITH_BUILTIN_DICTIONARY)
+  MESSAGE(STATUS "Info: DCMTK's will compile with built-in (compiled-in) dictionary")
+  # No extra variable needed since its only evaluated in CMake files
+ELSE(DCMTK_WITH_BUILTIN_DICTIONARY)
+  MESSAGE(STATUS "Info: DCMTK's will compile without built-in (compiled-in) dictionary")
+  # No extra variable needed since its only evaluated in CMake files
+ENDIF(DCMTK_WITH_BUILTIN_DICTIONARY)
+
+# External dictionary support
+IF(DCMTK_WITH_EXTERNAL_DICTIONARY)
+  SET(WITH_EXTERNAL_DICTIONARY 1)
+  MESSAGE(STATUS "Info: DCMTK's will try to load external dictionary from default path on startup")
+ELSE(DCMTK_WITH_EXTERNAL_DICTIONARY)
+  SET(WITH_EXTERNAL_DICTIONARY "")
+  MESSAGE(STATUS "Info: DCMTK's will not try to load external dictionary from default path on startup")
+ENDIF(DCMTK_WITH_EXTERNAL_DICTIONARY)
+
+
 # Private tags
 IF(DCMTK_WITH_PRIVATE_TAGS)
   SET(WITH_PRIVATE_TAGS 1)
@@ -61,13 +80,17 @@ IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   SET(PATH_SEPARATOR "\\\\")
   SET(ENVIRONMENT_PATH_SEPARATOR ";")
   # Set dictionary path to the data dir inside install main dir (prefix)
-  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}\\\\${DCMTK_INSTALL_DATDIR}\\\\dicom.dic")
-  # If private dictionary should be utilized, add it to default dictionary path.
-  IF(WITH_PRIVATE_TAGS)
-    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_PREFIX}\\\\${DCMTK_INSTALL_DATDIR}\\\\private.dic")
-  ENDIF(WITH_PRIVATE_TAGS)
-  # Again, for Windows strip all / from path and replace it with \\.
-  STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
+  IF(DCMTK_WITH_EXTERNAL_DICTIONARY)
+    SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}\\\\${DCMTK_INSTALL_DATDIR}\\\\dicom.dic")
+    # If private dictionary should be utilized, add it to default dictionary path.
+    IF(WITH_PRIVATE_TAGS)
+      SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_PREFIX}\\\\${DCMTK_INSTALL_DATDIR}\\\\private.dic")
+    ENDIF(WITH_PRIVATE_TAGS)
+     # Again, for Windows strip all / from path and replace it with \\.
+    STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
+  ELSE(DCMTK_WITH_EXTERNAL_DICTIONARY)
+    SET(DCM_DICT_DEFAULT_PATH "")
+  ENDIF(DCMTK_WITH_EXTERNAL_DICTIONARY)
   # Set default directory for configuration and support data.
   SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
   SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
@@ -78,11 +101,15 @@ ELSE(WIN32 AND NOT CYGWIN AND NOT MINGW)
   SET(PATH_SEPARATOR "/")
   SET(ENVIRONMENT_PATH_SEPARATOR ":")
   # Set dictionary path to the data dir inside install main dir (prefix).
-  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/dicom.dic")
-  # If private dictionary should be utilized, add it to default dictionary path.
-  IF(WITH_PRIVATE_TAGS)
-    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/private.dic")
-  ENDIF(WITH_PRIVATE_TAGS)
+  if (DCMTK_WITH_EXTERNAL_DICTIONARY)
+    SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/dicom.dic")
+    # If private dictionary should be utilized, add it to default dictionary path.
+    IF(WITH_PRIVATE_TAGS)
+      SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/private.dic")
+    ENDIF(WITH_PRIVATE_TAGS)
+  ELSE (DCMTK_WITH_EXTERNAL_DICTIONARY)
+    SET(DCM_DICT_DEFAULT_PATH "")
+  ENDIF (DCMTK_WITH_EXTERNAL_DICTIONARY)
   # Set default directory for configuration and support data.
   SET(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_ETCDIR}/")
   SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/")
