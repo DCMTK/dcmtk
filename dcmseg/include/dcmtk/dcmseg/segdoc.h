@@ -442,11 +442,6 @@ protected:
    */
   virtual OFCondition writeMultiFrameDimensionModule(DcmItem& dataset);
 
-  /** Find the maximum fractional value used
-   *  @return The maximum fractional value used
-   */
-  virtual Uint8 findMaximumFractionalValue();
-
   /** Read frames
    *  @param  dataset Item to read from, usually main dataset level
    *  @return EC_Normal if reading was successful, error otherwise

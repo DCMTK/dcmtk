@@ -1183,20 +1183,6 @@ OFCondition DcmSegmentation::readSegmentationType(DcmItem& item)
 }
 
 
-
-Uint8 DcmSegmentation::findMaximumFractionalValue()
-{
-  if (m_SegmentationType != DcmSegTypes::ST_FRACTIONAL)
-  {
-    DCMSEG_ERROR("Cannot find maximum fractional value non-fractional segmentation object");
-    return 0;
-  }
-  Uint16 result = 0;
-  //TODO
-  return result;
-}
-
-
 // protected override of public base class function
 IODImagePixelModule& DcmSegmentation::getImagePixel()
 {
