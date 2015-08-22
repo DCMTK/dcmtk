@@ -47,7 +47,7 @@ public:
   virtual FGBase *clone() const;
 
   /** Returns shared type of this functional group (can be shared or per-frame,
-   *  i.e. both)
+   *  i.e.\ both)
    *  @return Always returns DcmFGTypes::EFGS_BOTH
    */
   virtual DcmFGTypes::E_FGSharedType getSharedType() const {return DcmFGTypes::EFGS_BOTH;}
@@ -68,7 +68,7 @@ public:
    */
   virtual OFCondition read(DcmItem& item);
 
-  /** Writes functional group to item, i.e. writes the Plane Position (Volume)
+  /** Writes functional group to item, i.e.\ writes the Plane Position (Volume)
    *  Sequence
    *  @param  item The item to write to
    *  @return EC_Normal if writing was succesful, error otherwise
@@ -97,7 +97,7 @@ public:
 
   // --- set() functionality ---
 
-  /** Set Image Position Volume, i.e. the x/y/z coordinates of the upper left
+  /** Set Image Position Volume, i.e.\ the x/y/z coordinates of the upper left
    *  hand corner (center of the first voxel transmitted) of the frame, in mm.
    *  @param  value X,Y or Z coordinate of upper left hand corner voxel in mm
    *  @param  pos pos 0 is x, pos 1 is Y, pos 2 addresses Z coordinate
@@ -108,7 +108,7 @@ public:
                                              const unsigned long pos = 0,
                                              const OFBool checkValue = OFTrue);
 
-  /** Set Image Position Volume, i.e. the x/y/z coordinates of the upper left
+  /** Set Image Position Volume, i.e.\ the x/y/z coordinates of the upper left
    *  hand corner (center of the first voxel transmitted) of the frame, in mm.
    *  @param  valueX X coordinate of upper left hand corner voxel in mm
    *  @param  valueY coordinate of upper left hand corner voxel in mm
@@ -122,13 +122,13 @@ public:
                                              const OFBool checkValue = OFTrue);
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (i.e. both
+   *  Both objects (this and rhs) need to have the same type (i.e.\ both
    *  FGUnknown) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing

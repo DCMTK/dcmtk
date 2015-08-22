@@ -77,7 +77,7 @@ public:
    */
   virtual OFString getName() const;
 
-  /** Make sure that the module contains a Series Instance UID, i.e. a new one
+  /** Make sure that the module contains a Series Instance UID, i.e.\ a new one
    *  is created if empty. An invalid UID is corrected if desired.
    *  @param  correctInvalid Correct invalid UID if OFTrue, otherwise do nothing
    */

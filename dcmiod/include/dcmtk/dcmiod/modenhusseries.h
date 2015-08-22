@@ -31,22 +31,22 @@
 #include "dcmtk/dcmiod/modbase.h"
 
 /** Class representing the Enhanced Ultrasound Series Module:
-  *
-  * Notation: "Attribute name: (VR, VM, Requirement Type)"
-  * Modality: (CS, 1, 1)
-  * Referenced Performed Procedure Step Sequence: (SQ, 1, 1C)
-  * > SOP Instance Reference Macro
-  * Performed Protocol Code Sequence: (SQ, 1, 1C)
-  * > Code Sequence Macro
-  * Not yet explicitly supported:
-  * ----------------------------------------------
-  * > Protocol Context Sequence: (SQ, 1-n, 3)
-  * >> Content Item Macro
-  * >> Content Item Modifier Sequence: (SQ, 1-n, 3)
-  * >>> Content Item Macro
-  * ----------------------------------------------
-  * Performed Protocol Type: (CS, 1, 1C)
-  */
+ *
+ * Notation: "Attribute name: (VR, VM, Requirement Type)"
+ * Modality: (CS, 1, 1)
+ * Referenced Performed Procedure Step Sequence: (SQ, 1, 1C)
+ * > SOP Instance Reference Macro
+ * Performed Protocol Code Sequence: (SQ, 1, 1C)
+ * > Code Sequence Macro
+ * Not yet explicitly supported:
+ * ----------------------------------------------
+ * > Protocol Context Sequence: (SQ, 1-n, 3)
+ * >> Content Item Macro
+ * >> Content Item Modifier Sequence: (SQ, 1-n, 3)
+ * >>> Content Item Macro
+ * ----------------------------------------------
+ * Performed Protocol Type: (CS, 1, 1C)
+ */
 class DCMTK_DCMIOD_EXPORT IODEnhancedUSSeriesModule : public IODModule
 {
 

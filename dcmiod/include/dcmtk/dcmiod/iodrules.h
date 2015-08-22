@@ -39,8 +39,8 @@ class DcmElement;
 class IODRule;
 
 
-/** Class representing rules for a set of DICOM attributes, e.g.
- *  for all attributes of a module, macro or the like. At the moment
+/** Class representing rules for a set of DICOM attributes, e.g.\ for
+ *  all attributes of a module, macro or the like. At the moment
  *  attributes within sequences are not yet supported.
  */
 class DCMTK_DCMIOD_EXPORT IODRules
@@ -90,7 +90,7 @@ public:
   virtual OFBool deleteRule(const DcmTagKey key);
 
   /** Get all rules that are marked belonging to a specific module
-   *  @param  moduleName The module name (e.g. "PatientModule")
+   *  @param  moduleName The module name (e.g.\ "PatientModule")
    *  @return Vector with pointers to all the rules belonging to given module
    */
   const OFVector<IODRule*> getByModule(const OFString& moduleName);
@@ -124,7 +124,7 @@ private:
 /** Class representing a single rule, that refers to a single attribute.
  *  Each rule is uniquely identified by the attribute's tag key and includes
  *  information on the Value Multiplicity (VM) of the attribute, its type
- *  (1, 1C, 2,...), the module (e.g. "PatientModule") or structure (e.g.
+ *  (1, 1C, 2,...), the module (e.g.\ "PatientModule") or structure (e.g.
  *  "CodeSequenceMacro") it belongs to, a default value and its private
  *  creator if it is a private attribute. On top, the Information Entity
  *  according to the DICOM Model of the Real World can be stored, e.g.
@@ -137,7 +137,7 @@ public:
   /** Constructor to create a new attribute rule
    *  @param  key The tag key of the attribute
    *  @param  VM  The VM of the attribute (notation like in DICOM part 6,
-   *          e.g. "1-n")
+   *          e.g.\ "1-n")
    *  @param  type The "IOD type" of the attribute.
    *          Allowed values "1", "1C", "2", "2C" and "3"
    *  @param  module The module or "component" this attribute belongs to
@@ -175,13 +175,13 @@ public:
   virtual OFString getType() const;
 
   /** The VM of the attribute as noted in the DICOM standard part 6,
-   *  e.g. "1-n" or "2"
+   *  e.g.\ "1-n" or "2"
    *  @return The VM
    */
   virtual OFString getVM() const;
 
   /** Get module (or component name) the related attribute belongs to
-   *  @return The module or component name (e.g. "PatientName" or
+   *  @return The module or component name (e.g.\ "PatientName" or
    *          "CodeSequenceMacro")
    */
   virtual OFString getModule() const;
@@ -197,7 +197,7 @@ public:
   virtual DcmIODTypes::IOD_IE getIE() const;
 
   /** Check whether the given item fulfills the requirements of
-   *  this rule, i.e. the related attribute is checked within the
+   *  this rule, i.e.\ the related attribute is checked within the
    *  given item
    *  @param  item The item to check the attribute in
    *  @param  quiet If OFTrue, no error or warning messages will be produced
@@ -222,17 +222,17 @@ private:
   /// Tag key
   DcmTagKey m_Key;
 
-  /// VM, see DcmElement::checkVM() for permitted values (e.g. "1-n")
+  /// VM, see DcmElement::checkVM() for permitted values (e.g.\ "1-n")
   OFString m_VM;
 
   /// Requirement type: 1, 1C, 2, 2C or 3
   OFString m_Type;
 
-  /// Module (e.g. "PatientModule" or "component name", e.g. "CodeSequenceMacro"
+  /// Module (e.g.\ "PatientModule" or "component name", e.g.\ "CodeSequenceMacro"
   OFString m_Module;
 
   /// The Inforamtion Entitity the related attribute belongs to according to the
-  /// DICOM Model of the Real World, e.g. "Patient" for the attribute
+  /// DICOM Model of the Real World, e.g.\ "Patient" for the attribute
   /// "Patient Name"
   DcmIODTypes::IOD_IE m_IE;
 

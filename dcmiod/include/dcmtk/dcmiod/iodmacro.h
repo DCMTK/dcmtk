@@ -634,7 +634,7 @@ public:
    */
   virtual OFVector<PrimaryAnatomicStructureMacroItem*>& getPrimaryAnatomicStructure();
 
-  /** Reads Primary Anatomic Region Sequence (i.e. this macro) from given item
+  /** Reads Primary Anatomic Region Sequence (i.e.\ this macro) from given item
    *  @param  source The item to read from
    *  @param  clearOldData If OFTrue, old data is cleared first, otherwise it is
    *          kept where not overwritten
@@ -643,7 +643,7 @@ public:
   virtual OFCondition read(DcmItem& source,
                            const OFBool clearOldData = OFTrue);
 
-  /** Write Anatomic Region Sequence (i.e. this macro) to given item
+  /** Write Anatomic Region Sequence (i.e.\ this macro) to given item
    *  @param  item The item to write to
    *  @return EC_Normal if writing was fine, error otherwise
    */

@@ -237,6 +237,7 @@ public:
   /** Set Pixel Aspect Ratio
    *  @param  verticalPixelSize The vertical pixel size (no unit)
    *  @param  horizontalPixelSize The horizontal pixel size (no unit)
+   *  @param  checkValue Check 'value' for conformance with VR (IS)
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setPixelAspectRatio(const OFString& verticalPixelSize,

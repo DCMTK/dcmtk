@@ -74,7 +74,7 @@ class DCMTK_DCMSEG_EXPORT DcmSegTypes
      */
     enum E_SegmentationType
     {
-      /// Unknown (e.g. not initialized)
+      /// Unknown (e.g.\ not initialized)
       ST_UNKNOWN,
       /// Binary segmentation with 1 bit depth denoting whether a pixel
       /// belongs to a segmentation or not.
@@ -88,7 +88,7 @@ class DCMTK_DCMSEG_EXPORT DcmSegTypes
      */
     enum E_SegmentAlgoType
     {
-      /// Unknown (e.g. not initialized)
+      /// Unknown (e.g.\ not initialized)
       SAT_UNKNOWN,
       /// Calculated segment
       SAT_AUTOMATIC,
@@ -103,7 +103,7 @@ class DCMTK_DCMSEG_EXPORT DcmSegTypes
      */
     enum E_SegmentationFractionalType
     {
-      /// Unknown (e.g. not initialized)
+      /// Unknown (e.g.\ not initialized)
       SFT_UNKNOWN,
       /// For fractional segmentations, a value defines probablity that pixel belongs to segment
       SFT_PROBABILITY,

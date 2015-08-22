@@ -62,14 +62,14 @@ public:
    */
   virtual OFCondition check() const;
 
-  /** Read functional group from given item, i.e. read Plane Orientation
+  /** Read functional group from given item, i.e.\ read Plane Orientation
    *  (Volume) Sequence
    *  @param  item The item to read from
    *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& item);
 
-  /** Write functional group to given item, i.e. write Plane Orientation
+  /** Write functional group to given item, i.e.\ write Plane Orientation
    *  (Volume) Sequence
    *  @param  item The item to write to
    *  @return EC_Normal if writing was successful, error otherwise
@@ -124,13 +124,13 @@ public:
                                                 const OFBool checkValue = OFTrue);
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (i.e. both
+   *  Both objects (this and rhs) need to have the same type (i.e.\ both
    *  FGUnknown) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing

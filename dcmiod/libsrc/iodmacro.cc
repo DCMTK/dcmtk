@@ -676,7 +676,7 @@ OFCondition GeneralAnatomyMacro::read(DcmItem& source,
     "3",
     "GeneralAnatomyMacro" );
 
-  /* read Primary Anatomic Structure Macro (main level, i.e. original item) */
+  /* read Primary Anatomic Structure Macro (main level, i.e.\ original item) */
   m_PrimaryAnatomicStructure.read(source);
 
   return result;

@@ -29,16 +29,16 @@
 #include "dcmtk/dcmiod/ioddef.h"
 #include "dcmtk/dcmiod/iodrules.h"
 
-/** Class for managing sets of dicom attributes (e.g. macros and modules).
+/** Class for managing sets of dicom attributes (e.g.\ macros and modules).
  *  The data is hold in a container (DcmItem) that can be shared with other
- *  components, i.e. different modules that hold their data in a common
+ *  components, i.e.\ different modules that hold their data in a common
  *  container. In order to know which attributes in the container should be
  *  actually handled by a component, the component also has a set of rules, which
- *  can also be shared between different components (e.g. all modules of an IOD
+ *  can also be shared between different components (e.g.\ all modules of an IOD
  *  can share the same set of rules). For each attribute there is one rule in
  *  the rule set, denoting the requirement type (1,2,3,1C,2C), the VM, and
  *  besides others also the name of the component that the attribute belongs
- *  to (e.g. "PatientModule"). Since the component knows its own name, it can
+ *  to (e.g.\ "PatientModule"). Since the component knows its own name, it can
  *  decide which attributes in the data container it is responsible for.
  *  This class is meant to support nested substructures but so far only writes
  *  attributes on a single level (including sequences). Also, in this context
@@ -66,7 +66,7 @@ public:
   IODComponent(IODComponent* parent = NULL);
 
   /** Assignment operator, copies contained item and rule set from rhs to
-   *  "this" attribute set. Produces clone copy, i.e. the contained item
+   *  "this" attribute set. Produces clone copy, i.e.\ the contained item
    *  and the rule set is copied. The parent component is set to NULL.
    *  @param  rhs The IODComponent to be assigned
    *  @return Reference to this module

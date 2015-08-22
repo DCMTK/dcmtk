@@ -94,7 +94,7 @@ public:
    */
   virtual OFCondition write(DcmItem& destination);
 
-  /** Make sure that the module contains a Study Instance UID, i.e. a new one
+  /** Make sure that the module contains a Study Instance UID, i.e.\ a new one
    *  is created if empty. An invalid UID is corrected if desired.
    *  @param  correctInvalid Correct invalid UID if OFTrue, otherwise do nothing
    */

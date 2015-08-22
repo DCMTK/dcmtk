@@ -74,7 +74,7 @@ public:
    */
   virtual OFCondition read(DcmItem& item);
 
-  /** Writes this functional group to item, i.e. will write the Real World Value
+  /** Writes this functional group to item, i.e.\ will write the Real World Value
    *  Mapping Sequence
    *  @param  item The item to read from
    *  @return EC_Normal if reading was succesful, error otherwise
@@ -90,13 +90,13 @@ public:
   virtual OFVector< RWVMItem* >& getRealWorldValueMapping();
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (i.e. both
+   *  Both objects (this and rhs) need to have the same type (i.e.\ both
    *  FGUnknown) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing
@@ -155,7 +155,7 @@ public:
   RWVMItem(IODComponent* parent = NULL);
 
   /** Clone this class (perform deep copy)
-   *  @return Clone of this class or NULL (e.g. if memory exhausted)
+   *  @return Clone of this class or NULL (e.g.\ if memory exhausted)
    */
   RWVMItem* clone();
 
@@ -173,13 +173,13 @@ public:
   virtual OFString getName() const;
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (i.e. both
+   *  Both objects (this and rhs) need to have the same type (i.e.\ both
    *  FGUnknown) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing

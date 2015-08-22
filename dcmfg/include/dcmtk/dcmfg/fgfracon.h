@@ -76,13 +76,13 @@ public:
   virtual OFCondition write(DcmItem& item);
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (i.e. both
+   *  Both objects (this and rhs) need to have the same type (i.e.\ both
    *  FGUnknown) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing
@@ -280,7 +280,7 @@ public:
   /** Set one of the Dimension Index Values
    *  @param  value Value that should be set (lowest index starts with 1)
    *  @param  pos The position of the value that should be set (lowest index
-   *          starts with 0), i.e. select the 1st, 2nd, ..nth dimension
+   *          starts with 0), i.e.\ select the 1st, 2nd, ..nth dimension
    *  @param  checkValue If OFTrue, basic checks are performed whether the
    *          valid for this attribute
    *  @return EC_Normal, if value was set, error otherwise

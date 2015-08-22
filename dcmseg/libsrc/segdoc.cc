@@ -230,8 +230,9 @@ OFCondition DcmSegmentation::read(DcmItem &dataset)
   // Read Segmentation Series Module
   m_SegmentationSeries.read(dataset);
 
-  // Read Enhanced General Equipment (i.e. make sure all type 1 elements are there,
-  // which is not checked in General Equipment Module being part of DcmIODImage.
+  // Read Enhanced General Equipment (i.e. make sure all type 1 elements are
+  // there, which is not checked in General Equipment Module being part of
+  // DcmIODImage.
   m_EnhancedGeneralEquipmentModule.read(dataset);
 
   // Read functional groups module

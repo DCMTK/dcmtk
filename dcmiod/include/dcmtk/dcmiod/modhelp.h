@@ -95,7 +95,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy Patient Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -105,7 +105,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy Clinical Trial Subject Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -115,7 +115,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy General Study Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -125,7 +125,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy Patient Study Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -135,7 +135,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy Clinical Trial Study Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -145,7 +145,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy General Series Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -155,7 +155,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy Clinical Trial Series Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -165,7 +165,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy General Equipment Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -175,7 +175,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy Frame of Reference Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -184,10 +184,10 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
     static void copyFrameOfReferenceModule(DcmItem& src, DcmItem& dest);
 
     /** Copy SOP Common Module attributes.
-     *  Excludes: Digital Signatures Macro, i.e. MAC Parameters Sequence and
+     *  Excludes: Digital Signatures Macro, i.e.\ MAC Parameters Sequence and
      *  Digital Signatures Sequence.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the
@@ -197,7 +197,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
 
     /** Copy General Image Module attributes.
      *  @param src   Item to copy module from. Only the main level is searched,
-     *               i.e. no in-depth search is performed on the various tags.
+     *               i.e.\ no in-depth search is performed on the various tags.
      *  @param dest  Item to copy module to. An element not found within
      *               the source item will neither be created in the destination
      *               item, nor will any existing value be touched in the

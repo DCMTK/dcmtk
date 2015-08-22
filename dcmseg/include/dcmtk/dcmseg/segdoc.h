@@ -153,7 +153,7 @@ public:
    *  @param  useStudy If OFTrue, Study level information is imported
    *  @param  useSeries If OFTrue, Series level information is imported
    *  @param  useFoR If OFTrue, Frame of Reference information is imported
-   *  @return EC_Normal if reading was successful (i.e. if any information could
+   *  @return EC_Normal if reading was successful (i.e.\ if any information could
    *          be read), otherwise an error is returned
    */
   OFCondition importPatientStudyFoR(const OFString& filename,
@@ -165,7 +165,7 @@ public:
   // -------------------- access ---------------------
 
   /** Get number of frames, based on the number of items in the shared
-   *  functional functional groups sequence (i.e. the attribute Number of
+   *  functional functional groups sequence (i.e.\ the attribute Number of
    *  Frames) is not trusted).
    *  @return The number of frames handled by this object
    */
@@ -201,9 +201,9 @@ public:
   virtual OFBool check();
 
   /** Get access to functional groups. This is meant for reading data from
-   *  functional groups that are not actively managed,i.e. made accessible by
+   *  functional groups that are not actively managed, i.e.\ made accessible by
    *  DcmSegmentation. In rare cases, however, it makes sense to access it
-   *  for writing too, e.g. in order to add Stacks; use with care!
+   *  for writing too, e.g.\ in order to add Stacks; use with care!
    *  @return Reference to the functional groups
    */
   virtual FGInterface& getFunctionalGroups();
@@ -296,10 +296,10 @@ public:
 
   /** Add frame to segmentation object
    *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
-   *          For binary segmentations (bit depth i.e. Bits Allocated/Stored=1),
-   *          each byte equal to 0 will be interpreted as "not set", while every
-   *          other value is interpreted as "set". For fractional segmentations the
-   *          full byte is copied as is.
+   *          For binary segmentations (bit depth i.e.\ Bits
+   *          Allocated/Stored=1), each byte equal to 0 will be interpreted as
+   *          "not set", while every other value is interpreted as "set". For
+   *          fractional segmentations the full byte is copied as is.
    *  @param  segmentNumber The logical segment number (>=1) this frame refers to.
    *          The segment identified by the segmentNumber must already exist.
    *  @param  perFrameInformation The functional groups that identify this frame (i.e.

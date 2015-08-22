@@ -70,7 +70,7 @@ public:
   {
     /// Array for the pixel data bytes
     Uint8* pixData;
-    /// Number of pixel data bytes (i.e. Bits Allocated)
+    /// Number of pixel data bytes (i.e.\ Bits Allocated)
     size_t length;
     /// Destructor, frees memory
     ~Frame() {delete[] pixData;pixData = NULL;}
@@ -80,7 +80,7 @@ public:
    */
   enum IOD_IE
   {
-    /// Undefined Information Entity (i.e. no value set)
+    /// Undefined Information Entity (i.e.\ no value set)
     IE_UNDEFINED,
     /// Patient Entity
     IE_PATIENT,
@@ -102,7 +102,7 @@ public:
    */
   enum IOD_LATERALITY
   {
-    /// Undefined (e.g. value not set)
+    /// Undefined (e.g.\ value not set)
     LATERALITY_UNDEFINED,
     /// Left body part
     LATERALITY_L,

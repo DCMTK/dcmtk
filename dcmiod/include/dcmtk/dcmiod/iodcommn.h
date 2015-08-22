@@ -109,7 +109,7 @@ public:
 
   /** Create new study.
    *  After generating a new Study Instance UID the method createNewSeries() is
-   *  called, i.e. also a new Series Instance UID and SOP instance UID are
+   *  called, i.e.\ also a new Series Instance UID and SOP instance UID are
    *  generated.  This is a requirement of the DICOM standard. All other
    *  study-related attributes from the study-level modules managed by this class
    *  are cleared (as well as Series and Instance level attributes).
@@ -120,7 +120,7 @@ public:
 
   /** Create a new series.
    *  After generating a new Series Instance UID the method
-   *  createNewSOPInstance() is called, i.e. Series-related attributes managed
+   *  createNewSOPInstance() is called, i.e.\ Series-related attributes managed
    *  by the series-level modules of this class are cleared, as well as
    *  instance-level data.
    *  @param  clearFoR If OFTrue (default), also the frame of reference is
@@ -134,7 +134,7 @@ public:
    *  It could be used explicitly from the calling application if a new UID
    *  should be created (this is the case if the Study Instance UID or Series
    *  Instance UID has changed as well as any other attribute on the instance
-   *  level, e.g. image pixel data). Also clears other instance related data.
+   *  level, e.g.\ image pixel data). Also clears other instance related data.
    */
   virtual void createNewSOPInstance();
 
@@ -167,7 +167,7 @@ public:
    *  @param  readFoR     Read Frame of Reference information if OFTrue. See
    *          also readSeries parameter.
    *  @param  readSeries  Read Series-level information if OFTrue, always
-   *                      includes Frame of Reference, i.e. readFoR is
+   *                      includes Frame of Reference, i.e.\ readFoR is
    *                      considered to be OFTrue
    *  @return EC_Normal if successful, an error code otherwise
    */

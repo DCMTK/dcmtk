@@ -79,13 +79,13 @@ public:
   virtual ~FGBase();
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (e.g. both
+   *  Both objects (this and rhs) need to have the same type (e.g.\ both
    *  FGDerivationImage) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing
@@ -113,11 +113,11 @@ protected:
   /** Get the item containing the payload of a functional group sequence,
    *  identified by the functional group's sequence key provided and the desired
    *  item number.
-   *  @param  source The item to read the sequence from, e.g. item of the Shared
-   *          Functional Group Sequence
+   *  @param  source The item to read the sequence from, e.g.\ item of the
+   *          Shared Functional Group Sequence
    *  @param  seqKey The identifying key of the functional group's sequence
    *  @param  itemNum The item number to get from that sequence (usually,
-   *          a functional group has exactly a single item, i.e. the parameter
+   *          a functional group has exactly a single item, i.e.\ the parameter
    *          would be set to 0
    *  @param  result The item if found, otherwise NULL
    *  @return EC_Normal, if specified item could be retrieved, error otherwise
@@ -131,8 +131,8 @@ protected:
    *  @param  destination The item to put the sequence into
    *  @param  seqKey The functional group's tag key
    *  @param  numItems The number of items to create within sequence (minus 1).
-   *          Usually, functional group only contain a single item, i.e.
-   *          numItems would be set to 0
+   *          Usually, functional group only contain a single item,
+   *          i.e.\ numItems would be set to 0
    *  @param  firstItem Reference to the first item the method created
    *  @return EC_Normal if creation was successful, error otherwise
    */
@@ -152,7 +152,7 @@ private:
 };
 
 
-/** Class representing an "unknown" functional group, e.g. a private one
+/** Class representing an "unknown" functional group, e.g.\ a private one
  *  specified by a vendor or one that is not explicitly known yet to the
  *  dcmfg library.
  *  The main purpose is to have a container for such functional groups that
@@ -208,13 +208,13 @@ public:
   virtual OFCondition write(DcmItem& item);
 
   /** Comparison operator that compares the normalized value of this object
-   *  with a given object of the same type, i.e. the elements within both
+   *  with a given object of the same type, i.e.\ the elements within both
    *  functional groups (this and rhs parameter) are compared by value!
-   *  Both objects (this and rhs) need to have the same type (i.e. both
+   *  Both objects (this and rhs) need to have the same type (i.e.\ both
    *  FGUnknown) to be comparable. This function is used in order
    *  to decide whether a functional group already exists, or is new. This
    *  is used in particular to find out whether a given functional group
-   *  can be shared (i.e. the same information already exists as shared
+   *  can be shared (i.e.\ the same information already exists as shared
    *  functional group) or is different from the same shared group. In that
    *  case the shared functional group must be distributed into per-frame
    *  functional groups, instead. The exact implementation for implementing
@@ -245,7 +245,7 @@ private:
   /// The tag that uniquely identifies this functional group
   DcmTagKey m_seqStartTag;
 
-  /// The data hold by this item, i.e. the sequence making up the functional
+  /// The data hold by this item, i.e.\ the sequence making up the functional
   /// group
   DcmSequenceOfItems* m_fgSequence;
 

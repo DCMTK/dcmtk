@@ -128,7 +128,7 @@ public:
   static const OFString& currentDate(OFString &dateString);
 
   /** Get current time in DICOM 'TM' format (HHMMSS)
-   *  The optional UTC notation (e.g. +0100) is currently not supported.
+   *  The optional UTC notation (e.g.\ +0100) is currently not supported.
    *  @param  timeString String used to store the current time
    *                     (empty string if current time could not be retrieved)
    *  @return Resulting character string, empty if time could not be retrieved
@@ -137,7 +137,7 @@ public:
 
   /** Copy given element to the dataset
    *  The element is only added if 'result' is EC_Normal. A copy of the given
-   *  element is created, i.e. the caller is responsible for deleting the
+   *  element is created, i.e.\ the caller is responsible for deleting the
    *  original element handed to this function (if desired).
    *  @param  result Reference to status variable (checked before adding and
    *          updated afterwards!)
@@ -189,7 +189,7 @@ public:
    *  @param  dataset Reference to DICOM dataset to which the element should
    *          be added
    *  @param  delem Pointer to DICOM element which should be added. The element
-   *          is always consumed by this function, i.e. insertion was succesful
+   *          is always consumed by this function, i.e.\ insertion was succesful
    *          and therefore ownership is transferred to the dataset, or the
    *          element is deleted from memory if it could not be inserted.
    *  @param  rule  Rule describing parameters to be checked on element.
@@ -396,7 +396,7 @@ public:
    *  @param  cardinality Expected number of items.
    *          See DcmElement::checkVM() for a list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
-   *          i.e. "1,1C,2,2C or 3".
+   *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in. Used
    *          for error messages and can also be left empty.
    *  @return EC_Normal if successful, an error code otherwise
@@ -469,7 +469,7 @@ public:
    *  @param  cardinality Eexpected number of items.
    *          See DcmElement::checkVM() for a list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
-   *          i.e. "1,1C,2,2C or 3".
+   *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Nname of the module/macro this sequence is contained in. Used
    *          for error messages and can also be left empty.
    *  @return status EC_Normal if successful, an error code otherwise
@@ -519,14 +519,14 @@ public:
 
   /** Reads single DICOM item from a specific sequence into a destination class.
    *  The container must support the read(DcmItem) function. If a single item
-   *  (i.e. the first item of the specified sequence) cannot be read, an error
+   *  (i.e.\ the first item of the specified sequence) cannot be read, an error
    *  is returned.
    *  @param  source The source DICOM item read the sequence from
    *  @param  seqKey The tag key of the sequence to be read
    *  @param  destination The destination container to read into
    *          See DcmElement::checkVM() for a list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
-   *          i.e. "1,1C,2,2C or 3".
+   *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in.
    *          Used for error messages and can also be left empty.
    *  @return EC_Normal if successful, an error code otherwise
@@ -555,7 +555,7 @@ public:
 
   /** Reads single DICOM item from a specific sequence into a destination class.
    *  The container must support the read(DcmItem) function. If a single item
-   *  (i.e. the first item of the specified sequence) cannot be read, an error
+   *  (i.e.\ the first item of the specified sequence) cannot be read, an error
    *  is returned.
    *  @param  source The source DICOM item read the sequence from
    *  @param  seqKey The tag key of the sequence to be read
@@ -582,7 +582,7 @@ public:
   }
 
   /** Write given container into a DICOM sequence that is created within the
-   *  given item. The sequence is created from scratch, i.e. any old sequence
+   *  given item. The sequence is created from scratch, i.e.\ any old sequence
    *  (and its items) will be overwritten.
    *  @param  result If writing is successful, result will contain EC_Normal.
    *          Otherwise an error code is set.
@@ -591,11 +591,11 @@ public:
    *          write(DcmItem*) function.
    *  @param  destination The DICOM destination item to write the sequence to
    *          See DcmElement::checkVM() for a list of valid values.
-   *  @param  cardinality  Expected number of items (i.e. expected number of
+   *  @param  cardinality  Expected number of items (i.e.\ expected number of
    *          elements in source container). See DcmElement::checkVM() for a
    *          list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
-   *          i.e. "1,1C,2,2C or 3".
+   *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in. Used
    *                 for error messages and can also be left empty.
    *  @return EC_Normal if successful, an error code otherwise
@@ -667,7 +667,7 @@ public:
   }
 
   /** Write given container into a DICOM sequence that is created within the given item.
-   *  The container. The sequence is created from scratch, i.e. any old sequence
+   *  The container. The sequence is created from scratch, i.e.\ any old sequence
    *  (and its items) will be overwritten.
    *  @param  result If writing is successful, result will contain EC_Normal. Otherwise
    *          an error code is set.
@@ -712,7 +712,7 @@ public:
    *  @param  destination The DICOM item that should hold the sequence
    *          (with a single item) in the end.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
-   *          i.e. "1,1C,2,2C or 3".
+   *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in.
    *          Used for error messages and can also be left empty.
    *  @return EC_Normal if successful, an error code otherwise
@@ -741,7 +741,7 @@ public:
         {
           result = source.write(*localItem);
           // It can happen that check() returns OK but no elements have to be
-          // written at all (e.g. if it contains only type 3 attributes). In that
+          // written at all (e.g.\ if it contains only type 3 attributes). In that
           // case a sequence with a single empty item is written which must be removed
           // afterwards.
           if (result.good() && (localItem->card() == 0) )
@@ -800,11 +800,11 @@ public:
    *          to an error.
    *  @param  surroundingItem The item that should contain the given sequence.
    *  @param  seqKey The sequence to look for
-   *  @param  cardinality Expected number of items (i.e. expected number of
+   *  @param  cardinality Expected number of items (i.e.\ expected number of
    *          elements in source container). See DcmElement::checkVM() for a
    *          list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
-   *          i.e. "1,1C,2,2C or 3".
+   *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in.
    *          Used for error messages and can also be left empty.
    *  @return EC_Normal if successful, an error code otherwise

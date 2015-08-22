@@ -45,7 +45,7 @@ class DCMTK_DCMFG_EXPORT FGInterface
 
 public:
 
-  /// Type representing per-frame functional groups, i.e. a number of
+  /// Type representing per-frame functional groups, i.e.\ a number of
   /// functional groups assigned to each frame
   typedef OFMap<Uint32, FunctionalGroups*> PerFrameGroups;
 
@@ -74,14 +74,14 @@ public:
   virtual OFBool check();
 
   /** Returns number of frames. Computed by number of per-frame
-   *  functional group items (i.e. the Number of Frames attribues
+   *  functional group items (i.e.\ the Number of Frames attribues
    *  is not taken into account).
    *  @return Number of frames
    */
   virtual size_t getNumberOfFrames();
 
   /** Read enhanced multi-frame information from DICOM item, usually
-   *  DcmDataset, i.e. must contain Shared and Per-frame Functional Group
+   *  DcmDataset, i.e.\ must contain Shared and Per-frame Functional Group
    *  Sequences
    *  @param  dataset The item to read from
    *  @return EC_Normal if reading was successful, error otherwise
@@ -89,7 +89,7 @@ public:
   virtual OFCondition read(DcmItem& dataset);
 
   /** Write enhanced multi-frame information to DICOM item,
-   *  usually DcmDataset, i.e. writes  Shared and Per-frame Functional Group
+   *  usually DcmDataset, i.e.\ writes  Shared and Per-frame Functional Group
    *  Sequences
    *  @param  dataset The item to write to
    *  @return EC_Normal if successful, error otherwise
@@ -106,7 +106,7 @@ public:
   virtual FGBase* get(const Uint32 frameNo,
                       const DcmFGTypes::E_FGType fgType);
 
-  // TODO Add get(..) version that takes the sequence tag (e.g. for unknown
+  // TODO Add get(..) version that takes the sequence tag (e.g.\ for unknown
   // functional groups
 
   /** Get specific functional group for a frame, no matter whether it is stored
@@ -121,13 +121,13 @@ public:
                       const DcmFGTypes::E_FGType fgType,
                       OFBool& isPerFrame);
 
-  /** Return all per-frame functional groups, e.g. to iterate over them
+  /** Return all per-frame functional groups, e.g.\ to iterate over them
    *  @param  frameNo The frame number of the groups of interest (starts from 0)
    *  @return The per-frame functional groups for the given frame
    */
   const FunctionalGroups* getPerFrame(const Uint32 frameNo) const;
 
-  /** Return all shared functional groups, e.g. to iterate over them
+  /** Return all shared functional groups, e.g.\ to iterate over them
    *  @return The shared functional groups
    */
   const FunctionalGroups* getShared() const;
@@ -216,7 +216,7 @@ protected:
                                      const OFBool replaceExisting = OFTrue);
 
   /** Get existing per-frame group or create it for the given frame. Note that
-   *  the per-frame groups do not have to be created "in order", i.e. one could
+   *  the per-frame groups do not have to be created "in order", i.e.\ one could
    *  add groups in order 3,5,1 ,... .
    *  @param  frameNo The frame number to get/create per-frame groups for
    *  @return The functional groups if found/created, NULL in case of error

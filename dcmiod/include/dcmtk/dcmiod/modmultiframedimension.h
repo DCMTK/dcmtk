@@ -49,7 +49,7 @@ class DCMTK_DCMIOD_EXPORT IODMultiframeDimensionModule : public IODModule
 public:
 
   /** Helper class representing an item within the Dimension Index Sequence,
-   *  i.e. a single dimension description
+   *  i.e.\ a single dimension description
    */
   class DimensionOrganizationItem : public IODComponent
   {

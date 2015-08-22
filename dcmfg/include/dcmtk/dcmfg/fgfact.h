@@ -31,7 +31,7 @@ class FGBase;
 
 
 /** Singleton class that is used to create functional groups by knowing
- *  their type or other unique features, i.e. offering factory functionality.
+ *  their type or other unique features, i.e.\ offering factory functionality.
  */
 class DCMTK_DCMFG_EXPORT FGFactory
 {
