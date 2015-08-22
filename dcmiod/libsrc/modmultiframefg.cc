@@ -248,7 +248,7 @@ OFCondition IODMultiFrameFGModule::ConcatenationInfo::getInConcatenationTotalNum
 
 OFCondition IODMultiFrameFGModule::ConcatenationInfo::setConcatenationFrameOffsetNumber(const Uint32 value)
 {
-  return m_Item->putAndInsertUint16(DCM_ConcatenationFrameOffsetNumber, value);
+  return m_Item->putAndInsertUint32(DCM_ConcatenationFrameOffsetNumber, value);
 }
 
 

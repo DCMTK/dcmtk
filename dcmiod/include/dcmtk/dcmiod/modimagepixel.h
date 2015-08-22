@@ -239,8 +239,9 @@ public:
    *  @param  horizontalPixelSize The horizontal pixel size (no unit)
    *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition setPixelAspectRatio(const Uint32 verticalPixelSize,
-                                          const Uint32 horizontalPixelSize);
+  virtual OFCondition setPixelAspectRatio(const OFString& verticalPixelSize,
+                                          const OFString& horizontalPixelSize,
+                                          const OFBool checkValue = OFTrue);
 
   /** Set ICC Profile
    *  @param  values Reference to variable in which the values should be stored

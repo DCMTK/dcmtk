@@ -24,6 +24,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/dcmiod/iodutil.h"
 
 const OFString IODImagePixelModule::m_ModuleName = "ImagePixelModule";
@@ -274,13 +275,20 @@ OFCondition IODImagePixelModule::setPlanarConfiguration(const Uint16 value,
 }
 
 
-OFCondition IODImagePixelModule::setPixelAspectRatio(const Uint32 verticalPixelSize,
-                                                     const Uint32 horizontalPixelSize)
+OFCondition IODImagePixelModule::setPixelAspectRatio(const OFString& verticalPixelSize,
+                                                     const OFString& horizontalPixelSize,
+                                                     const OFBool checkValue)
 {
-  OFCondition result = m_Item->putAndInsertUint16(DCM_PixelAspectRatio, verticalPixelSize, 0);
-  if (result.good())
-    result = m_Item->putAndInsertUint16(DCM_PixelAspectRatio, horizontalPixelSize, 1);
-  return result;
+  OFString concat = verticalPixelSize;
+  concat += "\\"; concat += horizontalPixelSize;
+  OFCondition cond;
+  if (checkValue)
+  {
+    cond = DcmIntegerString::checkStringValue(concat, "2");
+    // check for unsignedness, too?
+  }
+  if (cond.good()) m_Item->putAndInsertOFStringArray(DCM_PixelAspectRatio, concat);
+  return cond;
 }
 
 
