@@ -51,6 +51,9 @@ public:
   /// iterator type to iterate over rule set
   typedef OFMap<DcmTagKey, IODRule*>::iterator iterator;
 
+  /// const iterator type to iterate over rule set
+  typedef OFMap<DcmTagKey, IODRule*>::const_iterator const_iterator;
+
   /** Constructor
    */
   IODRules();

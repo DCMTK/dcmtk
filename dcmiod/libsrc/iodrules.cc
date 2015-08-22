@@ -71,7 +71,7 @@ IODRules* IODRules::clone()
 
 IODRule* IODRules::getByTag(const DcmTagKey& key) const
 {
-  IODRules::iterator it = m_Rules.find(key);
+  IODRules::const_iterator it = m_Rules.find(key);
   if ( it != m_Rules.end() )
     return (*it).second;
   else
