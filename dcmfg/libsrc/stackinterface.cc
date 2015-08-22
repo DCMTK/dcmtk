@@ -255,7 +255,7 @@ size_t FGStackInterface::checkContext(FGStack* stack,
   // in-stack position is in range with the number of available frames
   size_t errors = 0;
   const OFMap<Uint32,Uint32>& frames = stack->m_FrameNumbers;
-  FGStack::iterator it = frames.begin();
+  FGStack::const_iterator it = frames.begin();
   for (size_t count = 0; count < numFrames; count++)
   {
     // Frame number must be in range

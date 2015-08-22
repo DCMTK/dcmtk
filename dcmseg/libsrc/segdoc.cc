@@ -485,7 +485,7 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData,
   if (result.bad())
     return result;
 
-  OFVector<const FGBase*>::const_iterator it = perFrameInformation.begin();
+  OFVector<FGBase*>::const_iterator it = perFrameInformation.begin();
   while (it != perFrameInformation.end())
   {
     result = (*it)->check();
@@ -527,7 +527,7 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData,
   // Cleanup any per-frame groups that might have been inserted and return
   if (result.bad())
   {
-    for (OFVector<const FGBase*>::const_iterator it2 = perFrameInformation.begin(); it2 != perFrameInformation.end(); it2++ )
+    for (OFVector<FGBase*>::const_iterator it2 = perFrameInformation.begin(); it2 != perFrameInformation.end(); it2++ )
     {
       m_FGInterface.deletePerFrame(frameNo, (*it2)->getType());
     }

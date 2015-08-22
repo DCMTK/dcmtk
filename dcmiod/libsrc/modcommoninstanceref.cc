@@ -69,7 +69,7 @@ void IODCommonInstanceReferenceModule::clearData()
 
 
 OFCondition IODCommonInstanceReferenceModule::read(DcmItem& source,
-                                                   OFBool clearOldData)
+                                                   const OFBool clearOldData)
 {
   if (clearOldData)
     clearData();
@@ -150,7 +150,7 @@ void IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::clearData()
 
 
 OFCondition IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::read(DcmItem& source,
-                                                                              OFBool clearOldData)
+                                                                              const OFBool clearOldData)
 {
   if (clearOldData)
     clearData();

@@ -78,7 +78,7 @@ public:
    *  @result EC_Normal if successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write data of this moduel into given destination item
    *  @param  destination The item to write to
@@ -158,7 +158,7 @@ public:
    *  @result EC_Normal if successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write this module's data into given destination item
    *  @param  destination Item to write to

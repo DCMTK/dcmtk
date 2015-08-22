@@ -107,7 +107,8 @@ IODEnhUSImageModule::~IODEnhUSImageModule()
 }
 
 
-OFCondition IODEnhUSImageModule::read(DcmItem& source, OFBool clearOldData)
+OFCondition IODEnhUSImageModule::read(DcmItem& source,
+                                      const OFBool clearOldData)
 {
   if (clearOldData)
   {

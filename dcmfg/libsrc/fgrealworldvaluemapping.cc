@@ -188,7 +188,7 @@ void FGRealWorldValueMapping::RWVMItem::resetRules()
 }
 
 OFCondition FGRealWorldValueMapping::RWVMItem::read(DcmItem& source,
-                                                    OFBool clearOldData)
+                                                    const OFBool clearOldData)
 {
   DcmIODUtil::readSingleItem(source, DCM_MeasurementUnitsCodeSequence, m_MeasurementUnitsCode, "1", m_ModuleName);
   return IODComponent::read(source, clearOldData);

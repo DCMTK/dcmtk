@@ -102,7 +102,7 @@ public:
    *  @result EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write attributes from this class into given item. Overwrites
    *  function of base class IODComponent.

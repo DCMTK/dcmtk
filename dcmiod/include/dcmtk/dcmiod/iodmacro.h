@@ -285,7 +285,7 @@ public:
    *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Series and Instance Reference Macro to given item
    *  @param  destination The item to write to
@@ -367,7 +367,7 @@ public:
    *  @param  clearOldData If OFTrue, old data is cleared before reading
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write this Referenced Series Sequence item data to given item
    *  @param  destination The item to write to
@@ -456,7 +456,7 @@ public:
    *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Image SOP Instance Reference Macrom to given item
    *  @param  item The item to write to
@@ -571,7 +571,7 @@ public:
    *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Anatomic Region Sequence Item to given item
    * @param  item The item to write to
@@ -641,7 +641,7 @@ public:
    *  @return EC_Normal if reading was fine, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Anatomic Region Sequence (i.e. this macro) to given item
    *  @param  item The item to write to
@@ -723,7 +723,7 @@ public:
    *  @return EC_Normal if no error, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Anatomic Region Sequence and Primary Anatomic Structure Macro to
    *  given item
@@ -863,7 +863,7 @@ public:
    *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write this macro to given item
    *  @param  item The item to write to
@@ -947,7 +947,7 @@ public:
        *  @result EC_Normal, if reading was successful, error otherwise
        */
       virtual OFCondition read(DcmItem& source,
-                               OFBool clearOldData = OFTrue);
+                               const OFBool clearOldData = OFTrue);
 
       /** Write alternate content description item to given item
        *  @param  item The item to write to
@@ -1085,7 +1085,7 @@ public:
    *          it is kept/overwritten
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Content Identification Macro to given item
    *  @param  item The item to write to
@@ -1243,7 +1243,7 @@ public:
    *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition read(DcmItem& source,
-                           OFBool clearOldData = OFTrue);
+                           const OFBool clearOldData = OFTrue);
 
   /** Write Mandatory View and Slice Progression Direction Macro to given item
    *  @param  item The item to write to

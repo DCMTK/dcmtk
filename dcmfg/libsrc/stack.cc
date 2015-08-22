@@ -84,7 +84,7 @@ OFString FGStack::getStackID() const
 
 Uint32 FGStack::getInStackPos(const Uint32 frameNumber) const
 {
-  FGStack::iterator it = m_FrameNumbers.find(frameNumber);
+  FGStack::const_iterator it = m_FrameNumbers.find(frameNumber);
   if (it == m_FrameNumbers.end())
      return 0;
   else

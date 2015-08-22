@@ -228,7 +228,7 @@ OFString IODSeriesAndInstanceReferenceMacro::getName() const
 
 
 OFCondition IODSeriesAndInstanceReferenceMacro::read(DcmItem& source,
-                                                     OFBool clearOldData)
+                                                     const OFBool clearOldData)
 {
   if (clearOldData)
     clearData();
@@ -313,7 +313,7 @@ void IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::clearData()
 
 
 OFCondition IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::read(DcmItem& source,
-                                                                           OFBool clearOldData)
+                                                                           const OFBool clearOldData)
 {
   if (clearOldData)
     clearData();
@@ -478,7 +478,7 @@ void ImageSOPInstanceReferenceMacro::clear()
 
 
 OFCondition ImageSOPInstanceReferenceMacro::read(DcmItem& source,
-                                                 OFBool clearOldData)
+                                                 const OFBool clearOldData)
 {
   /* re-initialize object */
   if (clearOldData)
@@ -649,7 +649,7 @@ PrimaryAnatomicStructureMacro& GeneralAnatomyMacro::getPrimaryAnatomicStructure(
 
 // Reads Anatomic Region Sequence and Primary Anatomic Structure Macro from given item
 OFCondition GeneralAnatomyMacro::read(DcmItem& source,
-                                      OFBool clearOldData)
+                                      const OFBool clearOldData)
 {
   OFCondition result = EC_Normal;
 
@@ -813,7 +813,7 @@ OFVector<CodeSequenceMacro*>& PrimaryAnatomicStructureMacroItem::getAnatomicStru
 
 
 OFCondition PrimaryAnatomicStructureMacroItem::read(DcmItem& source,
-                                                    OFBool clearOldData)
+                                                    const OFBool clearOldData)
 {
   OFCondition result = EC_Normal;
 
@@ -916,7 +916,7 @@ OFVector<PrimaryAnatomicStructureMacroItem*>& PrimaryAnatomicStructureMacro::get
 
 /// Reads Primary Anatomic Region Sequence from given item
 OFCondition PrimaryAnatomicStructureMacro::read(DcmItem& source,
-                                                OFBool clearOldData)
+                                                const OFBool clearOldData)
 {
   OFCondition result;
 
@@ -1109,7 +1109,7 @@ OFCondition AlgorithmIdentificationMacro::setAlgorithmSource(const OFString& val
 
 /// Reads Anatomic Region Sequence and Primary Anatomic Structure Macro from given item
 OFCondition AlgorithmIdentificationMacro::read(DcmItem& source,
-                                               OFBool clearOldData)
+                                               const OFBool clearOldData)
 {
   OFCondition result;
 
@@ -1387,7 +1387,7 @@ OFCondition ContentIdentificationMacro::setContentCreatorName(const OFString& va
 
 
 OFCondition ContentIdentificationMacro::read(DcmItem& source,
-                                             OFBool clearOldData)
+                                             const OFBool clearOldData)
 {
   OFCondition result;
 
@@ -1486,7 +1486,7 @@ void ContentIdentificationMacro::AlternateContentDescriptionItem::clearData()
 
 
 OFCondition ContentIdentificationMacro::AlternateContentDescriptionItem::read(DcmItem& source,
-                                                                              OFBool clearOldData)
+                                                                              const OFBool clearOldData)
 {
   OFCondition result;
   if (clearOldData)
@@ -1675,7 +1675,7 @@ void MandatoryViewAndSliceProgressionDirectionMacro::clearData()
 
 
 OFCondition MandatoryViewAndSliceProgressionDirectionMacro::read(DcmItem& source,
-                                                                 OFBool clearOldData)
+                                                                 const OFBool clearOldData)
 {
   if (clearOldData)
   {
