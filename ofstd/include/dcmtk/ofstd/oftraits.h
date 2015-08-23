@@ -59,6 +59,9 @@ template<typename... ARGS>
 using OFis_integral = std::is_integral<ARGS...>;
 
 template<typename... ARGS>
+using OFremove_pointer = std::remove_pointer<ARGS...>;
+
+template<typename... ARGS>
 using OFremove_reference = std::remove_reference<ARGS...>;
 
 template<typename... ARGS>

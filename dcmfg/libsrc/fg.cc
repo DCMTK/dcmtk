@@ -108,7 +108,7 @@ OFCondition FunctionalGroups::insert(FGBase* group,
   }
   if (result.good())
   {
-    if ( (m_groups.insert(OFMake_pair<DcmFGTypes::E_FGType,FGBase*>(group->getType(), group)).second) )
+    if ( (m_groups.insert(OFMake_pair(group->getType(), group)).second) )
     {
       DCMFG_DEBUG("Functional group successfully inserted: " << DcmFGTypes::FGType2OFString(group->getType()));
     }

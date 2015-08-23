@@ -94,7 +94,7 @@ OFCondition FGStackInterface::read(FGInterface& fgSource)
             return EC_MemoryExhausted;
           }
           stack->addFrame(count, inStackPos);
-          if ( !m_Stacks.insert(OFMake_pair<OFString, FGStack*>(stack->getStackID(), stack)).second )
+          if ( !m_Stacks.insert(OFMake_pair(stack->getStackID(), stack)).second )
           {
             delete stack;
             DCMFG_ERROR("Could not add stack to internal list (internal error, ignored)");
@@ -200,7 +200,7 @@ OFBool FGStackInterface::addStack(FGStack* stack)
     return OFFalse;
   }
 
-  return m_Stacks.insert(OFMake_pair<OFString, FGStack*>(stack->getStackID(), stack)).second;
+  return m_Stacks.insert(OFMake_pair(stack->getStackID(), stack)).second;
 }
 
 

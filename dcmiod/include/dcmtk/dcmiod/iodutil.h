@@ -424,7 +424,7 @@ public:
         DcmItem *item = source->getItem(count);
         if (item != NULL)
         {
-          // define the element type.
+          // define the element type
           typedef typename OFremove_pointer<typename Container::value_type>::type Element;
           Element *newElem = new Element();
           // read into container item (clears old data first)

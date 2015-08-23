@@ -128,7 +128,7 @@ OFBool IODRules::addRule(IODRule* rule,
   }
   else
   {
-    m_Rules.insert( OFMake_pair<DcmTagKey,IODRule*>( key, rule) );
+    m_Rules.insert( OFMake_pair ( key, rule) );
   }
   return OFTrue;
 }

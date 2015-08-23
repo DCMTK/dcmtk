@@ -268,7 +268,7 @@ OFCondition FGInterface::readPerFrameFG(DcmItem& dataset)
       result = readSingleFG(*oneFrameItem, *perFrameGroups);
       if (result.good())
       {
-        if ( !m_perFrame.insert( OFMake_pair<Uint32,FunctionalGroups*>(count, perFrameGroups.release()) ).second )
+        if ( !m_perFrame.insert( OFMake_pair(count, perFrameGroups.release()) ).second )
         {
           DCMFG_ERROR("Could not store functional groups for frame #" << count << " (internal error)");
         }
@@ -442,7 +442,7 @@ FunctionalGroups* FGInterface::getOrCreatePerFrameGroups(const Uint32 frameNo)
   FunctionalGroups *fg = new FunctionalGroups();
   if (fg != NULL)
   {
-    if ( !(m_perFrame.insert(OFMake_pair<Uint32, FunctionalGroups*>(frameNo, fg))).second )
+    if ( !(m_perFrame.insert(OFMake_pair(frameNo, fg))).second )
     {
       DCMFG_ERROR("Could not insert Per-frame Functional Groups for frame " << frameNo << ": " << "Internal error");
       delete fg;

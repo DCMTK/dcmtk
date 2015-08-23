@@ -61,8 +61,8 @@ IODComponent& IODComponent::operator=(const IODComponent& rhs)
 {
   if (&rhs != this)
   {
-    m_Rules = rhs.m_Rules->clone();
-    m_Item = OFstatic_cast(DcmItem*, rhs.m_Item->clone());
+    m_Rules.reset( rhs.m_Rules->clone() );
+    m_Item.reset( OFstatic_cast(DcmItem*, rhs.m_Item->clone()) );
     m_Parent = NULL;
   }
   return *this;

@@ -41,7 +41,7 @@ FGStack::FGStack(const OFString& stackID)
 OFBool FGStack::addFrame(const Uint32 frameNumber,
                          const Uint32 inStackPos)
 {
-  m_FrameNumbers.insert(OFMake_pair<Uint32,Uint32>(frameNumber, inStackPos));
+  m_FrameNumbers.insert(OFMake_pair(frameNumber, inStackPos));
   return OFTrue;
 }
 
