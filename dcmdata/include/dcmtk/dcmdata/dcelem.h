@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -70,7 +70,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  component that is compared, followed by the object types (VR, i.e. DCMTK'S EVR).
      *  DcmElement's default implementation does only compare the tag and EVR while
      *  the derived classes implement the value comparisons by comparing all the
-     *  components that make up the value, preferrably in the order declared in
+     *  components that make up the value, preferably in the order declared in
      *  the object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
@@ -660,7 +660,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  Note that the value returned by this method does not include the pad byte
      *  to even size needed for a buffer into which a frame is to be loaded.
      *  @param dataset dataset in which this pixel data element is contained
-     *  @param frameSize frame size in bytes (without padding) returned in this parameter upon success
+     *  @param frameSize frame size in bytes (without padding) returned in this
+     *    parameter upon success
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUncompressedFrameSize(DcmItem *dataset,
@@ -749,7 +750,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
 
     /** check for correct value multiplicity (VM)
      *  @param vmNum value multiplicity of the value to be checked.
-     *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e.\ no error).
+     *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e. no error).
      *  @param vmStr value multiplicity (according to the data dictionary) to be checked for.
      *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
      *                   "3", "3-n", "3-3n", "4", "5", "5-n", "6", "7", "7-7n", "8", "9",
