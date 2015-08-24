@@ -1,22 +1,11 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
- *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module: dcmsr
+ *  Source file for class CID5001_Countries
  *
  *  Author: Joerg Riesmeier
- *
- *  Purpose:
- *    classes: CID5001_Countries
  *
  */
 

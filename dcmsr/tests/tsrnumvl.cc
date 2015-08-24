@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
+ *  This software and supporting documentation are maintained by
  *
  *    OFFIS e.V.
  *    R&D Division Health

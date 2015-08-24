@@ -1,22 +1,11 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
- *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module: dcmsr
+ *  Source file for class TID1204_LanguageOfContentItemAndDescendants
  *
  *  Author: Joerg Riesmeier
- *
- *  Purpose:
- *    classes: TID1204_LanguageOfContentItemAndDescendants
  *
  */
 

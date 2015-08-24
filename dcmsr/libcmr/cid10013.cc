@@ -1,25 +1,12 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
+ *  Source file for class CID10013_CTAcquisitionType
  *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module: dcmsr
- *
- *  Author: Joerg Riesmeier
- *
- *  Purpose:
- *    classes: CID10013_CTAcquisitionType
- *
- *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-20 14:54:01 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2015c
+ *  File created on 2015-08-23 15:25:14 by J. Riesmeier
  *
  */
 

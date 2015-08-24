@@ -1,25 +1,12 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
- *  All right reserved.  See COPYRIGHT file for details.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
+ *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module: dcmsr
- *
- *  Author: Joerg Riesmeier
- *
- *  Purpose:
- *    DICOM Code Definitions (Coding Scheme "DCM", Version "01")
- *
- *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-17 14:25:12 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2015c
+ *  File created on 2015-08-23 14:58:58 by J. Riesmeier
  *
  */
 

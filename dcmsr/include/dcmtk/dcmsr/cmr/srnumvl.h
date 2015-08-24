@@ -1,22 +1,11 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
- *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module: dcmsr
+ *  Header file for class CMR_SRNumericMeasurementValue
  *
  *  Author: Joerg Riesmeier
- *
- *  Purpose:
- *    classes: CMR_SRNumericMeasurementValue
  *
  */
 
@@ -34,7 +23,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for numeric measurement values
+/** Class for SR numeric measurement values
  *  (extended version with additional support of the DICOM Content Mapping Resource)
  */
 class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue

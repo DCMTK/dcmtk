@@ -1,25 +1,12 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation were developed by
+ *  Header file for class CID4031_CommonAnatomicRegions
  *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module: dcmsr
- *
- *  Author: Joerg Riesmeier
- *
- *  Purpose:
- *    classes: CID4031_CommonAnatomicRegions
- *
- *    Generated automatically from DICOM PS 3.16-2015c
- *    File created on 2015-08-20 14:53:55 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2015c
+ *  File created on 2015-08-23 14:59:21 by J. Riesmeier
  *
  */
 
