@@ -367,6 +367,15 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
 }
 
 
+OFCondition DSRCodedEntryValue::readSequenceItem(DcmItem &item,
+                                                 const DcmTagKey &tagKey,
+                                                 const size_t flags)
+{
+    /* call the real function, which is "protected" */
+    return readItem(item, DcmTag(tagKey).getTagName(), flags);
+}
+
+
 OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
                                               const DcmTagKey &tagKey) const
 {
@@ -399,6 +408,14 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
             delete dseq;
     }
     return result;
+}
+
+
+OFCondition DSRCodedEntryValue::writeSequenceItem(DcmItem &item,
+                                                  const DcmTagKey & /*tagKey*/)
+{
+    /* call the real function, which is "protected" */
+    return writeItem(item);
 }
 
 

@@ -269,6 +269,16 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
                              const size_t flags = 0,
                              const OFString &vm = "1");
 
+    /** read code from sequence item
+     ** @param  item    DICOM sequence item from which the code should be read
+     *  @param  tagKey  DICOM tag specifying the sequence in which this item is contained
+     *  @param  flags   flag used to customize the reading process (see DSRTypes::RF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readSequenceItem(DcmItem &item,
+                                 const DcmTagKey &tagKey,
+                                 const size_t flags = 0);
+
     /** write code sequence to dataset
      ** @param  dataset  DICOM dataset to which the code sequence should be written
      *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be
@@ -277,6 +287,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     OFCondition writeSequence(DcmItem &dataset,
                               const DcmTagKey &tagKey) const;
+
+    /** write code to sequence item
+     ** @param  item    DICOM sequence item to which the code should be written
+     *  @param  tagKey  DICOM tag specifying the sequence in which this item is contained
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition writeSequenceItem(DcmItem &item,
+                                  const DcmTagKey &tagKey);
 
     /** read code from XML document.
      *  Please note that only the "Basic Coded Entry Attributes" are supported by this method.
