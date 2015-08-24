@@ -248,9 +248,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
     /** read code sequence from dataset.
      *  The number of items within the code sequence is checked.  If error/warning output are
-     *  enabled, a warning message is printed if the sequence is empty or contains more than
-     *  one item.  The latter is a limitation of the current implementation, knowing that
-     *  there are code sequences for which more than one item is allowed.
+     *  enabled, a warning message is printed if the sequence is empty or contains more items
+     *  than specified in the 'vm ' parameter (1 by default, which applies to most use cases).
+     *  However, this method always reads the first item from the given sequence.  If another
+     *  item should be read (e.g. a modifier), the method readSequenceItem() should be used.
      ** @param  dataset  DICOM dataset from which the code sequence should be read
      *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be read
      *  @param  type     value type of the sequence (valid value: "1", "2", something else).
@@ -258,12 +259,15 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *                   reported.
      *  @param  flags    optional flag used to customize the reading process (see
      *                   DSRTypes::RF_xxx)
+     *  @param  vm       value multiplicity to be checked, interpreted as cardinality (number
+     *                   of items).  See DcmElement::checkVM() for a list of valid values.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readSequence(DcmItem &dataset,
                              const DcmTagKey &tagKey,
                              const OFString &type,
-                             const size_t flags = 0);
+                             const size_t flags = 0,
+                             const OFString &vm = "1");
 
     /** write code sequence to dataset
      ** @param  dataset  DICOM dataset to which the code sequence should be written

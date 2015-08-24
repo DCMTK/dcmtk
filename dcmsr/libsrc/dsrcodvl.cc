@@ -346,12 +346,13 @@ OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset) const
 OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
                                              const DcmTagKey &tagKey,
                                              const OFString &type,
-                                             const size_t flags)
+                                             const size_t flags,
+                                             const OFString &vm)
 {
     /* read CodeSequence */
     DcmSequenceOfItems *dseq = NULL;
     OFCondition result = dataset.findAndGetSequence(tagKey, dseq);
-    DSRTypes::checkElementValue(dseq, tagKey, "1", type, result);
+    DSRTypes::checkElementValue(dseq, tagKey, vm, type, result);
     if (result.good())
     {
         DcmItem *ditem = dseq->getItem(0);
