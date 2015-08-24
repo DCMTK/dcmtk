@@ -187,5 +187,5 @@ OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
 OFTEST(dcmsr_cleanupContentMappingResource)
 {
     /* cleanup the internal code lists explicitly (should be the last test case) */
-    ContentMappingResource::cleanupAllContextGroups();
+    CMR_ContentMappingResource::cleanupAllContextGroups();
 }

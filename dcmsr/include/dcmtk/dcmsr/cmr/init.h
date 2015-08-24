@@ -38,7 +38,7 @@
  *  All functions are static and can, therefore, be accessed without creating an instance
  *  of this class.
  */
-class DCMTK_CMR_EXPORT ContentMappingResource
+class DCMTK_CMR_EXPORT CMR_ContentMappingResource
 {
 
   public:

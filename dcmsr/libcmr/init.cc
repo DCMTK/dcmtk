@@ -45,7 +45,7 @@
  *  implementation  *
  *------------------*/
 
-void ContentMappingResource::initializeAllContextGroups()
+void CMR_ContentMappingResource::initializeAllContextGroups()
 {
     /* initialize all context groups, one after the other */
     CID11_RouteOfAdministration::initialize();
@@ -65,7 +65,7 @@ void ContentMappingResource::initializeAllContextGroups()
 }
 
 
-void ContentMappingResource::cleanupAllContextGroups()
+void CMR_ContentMappingResource::cleanupAllContextGroups()
 {
     /* cleanup all context groups, one after the other */
     CID11_RouteOfAdministration::cleanup();
