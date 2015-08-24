@@ -35,6 +35,8 @@
 #include "dcmtk/dcmsr/cmr/cid244e.h"
 #include "dcmtk/dcmsr/cmr/cid4031e.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
+#include "dcmtk/dcmsr/cmr/cid10013e.h"
+#include "dcmtk/dcmsr/cmr/cid10033e.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
 #include "dcmtk/dcmsr/cmr/tid1204.h"
 #include "dcmtk/dcmsr/cmr/srnumvl.h"
@@ -124,6 +126,25 @@ OFTEST(dcmsr_CID7445_DeviceParticipatingRoles)
     OFCHECK(codeValue == CODE_DCM_Recording);
     OFCHECK_EQUAL(codeValue.getContextIdentifier(), "7445");
     OFCHECK_EQUAL(codeValue.getMappingResource(), "DCMR");
+}
+
+
+OFTEST(dcmsr_CID10013e_CTAcquisitionType)
+{
+    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("SEQUENCED") == CODE_DCM_SequencedAcquisition);
+    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("CONSTANT_ANGLE") == CODE_DCM_ConstantAngleAcquisition);
+    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("FREE") == CODE_DCM_FreeAcquisition);
+    /* invalid/unknown defined terms */
+    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("XYZ").isEmpty());
+}
+
+
+OFTEST(dcmsr_CID10033e_CTReconstructionAlgorithm)
+{
+    OFCHECK(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm("FILTER_BACK_PROJ") == CODE_DCM_FilteredBackProjection);
+    OFCHECK(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm("ITERATIVE") == CODE_DCM_IterativeReconstruction);
+    /* invalid/unknown defined terms */
+    OFCHECK(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm("XYZ").isEmpty());
 }
 
 

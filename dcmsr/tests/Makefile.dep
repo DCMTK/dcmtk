@@ -294,6 +294,10 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid4031e.h \
  ../include/dcmtk/dcmsr/cmr/cid4031.h \
  ../include/dcmtk/dcmsr/cmr/cid7445.h \
+ ../include/dcmtk/dcmsr/cmr/cid10013e.h \
+ ../include/dcmtk/dcmsr/cmr/cid10013.h \
+ ../include/dcmtk/dcmsr/cmr/cid10033e.h \
+ ../include/dcmtk/dcmsr/cmr/cid10033.h \
  ../include/dcmtk/dcmsr/cmr/tid1001.h ../include/dcmtk/dcmsr/dsrstpl.h \
  ../include/dcmtk/dcmsr/dsrdoctr.h ../include/dcmtk/dcmsr/dsrdocst.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrscovl.h \
