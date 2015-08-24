@@ -55,8 +55,8 @@ OFCondition CID7452_OrganizationalRoles::findCodedEntry(const DSRCodedEntryValue
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID7452_OrganizationalRoles::printCodes(STD_NAMESPACE ostream &stream) cons
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,24 +149,24 @@ CID7452_OrganizationalRoles::CodeList &CID7452_OrganizationalRoles::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(MedicalPractitioner, DSRBasicCodedEntry("J-0016E", "SRT", "Medical Practitioner")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Physician, DSRBasicCodedEntry("J-004E8", "SRT", "Physician")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Nurse, DSRBasicCodedEntry("J-07100", "SRT", "Nurse")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(RadiologicTechnologist, DSRBasicCodedEntry("J-00187", "SRT", "Radiologic Technologist")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Radiographer, DSRBasicCodedEntry("J-00187", "SRT", "Radiographer")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Intern, DSRBasicCodedEntry("C1144859", "UMLS", "Intern")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Resident, DSRBasicCodedEntry("J-005E6", "SRT", "Resident")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Registrar, DSRBasicCodedEntry("J-00172", "SRT", "Registrar")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Fellow, DSRBasicCodedEntry("121088", "DCM", "Fellow")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Attending, DSRBasicCodedEntry("J-005E8", "SRT", "Attending")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Consultant, DSRBasicCodedEntry("J-0050A", "SRT", "Consultant")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ConsultingPhysician, DSRBasicCodedEntry("C1441532", "UMLS", "Consulting Physician")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ScrubNurse, DSRBasicCodedEntry("J-0714A", "SRT", "Scrub nurse")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Surgeon, DSRBasicCodedEntry("J-00556", "SRT", "Surgeon")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Sonologist, DSRBasicCodedEntry("121092", "DCM", "Sonologist")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Sonographer, DSRBasicCodedEntry("C1954848", "UMLS", "Sonographer")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(RadiationPhysicist, DSRBasicCodedEntry("C2985483", "UMLS", "Radiation Physicist")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(MedicalPhysicist, DSRBasicCodedEntry("C1708969", "UMLS", "Medical Physicist")));
+        Codes->insert(OFMake_pair(MedicalPractitioner, DSRBasicCodedEntry("J-0016E", "SRT", "Medical Practitioner")));
+        Codes->insert(OFMake_pair(Physician, DSRBasicCodedEntry("J-004E8", "SRT", "Physician")));
+        Codes->insert(OFMake_pair(Nurse, DSRBasicCodedEntry("J-07100", "SRT", "Nurse")));
+        Codes->insert(OFMake_pair(RadiologicTechnologist, DSRBasicCodedEntry("J-00187", "SRT", "Radiologic Technologist")));
+        Codes->insert(OFMake_pair(Radiographer, DSRBasicCodedEntry("J-00187", "SRT", "Radiographer")));
+        Codes->insert(OFMake_pair(Intern, DSRBasicCodedEntry("C1144859", "UMLS", "Intern")));
+        Codes->insert(OFMake_pair(Resident, DSRBasicCodedEntry("J-005E6", "SRT", "Resident")));
+        Codes->insert(OFMake_pair(Registrar, DSRBasicCodedEntry("J-00172", "SRT", "Registrar")));
+        Codes->insert(OFMake_pair(Fellow, DSRBasicCodedEntry("121088", "DCM", "Fellow")));
+        Codes->insert(OFMake_pair(Attending, DSRBasicCodedEntry("J-005E8", "SRT", "Attending")));
+        Codes->insert(OFMake_pair(Consultant, DSRBasicCodedEntry("J-0050A", "SRT", "Consultant")));
+        Codes->insert(OFMake_pair(ConsultingPhysician, DSRBasicCodedEntry("C1441532", "UMLS", "Consulting Physician")));
+        Codes->insert(OFMake_pair(ScrubNurse, DSRBasicCodedEntry("J-0714A", "SRT", "Scrub nurse")));
+        Codes->insert(OFMake_pair(Surgeon, DSRBasicCodedEntry("J-00556", "SRT", "Surgeon")));
+        Codes->insert(OFMake_pair(Sonologist, DSRBasicCodedEntry("121092", "DCM", "Sonologist")));
+        Codes->insert(OFMake_pair(Sonographer, DSRBasicCodedEntry("C1954848", "UMLS", "Sonographer")));
+        Codes->insert(OFMake_pair(RadiationPhysicist, DSRBasicCodedEntry("C2985483", "UMLS", "Radiation Physicist")));
+        Codes->insert(OFMake_pair(MedicalPhysicist, DSRBasicCodedEntry("C1708969", "UMLS", "Medical Physicist")));
     }
     /* should never be NULL */
     return *Codes;

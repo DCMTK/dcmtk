@@ -55,8 +55,8 @@ OFCondition CID7445_DeviceParticipatingRoles::findCodedEntry(const DSRCodedEntry
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID7445_DeviceParticipatingRoles::printCodes(STD_NAMESPACE ostream &stream)
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,9 +149,9 @@ CID7445_DeviceParticipatingRoles::CodeList &CID7445_DeviceParticipatingRoles::ge
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IrradiatingDevice, DSRBasicCodedEntry("113859", "DCM", "Irradiating Device")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Recording, DSRBasicCodedEntry("121097", "DCM", "Recording")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(XRayReadingDevice, DSRBasicCodedEntry("113942", "DCM", "X-Ray Reading Device")));
+        Codes->insert(OFMake_pair(IrradiatingDevice, DSRBasicCodedEntry("113859", "DCM", "Irradiating Device")));
+        Codes->insert(OFMake_pair(Recording, DSRBasicCodedEntry("121097", "DCM", "Recording")));
+        Codes->insert(OFMake_pair(XRayReadingDevice, DSRBasicCodedEntry("113942", "DCM", "X-Ray Reading Device")));
     }
     /* should never be NULL */
     return *Codes;

@@ -55,8 +55,8 @@ OFCondition CID10013_CTAcquisitionType::findCodedEntry(const DSRCodedEntryValue 
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID10013_CTAcquisitionType::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,11 +149,11 @@ CID10013_CTAcquisitionType::CodeList &CID10013_CTAcquisitionType::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SequencedAcquisition, DSRBasicCodedEntry("113804", "DCM", "Sequenced Acquisition")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(SpiralAcquisition, DSRBasicCodedEntry("P5-08001", "SRT", "Spiral Acquisition")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ConstantAngleAcquisition, DSRBasicCodedEntry("113805", "DCM", "Constant Angle Acquisition")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(StationaryAcquisition, DSRBasicCodedEntry("113806", "DCM", "Stationary Acquisition")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(FreeAcquisition, DSRBasicCodedEntry("113807", "DCM", "Free Acquisition")));
+        Codes->insert(OFMake_pair(SequencedAcquisition, DSRBasicCodedEntry("113804", "DCM", "Sequenced Acquisition")));
+        Codes->insert(OFMake_pair(SpiralAcquisition, DSRBasicCodedEntry("P5-08001", "SRT", "Spiral Acquisition")));
+        Codes->insert(OFMake_pair(ConstantAngleAcquisition, DSRBasicCodedEntry("113805", "DCM", "Constant Angle Acquisition")));
+        Codes->insert(OFMake_pair(StationaryAcquisition, DSRBasicCodedEntry("113806", "DCM", "Stationary Acquisition")));
+        Codes->insert(OFMake_pair(FreeAcquisition, DSRBasicCodedEntry("113807", "DCM", "Free Acquisition")));
     }
     /* should never be NULL */
     return *Codes;

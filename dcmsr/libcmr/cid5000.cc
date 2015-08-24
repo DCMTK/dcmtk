@@ -54,8 +54,8 @@ OFCondition CID5000_Languages::findCodedEntry(const DSRCodedEntryValue &searchFo
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -89,8 +89,8 @@ void CID5000_Languages::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -148,18 +148,18 @@ CID5000_Languages::CodeList &CID5000_Languages::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /*Codes and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(English_US, DSRBasicCodedEntry("en-US", "IETF4646", "English (US)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French, DSRBasicCodedEntry("fra", "IETF4646", "French")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CA, DSRBasicCodedEntry("fr-CA", "IETF4646", "French (CA)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_CH, DSRBasicCodedEntry("fr-CH", "IETF4646", "French (CH)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(French_FR, DSRBasicCodedEntry("fr-FR", "IETF4646", "French (FR)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German, DSRBasicCodedEntry("deu", "IETF4646", "German")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_AT, DSRBasicCodedEntry("de-AT", "IETF4646", "German (AT)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_CH, DSRBasicCodedEntry("de-CH", "IETF4646", "German (CH)")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(German_DE, DSRBasicCodedEntry("de-DE", "IETF4646", "German (DE)")));
+        Codes->insert(OFMake_pair(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
+        Codes->insert(OFMake_pair(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
+        Codes->insert(OFMake_pair(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));
+        Codes->insert(OFMake_pair(English_US, DSRBasicCodedEntry("en-US", "IETF4646", "English (US)")));
+        Codes->insert(OFMake_pair(French, DSRBasicCodedEntry("fra", "IETF4646", "French")));
+        Codes->insert(OFMake_pair(French_CA, DSRBasicCodedEntry("fr-CA", "IETF4646", "French (CA)")));
+        Codes->insert(OFMake_pair(French_CH, DSRBasicCodedEntry("fr-CH", "IETF4646", "French (CH)")));
+        Codes->insert(OFMake_pair(French_FR, DSRBasicCodedEntry("fr-FR", "IETF4646", "French (FR)")));
+        Codes->insert(OFMake_pair(German, DSRBasicCodedEntry("deu", "IETF4646", "German")));
+        Codes->insert(OFMake_pair(German_AT, DSRBasicCodedEntry("de-AT", "IETF4646", "German (AT)")));
+        Codes->insert(OFMake_pair(German_CH, DSRBasicCodedEntry("de-CH", "IETF4646", "German (CH)")));
+        Codes->insert(OFMake_pair(German_DE, DSRBasicCodedEntry("de-DE", "IETF4646", "German (DE)")));
     }
     /* should never be NULL */
     return *Codes;

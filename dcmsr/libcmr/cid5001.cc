@@ -54,8 +54,8 @@ OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &searchFo
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -89,8 +89,8 @@ void CID5001_Countries::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -148,13 +148,13 @@ CID5001_Countries::CodeList &CID5001_Countries::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Austria, DSRBasicCodedEntry("AT", "ISO3166_1", "Austria")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Canada, DSRBasicCodedEntry("CA", "ISO3166_1", "Canada")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(France, DSRBasicCodedEntry("FR", "ISO3166_1", "France")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Germany, DSRBasicCodedEntry("DE", "ISO3166_1", "Germany")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Switzerland, DSRBasicCodedEntry("CH", "ISO3166_1", "Switzerland")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(UnitedKingdom, DSRBasicCodedEntry("GB", "ISO3166_1", "United Kingdom of Great Britain and Northern Ireland")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(UnitedStates, DSRBasicCodedEntry("US", "ISO3166_1", "United States of America")));
+        Codes->insert(OFMake_pair(Austria, DSRBasicCodedEntry("AT", "ISO3166_1", "Austria")));
+        Codes->insert(OFMake_pair(Canada, DSRBasicCodedEntry("CA", "ISO3166_1", "Canada")));
+        Codes->insert(OFMake_pair(France, DSRBasicCodedEntry("FR", "ISO3166_1", "France")));
+        Codes->insert(OFMake_pair(Germany, DSRBasicCodedEntry("DE", "ISO3166_1", "Germany")));
+        Codes->insert(OFMake_pair(Switzerland, DSRBasicCodedEntry("CH", "ISO3166_1", "Switzerland")));
+        Codes->insert(OFMake_pair(UnitedKingdom, DSRBasicCodedEntry("GB", "ISO3166_1", "United Kingdom of Great Britain and Northern Ireland")));
+        Codes->insert(OFMake_pair(UnitedStates, DSRBasicCodedEntry("US", "ISO3166_1", "United States of America")));
     }
     /* should never be NULL */
     return *Codes;

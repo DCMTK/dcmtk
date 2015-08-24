@@ -55,8 +55,8 @@ OFCondition CID244_Laterality::findCodedEntry(const DSRCodedEntryValue &searchFo
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID244_Laterality::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,10 +149,10 @@ CID244_Laterality::CodeList &CID244_Laterality::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Right, DSRBasicCodedEntry("G-A100", "SRT", "Right")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Left, DSRBasicCodedEntry("G-A101", "SRT", "Left")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(RightAndLeft, DSRBasicCodedEntry("G-A102", "SRT", "Right and left")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Unilateral, DSRBasicCodedEntry("G-A103", "SRT", "Unilateral")));
+        Codes->insert(OFMake_pair(Right, DSRBasicCodedEntry("G-A100", "SRT", "Right")));
+        Codes->insert(OFMake_pair(Left, DSRBasicCodedEntry("G-A101", "SRT", "Left")));
+        Codes->insert(OFMake_pair(RightAndLeft, DSRBasicCodedEntry("G-A102", "SRT", "Right and left")));
+        Codes->insert(OFMake_pair(Unilateral, DSRBasicCodedEntry("G-A103", "SRT", "Unilateral")));
     }
     /* should never be NULL */
     return *Codes;

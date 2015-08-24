@@ -55,8 +55,8 @@ OFCondition CID7453_PerformingRoles::findCodedEntry(const DSRCodedEntryValue &se
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID7453_PerformingRoles::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,16 +149,16 @@ CID7453_PerformingRoles::CodeList &CID7453_PerformingRoles::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Performing, DSRBasicCodedEntry("121094", "DCM", "Performing")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Referring, DSRBasicCodedEntry("C1709880", "UMLS", "Referring")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Requesting, DSRBasicCodedEntry("121096", "DCM", "Requesting")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Recording, DSRBasicCodedEntry("121097", "DCM", "Recording")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Verifying, DSRBasicCodedEntry("121098", "DCM", "Verifying")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Assisting, DSRBasicCodedEntry("121099", "DCM", "Assisting")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(CirculatingNurse, DSRBasicCodedEntry("J-0714B", "SRT", "Circulating Nurse")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Standby, DSRBasicCodedEntry("121101", "DCM", "Standby")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IrradiationAuthorizing, DSRBasicCodedEntry("113850", "DCM", "Irradiation Authorizing")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IrradiationAdministering, DSRBasicCodedEntry("113851", "DCM", "Irradiation Administering")));
+        Codes->insert(OFMake_pair(Performing, DSRBasicCodedEntry("121094", "DCM", "Performing")));
+        Codes->insert(OFMake_pair(Referring, DSRBasicCodedEntry("C1709880", "UMLS", "Referring")));
+        Codes->insert(OFMake_pair(Requesting, DSRBasicCodedEntry("121096", "DCM", "Requesting")));
+        Codes->insert(OFMake_pair(Recording, DSRBasicCodedEntry("121097", "DCM", "Recording")));
+        Codes->insert(OFMake_pair(Verifying, DSRBasicCodedEntry("121098", "DCM", "Verifying")));
+        Codes->insert(OFMake_pair(Assisting, DSRBasicCodedEntry("121099", "DCM", "Assisting")));
+        Codes->insert(OFMake_pair(CirculatingNurse, DSRBasicCodedEntry("J-0714B", "SRT", "Circulating Nurse")));
+        Codes->insert(OFMake_pair(Standby, DSRBasicCodedEntry("121101", "DCM", "Standby")));
+        Codes->insert(OFMake_pair(IrradiationAuthorizing, DSRBasicCodedEntry("113850", "DCM", "Irradiation Authorizing")));
+        Codes->insert(OFMake_pair(IrradiationAdministering, DSRBasicCodedEntry("113851", "DCM", "Irradiation Administering")));
     }
     /* should never be NULL */
     return *Codes;

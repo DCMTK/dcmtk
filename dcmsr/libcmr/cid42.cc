@@ -55,8 +55,8 @@ OFCondition CID42_NumericValueQualifier::findCodedEntry(const DSRCodedEntryValue
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID42_NumericValueQualifier::printCodes(STD_NAMESPACE ostream &stream) cons
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,18 +149,18 @@ CID42_NumericValueQualifier::CodeList &CID42_NumericValueQualifier::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(NotANumber, DSRBasicCodedEntry("114000", "DCM", "Not a number")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(NegativeInfinity, DSRBasicCodedEntry("114001", "DCM", "Negative Infinity")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(PositiveInfinity, DSRBasicCodedEntry("114002", "DCM", "Positive Infinity")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(DivideByZero, DSRBasicCodedEntry("114003", "DCM", "Divide by zero")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Underflow, DSRBasicCodedEntry("114004", "DCM", "Underflow")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(Overflow, DSRBasicCodedEntry("114005", "DCM", "Overflow")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(MeasurementFailure, DSRBasicCodedEntry("114006", "DCM", "Measurement failure")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(MeasurementNotAttempted, DSRBasicCodedEntry("114007", "DCM", "Measurement not attempted")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(CalculationFailure, DSRBasicCodedEntry("114008", "DCM", "Calculation failure")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ValueOutOfRange, DSRBasicCodedEntry("114009", "DCM", "Value out of range")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ValueUnknown, DSRBasicCodedEntry("114010", "DCM", "Value unknown")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(ValueIndeterminate, DSRBasicCodedEntry("114011", "DCM", "Value indeterminate")));
+        Codes->insert(OFMake_pair(NotANumber, DSRBasicCodedEntry("114000", "DCM", "Not a number")));
+        Codes->insert(OFMake_pair(NegativeInfinity, DSRBasicCodedEntry("114001", "DCM", "Negative Infinity")));
+        Codes->insert(OFMake_pair(PositiveInfinity, DSRBasicCodedEntry("114002", "DCM", "Positive Infinity")));
+        Codes->insert(OFMake_pair(DivideByZero, DSRBasicCodedEntry("114003", "DCM", "Divide by zero")));
+        Codes->insert(OFMake_pair(Underflow, DSRBasicCodedEntry("114004", "DCM", "Underflow")));
+        Codes->insert(OFMake_pair(Overflow, DSRBasicCodedEntry("114005", "DCM", "Overflow")));
+        Codes->insert(OFMake_pair(MeasurementFailure, DSRBasicCodedEntry("114006", "DCM", "Measurement failure")));
+        Codes->insert(OFMake_pair(MeasurementNotAttempted, DSRBasicCodedEntry("114007", "DCM", "Measurement not attempted")));
+        Codes->insert(OFMake_pair(CalculationFailure, DSRBasicCodedEntry("114008", "DCM", "Calculation failure")));
+        Codes->insert(OFMake_pair(ValueOutOfRange, DSRBasicCodedEntry("114009", "DCM", "Value out of range")));
+        Codes->insert(OFMake_pair(ValueUnknown, DSRBasicCodedEntry("114010", "DCM", "Value unknown")));
+        Codes->insert(OFMake_pair(ValueIndeterminate, DSRBasicCodedEntry("114011", "DCM", "Value indeterminate")));
     }
     /* should never be NULL */
     return *Codes;

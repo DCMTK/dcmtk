@@ -55,8 +55,8 @@ OFCondition CID10033_CTReconstructionAlgorithm::findCodedEntry(const DSRCodedEnt
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -90,8 +90,8 @@ void CID10033_CTReconstructionAlgorithm::printCodes(STD_NAMESPACE ostream &strea
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator iter = getCodes().begin();
-    OFMap<EnumType, DSRBasicCodedEntry>::const_iterator last = getCodes().end();
+    CodeList::const_iterator iter = getCodes().begin();
+    CodeList::const_iterator last = getCodes().end();
     /* iterate over coded entry list */
     while (iter != last)
     {
@@ -149,8 +149,8 @@ CID10033_CTReconstructionAlgorithm::CodeList &CID10033_CTReconstructionAlgorithm
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(FilteredBackProjection, DSRBasicCodedEntry("113962", "DCM", "Filtered Back Projection")));
-        Codes->insert(OFMake_pair<EnumType, DSRBasicCodedEntry>(IterativeReconstruction, DSRBasicCodedEntry("113963", "DCM", "Iterative Reconstruction")));
+        Codes->insert(OFMake_pair(FilteredBackProjection, DSRBasicCodedEntry("113962", "DCM", "Filtered Back Projection")));
+        Codes->insert(OFMake_pair(IterativeReconstruction, DSRBasicCodedEntry("113963", "DCM", "Iterative Reconstruction")));
     }
     /* should never be NULL */
     return *Codes;
