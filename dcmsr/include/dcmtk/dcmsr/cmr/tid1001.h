@@ -37,6 +37,9 @@ class DCMTK_CMR_EXPORT TID1001_ObservationContext
 
   public:
 
+    /// type used for storing and managing a list of device participating roles
+    typedef OFList<CID7445_DeviceParticipatingRoles> DeviceParticipatingRolesList;
+
     /** default constructor
      */
     TID1001_ObservationContext();
@@ -88,7 +91,7 @@ class DCMTK_CMR_EXPORT TID1001_ObservationContext
                                   const OFString &modelName = "",
                                   const OFString &serialNumber = "",
                                   const OFString &physicalLocation = "",
-                                  const OFList<CID7445_DeviceParticipatingRoles> &procedureRoles = OFList<CID7445_DeviceParticipatingRoles>(),
+                                  const DeviceParticipatingRolesList &procedureRoles = DeviceParticipatingRolesList(),
                                   const OFBool check = OFTrue);
 
     /** add content items for TID 1005 (Procedure Context)

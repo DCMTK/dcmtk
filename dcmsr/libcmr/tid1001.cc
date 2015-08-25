@@ -19,6 +19,7 @@
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call
 #define STORE_RESULT(call) result = call
+#define DELETE_ERROR(pointer) if (result.bad()) delete pointer
 
 // index positions in node list (makes source code more readable)
 #define LAST_PERSON_OBSERVER 0
@@ -28,7 +29,7 @@
 TID1001_ObservationContext::TID1001_ObservationContext()
   : DSRSubTemplate("1001", "DCMR", UID_DICOMContentMappingResource)
 {
-    /* need to store last person/device observer */
+    /* need to store last person and device observer */
     reserveEntriesInNodeList(2);
 }
 
@@ -81,8 +82,7 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
                 storeEntryInNodeList(LAST_PERSON_OBSERVER, lastNode);
         }
         /* in case of error, make sure that memory is freed */
-        if (result.bad())
-            delete subTree;
+        DELETE_ERROR(subTree);
     }
     return result;
 }
@@ -94,7 +94,7 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
                                                           const OFString &modelName,
                                                           const OFString &serialNumber,
                                                           const OFString &physicalLocation,
-                                                          const OFList<CID7445_DeviceParticipatingRoles> &procedureRoles,
+                                                          const DeviceParticipatingRolesList &procedureRoles,
                                                           const OFBool check)
 {
     OFCondition result = EC_MemoryExhausted;
@@ -164,8 +164,7 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
                 storeEntryInNodeList(LAST_DEVICE_OBSERVER, lastNode);
         }
         /* in case of error, make sure that memory is freed */
-        if (result.bad())
-            delete subTree;
+        DELETE_ERROR(subTree);
 }
     return result;
 }
