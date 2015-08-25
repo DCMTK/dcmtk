@@ -16,8 +16,7 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    test program for classes CID7445_DeviceParticipatingRoles,
- *    TID1001_ObservationContext and TID1204_LanguageOfContentItemAndDescendants
+ *    test program for various CIDxxx and TIDxxx classes from the "Content Mapping Resource"
  *
  */
 
@@ -39,6 +38,7 @@
 #include "dcmtk/dcmsr/cmr/cid10033e.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
 #include "dcmtk/dcmsr/cmr/tid1204.h"
+#include "dcmtk/dcmsr/cmr/tid1600.h"
 #include "dcmtk/dcmsr/cmr/srnumvl.h"
 
 
@@ -180,6 +180,90 @@ OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
     OFCHECK(lang.setLanguage(CID5000_Languages::German, CID5001_Countries::Germany).good());
     OFCHECK(lang.isValid());
     OFCHECK_EQUAL(lang.countNodes(), 2);
+}
+
+
+OFTEST(dcmsr_TID1600_ImageLibrary)
+{
+    TID1600_ImageLibrary library;
+    DcmItem *item1, *item2;
+    /* create four image datasets */
+    DcmDataset dataset1;
+    OFCHECK(dataset1.putAndInsertString(DCM_SOPClassUID, UID_CTImageStorage).good());
+    OFCHECK(dataset1.putAndInsertString(DCM_SOPInstanceUID, "1.2.3.4.5.6.7.8.9.0").good());
+    OFCHECK(dataset1.putAndInsertString(DCM_Modality, "CT").good());
+    OFCHECK(dataset1.putAndInsertString(DCM_StudyDate, "20150818").good());
+    OFCHECK(dataset1.putAndInsertUint16(DCM_Columns, 512).good());
+    OFCHECK(dataset1.putAndInsertUint16(DCM_Rows, 512).good());
+    OFCHECK(dataset1.putAndInsertString(DCM_PixelSpacing, "0.5\\1.5").good());
+    OFCHECK(dataset1.putAndInsertString(DCM_BodyPartExamined, "HEAD").good());
+    OFCHECK(dataset1.putAndInsertString(DCM_ImageOrientationPatient, "1.000000\\0.000000\\0.000000\\0.000000\\1.000000\\0.000000").good());
+    OFCHECK(dataset1.putAndInsertString(DCM_ImagePositionPatient, "-120.000000\\-120.000000\\-545.000000").good());
+    OFCHECK(dataset1.findOrCreateSequenceItem(DCM_SharedFunctionalGroupsSequence, item1, -2).good());
+    if (item1 != NULL)
+    {
+        OFCHECK(item1->findOrCreateSequenceItem(DCM_CTAcquisitionTypeSequence, item2, -2).good());
+        if (item2 != NULL)
+            OFCHECK(item2->putAndInsertString(DCM_AcquisitionType, "SPIRAL").good());
+        OFCHECK(item1->findOrCreateSequenceItem(DCM_CTReconstructionSequence, item2, -2).good());
+        if (item2 != NULL)
+            OFCHECK(item2->putAndInsertString(DCM_ReconstructionAlgorithm, "ITERATIVE").good());
+    }
+    DcmDataset dataset2;
+    OFCHECK(dataset2.putAndInsertString(DCM_SOPClassUID, UID_PositronEmissionTomographyImageStorage).good());
+    OFCHECK(dataset2.putAndInsertString(DCM_SOPInstanceUID, "1.2.3.4.5.6.7.8.9.1").good());
+    OFCHECK(dataset2.putAndInsertString(DCM_Modality, "PT").good());
+    OFCHECK(dataset2.putAndInsertString(DCM_ImageLaterality, "B").good());
+    OFCHECK(DSRCodedEntryValue("T-32000", "SRT", "Heart").writeSequence(dataset2, DCM_AnatomicRegionSequence).good());
+    OFCHECK(dataset2.findOrCreateSequenceItem(DCM_RadiopharmaceuticalInformationSequence, item1, -2).good());
+    if (item1 != NULL)
+    {
+        OFCHECK(DSRCodedEntryValue("C-128A2", "SRT", "^68^Germanium").writeSequence(*item1, DCM_RadionuclideCodeSequence).good());
+        OFCHECK(item1->putAndInsertString(DCM_RadiopharmaceuticalVolume, "50.5").good());
+    }
+    DcmDataset dataset3;
+    OFCHECK(dataset3.putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage).good());
+    OFCHECK(dataset3.putAndInsertString(DCM_SOPInstanceUID, "1.2.3.4.5.6.7.8.9.2").good());
+    OFCHECK(dataset3.putAndInsertString(DCM_Modality, "OT").good());
+    OFCHECK(dataset3.putAndInsertString(DCM_BodyPartExamined, "EAR").good());
+    OFCHECK(dataset3.putAndInsertString(DCM_FrameOfReferenceUID, "1.2.3.4.5.6.7.8.9.3").good());
+    DcmDataset dataset4;
+    OFCHECK(dataset4.putAndInsertString(DCM_SOPClassUID, UID_DigitalXRayImageStorageForPresentation).good());
+    OFCHECK(dataset4.putAndInsertString(DCM_SOPInstanceUID, "1.2.3.4.5.6.7.8.9.4").good());
+    OFCHECK(dataset4.putAndInsertString(DCM_Modality, "DX").good());
+    OFCHECK(dataset4.putAndInsertString(DCM_PatientOrientation, "A\\F").good());
+    OFCHECK(dataset4.putAndInsertString(DCM_PositionerPrimaryAngle, "45").good());
+    OFCHECK(dataset4.putAndInsertString(DCM_PositionerSecondaryAngle, "-45").good());
+    OFCHECK(DSRCodedEntryValue("R-10202", "SRT", "frontal").writeSequence(dataset4, DCM_ViewCodeSequence).good());
+    OFCHECK(dataset4.findAndGetSequenceItem(DCM_ViewCodeSequence, item1).good());
+    if (item1 != NULL)
+    {
+        OFCHECK(item1->findOrCreateSequenceItem(DCM_ViewModifierCodeSequence, item2, -2).good());
+        if (item2 != NULL)
+            OFCHECK(DSRCodedEntryValue("4711", "99TEST", "some strange modifier").writeSequenceItem(*item2, DCM_ViewModifierCodeSequence).good());
+        OFCHECK(item1->findOrCreateSequenceItem(DCM_ViewModifierCodeSequence, item2, -2).good());
+        if (item2 != NULL)
+            OFCHECK(DSRCodedEntryValue("4711b", "99TEST", "some even more strange modifier").writeSequenceItem(*item2, DCM_ViewModifierCodeSequence).good());
+    }
+    /* add two image groups */
+    OFCHECK(library.addImageGroup().good());
+    OFCHECK(library.addImageEntry(dataset1).good());
+    OFCHECK(library.addImageEntryDescriptors(dataset1).good());
+    OFCHECK(library.addImageGroup().good());
+    OFCHECK(library.addImageEntry(dataset2, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(library.addImageEntry(dataset1, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(library.addImageEntry(dataset3, TID1600_ImageLibrary::withoutDescriptors).good());
+    OFCHECK(library.addImageEntry(dataset4, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(library.addImageEntryDescriptors(dataset3).good());
+    /* try to add another invocation of TID 1602 */
+    OFCHECK(library.addImageEntryDescriptors(dataset4).bad());
+    /* check number of expected content items */
+    OFCHECK_EQUAL(library.countNodes(), 58);
+
+#ifdef DEBUG
+    /* output content of the tree (in debug mode only) */
+    library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID | DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode);
+#endif
 }
 
 
