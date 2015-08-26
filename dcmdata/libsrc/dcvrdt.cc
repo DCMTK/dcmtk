@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -292,7 +292,7 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
             const size_t posSign = dicomDateTime.find_first_of("+-", 8);
             OFString dicomTime = (posSign != OFString_npos) ? dicomDateTime.substr(8, posSign - 8) : dicomDateTime.substr(8);
             l_error = DcmTime::getISOFormattedTimeFromString(dicomTime, timeString, seconds, fraction, createMissingPart, OFFalse /*supportOldFormat*/);
-            if (l_error.good())
+            if (l_error.good() && !timeString.empty())
             {
                 /* add time string with separator */
                 formattedDateTime += dateTimeSeparator;

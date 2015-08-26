@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -141,7 +141,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
                               const unsigned long pos = 0);
 
     /** get the current element value in ISO date/time format.
-     *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
+     *  The ISO date/time format supported by this function is "YYYY-MM-DD[ HH:MM[:SS[.FFFFFF]]]
      *  [&HH:MM]" where the brackets enclose optional parts. Please note that the element value
      *  is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
      *  If this function fails or the current element value is empty, the result variable
@@ -226,7 +226,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
                                                OFDateTime &dateTimeValue);
 
     /** get the specified DICOM datetime value in ISO format.
-     *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
+     *  The ISO date/time format supported by this function is "YYYY-MM-DD[ HH:MM[:SS[.FFFFFF]]]
      *  [&HH:MM]" where the brackets enclose optional parts. Please note that the specified
      *  value is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
      *  If this function fails or the specified DICOM datetime value is empty, the result
