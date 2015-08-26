@@ -190,25 +190,28 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                 {
                     stream << " {" << dicomToReadableDateTime(node->getObservationDateTime(), tmpString) << "}";
                 }
-                if (flags & PF_printTemplateIdentification)
+                /* print annotation (optional) */
+                if (node->hasAnnotation() && (flags & PF_printAnnotation))
                 {
-                    /* check for template identification */
-                    if (node->hasTemplateIdentification())
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ANNOTATION)
+                    stream << "  \"" << node->getAnnotation().getText() << "\"";
+                }
+                /* print template identification (conditional) */
+                if (node->hasTemplateIdentification() && (flags & PF_printTemplateIdentification))
+                {
+                    OFString templateIdentifier;
+                    OFString mappingResource;
+                    OFString mappingResourceUID;
+                    if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
                     {
-                        OFString templateIdentifier;
-                        OFString mappingResource;
-                        OFString mappingResourceUID;
-                        if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
-                        {
-                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                            stream << "  # ";
-                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
-                            stream << "TID " << templateIdentifier;
-                            stream << " (" << mappingResource;
-                            if (!mappingResourceUID.empty())
-                                stream << ", " << mappingResourceUID;
-                            stream << ")";
-                        }
+                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                        stream << "  # ";
+                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
+                        stream << "TID " << templateIdentifier;
+                        stream << " (" << mappingResource;
+                        if (!mappingResourceUID.empty())
+                            stream << ", " << mappingResourceUID;
+                        stream << ")";
                     }
                 }
                 DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
@@ -256,6 +259,24 @@ size_t DSRDocumentSubTree::gotoNextNamedNode(const DSRCodedEntryValue &conceptNa
     size_t nodeID = iterate(searchIntoSub);
     if (nodeID > 0)
         nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, searchIntoSub);
+    return nodeID;
+}
+
+
+size_t DSRDocumentSubTree::gotoAnnotatedNode(const OFString &annotationText,
+                                             const OFBool startFromRoot)
+{
+    /* call the inherited function */
+    return gotoNode(DSRTreeNodeAnnotation(annotationText), startFromRoot);
+}
+
+
+size_t DSRDocumentSubTree::gotoNextAnnotatedNode(const OFString &annotationText)
+{
+    /* first, goto "next" node */
+    size_t nodeID = iterate();
+    if (nodeID > 0)
+        nodeID = gotoAnnotatedNode(annotationText, OFFalse /*startFromRoot*/);
     return nodeID;
 }
 

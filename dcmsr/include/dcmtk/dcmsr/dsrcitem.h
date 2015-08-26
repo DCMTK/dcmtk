@@ -528,6 +528,27 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     OFCondition setObservationUID(const OFString &observationUID,
                                   const OFBool check = OFTrue);
 
+    /** get annotation text.
+     *  The optional annotation text allows for labeling a content item with an arbitrary
+     *  character string.  This might be useful to navigate more easily within the document
+     *  tree.
+     *
+     *  Applicable to all content items (optional).
+     ** @return annotation text of current content item if valid,  EmptyString otherwise
+     */
+    const OFString &getAnnotationText() const;
+
+    /** set annotation text.
+     *  The optional annotation text allows for labeling a content item with an arbitrary
+     *  character string.  This might be useful to navigate more easily within the document
+     *  tree.
+     *
+     *  Applicable to all content items (optional).
+     ** @param  annotationText  value to be set (might be an empty string)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setAnnotationText(const OFString &annotationText) const;
+
 
   protected:
 

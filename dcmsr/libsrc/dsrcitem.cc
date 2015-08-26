@@ -742,6 +742,26 @@ OFCondition DSRContentItem::setObservationUID(const OFString &observationUID,
 }
 
 
+const OFString &DSRContentItem::getAnnotationText() const
+{
+    if (TreeNode != NULL)
+        return TreeNode->getAnnotation();
+    return EmptyString;
+}
+
+
+OFCondition DSRContentItem::setAnnotationText(const OFString &annotationText) const
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        TreeNode->setAnnotation(annotationText);
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 // protected methods
 
 void DSRContentItem::swap(DSRContentItem &item)

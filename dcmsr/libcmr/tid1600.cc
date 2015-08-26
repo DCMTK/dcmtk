@@ -55,7 +55,8 @@ TID1600_ImageLibrary::TID1600_ImageLibrary()
     /* need to store last image library group and entry */
     reserveEntriesInNodeList(2);
     /* TID 1600 (Image Library) Row 1 */
-    addChildContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary);
+    if (addChildContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary).good())
+        getCurrentContentItem().setAnnotationText("TID 1600 - Row 1");
 }
 
 
@@ -71,6 +72,7 @@ OFCondition TID1600_ImageLibrary::addImageGroup()
         /* TID 1600 (Image Library) Row 2, create first group (child) */
         STORE_RESULT(addChildContentItem(RT_contains, VT_Container, CODE_DCM_ImageLibraryGroup));
     }
+    CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1600 - Row 2"));
     /* store ID of recently added node for later use */
     if (result.good())
     {
@@ -96,6 +98,7 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
         STORE_RESULT(tid1601->addContentItem(RT_contains, VT_Image, DSRCodedEntryValue()));
         CHECK_RESULT(imageRef.setReference(dataset, check));
         CHECK_RESULT(tid1601->getCurrentContentItem().setImageReference(imageRef, check));
+        CHECK_RESULT(tid1601->getCurrentContentItem().setAnnotationText("TID 1601 - Row 1"));
         const size_t lastNode = tid1601->getNodeID();
         /* TID 1601 (Image Library Entry) Row 2 */
         if (mode == withAllDescriptors)
@@ -201,6 +204,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
         {
             CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_Modality));
             CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(modalityCode, check));
+            CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1602 - Row 1"));
         } else {
             /* do not treat this as an error, just report a warning */
             DCMSR_CMR_WARN("Cannot map Modality '" << modality << "' to a coded entry (not in CID 29)");
@@ -227,6 +231,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
     {
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_TargetRegion));
         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(regionCode, check));
+        CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1602 - Row 2"));
     }
     /* TID 1602 (Image Library Entry Descriptors) Row 3 */
     OFString imageLaterality;
@@ -238,31 +243,32 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
         {
             CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageLaterality));
             CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(lateralityCode, check));
+            CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1602 - Row 3"));
         } else {
             /* do not treat this as an error, just report a warning */
             DCMSR_CMR_WARN("Cannot map Image Laterality '" << imageLaterality << "' to a coded entry (not in CID 244)");
         }
     }
     /* TID 1602 (Image Library Entry Descriptors) Row 4 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_StudyDate, 0 /*pos*/, VT_Date, CODE_DCM_StudyDate, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_StudyDate, 0 /*pos*/, VT_Date, CODE_DCM_StudyDate, "TID 1602 - Row 4", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 5 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_StudyTime, 0 /*pos*/, VT_Time, CODE_DCM_StudyTime, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_StudyTime, 0 /*pos*/, VT_Time, CODE_DCM_StudyTime, "TID 1602 - Row 5", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 6 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_ContentDate, 0 /*pos*/, VT_Date, CODE_DCM_ContentDate, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_ContentDate, 0 /*pos*/, VT_Date, CODE_DCM_ContentDate, "TID 1602 - Row 6", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 7 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_ContentTime, 0 /*pos*/, VT_Time, CODE_DCM_ContentTime, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_ContentTime, 0 /*pos*/, VT_Time, CODE_DCM_ContentTime, "TID 1602 - Row 7", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 8 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_AcquisitionDate, 0 /*pos*/, VT_Date, CODE_DCM_AcquisitionDate, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_AcquisitionDate, 0 /*pos*/, VT_Date, CODE_DCM_AcquisitionDate, "TID 1602 - Row 8", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 9 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_AcquisitionTime, 0 /*pos*/, VT_Time, CODE_DCM_AcquisitionTime, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_AcquisitionTime, 0 /*pos*/, VT_Time, CODE_DCM_AcquisitionTime, "TID 1602 - Row 9", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 10 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_FrameOfReferenceUID, 0 /*pos*/, VT_UIDRef, CODE_DCM_FrameOfReferenceUID, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_FrameOfReferenceUID, 0 /*pos*/, VT_UIDRef, CODE_DCM_FrameOfReferenceUID, "TID 1602 - Row 10", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 11 */
     /* - tbc: what about DCM_TotalPixelMatrixRows (e.g. used for WSI images)? */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_Rows, 0 /*pos*/, CODE_DCM_PixelDataRows, CODE_UCUM_Pixels, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_Rows, 0 /*pos*/, CODE_DCM_PixelDataRows, CODE_UCUM_Pixels, "TID 1602 - Row 11", check));
     /* TID 1602 (Image Library Entry Descriptors) Row 12 */
     /* - tbc: what about DCM_TotalPixelMatrixColumns (e.g. used for WSI images)? */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_Columns, 0 /*pos*/, CODE_DCM_PixelDataColumns, CODE_UCUM_Pixels, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_Columns, 0 /*pos*/, CODE_DCM_PixelDataColumns, CODE_UCUM_Pixels, "TID 1602 - Row 12", check));
     /* continue with modality-specific descriptors (TID 1603 to 1607) */
     CHECK_RESULT(addModalitySpecificDescriptors(tree, dataset, modality, check));
     return result;
@@ -300,7 +306,7 @@ OFCondition TID1600_ImageLibrary::addProjectionRadiographyDescriptors(DSRDocumen
 {
     OFCondition result = EC_Normal;
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 1 */
-    CHECK_RESULT(addCodeContentItemFromDataset(tree, dataset, DCM_ViewCodeSequence, CODE_DCM_ImageView, check));
+    CHECK_RESULT(addCodeContentItemFromDataset(tree, dataset, DCM_ViewCodeSequence, CODE_DCM_ImageView, "TID 1603 - Row 1", check));
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 2 */
     if (result.good() && (tree.getCurrentContentItem().getConceptName() == CODE_DCM_ImageView))
     {
@@ -320,6 +326,7 @@ OFCondition TID1600_ImageLibrary::addProjectionRadiographyDescriptors(DSRDocumen
                     {
                         CHECK_RESULT(tree.addChildContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageViewModifier));
                         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(modifierCode, check));
+                        CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1603 - Row 2"));
                         tree.goUp();
                     }
                 }
@@ -327,17 +334,17 @@ OFCondition TID1600_ImageLibrary::addProjectionRadiographyDescriptors(DSRDocumen
         }
     }
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 3 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_PatientOrientation, 0 /*pos*/, VT_Text, CODE_DCM_PatientOrientationRow, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_PatientOrientation, 0 /*pos*/, VT_Text, CODE_DCM_PatientOrientationRow, "TID 1603 - Row 3", check));
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 4 */
-    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_PatientOrientation, 1 /*pos*/, VT_Text, CODE_DCM_PatientOrientationColumn, check));
+    CHECK_RESULT(addStringContentItemFromDataset(tree, dataset, DCM_PatientOrientation, 1 /*pos*/, VT_Text, CODE_DCM_PatientOrientationColumn, "TID 1603 - Row 4", check));
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 5 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagerPixelSpacing, 1 /*pos*/, CODE_DCM_HorizontalPixelSpacing, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagerPixelSpacing, 1 /*pos*/, CODE_DCM_HorizontalPixelSpacing, CODE_UCUM_Millimeter, "TID 1603 - Row 5", check));
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 6 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagerPixelSpacing, 0 /*pos*/, CODE_DCM_VerticalPixelSpacing, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagerPixelSpacing, 0 /*pos*/, CODE_DCM_VerticalPixelSpacing, CODE_UCUM_Millimeter, "TID 1603 - Row 6", check));
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 7 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PositionerPrimaryAngle, 0 /*pos*/, CODE_DCM_PositionerPrimaryAngle, CODE_UCUM_Degrees, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PositionerPrimaryAngle, 0 /*pos*/, CODE_DCM_PositionerPrimaryAngle, CODE_UCUM_Degrees, "TID 1603 - Row 7", check));
     /* TID 1603 (Image Library Entry Descriptors for Projection Radiography) Row 8 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PositionerSecondaryAngle, 0 /*pos*/, CODE_DCM_PositionerSecondaryAngle, CODE_UCUM_Degrees, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PositionerSecondaryAngle, 0 /*pos*/, CODE_DCM_PositionerSecondaryAngle, CODE_UCUM_Degrees, "TID 1603 - Row 8", check));
     return result;
 }
 
@@ -348,31 +355,31 @@ OFCondition TID1600_ImageLibrary::addCrossSectionalModalitiesDescriptors(DSRDocu
 {
     OFCondition result = EC_Normal;
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 1 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PixelSpacing, 1 /*pos*/, CODE_DCM_HorizontalPixelSpacing, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PixelSpacing, 1 /*pos*/, CODE_DCM_HorizontalPixelSpacing, CODE_UCUM_Millimeter, "TID 1604 - Row 1", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 2 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PixelSpacing, 0 /*pos*/, CODE_DCM_VerticalPixelSpacing, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_PixelSpacing, 0 /*pos*/, CODE_DCM_VerticalPixelSpacing, CODE_UCUM_Millimeter, "TID 1604 - Row 2", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 3 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_SpacingBetweenSlices, 0 /*pos*/, CODE_DCM_SpacingBetweenSlices, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_SpacingBetweenSlices, 0 /*pos*/, CODE_DCM_SpacingBetweenSlices, CODE_UCUM_Millimeter, "TID 1604 - Row 3", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 4 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_SliceThickness, 0 /*pos*/, CODE_DCM_SliceThickness, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_SliceThickness, 0 /*pos*/, CODE_DCM_SliceThickness, CODE_UCUM_Millimeter, "TID 1604 - Row 4", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 5 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagePositionPatient, 0 /*pos*/, CODE_DCM_ImagePosition_Patient_X, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagePositionPatient, 0 /*pos*/, CODE_DCM_ImagePosition_Patient_X, CODE_UCUM_Millimeter, "TID 1604 - Row 5", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 6 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagePositionPatient, 1 /*pos*/, CODE_DCM_ImagePosition_Patient_Y, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagePositionPatient, 1 /*pos*/, CODE_DCM_ImagePosition_Patient_Y, CODE_UCUM_Millimeter, "TID 1604 - Row 6", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 7 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagePositionPatient, 2 /*pos*/, CODE_DCM_ImagePosition_Patient_Z, CODE_UCUM_Millimeter, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImagePositionPatient, 2 /*pos*/, CODE_DCM_ImagePosition_Patient_Z, CODE_UCUM_Millimeter, "TID 1604 - Row 7", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 8 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 0 /*pos*/, CODE_DCM_ImageOrientation_Patient_RowX, CODE_UCUM_Minus1To1, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 0 /*pos*/, CODE_DCM_ImageOrientation_Patient_RowX, CODE_UCUM_Minus1To1, "TID 1604 - Row 8", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 9 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 1 /*pos*/, CODE_DCM_ImageOrientation_Patient_RowY, CODE_UCUM_Minus1To1, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 1 /*pos*/, CODE_DCM_ImageOrientation_Patient_RowY, CODE_UCUM_Minus1To1, "TID 1604 - Row 9", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 10 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 2 /*pos*/, CODE_DCM_ImageOrientation_Patient_RowZ, CODE_UCUM_Minus1To1, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 2 /*pos*/, CODE_DCM_ImageOrientation_Patient_RowZ, CODE_UCUM_Minus1To1, "TID 1604 - Row 10", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 11 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 3 /*pos*/, CODE_DCM_ImageOrientation_Patient_ColumnX, CODE_UCUM_Minus1To1, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 3 /*pos*/, CODE_DCM_ImageOrientation_Patient_ColumnX, CODE_UCUM_Minus1To1, "TID 1604 - Row 11", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 12 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 4 /*pos*/, CODE_DCM_ImageOrientation_Patient_ColumnY, CODE_UCUM_Minus1To1, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 4 /*pos*/, CODE_DCM_ImageOrientation_Patient_ColumnY, CODE_UCUM_Minus1To1, "TID 1604 - Row 12", check));
     /* TID 1604 (Image Library Entry Descriptors for Cross-Sectional Modalities) Row 13 */
-    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 5 /*pos*/, CODE_DCM_ImageOrientation_Patient_ColumnZ, CODE_UCUM_Minus1To1, check));
+    CHECK_RESULT(addNumericContentItemFromDataset(tree, dataset, DCM_ImageOrientationPatient, 5 /*pos*/, CODE_DCM_ImageOrientation_Patient_ColumnZ, CODE_UCUM_Minus1To1, "TID 1604 - Row 13", check));
     return result;
 }
 
@@ -399,9 +406,8 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
                 {
                     CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_CTAcquisitionType));
                     CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(acquisitionTypeCode, check));
-                }
-                else
-                {
+                    CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1605 - Row 1"));
+                } else {
                     /* do not treat this as an error, just report a warning */
                     DCMSR_CMR_WARN("Cannot map Acquisition Type '" << acquisitionType << "' to a coded entry (not in CID 10013)");
                 }
@@ -425,9 +431,8 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
                 {
                     CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ReconstructionAlgorithm));
                     CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(reconstructionAlgorithmCode, check));
-                }
-                else
-                {
+                    CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1605 - Row 2"));
+                } else {
                     /* do not treat this as an error, just report a warning */
                     DCMSR_CMR_WARN("Cannot map Reconstruction Algorithm '" << reconstructionAlgorithm << "' to a coded entry (not in CID 10033)");
                 }
@@ -451,6 +456,7 @@ OFCondition TID1600_ImageLibrary::addMagneticResonanceDescriptors(DSRDocumentSub
     {
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Text, DSRCodedEntryValue("110909", "DCM", "Pulse Sequence Name") /* wrong definition? CODE_DCM_PulseSequenceName */));
         CHECK_RESULT(tree.getCurrentContentItem().setStringValue(sequenceName, check));
+        CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1606 - Row 1"));
     }
     return result;
 }
@@ -470,32 +476,35 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
         if (item != NULL)
         {
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 1 */
-            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadionuclideCodeSequence, CODE_SRT_Radionuclide, check));
+            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadionuclideCodeSequence, CODE_SRT_Radionuclide, "TID 1607 - Row 1", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 2 */
-            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalCodeSequence, CODE_SRT_RadiopharmaceuticalAgent, check));
+            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalCodeSequence, CODE_SRT_RadiopharmaceuticalAgent, "TID 1607 - Row 2", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 3 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideHalfLife, 0 /*pos*/, CODE_SRT_HalfLifeOfRadiopharmaceutical, CODE_UCUM_S, check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideHalfLife, 0 /*pos*/, CODE_SRT_HalfLifeOfRadiopharmaceutical, CODE_UCUM_S, "TID 1607 - Row 3", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 4 */
-            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, check));
+            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, "TID 1607 - Row 4", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 4b */
-            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, check));
+            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, "TID 1607 - Row 4b", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 5 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_Cm3, check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_Cm3, "TID 1607 - Row 5", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 6 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideTotalDose, 0 /*pos*/, CODE_DCM_RadionuclideTotalDose, CODE_UCUM_Bq, check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideTotalDose, 0 /*pos*/, CODE_DCM_RadionuclideTotalDose, CODE_UCUM_Bq, "TID 1607 - Row 6", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 7 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, "TID 1607 - Row 7", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 8 */
-            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SRT_RouteOfAdministration, check));
+            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SRT_RouteOfAdministration, "TID 1607 - Row 8", check));
         }
     }
-    /* TID 1607 (Image Library Entry Descriptors for PET) Row 9 to 10 */
-    /* - contained in TID 15101 (NM/PET Protocol Context), i.e. not available in the image */
-    /* TID 1607 (Image Library Entry Descriptors for PET) Row 11 */
-    /* - tbc: where to get "Radionuclide Incubation Time */
-    /* TID 1607 (Image Library Entry Descriptors for PET) Row 12 to 14 */
-    /* - contained in TID 15101 (NM/PET Protocol Context), i.e. available from Modality Worklist, or
-     * - tbd: in TID 3470 (NM/PET Acquisition Context), i.e. from the Acquisition Context Module */
+    /* TID 1607 (Image Library Entry Descriptors for PET) Row 9 to 10
+     * - contained in TID 15101 (NM/PET Protocol Context), i.e. not available in the image
+     */
+    /* TID 1607 (Image Library Entry Descriptors for PET) Row 11
+     * - tbc: where to get "Radionuclide Incubation Time
+     */
+    /* TID 1607 (Image Library Entry Descriptors for PET) Row 12 to 14
+     * - contained in TID 15101 (NM/PET Protocol Context), i.e. available from Modality Worklist, or
+     * - tbd: in TID 3470 (NM/PET Acquisition Context), i.e. from the Acquisition Context Module
+     */
     return result;
 }
 
@@ -508,6 +517,7 @@ OFCondition TID1600_ImageLibrary::addStringContentItemFromDataset(DSRDocumentSub
                                                                   const signed long pos,
                                                                   const E_ValueType valueType,
                                                                   const DSRCodedEntryValue &conceptName,
+                                                                  const OFString &annotationText,
                                                                   const OFBool check)
 {
     OFCondition result = EC_Normal;
@@ -518,6 +528,8 @@ OFCondition TID1600_ImageLibrary::addStringContentItemFromDataset(DSRDocumentSub
         /* create new content item, set concept name and value */
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, valueType, conceptName));
         CHECK_RESULT(tree.getCurrentContentItem().setStringValue(stringValue, check));
+        if (!annotationText.empty())
+            CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText(annotationText));
     }
     return result;
 }
@@ -527,6 +539,7 @@ OFCondition TID1600_ImageLibrary::addCodeContentItemFromDataset(DSRDocumentSubTr
                                                                 DcmItem &dataset,
                                                                 const DcmTagKey &tagKey,
                                                                 const DSRCodedEntryValue &conceptName,
+                                                                const OFString &annotationText,
                                                                 const OFBool check)
 {
     OFCondition result = EC_Normal;
@@ -536,6 +549,8 @@ OFCondition TID1600_ImageLibrary::addCodeContentItemFromDataset(DSRDocumentSubTr
     {
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, conceptName));
         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(codedEntry, check));
+        if (!annotationText.empty())
+            CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText(annotationText));
     }
     return result;
 }
@@ -547,6 +562,7 @@ OFCondition TID1600_ImageLibrary::addNumericContentItemFromDataset(DSRDocumentSu
                                                                    const signed long pos,
                                                                    const DSRCodedEntryValue &conceptName,
                                                                    const DSRCodedEntryValue &measurementUnit,
+                                                                   const OFString &annotationText,
                                                                    const OFBool check)
 {
     OFCondition result = EC_Normal;
@@ -557,6 +573,8 @@ OFCondition TID1600_ImageLibrary::addNumericContentItemFromDataset(DSRDocumentSu
         /* create new content item, set concept name and value */
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Num, conceptName));
         CHECK_RESULT(tree.getCurrentContentItem().setNumericValue(DSRNumericMeasurementValue(numericValue, measurementUnit), check));
+        if (!annotationText.empty())
+            CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText(annotationText));
     }
     return result;
 }

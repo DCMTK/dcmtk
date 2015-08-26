@@ -29,6 +29,7 @@
 
 /** Implementation of DCMR Template:
  *  TID 1001 - Observation Context (and included templates 1002-1004).
+ *  All added content items are annotated with a text in the format "TID 1001 - Row [n]".
  ** @note Please note that the included templates 1005-1010 are not yet supported.
  */
 class DCMTK_CMR_EXPORT TID1001_ObservationContext

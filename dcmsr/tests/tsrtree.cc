@@ -230,6 +230,11 @@ OFTEST(dcmsr_getPosition)
     OFCHECK_EQUAL(tree.goUp(), nodeID + 0);
     OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 3);
     OFCHECK_EQUAL(tree.getPosition(posString), "1.3");
+    /* also try to go to a node based on its position */
+    OFCHECK_EQUAL(tree.gotoNode("1.1"), nodeID + 1);
+    OFCHECK_EQUAL(tree.gotoNode("1"), nodeID + 0);
+    OFCHECK_EQUAL(tree.gotoNode("1.3", OFFalse /*startFromRoot*/), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoNode("2"), 0 /* not found */);
 }
 
 
@@ -477,4 +482,23 @@ OFTEST(dcmsr_extractSubTree)
     OFCHECK_EQUAL(tree.gotoRoot(), nodeID + 0);
     OFCHECK_EQUAL(tree.iterate(), nodeID + 1);
     OFCHECK_EQUAL(tree.iterate(), nodeID + 3);
+}
+
+
+OFTEST(dcmsr_gotoAnnotatedTreeNode)
+{
+    DSRTree<> tree;
+    const size_t nodeID = tree.getNextNodeID();
+    /* first, create a simple tree of 6 nodes (5 of them are annotated) */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(DSRTreeNodeAnnotation("root"))), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(DSRTreeNodeAnnotation("first child")), DSRTypes::AM_belowCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(DSRTreeNodeAnnotation("second child")), DSRTypes::AM_afterCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(DSRTreeNodeAnnotation("third child")), DSRTypes::AM_afterCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(DSRTreeNodeAnnotation("grandchild")), DSRTypes::AM_afterCurrent), nodeID + 5);
+    /* check whether the annotations are correct */
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("second child")), nodeID + 2);
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("grandchild"), OFFalse /*startFromRoot*/), nodeID + 5);
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("bastard")), 0);
 }

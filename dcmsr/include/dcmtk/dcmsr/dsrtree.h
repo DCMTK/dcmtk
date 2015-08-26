@@ -52,12 +52,14 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
 
   public:
 
-    /** default constructor
+    /** (default) constructor
+     ** @param  annotation  optional annotation that should be set as the initial value
      */
-    DSRTreeNode()
+    DSRTreeNode(const DSRTreeNodeAnnotation &annotation = DSRTreeNodeAnnotation())
       : Prev(NULL),
         Next(NULL),
         Down(NULL),
+        Annotation(annotation),
         Ident(IdentCounter++)   // tbc: is this MT-safe?
     {
     }
@@ -109,6 +111,30 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
         return Ident;
     }
 
+    /** check whether this node has a (non-empty) annotation
+     ** @return OFTrue if this node has a (non-empty) annotation, OFFalse otherwise
+     */
+    inline OFBool hasAnnotation() const
+    {
+        return !Annotation.isEmpty();
+    }
+
+    /** get annotation of this node (optional)
+     ** @return annotation of this node
+     */
+    inline const DSRTreeNodeAnnotation &getAnnotation() const
+    {
+        return Annotation;
+    }
+
+    /** set annotation of this node (optional)
+     ** @param  annotation  annotation to be set (might be empty)
+     */
+    inline void setAnnotation(const DSRTreeNodeAnnotation &annotation)
+    {
+        Annotation = annotation;
+    }
+
 
   protected:
 
@@ -126,6 +152,9 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
     DSRTreeNode *Next;
     /// pointer to first child node (if any)
     DSRTreeNode *Down;
+
+    /// annotation of the tree node (optional)
+    DSRTreeNodeAnnotation Annotation;
 
 
   private:
@@ -220,6 +249,15 @@ template<typename T = DSRTreeNode> class DSRTree
      ** @return ID of the new current node if successful, 0 otherwise
      */
     size_t gotoNode(const OFString &reference,
+                    const OFBool startFromRoot = OFTrue);
+
+    /** set cursor to specified node. Starts from current position!
+     ** @param  annotation     annotation of the node to set the cursor to
+     *  @param  startFromRoot  flag indicating whether to start from the root node
+     *                         or the current one
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t gotoNode(const DSRTreeNodeAnnotation &annotation,
                     const OFBool startFromRoot = OFTrue);
 
     /** add new node to the current one.
@@ -558,6 +596,22 @@ size_t DSRTree<T>::gotoNode(const OFString &reference,
             gotoRoot();
         /* call the real function */
         nodeID = DSRTreeNodeCursor<T>::gotoNode(reference);
+    }
+    return nodeID;
+}
+
+
+template<typename T>
+size_t DSRTree<T>::gotoNode(const DSRTreeNodeAnnotation &annotation,
+                            const OFBool startFromRoot)
+{
+    size_t nodeID = 0;
+    if (!annotation.isEmpty())
+    {
+        if (startFromRoot)
+            gotoRoot();
+        /* call the real function */
+        nodeID = DSRTreeNodeCursor<T>::gotoNode(annotation);
     }
     return nodeID;
 }

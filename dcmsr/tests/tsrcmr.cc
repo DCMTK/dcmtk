@@ -169,6 +169,10 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     /* check whether all nodes are present */
     OFCHECK(obsContext.isValid());
     OFCHECK_EQUAL(obsContext.countNodes(), 16);
+    /* check whether annotations are as expected */
+    OFCHECK(obsContext.gotoAnnotatedNode("TID 1004 - Row 1") > 0);
+    OFCHECK(obsContext.gotoNextAnnotatedNode("TID 1004 - Row 1") > 0);
+    OFCHECK_EQUAL(obsContext.getCurrentContentItem().getStringValue(), "007");
 }
 
 
@@ -265,7 +269,8 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
 
 #ifdef DEBUG
     /* output content of the tree (in debug mode only) */
-    library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID | DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode);
+    library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                        DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode | DSRTypes::PF_printAnnotation);
 #endif
 }
 

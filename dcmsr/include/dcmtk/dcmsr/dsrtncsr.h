@@ -32,6 +32,7 @@
 
 #include "dcmtk/dcmsr/dsdefine.h"
 #include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrtnant.h"
 
 
 /*-----------------------*
@@ -208,6 +209,12 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     size_t gotoNode(const OFString &position,
                     const char separator = '.');
+
+    /** set cursor to specified node. Starts from current position!
+     ** @param  annotation  annotation of the node to set the cursor to
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t gotoNode(const DSRTreeNodeAnnotation &annotation);
 
     /** get current node ID.
      *  The node ID uniquely identifies a content item in the document tree.  Most of
@@ -697,6 +704,23 @@ size_t DSRTreeNodeCursor<T>::gotoNode(const OFString &position,
                         nodeID = 0;
                 }
             } while ((nodeID > 0) && (posEnd != OFString_npos));
+        }
+    }
+    return nodeID;
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::gotoNode(const DSRTreeNodeAnnotation &annotation)
+{
+    size_t nodeID = 0;
+    if (!annotation.isEmpty())
+    {
+        if (NodeCursor != NULL)
+        {
+            nodeID = NodeCursor->getIdent();
+            while ((nodeID > 0) && (NodeCursor->getAnnotation() != annotation))
+                nodeID = iterate();
         }
     }
     return nodeID;

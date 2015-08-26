@@ -42,8 +42,9 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_CannotAddMultipleImageLibr
 
 /** Implementation of DCMR Template:
  *  TID 1600 - Image Library (and included templates 1601-1607).
- ** @note Please note that most DICOM element values are copied from the main
- *        dataset only and not yet from the respective functional group macros.
+ *  All added content items are annotated with a text in the format "TID 1600 - Row [n]".
+ ** @note Please note that most DICOM element values are copied from the main dataset
+ *        only and not yet from the respective functional group macros.
  */
 class DCMTK_CMR_EXPORT TID1600_ImageLibrary
   : public DSRSubTemplate
@@ -183,14 +184,15 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
     /** add a content item with a string value copied from the given dataset.
      *  The content item is only created and added to the subtree if the specified data
      *  element is present in the 'dataset' and its string value is not empty.
-     ** @param  tree         subtree to which the content items should be added
-     *  @param  dataset      DICOM dataset from which the values should be copied
-     *  @param  tagKey       DICOM tag specifying the attribute from which the string
-     *                       value should be retrieved
-     *  @param  pos          index of the value to get (0..vm-1), -1 for all components
-     *  @param  valueType    value type of the content item to be added
-     *  @param  conceptName  concept name of the content item to be added
-     *  @param  check        if enabled, check values for validity before setting them
+     ** @param  tree            subtree to which the content items should be added
+     *  @param  dataset         DICOM dataset from which the values should be copied
+     *  @param  tagKey          DICOM tag specifying the attribute from which the string
+     *                          value should be retrieved
+     *  @param  pos             index of the value to get (0..vm-1), -1 for all components
+     *  @param  valueType       value type of the content item to be added
+     *  @param  conceptName     concept name of the content item to be added
+     *  @param  annotationText  optional text used to annotate the content item
+     *  @param  check           if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition addStringContentItemFromDataset(DSRDocumentSubTree &tree,
@@ -199,23 +201,26 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                        const signed long pos,
                                                        const E_ValueType valueType,
                                                        const DSRCodedEntryValue &conceptName,
+                                                       const OFString &annotationText,
                                                        const OFBool check);
 
     /** add a content item with a coded entry value copied from the given dataset.
      *  The content item is only created and added to the subtree if the specified code
      *  sequence is present in the 'dataset' and its value is valid (not empty).
-     ** @param  tree         subtree to which the content items should be added
-     *  @param  dataset      DICOM dataset from which the values should be copied
-     *  @param  tagKey       DICOM tag specifying the code sequence attribute from which
-     *                       the coded entry should be retrieved
-     *  @param  conceptName  concept name of the content item to be added
-     *  @param  check        if enabled, check values for validity before setting them
+     ** @param  tree            subtree to which the content items should be added
+     *  @param  dataset         DICOM dataset from which the values should be copied
+     *  @param  tagKey          DICOM tag specifying the code sequence attribute from which
+     *                          the coded entry should be retrieved
+     *  @param  conceptName     concept name of the content item to be added
+     *  @param  annotationText  optional text used to annotate the content item
+     *  @param  check           if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition addCodeContentItemFromDataset(DSRDocumentSubTree &tree,
                                                      DcmItem &dataset,
                                                      const DcmTagKey &tagKey,
                                                      const DSRCodedEntryValue &conceptName,
+                                                     const OFString &annotationText,
                                                      const OFBool check);
 
     /** add a content item with a numeric value copied from the given dataset.
@@ -230,6 +235,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *                           components
      *  @param  conceptName      concept name of the content item to be added
      *  @param  measurementUnit  measurement unit to be used for the numeric content item
+     *  @param  annotationText   optional text used to annotate the content item
      *  @param  check            if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -239,6 +245,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                         const signed long pos,
                                                         const DSRCodedEntryValue &conceptName,
                                                         const DSRCodedEntryValue &measurementUnit,
+                                                        const OFString &annotationText,
                                                         const OFBool check);
 
 };

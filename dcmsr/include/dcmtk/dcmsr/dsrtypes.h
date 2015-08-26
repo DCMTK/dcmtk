@@ -89,6 +89,7 @@ extern DCMTK_DCMSR_EXPORT OFLogger DCM_dcmsrLogger;
 #define DCMSR_ANSI_ESCAPE_CODE_CONCEPT_NAME      "\033[22m\033[33m"
 #define DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE        "\033[1m\033[37m"
 #define DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID       "\033[22m\033[35m"
+#define DCMSR_ANSI_ESCAPE_CODE_ANNOTATION        "\033[22m\033[36m"
 #define DCMSR_ANSI_ESCAPE_CODE_DELIMITER         "\033[1m\033[30m"
 
 // helper macro for the conditional usage of ANSI escape codes
@@ -426,6 +427,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// indicate with a "*" that the "enhanced encoding mode" is used for codes
     static const size_t PF_indicateEnhancedEncodingMode;
+
+    /// print annotation of a content item (optional, e.g. user-defined information)
+    static const size_t PF_printAnnotation;
 
     /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;

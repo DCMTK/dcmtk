@@ -112,6 +112,25 @@ OFTEST(dcmsr_gotoNamedNode)
 }
 
 
+OFTEST(dcmsr_gotoAnnotatedNode)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items (and annotate them) */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container, DSRCodedEntryValue("121111", "DCM", "Summary")).good());
+    OFCHECK(tree.getCurrentContentItem().setAnnotationText("Root Node").good());
+    OFCHECK(tree.addChildContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.getCurrentContentItem().setAnnotationText("Numeric Node").good());
+    const size_t nodeID = tree.getNodeID();
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRCodedEntryValue("1234", "99_PRV", "NOS")).good());
+    OFCHECK(tree.getCurrentContentItem().setAnnotationText("Text Node").good());
+    /* and check the "search by name" function */
+    OFCHECK_EQUAL(tree.gotoAnnotatedNode("Numeric Node"), nodeID);
+    OFCHECK_EQUAL(tree.gotoAnnotatedNode("Text Node"), nodeID + 1);
+}
+
+
 OFTEST(dcmsr_createDocSubTree)
 {
     /* first, create an empty document subtree */

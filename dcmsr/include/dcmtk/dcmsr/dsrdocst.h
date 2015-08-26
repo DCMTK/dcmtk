@@ -133,8 +133,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual DSRContentItem &getCurrentContentItem();
 
-    /** set internal cursor to the named node.
-     *  If more than one node exists with the given concept name the first one will
+    /** set internal cursor to a named node.
+     *  If more than one node exists with the given concept name, the first one will
      *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.
      ** @param  conceptName    concept name of the node to be searched for
      *  @param  startFromRoot  flag indicating whether to start from the root node
@@ -157,6 +157,26 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual size_t gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
                                      const OFBool searchIntoSub = OFTrue);
+
+    /** set internal cursor to an annotated node.
+     *  If more than one node exists with the given annotation text, the first one will
+     *  be selected.  Use gotoNextAnnotatedNode() in order to go to the next matching
+     *  node.  In contrast to gotoNamedNode(), a "deep search" is always performed.
+     ** @param  annotationText  annotation text of the node to be searched for
+     *  @param  startFromRoot   flag indicating whether to start from the root node
+     *                          or the current one
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    virtual size_t gotoAnnotatedNode(const OFString &annotationText,
+                                     const OFBool startFromRoot = OFTrue);
+
+    /** set internal cursor to the next annotated node.
+     *  Starts from "next" node, i.e. either the first children of the current node
+     *  or the first sibling following the current node.
+     ** @param  annotationText  annotation text of the node to be searched for
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    virtual size_t gotoNextAnnotatedNode(const OFString &annotationText);
 
     /** check whether specified content item can be added to the current one.
      *  This method can be used to decide which type of content items can be added prior

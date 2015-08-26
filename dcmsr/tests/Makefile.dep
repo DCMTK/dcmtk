@@ -113,7 +113,8 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -286,11 +287,11 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrnumtn.h ../include/dcmtk/dcmsr/dsrdoctn.h \
  ../include/dcmtk/dcmsr/dsrtree.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/cmr/init.h \
- ../include/dcmtk/dcmsr/cmr/define.h ../include/dcmtk/dcmsr/cmr/cid29e.h \
- ../include/dcmtk/dcmsr/cmr/cid29.h ../include/dcmtk/dcmsr/dsrctxgr.h \
- ../include/dcmtk/dcmsr/cmr/cid42.h ../include/dcmtk/dcmsr/cmr/cid244e.h \
- ../include/dcmtk/dcmsr/cmr/cid244.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/codes/dcm.h \
+ ../include/dcmtk/dcmsr/cmr/init.h ../include/dcmtk/dcmsr/cmr/define.h \
+ ../include/dcmtk/dcmsr/cmr/cid29e.h ../include/dcmtk/dcmsr/cmr/cid29.h \
+ ../include/dcmtk/dcmsr/dsrctxgr.h ../include/dcmtk/dcmsr/cmr/cid42.h \
+ ../include/dcmtk/dcmsr/cmr/cid244e.h ../include/dcmtk/dcmsr/cmr/cid244.h \
  ../include/dcmtk/dcmsr/cmr/cid4031e.h \
  ../include/dcmtk/dcmsr/cmr/cid4031.h \
  ../include/dcmtk/dcmsr/cmr/cid7445.h \
@@ -545,7 +546,8 @@ tsrdoc.o: tsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -674,7 +676,8 @@ tsrdoctr.o: tsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -921,7 +924,8 @@ tsrtpl.o: tsrtpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -1048,4 +1052,5 @@ tsrtree.o: tsrtree.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
- ../../ofstd/include/dcmtk/ofstd/ofstack.h
+ ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h

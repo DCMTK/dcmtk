@@ -44,11 +44,13 @@ OFCondition TID1204_LanguageOfContentItemAndDescendants::setLanguage(const CID50
     /* TID 1204 (Language of Content Item and Descendants) Row 1 */
     STORE_RESULT(subTree.addContentItem(RT_hasConceptMod, VT_Code, CODE_DCM_LanguageOfContentItemAndDescendants));
     CHECK_RESULT(subTree.getCurrentContentItem().setCodeValue(language.getSelectedValue(), check));
+    CHECK_RESULT(subTree.getCurrentContentItem().setAnnotationText("TID 1204 - Row 1"));
     /* TID 1204 (Language of Content Item and Descendants) Row 2 */
     if (country.hasSelectedValue())
     {
         CHECK_RESULT(subTree.addChildContentItem(RT_hasConceptMod, VT_Code, CODE_DCM_CountryOfLanguage));
         CHECK_RESULT(subTree.getCurrentContentItem().setCodeValue(country.getSelectedValue(), check));
+        CHECK_RESULT(subTree.getCurrentContentItem().setAnnotationText("TID 1204 - Row 2"));
     }
     /* if everything was OK, insert new subtree into the template */
     if (result.good())

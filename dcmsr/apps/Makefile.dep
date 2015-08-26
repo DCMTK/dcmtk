@@ -113,7 +113,8 @@ dsr2html.o: dsr2html.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -242,7 +243,8 @@ dsr2xml.o: dsr2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -371,7 +373,8 @@ dsrdump.o: dsrdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -500,7 +503,8 @@ xml2dsr.o: xml2dsr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
+ ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \

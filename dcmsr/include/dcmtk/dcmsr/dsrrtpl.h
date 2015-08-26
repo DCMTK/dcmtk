@@ -139,6 +139,8 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
     using DSRDocumentTree::countNodes;
     using DSRDocumentTree::gotoNamedNode;
     using DSRDocumentTree::gotoNextNamedNode;
+    using DSRDocumentTree::gotoAnnotatedNode;
+    using DSRDocumentTree::gotoNextAnnotatedNode;
     using DSRDocumentTree::getCurrentContentItem;
 
 
