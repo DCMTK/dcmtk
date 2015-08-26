@@ -79,6 +79,7 @@ OFTEST(dcmsr_CID244e_Laterality)
     OFCHECK_EQUAL(ctxGroup.mapImageLaterality("R").getCodeValue(), "G-A100");
     OFCHECK(ctxGroup.mapImageLaterality("B", codedEntry).good());
     OFCHECK(ctxGroup.selectValue("L").good());
+    OFCHECK(DSRCodedEntryValue(ctxGroup).getCodeMeaning() == "Left");
     /* invalid/unknown enumerated values */
     OFCHECK(!ctxGroup.mapImageLaterality("XYZ").isValid());
     OFCHECK(ctxGroup.mapImageLaterality("ABC", codedEntry) == SR_EC_InvalidValue);
@@ -89,7 +90,9 @@ OFTEST(dcmsr_CID244e_Laterality)
 OFTEST(dcmsr_CID4031e_CommonAnatomicRegions)
 {
     CID4031e_CommonAnatomicRegions ctxGroup("HEART");
+    DSRCodedEntryValue codedEntry = ctxGroup;
     OFCHECK(ctxGroup.hasSelectedValue());
+    OFCHECK(ctxGroup.getSelectedValue() == codedEntry);
     OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("ABDOMEN").getCodeMeaning(), "Abdomen");
     OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("KNEE").getCodeMeaning(), "Knee");
     OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("ZYGOMA").getCodeMeaning(), "Zygoma");

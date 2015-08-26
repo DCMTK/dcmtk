@@ -44,7 +44,7 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
     /** conversion operator that returns the currently selected coded entry value
      *  (might be empty if none is selected)
      */
-    operator DSRCodedEntryValue() const
+    operator const DSRCodedEntryValue &() const
     {
         return getSelectedValue();
     }
