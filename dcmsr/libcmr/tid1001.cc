@@ -25,10 +25,17 @@
 #define LAST_PERSON_OBSERVER 0
 #define LAST_DEVICE_OBSERVER 1
 
+// general information on TID 1001 (Observation Context)
+#define TEMPLATE_NUMBER      "1001"
+#define MAPPING_RESOURCE     "DCMR"
+#define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
+#define TEMPLATE_TYPE        OFFalse  /* non-extensible, but included templates are */
+
 
 TID1001_ObservationContext::TID1001_ObservationContext()
-  : DSRSubTemplate("1001", "DCMR", UID_DICOMContentMappingResource)
+  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
+    setExtensible(TEMPLATE_TYPE);
     /* need to store last person and device observer */
     reserveEntriesInNodeList(2);
 }

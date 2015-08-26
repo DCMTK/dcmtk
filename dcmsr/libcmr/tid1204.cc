@@ -20,10 +20,17 @@
 #define CHECK_RESULT(call) if (result.good()) result = call
 #define STORE_RESULT(call) result = call
 
+// general information on TID 1204 (Language of Content Item and Descendants)
+#define TEMPLATE_NUMBER      "1204"
+#define MAPPING_RESOURCE     "DCMR"
+#define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
+#define TEMPLATE_TYPE        OFFalse  /* non-extensible */
+
 
 TID1204_LanguageOfContentItemAndDescendants::TID1204_LanguageOfContentItemAndDescendants()
-  : DSRSubTemplate("1204", "DCMR", UID_DICOMContentMappingResource)
+  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
+    setExtensible(TEMPLATE_TYPE);
 }
 
 

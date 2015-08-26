@@ -36,14 +36,22 @@
 #define LAST_IMAGE_LIBRARY_GROUP 0
 #define LAST_IMAGE_LIBRARY_ENTRY 1
 
+// general information on TID 1600 (Image Library)
+#define TEMPLATE_NUMBER      "1600"
+#define MAPPING_RESOURCE     "DCMR"
+#define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
+#define TEMPLATE_TYPE        OFTrue  /* extensible */
+
+
 // conditions constants
 makeOFConditionConst(CMR_EC_NoImageLibraryGroup,                           OFM_dcmsr, 1600, OF_error, "No Image Library Group");
 makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors, OFM_dcmsr, 1602, OF_error, "Cannot add multiple Image Library Entry Descriptors");
 
 
 TID1600_ImageLibrary::TID1600_ImageLibrary()
-  : DSRSubTemplate("1600", "DCMR", UID_DICOMContentMappingResource)
+  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
+    setExtensible(TEMPLATE_TYPE);
     /* need to store last image library group and entry */
     reserveEntriesInNodeList(2);
     /* TID 1600 (Image Library) Row 1 */
