@@ -7,12 +7,13 @@ tags their respective VR, VM, attribute name and other information.  This
 information must also be made available in DCMTK.  This is accomplished
 through a global data dictionary class.
 
-The global data dictionary is loaded within a C++ constructor (prior to main)
-into the global DcmDataDictionary class instance called dcmDataDict.  The
-dictionary content is populated by two different approaches:  Either the
-content (tags, VR, ...) can be compiled into the dictionary code, or the
-dictionary is filled by loading a text file on startup from a pre-defined
-file path (also called an "external" data dictionary).
+The global data dictionary is loaded within a C++ constructor into the global
+DcmDataDictionary class instance called dcmDataDict once it is accessed for the
+first time from the code.  The dictionary content is populated by two
+different approaches:  Either the content (tags, VR, ...) can be compiled
+into the dictionary code, or the dictionary is filled by loading a text file
+on startup from a pre-defined file path (also called an "external" data
+dictionary).
 
 The built-in approach offers the advantage that a binary will not have to
 load any information from a separate file which may get lost or or used in an
@@ -31,10 +32,11 @@ DICTIONARY DEFAULT: AUTOCONF ON POSIX SYSTEMS
 
 By default on a Posix system the global data dictionary will attempt to load
 the data dictionary from an external file.  The location is pre-configured
-to $INSTALL_PREFIX/share/dcmtk/dicom.dic where $INSTALL_PREFIX is the
-installation prefix chosen using configure's --prefix option (default:
-/usr/local).  The resulting path is stored as DCM_DICT_DEFAULT_PATH in the
-file config/include/dcmtk/config/osconfig.h, which is created by autoconf
+to $DCMTK_DAT_DIR/dicom.dic where $DCMTK_DAT_DIR is DCMTK's data
+installation prefix chosen using configure's --datadir option (default:
+/dcmtk).  See also --datarootdir and --prefix options. The resulting path is
+stored as DCM_DICT_DEFAULT_PATH in the file
+config/include/dcmtk/config/osconfig.h, which is created by autoconf
 during the execution of the configure script and thus is available to the
 dictionary code that includes osconfig.h.
 
@@ -90,7 +92,7 @@ environment variable (see below).
 Application programs should check that a data dictionary has been loaded
 before using the functionality of the dcmdata library.  The absence of
 a data dictionary is likely to cause unexpected behaviour (e.g. unknown
-attributes will be encoded using VR=OB).
+attributes will be encoded using VR=UN).
 
 -----------------------------------------------------------------------------
 CUSTOM EXTERNAL DICTIONARIES THROUGH ENVIRONMENT VARIABLE "DCMDICTPATH"

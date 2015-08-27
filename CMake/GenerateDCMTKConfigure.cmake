@@ -1,19 +1,19 @@
 # Compiled-in dictionary support
 IF(DCMTK_WITH_BUILTIN_DICTIONARY)
-  MESSAGE(STATUS "Info: DCMTK's will compile with built-in (compiled-in) dictionary")
+  MESSAGE(STATUS "Info: DCMTK will compile with built-in (compiled-in) dictionary")
   # No extra variable needed since its only evaluated in CMake files
 ELSE(DCMTK_WITH_BUILTIN_DICTIONARY)
-  MESSAGE(STATUS "Info: DCMTK's will compile without built-in (compiled-in) dictionary")
+  MESSAGE(STATUS "Info: DCMTK will compile without built-in (compiled-in) dictionary")
   # No extra variable needed since its only evaluated in CMake files
 ENDIF(DCMTK_WITH_BUILTIN_DICTIONARY)
 
 # External dictionary support
 IF(DCMTK_WITH_EXTERNAL_DICTIONARY)
   SET(WITH_EXTERNAL_DICTIONARY 1)
-  MESSAGE(STATUS "Info: DCMTK's will try to load external dictionary from default path on startup")
+  MESSAGE(STATUS "Info: DCMTK will try to load external dictionary from default path on startup")
 ELSE(DCMTK_WITH_EXTERNAL_DICTIONARY)
   SET(WITH_EXTERNAL_DICTIONARY "")
-  MESSAGE(STATUS "Info: DCMTK's will not try to load external dictionary from default path on startup")
+  MESSAGE(STATUS "Info: DCMTK will not try to load external dictionary from default path on startup")
 ENDIF(DCMTK_WITH_EXTERNAL_DICTIONARY)
 
 

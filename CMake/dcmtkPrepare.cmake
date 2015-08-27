@@ -88,10 +88,10 @@ OPTION(DCMTK_GENERATE_DOXYGEN_TAGFILE "Generate a tag file with DOXYGEN." OFF)
 OPTION(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
 
-# Built-in (compiled-in)  dictionary enabled on Windows per default, otherwise
+# Built-in (compiled-in) dictionary enabled on Windows per default, otherwise
 # disabled. Loading of external dictionary via run-time is, per default,
 # configured the the opposite way since most users won't be interested in using
-# the external default dictionary if it already compiled in.
+# the external default dictionary if it is already compiled in.
 IF(WIN32 OR MINGW)
   OPTION(DCMTK_WITH_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary" ON)
   OPTION(DCMTK_WITH_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup" OFF)

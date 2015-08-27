@@ -1383,8 +1383,8 @@ Optional Packages:
   --without-private-tags  don't enable private tag dictionary (default)
   --with-external-dict    enable loading of external dictionary (default)
   --without-external-dict don't load external dictionary
-  --with-builtin-dict     enable loading of built-in dictionary (default)
-  --without-builtin-dict  don't load built-in dictionary
+  --with-builtin-dict     enable loading of built-in dictionary
+  --without-builtin-dict  don't load built-in dictionary (default)
   --with-opensslinc=DIR   location of OpenSSL includes and libraries
   --with-openssl          include OpenSSL support (default: auto)
   --without-openssl       don't include OpenSSL support

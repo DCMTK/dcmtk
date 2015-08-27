@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -208,7 +208,7 @@ private:
 
 
 /** global singleton dicom dictionary that is used by DCMTK in order to lookup
- *  attribute VR, tag names and so on.  The dictionary is internally created
+ *  attribute VR, tag names and so on.  The dictionary is internally populated
  *  on first use, if the user accesses it via rdlock() or wrlock().  The
  *  dictionary allows safe read (shared) and write (exclusive) access from
  *  multiple threads in parallel.
@@ -281,7 +281,7 @@ private:
 
 
 /** The Global DICOM Data Dictionary.
- *  Will be created before main() starts.
+ *  Will be created before main() starts and gets populated on its first use.
  *  Tries to load a builtin data dictionary (if compiled in).
  *  Tries to load data dictionaries from files specified by
  *  the DCMDICTPATH environment variable.  If this environment

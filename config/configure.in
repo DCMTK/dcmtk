@@ -948,14 +948,14 @@ dnl -------------------------------------------------------
 
 AC_MSG_CHECKING(whether to enable built-in dictionary loading)
 AC_ARG_WITH(builtin-dict,
-[  --with-builtin-dict     enable loading of built-in dictionary (default)
-  --without-builtin-dict  don't load built-in dictionary],
+[  --with-builtin-dict     enable loading of built-in dictionary
+  --without-builtin-dict  don't load built-in dictionary (default)],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
     dnl Remember for later evaluation when building dcmdata libary, i.e. for
-    dnl including the populated  dnl dictionary object (dcdictzz.o) and not the
-    dnl dummy dictionary (dcdictbi.o) in dcmdata
+    dnl including the populated dictionary object (dcdictzz.o) and not the
+    dnl empty dummy dictionary (dcdictbi.o) in dcmdata
     WITH_BUILTIN_DICTIONARY=true
     ;;
   *)
