@@ -119,8 +119,15 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
         return !Annotation.isEmpty();
     }
 
+    /** clear annotation of this node
+     */
+    inline void clearAnnotation()
+    {
+        Annotation.clear();
+    }
+
     /** get annotation of this node (optional)
-     ** @return annotation of this node
+     ** @return annotation of this node (might be empty)
      */
     inline const DSRTreeNodeAnnotation &getAnnotation() const
     {
@@ -128,7 +135,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
     }
 
     /** set annotation of this node (optional)
-     ** @param  annotation  annotation to be set (might be empty)
+     ** @param  annotation  annotation to be set
      */
     inline void setAnnotation(const DSRTreeNodeAnnotation &annotation)
     {
@@ -205,9 +212,13 @@ template<typename T = DSRTreeNode> class DSRTree
      */
     DSRTree &operator=(DSRTree<T> tree);
 
-    /** clear all member variables
+    /** clear all member variables, i.e.\ the tree with all nodes
      */
     virtual void clear();
+
+    /** clear annotations of all tree nodes
+     */
+    void clearAnnotations();
 
     /** check whether tree has any nodes
      ** @return OFTrue if tree is empty, OFFalse otherwise
@@ -527,6 +538,23 @@ void DSRTree<T>::clear()
             /* so delete them all */
             nodeID = removeNode();
         } while (nodeID > 0);
+    }
+}
+
+
+template<typename T>
+void DSRTree<T>::clearAnnotations()
+{
+    DSRTreeNodeCursor<T> cursor(RootNode);
+    if (cursor.isValid())
+    {
+        T *node;
+        /* iterate over all nodes */
+        do {
+            node = cursor.getNode();
+            if (node != NULL)
+                node->clearAnnotation();
+        } while (cursor.iterate());
     }
 }
 

@@ -500,5 +500,17 @@ OFTEST(dcmsr_gotoAnnotatedTreeNode)
     /* check whether the annotations are correct */
     OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("second child")), nodeID + 2);
     OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("grandchild"), OFFalse /*startFromRoot*/), nodeID + 5);
-    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("bastard")), 0);
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("bastard")), 0 /* not found */);
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("first child")), nodeID + 1);
+    /* clear annotation of current node and try again */
+    DSRTreeNode *node = tree.getNode();
+    if (node!= NULL)
+        node->clearAnnotation();
+    else
+        OFCHECK_FAIL("could not get current node");
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("first child")), 0 /* not found */);
+    /* clear all annotations and check one again */
+    tree.clearAnnotations();
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("root")), 0 /* not found */);
+    OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("third child")), 0 /* not found */);
 }

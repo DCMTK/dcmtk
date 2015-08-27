@@ -84,6 +84,13 @@ class DSRTreeNodeAnnotation
         return (Text != annotation.Text);
     }
 
+    /** clear the currently stored annotation text
+     */
+    inline void clear()
+    {
+        Text.clear();
+    }
+
     /** check whether the annotation is empty, i.e.\ whether the internally stored
      *  character string (text) has an empty value
      ** @return OFTrue if the annotation is empty, OFFalse otherwise
