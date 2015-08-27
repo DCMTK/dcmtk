@@ -173,6 +173,15 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     OFCHECK(obsContext.gotoAnnotatedNode("TID 1004 - Row 1") > 0);
     OFCHECK(obsContext.gotoNextAnnotatedNode("TID 1004 - Row 1") > 0);
     OFCHECK_EQUAL(obsContext.getCurrentContentItem().getStringValue(), "007");
+    /* now, clone the document tree of the template and check annotations again */
+    DSRDocumentSubTree *tree = obsContext.cloneTree();
+    if (tree != NULL)
+    {
+        OFCHECK(tree->gotoAnnotatedNode("TID 1004 - Row 1") > 0);
+        OFCHECK(tree->gotoNextAnnotatedNode("TID 1004 - Row 1") > 0);
+    } else
+        OFCHECK_FAIL("could not create clone of subtree");
+    delete tree;
 }
 
 

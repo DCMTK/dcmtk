@@ -52,7 +52,7 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipTy
 
 
 DSRDocumentTreeNode::DSRDocumentTreeNode(const DSRDocumentTreeNode &node)
-  : DSRTreeNode(),
+  : DSRTreeNode(node.Annotation),
     MarkFlag(node.MarkFlag),
     ReferenceTarget(OFFalse),
     RelationshipType(node.RelationshipType),

@@ -72,11 +72,12 @@ class DCMTK_DCMSR_EXPORT DSRTreeNode
 
     /** clone this tree node.
      *  Actually, a new tree node is created since the pointer members are not needed.
+     *  Only the optional annotation is copied.
      ** @return copy of this tree node
      */
     virtual DSRTreeNode *clone() const
     {
-        return new DSRTreeNode;
+        return new DSRTreeNode(Annotation);
     }
 
     /** get pointer to previous tree node
