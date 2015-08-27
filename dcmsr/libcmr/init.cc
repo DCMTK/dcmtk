@@ -17,12 +17,14 @@
 #include "dcmtk/dcmsr/cmr/cid11.h"
 #include "dcmtk/dcmsr/cmr/cid29.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
+#include "dcmtk/dcmsr/cmr/cid100.h"
 #include "dcmtk/dcmsr/cmr/cid244.h"
 #include "dcmtk/dcmsr/cmr/cid4020.h"
 #include "dcmtk/dcmsr/cmr/cid4021.h"
 #include "dcmtk/dcmsr/cmr/cid4031.h"
 #include "dcmtk/dcmsr/cmr/cid5000.h"
 #include "dcmtk/dcmsr/cmr/cid5001.h"
+#include "dcmtk/dcmsr/cmr/cid7021.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/cid7452.h"
 #include "dcmtk/dcmsr/cmr/cid7453.h"
@@ -40,12 +42,14 @@ void CMR_ContentMappingResource::initializeAllContextGroups()
     CID11_RouteOfAdministration::initialize();
     CID29_AcquisitionModality::initialize();
     CID42_NumericValueQualifier::initialize();
+    CID100_QuantitativeDiagnosticImagingProcedures::initialize();
     CID244_Laterality::initialize();
     CID4020_PETRadionuclide::initialize();
     CID4021_PETRadiopharmaceutical::initialize();
     CID4031_CommonAnatomicRegions::initialize();
     CID5000_Languages::initialize();
     CID5001_Countries::initialize();
+    CID7021_MeasurementReportDocumentTitles::initialize();
     CID7445_DeviceParticipatingRoles::initialize();
     CID7452_OrganizationalRoles::initialize();
     CID7453_PerformingRoles::initialize();
@@ -60,12 +64,14 @@ void CMR_ContentMappingResource::cleanupAllContextGroups()
     CID11_RouteOfAdministration::cleanup();
     CID29_AcquisitionModality::cleanup();
     CID42_NumericValueQualifier::cleanup();
+    CID100_QuantitativeDiagnosticImagingProcedures::cleanup();
     CID244_Laterality::cleanup();
     CID4020_PETRadionuclide::cleanup();
     CID4021_PETRadiopharmaceutical::cleanup();
     CID4031_CommonAnatomicRegions::cleanup();
     CID5000_Languages::cleanup();
     CID5001_Countries::cleanup();
+    CID7021_MeasurementReportDocumentTitles::cleanup();
     CID7445_DeviceParticipatingRoles::cleanup();
     CID7452_OrganizationalRoles::cleanup();
     CID7453_PerformingRoles::cleanup();

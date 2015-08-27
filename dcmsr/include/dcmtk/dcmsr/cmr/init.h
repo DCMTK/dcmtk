@@ -37,12 +37,14 @@ class DCMTK_CMR_EXPORT CMR_ContentMappingResource
      *  - CID11_RouteOfAdministration
      *  - CID29_AcquisitionModality
      *  - CID42_NumericValueQualifier
+     *  - CID100_QuantitativeDiagnosticImagingProcedures
      *  - CID244_Laterality
      *  - CID4020_PETRadionuclide
      *  - CID4021_PETRadiopharmaceutical
      *  - CID4031_CommonAnatomicRegions
      *  - CID5000_Languages
      *  - CID5001_Countries
+     *  - CID7021_MeasurementReportDocumentTitles
      *  - CID7445_DeviceParticipatingRoles
      *  - CID7452_OrganizationalRoles
      *  - CID7453_PerformingRoles
