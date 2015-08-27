@@ -204,7 +204,7 @@ protected:
 /** The class IODModule is an IODComponent without parent component since
  *  a module does always belong to the top level dataset.
  */
-class IODModule : public IODComponent
+class DCMTK_DCMIOD_EXPORT IODModule : public IODComponent
 {
 public:
 
