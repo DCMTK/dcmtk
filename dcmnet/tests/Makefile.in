@@ -33,10 +33,10 @@ tests: $(objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(I2DLIBS) $(LOCALLIBS) $(LIBS)
 
 check: tests
-	./tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
 install:
 
