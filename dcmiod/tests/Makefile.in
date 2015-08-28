@@ -12,11 +12,13 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-all: 
+all:
 
 check:
 
-install: 
+check-exhaustive:
+
+install:
 
 clean:
 	rm -f $(TRASH)

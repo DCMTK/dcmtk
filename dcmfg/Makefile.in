@@ -39,9 +39,11 @@ libsrc-all: include-all
 tests-all: libsrc-all
 	(cd tests && $(MAKE) ARCH="$(ARCH)" all)
 
-
 check: tests-all
 	(cd tests && $(MAKE) check)
+
+check-exhaustive: tests-all
+	(cd tests && $(MAKE) check-exhaustive)
 
 
 include-install:
