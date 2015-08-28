@@ -1205,7 +1205,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmTime             InstanceCreationTime;
     /// Instance Creator UID: (UI, 1, 3)
     DcmUniqueIdentifier InstanceCreatorUID;
-    /// Coding Scheme Identification Sequence: (SQ, 1, 3)
+    /// Coding Scheme Identification Sequence: (SQ, 1-n, 3)
     DSRCodingSchemeIdentificationList CodingSchemeIdentification;
 
     // --- General Study Module (M) ---
@@ -1278,7 +1278,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmLongString       ProtocolName;
     /// Series Description: (LO, 1, 3)
     DcmLongString       SeriesDescription;
-    /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)
+    /// Referenced Performed Procedure Step Sequence: (SQ, 1-n, 2)
     DcmSequenceOfItems  ReferencedPerformedProcedureStep;
 
     // --- SR Document General Module (M) ---
@@ -1297,21 +1297,21 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmDate             ContentDate;
     /// Content Time: (TM, 1, 1)
     DcmTime             ContentTime;
-    /// Verifying Observer Sequence: (SQ, 1, 1C)
+    /// Verifying Observer Sequence: (SQ, 1-n, 1C)
     DcmSequenceOfItems  VerifyingObserver;
-    /// Predecessor Documents Sequence: (SQ, 1, 1C)
+    /// Predecessor Documents Sequence: (SQ, 1-n, 1C)
     DSRSOPInstanceReferenceList PredecessorDocuments;
-    /// Identical Documents Sequence: (SQ, 1, 1C)
+    /// Identical Documents Sequence: (SQ, 1-n, 1C)
     DSRSOPInstanceReferenceList IdenticalDocuments;
-    // Referenced Request Sequence: (SQ, 1, 1C)
+    // Referenced Request Sequence: (SQ, 1-n, 1C)
     // - tbd: conditional attribute not yet supported
-    /// Performed Procedure Code Sequence: (SQ, 1, 2)
+    /// Performed Procedure Code Sequence: (SQ, 1-n, 2)
     DcmSequenceOfItems  PerformedProcedureCode;
-    /// Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)
+    /// Current Requested Procedure Evidence Sequence: (SQ, 1-n, 1C)
     DSRSOPInstanceReferenceList CurrentRequestedProcedureEvidence;
-    /// Pertinent Other Evidence Sequence: (SQ, 1, 1C)
+    /// Pertinent Other Evidence Sequence: (SQ, 1-n, 1C)
     DSRSOPInstanceReferenceList PertinentOtherEvidence;
-    /// Referenced Instance Sequence: (SQ, 1, 1C)
+    /// Referenced Instance Sequence: (SQ, 1-n, 1C)
     DSRReferencedInstanceList ReferencedInstances;
 
  // --- declaration of copy constructor and assignment operator ---
