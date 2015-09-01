@@ -267,7 +267,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_LittleEndianImplicitTransferSyntax  "1.2.840.10008.1.2"
 /// Explicit VR Little Endian
 #define UID_LittleEndianExplicitTransferSyntax  "1.2.840.10008.1.2.1"
-/// Explicit VR Big Endian
+/// Explicit VR Big Endian - RETIRED
 #define UID_BigEndianExplicitTransferSyntax     "1.2.840.10008.1.2.2"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
