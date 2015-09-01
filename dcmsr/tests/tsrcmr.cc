@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/cmr/init.h"
+#include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/cmr/cid29e.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
 #include "dcmtk/dcmsr/cmr/cid244e.h"
@@ -276,11 +277,12 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     /* check number of expected content items */
     OFCHECK_EQUAL(library.countNodes(), 58);
 
-#ifdef DEBUG
     /* output content of the tree (in debug mode only) */
-    library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
-                        DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode | DSRTypes::PF_printAnnotation);
-#endif
+    if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                            DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode | DSRTypes::PF_printAnnotation);
+    }
 }
 
 
