@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,15 +91,15 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
     ** (and construct) sequences.
     */
     e = makeSkelEntry(0xfffe, 0xe000, 0xfffe, 0xe000,
-                      EVR_na, "Item", 1, 1, "DICOM3",
+                      EVR_na, "Item", 1, 1, "DICOM",
                       DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
     e = makeSkelEntry(0xfffe, 0xe00d, 0xfffe, 0xe00d,
-                      EVR_na, "ItemDelimitationItem", 1, 1, "DICOM3",
+                      EVR_na, "ItemDelimitationItem", 1, 1, "DICOM",
                       DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
     e = makeSkelEntry(0xfffe, 0xe0dd, 0xfffe, 0xe0dd,
-                      EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM3",
+                      EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM",
                       DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
 
