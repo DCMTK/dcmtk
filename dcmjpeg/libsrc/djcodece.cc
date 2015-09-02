@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -308,12 +308,12 @@ OFCondition DJCodecEncoder::encodeColorImage(
   // create initial pixel sequence
   if (result.good())
   {
-    pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData,EVR_OB));
+    pixelSequence = new DcmPixelSequence(DCM_PixelSequenceTag);
     if (pixelSequence == NULL) result = EC_MemoryExhausted;
     else
     {
       // create empty offset table
-      offsetTable = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+      offsetTable = new DcmPixelItem(DCM_PixelItemTag);
       if (offsetTable == NULL) result = EC_MemoryExhausted;
       else pixelSequence->insert(offsetTable);
     }
@@ -580,12 +580,12 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     DcmPixelItem *offsetTable = NULL;
     if (result.good())
     {
-      pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData,EVR_OB));
+      pixelSequence = new DcmPixelSequence(DCM_PixelSequenceTag);
       if (pixelSequence == NULL) result = EC_MemoryExhausted;
       else
       {
         // create empty offset table
-        offsetTable = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+        offsetTable = new DcmPixelItem(DCM_PixelItemTag);
         if (offsetTable == NULL) result = EC_MemoryExhausted;
         else pixelSequence->insert(offsetTable);
       }
@@ -1044,12 +1044,12 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   // create initial pixel sequence
   if (result.good())
   {
-    pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData,EVR_OB));
+    pixelSequence = new DcmPixelSequence(DCM_PixelSequenceTag);
     if (pixelSequence == NULL) result = EC_MemoryExhausted;
     else
     {
       // create empty offset table
-      offsetTable = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+      offsetTable = new DcmPixelItem(DCM_PixelItemTag);
       if (offsetTable == NULL) result = EC_MemoryExhausted;
       else pixelSequence->insert(offsetTable);
     }

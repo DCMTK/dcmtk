@@ -47,7 +47,7 @@
 
 
 DcmDataset::DcmDataset()
-  : DcmItem(ItemTag, DCM_UndefinedLength),
+  : DcmItem(DCM_ItemTag, DCM_UndefinedLength),
     OriginalXfer(EXS_Unknown),
     // the default transfer syntax is explicit VR with local endianness
     CurrentXfer((gLocalByteOrder == EBO_BigEndian) ? EXS_BigEndianExplicit : EXS_LittleEndianExplicit)

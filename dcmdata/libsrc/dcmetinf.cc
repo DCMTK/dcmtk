@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,7 +47,7 @@ const Uint32 DCM_GroupLengthElementLength = 12;
 
 
 DcmMetaInfo::DcmMetaInfo()
-  : DcmItem(ItemTag),
+  : DcmItem(DCM_ItemTag),
     preambleUsed(OFFalse),
     fPreambleTransferState(ERW_init),
     Xfer(META_HEADER_DEFAULT_TRANSFERSYNTAX)

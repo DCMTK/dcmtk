@@ -407,12 +407,12 @@ OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset,
 
   DCMDATA_LIBI2D_DEBUG("Image2Dcm: Storing imported pixel data to DICOM file");
   // create initial pixel sequence
-  DcmPixelSequence* pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
+  DcmPixelSequence* pixelSequence = new DcmPixelSequence(DCM_PixelSequenceTag);
   if (pixelSequence == NULL)
     return EC_MemoryExhausted;
 
   // insert empty offset table into sequence
-  DcmPixelItem *offsetTable = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
+  DcmPixelItem *offsetTable = new DcmPixelItem(DCM_PixelItemTag);
   if (offsetTable == NULL)
   {
     delete pixelSequence; pixelSequence = NULL;

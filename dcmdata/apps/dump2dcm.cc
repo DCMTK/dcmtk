@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -524,7 +524,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
         if (newTagVR == EVR_pixelSQ)
             newElement = new DcmPixelData(tag);
         else if (newTagVR == EVR_pixelItem)
-            newElement = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
+            newElement = new DcmPixelItem(DCM_PixelItemTag);
         else
             newElementError = newDicomElement(newElement, tag);
 
@@ -574,7 +574,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                               // special handling for pixel sequence
                               if (newTagVR == EVR_pixelSQ)
                               {
-                                  DcmPixelSequence *pixelSeq = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
+                                  DcmPixelSequence *pixelSeq = new DcmPixelSequence(DCM_PixelSequenceTag);
                                   if (pixelSeq != NULL)
                                   {
                                       OFstatic_cast(DcmPixelData *, newElement)->putOriginalRepresentation(xfer, NULL, pixelSeq);

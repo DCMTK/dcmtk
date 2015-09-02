@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,7 +111,7 @@ static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames
 
 
 DcmDirectoryRecord::DcmDirectoryRecord()
-  : DcmItem(ItemTag),
+  : DcmItem(DCM_ItemTag),
     recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
@@ -145,7 +145,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
                                        const char *referencedFileID,
                                        const OFFilename &sourceFilename,
                                        DcmFileFormat *fileFormat)
-  : DcmItem(ItemTag),
+  : DcmItem(DCM_ItemTag),
     recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(recordType),
@@ -167,7 +167,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char *recordTypeName,
                                        const char *referencedFileID,
                                        const OFFilename &sourceFilename,
                                        DcmFileFormat *fileFormat)
-  : DcmItem(ItemTag),
+  : DcmItem(DCM_ItemTag),
     recordsOriginFile(),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
@@ -1239,7 +1239,7 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
         if (lowerLevelList->card() > 0)
             lowerLevelList->print(out, flags, level + 1);
         /* print record end line */
-        DcmTag delimItemTag(DCM_ItemDelimitationItem);
+        DcmTag delimItemTag(DCM_ItemDelimitationItemTag);
         if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "\"ItemDelimitationItem\"", &delimItemTag);
         else

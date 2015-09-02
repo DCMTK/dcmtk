@@ -185,12 +185,12 @@ OFCondition DcmRLECodecEncoder::encode(
     // create initial pixel sequence
     if (result.good())
     {
-      pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData,EVR_OB));
+      pixelSequence = new DcmPixelSequence(DCM_PixelSequenceTag);
       if (pixelSequence == NULL) result = EC_MemoryExhausted;
       else
       {
         // create empty offset table
-        offsetTable = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+        offsetTable = new DcmPixelItem(DCM_PixelItemTag);
         if (offsetTable == NULL) result = EC_MemoryExhausted;
         else pixelSequence->insert(offsetTable);
       }

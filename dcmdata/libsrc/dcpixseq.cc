@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -129,7 +129,7 @@ void DcmPixelSequence::print(STD_NAMESPACE ostream &out,
             } while (itemList->seek(ELP_next));
         }
         /* print pixel sequence end line */
-        DcmTag delimItemTag(DCM_SequenceDelimitationItem);
+        DcmTag delimItemTag(DCM_SequenceDelimitationItemTag);
         if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
@@ -405,7 +405,7 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 
     while ((offset < compressedLen) && (result.good()))
     {
-        fragment = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
+        fragment = new DcmPixelItem(DCM_PixelItemTag);
         if (fragment == NULL)
             result = EC_MemoryExhausted;
         else

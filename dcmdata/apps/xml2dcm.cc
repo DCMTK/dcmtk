@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -434,7 +434,7 @@ static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
             if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "pixel-item")) == 0)
             {
                 /* create new pixel item */
-                DcmPixelItem *newItem = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
+                DcmPixelItem *newItem = new DcmPixelItem(DCM_PixelItemTag);
                 if (newItem != NULL)
                 {
                     sequence->insert(newItem);
@@ -504,7 +504,7 @@ static OFCondition parseDataSet(DcmItem *dataset,
                     if (newElem->getTag() == DCM_PixelData)
                     {
                         /* create new pixel sequence */
-                        DcmPixelSequence *sequence = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
+                        DcmPixelSequence *sequence = new DcmPixelSequence(DCM_PixelSequenceTag);
                         if (sequence != NULL)
                         {
                             /* ... insert it into the dataset and proceed with the pixel items */

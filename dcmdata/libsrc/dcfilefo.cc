@@ -54,7 +54,7 @@
 
 
 DcmFileFormat::DcmFileFormat()
-  : DcmSequenceOfItems(InternalUseTag),
+  : DcmSequenceOfItems(DCM_InternalUseTag),
     FileReadMode(ERM_autoDetect)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
@@ -69,7 +69,7 @@ DcmFileFormat::DcmFileFormat()
 
 DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
                              OFBool deepCopy)
-  : DcmSequenceOfItems(InternalUseTag),
+  : DcmSequenceOfItems(DCM_InternalUseTag),
     FileReadMode(ERM_autoDetect)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();

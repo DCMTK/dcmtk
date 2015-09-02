@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,8 +27,21 @@
 #include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmdata/dcvr.h"
 
+/*
+** Defines
+*/
+
 /// default attribute name for unknown attributes
 #define DcmTag_ERROR_TagName    "Unknown Tag & Data"
+
+/// macro for the "item" tag (avoid VR lookup)
+#define DCM_ItemTag (DcmTag(DCM_Item, EVR_na))
+/// macro for the "item delimitation item" tag (avoid VR lookup)
+#define DCM_ItemDelimitationItemTag (DcmTag(DCM_ItemDelimitationItem, EVR_na))
+/// macro for the "sequence delimitation item" tag (avoid VR lookup)
+#define DCM_SequenceDelimitationItemTag (DcmTag(DCM_SequenceDelimitationItem, EVR_na))
+/// macro for the "internal use" tag (an attribute that is never used in DICOM)
+#define DCM_InternalUseTag (DcmTag(DcmTagKey(0xfffe, 0xfffe), EVR_UNKNOWN))
 
 
 /** this class encapsulates an attribute tag (group, element) and a VR.
@@ -203,13 +216,5 @@ private:
     OFCondition errorFlag;
 
 };
-
-
-// *** global constants ********************************
-
-
-#define ItemTag (DcmTag(DCM_Item))
-#define InternalUseTag (DcmTag(DcmTagKey(0xfffe, 0xfffe)))
-
 
 #endif /* !DCTAG_H */

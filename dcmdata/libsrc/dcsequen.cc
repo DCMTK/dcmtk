@@ -290,7 +290,7 @@ void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
             } while (itemList->seek(ELP_next));
         }
         /* print sequence end line */
-        DcmTag delimItemTag(DCM_SequenceDelimitationItem);
+        DcmTag delimItemTag(DCM_SequenceDelimitationItemTag);
         if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
@@ -546,7 +546,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         inStream.read(&elementTag, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
-        // tag has ben read
+        // tag has been read
 
         DcmTag newTag(groupTag, elementTag);
 
@@ -787,13 +787,13 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
                         if (outStream.avail() >= 8)
                         {
                             // write sequence delimitation item
-                            DcmTag delim(DCM_SequenceDelimitationItem);
+                            const DcmTag delim(DCM_SequenceDelimitationItemTag);
                             errorFlag = writeTag(outStream, delim, oxfer);
                             Uint32 delimLen = 0L;
                             outStream.write(&delimLen, 4); // 4 bytes length
                         } else {
                             // the complete sequence is written but it
-                            // is not possible to write the delimination item into the buffer.
+                            // is not possible to write the delimitation item into the buffer.
                             errorFlag = EC_StreamNotifyClient;
                             setTransferState(ERW_inWork);
                         }
@@ -907,11 +907,11 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                     if (outStream.avail() >= 4)
                     {
                         // write sequence delimitation item
-                        DcmTag delim(DCM_SequenceDelimitationItem);
+                        const DcmTag delim(DCM_SequenceDelimitationItemTag);
                         errorFlag = writeTag(outStream, delim, oxfer);
                     } else {
                         // Every subelement of the item was written but it
-                        // is not possible to write the delimination item
+                        // is not possible to write the delimitation item
                         // into the buffer.
                         setTransferState(ERW_inWork);
                         errorFlag = EC_StreamNotifyClient;

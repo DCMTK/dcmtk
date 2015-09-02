@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,20 @@
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
 
+
+/*
+** Forward declarations
+*/
+
 class DcmPixelItem;
+
+/*
+** Defines
+*/
+
+/// macro for the "pixel sequence" tag
+#define DCM_PixelSequenceTag (DcmTag(DCM_PixelData, EVR_OB))
+
 
 /** this class implements a sequence of pixel items, i.e. the data structure DICOM is using
  *  to store compressed pixel data. The object behaves very much like a sequence, but uses

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,14 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
+
+
+/*
+** Defines
+*/
+
+/// macro for the "pixel item" tag
+#define DCM_PixelItemTag (DcmTag(DCM_Item, EVR_OB))
 
 
 /** this class implements a container for a fragment of compressed pixel data.

@@ -80,7 +80,7 @@
 
 
 DcmItem::DcmItem()
-  : DcmObject(ItemTag),
+  : DcmObject(DCM_ItemTag),
     elementList(NULL),
     lastElementComplete(OFTrue),
     fStartPosition(0),
@@ -479,7 +479,7 @@ void DcmItem::print(STD_NAMESPACE ostream &out,
             } while (elementList->seek(ELP_next));
         }
         /* print item end line */
-        DcmTag delimItemTag(DCM_ItemDelimitationItem);
+        DcmTag delimItemTag(DCM_ItemDelimitationItemTag);
         if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(ItemDelimitationItem)", &delimItemTag);
         else
@@ -1259,7 +1259,8 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
             fStartPosition = inStream.tell();  // start position of this item
             setTransferState(ERW_inWork);
         }
-        DcmTag newTag; OFBool readStopElem = OFFalse;
+        DcmTag newTag;
+        OFBool readStopElem = OFFalse;
         /* start a loop in order to read all elements (attributes) which are contained in the inStream */
         while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete) && !readStopElem)
         {
@@ -1454,7 +1455,7 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
             if (outStream.avail() >= 8)
             {
                 // write Item delimitation
-                DcmTag delim(DCM_ItemDelimitationItem);
+                DcmTag delim(DCM_ItemDelimitationItemTag);
                 errorFlag = writeTag(outStream, delim, oxfer);
                 Uint32 delimLen = 0L;
                 outStream.write(&delimLen, 4); // 4 bytes length
