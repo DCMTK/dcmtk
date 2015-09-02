@@ -360,7 +360,7 @@ public:
     }
     if ( result.bad() )
     {
-	    destination.clear();
+      destination.clear();
     }
     return result;
   }
@@ -849,12 +849,12 @@ public:
     {
       if (*it != NULL)
       {
-	Element *elem = new Element(**it);
-	dst.push_back ( elem );
+        Element *elem = new Element(**it);
+        dst.push_back ( elem );
       }
       else
       {
-	DCMIOD_ERROR("Could not copy element while copying container: Element is NULL, skipping");
+        DCMIOD_ERROR("Could not copy element while copying container: Element is NULL, skipping");
       }
       it++;
     }

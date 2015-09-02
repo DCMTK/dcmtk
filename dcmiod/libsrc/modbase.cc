@@ -253,7 +253,7 @@ IODModule::IODModule(): IODComponent()
 
 
 IODModule::IODModule(OFshared_ptr< DcmItem > item,
-		     OFshared_ptr< IODRules > rules)
+  OFshared_ptr< IODRules > rules)
 : IODComponent(item, rules, NULL /* No parent for modules */)
 {
   // nothing to do, IODComponent does the work
