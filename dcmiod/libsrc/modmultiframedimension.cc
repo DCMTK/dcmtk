@@ -500,7 +500,7 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setFunctionalGroup
   if (value == DCM_UndefinedTagKey)
     return EC_IllegalParameter;
 
-  DcmAttributeTag *elem = OFdynamic_cast(DcmAttributeTag*, newDicomElement(DCM_FunctionalGroupPointer));
+  DcmAttributeTag *elem = OFstatic_cast(DcmAttributeTag*, newDicomElement(DCM_FunctionalGroupPointer));
   if (elem == NULL)
     return EC_InternalError;
 
@@ -531,7 +531,7 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setDimensionIndexP
   if (value == DCM_UndefinedTagKey)
     return EC_IllegalParameter;
 
-  DcmAttributeTag *elem = OFdynamic_cast(DcmAttributeTag*, newDicomElement(DCM_DimensionIndexPointer));
+  DcmAttributeTag *elem = OFstatic_cast(DcmAttributeTag*, newDicomElement(DCM_DimensionIndexPointer));
   if (elem == NULL)
     return EC_InternalError;
 

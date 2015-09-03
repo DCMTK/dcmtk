@@ -150,7 +150,7 @@ OFCondition IODImagePixelModule::getICCProfile(OFVector<Uint8>& values)
   OFCondition result = m_Item->findAndGetElement(DCM_ICCProfile, elem);
   if (result.good())
   {
-    DcmOtherByteOtherWord* ob = OFdynamic_cast(DcmOtherByteOtherWord*, elem);
+    DcmOtherByteOtherWord* ob = OFstatic_cast(DcmOtherByteOtherWord*, elem);
     if (ob)
       return DcmIODUtil::copyFromUint8Array<OFVector<Uint8> > (ob, values);
     else

@@ -79,7 +79,7 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(DcmItem &dataset,
   if (result.good())
   {
     /* copy object from search stack */
-    delem = OFdynamic_cast( DcmElement*, stack.top()->clone() );
+    delem = OFstatic_cast ( DcmElement*, stack.top()->clone() );
     /* we need a reference to the original element in order to determine the SpecificCharacterSet */
     checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName);
   }
