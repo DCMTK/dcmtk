@@ -1,0 +1,47 @@
+
+CREDITS
+
+We would like to thank the following individuals, companies and organizations
+(in alphabetical order) for supporting the development and maintenance of the
+Open Source DICOM Toolkit DCMTK:
+
+
+DKFZ: The work on the DCMTK module "dcmrt" was supported in part by funding
+  from the Deutsches Krebsforschungszentrum (DKFZ), Heidelberg, Germany.
+
+Epilepsieforschung: The Gesellschaft fuer Epilepsieforschung e.V. (Bielefeld,
+  Germany) supported the DCMTK by sponsoring the initial development of the
+  tool "dcmrecv" and the underlying class "DcmStorageSCP".
+
+ICSMED: From 2006 to 2012, the work on the DCMTK was supported by employees of
+  the ICSMED AG (Oldenburg, Germany), a spin-off from the OFFIS institute.
+
+ITH icoserve: The ITH icoserve technology for healthcare GmbH (Innsbruck,
+  Austria) regularly reports issues to the DCMTK team and contributes patches.
+  The company is also known for testing the latest DCMTK snapshots and providing
+  useful feedback.
+
+J. Riesmeier: The work on the DCMTK is supported by Joerg Riesmeier (Oldenburg,
+  Germany), a former employee of both the OFFIS institute and the ICSMED company
+  who now works as a freelancer.
+
+M. Malaterre: The GDCM developer Mathieu Malaterre (Lyon, France) regularly
+  reports possible issues to the DCMTK team.  He is also responsible for
+  packaging the DCMTK library and tools for the Debian operating system.
+
+Open Connections: The work on the DCMTK is supported by employees of the Open
+  Connections GmbH (Oldenburg, Germany), a spin-off from the OFFIS institute.
+
+QIICR: The work on various DCMTK modules was supported in part by funding from
+  the National Institutes of Health and the NCI Informatics Technology for
+  Cancer Research (ITCR) initiative to the Quantitative Image Informatics for
+  Cancer Research (QIICR) project, award U24 CA180918.
+
+VISUS: The work on various extensions of the DCMTK was supported in part by
+  funding from the VISUS Technology Transfer GmbH (Bochum, Germany).
+
+
+Please note that this list does not claim to be exhaustive.  Just send us an
+email if you think that you or your company/organization should also be listed.
+
+DCMTK Team, 2015-09-10
