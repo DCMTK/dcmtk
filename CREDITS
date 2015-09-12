@@ -7,7 +7,7 @@ Open Source DICOM Toolkit DCMTK:
 
 
 DKFZ: The work on the DCMTK module "dcmrt" was supported in part by funding
-  from the Deutsches Krebsforschungszentrum (DKFZ), Heidelberg, Germany.
+  from the Deutsches Krebsforschungszentrum (Heidelberg, Germany).
 
 Epilepsieforschung: The Gesellschaft fuer Epilepsieforschung e.V. (Bielefeld,
   Germany) supported the DCMTK by sponsoring the initial development of the
@@ -40,8 +40,11 @@ QIICR: The work on various DCMTK modules was supported in part by funding from
 VISUS: The work on various extensions of the DCMTK was supported in part by
   funding from the VISUS Technology Transfer GmbH (Bochum, Germany).
 
+YXLON: The work on the initial version of the DICONDE data dictionary was
+  supported by funding from the YXLON International GmbH (Hamburg, Germany).
+
 
 Please note that this list does not claim to be exhaustive.  Just send us an
 email if you think that you or your company/organization should also be listed.
 
-DCMTK Team, 2015-09-10
+DCMTK Team, 2015-09-12
