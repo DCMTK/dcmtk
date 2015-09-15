@@ -58,6 +58,13 @@
 /* Define the default directory where support data files reside. */
 #undef DEFAULT_SUPPORT_DATA_DIR
 
+/* Define if we are compiling for loading external dictionary from default
+   path. */
+#undef ENABLE_EXTERNAL_DICTIONARY
+
+/* Define if we are compiling for enabling external private tag dictionary. */
+#undef ENABLE_PRIVATE_TAGS
+
 /* Define the environment variable path separator. */
 #ifndef ENVIRONMENT_PATH_SEPARATOR
 #define ENVIRONMENT_PATH_SEPARATOR ':'
@@ -1020,10 +1027,6 @@ typedef unsigned short ushort;
 #endif
 
 
-/* Define if we are compiling for loading external dictionary from default
-   path. */
-#undef WITH_EXTERNAL_DICTIONARY
-
 /* Define if we are compiling with libiconv support. */
 #undef WITH_LIBICONV
 
@@ -1038,9 +1041,6 @@ typedef unsigned short ushort;
 
 /* Define if we are compiling with OpenSSL support. */
 #undef WITH_OPENSSL
-
-/* Define if we are compiling for built-in private tag dictionary. */
-#undef WITH_PRIVATE_TAGS
 
 /* Define if we are compiling with libsndfile support. */
 #undef WITH_SNDFILE

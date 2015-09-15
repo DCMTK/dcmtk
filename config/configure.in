@@ -903,13 +903,13 @@ dnl Check for Private Tag support
 dnl -------------------------------------------------------
 
 AC_MSG_CHECKING(whether to enable private tag dictionary)
-AC_ARG_WITH(private-tags,
-[  --with-private-tags     enable private tag dictionary
-  --without-private-tags  don't enable private tag dictionary (default)],
-[ case "$withval" in
+AC_ARG_ENABLE(private-tags,
+[  --enable-private-tags   enable private tag dictionary
+  --disable-private-tags  don't enable private tag dictionary (default)],
+[ case "$enableval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_PRIVATE_TAGS, , [Define if we are compiling for built-in private tag dictionary.])
+    AC_DEFINE(ENABLE_PRIVATE_TAGS, , [Define if we are compiling for enabling external private tag dictionary.])
     AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic", [Define the default data dictionary path for the dcmdata library package.])
     ;;
   *)
@@ -924,13 +924,13 @@ dnl Check for External Dictionary support
 dnl -------------------------------------------------------
 
 AC_MSG_CHECKING(whether to enable loading external dictionary from default path)
-AC_ARG_WITH(external-dict,
-[  --with-external-dict    enable loading of external dictionary (default)
-  --without-external-dict don't load external dictionary],
-[ case "$withval" in
+AC_ARG_ENABLE(external-dict,
+[  --enable-external-dict  enable loading of external dictionary (default)
+  --disable-external-dict don't load external dictionary],
+[ case "$enableval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
+    AC_DEFINE(ENABLE_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -939,7 +939,7 @@ AC_ARG_WITH(external-dict,
     ;;
   esac ],
   AC_MSG_RESULT(yes)
-  AC_DEFINE(WITH_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
+  AC_DEFINE(ENABLE_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
 )
 
 dnl -------------------------------------------------------
@@ -947,16 +947,16 @@ dnl Check for Built-in (compiled-in) Dictionary support
 dnl -------------------------------------------------------
 
 AC_MSG_CHECKING(whether to enable built-in dictionary loading)
-AC_ARG_WITH(builtin-dict,
-[  --with-builtin-dict     enable loading of built-in dictionary
-  --without-builtin-dict  don't load built-in dictionary (default)],
-[ case "$withval" in
+AC_ARG_ENABLE(builtin-dict,
+[  --enable-builtin-dict   enable loading of built-in dictionary
+  --disable-builtin-dict  don't load built-in dictionary (default)],
+[ case "$enableval" in
   yes)
     AC_MSG_RESULT(yes)
     dnl Remember for later evaluation when building dcmdata libary, i.e. for
     dnl including the populated dictionary object (dcdictzz.o) and not the
     dnl empty dummy dictionary (dcdictbi.o) in dcmdata
-    WITH_BUILTIN_DICTIONARY=true
+    DCMTK_ENABLE_BUILTIN_DICTIONARY=true
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -1354,7 +1354,7 @@ AC_SUBST(TCPWRAPPERLIBS)
 AC_SUBST(SNDFILELIBS)
 AC_SUBST(ICONVLIBS)
 AC_SUBST(DEBUG)
-AC_SUBST(WITH_BUILTIN_DICTIONARY)
+AC_SUBST(DCMTK_ENABLE_BUILTIN_DICTIONARY)
 
 AC_OUTPUT(Makefile.def Makefile)
 

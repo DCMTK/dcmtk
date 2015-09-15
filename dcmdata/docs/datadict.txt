@@ -56,10 +56,10 @@ CHANGING DICTIONARY DEFAULTS
 Autoconf as well as CMake provide options to change their default dictionary
 behaviour.  For autoconf, configure offers the options:
 
-  --with-external-dict    enable loading of external dictionary (default)
-  --without-external-dict don't load external dictionary
-  --with-builtin-dict     enable loading of built-in dictionary (default)
-  --without-builtin-dict  don't load built-in dictionary
+  --enable-external-dict    enable loading of external dictionary (default)
+  --disable-external-dict   don't load external dictionary
+  --enable-builtin-dict     enable loading of built-in dictionary (default)
+  --disable-builtin-dict    don't load built-in dictionary
 
 They can be used toggle both dictionaries on and off: If the external
 dictionary is turned off, it is not tried to load it from any default
@@ -67,8 +67,8 @@ location.
 
 When building with CMake, the related options are called
 
-  - DCMTK_WITH_EXTERNAL_DICTIONARY
-  - DCMTK_WITH_BUILTIN_DICTIONARY
+  - DCMTK_ENABLE_EXTERNAL_DICTIONARY
+  - DCMTK_ENABLE_BUILTIN_DICTIONARY
 
 The built-in dictionary, if enabled, is always loaded first on startup,
 followed by any external dictionary.  Data dictionary entries loaded later in
@@ -80,7 +80,7 @@ built-in dictionary. If both external and built-in version are enabled,
 the global data dictionary is populated first with the compiled-in data,
 and afterwards the external dictionary is loaded. If the latter is the
 default one shipping with DCMTK (dicom.dic) then the external dictionary
-provides no extra information since it contains exactly the same datas as
+provides no extra information since it contains exactly the same data as
 the built-in one but only takes time loading. Thus it only makes sense
 to use enable both options if the external dictionary is modified to include
 (only) additional information not available in the built-in dictionary.
@@ -150,7 +150,7 @@ DATA DICTIONARIES INCLUDED IN DCMTK (DICOM.DIC, PRIVATE.DIC AND BUILT-IN)
 
 An example DICOM data dictionary can be found in dcmdata/data/dicom.dic
 which is also installed (using autoconf or CMake) and used as the default
-external dicitionary (if external default dictionary is enabled).
+external dictionary (if external default dictionary is enabled).
 
 The example data dictionary is relatively complete and includes all
 standard DICOM tags (see the header of the file, where the implemented
@@ -165,9 +165,9 @@ taken over from other DICOM toolkits and various other sources like
 Conformance Statements.  There is no guarantee that the tag information
 contained is valid or even complete.  Per default, this dictionary is not
 taken into account.  It can be enabled to load on startup as an extra
-external dictionary using autoconf's configure option "--with-private-tags"
-and in CMake using the option "DCMTK_WITH_PRIVATE_TAGS".  Enabling will result
-in private.dic being added to the DCM_DICT_DEFAULT_PATH which lists those
+external dictionary using autoconf's configure option "--enable-private-tags"
+and in CMake using the option "DCMTK_ENABLE_PRIVATE_TAGS".  Enabling will
+result in private.dic being added to the DCM_DICT_DEFAULT_PATH which lists those
 external dictionaries to be loaded on startup (see above).  Note that the
 private tag option is only considered if external dictionaries are not
 turned off.
@@ -215,4 +215,4 @@ already use the old name and might subsequently fail to compile.
 
 OFFIS e.V., Oldenburg, Germany
 
-Last revised: 2015-08-25 (Onken).
+Last revised: 2015-09-15 (Onken).

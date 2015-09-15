@@ -36,7 +36,7 @@ privatedic = $(top_srcdir)/data/private.dic
 # dictionary should be used, then dicdictzz must be built and included,
 # otherwise the dummy built-in dictionary dcdictbi comes into play
 
-ifdef WITH_BUILTIN_DICTIONARY
+ifdef DCMTK_ENABLE_BUILTIN_DICTIONARY
 dict_objs = dcdictzz.o dctagkey.o dcdicent.o dcdict.o dcvr.o dchashdi.o
 else
 dict_objs = dcdictbi.o dctagkey.o dcdicent.o dcdict.o dcvr.o dchashdi.o

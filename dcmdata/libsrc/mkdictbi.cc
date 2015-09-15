@@ -41,7 +41,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-#define PRIVATE_TAGS_IFNAME "WITH_PRIVATE_TAGS"
+#define PRIVATE_TAGS_IFNAME "ENABLE_PRIVATE_TAGS"
 
 static const char*
 rr2s(DcmDictRangeRestriction rr)

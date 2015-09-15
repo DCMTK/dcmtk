@@ -900,7 +900,7 @@
 #cmakedefine WITH_OPENSSL
 
 /* Define if we are compiling for built-in private tag dictionary */
-#cmakedefine WITH_PRIVATE_TAGS
+#cmakedefine ENABLE_PRIVATE_TAGS
 
 /* Define if we are compiling with sndfile support. */
 #cmakedefine WITH_SNDFILE

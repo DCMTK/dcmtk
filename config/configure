@@ -624,7 +624,7 @@ ac_includes_default="\
 #endif"
 
 ac_subst_vars='LTLIBOBJS
-WITH_BUILTIN_DICTIONARY
+DCMTK_ENABLE_BUILTIN_DICTIONARY
 DEBUG
 ICONVLIBS
 SNDFILELIBS
@@ -718,9 +718,9 @@ enable_debug
 enable_threads
 enable_lfs
 enable_std_includes
-with_private_tags
-with_external_dict
-with_builtin_dict
+enable_private_tags
+enable_external_dict
+enable_builtin_dict
 enable_rpath
 with_opensslinc
 with_openssl
@@ -1374,17 +1374,17 @@ Optional Features:
   --disable-lfs           compile without LFS support
   --enable-std-includes   use C++ ANSI standard includes (default: auto)
   --disable-std-includes  use old C++ includes
+  --enable-private-tags   enable private tag dictionary
+  --disable-private-tags  don't enable private tag dictionary (default)
+  --enable-external-dict  enable loading of external dictionary (default)
+  --disable-external-dict don't load external dictionary
+  --enable-builtin-dict   enable loading of built-in dictionary
+  --disable-builtin-dict  don't load built-in dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-private-tags     enable private tag dictionary
-  --without-private-tags  don't enable private tag dictionary (default)
-  --with-external-dict    enable loading of external dictionary (default)
-  --without-external-dict don't load external dictionary
-  --with-builtin-dict     enable loading of built-in dictionary
-  --without-builtin-dict  don't load built-in dictionary (default)
   --with-opensslinc=DIR   location of OpenSSL includes and libraries
   --with-openssl          include OpenSSL support (default: auto)
   --without-openssl       don't include OpenSSL support
@@ -13550,15 +13550,14 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable private tag dictionary" >&5
 $as_echo_n "checking whether to enable private tag dictionary... " >&6; }
-
-# Check whether --with-private-tags was given.
-if test "${with_private_tags+set}" = set; then :
-  withval=$with_private_tags;  case "$withval" in
+# Check whether --enable-private-tags was given.
+if test "${enable_private_tags+set}" = set; then :
+  enableval=$enable_private_tags;  case "$enableval" in
   yes)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-$as_echo "#define WITH_PRIVATE_TAGS /**/" >>confdefs.h
+$as_echo "#define ENABLE_PRIVATE_TAGS /**/" >>confdefs.h
 
 
 cat >>confdefs.h <<_ACEOF
@@ -13581,15 +13580,14 @@ fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable loading external dictionary from default path" >&5
 $as_echo_n "checking whether to enable loading external dictionary from default path... " >&6; }
-
-# Check whether --with-external-dict was given.
-if test "${with_external_dict+set}" = set; then :
-  withval=$with_external_dict;  case "$withval" in
+# Check whether --enable-external-dict was given.
+if test "${enable_external_dict+set}" = set; then :
+  enableval=$enable_external_dict;  case "$enableval" in
   yes)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-$as_echo "#define WITH_EXTERNAL_DICTIONARY /**/" >>confdefs.h
+$as_echo "#define ENABLE_EXTERNAL_DICTIONARY /**/" >>confdefs.h
 
     ;;
   *)
@@ -13606,7 +13604,7 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-$as_echo "#define WITH_EXTERNAL_DICTIONARY /**/" >>confdefs.h
+$as_echo "#define ENABLE_EXTERNAL_DICTIONARY /**/" >>confdefs.h
 
 
 fi
@@ -13615,14 +13613,13 @@ fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable built-in dictionary loading" >&5
 $as_echo_n "checking whether to enable built-in dictionary loading... " >&6; }
-
-# Check whether --with-builtin-dict was given.
-if test "${with_builtin_dict+set}" = set; then :
-  withval=$with_builtin_dict;  case "$withval" in
+# Check whether --enable-builtin-dict was given.
+if test "${enable_builtin_dict+set}" = set; then :
+  enableval=$enable_builtin_dict;  case "$enableval" in
   yes)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-                WITH_BUILTIN_DICTIONARY=true
+                DCMTK_ENABLE_BUILTIN_DICTIONARY=true
     ;;
   *)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
