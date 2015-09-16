@@ -9,11 +9,12 @@ through a global data dictionary class.
 
 The global data dictionary is loaded within a C++ constructor into the global
 DcmDataDictionary class instance called dcmDataDict once it is accessed for the
-first time from the code.  The dictionary content is populated by two
+first time from the code.  The dictionary content is populated by three
 different approaches:  Either the content (tags, VR, ...) can be compiled
 into the dictionary code, or the dictionary is filled by loading a text file
 on startup from a pre-defined file path (also called an "external" data
-dictionary).
+dictionary).  Lastly, DCMTK will load one or more additional external
+dictionaries from the path set in the environment variable DCMDICTPATH, if set.
 
 The built-in approach offers the advantage that a binary will not have to
 load any information from a separate file which may get lost or or used in an
@@ -70,24 +71,29 @@ When building with CMake, the related options are called
   - DCMTK_ENABLE_EXTERNAL_DICTIONARY
   - DCMTK_ENABLE_BUILTIN_DICTIONARY
 
+-----------------------------------------------------------------------------
+DICTIONARY LOAD ORDER AND USING MULTIPLE DICTIONARIES
+-----------------------------------------------------------------------------
+
 The built-in dictionary, if enabled, is always loaded first on startup,
 followed by any external dictionary.  Data dictionary entries loaded later in
 the load sequence override entries loaded earlier.
 
 Note that most of the time (no matter whether using autoconf or CMake) it
-makes sense to enable only the built-in dictionary or only the
-built-in dictionary. If both external and built-in version are enabled,
-the global data dictionary is populated first with the compiled-in data,
-and afterwards the external dictionary is loaded. If the latter is the
-default one shipping with DCMTK (dicom.dic) then the external dictionary
-provides no extra information since it contains exactly the same data as
-the built-in one but only takes time loading. Thus it only makes sense
-to use enable both options if the external dictionary is modified to include
-(only) additional information not available in the built-in dictionary.
+makes sense to enable only the built-in dictionary or only the external
+dictionary. If both external and built-in version are enabled, the global data
+dictionary is populated first with the compiled-in data, and afterwards the
+external dictionary is loaded. If the latter is the default one shipping with
+DCMTK (dicom.dic) then the external dictionary provides no extra information
+since it contains exactly the same data as the built-in one but only takes time
+loading.  Thus it only makes sense to use enable both options if the external
+dictionary is modified to include (only) additional information not available in
+the built-in dictionary.
 
 If the user disables both options, no dictionary will be loaded per default
 on startup.  However, a dictionary can be defined using the DCMDICTPATH
-environment variable (see below).
+environment variable (see below).  If DCMDICTPATH is used, the default external
+dictionary will not be loaded at all.
 
 Application programs should check that a data dictionary has been loaded
 before using the functionality of the dcmdata library.  The absence of
@@ -169,27 +175,21 @@ external dictionary using autoconf's configure option "--enable-private-tags"
 and in CMake using the option "DCMTK_ENABLE_PRIVATE_TAGS".  Enabling will
 result in private.dic being added to the DCM_DICT_DEFAULT_PATH which lists those
 external dictionaries to be loaded on startup (see above).  Note that the
-private tag option is only considered if external dictionaries are not
-turned off.
+private tag option is only considered for external dictionaries if external
+dictionaries are not turned off.
 
-DCMTK also includes two built-in dictionary source files, dcdictbi.cc and
-dcdictzz.cc. dcdictbi is empty and does not contain any tag information at
-all.  It is compiled into the source code if the built-in dictionary is not
-enabled during build configuration at all. Thus any tag information must
-come from external dictionaries, instead.
-
-dcdictzz.cc contains all tag information that is also provided in DCMTK's
-dicom.dic file.  dcdictzz is used if the user enables the built-in during
-build configuration.
+DCMTK also includes two predefined built-in dictionaries, one fully populated
+containing the information from DCMTK's dicom.dic file, and one that is empty.
+Both are defined in dcdictbi.cc and the one to be used is selected by the
+builtin dictionary build options (see above).
 
 The code for a useful built-in data dictionary can be regenerated at any time
 by the mkdictbi program (dcmdata/libsrc/mkdictbi).  The dcmdata library
 Makefiles (for autoconf dcmdata/libsrc/Makefile.in, and for CMake
-dcmdata/libsrc/CMakeLists.txt) include a target (builtindict) for this
-purpose.  The Makefiles also includes a target (nobuiltindict) to reset back
-to an empty built-in data dictionary.  By making the built-in data
-dictionary, rebuilding the libdcmdata.a library and relinking all your
-applications will ensure that the built-in data dictionary is used.
+dcmdata/libsrc/CMakeLists.txt) include a target (updatebuiltindict) for this
+purpose.  After regenerating dcdictbi.cc, rebuilding the libdcmdata.a library
+and relinking all your applications will ensure that the built-in data
+dictionary is used.
 
 -----------------------------------------------------------------------------
 TAG NAME CONSTANTS FOR USE IN APPLICATIONS
@@ -204,15 +204,16 @@ when compiling code which includes the dcdeftag.h header file.  Thus, when
 adding new entries to the data dictionary, care should be taken to ensure
 that attribute names are not duplicated for distinct tags.
 The dcmdata library Makefiles (for autoconf dcmdata/libsrc/Makefile.in and for
-CMake dcmdata/libsrc/CMakeLists.txt) include a target (gendeftag) which
-generates the dcmdata/include/dcmtk/dcmdata/dcdeftag.h
-header file.  The header file should be regenerated whenever additions or
-name modifications are made to the data dictionary.  Care should be taken
-before modifying any tag names since existing application programs may
-already use the old name and might subsequently fail to compile.
+CMake dcmdata/libsrc/CMakeLists.txt) include a target (updatedeftag) which
+builds the mkdeftag tool and uses it to generate the
+dcmdata/include/dcmtk/dcmdata/dcdeftag.h header file.  The header file should
+be regenerated whenever additions or name modifications are made to the data
+dictionary.  Care should be taken before modifying any tag names since existing
+application programs may already use the old name and might subsequently fail
+to compile.
 
 ------------
 
 OFFIS e.V., Oldenburg, Germany
 
-Last revised: 2015-09-15 (Onken).
+Last revised: 2015-09-16 (Onken).

@@ -53,6 +53,9 @@
 /* Define the default data dictionary path for the dcmdata library package */
 #define DCM_DICT_DEFAULT_PATH "@DCM_DICT_DEFAULT_PATH@"
 
+/* Define if we want a populated builtin dictionary */
+#cmakedefine ENABLE_BUILTIN_DICTIONARY "@ENABLE_BUILTIN_DICTIONARY@"
+
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR '@ENVIRONMENT_PATH_SEPARATOR@'
 

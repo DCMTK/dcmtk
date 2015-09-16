@@ -62,6 +62,9 @@
    path. */
 #undef ENABLE_EXTERNAL_DICTIONARY
 
+/* Define if we are compiling with built-in dictionary */
+#undef ENABLE_BUILTIN_DICTIONARY
+
 /* Define if we are compiling for enabling external private tag dictionary. */
 #undef ENABLE_PRIVATE_TAGS
 

@@ -493,21 +493,6 @@ dcdictbi.o: dcdictbi.cc ../include/dcmtk/dcmdata/dcdict.h \
  ../include/dcmtk/dcmdata/dchashdi.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmdata/dcdefine.h
-dcdictzz.o: dcdictzz.cc ../include/dcmtk/dcmdata/dcdict.h \
- ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../include/dcmtk/dcmdata/dchashdi.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../include/dcmtk/dcmdata/dcdefine.h ../include/dcmtk/dcmdata/dcdicent.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcvr.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h
 dcdirrec.o: dcdirrec.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \

@@ -162,6 +162,12 @@ DOXYGEN
     (e.g. HAVE_WINDOWS_H). Using this macro at the appropriate locations
     could be a solution for this problem.
 
+ENABLE_BUILTIN_DICTIONARY
+  Affected: dcmdata
+  Type of modification: Enables or disables population of the builtin tag
+  dictionary that is loaded on DCMTK startup into the global data dictionary
+  object.
+
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
   Type of modification: Activates experimental or rarely used feature
@@ -369,7 +375,7 @@ SUPPRESS_CREATE_STAMP
   Affected: dcmdata
   Type of modification: Activates experimental or rarely used feature
   Explanation: When defined, suppresses the creation of a time stamp
-    comment when re-generating dcdeftag.h and dcdictzz.cc.
+    comment when re-generating dcdeftag.h and dcdictbi.cc.
 
 USE__LOCKING
   Affected: dcmnet

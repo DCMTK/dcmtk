@@ -262,3 +262,14 @@ int main(int argc, char* argv[])
     dcmDataDict.unlock();
     return 0;
 }
+
+void
+DcmDataDictionary::loadBuiltinDictionary()
+{
+  /*
+   * * Empty Stub.
+   **
+   ** Used to keep compiler happy when building mkdictbi since it links itself
+   ** against dcdict.cc.
+   */
+}

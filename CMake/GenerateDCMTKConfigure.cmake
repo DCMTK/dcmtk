@@ -1,8 +1,10 @@
 # Compiled-in dictionary support
 IF(DCMTK_ENABLE_BUILTIN_DICTIONARY)
+  SET(ENABLE_BUILTIN_DICTIONARY 1)
   MESSAGE(STATUS "Info: DCMTK will compile with built-in (compiled-in) dictionary")
   # No extra variable needed since its only evaluated in CMake files
 ELSE(DCMTK_ENABLE_BUILTIN_DICTIONARY)
+  SET(ENABLE_BUILTIN_DICTIONARY "")
   MESSAGE(STATUS "Info: DCMTK will compile without built-in (compiled-in) dictionary")
   # No extra variable needed since its only evaluated in CMake files
 ENDIF(DCMTK_ENABLE_BUILTIN_DICTIONARY)
