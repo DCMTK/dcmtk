@@ -100,7 +100,7 @@ ELSE(WIN32 or MINGW) # built-in dictionary turned off on Unix per default
   OPTION(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup" ON)
 ENDIF(WIN32 OR MINGW)
 if (NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND NOT DCMTK_ENABLE_BUILTIN_DICTIONARY)
-  MESSAGE(WARNING "Either external or built-in dictionary should be enabled, otherwise dicionary must be loaded manually on startup!")
+  MESSAGE(WARNING "Either external or built-in dictionary should be enabled, otherwise dictionary must be loaded manually on startup!")
 ENDIF(NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND NOT DCMTK_ENABLE_BUILTIN_DICTIONARY)
 # If no external dictionary is loaded on startup, one cannot ask for loading private.dic either
 IF(NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND DCMTK_ENABLE_PRIVATE_TAGS)
