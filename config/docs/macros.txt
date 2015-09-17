@@ -164,9 +164,11 @@ DOXYGEN
 
 ENABLE_BUILTIN_DICTIONARY
   Affected: dcmdata
-  Type of modification: Enables or disables population of the builtin tag
-  dictionary that is loaded on DCMTK startup into the global data dictionary
-  object.
+  Type of modification: Enables or disables population of builtin dictionary 
+  Explanation: If enabled, DCMTK's global builtin dictionary, that is always
+    loaded on startup, is populated with known DICOM tags.  Otherwise, the
+    builtin dictionary stays empty.  For more further information about
+    dictionary configuration read dcmdata/docs/datadict.txt.
 
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
