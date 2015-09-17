@@ -102,10 +102,6 @@ ENDIF(WIN32 OR MINGW)
 if (NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND NOT DCMTK_ENABLE_BUILTIN_DICTIONARY)
   MESSAGE(WARNING "Either external or built-in dictionary should be enabled, otherwise dictionary must be loaded manually on startup!")
 ENDIF(NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND NOT DCMTK_ENABLE_BUILTIN_DICTIONARY)
-# If no external dictionary is loaded on startup, one cannot ask for loading private.dic either
-IF(NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND DCMTK_ENABLE_PRIVATE_TAGS)
-  MESSAGE(SEND_ERROR "In order to load private dictionary on startup, DCMTK_ENABLE_EXTERNAL_DICTIONARY must be enabled, too!")
-ENDIF(NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND DCMTK_ENABLE_PRIVATE_TAGS)
 
 # Mark various settings as "advanced"
 MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
