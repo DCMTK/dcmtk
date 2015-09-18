@@ -584,8 +584,12 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         PT_Blending,
         /// XA/XRF Grayscale Softcopy Presentation State (XGSPS)
         PT_XAXRFGrayscale,
+        /// Grayscale Planar MPR Volumetric Presentation State (GPVPS)
+        PT_GrayscalePlanarMPR,
+        /// Compositing Planar MPR Volumetric Presentation State (CPVPS)
+        PT_CompositingPlanarMPR,
         /// internal type used to mark the last entry
-        PT_last = PT_XAXRFGrayscale
+        PT_last = PT_CompositingPlanarMPR
     };
 
     /** SR graphic types.  Used for content item SCOORD.

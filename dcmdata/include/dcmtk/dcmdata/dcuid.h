@@ -411,6 +411,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_PseudoColorSoftcopyPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.11.3"
 #define UID_BlendingSoftcopyPresentationStateStorage               "1.2.840.10008.5.1.4.1.1.11.4"
 #define UID_XAXRFGrayscaleSoftcopyPresentationStateStorage         "1.2.840.10008.5.1.4.1.1.11.5"
+#define UID_GrayscalePlanarMPRVolumetricPresentationStateStorage   "1.2.840.10008.5.1.4.1.1.11.6"
+#define UID_CompositingPlanarMPRVolumetricPresentationStateStorage "1.2.840.10008.5.1.4.1.1.11.7"
 #define UID_XRayAngiographicImageStorage                           "1.2.840.10008.5.1.4.1.1.12.1"
 #define UID_EnhancedXAImageStorage                                 "1.2.840.10008.5.1.4.1.1.12.1.1"
 #define UID_XRayRadiofluoroscopicImageStorage                      "1.2.840.10008.5.1.4.1.1.12.2"

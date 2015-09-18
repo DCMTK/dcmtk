@@ -687,6 +687,8 @@ ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.
 PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
 BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
 XAXRFGrayscaleSoftcopyPresentationStateStorage       1.2.840.10008.5.1.4.1.1.11.5
+GrayscalePlanarMPRVolumetricPresentationStateStorage 1.2.840.10008.5.1.4.1.1.11.6
+CompositingPlanarMPRVolumetricPresentationStateStor. 1.2.840.10008.5.1.4.1.1.11.7
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2

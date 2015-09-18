@@ -351,12 +351,14 @@ static const S_ValueTypeNameMap ValueTypeNameMap[] =
 
 static const S_PresentationStateTypeNameMap PresentationStateTypeNameMap[] =
 {
-    {DSRTypes::PT_invalid,        "",                                                 "invalid/unknown presentation state type"},
-    {DSRTypes::PT_Grayscale,      UID_GrayscaleSoftcopyPresentationStateStorage,      "GSPS"},
-    {DSRTypes::PT_Color,          UID_ColorSoftcopyPresentationStateStorage,          "CSPS"},
-    {DSRTypes::PT_PseudoColor,    UID_PseudoColorSoftcopyPresentationStateStorage,    "PCSPS"},
-    {DSRTypes::PT_Blending,       UID_BlendingSoftcopyPresentationStateStorage,       "BSPS"},
-    {DSRTypes::PT_XAXRFGrayscale, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage, "XGSPS"}
+    {DSRTypes::PT_invalid,              "",                                                         "invalid/unknown presentation state type"},
+    {DSRTypes::PT_Grayscale,            UID_GrayscaleSoftcopyPresentationStateStorage,              "GSPS"},
+    {DSRTypes::PT_Color,                UID_ColorSoftcopyPresentationStateStorage,                  "CSPS"},
+    {DSRTypes::PT_PseudoColor,          UID_PseudoColorSoftcopyPresentationStateStorage,            "PCSPS"},
+    {DSRTypes::PT_Blending,             UID_BlendingSoftcopyPresentationStateStorage,               "BSPS"},
+    {DSRTypes::PT_XAXRFGrayscale,       UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,         "XGSPS"},
+    {DSRTypes::PT_GrayscalePlanarMPR,   UID_GrayscalePlanarMPRVolumetricPresentationStateStorage,   "GPVPS"},
+    {DSRTypes::PT_CompositingPlanarMPR, UID_CompositingPlanarMPRVolumetricPresentationStateStorage, "CPVPS"}
 };
 
 
