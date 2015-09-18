@@ -1012,9 +1012,12 @@ static OFString &alternativeStudyTime(DcmItem *dataset,
 
 
 // check whether given SOP Class UID belongs to a multi-frame composite IOD
+// (not sure whether all these IODs should really be treated as "movies"?)
 static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
 {
-    return compare(sopClassUID, UID_BreastTomosynthesisImageStorage) ||
+    return compare(sopClassUID, UID_BreastProjectionXRayImageStorageForPresentation) ||
+           compare(sopClassUID, UID_BreastProjectionXRayImageStorageForProcessing) ||
+           compare(sopClassUID, UID_BreastTomosynthesisImageStorage) ||
            compare(sopClassUID, UID_EnhancedCTImageStorage) ||
            compare(sopClassUID, UID_EnhancedMRColorImageStorage) ||
            compare(sopClassUID, UID_EnhancedMRImageStorage) ||
@@ -1032,12 +1035,17 @@ static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
            compare(sopClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
            compare(sopClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
            compare(sopClassUID, UID_OphthalmicTomographyImageStorage) ||
+           compare(sopClassUID, UID_ParametricMapStorage) ||
            compare(sopClassUID, UID_RTDoseStorage) ||
            compare(sopClassUID, UID_RTImageStorage) ||
            compare(sopClassUID, UID_UltrasoundMultiframeImageStorage) ||
            compare(sopClassUID, UID_VideoEndoscopicImageStorage) ||
            compare(sopClassUID, UID_VideoMicroscopicImageStorage) ||
            compare(sopClassUID, UID_VideoPhotographicImageStorage) ||
+// in fact, the following IOD is a multi-frame image but the individual frames are rather "tiles"
+//         compare(sopClassUID, UID_VLWholeSlideMicroscopyImageStorage) ||
+           compare(sopClassUID, UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage) ||
+           compare(sopClassUID, UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage) ||
            compare(sopClassUID, UID_XRay3DAngiographicImageStorage) ||
            compare(sopClassUID, UID_XRay3DCraniofacialImageStorage) ||
            compare(sopClassUID, UID_XRayAngiographicImageStorage) ||
