@@ -23,11 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2015c and PS 3.7-2015c.
 # File created on 2015-07-05 12:23:01 by J. Riesmeier on thinkpad.
-# File updated manually on 2015-07-05 by J. Riesmeier.
+# File updated manually on 2015-09-18 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - CP 1441, 1454, 1458, 1461
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3561,6 +3561,20 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1441, 1454, 1458, 1461
+#
+(0040,4070)	SQ	OutputDestinationSequence	1	CP_1441
+(0040,4071)	SQ	DICOMStorageSequence	1	CP_1441
+(0040,4072)	SQ	STOWRSStorageSequence	1	CP_1441
+(0040,4073)	UR	StorageURL	1	CP_1441
+(0040,4074)	SQ	XDSStorageSequence	1	CP_1441
+(0028,2002)	CS	ColorSpace	1	CP_1454
+(0040,9213)	FD	DoubleFloatRealWorldValueLastValueMapped	1	CP_1458
+(0040,9214)	FD	DoubleFloatRealWorldValueFirstValueMapped	1	CP_1458
+(0018,1320)	FL	B1rms	1	CP_1461
 #
 #---------------------------------------------------------------------------
 #

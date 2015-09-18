@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-07-05 12:33:39
+**   Date: 2015-09-18 10:59:00
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-07-05 12:33:39"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-09-18 10:59:00"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3900
+** Number of entries: 3909
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -739,6 +739,7 @@
 #define DCM_VariableFlipAngleFlag                DcmTagKey(0x0018, 0x1315)
 #define DCM_SAR                                  DcmTagKey(0x0018, 0x1316)
 #define DCM_dBdt                                 DcmTagKey(0x0018, 0x1318)
+#define DCM_B1rms                                DcmTagKey(0x0018, 0x1320)
 #define DCM_AcquisitionDeviceProcessingDescription DcmTagKey(0x0018, 0x1400)
 #define DCM_AcquisitionDeviceProcessingCode      DcmTagKey(0x0018, 0x1401)
 #define DCM_CassetteOrientation                  DcmTagKey(0x0018, 0x1402)
@@ -1791,6 +1792,7 @@
 #define DCM_RGBLUTTransferFunction               DcmTagKey(0x0028, 0x140f)
 #define DCM_AlphaLUTTransferFunction             DcmTagKey(0x0028, 0x1410)
 #define DCM_ICCProfile                           DcmTagKey(0x0028, 0x2000)
+#define DCM_ColorSpace                           DcmTagKey(0x0028, 0x2002)
 #define DCM_LossyImageCompression                DcmTagKey(0x0028, 0x2110)
 #define DCM_LossyImageCompressionRatio           DcmTagKey(0x0028, 0x2112)
 #define DCM_LossyImageCompressionMethod          DcmTagKey(0x0028, 0x2114)
@@ -2155,6 +2157,11 @@
 #define DCM_PerformedProcedureStepStartDateTime  DcmTagKey(0x0040, 0x4050)
 #define DCM_PerformedProcedureStepEndDateTime    DcmTagKey(0x0040, 0x4051)
 #define DCM_ProcedureStepCancellationDateTime    DcmTagKey(0x0040, 0x4052)
+#define DCM_OutputDestinationSequence            DcmTagKey(0x0040, 0x4070)
+#define DCM_DICOMStorageSequence                 DcmTagKey(0x0040, 0x4071)
+#define DCM_STOWRSStorageSequence                DcmTagKey(0x0040, 0x4072)
+#define DCM_StorageURL                           DcmTagKey(0x0040, 0x4073)
+#define DCM_XDSStorageSequence                   DcmTagKey(0x0040, 0x4074)
 #define DCM_EntranceDoseInmGy                    DcmTagKey(0x0040, 0x8302)
 #define DCM_ParametricMapFrameTypeSequence       DcmTagKey(0x0040, 0x9092)
 #define DCM_ReferencedImageRealWorldValueMappingSequence DcmTagKey(0x0040, 0x9094)
@@ -2163,6 +2170,8 @@
 #define DCM_LUTLabel                             DcmTagKey(0x0040, 0x9210)
 #define DCM_RealWorldValueLastValueMapped        DcmTagKey(0x0040, 0x9211)
 #define DCM_RealWorldValueLUTData                DcmTagKey(0x0040, 0x9212)
+#define DCM_DoubleFloatRealWorldValueLastValueMapped DcmTagKey(0x0040, 0x9213)
+#define DCM_DoubleFloatRealWorldValueFirstValueMapped DcmTagKey(0x0040, 0x9214)
 #define DCM_RealWorldValueFirstValueMapped       DcmTagKey(0x0040, 0x9216)
 #define DCM_QuantityDefinitionSequence           DcmTagKey(0x0040, 0x9220)
 #define DCM_RealWorldValueIntercept              DcmTagKey(0x0040, 0x9224)
