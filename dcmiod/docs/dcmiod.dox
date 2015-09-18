@@ -1,13 +1,13 @@
 /*!
 
-\page mod_dcmiod dcmiod: a library of working with DICOM IODs and modules
+\page mod_dcmiod dcmiod: a library for working with information objects and modules
 
-This module contains classes that represent DICOM IOD (Image Object Definitions)
-from part 3 of the DICOM Standard, including their modules and the elements
-contained thererin. They should ease reading, modifying and writing IODs by
-offering an explicit API for this purpose. The requirements regarding existance
-of elements and their values are pre-configured and can be adapted during
-runtime.
+This module contains classes that represent DICOM IOD (Information Object
+Definitions) from part 3 of the DICOM Standard, including their modules and the
+elements contained therein. They should ease reading, modifying and writing
+IODs by offering an explicit API for this purpose. The requirements regarding
+existence of elements and their values are pre-configured and can be adapted
+during runtime.
 
 The main classes are (in alphabetical order):
 \li \b DcmIODCommon

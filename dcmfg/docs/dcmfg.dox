@@ -1,6 +1,6 @@
 /*!
 
-\page mod_dcmfg dcmfg: a library of working with DICOM Functional Groups
+\page mod_dcmfg dcmfg: a library for working with functional groups
 
 This module contains classes to deal with DICOM Functional Groups as they are
 used in objects of the "Enhanced" family in DICOM. Some but not all functional
@@ -8,7 +8,7 @@ groups have been implemented. However, unknown groups can be read and written,
 and modified using a low(er) level access method.
 
 The main classes are (in alphabetical order):
-\li \b FGInterface
 \li \b FGBase
+\li \b FGInterface
 
 */

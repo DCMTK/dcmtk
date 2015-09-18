@@ -1,13 +1,14 @@
 /*!
 
-\page mod_dcmseg dcmseg: a library of working with DICOM Segmentation Objects
+\page mod_dcmseg dcmseg: a library for working with segmentation objects
 
-This module contains classes to deal with DICOM Segmentation Objects. It can
+This module contains classes to deal with DICOM Segmentation objects. It can
 handle shared and fractional segmentations and is able to create, load, modify
 and save them. Several checks (as possible) make sure that only valid
-Segmentations objects can be written. This module makes heavy use of the dcmiod
-module for managing common IOD attribute as well as the dcmfg module to manage
-the functional groups required for Segmentation objects.
+Segmentations objects can be written. This module makes heavy use of the
+\ref mod_dcmiod "dcmiod" module for managing common IOD attribute as well as
+the \ref mod_dcmfg "dcmfg" module to manage the functional groups required for
+Segmentation objects.
 
 The main class of this module is:
 \li \b DcmSegmentation
