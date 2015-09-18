@@ -27,6 +27,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
+# - Supplement 156
 # - CP 1441, 1454, 1458, 1461
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -3561,6 +3562,58 @@
 (FFFE,E000)	na	Item	1	DICOM
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 156 (Planar MPR Volumetric Presentation State)
+#
+(0028,1224)	OW	SegmentedAlphaPaletteColorLookupTableData	1	Supplement_156
+(0070,1101)	UI	PresentationDisplayCollectionUID	1	Supplement_156
+(0070,1102)	UI	PresentationSequenceCollectionUID	1	Supplement_156
+(0070,1103)	US	PresentationSequencePositionIndex	1	Supplement_156
+(0070,1104)	SQ	RenderedImageReferenceSequence	1	Supplement_156
+(0070,1201)	SQ	VolumetricPresentationStateInputSequence	1	Supplement_156
+(0070,1202)	CS	PresentationInputType	1	Supplement_156
+(0070,1203)	US	InputSequencePositionIndex	1	Supplement_156
+(0070,1204)	CS	Crop	1	Supplement_156
+(0070,1205)	US	CroppingSpecificationIndex	1-n	Supplement_156
+(0070,1206)	CS	CompositingMethod	1	Supplement_156
+(0070,1207)	US	VolumetricPresentationInputNumber	1	Supplement_156
+(0070,1208)	CS	ImageVolumeGeometry	1	Supplement_156
+(0070,1301)	SQ	VolumeCroppingSequence	1	Supplement_156
+(0070,1302)	CS	VolumeCroppingMethod	1	Supplement_156
+(0070,1303)	FD	BoundingBoxCrop	6	Supplement_156
+(0070,1304)	SQ	ObliqueCroppingPlaneSequence	1	Supplement_156
+(0070,1305)	FD	ObliqueCroppingPlane	4	Supplement_156
+(0070,1306)	FD	ObliqueCroppingPlaneNormal	3	Supplement_156
+(0070,1309)	US	CroppingSpecificationNumber	1	Supplement_156
+(0070,1501)	CS	MultiPlanarReconstructionStyle	1	Supplement_156
+(0070,1502)	CS	MPRThicknessType	1	Supplement_156
+(0070,1503)	FD	MPRSlabThickness	1	Supplement_156
+(0070,1505)	FD	MPRTopLeftHandCorner	3	Supplement_156
+(0070,1507)	FD	MPRViewWidthDirection	3	Supplement_156
+(0070,1508)	FD	MPRViewWidth	1	Supplement_156
+(0070,150C)	FL	NumberOfVolumetricCurvePoints	1	Supplement_156
+(0070,150D)	OD	VolumetricCurvePoints	1	Supplement_156
+(0070,1511)	FD	MPRViewHeightDirection	3	Supplement_156
+(0070,1512)	FD	MPRViewHeight	1	Supplement_156
+(0070,1801)	SQ	PresentationStateClassificationComponentSequence	1	Supplement_156
+(0070,1802)	CS	ComponentType	1	Supplement_156
+(0070,1803)	SQ	ComponentInputSequence	1	Supplement_156
+(0070,1804)	US	VolumetricPresentationInputIndex	1	Supplement_156
+(0070,1805)	SQ	PresentationStateCompositorComponentSequence	1	Supplement_156
+(0070,1806)	SQ	WeightingTransferFunctionSequence	1	Supplement_156
+(0070,1807)	US	WeightingLookupTableDescriptor	3	Supplement_156
+(0070,1808)	OB	WeightingLookupTableData	1	Supplement_156
+(0070,1901)	SQ	VolumetricAnnotationSequence	1	Supplement_156
+(0070,1903)	SQ	ReferencedStructuredContextSequence	1	Supplement_156
+(0070,1904)	UI	ReferencedContentItem	1	Supplement_156
+(0070,1905)	SQ	VolumetricPresentationInputAnnotationSequence	1	Supplement_156
+(0070,1907)	CS	AnnotationClipping	1	Supplement_156
+(0070,1A01)	CS	PresentationAnimationStyle	1	Supplement_156
+(0070,1A03)	FD	RecommendedAnimationRate	1	Supplement_156
+(0070,1A04)	SQ	AnimationCurveSequence	1	Supplement_156
+(0070,1A05)	FD	AnimationStepSize	1	Supplement_156
 #
 #---------------------------------------------------------------------------
 #

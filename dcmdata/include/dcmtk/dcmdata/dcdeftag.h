@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-09-18 10:59:00
+**   Date: 2015-09-18 11:18:13
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-09-18 10:59:00"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-09-18 11:18:13"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3909
+** Number of entries: 3956
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1772,6 +1772,7 @@
 #define DCM_SegmentedRedPaletteColorLookupTableData DcmTagKey(0x0028, 0x1221)
 #define DCM_SegmentedGreenPaletteColorLookupTableData DcmTagKey(0x0028, 0x1222)
 #define DCM_SegmentedBluePaletteColorLookupTableData DcmTagKey(0x0028, 0x1223)
+#define DCM_SegmentedAlphaPaletteColorLookupTableData DcmTagKey(0x0028, 0x1224)
 #define DCM_BreastImplantPresent                 DcmTagKey(0x0028, 0x1300)
 #define DCM_PartialView                          DcmTagKey(0x0028, 0x1350)
 #define DCM_PartialViewDescription               DcmTagKey(0x0028, 0x1351)
@@ -2817,6 +2818,52 @@
 #define DCM_RelativeOpacity                      DcmTagKey(0x0070, 0x0403)
 #define DCM_ReferencedSpatialRegistrationSequence DcmTagKey(0x0070, 0x0404)
 #define DCM_BlendingPosition                     DcmTagKey(0x0070, 0x0405)
+#define DCM_PresentationDisplayCollectionUID     DcmTagKey(0x0070, 0x1101)
+#define DCM_PresentationSequenceCollectionUID    DcmTagKey(0x0070, 0x1102)
+#define DCM_PresentationSequencePositionIndex    DcmTagKey(0x0070, 0x1103)
+#define DCM_RenderedImageReferenceSequence       DcmTagKey(0x0070, 0x1104)
+#define DCM_VolumetricPresentationStateInputSequence DcmTagKey(0x0070, 0x1201)
+#define DCM_PresentationInputType                DcmTagKey(0x0070, 0x1202)
+#define DCM_InputSequencePositionIndex           DcmTagKey(0x0070, 0x1203)
+#define DCM_Crop                                 DcmTagKey(0x0070, 0x1204)
+#define DCM_CroppingSpecificationIndex           DcmTagKey(0x0070, 0x1205)
+#define DCM_CompositingMethod                    DcmTagKey(0x0070, 0x1206)
+#define DCM_VolumetricPresentationInputNumber    DcmTagKey(0x0070, 0x1207)
+#define DCM_ImageVolumeGeometry                  DcmTagKey(0x0070, 0x1208)
+#define DCM_VolumeCroppingSequence               DcmTagKey(0x0070, 0x1301)
+#define DCM_VolumeCroppingMethod                 DcmTagKey(0x0070, 0x1302)
+#define DCM_BoundingBoxCrop                      DcmTagKey(0x0070, 0x1303)
+#define DCM_ObliqueCroppingPlaneSequence         DcmTagKey(0x0070, 0x1304)
+#define DCM_ObliqueCroppingPlane                 DcmTagKey(0x0070, 0x1305)
+#define DCM_ObliqueCroppingPlaneNormal           DcmTagKey(0x0070, 0x1306)
+#define DCM_CroppingSpecificationNumber          DcmTagKey(0x0070, 0x1309)
+#define DCM_MultiPlanarReconstructionStyle       DcmTagKey(0x0070, 0x1501)
+#define DCM_MPRThicknessType                     DcmTagKey(0x0070, 0x1502)
+#define DCM_MPRSlabThickness                     DcmTagKey(0x0070, 0x1503)
+#define DCM_MPRTopLeftHandCorner                 DcmTagKey(0x0070, 0x1505)
+#define DCM_MPRViewWidthDirection                DcmTagKey(0x0070, 0x1507)
+#define DCM_MPRViewWidth                         DcmTagKey(0x0070, 0x1508)
+#define DCM_NumberOfVolumetricCurvePoints        DcmTagKey(0x0070, 0x150c)
+#define DCM_VolumetricCurvePoints                DcmTagKey(0x0070, 0x150d)
+#define DCM_MPRViewHeightDirection               DcmTagKey(0x0070, 0x1511)
+#define DCM_MPRViewHeight                        DcmTagKey(0x0070, 0x1512)
+#define DCM_PresentationStateClassificationComponentSequence DcmTagKey(0x0070, 0x1801)
+#define DCM_ComponentType                        DcmTagKey(0x0070, 0x1802)
+#define DCM_ComponentInputSequence               DcmTagKey(0x0070, 0x1803)
+#define DCM_VolumetricPresentationInputIndex     DcmTagKey(0x0070, 0x1804)
+#define DCM_PresentationStateCompositorComponentSequence DcmTagKey(0x0070, 0x1805)
+#define DCM_WeightingTransferFunctionSequence    DcmTagKey(0x0070, 0x1806)
+#define DCM_WeightingLookupTableDescriptor       DcmTagKey(0x0070, 0x1807)
+#define DCM_WeightingLookupTableData             DcmTagKey(0x0070, 0x1808)
+#define DCM_VolumetricAnnotationSequence         DcmTagKey(0x0070, 0x1901)
+#define DCM_ReferencedStructuredContextSequence  DcmTagKey(0x0070, 0x1903)
+#define DCM_ReferencedContentItem                DcmTagKey(0x0070, 0x1904)
+#define DCM_VolumetricPresentationInputAnnotationSequence DcmTagKey(0x0070, 0x1905)
+#define DCM_AnnotationClipping                   DcmTagKey(0x0070, 0x1907)
+#define DCM_PresentationAnimationStyle           DcmTagKey(0x0070, 0x1a01)
+#define DCM_RecommendedAnimationRate             DcmTagKey(0x0070, 0x1a03)
+#define DCM_AnimationCurveSequence               DcmTagKey(0x0070, 0x1a04)
+#define DCM_AnimationStepSize                    DcmTagKey(0x0070, 0x1a05)
 #define DCM_HangingProtocolName                  DcmTagKey(0x0072, 0x0002)
 #define DCM_HangingProtocolDescription           DcmTagKey(0x0072, 0x0004)
 #define DCM_HangingProtocolLevel                 DcmTagKey(0x0072, 0x0006)

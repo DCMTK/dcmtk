@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-09-18 10:59:00
+**   Date: 2015-09-18 11:18:13
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -14776,6 +14776,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_OW, "SegmentedBluePaletteColorLookupTableData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0028, 0x1224, 0x0028, 0x1224,
+      EVR_OW, "SegmentedAlphaPaletteColorLookupTableData", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0028, 0x1300, 0x0028, 0x1300,
       EVR_CS, "BreastImplantPresent", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -21588,6 +21592,190 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0070, 0x0405, 0x0070, 0x0405,
       EVR_CS, "BlendingPosition", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1101, 0x0070, 0x1101,
+      EVR_UI, "PresentationDisplayCollectionUID", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1102, 0x0070, 0x1102,
+      EVR_UI, "PresentationSequenceCollectionUID", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1103, 0x0070, 0x1103,
+      EVR_US, "PresentationSequencePositionIndex", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1104, 0x0070, 0x1104,
+      EVR_SQ, "RenderedImageReferenceSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1201, 0x0070, 0x1201,
+      EVR_SQ, "VolumetricPresentationStateInputSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1202, 0x0070, 0x1202,
+      EVR_CS, "PresentationInputType", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1203, 0x0070, 0x1203,
+      EVR_US, "InputSequencePositionIndex", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1204, 0x0070, 0x1204,
+      EVR_CS, "Crop", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1205, 0x0070, 0x1205,
+      EVR_US, "CroppingSpecificationIndex", 1, -1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1206, 0x0070, 0x1206,
+      EVR_CS, "CompositingMethod", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1207, 0x0070, 0x1207,
+      EVR_US, "VolumetricPresentationInputNumber", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1208, 0x0070, 0x1208,
+      EVR_CS, "ImageVolumeGeometry", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1301, 0x0070, 0x1301,
+      EVR_SQ, "VolumeCroppingSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1302, 0x0070, 0x1302,
+      EVR_CS, "VolumeCroppingMethod", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1303, 0x0070, 0x1303,
+      EVR_FD, "BoundingBoxCrop", 6, 6, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1304, 0x0070, 0x1304,
+      EVR_SQ, "ObliqueCroppingPlaneSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1305, 0x0070, 0x1305,
+      EVR_FD, "ObliqueCroppingPlane", 4, 4, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1306, 0x0070, 0x1306,
+      EVR_FD, "ObliqueCroppingPlaneNormal", 3, 3, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1309, 0x0070, 0x1309,
+      EVR_US, "CroppingSpecificationNumber", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1501, 0x0070, 0x1501,
+      EVR_CS, "MultiPlanarReconstructionStyle", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1502, 0x0070, 0x1502,
+      EVR_CS, "MPRThicknessType", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1503, 0x0070, 0x1503,
+      EVR_FD, "MPRSlabThickness", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1505, 0x0070, 0x1505,
+      EVR_FD, "MPRTopLeftHandCorner", 3, 3, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1507, 0x0070, 0x1507,
+      EVR_FD, "MPRViewWidthDirection", 3, 3, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1508, 0x0070, 0x1508,
+      EVR_FD, "MPRViewWidth", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x150c, 0x0070, 0x150c,
+      EVR_FL, "NumberOfVolumetricCurvePoints", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x150d, 0x0070, 0x150d,
+      EVR_OD, "VolumetricCurvePoints", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1511, 0x0070, 0x1511,
+      EVR_FD, "MPRViewHeightDirection", 3, 3, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1512, 0x0070, 0x1512,
+      EVR_FD, "MPRViewHeight", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1801, 0x0070, 0x1801,
+      EVR_SQ, "PresentationStateClassificationComponentSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1802, 0x0070, 0x1802,
+      EVR_CS, "ComponentType", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1803, 0x0070, 0x1803,
+      EVR_SQ, "ComponentInputSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1804, 0x0070, 0x1804,
+      EVR_US, "VolumetricPresentationInputIndex", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1805, 0x0070, 0x1805,
+      EVR_SQ, "PresentationStateCompositorComponentSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1806, 0x0070, 0x1806,
+      EVR_SQ, "WeightingTransferFunctionSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1807, 0x0070, 0x1807,
+      EVR_US, "WeightingLookupTableDescriptor", 3, 3, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1808, 0x0070, 0x1808,
+      EVR_OB, "WeightingLookupTableData", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1901, 0x0070, 0x1901,
+      EVR_SQ, "VolumetricAnnotationSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1903, 0x0070, 0x1903,
+      EVR_SQ, "ReferencedStructuredContextSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1904, 0x0070, 0x1904,
+      EVR_UI, "ReferencedContentItem", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1905, 0x0070, 0x1905,
+      EVR_SQ, "VolumetricPresentationInputAnnotationSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1907, 0x0070, 0x1907,
+      EVR_CS, "AnnotationClipping", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1a01, 0x0070, 0x1a01,
+      EVR_CS, "PresentationAnimationStyle", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1a03, 0x0070, 0x1a03,
+      EVR_FD, "RecommendedAnimationRate", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1a04, 0x0070, 0x1a04,
+      EVR_SQ, "AnimationCurveSequence", 1, 1, "Supplement_156",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0070, 0x1a05, 0x0070, 0x1a05,
+      EVR_FD, "AnimationStepSize", 1, 1, "Supplement_156",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0072, 0x0002, 0x0072, 0x0002,
