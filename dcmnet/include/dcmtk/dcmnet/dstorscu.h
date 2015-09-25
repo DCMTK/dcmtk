@@ -454,8 +454,6 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
                                           const E_FileReadMode readMode,
                                           const OFBool checkValues);
 
-    // --- static methods ---
-
     /** check given SOP Class UID, SOP Instance UID and Transfer Syntax UID for validity and
      *  conformance to the DICOM standard.  For all UID values, the compliance with the
      *  requirements of the value representation "Unique Identifier" (UI) and value
@@ -464,6 +462,8 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *  For the Transfer Syntax UID, it is checked whether it is known and generally
      *  supported.  Further checks will be performed when the list of presentation contexts is
      *  created for the association negotiation.
+     *  This method is called for each SOP instance that is added to the transfer list by one
+     *  of the following methods: addDicomFile(), addDataset(), addDicomFilesFromDICOMDIR()
      *  @param  sopClassUID        value of the SOP Class UID to be checked
      *  @param  sopInstanceUID     value of the SOP Instance UID to be checked
      *  @param  transferSyntaxUID  value of the Transfer Syntax UID to be checked
@@ -472,10 +472,10 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *                             are rejected.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    static OFCondition checkSOPInstance(const OFString &sopClassUID,
-                                        const OFString &sopInstanceUID,
-                                        const OFString &transferSyntaxUID,
-                                        const OFBool checkValues);
+    virtual OFCondition checkSOPInstance(const OFString &sopClassUID,
+                                         const OFString &sopInstanceUID,
+                                         const OFString &transferSyntaxUID,
+                                         const OFBool checkValues);
 
     /** This method is called each time a SOP instance is sent to a peer.  Since it is called
      *  after the SOP instance has been processed, the transfer entry passed to this method
