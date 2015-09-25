@@ -828,9 +828,15 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     // load SOP instance from DICOM file
                     status = fileformat.loadFile((*CurrentTransferEntry)->Filename, EXS_Unknown, EGL_noChange,
                         DCM_MaxReadLength, (*CurrentTransferEntry)->FileReadMode);
-                    // do not store the dataset pointer in the transfer entry, because this pointer
-                    // will become invalid for the next iteration of this while-loop.
-                    dataset = fileformat.getDataset();
+                    if (status.good())
+                    {
+                        // do not store the dataset pointer in the transfer entry, because this pointer
+                        // will become invalid for the next iteration of this while-loop.
+                        dataset = fileformat.getDataset();
+                    } else {
+                        DCMNET_ERROR("cannot send SOP instance from file: " << (*CurrentTransferEntry)->Filename
+                            << ": " << status.text());
+                    }
                 }
                 // send SOP instance to the peer using a C-STORE request message
                 if (status.good())
