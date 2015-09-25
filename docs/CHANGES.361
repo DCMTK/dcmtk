@@ -1184,7 +1184,7 @@ Changes between releases are documented here.
            dcmsr/tests/tests.cc
            dcmsr/tests/tsrtree.cc
 
-- Added method to look up a context group entr:
+- Added method to look up a context group entry:
   Added method that can be used to look up a coded entry from a context group.
   This method, therefore, allows for retrieving the "official" code meaning or
   for automatically setting the "enhanced encoding mode".
