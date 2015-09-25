@@ -799,6 +799,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     OFString xferName = xfer.getXferName();
     DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
       << sopClassName << " / " << xferName);
+    delete fileformat;
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
