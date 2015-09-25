@@ -42,7 +42,7 @@
 // description of the code meaning to a compiler-friendly but still human-readable representation.
 
 #define CODE_UCUM_Pixels            DSRBasicCodedEntry("{pixels}", "UCUM", "pixels")
-#define CODE_UCUM_Degrees           DSRBasicCodedEntry("deg", "UCUM", "degrees")
+#define CODE_UCUM_Degrees           DSRBasicCodedEntry("deg", "UCUM", "deg")
 #define CODE_UCUM_Minus1To1         DSRBasicCodedEntry("{-1:1}", "UCUM", "{-1:1}")
 #define CODE_UCUM_Millimeter        DSRBasicCodedEntry("mm", "UCUM", "millimeter")
 #define CODE_UCUM_Cm3               DSRBasicCodedEntry("cm3", "UCUM", "cm3")
