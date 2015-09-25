@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation are maintained by
+ *  This software and supporting documentation were developed by
  *
  *    OFFIS e.V.
  *    R&D Division Health
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmiod
+ *  Module:  dcmdata
  *
- *  Author:  Michael Onken
+ *  Author:  Joerg Riesmeier, Michael Onken
  *
  *  Purpose: Static helper functionality for dcmdata module
  *

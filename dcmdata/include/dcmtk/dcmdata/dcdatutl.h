@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  This software and supporting documentation are maintained by
+ *  This software and supporting documentation were developed by
  *
  *    OFFIS e.V.
  *    R&D Division Health
@@ -11,9 +11,9 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module: dcmiod
+ *  Module: dcmdata
  *
- *  Author: Michael Onken
+ *  Author: Joerg Riesmeier, Michael Onken
  *
  *  Purpose: Static helper functionality for dcmdata module
  *
@@ -22,13 +22,14 @@
 #ifndef DCDATUTL_H
 #define DCDATUTL_H
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 
-/** Class with helper functions used within the dcmiod module (and beyond)
+
+/** Class with helper functions used within the dcmdata module (and beyond)
  */
 class DCMTK_DCMDATA_EXPORT DcmDataUtil
 {
