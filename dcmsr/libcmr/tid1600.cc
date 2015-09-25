@@ -483,25 +483,25 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
             CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideHalfLife, 0 /*pos*/, CODE_SRT_HalfLifeOfRadiopharmaceutical, CODE_UCUM_S, "TID 1607 - Row 3", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 4 */
             CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, "TID 1607 - Row 4", check));
-            /* TID 1607 (Image Library Entry Descriptors for PET) Row 4b */
-            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, "TID 1607 - Row 4b", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 5 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_Cm3, "TID 1607 - Row 5", check));
+            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, "TID 1607 - Row 4b", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 6 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideTotalDose, 0 /*pos*/, CODE_DCM_RadionuclideTotalDose, CODE_UCUM_Bq, "TID 1607 - Row 6", check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_Cm3, "TID 1607 - Row 5", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 7 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, "TID 1607 - Row 7", check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideTotalDose, 0 /*pos*/, CODE_DCM_RadionuclideTotalDose, CODE_UCUM_Bq, "TID 1607 - Row 6", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 8 */
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, "TID 1607 - Row 7", check));
+            /* TID 1607 (Image Library Entry Descriptors for PET) Row 9 */
             CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SRT_RouteOfAdministration, "TID 1607 - Row 8", check));
         }
     }
-    /* TID 1607 (Image Library Entry Descriptors for PET) Row 9 to 10
+    /* TID 1607 (Image Library Entry Descriptors for PET) Row 10 to 11
      * - contained in TID 15101 (NM/PET Protocol Context), i.e. not available in the image
      */
-    /* TID 1607 (Image Library Entry Descriptors for PET) Row 11
-     * - tbc: where to get "Radionuclide Incubation Time
+    /* TID 1607 (Image Library Entry Descriptors for PET) Row 12
+     * - "Radionuclide Incubation Time" calculated from time of injection and time of starting the scan
      */
-    /* TID 1607 (Image Library Entry Descriptors for PET) Row 12 to 14
+    /* TID 1607 (Image Library Entry Descriptors for PET) Row 13 to 15
      * - contained in TID 15101 (NM/PET Protocol Context), i.e. available from Modality Worklist, or
      * - tbd: in TID 3470 (NM/PET Acquisition Context), i.e. from the Acquisition Context Module
      */
