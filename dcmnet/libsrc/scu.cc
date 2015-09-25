@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2014, OFFIS e.V.
+ *  Copyright (C) 2008-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -680,7 +680,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 
 // Sends C-STORE request to another DICOM application
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
-                                     const OFString &dicomFile,
+                                     const OFFilename &dicomFile,
                                      DcmDataset *dataset,
                                      Uint16 &rspStatusCode,
                                      const OFString &moveOriginatorAETitle,
@@ -705,12 +705,12 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   req->MessageID = nextMessageID();
   /* Load file if necessary */
   DcmFileFormat *fileformat = NULL;
-  if (!dicomFile.empty())
+  if (!dicomFile.isEmpty())
   {
     fileformat = new DcmFileFormat();
     if (fileformat == NULL)
       return EC_MemoryExhausted;
-    cond = fileformat->loadFile(dicomFile.c_str());
+    cond = fileformat->loadFile(dicomFile);
     if (cond.bad())
     {
       delete fileformat;
@@ -729,7 +729,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   if (sopClassUID.empty() || sopInstanceUID.empty() || ((pcid == 0) && (xferSyntax == EXS_Unknown)))
   {
     DCMNET_ERROR("Cannot send SOP instance, missing information:");
-    if (!dicomFile.empty())
+    if (!dicomFile.isEmpty())
       DCMNET_ERROR("  DICOM Filename   : " << dicomFile);
     DCMNET_ERROR("  SOP Class UID    : " << sopClassUID);
     DCMNET_ERROR("  SOP Instance UID : " << sopInstanceUID);
@@ -1371,7 +1371,7 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
 
   OFString filename = createStorageFilename(incomingObject);
   DcmFileFormat dcmff(incomingObject, OFFalse /* do not copy but take ownership */);
-  result = dcmff.saveFile(filename.c_str());
+  result = dcmff.saveFile(filename);
   if (result.good())
   {
     E_TransferSyntax xferSyntax;
@@ -1388,8 +1388,8 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
 }
 
 OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID *presID,
-                                           const OFString& filename,
-                                           T_DIMSE_C_StoreRQ* request)
+                                           const OFString &filename,
+                                           T_DIMSE_C_StoreRQ *request)
 {
   if (filename.empty())
     return EC_IllegalParameter;
@@ -1413,7 +1413,7 @@ OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID *presID,
     delete filestream;
     if (cond != EC_Normal)
     {
-      unlink(filename.c_str());
+      OFStandard::deleteFile(filename);
     }
     DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, *presID));
   }
@@ -1482,7 +1482,7 @@ OFString DcmSCU::createStorageFilename(DcmDataset *dataset)
 
 
 OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID presID,
-                                       const T_DIMSE_C_StoreRQ& request)
+                                       const T_DIMSE_C_StoreRQ &request)
 {
 
   /* We cannot create the filestream, so ignore the incoming dataset and return an out-of-resources error to the SCU */
@@ -1500,9 +1500,9 @@ OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID presID,
 }
 
 
-void DcmSCU::notifyInstanceStored(const OFString& filename,
-                                  const OFString& sopClassUID,
-                                  const OFString& sopInstanceUID) const
+void DcmSCU::notifyInstanceStored(const OFString &filename,
+                                  const OFString &sopClassUID,
+                                  const OFString &sopInstanceUID) const
 {
   DCMNET_DEBUG("Stored instance to disk:");
   DCMNET_DEBUG("  Filename: " << filename);

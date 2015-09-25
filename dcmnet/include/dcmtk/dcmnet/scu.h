@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2014, OFFIS e.V.
+ *  Copyright (C) 2008-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -291,7 +291,7 @@ public:
    *          failure of the storage request, EC_Normal will be returned.
    */
   virtual OFCondition sendSTORERequest(const T_ASC_PresentationContextID presID,
-                                       const OFString &dicomFile,
+                                       const OFFilename &dicomFile,
                                        DcmDataset *dataset,
                                        Uint16 &rspStatusCode,
                                        const OFString &moveOriginatorAETitle = "",

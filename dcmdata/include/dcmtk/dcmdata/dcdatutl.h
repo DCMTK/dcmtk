@@ -54,7 +54,7 @@ public:
    *          ERM_metaOnly.
    *  @return EC_Normal if successful, an error code otherwise
    */
-  static OFCondition getSOPInstanceFromFile(const OFString &filename,
+  static OFCondition getSOPInstanceFromFile(const OFFilename &filename,
                                             OFString &sopClassUID,
                                             OFString &sopInstanceUID,
                                             OFString &transferSyntaxUID,

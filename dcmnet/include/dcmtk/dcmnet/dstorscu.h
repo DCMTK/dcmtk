@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -265,7 +265,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *                       conformance.  If OFFalse, only empty values are rejected.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition addDicomFile(const OFString &filename,
+    OFCondition addDicomFile(const OFFilename &filename,
                              const E_FileReadMode readMode = ERM_fileOnly,
                              const OFBool checkValues = OFTrue);
 
@@ -371,7 +371,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
          *  @param  transferSyntaxUID  Transfer Syntax UID of the SOP instance to be
          *                             transferred
          */
-        TransferEntry(const OFString &filename,
+        TransferEntry(const OFFilename &filename,
                       const E_FileReadMode readMode,
                       const OFString &sopClassUID,
                       const OFString &sopInstanceUID,
@@ -398,7 +398,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
         ~TransferEntry();
 
         /// filename of the SOP instance to be transferred (if no 'Dataset' given)
-        const OFString Filename;
+        const OFFilename Filename;
         /// read mode that should be used to read the given SOP instance from file
         const E_FileReadMode FileReadMode;
         /// dataset of the SOP instance to be transferred (if no 'Filename' given)
@@ -450,7 +450,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *                       only empty values are rejected.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition addDicomFilesFromDICOMDIR(const OFString &filename,
+    OFCondition addDicomFilesFromDICOMDIR(const OFFilename &filename,
                                           const E_FileReadMode readMode,
                                           const OFBool checkValues);
 

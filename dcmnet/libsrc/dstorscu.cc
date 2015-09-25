@@ -61,7 +61,7 @@ static const OFString &dicomToHostFilename(const OFString &dicomFilename,
 
 // implementation of the internal class/struct for a single transfer entry
 
-DcmStorageSCU::TransferEntry::TransferEntry(const OFString &filename,
+DcmStorageSCU::TransferEntry::TransferEntry(const OFFilename &filename,
                                             const E_FileReadMode readMode,
                                             const OFString &sopClassUID,
                                             const OFString &sopInstanceUID,
@@ -358,13 +358,13 @@ OFCondition DcmStorageSCU::removeSOPInstance(const OFString &sopClassUID,
 }
 
 
-OFCondition DcmStorageSCU::addDicomFile(const OFString &filename,
+OFCondition DcmStorageSCU::addDicomFile(const OFFilename &filename,
                                         const E_FileReadMode readMode,
                                         const OFBool checkValues)
 {
     OFCondition status = EC_IllegalParameter;
     // check for non-empty filename
-    if (!filename.empty())
+    if (!filename.isEmpty())
     {
         DCMNET_DEBUG("adding DICOM file '" << filename << "'");
         const size_t numInstances = TransferList.size();
@@ -464,20 +464,20 @@ OFCondition DcmStorageSCU::addDataset(DcmDataset *dataset,
 }
 
 
-OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFString &filename,
+OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFFilename &filename,
                                                      const E_FileReadMode readMode,
                                                      const OFBool checkValues)
 {
     DCMNET_DEBUG("adding DICOM files referenced from '" << filename << "'");
     // read the DICOMDIR file (always require meta-header to be present)
     DcmFileFormat fileformat;
-    OFCondition status = fileformat.loadFile(filename.c_str(), EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_fileOnly);
+    OFCondition status = fileformat.loadFile(filename, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_fileOnly);
     if (status.good())
     {
         DcmStack stack;
         // do not use the DcmDirectoryRecord class, but access the data elements directly
         DcmDataset *dataset = fileformat.getDataset();
-        OFString dirName;
+        OFFilename dirName;
         OFStandard::getDirNameFromPath(dirName, filename, OFFalse /* assumeDirName */);
         // iterate over all items (directory records) where ReferencedFileID is present
         while (dataset->search(DCM_ReferencedFileID, stack, ESM_afterStackTop, OFTrue).good())
@@ -485,7 +485,8 @@ OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFString &filename,
             // make sure that the dataset and element pointer are there
             if (stack.card() > 1)
             {
-                OFString pathName, fileID, sopClassUID, sopInstanceUID, transferSyntaxUID;
+                OFFilename pathName;
+                OFString fileID, sopClassUID, sopInstanceUID, transferSyntaxUID;
                 // first, get the name of the referenced DICOM file
                 DcmElement *element = OFstatic_cast(DcmElement *, stack.top());
                 if (element != NULL)
@@ -508,9 +509,9 @@ OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFString &filename,
                     if (status.good())
                     {
                         OFString tmpString;
+                        const OFFilename tmpFilename(dicomToHostFilename(fileID, tmpString), pathName.usesWideChars() /*convert*/);
                         // consider that the value of ReferencedFileID is relative to the DICOMDIR
-                        OFStandard::combineDirAndFilename(pathName, dirName, dicomToHostFilename(fileID, tmpString),
-                            OFTrue /* allowEmptyDirName */);
+                        OFStandard::combineDirAndFilename(pathName, dirName, tmpFilename, OFTrue /* allowEmptyDirName */);
                         // create a new entry ...
                         TransferEntry *entry = new TransferEntry(pathName, readMode, sopClassUID, sopInstanceUID, transferSyntaxUID);
                         if (entry != NULL)
@@ -528,7 +529,7 @@ OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFString &filename,
                         DCMNET_DEBUG("successfully added SOP instance " << sopInstanceUID << " to the transfer list");
                     } else {
                         DCMNET_ERROR("cannot add DICOM file from DICOMDIR to the transfer list: "
-                            << (pathName.empty() ? fileID : pathName) << ": " << status.text());
+                            << (pathName.isEmpty() ? fileID : pathName) << ": " << status.text());
                     }
                 } else {
                     DCMNET_ERROR("cannot add DICOM file from DICOMDIR with empty filename");
@@ -806,7 +807,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     break;
                 }
                 // output debug information on the SOP instance to be sent
-                if ((*CurrentTransferEntry)->Filename.empty())
+                if ((*CurrentTransferEntry)->Filename.isEmpty())
                 {
                     if ((*CurrentTransferEntry)->Dataset != NULL)
                     {
@@ -825,7 +826,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                 } else {
                     DCMNET_DEBUG("sending SOP instance from file: " << (*CurrentTransferEntry)->Filename);
                     // load SOP instance from DICOM file
-                    status = fileformat.loadFile((*CurrentTransferEntry)->Filename.c_str(), EXS_Unknown, EGL_noChange,
+                    status = fileformat.loadFile((*CurrentTransferEntry)->Filename, EXS_Unknown, EGL_noChange,
                         DCM_MaxReadLength, (*CurrentTransferEntry)->FileReadMode);
                     // do not store the dataset pointer in the transfer entry, because this pointer
                     // will become invalid for the next iteration of this while-loop.
@@ -870,7 +871,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     // ... remember that this SOP instance has already been sent
                     (*CurrentTransferEntry)->RequestSent = OFTrue;
                     // check whether we need to compact or delete the dataset
-                    if ((*CurrentTransferEntry)->Filename.empty() && ((*CurrentTransferEntry)->Dataset != NULL))
+                    if ((*CurrentTransferEntry)->Filename.isEmpty() && ((*CurrentTransferEntry)->Dataset != NULL))
                     {
                         if ((*CurrentTransferEntry)->DatasetHandlingMode == HM_compactAfterSend)
                         {
@@ -1040,7 +1041,7 @@ OFCondition DcmStorageSCU::createReportFile(const OFString &filename) const
             {
                 DcmXfer orgXfer((*transferEntry)->TransferSyntaxUID.c_str());
                 stream << "Number        : " << (++counter) << OFendl;
-                if (!(*transferEntry)->Filename.empty())
+                if (!(*transferEntry)->Filename.isEmpty())
                     stream << "Filename      : " << (*transferEntry)->Filename << OFendl;
                 stream << "SOP Instance  : " << (*transferEntry)->SOPInstanceUID << OFendl;
                 stream << "SOP Class     : " << (*transferEntry)->SOPClassUID << " = "

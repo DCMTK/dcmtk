@@ -26,17 +26,17 @@
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 
+
 // --- static helpers ---
 
-
-OFCondition DcmDataUtil::getSOPInstanceFromFile(const OFString &filename,
+OFCondition DcmDataUtil::getSOPInstanceFromFile(const OFFilename &filename,
                                                 OFString &sopClassUID,
                                                 OFString &sopInstanceUID,
                                                 OFString &transferSyntaxUID,
                                                 const E_FileReadMode readMode)
 {
   OFCondition status = EC_IllegalParameter;
-  if (!filename.empty())
+  if (!filename.isEmpty())
   {
     DCMDATA_DEBUG("getting SOP Class UID, SOP Instance UID and Transfer Syntax UID from DICOM file");
     sopClassUID.clear();
@@ -46,7 +46,7 @@ OFCondition DcmDataUtil::getSOPInstanceFromFile(const OFString &filename,
     if (readMode != ERM_dataset)
     {
       DcmMetaInfo metaInfo;
-      status = metaInfo.loadFile(filename.c_str());
+      status = metaInfo.loadFile(filename);
       if (status.good())
       {
         // try to get the UIDs from the meta-header
@@ -64,7 +64,7 @@ OFCondition DcmDataUtil::getSOPInstanceFromFile(const OFString &filename,
       if (status.bad() || sopClassUID.empty() || sopInstanceUID.empty() || transferSyntaxUID.empty())
       {
         DcmFileFormat fileformat;
-        status = fileformat.loadFile(filename.c_str(), EXS_Unknown, EGL_noChange, 256 /* maxReadLength */, readMode);
+        status = fileformat.loadFile(filename, EXS_Unknown, EGL_noChange, 256 /* maxReadLength */, readMode);
         if (status.good())
         {
           DcmDataset *dataset = fileformat.getDataset();
