@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,8 +27,8 @@
 #include "dcmtk/dcmdata/dcelem.h"
 
 
-/** a class representing the DICOM value representations 'Other Byte String' (OB)
- *  and 'Other Word String' (OW)
+/** a class representing the DICOM value representations 'Other Byte' (OB)
+ *  and 'Other Word' (OW)
  */
 class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
   : public DcmElement

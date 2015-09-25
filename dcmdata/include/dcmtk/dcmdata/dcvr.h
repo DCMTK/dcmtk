@@ -126,16 +126,16 @@ enum DcmEVR
     /// long text
     EVR_LT,
 
-    /// other byte string
+    /// other byte
     EVR_OB,
 
-    /// other double string
+    /// other double
     EVR_OD,
 
-    /// other float string
+    /// other float
     EVR_OF,
 
-    /// other word string
+    /// other word
     EVR_OW,
 
     /// person name

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013, OFFIS e.V.
+ *  Copyright (C) 2013-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,7 @@
 #include "dcmtk/dcmdata/dcvrfd.h"
 
 
-/** a class representing the DICOM value representation 'Other Double String' (OD)
+/** a class representing the DICOM value representation 'Other Double' (OD)
  */
 class DCMTK_DCMDATA_EXPORT DcmOtherDouble
   : public DcmFloatingPointDouble

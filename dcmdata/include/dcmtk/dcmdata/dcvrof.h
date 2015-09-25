@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2013, OFFIS e.V.
+ *  Copyright (C) 2002-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,7 @@
 #include "dcmtk/dcmdata/dcvrfl.h"
 
 
-/** a class representing the DICOM value representation 'Other Float String' (OF)
+/** a class representing the DICOM value representation 'Other Float' (OF)
  */
 class DCMTK_DCMDATA_EXPORT DcmOtherFloat
   : public DcmFloatingPointSingle
