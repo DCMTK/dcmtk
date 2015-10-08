@@ -44,9 +44,11 @@ class DSRIODConstraintChecker;
  *  template instantiation  *
  *--------------------------*/
 
-// the following line is required in order to help older compilers
-// (e.g. Clang 3.0 and 3.1 on Mac OS X when building with shared libs)
+// the following is required in order to help older Clang compilers,
+// e.g. Clang 3.0 and 3.1 on Mac OS X when building with shared libs
+#if defined(__clang__)
 template class DSRTree<DSRDocumentTreeNode>;
+#endif
 
 
 /*---------------------*
