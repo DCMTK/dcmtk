@@ -546,7 +546,7 @@ OFCondition DcmIODUtil::decompress(DcmDataset& dset)
   {
     if (EC_Normal != dset.chooseRepresentation(EXS_LittleEndianExplicit, NULL))
     {
-      DCMIOD_ERROR("No conversion uncompressed transfer syntax possible!");
+      DCMIOD_ERROR("No conversion to uncompressed transfer syntax possible!");
       return IOD_EC_CannotDecompress;
     }
   }
