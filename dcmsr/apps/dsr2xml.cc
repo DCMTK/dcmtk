@@ -315,6 +315,8 @@ int main(int argc, char *argv[])
             app.checkConflict("--add-schema-reference", "--template-envelope", (opt_writeFlags & DSRTypes::XF_templateElementEnclosesItems) > 0);
             app.checkConflict("--add-schema-reference", "--write-empty-tags", (opt_writeFlags & DSRTypes::XF_writeEmptyTags) > 0);
         }
+        if (opt_writeFlags & DSRTypes::XF_templateIdentifierAsAttribute)
+            app.checkDependence("--attr-template-id", "--write-template-id", (opt_writeFlags & DSRTypes::XF_writeTemplateIdentification) > 0);
         if (opt_writeFlags & DSRTypes::XF_templateElementEnclosesItems)
             app.checkDependence("--template-envelope", "--write-template-id", (opt_writeFlags & DSRTypes::XF_writeTemplateIdentification) > 0);
     }
