@@ -664,7 +664,8 @@ DcmSegment* DcmSegmentation::getSegment(const size_t& segmentNumber)
   {
     return NULL;
   }
-  return m_Segments[segmentNumber];
+  // logical segment numbering starts with 1, so subtract 1 for vector index
+  return m_Segments[segmentNumber-1];
 }
 
 
@@ -676,7 +677,8 @@ OFBool DcmSegmentation::getSegmentNumber(const DcmSegment* segment,
   {
     if (m_Segments.at(count) == segment)
     {
-      segmentNumber = count;
+      // logical segment numbering starts with 1 but vector index with 0
+      segmentNumber = count + 1;
       return OFTrue;
     }
   }
