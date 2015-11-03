@@ -176,7 +176,7 @@ int DcmItem::compare(const DcmItem& rhs) const
             if (rhsVal)
             {
                 int result = val->compare(*rhsVal);
-                if (val != 0)
+                if (result != 0)
                 {
                     return result;
                 }
