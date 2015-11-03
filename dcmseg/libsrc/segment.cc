@@ -157,9 +157,9 @@ void DcmSegment::initIODRules()
 
 // -------------- getters --------------------
 
-Uint16 DcmSegment::getSegmentNumber()
+unsigned int DcmSegment::getSegmentNumber()
 {
-  Uint16 value = 0;
+  unsigned int value = 0;
   if (m_SegmentationDoc != NULL)
   {
     m_SegmentationDoc->getSegmentNumber(this, value);

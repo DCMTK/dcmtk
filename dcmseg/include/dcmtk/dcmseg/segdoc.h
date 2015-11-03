@@ -225,7 +225,7 @@ public:
    *  @param  segmentNumber The logical segment number
    *  @return The segment if segment number is valid, NULL otherwise
    */
-  virtual DcmSegment* getSegment(const size_t& segmentNumber);
+  virtual DcmSegment* getSegment(const unsigned int segmentNumber);
 
   /** Get logical segment number by providing a pointer to a given segment
    *  @param  segment The segment to find the logical segment number for
@@ -233,7 +233,7 @@ public:
    *  @return OFTrue if segment could be found, OFFalse otherwise.
    */
   virtual OFBool getSegmentNumber(const DcmSegment* segment,
-                                  Uint16& segmentNumber);
+                                  unsigned int& segmentNumber);
 
   /** Find segments by their segment label
    *  @param segmentLabel

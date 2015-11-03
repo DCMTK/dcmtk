@@ -658,20 +658,23 @@ void DcmSegmentation::getReferencedPPS(OFString& refSOPClassUID,
 }
 
 
-DcmSegment* DcmSegmentation::getSegment(const size_t& segmentNumber)
+DcmSegment* DcmSegmentation::getSegment(const unsigned int segmentNumber)
 {
-  if (segmentNumber > m_Segments.size())
+  // check for invalid index
+  if ( (segmentNumber == 0) || (segmentNumber > m_Segments.size()) )
   {
     return NULL;
   }
+
   // logical segment numbering starts with 1, so subtract 1 for vector index
   return m_Segments[segmentNumber-1];
 }
 
 
 OFBool DcmSegmentation::getSegmentNumber(const DcmSegment* segment,
-                                         Uint16& segmentNumber)
+                                         unsigned int& segmentNumber)
 {
+  segmentNumber = 0;
   size_t max = m_Segments.size();
   for (size_t count = 0; count < max; count++)
   {

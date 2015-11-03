@@ -98,7 +98,7 @@ public:
   /** Get Segment Number
    *  @return The Segment number
    */
-  virtual Uint16 getSegmentNumber();
+  virtual unsigned int getSegmentNumber();
 
   /** Get Segment Label
    *  @param  value Reference to variable in which the value should be stored
