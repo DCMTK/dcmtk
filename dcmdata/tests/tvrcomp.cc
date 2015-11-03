@@ -409,18 +409,17 @@ static void checkDcmItemAndSequences()
   DcmItem obj2;
 
   obj1.putAndInsertUint16(DcmTagKey(0x0028,0x0010) /* Rows */, 10);
-  obj1.putAndInsertUint16(DcmTagKey(0x0028,0x0020) /* Columns */, 10);
+  obj1.putAndInsertUint16(DcmTagKey(0x0028,0x0011) /* Columns */, 10);
   obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0010) /* Rows */, 10);
-  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0020) /* Columns */, 10);
+  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0011) /* Columns */, 10);
 
   // Check equality
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
 
-  // Check values in second item larger
-  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0010) /* Rows */, 100);
-  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0020) /* Columns */, 100);
+  // Check values in second item larger. Make sure that the first value remains equal.
+  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0011) /* Columns */, 100);
   OFCHECK(obj1.compare(obj2) < 0);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
