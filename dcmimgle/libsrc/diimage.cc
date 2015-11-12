@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,7 +117,14 @@ DiImage::DiImage(const DiDocument *docu,
         /* start from first processed frame (might still exceed number of loaded frames) */
         RepresentativeFrame -= FirstFrame;
         int ok = (Document->getValue(DCM_Rows, Rows) > 0);
-        ok &= (Document->getValue(DCM_Columns, Columns) > 0);
+        if (!ok)
+            DCMIMGLE_ERROR("mandatory attribute 'Rows' is missing");
+        if (Document->getValue(DCM_Columns, Columns) == 0)
+        {
+            ok = 0;
+            DCMIMGLE_ERROR("mandatory attribute 'Columns' is missing");
+        }
+        /* check whether to proceed */
         if (!ok || ((Rows > 0) && (Columns > 0)))
         {
             ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
