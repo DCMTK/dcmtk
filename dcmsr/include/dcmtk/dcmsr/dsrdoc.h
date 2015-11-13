@@ -661,10 +661,12 @@ class DCMTK_DCMSR_EXPORT DSRDocument
   // --- set DICOM string attributes ---
 
     /** set specific character set.  The internal enumerated value is set accordingly.
-     *  Please note that code extensions techniques are not supported.  Therefore, only
-     *  a single value can be passed.
+     *  Please note that this method does not return an error if the given 'value' is not
+     *  supported by this class, e.g. when no mapping to the character set names needed
+     *  for HTML/XHTML or XML output is defined.  If needed, check the return value of
+     *  getSpecificCharacterSetType() for DSRTypes::CS_unknown after calling this method.
      ** @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1-n) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setSpecificCharacterSet(const OFString &value,
@@ -1185,7 +1187,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /// defined term: see class DSRTypes
     E_CharacterSet     SpecificCharacterSetEnum;
 
-    // DICOM attributes are listed ordered by module.
+    // DICOM attributes are listed ordered by Module.
     // The comments for each attribute describe "Name: (VR, VM, Type)".
     // Please note that for particular SR documents (e.g. Key Object Selection)
     // other rules might apply.  See DICOM standard for further reference.

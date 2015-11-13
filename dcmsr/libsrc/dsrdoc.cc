@@ -440,9 +440,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getElementFromDataset(dataset, SOPClassUID);   /* already checked */
         getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", "SOPCommonModule");
-        if (SpecificCharacterSet.getVM() > 1)
-            DCMSR_WARN("Multiple values for Specific Character Set are not supported");
-        getStringValueFromElement(SpecificCharacterSet, tmpString);
+        getStringValueFromElement(SpecificCharacterSet, tmpString, -1 /* all components */);
         /* currently, the VR checker in 'dcmdata' only supports ASCII and Latin-1 */
         if (!tmpString.empty() && (tmpString != "ISO_IR 6") && (tmpString != "ISO_IR 100"))
             DCMSR_WARN("The VR checker does not support this Specific Character Set: " << tmpString);
@@ -552,7 +550,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             else if (VerificationFlagEnum == VF_Verified)
                 checkElementValue(VerifyingObserver, "1-n", "1", obsSearchCond, "SRDocumentGeneralModule");
         }
-        SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, tmpString));
+        getStringValueFromElement(SpecificCharacterSet, tmpString, -1 /* all components */);
+        SpecificCharacterSetEnum = definedTermToCharacterSet(tmpString);
         /* check SpecificCharacterSet */
         if ((SpecificCharacterSetEnum == CS_invalid) && !tmpString.empty())
             printUnknownValueWarningMessage("SpecificCharacterSet", tmpString.c_str());
@@ -2275,7 +2274,7 @@ OFCondition DSRDocument::setSpecificCharacterSet(const OFString &value,
                                                  const OFBool check)
 {
     /* we only support a single value, i.e. no code extensions */
-    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1-n") : EC_Normal;
     if (result.good())
     {
         SpecificCharacterSetEnum = definedTermToCharacterSet(value);
