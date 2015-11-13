@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -127,32 +127,18 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
                         OFLOG_DEBUG(dsr2htmlLogger, "use option --charset-assume to manually specify an appropriate character set");
                         result = EC_IllegalCall;
                     } else {
-                        OFString charsetStr(defaultCharset);
                         // use the default character set specified by the user
-                        if (charsetStr == "ISO_IR 192")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_UTF8);
-                        else if (charsetStr == "ISO_IR 100")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
-                        else if (charsetStr == "ISO_IR 101")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
-                        else if (charsetStr == "ISO_IR 109")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
-                        else if (charsetStr == "ISO_IR 110")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
-                        else if (charsetStr == "ISO_IR 148")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
-                        else if (charsetStr == "ISO_IR 144")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
-                        else if (charsetStr == "ISO_IR 127")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
-                        else if (charsetStr == "ISO_IR 126")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
-                        else if (charsetStr == "ISO_IR 138")
-                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
-                        else {
+                        result = dsrdoc->setSpecificCharacterSet(defaultCharset);
+                        if (dsrdoc->getSpecificCharacterSetType() == DSRTypes::CS_unknown)
+                        {
                             OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Character set '"
                                 << defaultCharset << "' specified with option --charset-assume not supported");
                             result = EC_IllegalCall;
+                        }
+                        else if (result.bad())
+                        {
+                            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Cannot use character set '"
+                                << defaultCharset << "' specified with option --charset-assume: " << result.text());
                         }
                     }
                 }
