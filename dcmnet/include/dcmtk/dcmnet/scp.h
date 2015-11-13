@@ -30,6 +30,7 @@
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
 #include "dcmtk/dcmnet/scpcfg.h"
+#include "dcmtk/dcmnet/diutil.h"    /* for DCMNET_WARN() */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -653,9 +654,26 @@ protected:
    *  @param reqDataset [out] Pointer to the dataset received
    *  @return status, EC_Normal if successful, an error code otherwise
    */
+  virtual OFCondition receiveFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
+                                         const T_ASC_PresentationContextID presID,
+                                         DcmDataset *&reqDataset);
+
+  /** Handle C-FIND request. This function is deprecated and will be removed in
+   *  the future. For now it calls receiveFINDRequest() which should be used
+   *  instead.
+   *  @param reqMessage [in]  The C-FIND request message that was received
+   *  @param presID     [in]  The presentation context to be used. By default, the
+   *                          presentation context of the request is used.
+   *  @param reqDataset [out] Pointer to the dataset received
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
   virtual OFCondition handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
                                         const T_ASC_PresentationContextID presID,
-                                        DcmDataset *&reqDataset);
+                                        DcmDataset *&reqDataset)
+  {
+    DCMNET_WARN("handleFINDRequest() is deprecated, use receiveFINDRequest() instead");
+    return receiveFINDRequest(reqMessage, presID, reqDataset);
+  }
 
   /** Respond to the C-FIND request
    *  @param presID        [in] The presentation context ID to respond to
@@ -706,10 +724,29 @@ protected:
    *  @param moveDest   [out] The move destination where to send the instances
    *  @return status, EC_Normal if successful, an error code otherwise
    */
+  virtual OFCondition receiveMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
+                                         const T_ASC_PresentationContextID presID,
+                                         DcmDataset *&reqDataset,
+                                         OFString &moveDest);
+
+  /** Receive C-MOVE request on the currently active association. This function
+   *  is deprecated and will be removed in the future. For now it calls
+   *  receiveMOVERequest() which should be used instead.
+   *  @param reqMessage [in]  The C-MOVE request message that was received
+   *  @param presID     [in]  The presentation context to be used. By default, the
+   *                          presentation context of the request is used.
+   *  @param reqDataset [out] Pointer to the dataset received
+   *  @param moveDest   [out] The move destination where to send the instances
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
   virtual OFCondition handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
                                         const T_ASC_PresentationContextID presID,
                                         DcmDataset *&reqDataset,
-                                        OFString &moveDest);
+                                        OFString &moveDest)
+  {
+    DCMNET_WARN("handleMOVERequest() is deprecated, use receiveMOVERequest() instead");
+    return receiveMOVERequest(reqMessage, presID, reqDataset, moveDest);
+  }
 
   /** Respond to the C-MOVE request
    *  @param presID        [in] The presentation context ID to respond to
@@ -754,10 +791,29 @@ protected:
    *  @param actionTypeID [out] Action Type ID from the command set received
    *  @return status, EC_Normal if successful, an error code otherwise
    */
+  virtual OFCondition receiveACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
+                                           const T_ASC_PresentationContextID presID,
+                                           DcmDataset *&reqDataset,
+                                           Uint16 &actionTypeID);
+
+  /** Receive N-ACTION request on the currently opened association. This
+   *  function is deprecated and will be removed in the future. For now it calls
+   *  receiveACTIONRequest() which should be used instead.
+   *  @param reqMessage   [in]  The N-ACTION request message that was received
+   *  @param presID       [in]  The presentation context to be used. By default, the
+   *                            presentation context of the request is used.
+   *  @param reqDataset   [out] Pointer to the dataset received
+   *  @param actionTypeID [out] Action Type ID from the command set received
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
   virtual OFCondition handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
                                           const T_ASC_PresentationContextID presID,
                                           DcmDataset *&reqDataset,
-                                          Uint16 &actionTypeID);
+                                          Uint16 &actionTypeID)
+  {
+    DCMNET_WARN("handleACTIONRequest() is deprecated, use receiveACTIONRequest() instead");
+    return receiveACTIONRequest(reqMessage, presID, reqDataset, actionTypeID);
+  }
 
   /** Respond to the N-ACTION request
    *  @param presID         [in] The presentation context ID to respond to

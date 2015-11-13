@@ -22,7 +22,6 @@
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmnet/scp.h"
-#include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
 
@@ -801,9 +800,9 @@ Uint16 DcmSCP::checkSTORERequest(T_DIMSE_C_StoreRQ & /*reqMessage*/,
 
 // -- C-FIND --
 
-OFCondition DcmSCP::handleFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
-                                      const T_ASC_PresentationContextID presID,
-                                      DcmDataset *&reqDataset)
+OFCondition DcmSCP::receiveFINDRequest(T_DIMSE_C_FindRQ &reqMessage,
+                                       const T_ASC_PresentationContextID presID,
+                                       DcmDataset *&reqDataset)
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
@@ -916,10 +915,10 @@ OFCondition DcmSCP::checkForCANCEL(T_ASC_PresentationContextID presID,
 
 // -- C-MOVE --
 
-OFCondition DcmSCP::handleMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
-                                      const T_ASC_PresentationContextID presID,
-                                      DcmDataset *&reqDataset,
-                                      OFString &moveDest)
+OFCondition DcmSCP::receiveMOVERequest(T_DIMSE_C_MoveRQ &reqMessage,
+                                       const T_ASC_PresentationContextID presID,
+                                       DcmDataset *&reqDataset,
+                                       OFString &moveDest)
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
@@ -1040,10 +1039,10 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
 
 // -- N-ACTION --
 
-OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
-                                        const T_ASC_PresentationContextID presID,
-                                        DcmDataset *&reqDataset,
-                                        Uint16 &actionTypeID)
+OFCondition DcmSCP::receiveACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
+                                         const T_ASC_PresentationContextID presID,
+                                         DcmDataset *&reqDataset,
+                                         Uint16 &actionTypeID)
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
