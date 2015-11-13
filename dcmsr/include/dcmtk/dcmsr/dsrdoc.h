@@ -231,10 +231,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition setTreeFromRootTemplate(DSRRootTemplate &rootTemplate);
 
     /** get specific character set type.
-     *  If the type is unknown the original DICOM defined term can be retrieved
-     *  with the method getSpecificCharacterSet().  Please note that only the
-     *  first of possibly multiple values is used to determine the type from the
-     *  given DICOM code string (multiple character sets are not yet supported).
+     *  If the type is unknown, the original DICOM defined term can be retrieved
+     *  with the method getSpecificCharacterSet().
      ** @return character set (might be CS_invalid/unknown if not supported)
      */
     virtual E_CharacterSet getSpecificCharacterSetType() const;

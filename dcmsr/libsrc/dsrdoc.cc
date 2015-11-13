@@ -1191,13 +1191,10 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         stream << "<?xml version=\"1.0\"";
         /* optional character set */
         tmpString = characterSetToXMLName(SpecificCharacterSetEnum);
-        if (!tmpString.empty())
-        {
-            if (tmpString != "?")
-                stream << " encoding=\"" << tmpString << "\"";
-            else
-                DCMSR_WARN("Cannot map Specific Character Set to equivalent XML encoding");
-        }
+        if (!tmpString.empty() && (tmpString != "?"))
+            stream << " encoding=\"" << tmpString << "\"";
+        else if (!SpecificCharacterSet.isEmpty())
+            DCMSR_WARN("Cannot map Specific Character Set to equivalent XML encoding");
         stream << "?>" << OFendl;
 
         stream << "<report";

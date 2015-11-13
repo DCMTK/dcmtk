@@ -431,21 +431,26 @@ static const S_VerificationFlagNameMap VerificationFlagNameMap[] =
 
 static const S_CharacterSetNameMap CharacterSetNameMap[] =
 {
-    // columns: enum, DICOM, HTML, XML (if "?" a warning is reported)
-    {DSRTypes::CS_invalid,  "",           "",           ""},
-    {DSRTypes::CS_ASCII,    "ISO_IR 6",   "",           "UTF-8"},   /* "ISO_IR 6" is only used for reading */
-    {DSRTypes::CS_Latin1,   "ISO_IR 100", "ISO-8859-1", "ISO-8859-1"},
-    {DSRTypes::CS_Latin2,   "ISO_IR 101", "ISO-8859-2", "ISO-8859-2"},
-    {DSRTypes::CS_Latin3,   "ISO_IR 109", "ISO-8859-3", "ISO-8859-3"},
-    {DSRTypes::CS_Latin4,   "ISO_IR 110", "ISO-8859-4", "ISO-8859-4"},
-    {DSRTypes::CS_Cyrillic, "ISO_IR 144", "ISO-8859-5", "ISO-8859-5"},
-    {DSRTypes::CS_Arabic,   "ISO_IR 127", "ISO-8859-6", "ISO-8859-6"},
-    {DSRTypes::CS_Greek,    "ISO_IR 126", "ISO-8859-7", "ISO-8859-7"},
-    {DSRTypes::CS_Hebrew,   "ISO_IR 138", "ISO-8859-8", "ISO-8859-8"},
-    {DSRTypes::CS_Latin5,   "ISO_IR 148", "ISO-8859-9", "ISO-8859-9"},
-    {DSRTypes::CS_Japanese, "ISO_IR 13",  "?",          "?"},  /* JIS_X0201 ? */
-    {DSRTypes::CS_Thai,     "ISO_IR 166", "?",          "?"},  /* TIS-620 ? */
-    {DSRTypes::CS_UTF8,     "ISO_IR 192", "UTF-8",      "UTF-8"}
+    // columns: enum, DICOM, HTML, XML (if "?" a warning is reported).
+    // This mapping is based on Table D-1 in DICOM PS 3.18 Annex D.
+    {DSRTypes::CS_invalid,        "",                               "",            ""},
+    {DSRTypes::CS_ASCII,          "ISO_IR 6",                       "",            "UTF-8"},   /* "ISO_IR 6" is only used for reading */
+    {DSRTypes::CS_Latin1,         "ISO_IR 100",                     "ISO-8859-1",  "ISO-8859-1"},
+    {DSRTypes::CS_Latin2,         "ISO_IR 101",                     "ISO-8859-2",  "ISO-8859-2"},
+    {DSRTypes::CS_Latin3,         "ISO_IR 109",                     "ISO-8859-3",  "ISO-8859-3"},
+    {DSRTypes::CS_Latin4,         "ISO_IR 110",                     "ISO-8859-4",  "ISO-8859-4"},
+    {DSRTypes::CS_Cyrillic,       "ISO_IR 144",                     "ISO-8859-5",  "ISO-8859-5"},
+    {DSRTypes::CS_Arabic,         "ISO_IR 127",                     "ISO-8859-6",  "ISO-8859-6"},
+    {DSRTypes::CS_Greek,          "ISO_IR 126",                     "ISO-8859-7",  "ISO-8859-7"},
+    {DSRTypes::CS_Hebrew,         "ISO_IR 138",                     "ISO-8859-8",  "ISO-8859-8"},
+    {DSRTypes::CS_Latin5,         "ISO_IR 148",                     "ISO-8859-9",  "ISO-8859-9"},
+    {DSRTypes::CS_Thai,           "ISO_IR 166",                     "TIS-620",     "TIS-620"},
+    {DSRTypes::CS_Japanese,       "ISO 2022 IR 13\\ISO 2022 IR 87", "ISO-2022-JP", "ISO-2022-JP"},
+    {DSRTypes::CS_Korean,         "ISO 2022 IR 6\\ISO 2022 IR 149", "ISO-2022-KR", "ISO-2022-KR"},
+    {DSRTypes::CS_ChineseISO,     "ISO 2022 IR 6\\ISO 2022 IR 58",  "ISO-2022-CN", "ISO-2022-CN"},
+    {DSRTypes::CS_ChineseGB18030, "GB18030",                        "GB18030",     "GB18030"},
+    {DSRTypes::CS_ChineseGBK,     "GBK",                            "GBK",         "GBK"},
+    {DSRTypes::CS_UTF8,           "ISO_IR 192",                     "UTF-8",       "UTF-8"}
 };
 
 
@@ -1598,12 +1603,17 @@ OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream &stream,
     {
         OFString tempString;
         stream << "<" << tagName << ">";
-        if (delem.getVR() == EVR_PN)        // special formatting for person names
+        /* special formatting for person names */
+        if (delem.getVR() == EVR_PN)
         {
             OFString xmlString;
+            /* use first element value only */
             stream << OFendl << dicomToXMLPersonName(getStringValueFromElement(delem, tempString), xmlString, writeEmptyValue) << OFendl;
-        } else
-            OFStandard::convertToMarkupStream(stream, getStringValueFromElement(delem, tempString), OFFalse /*convertNonASCII*/);
+        } else {
+            /* use all element values (1-n) */
+            getStringValueFromElement(delem, tempString, -1 /* all components */);
+            OFStandard::convertToMarkupStream(stream, tempString, OFFalse /*convertNonASCII*/);
+        }
         stream << "</" << tagName << ">" << OFendl;
         result = OFTrue;
     }

@@ -746,10 +746,18 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         CS_Hebrew,
         /// ISO-IR 148: Latin alphabet No. 5
         CS_Latin5,
-        /// ISO-IR 13: Japanese (Katakana/Romaji)
-        CS_Japanese,
         /// ISO-IR 166: Thai
         CS_Thai,
+        /// ISO-IR 13/87: Japanese (Katakana/Romaji/Kanji)
+        CS_Japanese,
+        /// ISO-IR 6/149: Korean (Hangul/Hanja)
+        CS_Korean,
+        /// ISO-IR 6/58: Chinese
+        CS_ChineseISO,
+        /// GB18030: Chinese
+        CS_ChineseGB18030,
+        /// GBK: Chinese
+        CS_ChineseGBK,
         /// UTF-8: Unicode in UTF-8
         CS_UTF8,
         /// internal type used to mark the last entry
