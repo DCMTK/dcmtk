@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-09-18 11:18:13
+**   Date: 2015-11-16 18:17:24
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-09-18 11:18:13"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-11-16 18:17:24"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3956
+** Number of entries: 3970
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -3031,6 +3031,20 @@
 #define DCM_BeamOrderIndex                       DcmTagKey(0x0074, 0x1324)
 #define DCM_DoubleExposureMeterset               DcmTagKey(0x0074, 0x1338)
 #define DCM_DoubleExposureFieldDelta             DcmTagKey(0x0074, 0x133a)
+#define DCM_BrachyTaskSequence                   DcmTagKey(0x0074, 0x1401)
+#define DCM_ContinuationStartTotalReferenceAirKerma DcmTagKey(0x0074, 0x1402)
+#define DCM_ContinuationEndTotalReferenceAirKerma DcmTagKey(0x0074, 0x1403)
+#define DCM_ContinuationPulseNumber              DcmTagKey(0x0074, 0x1404)
+#define DCM_ChannelDeliveryOrderSequence         DcmTagKey(0x0074, 0x1405)
+#define DCM_ReferencedChannelNumber              DcmTagKey(0x0074, 0x1406)
+#define DCM_StartCumulativeTimeWeight            DcmTagKey(0x0074, 0x1407)
+#define DCM_EndCumulativeTimeWeight              DcmTagKey(0x0074, 0x1408)
+#define DCM_OmittedChannelSequence               DcmTagKey(0x0074, 0x1409)
+#define DCM_ReasonForChannelOmission             DcmTagKey(0x0074, 0x140a)
+#define DCM_ReasonForChannelOmissionDescription  DcmTagKey(0x0074, 0x140b)
+#define DCM_ChannelDeliveryOrderIndex            DcmTagKey(0x0074, 0x140c)
+#define DCM_ChannelDeliveryContinuationSequence  DcmTagKey(0x0074, 0x140d)
+#define DCM_OmittedApplicationSetupSequence      DcmTagKey(0x0074, 0x140e)
 #define DCM_ImplantAssemblyTemplateName          DcmTagKey(0x0076, 0x0001)
 #define DCM_ImplantAssemblyTemplateIssuer        DcmTagKey(0x0076, 0x0003)
 #define DCM_ImplantAssemblyTemplateVersion       DcmTagKey(0x0076, 0x0006)

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-09-18 11:18:13
+**   Date: 2015-11-16 18:17:37
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -22444,6 +22444,62 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0074, 0x133a, 0x0074, 0x133a,
       EVR_FD, "DoubleExposureFieldDelta", 4, 4, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1401, 0x0074, 0x1401,
+      EVR_SQ, "BrachyTaskSequence", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1402, 0x0074, 0x1402,
+      EVR_DS, "ContinuationStartTotalReferenceAirKerma", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1403, 0x0074, 0x1403,
+      EVR_DS, "ContinuationEndTotalReferenceAirKerma", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1404, 0x0074, 0x1404,
+      EVR_IS, "ContinuationPulseNumber", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1405, 0x0074, 0x1405,
+      EVR_SQ, "ChannelDeliveryOrderSequence", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1406, 0x0074, 0x1406,
+      EVR_IS, "ReferencedChannelNumber", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1407, 0x0074, 0x1407,
+      EVR_DS, "StartCumulativeTimeWeight", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1408, 0x0074, 0x1408,
+      EVR_DS, "EndCumulativeTimeWeight", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1409, 0x0074, 0x1409,
+      EVR_SQ, "OmittedChannelSequence", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x140a, 0x0074, 0x140a,
+      EVR_CS, "ReasonForChannelOmission", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x140b, 0x0074, 0x140b,
+      EVR_LO, "ReasonForChannelOmissionDescription", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x140c, 0x0074, 0x140c,
+      EVR_IS, "ChannelDeliveryOrderIndex", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x140d, 0x0074, 0x140d,
+      EVR_SQ, "ChannelDeliveryContinuationSequence", 1, 1, "Supplement_184",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x140e, 0x0074, 0x140e,
+      EVR_SQ, "OmittedApplicationSetupSequence", 1, 1, "Supplement_184",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0076, 0x0001, 0x0076, 0x0001,

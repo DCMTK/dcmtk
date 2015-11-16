@@ -23,11 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2015c and PS 3.7-2015c.
 # File created on 2015-07-05 12:23:01 by J. Riesmeier on thinkpad.
-# File updated manually on 2015-09-18 by J. Riesmeier.
+# File updated manually on 2015-11-16 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 156
+# - Supplement 156, 184
 # - CP 1441, 1454, 1458, 1461
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -3614,6 +3614,25 @@
 (0070,1A03)	FD	RecommendedAnimationRate	1	Supplement_156
 (0070,1A04)	SQ	AnimationCurveSequence	1	Supplement_156
 (0070,1A05)	FD	AnimationStepSize	1	Supplement_156
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 184 (Brachytherapy Delivery Instruction)
+#
+(0074,1401)	SQ	BrachyTaskSequence	1	Supplement_184
+(0074,1402)	DS	ContinuationStartTotalReferenceAirKerma	1	Supplement_184
+(0074,1403)	DS	ContinuationEndTotalReferenceAirKerma	1	Supplement_184
+(0074,1404)	IS	ContinuationPulseNumber	1	Supplement_184
+(0074,1405)	SQ	ChannelDeliveryOrderSequence	1	Supplement_184
+(0074,1406)	IS	ReferencedChannelNumber	1	Supplement_184
+(0074,1407)	DS	StartCumulativeTimeWeight	1	Supplement_184
+(0074,1408)	DS	EndCumulativeTimeWeight	1	Supplement_184
+(0074,1409)	SQ	OmittedChannelSequence	1	Supplement_184
+(0074,140A)	CS	ReasonForChannelOmission	1	Supplement_184
+(0074,140B)	LO	ReasonForChannelOmissionDescription	1	Supplement_184
+(0074,140C)	IS	ChannelDeliveryOrderIndex	1	Supplement_184
+(0074,140D)	SQ	ChannelDeliveryContinuationSequence	1	Supplement_184
+(0074,140E)	SQ	OmittedApplicationSetupSequence	1	Supplement_184
 #
 #---------------------------------------------------------------------------
 #
