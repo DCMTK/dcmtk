@@ -104,29 +104,29 @@ static void checkAttributeTags()
   DcmAttributeTag objOtherTag(DCM_UndefinedTagKey);
 
   // Check equality
-  obj1.putTagVal(DcmTagKey(0010,0010));
-  obj2.putTagVal(DcmTagKey(0010,0010));
+  obj1.putTagVal(DCM_PatientName);
+  obj2.putTagVal(DCM_PatientName);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
-  objOtherTag.putTagVal(DcmTagKey(0010,0010));
+  objOtherTag.putTagVal(DCM_PatientName);
   OFCHECK(obj1.compare(objOtherTag) < 0);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
 
   // Check second attribute larger
-  obj2.putTagVal(DcmTagKey(0010,0020));
+  obj2.putTagVal(DCM_PatientID);
   OFCHECK(obj1.compare(obj2) < 0);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
 
   // Test different VM
-  obj1.putTagVal(DcmTagKey(0010,0010), 1); // VM = 2
-  obj2.putTagVal(DcmTagKey(0010,0010), 0);
-  obj2.putTagVal(DcmTagKey(0010,0010), 1);
-  obj2.putTagVal(DcmTagKey(0010,0010), 2); // VM = 3
+  obj1.putTagVal(DCM_PatientName, 1); // VM = 2
+  obj2.putTagVal(DCM_PatientName, 0);
+  obj2.putTagVal(DCM_PatientName, 1);
+  obj2.putTagVal(DCM_PatientName, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
   // Reverse test should yield opposite result
@@ -408,10 +408,10 @@ static void checkDcmItemAndSequences()
   DcmItem obj1;
   DcmItem obj2;
 
-  obj1.putAndInsertUint16(DcmTagKey(0x0028,0x0010) /* Rows */, 10);
-  obj1.putAndInsertUint16(DcmTagKey(0x0028,0x0011) /* Columns */, 10);
-  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0010) /* Rows */, 10);
-  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0011) /* Columns */, 10);
+  obj1.putAndInsertUint16(DCM_Rows, 10);
+  obj1.putAndInsertUint16(DCM_Columns, 10);
+  obj2.putAndInsertUint16(DCM_Rows, 10);
+  obj2.putAndInsertUint16(DCM_Columns, 10);
 
   // Check equality
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
@@ -419,7 +419,7 @@ static void checkDcmItemAndSequences()
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
 
   // Check values in second item larger. Make sure that the first value remains equal.
-  obj2.putAndInsertUint16(DcmTagKey(0x0028,0x0011) /* Columns */, 100);
+  obj2.putAndInsertUint16(DCM_Columns, 100);
   OFCHECK(obj1.compare(obj2) < 0);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
@@ -427,7 +427,7 @@ static void checkDcmItemAndSequences()
   // Test different VM (i.e. item cardinality):
   // obj1 has VM = 2
   // Make obj2 VM = 3 by adding another tag
-  obj2.insertEmptyElement(DcmTagKey(0x7fe0,0x0010) /* Pixel Data */);
+  obj2.insertEmptyElement(DCM_PixelData);
 
   OFCHECK(obj1.compare(obj2) < 0);
   // Reverse test should yield opposite result
