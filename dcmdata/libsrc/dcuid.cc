@@ -136,7 +136,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RFC2557MIMEEncapsulationTransferSyntax,              "RFC2557MIMEEncapsulation" },
     { UID_XMLEncodingTransferSyntax,                           "XMLEncoding" },
 
-    // Storage
+    // Storage (DICOM)
     { UID_AmbulatoryECGWaveformStorage,                        "AmbulatoryECGWaveformStorage" },
     { UID_ArterialPulseWaveformStorage,                        "ArterialPulseWaveformStorage" },
     { UID_AutorefractionMeasurementsStorage,                   "AutorefractionMeasurementsStorage" },
@@ -218,7 +218,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RawDataStorage,                                      "RawDataStorage" },
     { UID_RealWorldValueMappingStorage,                        "RealWorldValueMappingStorage" },
     { UID_RespiratoryWaveformStorage,                          "RespiratoryWaveformStorage" },
+    { UID_RTBeamsDeliveryInstructionStorage,                   "RTBeamsDeliveryInstructionStorage" },
     { UID_RTBeamsTreatmentRecordStorage,                       "RTBeamsTreatmentRecordStorage" },
+    { UID_RTBrachyApplicationSetupDeliveryInstructionStorage,  "RTBrachyApplicationSetupDeliveryInstructionStorage" },
     { UID_RTBrachyTreatmentRecordStorage,                      "RTBrachyTreatmentRecordStorage" },
     { UID_RTDoseStorage,                                       "RTDoseStorage" },
     { UID_RTImageStorage,                                      "RTImageStorage" },
@@ -295,7 +297,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MOVECompositeInstanceRootRetrieve,                         "MOVECompositeInstanceRootRetrieve" },
     { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel, "RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
 
-    // Worklist
+    // Modality Worklist
     { UID_FINDModalityWorklistInformationModel,                "FINDModalityWorklistInformationModel" },
 
     // General Purpose Worklist
@@ -309,8 +311,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ModalityPerformedProcedureStepRetrieveSOPClass,      "ModalityPerformedProcedureStepRetrieveSOPClass" },
     { UID_ModalityPerformedProcedureStepSOPClass,              "ModalityPerformedProcedureStepSOPClass" },
 
-    // Radiotherapy Treatment Delivery
-    { UID_RTBeamsDeliveryInstructionStorage,                   "RTBeamsDeliveryInstructionStorage" },
+    // Radiotherapy
     { UID_RTConventionalMachineVerification,                   "RTConventionalMachineVerification" },
     { UID_RTIonMachineVerification,                            "RTIonMachineVerification" },
 
@@ -614,6 +615,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_RespiratoryWaveformStorage,
     UID_RTBeamsDeliveryInstructionStorage,
     UID_RTBeamsTreatmentRecordStorage,
+    UID_RTBrachyApplicationSetupDeliveryInstructionStorage,
     UID_RTBrachyTreatmentRecordStorage,
     UID_RTDoseStorage,
     UID_RTImageStorage,
@@ -814,6 +816,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_LegacyConvertedEnhancedPETImageStorage,
 //  UID_ParametricMapStorage,
 //  UID_RadiopharmaceuticalRadiationDoseSRStorage,
+//  UID_RTBrachyApplicationSetupDeliveryInstructionStorage,
 //  UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
 //  UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
     // retired
@@ -1124,6 +1127,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RespiratoryWaveformStorage,                              "WVr", 4096 },
     { UID_RTBeamsDeliveryInstructionStorage,                       "RTd", 4096 },
     { UID_RTBeamsTreatmentRecordStorage,                           "RTb", 4096 },
+    { UID_RTBrachyApplicationSetupDeliveryInstructionStorage,      "RTa", 4096 },
     { UID_RTBrachyTreatmentRecordStorage,                          "RTr", 4096 },
     { UID_RTDoseStorage,                                           "RD",  4096 },
     { UID_RTImageStorage,                                          "RI",  4096 },

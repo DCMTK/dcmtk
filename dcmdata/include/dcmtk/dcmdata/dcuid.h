@@ -363,7 +363,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 ** Defined SOP Class UIDs according to DICOM standard
 */
 
-// Storage
+// Storage (DICOM)
 #define UID_RETIRED_StoredPrintStorage                             "1.2.840.10008.5.1.1.27"
 #define UID_RETIRED_HardcopyGrayscaleImageStorage                  "1.2.840.10008.5.1.1.29"
 #define UID_RETIRED_HardcopyColorImageStorage                      "1.2.840.10008.5.1.1.30"
@@ -493,6 +493,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RTTreatmentSummaryRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.7"
 #define UID_RTIonPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.8"
 #define UID_RTIonBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.9"
+#define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
+#define UID_RTBrachyApplicationSetupDeliveryInstructionStorage     "1.2.840.10008.5.1.4.34.10"
 #define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 #define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
 #define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
@@ -525,7 +527,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_GETCompositeInstanceRootRetrieve                       "1.2.840.10008.5.1.4.1.2.4.3"
 #define UID_GETCompositeInstanceRetrieveWithoutBulkData            "1.2.840.10008.5.1.4.1.2.5.3"
 
-// Worklist
+// Modality Worklist
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
 
 // General Purpose Worklist
@@ -539,8 +541,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ModalityPerformedProcedureStepRetrieveSOPClass         "1.2.840.10008.3.1.2.3.4"
 #define UID_ModalityPerformedProcedureStepNotificationSOPClass     "1.2.840.10008.3.1.2.3.5"
 
-// Radiotherapy Treatment Delivery
-#define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
+// Radiotherapy
 #define UID_RTConventionalMachineVerification                      "1.2.840.10008.5.1.4.34.8"
 #define UID_RTIonMachineVerification                               "1.2.840.10008.5.1.4.34.9"
 
