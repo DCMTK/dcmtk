@@ -1371,6 +1371,10 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   }
 
   OFString filename = createStorageFilename(incomingObject);
+  if (OFStandard::fileExists(filename))
+  {
+    DCMNET_WARN("DICOM file already exists, overwriting: " << filename);
+  }
   DcmFileFormat dcmff(incomingObject, OFFalse /* do not copy but take ownership */);
   result = dcmff.saveFile(filename);
   if (result.good())

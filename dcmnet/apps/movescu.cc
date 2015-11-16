@@ -1289,6 +1289,10 @@ storeSCPCallback(
          /* create full path name for the output file */
          OFString ofname;
          OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, cbdata->imageFileName, OFTrue /* allowEmptyDirName */);
+         if (OFStandard::fileExists(ofname))
+         {
+           OFLOG_WARN(movescuLogger, "DICOM file already exists, overwriting: " << ofname);
+         }
 
          E_TransferSyntax xfer = opt_writeTransferSyntax;
          if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
