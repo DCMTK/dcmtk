@@ -28,7 +28,8 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
 # - Supplement 156, 184
-# - CP 1441, 1454, 1458, 1461
+# - CP 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1461, 1478 (WC), 1487
+# "WC" means "Draft Final Text - Waiting for Codes"
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -3636,17 +3637,34 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1441, 1454, 1458, 1461
+# Correction Items 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1461, 1478 (WC), 1487
 #
+(0008,119A)	SQ	OtherFailuresSequence	1	CP_1364
+(300A,0090)	CS	BeamDoseType	1	CP_1431
+(300A,0091)	DS	AlternateBeamDose	1	CP_1431
+(300A,0092)	CS	AlternateBeamDoseType	1	CP_1431
+(300A,0309)	CS	ModulatedScanModeType	1	CP_1432
 (0040,4070)	SQ	OutputDestinationSequence	1	CP_1441
 (0040,4071)	SQ	DICOMStorageSequence	1	CP_1441
 (0040,4072)	SQ	STOWRSStorageSequence	1	CP_1441
 (0040,4073)	UR	StorageURL	1	CP_1441
 (0040,4074)	SQ	XDSStorageSequence	1	CP_1441
 (0028,2002)	CS	ColorSpace	1	CP_1454
+(0010,0026)	SQ	SourcePatientGroupIdentificationSequence	1	CP_1457
+(0010,0027)	SQ	GroupOfPatientsIdentificationSequence	1	CP_1457
+(0010,0028)	US	SubjectRelativePositionInImage	3	CP_1457
 (0040,9213)	FD	DoubleFloatRealWorldValueLastValueMapped	1	CP_1458
 (0040,9214)	FD	DoubleFloatRealWorldValueFirstValueMapped	1	CP_1458
 (0018,1320)	FL	B1rms	1	CP_1461
+(0010,0212)	UC	StrainDescription	1	CP_1478
+(0010,0213)	LO	StrainNomenclature	1	CP_1478
+(0010,0214)	LO	StrainStockNumber	1	CP_1478
+(0010,0215)	SQ	StrainSourceRegistryCodeSequence	1	CP_1478
+(0010,0216)	SQ	StrainStockSequence	1	CP_1478
+(0010,0217)	LO	StrainSource	1	CP_1478
+(0010,0218)	UT	StrainAdditionalInformation	1	CP_1478
+(0010,0219)	SQ	StrainCodeSequence	1	CP_1478
+(0070,030B)	FD	FrameOfReferenceToDisplayedCoordinateSystemTransformationMatrix	16	CP_1487
 #
 #---------------------------------------------------------------------------
 #

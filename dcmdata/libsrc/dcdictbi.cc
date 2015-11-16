@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-11-16 18:17:37
+**   Date: 2015-11-16 19:19:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -898,6 +898,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x1199, 0x0008, 0x1199,
       EVR_SQ, "ReferencedSOPSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x119a, 0x0008, 0x119a,
+      EVR_SQ, "OtherFailuresSequence", 1, 1, "CP_1364",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1200, 0x0008, 0x1200,
@@ -1966,6 +1970,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "IssuerOfPatientIDQualifiersSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0010, 0x0026, 0x0010, 0x0026,
+      EVR_SQ, "SourcePatientGroupIdentificationSequence", 1, 1, "CP_1457",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0027, 0x0010, 0x0027,
+      EVR_SQ, "GroupOfPatientsIdentificationSequence", 1, 1, "CP_1457",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0028, 0x0010, 0x0028,
+      EVR_US, "SubjectRelativePositionInImage", 3, 3, "CP_1457",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0010, 0x0030, 0x0010, 0x0030,
       EVR_DA, "PatientBirthDate", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1996,6 +2012,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0010, 0x0201, 0x0010, 0x0201,
       EVR_SQ, "QualityControlSubjectTypeCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0212, 0x0010, 0x0212,
+      EVR_UC, "StrainDescription", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0213, 0x0010, 0x0213,
+      EVR_LO, "StrainNomenclature", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0214, 0x0010, 0x0214,
+      EVR_LO, "StrainStockNumber", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0215, 0x0010, 0x0215,
+      EVR_SQ, "StrainSourceRegistryCodeSequence", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0216, 0x0010, 0x0216,
+      EVR_SQ, "StrainStockSequence", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0217, 0x0010, 0x0217,
+      EVR_LO, "StrainSource", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0218, 0x0010, 0x0218,
+      EVR_UT, "StrainAdditionalInformation", 1, 1, "CP_1478",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0219, 0x0010, 0x0219,
+      EVR_SQ, "StrainCodeSequence", 1, 1, "CP_1478",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x1000, 0x0010, 0x1000,
@@ -21530,6 +21578,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "MatrixSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0070, 0x030b, 0x0070, 0x030b,
+      EVR_FD, "FrameOfReferenceToDisplayedCoordinateSystemTransformationMatrix", 16, 16, "CP_1487",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0070, 0x030c, 0x0070, 0x030c,
       EVR_CS, "FrameOfReferenceTransformationMatrixType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -25060,6 +25112,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "AverageBeamDosePointSSD", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0090, 0x300a, 0x0090,
+      EVR_CS, "BeamDoseType", 1, 1, "CP_1431",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0091, 0x300a, 0x0091,
+      EVR_DS, "AlternateBeamDose", 1, 1, "CP_1431",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0092, 0x300a, 0x0092,
+      EVR_CS, "AlternateBeamDoseType", 1, 1, "CP_1431",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x00a0, 0x300a, 0x00a0,
       EVR_IS, "NumberOfBrachyApplicationSetups", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -25942,6 +26006,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x0308, 0x300a, 0x0308,
       EVR_CS, "ScanMode", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0309, 0x300a, 0x0309,
+      EVR_CS, "ModulatedScanModeType", 1, 1, "CP_1432",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x030a, 0x300a, 0x030a,

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-11-16 18:17:24
+**   Date: 2015-11-16 19:19:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-11-16 18:17:24"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2015-11-16 19:19:09"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3970
+** Number of entries: 3987
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -231,6 +231,7 @@
 #define DCM_FailureReason                        DcmTagKey(0x0008, 0x1197)
 #define DCM_FailedSOPSequence                    DcmTagKey(0x0008, 0x1198)
 #define DCM_ReferencedSOPSequence                DcmTagKey(0x0008, 0x1199)
+#define DCM_OtherFailuresSequence                DcmTagKey(0x0008, 0x119a)
 #define DCM_StudiesContainingOtherReferencedInstancesSequence DcmTagKey(0x0008, 0x1200)
 #define DCM_RelatedSeriesSequence                DcmTagKey(0x0008, 0x1250)
 #define DCM_RETIRED_LossyImageCompressionRetired DcmTagKey(0x0008, 0x2110)
@@ -299,6 +300,9 @@
 #define DCM_IssuerOfPatientID                    DcmTagKey(0x0010, 0x0021)
 #define DCM_TypeOfPatientID                      DcmTagKey(0x0010, 0x0022)
 #define DCM_IssuerOfPatientIDQualifiersSequence  DcmTagKey(0x0010, 0x0024)
+#define DCM_SourcePatientGroupIdentificationSequence DcmTagKey(0x0010, 0x0026)
+#define DCM_GroupOfPatientsIdentificationSequence DcmTagKey(0x0010, 0x0027)
+#define DCM_SubjectRelativePositionInImage       DcmTagKey(0x0010, 0x0028)
 #define DCM_PatientBirthDate                     DcmTagKey(0x0010, 0x0030)
 #define DCM_PatientBirthTime                     DcmTagKey(0x0010, 0x0032)
 #define DCM_PatientSex                           DcmTagKey(0x0010, 0x0040)
@@ -307,6 +311,14 @@
 #define DCM_PatientPrimaryLanguageModifierCodeSequence DcmTagKey(0x0010, 0x0102)
 #define DCM_QualityControlSubject                DcmTagKey(0x0010, 0x0200)
 #define DCM_QualityControlSubjectTypeCodeSequence DcmTagKey(0x0010, 0x0201)
+#define DCM_StrainDescription                    DcmTagKey(0x0010, 0x0212)
+#define DCM_StrainNomenclature                   DcmTagKey(0x0010, 0x0213)
+#define DCM_StrainStockNumber                    DcmTagKey(0x0010, 0x0214)
+#define DCM_StrainSourceRegistryCodeSequence     DcmTagKey(0x0010, 0x0215)
+#define DCM_StrainStockSequence                  DcmTagKey(0x0010, 0x0216)
+#define DCM_StrainSource                         DcmTagKey(0x0010, 0x0217)
+#define DCM_StrainAdditionalInformation          DcmTagKey(0x0010, 0x0218)
+#define DCM_StrainCodeSequence                   DcmTagKey(0x0010, 0x0219)
 #define DCM_OtherPatientIDs                      DcmTagKey(0x0010, 0x1000)
 #define DCM_OtherPatientNames                    DcmTagKey(0x0010, 0x1001)
 #define DCM_OtherPatientIDsSequence              DcmTagKey(0x0010, 0x1002)
@@ -2802,6 +2814,7 @@
 #define DCM_RegistrationSequence                 DcmTagKey(0x0070, 0x0308)
 #define DCM_MatrixRegistrationSequence           DcmTagKey(0x0070, 0x0309)
 #define DCM_MatrixSequence                       DcmTagKey(0x0070, 0x030a)
+#define DCM_FrameOfReferenceToDisplayedCoordinateSystemTransformationMatrix DcmTagKey(0x0070, 0x030b)
 #define DCM_FrameOfReferenceTransformationMatrixType DcmTagKey(0x0070, 0x030c)
 #define DCM_RegistrationTypeCodeSequence         DcmTagKey(0x0070, 0x030d)
 #define DCM_FiducialDescription                  DcmTagKey(0x0070, 0x030f)
@@ -3517,6 +3530,9 @@
 #define DCM_AverageBeamDosePointDepth            DcmTagKey(0x300a, 0x008d)
 #define DCM_AverageBeamDosePointEquivalentDepth  DcmTagKey(0x300a, 0x008e)
 #define DCM_AverageBeamDosePointSSD              DcmTagKey(0x300a, 0x008f)
+#define DCM_BeamDoseType                         DcmTagKey(0x300a, 0x0090)
+#define DCM_AlternateBeamDose                    DcmTagKey(0x300a, 0x0091)
+#define DCM_AlternateBeamDoseType                DcmTagKey(0x300a, 0x0092)
 #define DCM_NumberOfBrachyApplicationSetups      DcmTagKey(0x300a, 0x00a0)
 #define DCM_BrachyApplicationSetupDoseSpecificationPoint DcmTagKey(0x300a, 0x00a2)
 #define DCM_BrachyApplicationSetupDose           DcmTagKey(0x300a, 0x00a4)
@@ -3738,6 +3754,7 @@
 #define DCM_RadiationAtomicNumber                DcmTagKey(0x300a, 0x0304)
 #define DCM_RadiationChargeState                 DcmTagKey(0x300a, 0x0306)
 #define DCM_ScanMode                             DcmTagKey(0x300a, 0x0308)
+#define DCM_ModulatedScanModeType                DcmTagKey(0x300a, 0x0309)
 #define DCM_VirtualSourceAxisDistances           DcmTagKey(0x300a, 0x030a)
 #define DCM_SnoutSequence                        DcmTagKey(0x300a, 0x030c)
 #define DCM_SnoutPosition                        DcmTagKey(0x300a, 0x030d)
