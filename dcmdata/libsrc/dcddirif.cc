@@ -750,8 +750,11 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_ImplantGroup;
     else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
         result = ERT_ImplantAssy;
-    else if (compare(sopClass, UID_RTBeamsDeliveryInstructionStorage))
+    else if (compare(sopClass, UID_RTBeamsDeliveryInstructionStorage) ||
+             compare(sopClass, UID_RTBrachyApplicationSetupDeliveryInstructionStorage))
+    {
         result = ERT_Plan;
+    }
     else if (compare(sopClass, UID_SurfaceScanMeshStorage) ||
              compare(sopClass, UID_SurfaceScanPointCloudStorage))
     {
@@ -1516,10 +1519,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     {
                         found = compare(mediaSOPClassUID, UID_RTDoseStorage) ||
                                 compare(mediaSOPClassUID, UID_RTStructureSetStorage) ||
-                                compare(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage) ||
                                 compare(mediaSOPClassUID, UID_RTPlanStorage) ||
-                                compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage) ||
                                 compare(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTBeamsDeliveryInstructionStorage) ||
+                                compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTBrachyApplicationSetupDeliveryInstructionStorage) ||
                                 compare(mediaSOPClassUID, UID_RTIonPlanStorage) ||
                                 compare(mediaSOPClassUID, UID_RTIonBeamsTreatmentRecordStorage);
                     }
