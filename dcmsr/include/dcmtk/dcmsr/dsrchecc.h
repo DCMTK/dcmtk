@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,7 +33,11 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the relationship content constraints of the Chest CAD SR IOD
+/** Class for checking the relationship content constraints of the Chest CAD SR IOD.
+ *  According to DICOM PS 3.3: "The document shall be constructed from TID 4100
+ *  (Chest CAD Document Root) invoked at the root node.  When a content item sub-tree
+ *  from a prior document is duplicated by-value, its observation context shall be
+ *  defined by TID 1001 (Observation Context) and its subordinate templates."
  */
 class DCMTK_DCMSR_EXPORT DSRChestCadSRConstraintChecker
   : public DSRIODConstraintChecker

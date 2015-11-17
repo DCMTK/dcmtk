@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2014, OFFIS e.V.
+ *  Copyright (C) 2010-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,8 +33,10 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the relationship content constraints of the
- *  Macular Grid Thickness And Volume Report IOD
+/** Class for checking the relationship content constraints of the Macular Grid
+ *  Thickness And Volume Report IOD.
+ *  According to DICOM PS 3.3: "The document shall be constructed from TID 2100
+ *  (Macular Grid Thickness and Volume Report) invoked at the root node."
  */
 class DCMTK_DCMSR_EXPORT DSRMacularGridThicknessAndVolumeReportConstraintChecker
   : public DSRIODConstraintChecker

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,8 +33,10 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the relationship content constraints of the
- *  Key Object Selection Document IOD
+/** Class for checking the relationship content constraints of the Key Object
+ *  Selection Document IOD.
+ *  According to DICOM PS 3.3: "The document shall be constructed from TID 2010
+ *  (Key Object Selection) invoked at the root node."
  */
 class DCMTK_DCMSR_EXPORT DSRKeyObjectSelectionDocumentConstraintChecker
   : public DSRIODConstraintChecker

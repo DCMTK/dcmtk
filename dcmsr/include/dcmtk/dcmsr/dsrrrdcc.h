@@ -34,7 +34,9 @@
  *---------------------*/
 
 /** Class for checking the relationship content constraints of the Radiopharmaceutical
- *  Radiation Dose SR IOD
+ *  Radiation Dose SR IOD.
+ *  According to DICOM PS 3.3: "The document may be constructed from Baseline TID 10021
+ *  (Radiopharmaceutical Radiation Dose) invoked at the root node."
  */
 class DCMTK_DCMSR_EXPORT DSRRadiopharmaceuticalRadiationDoseConstraintChecker
   : public DSRIODConstraintChecker

@@ -33,7 +33,9 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the relationship content constraints of the Procedure Log IOD
+/** Class for checking the relationship content constraints of the Procedure Log IOD.
+ *  According to DICOM PS 3.3: "The document may be constructed from Baseline TID 3001
+ *  (Procedure Log) invoked at the root node."
  */
 class DCMTK_DCMSR_EXPORT DSRProcedureLogConstraintChecker
   : public DSRIODConstraintChecker
