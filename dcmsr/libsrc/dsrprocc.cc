@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,13 +45,13 @@ OFBool DSRProcedureLogConstraintChecker::isByReferenceAllowed() const
 
 OFBool DSRProcedureLogConstraintChecker::isTemplateSupportRequired() const
 {
-    return OFTrue;
+    return OFFalse;
 }
 
 
 const char *DSRProcedureLogConstraintChecker::getRootTemplateIdentifier() const
 {
-    return "3001";
+    return NULL;
 }
 
 

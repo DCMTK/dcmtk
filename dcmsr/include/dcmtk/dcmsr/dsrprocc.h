@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,12 +55,12 @@ class DCMTK_DCMSR_EXPORT DSRProcedureLogConstraintChecker
     virtual OFBool isByReferenceAllowed() const;
 
     /** check whether this SR IOD requires template support
-     ** @return always returns OFTrue, i.e. template support is required
+     ** @return always returns OFFalse, i.e. template support is not required
      */
     virtual OFBool isTemplateSupportRequired() const;
 
     /** get identifier of the root template
-     ** @return root template identifier (TID) "3001"
+     ** @return always returns NULL (no template required)
      */
     virtual const char *getRootTemplateIdentifier() const;
 
