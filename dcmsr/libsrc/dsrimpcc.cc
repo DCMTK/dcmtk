@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2014, OFFIS e.V.
+ *  Copyright (C) 2010-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,7 +66,7 @@ OFBool DSRImplantationPlanSRDocumentConstraintChecker::checkContentRelationship(
                                                                                 const E_ValueType targetValueType,
                                                                                 const OFBool byReference) const
 {
-    /* the following code implements the constraints of table A.35.Y-2 in DICOM PS3.3 (Supplement 134) */
+    /* the following code implements the constraints of table A.35.12-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
     /* by-reference relationships not allowed at all */
     if (!byReference)

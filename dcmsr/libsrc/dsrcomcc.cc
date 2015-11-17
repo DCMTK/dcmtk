@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,7 +66,7 @@ OFBool DSRComprehensiveSRConstraintChecker::checkContentRelationship(const E_Val
                                                                      const E_ValueType targetValueType,
                                                                      const OFBool byReference) const
 {
-    /* the following code implements the contraints of table A.35.3-2 in DICOM PS3.3 */
+    /* the following code implements the constraints of table A.35.3-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
     /* row 1 of the table */
     if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))

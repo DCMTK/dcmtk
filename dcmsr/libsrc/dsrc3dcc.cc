@@ -66,7 +66,7 @@ OFBool DSRComprehensive3DSRConstraintChecker::checkContentRelationship(const E_V
                                                                        const E_ValueType targetValueType,
                                                                        const OFBool byReference) const
 {
-    /* the following code implements the contraints of table A.35.X-2 in DICOM PS3.3 (Supplement 162) */
+    /* the following code implements the constraints of table A.35.13-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
     /* row 1 of the table */
     if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))
