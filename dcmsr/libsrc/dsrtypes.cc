@@ -54,6 +54,7 @@
 #include "dcmtk/dcmsr/dsrimpcc.h"
 #include "dcmtk/dcmsr/dsrc3dcc.h"
 #include "dcmtk/dcmsr/dsrrrdcc.h"
+#include "dcmtk/dcmsr/dsracqcc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -860,7 +861,7 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) && (documentType != DT_AcquisitionContextSR);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR);
 }
 
 
@@ -1428,7 +1429,7 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             /* not yet supported */
             break;
         case DT_AcquisitionContextSR:
-            /* not yet supported */
+            checker = new DSRAcquisitionContextConstraintChecker();
             break;
         case DT_invalid:
             /* nothing to do */

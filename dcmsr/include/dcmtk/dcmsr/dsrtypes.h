@@ -492,7 +492,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_RadiopharmaceuticalRadiationDoseSR,
         /// DICOM IOD: Extensible SR (not yet implemented)
         DT_ExtensibleSR,
-        /// DICOM IOD: Acquisition Context SR (not yet implemented)
+        /// DICOM IOD: Acquisition Context SR
         DT_AcquisitionContextSR,
         /// internal type used to mark the last entry
         DT_last = DT_AcquisitionContextSR
