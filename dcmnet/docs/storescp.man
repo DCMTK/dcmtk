@@ -652,6 +652,7 @@ XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.
 RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
+AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128

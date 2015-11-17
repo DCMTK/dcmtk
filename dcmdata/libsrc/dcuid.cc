@@ -137,6 +137,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_XMLEncodingTransferSyntax,                           "XMLEncoding" },
 
     // Storage (DICOM)
+    { UID_AcquisitionContextSRStorage,                         "AcquisitionContextSRStorage" },
     { UID_AmbulatoryECGWaveformStorage,                        "AmbulatoryECGWaveformStorage" },
     { UID_ArterialPulseWaveformStorage,                        "ArterialPulseWaveformStorage" },
     { UID_AutorefractionMeasurementsStorage,                   "AutorefractionMeasurementsStorage" },
@@ -534,6 +535,7 @@ static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeo
  */
 
 const char* dcmAllStorageSOPClassUIDs[] = {
+    UID_AcquisitionContextSRStorage,
     UID_AmbulatoryECGWaveformStorage,
     UID_ArterialPulseWaveformStorage,
     UID_AutorefractionMeasurementsStorage,
@@ -805,6 +807,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
     UID_XRayRadiationDoseSRStorage,
     UID_XRayRadiofluoroscopicImageStorage,
     // recently approved
+//  UID_AcquisitionContextSRStorage,
 //  UID_BreastProjectionXRayImageStorageForPresentation,
 //  UID_BreastProjectionXRayImageStorageForProcessing,
 //  UID_CompositingPlanarMPRVolumetricPresentationStateStorage
@@ -1046,6 +1049,7 @@ typedef struct {
 ** the size of an image being transmitted).
 */
 static const DcmModalityTable modalities[] = {
+    { UID_AcquisitionContextSRStorage,                             "SRa", 4096 },
     { UID_AmbulatoryECGWaveformStorage,                            "ECA", 4096 },
     { UID_ArterialPulseWaveformStorage,                            "WVa", 4096 },
     { UID_AutorefractionMeasurementsStorage,                       "OPa", 4096 },
