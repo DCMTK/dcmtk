@@ -47,6 +47,13 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 {
   public:
 
+    // be friend with "greater than" and "less than" operators that are defined
+    // outside of this class
+    friend bool operator< (const DcmItem& lhs, const DcmItem& rhs);
+    friend bool operator> (const DcmItem& lhs, const DcmItem& rhs);
+    friend bool operator<=(const DcmItem& lhs, const DcmItem& rhs);
+    friend bool operator>=(const DcmItem& lhs, const DcmItem& rhs);
+
     /** default constructor
      */
     DcmItem();
@@ -66,7 +73,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** assignment operator. Private creator cache is not copied
      *  as it is also the case for clone().
-     *  @param the item to be copied
+     *  @param obj the item to be copied
+     *  @return Reference to this object after assignment
      */
     DcmItem &operator=(const DcmItem &obj);
 
@@ -1314,6 +1322,56 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /// cache for private creator tags and names
     DcmPrivateTagCache privateCreatorCache;
 };
+
+/** Checks whether left hand side item is smaller than right hand side
+ *  item. Uses DcmItem's compare() method in order to perform the
+ *  comparison. See DcmItem::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is smaller than rhs, OFFalse otherwise
+ */
+inline bool operator< (const DcmItem& lhs, const DcmItem& rhs)
+{
+  return ( lhs.compare(rhs) < 0 );
+}
+
+/** Checks whether left hand side item is greater than right hand side
+ *  item. Uses DcmItem's compare() method in order to perform the
+ *  comparison. See DcmItem::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is greater than rhs, OFFalse otherwise
+ */
+inline bool operator> (const DcmItem& lhs, const DcmItem& rhs)
+{
+  return rhs < lhs;
+}
+
+/** Checks whether left hand side item is smaller than or equal to right hand
+ *  side item. Uses DcmItem's compare() method in order to perform the
+ *  comparison. See DcmItem::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is smaller than rhs or both are equal, OFFalse
+ *          otherwise
+ */
+inline bool operator<=(const DcmItem& lhs, const DcmItem& rhs)
+{
+  return !(lhs > rhs);
+}
+
+/** Checks whether left hand side element is greater than or equal to right hand
+ *  side element. Uses DcmElement's compare() method in order to perform the
+ *  comparison. See DcmElement::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is greater than rhs or both are equal, OFFalse
+ *          otherwise
+ */
+inline bool operator>=(const DcmItem& lhs, const DcmItem& rhs)
+{
+  return !(lhs < rhs);
+}
 
 //
 // SUPPORT FUNCTIONS

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: test program for compare() method of VR classes
+ *  Purpose: tests for compare() as well as < and > operators of VR classes
  *
  */
 
@@ -72,27 +72,41 @@ static void checkByteString(const DcmTagKey& key)
   obj1.putOFStringArray("TEST");
   obj2.putOFStringArray("TEST");
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putOFStringArray("TEST" /* same value*/);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second string longer
   obj2.putOFStringArray("TEST_LONG");
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putOFStringArray("TEST\\TEST");
   obj2.putOFStringArray("TEST\\TEST\\TEST");
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -107,20 +121,30 @@ static void checkAttributeTags()
   obj1.putTagVal(DCM_PatientName);
   obj2.putTagVal(DCM_PatientName);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putTagVal(DCM_PatientName);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putTagVal(DCM_PatientID);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putTagVal(DCM_PatientName, 1); // VM = 2
@@ -129,8 +153,12 @@ static void checkAttributeTags()
   obj2.putTagVal(DCM_PatientName, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -145,20 +173,30 @@ static void checkFloatingPointDouble()
   obj1.putFloat64(10.0);
   obj2.putFloat64(10.0);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj2) && (obj1 >= obj1) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putFloat64(10.0);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putFloat64(100.50);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putFloat64(10.0);     // VM = 2
@@ -167,8 +205,12 @@ static void checkFloatingPointDouble()
   obj2.putFloat64(10.0, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -183,20 +225,30 @@ static void checkFloatingPointSingle()
   obj1.putFloat32(10.0);
   obj2.putFloat32(10.0);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putFloat32(10.0);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putFloat32(100.50);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putFloat32(10.0);     // VM = 2
@@ -205,8 +257,12 @@ static void checkFloatingPointSingle()
   obj2.putFloat32(10.0, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 template <typename BinaryOBOWType>
@@ -222,21 +278,31 @@ static void checkOtherByteOtherWord(const DcmTagKey& tagKey)
   obj1.putUint8Array(testData, 1);
   obj2.putUint8Array(testData, 1);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putUint8Array(testData, 1);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   Uint8 biggerTestData[1] = {101};
   obj2.putUint8Array(biggerTestData, 1);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   Uint8 largeVMTestData[2] = {100, 101};
@@ -245,8 +311,12 @@ static void checkOtherByteOtherWord(const DcmTagKey& tagKey)
   obj2.putUint8Array(evenLargerVMTestData, 3); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -261,20 +331,30 @@ static void checkSignedLong()
   obj1.putSint32(-10);
   obj2.putSint32(-10);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putSint32(-10);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putSint32(-5);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
+
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putSint32(-10);     // VM = 2
@@ -283,8 +363,12 @@ static void checkSignedLong()
   obj2.putSint32(-10, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -299,20 +383,30 @@ static void checkSignedShort()
   obj1.putSint16(-10);
   obj2.putSint16(-10);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putSint16(-10);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putSint16(-5);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putSint16(-10);     // VM = 2
@@ -321,8 +415,12 @@ static void checkSignedShort()
   obj2.putSint16(-10, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -337,20 +435,30 @@ static void checkUnsignedLong()
   obj1.putUint32(10);
   obj2.putUint32(10);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putUint32(10);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putUint32(10000);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putUint32(10);     // VM = 2
@@ -359,8 +467,12 @@ static void checkUnsignedLong()
   obj2.putUint32(10, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -375,20 +487,30 @@ static void checkUnsignedShort()
   obj1.putUint16(10);
   obj2.putUint16(10);
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj2) && (obj1 >= obj2) );
 
   // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
   objOtherTag.putUint16(10);
   OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
   // Reverse test should yield opposite result
   OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
 
   // Check second attribute larger
   obj2.putUint16(10000);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM
   obj1.putUint16(10);     // VM = 2
@@ -397,8 +519,12 @@ static void checkUnsignedShort()
   obj2.putUint16(10, 2); // VM = 3
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 }
 
 
@@ -415,14 +541,20 @@ static void checkDcmItemAndSequences()
 
   // Check equality
   OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj2) && (obj1 >= obj1) );
 
   // Check values in second item larger. Make sure that the first value remains equal.
   obj2.putAndInsertUint16(DCM_Columns, 100);
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
 
   // Test different VM (i.e. item cardinality):
   // obj1 has VM = 2
@@ -430,8 +562,12 @@ static void checkDcmItemAndSequences()
   obj2.insertEmptyElement(DCM_PixelData);
 
   OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2 );
   // Reverse test should yield opposite result
   OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1 );
+  OFCHECK(obj2 >= obj1 );
 
   // Check sequences
 
@@ -445,8 +581,10 @@ static void checkDcmItemAndSequences()
 
   // Check equality
   OFCHECK_EQUAL(seq1.compare(seq2), 0);
+  OFCHECK( (seq1 <= seq2) && (seq2 <= seq1) );
   // Reverse test should yield same result
   OFCHECK_EQUAL(seq2.compare(seq1), 0);
+  OFCHECK( (seq2 >= seq1) && (seq1 >= seq2) );
 
   // Test different VM (i.e. sequence cardinality):
   // seq1 has VM = 2
@@ -454,8 +592,12 @@ static void checkDcmItemAndSequences()
   seq2.insertAtCurrentPos(new DcmItem());;
 
   OFCHECK(seq1.compare(seq2) < 0);
+  OFCHECK(seq1 < seq2);
+  OFCHECK(seq1 <= seq2);
   // Reverse test should yield opposite result
   OFCHECK(seq2.compare(seq1) > 0);
+  OFCHECK(seq2 > seq1);
+  OFCHECK(seq2 >= seq1);
 }
 
 

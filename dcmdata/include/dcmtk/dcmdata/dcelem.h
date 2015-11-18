@@ -41,6 +41,13 @@ class DCMTK_DCMDATA_EXPORT DcmElement
 
   public:
 
+    // be friend with "greater than" and "less than" operators that are defined
+    // outside of this class
+    friend bool operator< (const DcmElement& lhs, const DcmElement& rhs);
+    friend bool operator> (const DcmElement& lhs, const DcmElement& rhs);
+    friend bool operator<=(const DcmElement& lhs, const DcmElement& rhs);
+    friend bool operator>=(const DcmElement& lhs, const DcmElement& rhs);
+
     /** constructor.
      *  Create new element from given tag and length.
      *  @param tag DICOM tag for the new element
@@ -77,7 +84,9 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *          -1 if either the value of the first component that does not match
      *          is lower in this object than in rhs, or all compared components match
      *          but this object has fewer components than rhs. Also returned if rhs
-     *          cannot be casted to this object type.
+     *          cannot be casted to this object type or both objects are of
+     *          different VR (i.e. the DcmEVR returned by the element's ident()
+     *          call are different).
      *          1 if either the value of the first component that does not match
      *          is greater in this object than in rhs object, or all compared
      *          components match but the this component is longer.
@@ -864,5 +873,54 @@ class DCMTK_DCMDATA_EXPORT DcmElement
     Uint8 *fValue;
 };
 
+/** Checks whether left hand side element is smaller than right hand side
+ *  element. Uses DcmElement's compare() method in order to perform the
+ *  comparison. See DcmElement::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is smaller than rhs, OFFalse otherwise
+ */
+inline bool operator< (const DcmElement& lhs, const DcmElement& rhs)
+{
+  return ( lhs.compare(rhs) < 0 );
+}
+
+/** Checks whether left hand side element is greater than right hand side
+ *  element. Uses DcmElement's compare() method in order to perform the
+ *  comparison. See DcmElement::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is greater than rhs, OFFalse otherwise
+ */
+inline bool operator> (const DcmElement& lhs, const DcmElement& rhs)
+{
+    return rhs < lhs;
+}
+
+/** Checks whether left hand side element is smaller than or equal to right hand
+ *  side element. Uses DcmElement's compare() method in order to perform the
+ *  comparison. See DcmElement::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is smaller than rhs or both are equal, OFFalse
+ *          otherwise
+ */
+inline bool operator<=(const DcmElement& lhs, const DcmElement& rhs)
+{
+    return !(lhs > rhs);
+}
+
+/** Checks whether left hand side element is greater than or equal to right hand
+ *  side element. Uses DcmElement's compare() method in order to perform the
+ *  comparison. See DcmElement::compare() for details.
+ *  @param lhs left hand side of the comparison
+ *  @param rhs right hand side of the comparison
+ *  @return OFTrue if lhs is greater than rhs or both are equal, OFFalse
+ *          otherwise
+ */
+inline bool operator>=(const DcmElement& lhs, const DcmElement& rhs)
+{
+    return !(lhs < rhs);
+}
 
 #endif // DCELEM_H
