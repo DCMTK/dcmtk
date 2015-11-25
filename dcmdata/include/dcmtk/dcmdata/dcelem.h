@@ -43,10 +43,10 @@ class DCMTK_DCMDATA_EXPORT DcmElement
 
     // be friend with "greater than" and "less than" operators that are defined
     // outside of this class
-    friend bool operator< (const DcmElement& lhs, const DcmElement& rhs);
-    friend bool operator> (const DcmElement& lhs, const DcmElement& rhs);
-    friend bool operator<=(const DcmElement& lhs, const DcmElement& rhs);
-    friend bool operator>=(const DcmElement& lhs, const DcmElement& rhs);
+    friend OFBool operator< (const DcmElement& lhs, const DcmElement& rhs);
+    friend OFBool operator> (const DcmElement& lhs, const DcmElement& rhs);
+    friend OFBool operator<=(const DcmElement& lhs, const DcmElement& rhs);
+    friend OFBool operator>=(const DcmElement& lhs, const DcmElement& rhs);
 
     /** constructor.
      *  Create new element from given tag and length.
@@ -880,7 +880,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
  *  @param rhs right hand side of the comparison
  *  @return OFTrue if lhs is smaller than rhs, OFFalse otherwise
  */
-inline bool operator< (const DcmElement& lhs, const DcmElement& rhs)
+inline OFBool operator< (const DcmElement& lhs, const DcmElement& rhs)
 {
   return ( lhs.compare(rhs) < 0 );
 }
@@ -892,7 +892,7 @@ inline bool operator< (const DcmElement& lhs, const DcmElement& rhs)
  *  @param rhs right hand side of the comparison
  *  @return OFTrue if lhs is greater than rhs, OFFalse otherwise
  */
-inline bool operator> (const DcmElement& lhs, const DcmElement& rhs)
+inline OFBool operator> (const DcmElement& lhs, const DcmElement& rhs)
 {
     return rhs < lhs;
 }
@@ -905,7 +905,7 @@ inline bool operator> (const DcmElement& lhs, const DcmElement& rhs)
  *  @return OFTrue if lhs is smaller than rhs or both are equal, OFFalse
  *          otherwise
  */
-inline bool operator<=(const DcmElement& lhs, const DcmElement& rhs)
+inline OFBool operator<=(const DcmElement& lhs, const DcmElement& rhs)
 {
     return !(lhs > rhs);
 }
@@ -918,7 +918,7 @@ inline bool operator<=(const DcmElement& lhs, const DcmElement& rhs)
  *  @return OFTrue if lhs is greater than rhs or both are equal, OFFalse
  *          otherwise
  */
-inline bool operator>=(const DcmElement& lhs, const DcmElement& rhs)
+inline OFBool operator>=(const DcmElement& lhs, const DcmElement& rhs)
 {
     return !(lhs < rhs);
 }
