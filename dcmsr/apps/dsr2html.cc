@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string",
                                                           "assume charset c if no extended charset declared");
-        cmd.addOption("--charset-check-all",              "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
+        cmd.addOption("--charset-check-all",              "check all data elements with string values\n(default: only PN, LO, LT, SH, ST, UC and UT)");
 #ifdef WITH_LIBICONV
         cmd.addOption("--convert-to-utf8",      "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
 #endif

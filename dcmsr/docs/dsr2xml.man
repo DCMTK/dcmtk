@@ -132,7 +132,7 @@ specific character set:
 
   +Cc  --charset-check-all
          check all data elements with string values
-         (default: only PN, LO, LT, SH, ST and UT)
+         (default: only PN, LO, LT, SH, ST, UC and UT)
 
          # this option is only used for the mapping to an appropriate
          # XML character encoding, but not for the conversion to UTF-8

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -252,7 +252,8 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      *  codes below 128 are considered to be ASCII codes and all others are considered to
      *  be non-ASCII.
      *  @param checkAllStrings if true, also check elements with string values not affected
-     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
+     *    by SpecificCharacterSet (0008,0005). By default, only check PN, LO, LT, SH, ST,
+     *    UC and UT, i.e. none of the derived VR classes.
      *  @return true if element contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);

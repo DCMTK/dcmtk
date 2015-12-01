@@ -82,7 +82,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
-     *  components of the object, preferrably in the order declared in the
+     *  components of the object, preferably in the order declared in the
      *  object (if applicable). For item values that means that all elements
      *  within the items are compared to each other in ascending tag order.
      *  This may be an expensive operation.
@@ -172,7 +172,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  VR field and the value itself, for items and sequences it returns
      *  the length of the complete item or sequence including delimitation tags
      *  if applicable.
-     *  If length encodig is set to be explicit and the total item size is
+     *  If length encoding is set to be explicit and the total item size is
      *  larger than the available 32-bit length field, then undefined length
      *  is returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
      *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
@@ -188,7 +188,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /** calculate the value length (without attribute tag, VR and length field)
      *  of this DICOM element when encoded with the given transfer syntax and
      *  the given encoding type for sequences.
-     *  If length encodig is set to be explicit and the item content is larger
+     *  If length encoding is set to be explicit and the item content is larger
      *  than the available 32-bit length field, then undefined length is
      *  returned. If "dcmWriteOversizedSeqsAndItemsUndefined" is disabled,
      *  also the internal DcmObject errorFlag is set to
@@ -285,8 +285,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  character codes below 128 are considered to be ASCII codes and all others are
      *  considered to be non-ASCII.
      *  @param checkAllStrings if true, also check elements with string values not affected
-     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UC
-     *    and UT
+     *    by SpecificCharacterSet (0008,0005). By default, only check PN, LO, LT, SH, ST,
+     *    UC and UT.
      *  @return true if object contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
