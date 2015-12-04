@@ -1278,7 +1278,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmLongString       ProtocolName;
     /// Series Description: (LO, 1, 3)
     DcmLongString       SeriesDescription;
-    /// Referenced Performed Procedure Step Sequence: (SQ, 1-n, 2)
+    /// Series Description Code Sequence: (SQ, 1, 3)
+     // - tbd: optional attribute not yet supported
+    /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)
     DcmSequenceOfItems  ReferencedPerformedProcedureStep;
 
     // --- SR Document General Module (M) ---
@@ -1299,12 +1301,18 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmTime             ContentTime;
     /// Verifying Observer Sequence: (SQ, 1-n, 1C)
     DcmSequenceOfItems  VerifyingObserver;
+    /// Author Observer Sequence: (SQ, 1-n, 3)
+     // - tbd: optional attribute not yet supported
+    /// Participant Sequence: (SQ, 1-n, 3)
+     // - tbd: optional attribute not yet supported
+    /// Custodial Organization Sequence: (SQ, 1, 3)
+     // - tbd: optional attribute not yet supported
     /// Predecessor Documents Sequence: (SQ, 1-n, 1C)
     DSRSOPInstanceReferenceList PredecessorDocuments;
     /// Identical Documents Sequence: (SQ, 1-n, 1C)
     DSRSOPInstanceReferenceList IdenticalDocuments;
     // Referenced Request Sequence: (SQ, 1-n, 1C)
-    // - tbd: conditional attribute not yet supported
+     // - tbd: conditional attribute not yet supported
     /// Performed Procedure Code Sequence: (SQ, 1-n, 2)
     DcmSequenceOfItems  PerformedProcedureCode;
     /// Current Requested Procedure Evidence Sequence: (SQ, 1-n, 1C)
