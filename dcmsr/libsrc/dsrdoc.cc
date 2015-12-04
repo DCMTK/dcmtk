@@ -513,7 +513,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             PredecessorDocuments.read(dataset, flags);
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, PerformedProcedureCode);
-            checkElementValue(PerformedProcedureCode, "1", "2", searchCond, "SRDocumentGeneralModule");
+            checkElementValue(PerformedProcedureCode, "1-n", "2", searchCond, "SRDocumentGeneralModule");
             PertinentOtherEvidence.read(dataset, flags);
             ReferencedInstances.read(dataset, flags);
         }
@@ -694,7 +694,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
                 PredecessorDocuments.write(dataset);    /* optional */
             /* always write empty sequence since not yet fully supported */
             PerformedProcedureCode.clear();
-            addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode), "1", "2", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode), "1-n", "2", "SRDocumentGeneralModule");
             if (result.good())
                 result = PertinentOtherEvidence.write(dataset);
             if (result.good())
