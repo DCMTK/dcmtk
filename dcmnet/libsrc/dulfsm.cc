@@ -2259,7 +2259,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
 
     // depending on the socket mode, connect will block or return immediately
-    int rc = connect(s, (struct sockaddr *) & server, sizeof(server));
+    int rc;
+    do {
+        rc = connect(s, (struct sockaddr *) & server, sizeof(server));
+    } while (rc == -1 && errno == EINTR);
 
 #ifdef HAVE_WINSOCK_H
     if (rc == SOCKET_ERROR && WSAGetLastError() == WSAEWOULDBLOCK)
@@ -2281,7 +2284,9 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         timeout.tv_sec = connectTimeout;
         timeout.tv_usec = 0;
 
-        rc = select(s+1, NULL, &fdSet, NULL, &timeout);
+        do {
+            rc = select(s + 1, NULL, &fdSet, NULL, &timeout);
+        } while (rc == -1 && errno == EINTR);
 
         // reset socket to blocking mode
 #ifdef HAVE_WINSOCK_H
