@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -144,6 +144,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getCumulativeMetersetWeight(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get ExternalContourEntryPoint (300a,0133)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getExternalContourEntryPoint(Float32 &value, const unsigned long pos = 0) const;
 
         /** get GantryAngle (300a,011e)
          *  @param  value  reference to variable in which the value should be stored
@@ -520,6 +527,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
          */
         OFCondition setCumulativeMetersetWeight(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ExternalContourEntryPoint (300a,0133)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=3
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setExternalContourEntryPoint(const Float32 value, const unsigned long pos = 0);
+
         /** set GantryAngle (300a,011e)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -717,6 +731,8 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
         DcmIntegerString ControlPointIndex;
         /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=2
         DcmDecimalString CumulativeMetersetWeight;
+        /// ExternalContourEntryPoint (300a,0133) vr=FL, vm=3, type=3
+        DcmFloatingPointSingle ExternalContourEntryPoint;
         /// GantryAngle (300a,011e) vr=DS, vm=1, type=1C
         DcmDecimalString GantryAngle;
         /// GantryPitchAngle (300a,014a) vr=FL, vm=1, type=2C

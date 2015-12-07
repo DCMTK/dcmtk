@@ -109,12 +109,14 @@ drtdump.o: drtdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdvhs.h \
@@ -144,11 +146,14 @@ drtdump.o: drtdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpsss.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpsss.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrcs.h ../include/dcmtk/dcmrt/seq/drtcs.h \
  ../include/dcmtk/dcmrt/seq/drtcis.h \
  ../include/dcmtk/dcmrt/seq/drtrdros.h \
  ../include/dcmtk/dcmrt/seq/drtrwvms.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrfors.h \
  ../include/dcmtk/dcmrt/seq/drtrsts.h \
@@ -156,8 +161,10 @@ drtdump.o: drtdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps.h \
  ../include/dcmtk/dcmrt/seq/drtrfgs.h \
@@ -229,7 +236,7 @@ drtdump.o: drtdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drttsmds.h ../include/dcmtk/dcmrt/drtionpl.h \
  ../include/dcmtk/dcmrt/seq/drtibs.h ../include/dcmtk/dcmrt/seq/drtas6.h \
  ../include/dcmtk/dcmrt/seq/drtiblds.h \
- ../include/dcmtk/dcmrt/seq/drtibls.h \
+ ../include/dcmtk/dcmrt/seq/drtibls.h ../include/dcmtk/dcmrt/seq/drtbss.h \
  ../include/dcmtk/dcmrt/seq/drticps.h \
  ../include/dcmtk/dcmrt/seq/drtiwps.h \
  ../include/dcmtk/dcmrt/seq/drtlsds6.h \

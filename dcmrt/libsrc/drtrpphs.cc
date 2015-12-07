@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTReferencedPatientPhotoSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -27,6 +27,7 @@ DRTReferencedPatientPhotoSequence::Item::Item(const OFBool emptyDefaultItem)
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     StudyInstanceUID(DCM_StudyInstanceUID),
     TypeOfInstances(DCM_TypeOfInstances),
+    WADORSRetrievalSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     WADORetrievalSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     XDSRetrievalSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
@@ -41,6 +42,7 @@ DRTReferencedPatientPhotoSequence::Item::Item(const Item &copy)
     SeriesInstanceUID(copy.SeriesInstanceUID),
     StudyInstanceUID(copy.StudyInstanceUID),
     TypeOfInstances(copy.TypeOfInstances),
+    WADORSRetrievalSequence(copy.WADORSRetrievalSequence),
     WADORetrievalSequence(copy.WADORetrievalSequence),
     XDSRetrievalSequence(copy.XDSRetrievalSequence)
 {
@@ -63,6 +65,7 @@ DRTReferencedPatientPhotoSequence::Item &DRTReferencedPatientPhotoSequence::Item
         SeriesInstanceUID = copy.SeriesInstanceUID;
         StudyInstanceUID = copy.StudyInstanceUID;
         TypeOfInstances = copy.TypeOfInstances;
+        WADORSRetrievalSequence = copy.WADORSRetrievalSequence;
         WADORetrievalSequence = copy.WADORetrievalSequence;
         XDSRetrievalSequence = copy.XDSRetrievalSequence;
     }
@@ -83,6 +86,7 @@ void DRTReferencedPatientPhotoSequence::Item::clear()
         DICOMMediaRetrievalSequence.clear();
         WADORetrievalSequence.clear();
         XDSRetrievalSequence.clear();
+        WADORSRetrievalSequence.clear();
     }
 }
 
@@ -96,7 +100,8 @@ OFBool DRTReferencedPatientPhotoSequence::Item::isEmpty()
            DICOMRetrievalSequence.isEmpty() &&
            DICOMMediaRetrievalSequence.isEmpty() &&
            WADORetrievalSequence.isEmpty() &&
-           XDSRetrievalSequence.isEmpty();
+           XDSRetrievalSequence.isEmpty() &&
+           WADORSRetrievalSequence.isEmpty();
 }
 
 
@@ -121,6 +126,7 @@ OFCondition DRTReferencedPatientPhotoSequence::Item::read(DcmItem &item)
         DICOMMediaRetrievalSequence.read(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
         WADORetrievalSequence.read(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
         XDSRetrievalSequence.read(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
+        WADORSRetrievalSequence.read(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
         result = EC_Normal;
     }
     return result;
@@ -141,6 +147,7 @@ OFCondition DRTReferencedPatientPhotoSequence::Item::write(DcmItem &item)
         if (result.good()) result = DICOMMediaRetrievalSequence.write(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
         if (result.good()) result = WADORetrievalSequence.write(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
         if (result.good()) result = XDSRetrievalSequence.write(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
+        if (result.good()) result = WADORSRetrievalSequence.write(item, "1-n", "1C", "ReferencedPatientPhotoSequence");
     }
     return result;
 }

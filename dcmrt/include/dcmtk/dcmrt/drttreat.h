@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTTreatmentSummaryRecordIOD
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -22,6 +22,7 @@
 #include "dcmtk/dcmrt/seq/drtbrs.h"    // for BreedRegistrationSequence
 #include "dcmtk/dcmrt/seq/drtcsis.h"   // for CodingSchemeIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtcctus.h"  // for ConsentForClinicalTrialUseSequence
+#include "dcmtk/dcmrt/seq/drtcpis.h"   // for ConsultingPhysicianIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtces.h"    // for ContributingEquipmentSequence
 #include "dcmtk/dcmrt/seq/drtcsas.h"   // for ConversionSourceAttributesSequence
 #include "dcmtk/dcmrt/seq/drtdimcs.h"  // for DeidentificationMethodCodeSequence
@@ -42,6 +43,7 @@
 #include "dcmtk/dcmrt/seq/drtppcs.h"   // for PerformedProtocolCodeSequence
 #include "dcmtk/dcmrt/seq/drtporis.h"  // for PhysiciansOfRecordIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtprsis.h"  // for PhysiciansReadingStudyIdentificationSequence
+#include "dcmtk/dcmrt/seq/drtpdecs.h"  // for PrivateDataElementCharacteristicsSequence
 #include "dcmtk/dcmrt/seq/drtpcs.h"    // for ProcedureCodeSequence
 #include "dcmtk/dcmrt/seq/drtrppcs.h"  // for ReasonForPerformedProcedureCodeSequence
 #include "dcmtk/dcmrt/seq/drtrpphs.h"  // for ReferencedPatientPhotoSequence
@@ -314,6 +316,13 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getCommentsOnThePerformedProcedureStep(OFString &value, const signed long pos = 0) const;
+
+    /** get ConsultingPhysicianName (0008,009c)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getConsultingPhysicianName(OFString &value, const signed long pos = 0) const;
 
     /** get ContentQualification (0018,9004)
      *  @param  value  reference to variable in which the value should be stored
@@ -974,6 +983,18 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
     const DRTConsentForClinicalTrialUseSequence &getConsentForClinicalTrialUseSequence() const
         { return ConsentForClinicalTrialUseSequence; }
 
+    /** get ConsultingPhysicianIdentificationSequence (0008,009d)
+     *  @return reference to sequence element
+     */
+    DRTConsultingPhysicianIdentificationSequence &getConsultingPhysicianIdentificationSequence()
+        { return ConsultingPhysicianIdentificationSequence; }
+
+    /** get ConsultingPhysicianIdentificationSequence (0008,009d)
+     *  @return const reference to sequence element
+     */
+    const DRTConsultingPhysicianIdentificationSequence &getConsultingPhysicianIdentificationSequence() const
+        { return ConsultingPhysicianIdentificationSequence; }
+
     /** get ContributingEquipmentSequence (0018,a001)
      *  @return reference to sequence element
      */
@@ -1213,6 +1234,18 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      */
     const DRTPhysiciansReadingStudyIdentificationSequence &getPhysiciansReadingStudyIdentificationSequence() const
         { return PhysiciansReadingStudyIdentificationSequence; }
+
+    /** get PrivateDataElementCharacteristicsSequence (0008,0300)
+     *  @return reference to sequence element
+     */
+    DRTPrivateDataElementCharacteristicsSequence &getPrivateDataElementCharacteristicsSequence()
+        { return PrivateDataElementCharacteristicsSequence; }
+
+    /** get PrivateDataElementCharacteristicsSequence (0008,0300)
+     *  @return const reference to sequence element
+     */
+    const DRTPrivateDataElementCharacteristicsSequence &getPrivateDataElementCharacteristicsSequence() const
+        { return PrivateDataElementCharacteristicsSequence; }
 
     /** get ProcedureCodeSequence (0008,1032)
      *  @return reference to sequence element
@@ -1547,6 +1580,13 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setCommentsOnThePerformedProcedureStep(const OFString &value, const OFBool check = OFTrue);
+
+    /** set ConsultingPhysicianName (0008,009c)
+     *  @param  value  value to be set (possibly multi-valued) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (PN) and VM (1-n) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setConsultingPhysicianName(const OFString &value, const OFBool check = OFTrue);
 
     /** set ContentQualification (0018,9004)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -2230,6 +2270,10 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
     DcmPersonName ReferringPhysicianName;
     /// ReferringPhysicianIdentificationSequence (0008,0096) vr=SQ, vm=1, type=3
     DRTReferringPhysicianIdentificationSequence ReferringPhysicianIdentificationSequence;
+    /// ConsultingPhysicianName (0008,009c) vr=PN, vm=1-n, type=3
+    DcmPersonName ConsultingPhysicianName;
+    /// ConsultingPhysicianIdentificationSequence (0008,009d) vr=SQ, vm=1, type=3
+    DRTConsultingPhysicianIdentificationSequence ConsultingPhysicianIdentificationSequence;
     /// StudyID (0020,0010) vr=SH, vm=1, type=2
     DcmShortString StudyID;
     /// AccessionNumber (0008,0050) vr=SH, vm=1, type=2
@@ -2458,6 +2502,8 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
     DRTConversionSourceAttributesSequence ConversionSourceAttributesSequence;
     /// ContentQualification (0018,9004) vr=CS, vm=1, type=3
     DcmCodeString ContentQualification;
+    /// PrivateDataElementCharacteristicsSequence (0008,0300) vr=SQ, vm=1, type=3
+    DRTPrivateDataElementCharacteristicsSequence PrivateDataElementCharacteristicsSequence;
 
     // --- CommonInstanceReferenceModule (U) ---
 

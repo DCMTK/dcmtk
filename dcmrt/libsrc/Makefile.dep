@@ -110,12 +110,14 @@ drmdose.o: drmdose.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdvhs.h \
@@ -145,11 +147,14 @@ drmdose.o: drmdose.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpsss.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpsss.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrcs.h ../include/dcmtk/dcmrt/seq/drtcs.h \
  ../include/dcmtk/dcmrt/seq/drtcis.h \
  ../include/dcmtk/dcmrt/seq/drtrdros.h \
  ../include/dcmtk/dcmrt/seq/drtrwvms.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrfors.h \
  ../include/dcmtk/dcmrt/seq/drtrsts.h \
@@ -157,8 +162,10 @@ drmdose.o: drmdose.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps.h \
  ../include/dcmtk/dcmrt/seq/drtrfgs.h \
@@ -290,14 +297,16 @@ drmimage.o: drmimage.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h \
  ../include/dcmtk/dcmrt/seq/drtcbars.h \
  ../include/dcmtk/dcmrt/seq/drtads.h ../include/dcmtk/dcmrt/seq/drtbas.h \
  ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -332,14 +341,18 @@ drmimage.o: drmimage.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrwvms.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps5.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -481,9 +494,9 @@ drmplan.o: drmplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtass.h \
- ../include/dcmtk/dcmrt/seq/drtbads.h ../include/dcmtk/dcmrt/seq/drtchs.h \
- ../include/dcmtk/dcmrt/seq/drtbcps.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtass.h ../include/dcmtk/dcmrt/seq/drtbads.h \
+ ../include/dcmtk/dcmrt/seq/drtchs.h ../include/dcmtk/dcmrt/seq/drtbcps.h \
  ../include/dcmtk/dcmrt/seq/drtbrdrs.h \
  ../include/dcmtk/dcmrt/seq/drtcshs.h \
  ../include/dcmtk/dcmrt/seq/drtrris9.h ../include/dcmtk/dcmrt/seq/drtbs.h \
@@ -502,8 +515,9 @@ drmplan.o: drmplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -537,12 +551,15 @@ drmplan.o: drmplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps3.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -670,12 +687,14 @@ drmstrct.o: drmstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -702,7 +721,9 @@ drmstrct.o: drmstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpsss.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpsss.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrcs.h ../include/dcmtk/dcmrt/seq/drtcs.h \
  ../include/dcmtk/dcmrt/seq/drtcis.h ../include/dcmtk/dcmrt/seq/drtrros.h \
  ../include/dcmtk/dcmrt/seq/drtarics.h \
@@ -717,8 +738,10 @@ drmstrct.o: drmstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrses.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
  ../include/dcmtk/dcmrt/seq/drtris.h ../include/dcmtk/dcmrt/seq/drtrss.h \
@@ -841,7 +864,8 @@ drtaadcs.o: drtaadcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtadcs.o: drtadcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtadcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -953,7 +977,8 @@ drtadcs.o: drtadcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtads.o: drtads.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtads.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -1065,7 +1090,8 @@ drtads.o: drtads.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtafs.o: drtafs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtafs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -1401,7 +1427,8 @@ drtajcs.o: drtajcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtarics.o: drtarics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtarics.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -1514,6 +1541,7 @@ drtarics.o: drtarics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h
 drtas1.o: drtas1.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtas1.h \
@@ -2305,7 +2333,8 @@ drtbas.o: drtbas.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtbcps.o: drtbcps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbcps.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -3426,7 +3455,8 @@ drtbrcss.o: drtbrcss.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtbrdrs.o: drtbrdrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbrdrs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -3651,7 +3681,8 @@ drtbrs.o: drtbrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtbrcss.h
+ ../include/dcmtk/dcmrt/seq/drtbrcss.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtbs.o: drtbs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -3775,6 +3806,118 @@ drtbs.o: drtbs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpfms.h \
  ../include/dcmtk/dcmrt/seq/drtrbos1.h \
  ../include/dcmtk/dcmrt/seq/drtrris1.h ../include/dcmtk/dcmrt/seq/drtws.h
+drtbss.o: drtbss.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtbss.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
 drtbvcps.o: drtbvcps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbvcps.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -3999,7 +4142,7 @@ drtcbars.o: drtcbars.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtads.h
+ ../include/dcmtk/dcmrt/seq/drtads.h ../include/dcmtk/dcmrt/seq/drtecs.h
 drtccs.o: drtccs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtccs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -4111,7 +4254,8 @@ drtccs.o: drtccs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtcctus.o: drtcctus.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -4449,7 +4593,7 @@ drtces.o: drtces.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtois.h ../include/dcmtk/dcmrt/seq/drtics.h \
- ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h ../include/dcmtk/dcmrt/seq/drtpics.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h
 drtchs.o: drtchs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtchs.h \
@@ -4678,7 +4822,8 @@ drtcims.o: drtcims.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtcncs.h \
+ ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtcncs.h \
  ../include/dcmtk/dcmrt/seq/drtmucs.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h
 drtcis.o: drtcis.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -4904,7 +5049,8 @@ drtcncs.o: drtcncs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtcos.o: drtcos.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtcos.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -5129,6 +5275,120 @@ drtcpas.o: drtcpas.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+drtcpis.o: drtcpis.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h
 drtcps.o: drtcps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtcps.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -5804,9 +6064,123 @@ drtcss.o: drtcss.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtdcs.o: drtdcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdcs.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
+drtdias.o: drtdias.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -6028,7 +6402,8 @@ drtdimcs.o: drtdimcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtdimrs.o: drtdimrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -6364,12 +6739,14 @@ drtdose.o: drtdose.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdvhs.h \
@@ -6399,11 +6776,14 @@ drtdose.o: drtdose.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpsss.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpsss.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrcs.h ../include/dcmtk/dcmrt/seq/drtcs.h \
  ../include/dcmtk/dcmrt/seq/drtcis.h \
  ../include/dcmtk/dcmrt/seq/drtrdros.h \
  ../include/dcmtk/dcmrt/seq/drtrwvms.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrfors.h \
  ../include/dcmtk/dcmrt/seq/drtrsts.h \
@@ -6411,8 +6791,10 @@ drtdose.o: drtdose.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps.h \
  ../include/dcmtk/dcmrt/seq/drtrfgs.h \
@@ -6654,7 +7036,8 @@ drtds.o: drtds.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtdspcs.o: drtdspcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdspcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -6766,7 +7149,8 @@ drtdspcs.o: drtdspcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtdss.o: drtdss.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdss.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -6879,7 +7263,8 @@ drtdss.o: drtdss.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtdspcs.h
+ ../include/dcmtk/dcmrt/seq/drtdspcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtdvhs.o: drtdvhs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdvhs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -7107,6 +7492,118 @@ drtdvrrs.o: drtdvrrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
 drteas.o: drteas.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drteas.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+drtecs.o: drtecs.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -8682,7 +9179,8 @@ drtibls.o: drtibls.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtbss.h
 drtibs.o: drtibs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtibs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -8797,7 +9295,7 @@ drtibs.o: drtibs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtas6.h ../include/dcmtk/dcmrt/seq/drtgas.h \
  ../include/dcmtk/dcmrt/seq/drtiblds.h \
- ../include/dcmtk/dcmrt/seq/drtibls.h \
+ ../include/dcmtk/dcmrt/seq/drtibls.h ../include/dcmtk/dcmrt/seq/drtbss.h \
  ../include/dcmtk/dcmrt/seq/drticps.h \
  ../include/dcmtk/dcmrt/seq/drtbldps.h \
  ../include/dcmtk/dcmrt/seq/drtiwps.h \
@@ -9159,7 +9657,8 @@ drtics.o: drtics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtiis.o: drtiis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtiis.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -9383,14 +9882,16 @@ drtimage.o: drtimage.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h \
  ../include/dcmtk/dcmrt/seq/drtcbars.h \
  ../include/dcmtk/dcmrt/seq/drtads.h ../include/dcmtk/dcmrt/seq/drtbas.h \
  ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -9425,14 +9926,18 @@ drtimage.o: drtimage.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrwvms.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps5.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -9556,12 +10061,14 @@ drtionpl.o: drtionpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -9577,7 +10084,7 @@ drtionpl.o: drtionpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtibs.h ../include/dcmtk/dcmrt/seq/drtas6.h \
  ../include/dcmtk/dcmrt/seq/drtgas.h \
  ../include/dcmtk/dcmrt/seq/drtiblds.h \
- ../include/dcmtk/dcmrt/seq/drtibls.h \
+ ../include/dcmtk/dcmrt/seq/drtibls.h ../include/dcmtk/dcmrt/seq/drtbss.h \
  ../include/dcmtk/dcmrt/seq/drticps.h \
  ../include/dcmtk/dcmrt/seq/drtbldps.h \
  ../include/dcmtk/dcmrt/seq/drtiwps.h \
@@ -9614,12 +10121,15 @@ drtionpl.o: drtionpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps3.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -9743,13 +10253,15 @@ drtiontr.o: drtiontr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcdrs.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -9781,12 +10293,15 @@ drtiontr.o: drtiontr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps4.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -9936,7 +10451,8 @@ drtipiqs.o: drtipiqs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtaadcs.h \
- ../include/dcmtk/dcmrt/seq/drtafs.h ../include/dcmtk/dcmrt/seq/drtajcs.h
+ ../include/dcmtk/dcmrt/seq/drtecs.h ../include/dcmtk/dcmrt/seq/drtafs.h \
+ ../include/dcmtk/dcmrt/seq/drtajcs.h
 drtircs.o: drtircs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtircs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -10946,7 +11462,7 @@ drtmacds.o: drtmacds.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtcss.h
+ ../include/dcmtk/dcmrt/seq/drtcss.h ../include/dcmtk/dcmrt/seq/drtecs.h
 drtmas.o: drtmas.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtmas.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -11618,7 +12134,8 @@ drtmucs.o: drtmucs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtoas.o: drtoas.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtoas.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -11844,7 +12361,8 @@ drtois.o: drtois.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h
+ ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h
 drtopis.o: drtopis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtopis.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -11959,7 +12477,8 @@ drtopis.o: drtopis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtipiqs.h \
  ../include/dcmtk/dcmrt/seq/drtaadcs.h \
- ../include/dcmtk/dcmrt/seq/drtafs.h ../include/dcmtk/dcmrt/seq/drtajcs.h
+ ../include/dcmtk/dcmrt/seq/drtecs.h ../include/dcmtk/dcmrt/seq/drtafs.h \
+ ../include/dcmtk/dcmrt/seq/drtajcs.h
 drtos.o: drtos.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtos.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -12183,7 +12702,8 @@ drtpbcs.o: drtpbcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtpcs.o: drtpcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -12295,7 +12815,8 @@ drtpcs.o: drtpcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtpcxs.o: drtpcxs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpcxs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -12408,10 +12929,124 @@ drtpcxs.o: drtpcxs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtcncs.h \
+ ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtcncs.h \
  ../include/dcmtk/dcmrt/seq/drtcims.h \
  ../include/dcmtk/dcmrt/seq/drtmucs.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h
+drtpdecs.o: drtpdecs.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h
 drtpfms.o: drtpfms.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpfms.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -12635,7 +13270,8 @@ drtpics.o: drtpics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtplan.o: drtplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/drtplan.h ../include/dcmtk/dcmrt/drttypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -12747,9 +13383,9 @@ drtplan.o: drtplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtass.h \
- ../include/dcmtk/dcmrt/seq/drtbads.h ../include/dcmtk/dcmrt/seq/drtchs.h \
- ../include/dcmtk/dcmrt/seq/drtbcps.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtass.h ../include/dcmtk/dcmrt/seq/drtbads.h \
+ ../include/dcmtk/dcmrt/seq/drtchs.h ../include/dcmtk/dcmrt/seq/drtbcps.h \
  ../include/dcmtk/dcmrt/seq/drtbrdrs.h \
  ../include/dcmtk/dcmrt/seq/drtcshs.h \
  ../include/dcmtk/dcmrt/seq/drtrris9.h ../include/dcmtk/dcmrt/seq/drtbs.h \
@@ -12768,8 +13404,9 @@ drtplan.o: drtplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -12803,12 +13440,15 @@ drtplan.o: drtplan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps3.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -12935,7 +13575,8 @@ drtporcs.o: drtporcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtporis.o: drtporis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -13048,7 +13689,8 @@ drtporis.o: drtporis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h
+ ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h
 drtppcs.o: drtppcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtppcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -13161,8 +13803,8 @@ drtppcs.o: drtppcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtpcxs.h ../include/dcmtk/dcmrt/seq/drtccs.h \
- ../include/dcmtk/dcmrt/seq/drtcncs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h ../include/dcmtk/dcmrt/seq/drtpcxs.h \
+ ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtcncs.h \
  ../include/dcmtk/dcmrt/seq/drtcims.h \
  ../include/dcmtk/dcmrt/seq/drtmucs.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h
@@ -13278,7 +13920,8 @@ drtprsis.o: drtprsis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h
+ ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h
 drtpscs.o: drtpscs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpscs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -13390,7 +14033,8 @@ drtpscs.o: drtpscs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtpsics.o: drtpsics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpsics.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -13502,7 +14146,8 @@ drtpsics.o: drtpsics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtpss.o: drtpss.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtpss.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -13842,6 +14487,122 @@ drtpvis.o: drtpvis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+drtqds.o: drtqds.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtcncs.h \
+ ../include/dcmtk/dcmrt/seq/drtmucs.h \
+ ../include/dcmtk/dcmrt/seq/drtrsos.h
 drtras.o: drtras.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtras.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -13956,7 +14717,8 @@ drtras.o: drtras.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtians.h \
  ../include/dcmtk/dcmrt/seq/drtrrpcs.h \
- ../include/dcmtk/dcmrt/seq/drtrss.h ../include/dcmtk/dcmrt/seq/drtrpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h ../include/dcmtk/dcmrt/seq/drtrss.h \
+ ../include/dcmtk/dcmrt/seq/drtrpcs.h \
  ../include/dcmtk/dcmrt/seq/drtspcs.h \
  ../include/dcmtk/dcmrt/seq/drtpcxs.h ../include/dcmtk/dcmrt/seq/drtccs.h \
  ../include/dcmtk/dcmrt/seq/drtcncs.h \
@@ -16435,7 +17197,8 @@ drtrics.o: drtrics.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrims.o: drtrims.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrims.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -16548,7 +17311,8 @@ drtrims.o: drtrims.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtporcs.h
+ ../include/dcmtk/dcmrt/seq/drtporcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtris.o: drtris.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtris.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -16661,7 +17425,8 @@ drtris.o: drtris.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtporcs.h
+ ../include/dcmtk/dcmrt/seq/drtporcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrlsds.o: drtrlsds.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrlsds.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -17333,7 +18098,8 @@ drtrpcs.o: drtrpcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrpis.o: drtrpis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrpis.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -17446,7 +18212,8 @@ drtrpis.o: drtrpis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h
+ ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h
 drtrppcs.o: drtrppcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -17558,7 +18325,8 @@ drtrppcs.o: drtrppcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrpphs.o: drtrpphs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -17673,8 +18441,9 @@ drtrpphs.o: drtrpphs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
  ../include/dcmtk/dcmrt/seq/drtdirs.h \
- ../include/dcmtk/dcmrt/seq/drtrsos.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h
+ ../include/dcmtk/dcmrt/seq/drtrsos.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h
 drtrpps.o: drtrpps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrpps.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -18573,6 +19342,7 @@ drtrros.o: drtrros.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtarics.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpps.h \
  ../include/dcmtk/dcmrt/seq/drtrecs.h \
@@ -18690,7 +19460,8 @@ drtrrpcs.o: drtrrpcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrrros.o: drtrrros.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrrros.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -19590,7 +20361,8 @@ drtrscs.o: drtrscs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrsers.o: drtrsers.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -19704,7 +20476,8 @@ drtrsers.o: drtrsers.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtris.h \
- ../include/dcmtk/dcmrt/seq/drtporcs.h
+ ../include/dcmtk/dcmrt/seq/drtporcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtrses.o: drtrses.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrses.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -21501,7 +22274,10 @@ drtrwvms.o: drtrwvms.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtmucs.h
+ ../include/dcmtk/dcmrt/seq/drtmucs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtqds.h ../include/dcmtk/dcmrt/seq/drtccs.h \
+ ../include/dcmtk/dcmrt/seq/drtcncs.h \
+ ../include/dcmtk/dcmrt/seq/drtrsos.h
 drtscris.o: drtscris.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtscris.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -21616,7 +22392,8 @@ drtscris.o: drtscris.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
  ../include/dcmtk/dcmrt/seq/drtris.h \
- ../include/dcmtk/dcmrt/seq/drtporcs.h
+ ../include/dcmtk/dcmrt/seq/drtporcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtsdcs.o: drtsdcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtsdcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -21728,7 +22505,8 @@ drtsdcs.o: drtsdcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtsds.o: drtsds.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtsds.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -22065,7 +22843,8 @@ drtsis.o: drtsis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtporcs.h
+ ../include/dcmtk/dcmrt/seq/drtporcs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtsns.o: drtsns.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtsns.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -22289,7 +23068,8 @@ drtspccs.o: drtspccs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
- ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h
 drtspcs.o: drtspcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtspcs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -22402,8 +23182,8 @@ drtspcs.o: drtspcs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtpcxs.h ../include/dcmtk/dcmrt/seq/drtccs.h \
- ../include/dcmtk/dcmrt/seq/drtcncs.h \
+ ../include/dcmtk/dcmrt/seq/drtecs.h ../include/dcmtk/dcmrt/seq/drtpcxs.h \
+ ../include/dcmtk/dcmrt/seq/drtccs.h ../include/dcmtk/dcmrt/seq/drtcncs.h \
  ../include/dcmtk/dcmrt/seq/drtcims.h \
  ../include/dcmtk/dcmrt/seq/drtmucs.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h
@@ -22631,7 +23411,7 @@ drtssrs.o: drtssrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtdcs.h
+ ../include/dcmtk/dcmrt/seq/drtdcs.h ../include/dcmtk/dcmrt/seq/drtecs.h
 drtstrct.o: drtstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/drtstrct.h ../include/dcmtk/dcmrt/drttypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -22743,12 +23523,14 @@ drtstrct.o: drtstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -22775,7 +23557,9 @@ drtstrct.o: drtstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpsss.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpsss.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrcs.h ../include/dcmtk/dcmrt/seq/drtcs.h \
  ../include/dcmtk/dcmrt/seq/drtcis.h ../include/dcmtk/dcmrt/seq/drtrros.h \
  ../include/dcmtk/dcmrt/seq/drtarics.h \
@@ -22790,8 +23574,10 @@ drtstrct.o: drtstrct.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrses.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
  ../include/dcmtk/dcmrt/seq/drtris.h ../include/dcmtk/dcmrt/seq/drtrss.h \
@@ -23138,12 +23924,14 @@ drttreat.o: drttreat.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtbrs.h \
+ ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
+ ../include/dcmtk/dcmrt/seq/drtbrs.h \
  ../include/dcmtk/dcmrt/seq/drtbrcss.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
- ../include/dcmtk/dcmrt/seq/drtces.h ../include/dcmtk/dcmrt/seq/drtois.h \
- ../include/dcmtk/dcmrt/seq/drtics.h ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
@@ -23171,12 +23959,15 @@ drttreat.o: drttreat.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrsos.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
- ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtpdecs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
- ../include/dcmtk/dcmrt/seq/drtdirs.h ../include/dcmtk/dcmrt/seq/drtwrs.h \
- ../include/dcmtk/dcmrt/seq/drtxrs.h ../include/dcmtk/dcmrt/seq/drtrps.h \
+ ../include/dcmtk/dcmrt/seq/drtdirs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
+ ../include/dcmtk/dcmrt/seq/drtwrs.h ../include/dcmtk/dcmrt/seq/drtxrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrps.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps4.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
@@ -23997,6 +24788,118 @@ drtwps.o: drtwps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
 drtwrs.o: drtwrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtwrs.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmrt/drttypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+drtwrsrs.o: drtwrsrs.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmrt/seq/drtwrsrs.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \

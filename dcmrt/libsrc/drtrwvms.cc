@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTRealWorldValueMappingSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -24,6 +24,7 @@ DRTRealWorldValueMappingSequence::Item::Item(const OFBool emptyDefaultItem)
     LUTExplanation(DCM_LUTExplanation),
     LUTLabel(DCM_LUTLabel),
     MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    QuantityDefinitionSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RealWorldValueFirstValueMapped(DCM_RealWorldValueFirstValueMapped),
     RealWorldValueIntercept(DCM_RealWorldValueIntercept),
     RealWorldValueLUTData(DCM_RealWorldValueLUTData),
@@ -38,6 +39,7 @@ DRTRealWorldValueMappingSequence::Item::Item(const Item &copy)
     LUTExplanation(copy.LUTExplanation),
     LUTLabel(copy.LUTLabel),
     MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
+    QuantityDefinitionSequence(copy.QuantityDefinitionSequence),
     RealWorldValueFirstValueMapped(copy.RealWorldValueFirstValueMapped),
     RealWorldValueIntercept(copy.RealWorldValueIntercept),
     RealWorldValueLUTData(copy.RealWorldValueLUTData),
@@ -60,6 +62,7 @@ DRTRealWorldValueMappingSequence::Item &DRTRealWorldValueMappingSequence::Item::
         LUTExplanation = copy.LUTExplanation;
         LUTLabel = copy.LUTLabel;
         MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
+        QuantityDefinitionSequence = copy.QuantityDefinitionSequence;
         RealWorldValueFirstValueMapped = copy.RealWorldValueFirstValueMapped;
         RealWorldValueIntercept = copy.RealWorldValueIntercept;
         RealWorldValueLUTData = copy.RealWorldValueLUTData;
@@ -83,6 +86,7 @@ void DRTRealWorldValueMappingSequence::Item::clear()
         LUTExplanation.clear();
         LUTLabel.clear();
         MeasurementUnitsCodeSequence.clear();
+        QuantityDefinitionSequence.clear();
     }
 }
 
@@ -96,7 +100,8 @@ OFBool DRTRealWorldValueMappingSequence::Item::isEmpty()
            RealWorldValueLUTData.isEmpty() &&
            LUTExplanation.isEmpty() &&
            LUTLabel.isEmpty() &&
-           MeasurementUnitsCodeSequence.isEmpty();
+           MeasurementUnitsCodeSequence.isEmpty() &&
+           QuantityDefinitionSequence.isEmpty();
 }
 
 
@@ -121,6 +126,7 @@ OFCondition DRTRealWorldValueMappingSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, LUTExplanation, "1", "1", "RealWorldValueMappingSequence");
         getAndCheckElementFromDataset(item, LUTLabel, "1", "1", "RealWorldValueMappingSequence");
         MeasurementUnitsCodeSequence.read(item, "1-n", "1", "RealWorldValueMappingSequence");
+        QuantityDefinitionSequence.read(item, "1-n", "3", "RealWorldValueMappingSequence");
         result = EC_Normal;
     }
     return result;
@@ -141,6 +147,7 @@ OFCondition DRTRealWorldValueMappingSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(LUTExplanation), "1", "1", "RealWorldValueMappingSequence");
         addElementToDataset(result, item, new DcmShortString(LUTLabel), "1", "1", "RealWorldValueMappingSequence");
         if (result.good()) result = MeasurementUnitsCodeSequence.write(item, "1-n", "1", "RealWorldValueMappingSequence");
+        if (result.good()) result = QuantityDefinitionSequence.write(item, "1-n", "3", "RealWorldValueMappingSequence");
     }
     return result;
 }

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTDoseIOD
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -58,6 +58,8 @@ DRTDoseIOD::DRTDoseIOD()
     StudyTime(DCM_StudyTime),
     ReferringPhysicianName(DCM_ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(),
+    ConsultingPhysicianName(DCM_ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
     IssuerOfAccessionNumberSequence(),
@@ -169,6 +171,7 @@ DRTDoseIOD::DRTDoseIOD()
     PixelPaddingRangeLimit(DCM_PixelPaddingRangeLimit),
     NumberOfFrames(DCM_NumberOfFrames),
     FrameIncrementPointer(DCM_FrameIncrementPointer),
+    StereoPairsPresent(DCM_StereoPairsPresent),
     OverlayRows(DCM_OverlayRows),
     OverlayColumns(DCM_OverlayColumns),
     OverlayType(DCM_OverlayType),
@@ -248,6 +251,7 @@ DRTDoseIOD::DRTDoseIOD()
     QueryRetrieveView(DCM_QueryRetrieveView),
     ConversionSourceAttributesSequence(),
     ContentQualification(DCM_ContentQualification),
+    PrivateDataElementCharacteristicsSequence(),
     ReferencedSeriesSequence(),
     StudiesContainingOtherReferencedInstancesSequence(),
     FrameExtractionSequence()
@@ -298,6 +302,8 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     StudyTime(copy.StudyTime),
     ReferringPhysicianName(copy.ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(copy.ReferringPhysicianIdentificationSequence),
+    ConsultingPhysicianName(copy.ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(copy.ConsultingPhysicianIdentificationSequence),
     StudyID(copy.StudyID),
     AccessionNumber(copy.AccessionNumber),
     IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
@@ -409,6 +415,7 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     PixelPaddingRangeLimit(copy.PixelPaddingRangeLimit),
     NumberOfFrames(copy.NumberOfFrames),
     FrameIncrementPointer(copy.FrameIncrementPointer),
+    StereoPairsPresent(copy.StereoPairsPresent),
     OverlayRows(copy.OverlayRows),
     OverlayColumns(copy.OverlayColumns),
     OverlayType(copy.OverlayType),
@@ -488,6 +495,7 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     QueryRetrieveView(copy.QueryRetrieveView),
     ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
     ContentQualification(copy.ContentQualification),
+    PrivateDataElementCharacteristicsSequence(copy.PrivateDataElementCharacteristicsSequence),
     ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
     StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence),
     FrameExtractionSequence(copy.FrameExtractionSequence)
@@ -544,6 +552,8 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         StudyTime = copy.StudyTime;
         ReferringPhysicianName = copy.ReferringPhysicianName;
         ReferringPhysicianIdentificationSequence = copy.ReferringPhysicianIdentificationSequence;
+        ConsultingPhysicianName = copy.ConsultingPhysicianName;
+        ConsultingPhysicianIdentificationSequence = copy.ConsultingPhysicianIdentificationSequence;
         StudyID = copy.StudyID;
         AccessionNumber = copy.AccessionNumber;
         IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
@@ -655,6 +665,7 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         PixelPaddingRangeLimit = copy.PixelPaddingRangeLimit;
         NumberOfFrames = copy.NumberOfFrames;
         FrameIncrementPointer = copy.FrameIncrementPointer;
+        StereoPairsPresent = copy.StereoPairsPresent;
         OverlayRows = copy.OverlayRows;
         OverlayColumns = copy.OverlayColumns;
         OverlayType = copy.OverlayType;
@@ -734,6 +745,7 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         QueryRetrieveView = copy.QueryRetrieveView;
         ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
         ContentQualification = copy.ContentQualification;
+        PrivateDataElementCharacteristicsSequence = copy.PrivateDataElementCharacteristicsSequence;
         ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
         StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
         FrameExtractionSequence = copy.FrameExtractionSequence;
@@ -785,6 +797,8 @@ void DRTDoseIOD::clear()
     StudyTime.clear();
     ReferringPhysicianName.clear();
     ReferringPhysicianIdentificationSequence.clear();
+    ConsultingPhysicianName.clear();
+    ConsultingPhysicianIdentificationSequence.clear();
     StudyID.clear();
     AccessionNumber.clear();
     IssuerOfAccessionNumberSequence.clear();
@@ -905,6 +919,7 @@ void DRTDoseIOD::clear()
     PixelPaddingRangeLimit.clear();
     NumberOfFrames.clear();
     FrameIncrementPointer.clear();
+    StereoPairsPresent.clear();
     OverlayRows.clear();
     OverlayColumns.clear();
     OverlayType.clear();
@@ -975,6 +990,7 @@ void DRTDoseIOD::clear()
     QueryRetrieveView.clear();
     ConversionSourceAttributesSequence.clear();
     ContentQualification.clear();
+    PrivateDataElementCharacteristicsSequence.clear();
     ReferencedSeriesSequence.clear();
     StudiesContainingOtherReferencedInstancesSequence.clear();
     FrameExtractionSequence.clear();
@@ -1119,6 +1135,7 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         {
             getAndCheckElementFromDataset(dataset, NumberOfFrames, "1", "1", "MultiFrameModule");
             getAndCheckElementFromDataset(dataset, FrameIncrementPointer, "1-n", "1", "MultiFrameModule");
+            getAndCheckElementFromDataset(dataset, StereoPairsPresent, "1", "3", "MultiFrameModule");
         }
 
         // --- OverlayPlaneModule (U) ---
@@ -1247,6 +1264,7 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, QueryRetrieveView, "1", "1C", "SOPCommonModule");
         ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
+        PrivateDataElementCharacteristicsSequence.read(dataset, "1-n", "3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
@@ -1327,6 +1345,8 @@ OFCondition DRTDoseIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
         ReferringPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, ConsultingPhysicianName, "1-n", "3", "GeneralStudyModule");
+        ConsultingPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
         IssuerOfAccessionNumberSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
@@ -1463,6 +1483,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmTime(StudyTime), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName), "1", "2", "GeneralStudyModule");
         if (result.good()) result = ReferringPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmPersonName(ConsultingPhysicianName), "1-n", "3", "GeneralStudyModule");
+        if (result.good()) result = ConsultingPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
         if (result.good()) result = IssuerOfAccessionNumberSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
@@ -1623,6 +1645,7 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         {
             addElementToDataset(result, dataset, new DcmIntegerString(NumberOfFrames), "1", "1", "MultiFrameModule");
             addElementToDataset(result, dataset, new DcmAttributeTag(FrameIncrementPointer), "1-n", "1", "MultiFrameModule");
+            addElementToDataset(result, dataset, new DcmCodeString(StereoPairsPresent), "1", "3", "MultiFrameModule");
         }
 
         // --- OverlayPlaneModule (U) ---
@@ -1744,6 +1767,7 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(QueryRetrieveView), "1", "1C", "SOPCommonModule");
         if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
+        if (result.good()) result = PrivateDataElementCharacteristicsSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
@@ -1910,7 +1934,8 @@ OFBool DRTDoseIOD::isMultiFrameModulePresent(const OFBool complete)
     } else {
         /* check whether at least one attribute is present */
         return !NumberOfFrames.isEmpty() ||
-               !FrameIncrementPointer.isEmpty();
+               !FrameIncrementPointer.isEmpty() ||
+               !StereoPairsPresent.isEmpty();
     }
 }
 
@@ -2229,6 +2254,12 @@ OFCondition DRTDoseIOD::getColumns(Uint16 &value, const unsigned long pos) const
 OFCondition DRTDoseIOD::getCommentsOnThePerformedProcedureStep(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(CommentsOnThePerformedProcedureStep, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getConsultingPhysicianName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ConsultingPhysicianName, value, pos);
 }
 
 
@@ -3261,6 +3292,12 @@ OFCondition DRTDoseIOD::getStationName(OFString &value, const signed long pos) c
 }
 
 
+OFCondition DRTDoseIOD::getStereoPairsPresent(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(StereoPairsPresent, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getStructureSetDate(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(StructureSetDate, value, pos);
@@ -3590,6 +3627,15 @@ OFCondition DRTDoseIOD::setCommentsOnThePerformedProcedureStep(const OFString &v
     OFCondition result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
     if (result.good())
         result = CommentsOnThePerformedProcedureStep.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setConsultingPhysicianName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = ConsultingPhysicianName.putOFStringArray(value);
     return result;
 }
 
@@ -4745,6 +4791,15 @@ OFCondition DRTDoseIOD::setStationName(const OFString &value, const OFBool check
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = StationName.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTDoseIOD::setStereoPairsPresent(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = StereoPairsPresent.putOFStringArray(value);
     return result;
 }
 

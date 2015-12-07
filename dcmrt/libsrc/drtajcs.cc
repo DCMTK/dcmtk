@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTAssigningJurisdictionCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -31,7 +31,11 @@ DRTAssigningJurisdictionCodeSequence::Item::Item(const OFBool emptyDefaultItem)
     ContextGroupVersion(DCM_ContextGroupVersion),
     ContextIdentifier(DCM_ContextIdentifier),
     ContextUID(DCM_ContextUID),
-    MappingResource(DCM_MappingResource)
+    EquivalentCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    LongCodeValue(DCM_LongCodeValue),
+    MappingResource(DCM_MappingResource),
+    MappingResourceUID(DCM_MappingResourceUID),
+    URNCodeValue(DCM_URNCodeValue)
 {
 }
 
@@ -48,7 +52,11 @@ DRTAssigningJurisdictionCodeSequence::Item::Item(const Item &copy)
     ContextGroupVersion(copy.ContextGroupVersion),
     ContextIdentifier(copy.ContextIdentifier),
     ContextUID(copy.ContextUID),
-    MappingResource(copy.MappingResource)
+    EquivalentCodeSequence(copy.EquivalentCodeSequence),
+    LongCodeValue(copy.LongCodeValue),
+    MappingResource(copy.MappingResource),
+    MappingResourceUID(copy.MappingResourceUID),
+    URNCodeValue(copy.URNCodeValue)
 {
 }
 
@@ -73,7 +81,11 @@ DRTAssigningJurisdictionCodeSequence::Item &DRTAssigningJurisdictionCodeSequence
         ContextGroupVersion = copy.ContextGroupVersion;
         ContextIdentifier = copy.ContextIdentifier;
         ContextUID = copy.ContextUID;
+        EquivalentCodeSequence = copy.EquivalentCodeSequence;
+        LongCodeValue = copy.LongCodeValue;
         MappingResource = copy.MappingResource;
+        MappingResourceUID = copy.MappingResourceUID;
+        URNCodeValue = copy.URNCodeValue;
     }
     return *this;
 }
@@ -88,9 +100,13 @@ void DRTAssigningJurisdictionCodeSequence::Item::clear()
         CodingSchemeDesignator.clear();
         CodingSchemeVersion.clear();
         CodeMeaning.clear();
+        LongCodeValue.clear();
+        URNCodeValue.clear();
+        EquivalentCodeSequence.clear();
         ContextIdentifier.clear();
         ContextUID.clear();
         MappingResource.clear();
+        MappingResourceUID.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
         ContextGroupLocalVersion.clear();
@@ -105,9 +121,13 @@ OFBool DRTAssigningJurisdictionCodeSequence::Item::isEmpty()
            CodingSchemeDesignator.isEmpty() &&
            CodingSchemeVersion.isEmpty() &&
            CodeMeaning.isEmpty() &&
+           LongCodeValue.isEmpty() &&
+           URNCodeValue.isEmpty() &&
+           EquivalentCodeSequence.isEmpty() &&
            ContextIdentifier.isEmpty() &&
            ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
+           MappingResourceUID.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
            ContextGroupLocalVersion.isEmpty() &&
@@ -128,13 +148,17 @@ OFCondition DRTAssigningJurisdictionCodeSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, CodeValue, "1", "1", "AssigningJurisdictionCodeSequence");
-        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1", "AssigningJurisdictionCodeSequence");
+        getAndCheckElementFromDataset(item, CodeValue, "1", "1C", "AssigningJurisdictionCodeSequence");
+        getAndCheckElementFromDataset(item, CodingSchemeDesignator, "1", "1C", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "1C", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, CodeMeaning, "1", "1", "AssigningJurisdictionCodeSequence");
+        getAndCheckElementFromDataset(item, LongCodeValue, "1", "1C", "AssigningJurisdictionCodeSequence");
+        getAndCheckElementFromDataset(item, URNCodeValue, "1", "1C", "AssigningJurisdictionCodeSequence");
+        EquivalentCodeSequence.read(item, "1-n", "3", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, ContextUID, "1", "3", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "AssigningJurisdictionCodeSequence");
+        getAndCheckElementFromDataset(item, MappingResourceUID, "1", "3", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "AssigningJurisdictionCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "AssigningJurisdictionCodeSequence");
@@ -151,13 +175,17 @@ OFCondition DRTAssigningJurisdictionCodeSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1", "AssigningJurisdictionCodeSequence");
-        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1", "AssigningJurisdictionCodeSequence");
+        addElementToDataset(result, item, new DcmShortString(CodeValue), "1", "1C", "AssigningJurisdictionCodeSequence");
+        addElementToDataset(result, item, new DcmShortString(CodingSchemeDesignator), "1", "1C", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "1C", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1", "AssigningJurisdictionCodeSequence");
+        addElementToDataset(result, item, new DcmUnlimitedCharacters(LongCodeValue), "1", "1C", "AssigningJurisdictionCodeSequence");
+        addElementToDataset(result, item, new DcmUniversalResourceIdentifierOrLocator(URNCodeValue), "1", "1C", "AssigningJurisdictionCodeSequence");
+        if (result.good()) result = EquivalentCodeSequence.write(item, "1-n", "3", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "AssigningJurisdictionCodeSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(MappingResourceUID), "1", "3", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "AssigningJurisdictionCodeSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "AssigningJurisdictionCodeSequence");
@@ -257,12 +285,39 @@ OFCondition DRTAssigningJurisdictionCodeSequence::Item::getContextUID(OFString &
 }
 
 
+OFCondition DRTAssigningJurisdictionCodeSequence::Item::getLongCodeValue(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(LongCodeValue, value, pos);
+}
+
+
 OFCondition DRTAssigningJurisdictionCodeSequence::Item::getMappingResource(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
         return getStringValueFromElement(MappingResource, value, pos);
+}
+
+
+OFCondition DRTAssigningJurisdictionCodeSequence::Item::getMappingResourceUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResourceUID, value, pos);
+}
+
+
+OFCondition DRTAssigningJurisdictionCodeSequence::Item::getURNCodeValue(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(URNCodeValue, value, pos);
 }
 
 
@@ -396,6 +451,19 @@ OFCondition DRTAssigningJurisdictionCodeSequence::Item::setContextUID(const OFSt
 }
 
 
+OFCondition DRTAssigningJurisdictionCodeSequence::Item::setLongCodeValue(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUnlimitedCharacters::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = LongCodeValue.putOFStringArray(value);
+    }
+    return result;
+}
+
+
 OFCondition DRTAssigningJurisdictionCodeSequence::Item::setMappingResource(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -404,6 +472,32 @@ OFCondition DRTAssigningJurisdictionCodeSequence::Item::setMappingResource(const
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = MappingResource.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTAssigningJurisdictionCodeSequence::Item::setMappingResourceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResourceUID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTAssigningJurisdictionCodeSequence::Item::setURNCodeValue(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniversalResourceIdentifierOrLocator::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            result = URNCodeValue.putOFStringArray(value);
     }
     return result;
 }

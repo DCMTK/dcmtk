@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTRealWorldValueMappingSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtmucs.h"   // for MeasurementUnitsCodeSequence
+#include "dcmtk/dcmrt/seq/drtqds.h"    // for QuantityDefinitionSequence
 
 
 /** Interface class for RealWorldValueMappingSequence (0040,9096)
@@ -154,6 +155,18 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
         const DRTMeasurementUnitsCodeSequence &getMeasurementUnitsCodeSequence() const
             { return MeasurementUnitsCodeSequence; }
 
+        /** get QuantityDefinitionSequence (0040,9220)
+         *  @return reference to sequence element
+         */
+        DRTQuantityDefinitionSequence &getQuantityDefinitionSequence()
+            { return QuantityDefinitionSequence; }
+
+        /** get QuantityDefinitionSequence (0040,9220)
+         *  @return const reference to sequence element
+         */
+        const DRTQuantityDefinitionSequence &getQuantityDefinitionSequence() const
+            { return QuantityDefinitionSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set LUTExplanation (0028,3003)
@@ -216,6 +229,8 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
         DcmShortString LUTLabel;
         /// MeasurementUnitsCodeSequence (0040,08ea) vr=SQ, vm=1, type=1
         DRTMeasurementUnitsCodeSequence MeasurementUnitsCodeSequence;
+        /// QuantityDefinitionSequence (0040,9220) vr=SQ, vm=1, type=3
+        DRTQuantityDefinitionSequence QuantityDefinitionSequence;
         /// RealWorldValueFirstValueMapped (0040,9216) vr=US/SS, vm=1, type=1
         DcmUnsignedShort RealWorldValueFirstValueMapped;
         /// RealWorldValueIntercept (0040,9224) vr=FD, vm=1, type=1C

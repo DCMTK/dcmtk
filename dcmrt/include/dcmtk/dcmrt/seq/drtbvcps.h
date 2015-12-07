@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTBeamDoseVerificationControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -111,6 +111,13 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
          */
         OFCondition getAverageBeamDosePointSSD(Float32 &value, const unsigned long pos = 0) const;
 
+        /** get AverageBeamDosePointSourceToExternalContourSurfaceDistance (300a,0131)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getAverageBeamDosePointSourceToExternalContourSurfaceDistance(Float32 &value, const unsigned long pos = 0) const;
+
         /** get CumulativeMetersetWeight (300a,0134)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -162,6 +169,13 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
          */
         OFCondition setAverageBeamDosePointSSD(const Float32 value, const unsigned long pos = 0);
 
+        /** set AverageBeamDosePointSourceToExternalContourSurfaceDistance (300a,0131)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setAverageBeamDosePointSourceToExternalContourSurfaceDistance(const Float32 value, const unsigned long pos = 0);
+
         /** set CumulativeMetersetWeight (300a,0134)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -187,6 +201,8 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
         DcmFloatingPointSingle AverageBeamDosePointEquivalentDepth;
         /// AverageBeamDosePointSSD (300a,008f) vr=FL, vm=1, type=2C
         DcmFloatingPointSingle AverageBeamDosePointSSD;
+        /// AverageBeamDosePointSourceToExternalContourSurfaceDistance (300a,0131) vr=FL, vm=1, type=3
+        DcmFloatingPointSingle AverageBeamDosePointSourceToExternalContourSurfaceDistance;
         /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=1
         DcmDecimalString CumulativeMetersetWeight;
         /// ReferencedControlPointIndex (300c,00f0) vr=IS, vm=1, type=1C

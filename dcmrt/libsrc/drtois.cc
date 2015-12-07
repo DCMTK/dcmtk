@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTOperatorIdentificationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -26,6 +26,7 @@ DRTOperatorIdentificationSequence::Item::Item(const OFBool emptyDefaultItem)
     InstitutionName(DCM_InstitutionName),
     PersonAddress(DCM_PersonAddress),
     PersonIdentificationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    PersonTelecomInformation(DCM_PersonTelecomInformation),
     PersonTelephoneNumbers(DCM_PersonTelephoneNumbers)
 {
 }
@@ -38,6 +39,7 @@ DRTOperatorIdentificationSequence::Item::Item(const Item &copy)
     InstitutionName(copy.InstitutionName),
     PersonAddress(copy.PersonAddress),
     PersonIdentificationCodeSequence(copy.PersonIdentificationCodeSequence),
+    PersonTelecomInformation(copy.PersonTelecomInformation),
     PersonTelephoneNumbers(copy.PersonTelephoneNumbers)
 {
 }
@@ -58,6 +60,7 @@ DRTOperatorIdentificationSequence::Item &DRTOperatorIdentificationSequence::Item
         InstitutionName = copy.InstitutionName;
         PersonAddress = copy.PersonAddress;
         PersonIdentificationCodeSequence = copy.PersonIdentificationCodeSequence;
+        PersonTelecomInformation = copy.PersonTelecomInformation;
         PersonTelephoneNumbers = copy.PersonTelephoneNumbers;
     }
     return *this;
@@ -72,6 +75,7 @@ void DRTOperatorIdentificationSequence::Item::clear()
         PersonIdentificationCodeSequence.clear();
         PersonAddress.clear();
         PersonTelephoneNumbers.clear();
+        PersonTelecomInformation.clear();
         InstitutionName.clear();
         InstitutionAddress.clear();
         InstitutionCodeSequence.clear();
@@ -84,6 +88,7 @@ OFBool DRTOperatorIdentificationSequence::Item::isEmpty()
     return PersonIdentificationCodeSequence.isEmpty() &&
            PersonAddress.isEmpty() &&
            PersonTelephoneNumbers.isEmpty() &&
+           PersonTelecomInformation.isEmpty() &&
            InstitutionName.isEmpty() &&
            InstitutionAddress.isEmpty() &&
            InstitutionCodeSequence.isEmpty();
@@ -106,6 +111,7 @@ OFCondition DRTOperatorIdentificationSequence::Item::read(DcmItem &item)
         PersonIdentificationCodeSequence.read(item, "1-n", "1", "OperatorIdentificationSequence");
         getAndCheckElementFromDataset(item, PersonAddress, "1", "3", "OperatorIdentificationSequence");
         getAndCheckElementFromDataset(item, PersonTelephoneNumbers, "1-n", "3", "OperatorIdentificationSequence");
+        getAndCheckElementFromDataset(item, PersonTelecomInformation, "1", "3", "OperatorIdentificationSequence");
         getAndCheckElementFromDataset(item, InstitutionName, "1", "1C", "OperatorIdentificationSequence");
         getAndCheckElementFromDataset(item, InstitutionAddress, "1", "3", "OperatorIdentificationSequence");
         InstitutionCodeSequence.read(item, "1-n", "1C", "OperatorIdentificationSequence");
@@ -124,6 +130,7 @@ OFCondition DRTOperatorIdentificationSequence::Item::write(DcmItem &item)
         if (result.good()) result = PersonIdentificationCodeSequence.write(item, "1-n", "1", "OperatorIdentificationSequence");
         addElementToDataset(result, item, new DcmShortText(PersonAddress), "1", "3", "OperatorIdentificationSequence");
         addElementToDataset(result, item, new DcmLongString(PersonTelephoneNumbers), "1-n", "3", "OperatorIdentificationSequence");
+        addElementToDataset(result, item, new DcmLongText(PersonTelecomInformation), "1", "3", "OperatorIdentificationSequence");
         addElementToDataset(result, item, new DcmLongString(InstitutionName), "1", "1C", "OperatorIdentificationSequence");
         addElementToDataset(result, item, new DcmShortText(InstitutionAddress), "1", "3", "OperatorIdentificationSequence");
         if (result.good()) result = InstitutionCodeSequence.write(item, "1-n", "1C", "OperatorIdentificationSequence");
@@ -156,6 +163,15 @@ OFCondition DRTOperatorIdentificationSequence::Item::getPersonAddress(OFString &
         return EC_IllegalCall;
     else
         return getStringValueFromElement(PersonAddress, value, pos);
+}
+
+
+OFCondition DRTOperatorIdentificationSequence::Item::getPersonTelecomInformation(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(PersonTelecomInformation, value, pos);
 }
 
 
@@ -202,6 +218,19 @@ OFCondition DRTOperatorIdentificationSequence::Item::setPersonAddress(const OFSt
         result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
         if (result.good())
             result = PersonAddress.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTOperatorIdentificationSequence::Item::setPersonTelecomInformation(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongText::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            result = PersonTelecomInformation.putOFStringArray(value);
     }
     return result;
 }

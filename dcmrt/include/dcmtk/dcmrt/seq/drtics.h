@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTInstitutionCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtecs.h"    // for EquivalentCodeSequence
 
 
 /** Interface class for InstitutionCodeSequence (0008,0082)
@@ -160,12 +161,47 @@ class DCMTK_DCMRT_EXPORT DRTInstitutionCodeSequence
          */
         OFCondition getContextUID(OFString &value, const signed long pos = 0) const;
 
+        /** get LongCodeValue (0008,0119)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getLongCodeValue(OFString &value, const signed long pos = 0) const;
+
         /** get MappingResource (0008,0105)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getMappingResource(OFString &value, const signed long pos = 0) const;
+
+        /** get MappingResourceUID (0008,0118)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getMappingResourceUID(OFString &value, const signed long pos = 0) const;
+
+        /** get URNCodeValue (0008,0120)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getURNCodeValue(OFString &value, const signed long pos = 0) const;
+
+      // --- get DICOM sequence attributes ---
+
+        /** get EquivalentCodeSequence (0008,0121)
+         *  @return reference to sequence element
+         */
+        DRTEquivalentCodeSequence &getEquivalentCodeSequence()
+            { return EquivalentCodeSequence; }
+
+        /** get EquivalentCodeSequence (0008,0121)
+         *  @return const reference to sequence element
+         */
+        const DRTEquivalentCodeSequence &getEquivalentCodeSequence() const
+            { return EquivalentCodeSequence; }
 
       // --- set DICOM attribute values ---
 
@@ -239,12 +275,33 @@ class DCMTK_DCMRT_EXPORT DRTInstitutionCodeSequence
          */
         OFCondition setContextUID(const OFString &value, const OFBool check = OFTrue);
 
+        /** set LongCodeValue (0008,0119)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UC) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setLongCodeValue(const OFString &value, const OFBool check = OFTrue);
+
         /** set MappingResource (0008,0105)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setMappingResource(const OFString &value, const OFBool check = OFTrue);
+
+        /** set MappingResourceUID (0008,0118)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setMappingResourceUID(const OFString &value, const OFBool check = OFTrue);
+
+        /** set URNCodeValue (0008,0120)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UR) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setURNCodeValue(const OFString &value, const OFBool check = OFTrue);
 
       private:
 
@@ -253,9 +310,9 @@ class DCMTK_DCMRT_EXPORT DRTInstitutionCodeSequence
 
         /// CodeMeaning (0008,0104) vr=LO, vm=1, type=1
         DcmLongString CodeMeaning;
-        /// CodeValue (0008,0100) vr=SH, vm=1, type=1
+        /// CodeValue (0008,0100) vr=SH, vm=1, type=1C
         DcmShortString CodeValue;
-        /// CodingSchemeDesignator (0008,0102) vr=SH, vm=1, type=1
+        /// CodingSchemeDesignator (0008,0102) vr=SH, vm=1, type=1C
         DcmShortString CodingSchemeDesignator;
         /// CodingSchemeVersion (0008,0103) vr=SH, vm=1, type=1C
         DcmShortString CodingSchemeVersion;
@@ -271,8 +328,16 @@ class DCMTK_DCMRT_EXPORT DRTInstitutionCodeSequence
         DcmCodeString ContextIdentifier;
         /// ContextUID (0008,0117) vr=UI, vm=1, type=3
         DcmUniqueIdentifier ContextUID;
+        /// EquivalentCodeSequence (0008,0121) vr=SQ, vm=1, type=3
+        DRTEquivalentCodeSequence EquivalentCodeSequence;
+        /// LongCodeValue (0008,0119) vr=UC, vm=1, type=1C
+        DcmUnlimitedCharacters LongCodeValue;
         /// MappingResource (0008,0105) vr=CS, vm=1, type=1C
         DcmCodeString MappingResource;
+        /// MappingResourceUID (0008,0118) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier MappingResourceUID;
+        /// URNCodeValue (0008,0120) vr=UR, vm=1, type=1C
+        DcmUniversalResourceIdentifierOrLocator URNCodeValue;
 
     };
 

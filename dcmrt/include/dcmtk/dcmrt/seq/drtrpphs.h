@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTReferencedPatientPhotoSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -22,6 +22,7 @@
 #include "dcmtk/dcmrt/seq/drtdimrs.h"  // for DICOMMediaRetrievalSequence
 #include "dcmtk/dcmrt/seq/drtdirs.h"   // for DICOMRetrievalSequence
 #include "dcmtk/dcmrt/seq/drtrsos.h"   // for ReferencedSOPSequence
+#include "dcmtk/dcmrt/seq/drtwrsrs.h"  // for WADORSRetrievalSequence
 #include "dcmtk/dcmrt/seq/drtwrs.h"    // for WADORetrievalSequence
 #include "dcmtk/dcmrt/seq/drtxrs.h"    // for XDSRetrievalSequence
 
@@ -154,6 +155,18 @@ class DCMTK_DCMRT_EXPORT DRTReferencedPatientPhotoSequence
         const DRTReferencedSOPSequence &getReferencedSOPSequence() const
             { return ReferencedSOPSequence; }
 
+        /** get WADORSRetrievalSequence (0040,e025)
+         *  @return reference to sequence element
+         */
+        DRTWADORSRetrievalSequence &getWADORSRetrievalSequence()
+            { return WADORSRetrievalSequence; }
+
+        /** get WADORSRetrievalSequence (0040,e025)
+         *  @return const reference to sequence element
+         */
+        const DRTWADORSRetrievalSequence &getWADORSRetrievalSequence() const
+            { return WADORSRetrievalSequence; }
+
         /** get WADORetrievalSequence (0040,e023)
          *  @return reference to sequence element
          */
@@ -218,6 +231,8 @@ class DCMTK_DCMRT_EXPORT DRTReferencedPatientPhotoSequence
         DcmUniqueIdentifier StudyInstanceUID;
         /// TypeOfInstances (0040,e020) vr=CS, vm=1, type=1
         DcmCodeString TypeOfInstances;
+        /// WADORSRetrievalSequence (0040,e025) vr=SQ, vm=1, type=1C
+        DRTWADORSRetrievalSequence WADORSRetrievalSequence;
         /// WADORetrievalSequence (0040,e023) vr=SQ, vm=1, type=1C
         DRTWADORetrievalSequence WADORetrievalSequence;
         /// XDSRetrievalSequence (0040,e024) vr=SQ, vm=1, type=1C

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTWedgeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -96,6 +96,20 @@ class DCMTK_DCMRT_EXPORT DRTWedgeSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getAccessoryCode(OFString &value, const signed long pos = 0) const;
+
+        /** get EffectiveWedgeAngle (300a,00de)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getEffectiveWedgeAngle(OFString &value, const signed long pos = 0) const;
+
+        /** get EffectiveWedgeAngle (300a,00de)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getEffectiveWedgeAngle(Float64 &value, const unsigned long pos = 0) const;
 
         /** get SourceToWedgeTrayDistance (300a,00da)
          *  @param  value  reference to variable in which the value should be stored
@@ -190,6 +204,13 @@ class DCMTK_DCMRT_EXPORT DRTWedgeSequence
          */
         OFCondition setAccessoryCode(const OFString &value, const OFBool check = OFTrue);
 
+        /** set EffectiveWedgeAngle (300a,00de)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setEffectiveWedgeAngle(const OFString &value, const OFBool check = OFTrue);
+
         /** set SourceToWedgeTrayDistance (300a,00da)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -246,6 +267,8 @@ class DCMTK_DCMRT_EXPORT DRTWedgeSequence
 
         /// AccessoryCode (300a,00f9) vr=LO, vm=1, type=3
         DcmLongString AccessoryCode;
+        /// EffectiveWedgeAngle (300a,00de) vr=DS, vm=1, type=3
+        DcmDecimalString EffectiveWedgeAngle;
         /// SourceToWedgeTrayDistance (300a,00da) vr=DS, vm=1, type=3
         DcmDecimalString SourceToWedgeTrayDistance;
         /// WedgeAngle (300a,00d5) vr=IS, vm=1, type=2

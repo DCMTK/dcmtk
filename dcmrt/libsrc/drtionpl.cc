@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonPlanIOD
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -58,6 +58,8 @@ DRTIonPlanIOD::DRTIonPlanIOD()
     StudyTime(DCM_StudyTime),
     ReferringPhysicianName(DCM_ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(),
+    ConsultingPhysicianName(DCM_ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
     IssuerOfAccessionNumberSequence(),
@@ -171,6 +173,7 @@ DRTIonPlanIOD::DRTIonPlanIOD()
     QueryRetrieveView(DCM_QueryRetrieveView),
     ConversionSourceAttributesSequence(),
     ContentQualification(DCM_ContentQualification),
+    PrivateDataElementCharacteristicsSequence(),
     ReferencedSeriesSequence(),
     StudiesContainingOtherReferencedInstancesSequence()
 {
@@ -220,6 +223,8 @@ DRTIonPlanIOD::DRTIonPlanIOD(const DRTIonPlanIOD &copy)
     StudyTime(copy.StudyTime),
     ReferringPhysicianName(copy.ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(copy.ReferringPhysicianIdentificationSequence),
+    ConsultingPhysicianName(copy.ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(copy.ConsultingPhysicianIdentificationSequence),
     StudyID(copy.StudyID),
     AccessionNumber(copy.AccessionNumber),
     IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
@@ -333,6 +338,7 @@ DRTIonPlanIOD::DRTIonPlanIOD(const DRTIonPlanIOD &copy)
     QueryRetrieveView(copy.QueryRetrieveView),
     ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
     ContentQualification(copy.ContentQualification),
+    PrivateDataElementCharacteristicsSequence(copy.PrivateDataElementCharacteristicsSequence),
     ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
     StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence)
 {
@@ -388,6 +394,8 @@ DRTIonPlanIOD &DRTIonPlanIOD::operator=(const DRTIonPlanIOD &copy)
         StudyTime = copy.StudyTime;
         ReferringPhysicianName = copy.ReferringPhysicianName;
         ReferringPhysicianIdentificationSequence = copy.ReferringPhysicianIdentificationSequence;
+        ConsultingPhysicianName = copy.ConsultingPhysicianName;
+        ConsultingPhysicianIdentificationSequence = copy.ConsultingPhysicianIdentificationSequence;
         StudyID = copy.StudyID;
         AccessionNumber = copy.AccessionNumber;
         IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
@@ -501,6 +509,7 @@ DRTIonPlanIOD &DRTIonPlanIOD::operator=(const DRTIonPlanIOD &copy)
         QueryRetrieveView = copy.QueryRetrieveView;
         ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
         ContentQualification = copy.ContentQualification;
+        PrivateDataElementCharacteristicsSequence = copy.PrivateDataElementCharacteristicsSequence;
         ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
         StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
     }
@@ -551,6 +560,8 @@ void DRTIonPlanIOD::clear()
     StudyTime.clear();
     ReferringPhysicianName.clear();
     ReferringPhysicianIdentificationSequence.clear();
+    ConsultingPhysicianName.clear();
+    ConsultingPhysicianIdentificationSequence.clear();
     StudyID.clear();
     AccessionNumber.clear();
     IssuerOfAccessionNumberSequence.clear();
@@ -664,6 +675,7 @@ void DRTIonPlanIOD::clear()
     QueryRetrieveView.clear();
     ConversionSourceAttributesSequence.clear();
     ContentQualification.clear();
+    PrivateDataElementCharacteristicsSequence.clear();
     ReferencedSeriesSequence.clear();
     StudiesContainingOtherReferencedInstancesSequence.clear();
 }
@@ -811,6 +823,7 @@ OFCondition DRTIonPlanIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, QueryRetrieveView, "1", "1C", "SOPCommonModule");
         ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
+        PrivateDataElementCharacteristicsSequence.read(dataset, "1-n", "3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
@@ -885,6 +898,8 @@ OFCondition DRTIonPlanIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
         ReferringPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, ConsultingPhysicianName, "1-n", "3", "GeneralStudyModule");
+        ConsultingPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
         IssuerOfAccessionNumberSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
@@ -1021,6 +1036,8 @@ OFCondition DRTIonPlanIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmTime(StudyTime), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName), "1", "2", "GeneralStudyModule");
         if (result.good()) result = ReferringPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmPersonName(ConsultingPhysicianName), "1-n", "3", "GeneralStudyModule");
+        if (result.good()) result = ConsultingPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
         if (result.good()) result = IssuerOfAccessionNumberSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
@@ -1190,6 +1207,7 @@ OFCondition DRTIonPlanIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(QueryRetrieveView), "1", "1C", "SOPCommonModule");
         if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
+        if (result.good()) result = PrivateDataElementCharacteristicsSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
@@ -1446,6 +1464,12 @@ OFCondition DRTIonPlanIOD::getClinicalTrialTimePointID(OFString &value, const si
 OFCondition DRTIonPlanIOD::getCommentsOnThePerformedProcedureStep(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(CommentsOnThePerformedProcedureStep, value, pos);
+}
+
+
+OFCondition DRTIonPlanIOD::getConsultingPhysicianName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ConsultingPhysicianName, value, pos);
 }
 
 
@@ -2210,6 +2234,15 @@ OFCondition DRTIonPlanIOD::setCommentsOnThePerformedProcedureStep(const OFString
     OFCondition result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
     if (result.good())
         result = CommentsOnThePerformedProcedureStep.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTIonPlanIOD::setConsultingPhysicianName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = ConsultingPhysicianName.putOFStringArray(value);
     return result;
 }
 

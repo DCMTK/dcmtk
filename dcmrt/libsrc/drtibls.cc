@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonBlockSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -28,11 +28,13 @@ DRTIonBlockSequence::Item::Item(const OFBool emptyDefaultItem)
     BlockName(DCM_BlockName),
     BlockNumber(DCM_BlockNumber),
     BlockNumberOfPoints(DCM_BlockNumberOfPoints),
+    BlockSlabSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     BlockThickness(DCM_BlockThickness),
     BlockTrayID(DCM_BlockTrayID),
     BlockType(DCM_BlockType),
     IsocenterToBlockTrayDistance(DCM_IsocenterToBlockTrayDistance),
-    MaterialID(DCM_MaterialID)
+    MaterialID(DCM_MaterialID),
+    NumberOfBlockSlabItems(DCM_NumberOfBlockSlabItems)
 {
 }
 
@@ -46,11 +48,13 @@ DRTIonBlockSequence::Item::Item(const Item &copy)
     BlockName(copy.BlockName),
     BlockNumber(copy.BlockNumber),
     BlockNumberOfPoints(copy.BlockNumberOfPoints),
+    BlockSlabSequence(copy.BlockSlabSequence),
     BlockThickness(copy.BlockThickness),
     BlockTrayID(copy.BlockTrayID),
     BlockType(copy.BlockType),
     IsocenterToBlockTrayDistance(copy.IsocenterToBlockTrayDistance),
-    MaterialID(copy.MaterialID)
+    MaterialID(copy.MaterialID),
+    NumberOfBlockSlabItems(copy.NumberOfBlockSlabItems)
 {
 }
 
@@ -72,11 +76,13 @@ DRTIonBlockSequence::Item &DRTIonBlockSequence::Item::operator=(const Item &copy
         BlockName = copy.BlockName;
         BlockNumber = copy.BlockNumber;
         BlockNumberOfPoints = copy.BlockNumberOfPoints;
+        BlockSlabSequence = copy.BlockSlabSequence;
         BlockThickness = copy.BlockThickness;
         BlockTrayID = copy.BlockTrayID;
         BlockType = copy.BlockType;
         IsocenterToBlockTrayDistance = copy.IsocenterToBlockTrayDistance;
         MaterialID = copy.MaterialID;
+        NumberOfBlockSlabItems = copy.NumberOfBlockSlabItems;
     }
     return *this;
 }
@@ -99,6 +105,8 @@ void DRTIonBlockSequence::Item::clear()
         BlockThickness.clear();
         BlockNumberOfPoints.clear();
         BlockData.clear();
+        NumberOfBlockSlabItems.clear();
+        BlockSlabSequence.clear();
     }
 }
 
@@ -116,7 +124,9 @@ OFBool DRTIonBlockSequence::Item::isEmpty()
            MaterialID.isEmpty() &&
            BlockThickness.isEmpty() &&
            BlockNumberOfPoints.isEmpty() &&
-           BlockData.isEmpty();
+           BlockData.isEmpty() &&
+           NumberOfBlockSlabItems.isEmpty() &&
+           BlockSlabSequence.isEmpty();
 }
 
 
@@ -145,6 +155,8 @@ OFCondition DRTIonBlockSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, BlockThickness, "1", "1", "IonBlockSequence");
         getAndCheckElementFromDataset(item, BlockNumberOfPoints, "1", "1", "IonBlockSequence");
         getAndCheckElementFromDataset(item, BlockData, "2-2n", "1", "IonBlockSequence");
+        getAndCheckElementFromDataset(item, NumberOfBlockSlabItems, "1", "3", "IonBlockSequence");
+        BlockSlabSequence.read(item, "1-n", "1C", "IonBlockSequence");
         result = EC_Normal;
     }
     return result;
@@ -169,6 +181,8 @@ OFCondition DRTIonBlockSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(BlockThickness), "1", "1", "IonBlockSequence");
         addElementToDataset(result, item, new DcmIntegerString(BlockNumberOfPoints), "1", "1", "IonBlockSequence");
         addElementToDataset(result, item, new DcmDecimalString(BlockData), "2-2n", "1", "IonBlockSequence");
+        addElementToDataset(result, item, new DcmIntegerString(NumberOfBlockSlabItems), "1", "3", "IonBlockSequence");
+        if (result.good()) result = BlockSlabSequence.write(item, "1-n", "1C", "IonBlockSequence");
     }
     return result;
 }
@@ -327,6 +341,24 @@ OFCondition DRTIonBlockSequence::Item::getMaterialID(OFString &value, const sign
 }
 
 
+OFCondition DRTIonBlockSequence::Item::getNumberOfBlockSlabItems(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(NumberOfBlockSlabItems, value, pos);
+}
+
+
+OFCondition DRTIonBlockSequence::Item::getNumberOfBlockSlabItems(Sint32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmIntegerString &, NumberOfBlockSlabItems).getSint32(value, pos);
+}
+
+
 OFCondition DRTIonBlockSequence::Item::setAccessoryCode(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -474,6 +506,19 @@ OFCondition DRTIonBlockSequence::Item::setMaterialID(const OFString &value, cons
         result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = MaterialID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTIonBlockSequence::Item::setNumberOfBlockSlabItems(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = NumberOfBlockSlabItems.putOFStringArray(value);
     }
     return result;
 }

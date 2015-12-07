@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTStructureSetIOD
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -58,6 +58,8 @@ DRTStructureSetIOD::DRTStructureSetIOD()
     StudyTime(DCM_StudyTime),
     ReferringPhysicianName(DCM_ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(),
+    ConsultingPhysicianName(DCM_ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
     IssuerOfAccessionNumberSequence(),
@@ -121,6 +123,8 @@ DRTStructureSetIOD::DRTStructureSetIOD()
     DateOfLastCalibration(DCM_DateOfLastCalibration),
     TimeOfLastCalibration(DCM_TimeOfLastCalibration),
     PixelPaddingValue(DCM_PixelPaddingValue),
+    FrameOfReferenceUID(DCM_FrameOfReferenceUID),
+    PositionReferenceIndicator(DCM_PositionReferenceIndicator),
     StructureSetLabel(DCM_StructureSetLabel),
     StructureSetName(DCM_StructureSetName),
     StructureSetDescription(DCM_StructureSetDescription),
@@ -161,6 +165,7 @@ DRTStructureSetIOD::DRTStructureSetIOD()
     QueryRetrieveView(DCM_QueryRetrieveView),
     ConversionSourceAttributesSequence(),
     ContentQualification(DCM_ContentQualification),
+    PrivateDataElementCharacteristicsSequence(),
     ReferencedSeriesSequence(),
     StudiesContainingOtherReferencedInstancesSequence()
 {
@@ -210,6 +215,8 @@ DRTStructureSetIOD::DRTStructureSetIOD(const DRTStructureSetIOD &copy)
     StudyTime(copy.StudyTime),
     ReferringPhysicianName(copy.ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(copy.ReferringPhysicianIdentificationSequence),
+    ConsultingPhysicianName(copy.ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(copy.ConsultingPhysicianIdentificationSequence),
     StudyID(copy.StudyID),
     AccessionNumber(copy.AccessionNumber),
     IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
@@ -273,6 +280,8 @@ DRTStructureSetIOD::DRTStructureSetIOD(const DRTStructureSetIOD &copy)
     DateOfLastCalibration(copy.DateOfLastCalibration),
     TimeOfLastCalibration(copy.TimeOfLastCalibration),
     PixelPaddingValue(copy.PixelPaddingValue),
+    FrameOfReferenceUID(copy.FrameOfReferenceUID),
+    PositionReferenceIndicator(copy.PositionReferenceIndicator),
     StructureSetLabel(copy.StructureSetLabel),
     StructureSetName(copy.StructureSetName),
     StructureSetDescription(copy.StructureSetDescription),
@@ -313,6 +322,7 @@ DRTStructureSetIOD::DRTStructureSetIOD(const DRTStructureSetIOD &copy)
     QueryRetrieveView(copy.QueryRetrieveView),
     ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
     ContentQualification(copy.ContentQualification),
+    PrivateDataElementCharacteristicsSequence(copy.PrivateDataElementCharacteristicsSequence),
     ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
     StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence)
 {
@@ -368,6 +378,8 @@ DRTStructureSetIOD &DRTStructureSetIOD::operator=(const DRTStructureSetIOD &copy
         StudyTime = copy.StudyTime;
         ReferringPhysicianName = copy.ReferringPhysicianName;
         ReferringPhysicianIdentificationSequence = copy.ReferringPhysicianIdentificationSequence;
+        ConsultingPhysicianName = copy.ConsultingPhysicianName;
+        ConsultingPhysicianIdentificationSequence = copy.ConsultingPhysicianIdentificationSequence;
         StudyID = copy.StudyID;
         AccessionNumber = copy.AccessionNumber;
         IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
@@ -431,6 +443,8 @@ DRTStructureSetIOD &DRTStructureSetIOD::operator=(const DRTStructureSetIOD &copy
         DateOfLastCalibration = copy.DateOfLastCalibration;
         TimeOfLastCalibration = copy.TimeOfLastCalibration;
         PixelPaddingValue = copy.PixelPaddingValue;
+        FrameOfReferenceUID = copy.FrameOfReferenceUID;
+        PositionReferenceIndicator = copy.PositionReferenceIndicator;
         StructureSetLabel = copy.StructureSetLabel;
         StructureSetName = copy.StructureSetName;
         StructureSetDescription = copy.StructureSetDescription;
@@ -471,6 +485,7 @@ DRTStructureSetIOD &DRTStructureSetIOD::operator=(const DRTStructureSetIOD &copy
         QueryRetrieveView = copy.QueryRetrieveView;
         ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
         ContentQualification = copy.ContentQualification;
+        PrivateDataElementCharacteristicsSequence = copy.PrivateDataElementCharacteristicsSequence;
         ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
         StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
     }
@@ -521,6 +536,8 @@ void DRTStructureSetIOD::clear()
     StudyTime.clear();
     ReferringPhysicianName.clear();
     ReferringPhysicianIdentificationSequence.clear();
+    ConsultingPhysicianName.clear();
+    ConsultingPhysicianIdentificationSequence.clear();
     StudyID.clear();
     AccessionNumber.clear();
     IssuerOfAccessionNumberSequence.clear();
@@ -584,6 +601,8 @@ void DRTStructureSetIOD::clear()
     DateOfLastCalibration.clear();
     TimeOfLastCalibration.clear();
     PixelPaddingValue.clear();
+    FrameOfReferenceUID.clear();
+    PositionReferenceIndicator.clear();
     StructureSetLabel.clear();
     StructureSetName.clear();
     StructureSetDescription.clear();
@@ -624,6 +643,7 @@ void DRTStructureSetIOD::clear()
     QueryRetrieveView.clear();
     ConversionSourceAttributesSequence.clear();
     ContentQualification.clear();
+    PrivateDataElementCharacteristicsSequence.clear();
     ReferencedSeriesSequence.clear();
     StudiesContainingOtherReferencedInstancesSequence.clear();
 }
@@ -688,6 +708,14 @@ OFCondition DRTStructureSetIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, TimeOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, PixelPaddingValue, "1", "1C", "GeneralEquipmentModule");
 
+        // --- FrameOfReferenceModule (U) ---
+        if (dataset.tagExists(DCM_FrameOfReferenceUID) ||
+            dataset.tagExists(DCM_PositionReferenceIndicator))
+        {
+            getAndCheckElementFromDataset(dataset, FrameOfReferenceUID, "1", "1", "FrameOfReferenceModule");
+            getAndCheckElementFromDataset(dataset, PositionReferenceIndicator, "1", "2", "FrameOfReferenceModule");
+        }
+
         // --- StructureSetModule (M) ---
         getAndCheckElementFromDataset(dataset, StructureSetLabel, "1", "1", "StructureSetModule");
         getAndCheckElementFromDataset(dataset, StructureSetName, "1", "3", "StructureSetModule");
@@ -741,6 +769,7 @@ OFCondition DRTStructureSetIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, QueryRetrieveView, "1", "1C", "SOPCommonModule");
         ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
+        PrivateDataElementCharacteristicsSequence.read(dataset, "1-n", "3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
@@ -815,6 +844,8 @@ OFCondition DRTStructureSetIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
         ReferringPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, ConsultingPhysicianName, "1-n", "3", "GeneralStudyModule");
+        ConsultingPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
         IssuerOfAccessionNumberSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
@@ -951,6 +982,8 @@ OFCondition DRTStructureSetIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmTime(StudyTime), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName), "1", "2", "GeneralStudyModule");
         if (result.good()) result = ReferringPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmPersonName(ConsultingPhysicianName), "1-n", "3", "GeneralStudyModule");
+        if (result.good()) result = ConsultingPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
         if (result.good()) result = IssuerOfAccessionNumberSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
@@ -1034,6 +1067,13 @@ OFCondition DRTStructureSetIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmTime(TimeOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmUnsignedShort(PixelPaddingValue), "1", "1C", "GeneralEquipmentModule");
 
+        // --- FrameOfReferenceModule (U) ---
+        if (isFrameOfReferenceModulePresent(OFFalse /*complete*/))
+        {
+            addElementToDataset(result, dataset, new DcmUniqueIdentifier(FrameOfReferenceUID), "1", "1", "FrameOfReferenceModule");
+            addElementToDataset(result, dataset, new DcmLongString(PositionReferenceIndicator), "1", "2", "FrameOfReferenceModule");
+        }
+
         // --- StructureSetModule (M) ---
         addElementToDataset(result, dataset, new DcmShortString(StructureSetLabel), "1", "1", "StructureSetModule");
         addElementToDataset(result, dataset, new DcmLongString(StructureSetName), "1", "3", "StructureSetModule");
@@ -1087,6 +1127,7 @@ OFCondition DRTStructureSetIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(QueryRetrieveView), "1", "1C", "SOPCommonModule");
         if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
+        if (result.good()) result = PrivateDataElementCharacteristicsSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
@@ -1157,6 +1198,20 @@ OFBool DRTStructureSetIOD::isClinicalTrialSeriesModulePresent(const OFBool /*com
     return !ClinicalTrialCoordinatingCenterName.isEmpty() ||
            !ClinicalTrialSeriesID.isEmpty() ||
            !ClinicalTrialSeriesDescription.isEmpty();
+}
+
+
+OFBool DRTStructureSetIOD::isFrameOfReferenceModulePresent(const OFBool complete)
+{
+    if (complete)
+    {
+        /* check whether all mandatory attributes are present */
+        return !FrameOfReferenceUID.isEmpty();
+    } else {
+        /* check whether at least one attribute is present */
+        return !FrameOfReferenceUID.isEmpty() ||
+               !PositionReferenceIndicator.isEmpty();
+    }
 }
 
 
@@ -1310,6 +1365,12 @@ OFCondition DRTStructureSetIOD::getCommentsOnThePerformedProcedureStep(OFString 
 }
 
 
+OFCondition DRTStructureSetIOD::getConsultingPhysicianName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ConsultingPhysicianName, value, pos);
+}
+
+
 OFCondition DRTStructureSetIOD::getContentQualification(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ContentQualification, value, pos);
@@ -1337,6 +1398,12 @@ OFCondition DRTStructureSetIOD::getDeviceSerialNumber(OFString &value, const sig
 OFCondition DRTStructureSetIOD::getEthnicGroup(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(EthnicGroup, value, pos);
+}
+
+
+OFCondition DRTStructureSetIOD::getFrameOfReferenceUID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(FrameOfReferenceUID, value, pos);
 }
 
 
@@ -1601,6 +1668,12 @@ OFCondition DRTStructureSetIOD::getPhysiciansOfRecord(OFString &value, const sig
 OFCondition DRTStructureSetIOD::getPixelPaddingValue(Uint16 &value, const unsigned long pos) const
 {
     return OFconst_cast(DcmUnsignedShort &, PixelPaddingValue).getUint16(value, pos);
+}
+
+
+OFCondition DRTStructureSetIOD::getPositionReferenceIndicator(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(PositionReferenceIndicator, value, pos);
 }
 
 
@@ -2033,6 +2106,15 @@ OFCondition DRTStructureSetIOD::setCommentsOnThePerformedProcedureStep(const OFS
 }
 
 
+OFCondition DRTStructureSetIOD::setConsultingPhysicianName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = ConsultingPhysicianName.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTStructureSetIOD::setContentQualification(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
@@ -2074,6 +2156,15 @@ OFCondition DRTStructureSetIOD::setEthnicGroup(const OFString &value, const OFBo
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = EthnicGroup.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTStructureSetIOD::setFrameOfReferenceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = FrameOfReferenceUID.putOFStringArray(value);
     return result;
 }
 
@@ -2441,6 +2532,15 @@ OFCondition DRTStructureSetIOD::setPhysiciansOfRecord(const OFString &value, con
 OFCondition DRTStructureSetIOD::setPixelPaddingValue(const Uint16 value, const unsigned long pos)
 {
     return PixelPaddingValue.putUint16(value, pos);
+}
+
+
+OFCondition DRTStructureSetIOD::setPositionReferenceIndicator(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PositionReferenceIndicator.putOFStringArray(value);
+    return result;
 }
 
 

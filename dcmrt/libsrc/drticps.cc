@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -26,6 +26,7 @@ DRTIonControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
     BeamLimitingDeviceRotationDirection(DCM_BeamLimitingDeviceRotationDirection),
     ControlPointIndex(DCM_ControlPointIndex),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
+    ExternalContourEntryPoint(DCM_ExternalContourEntryPoint),
     GantryAngle(DCM_GantryAngle),
     GantryPitchAngle(DCM_GantryPitchAngle),
     GantryPitchRotationDirection(DCM_GantryPitchRotationDirection),
@@ -68,6 +69,7 @@ DRTIonControlPointSequence::Item::Item(const Item &copy)
     BeamLimitingDeviceRotationDirection(copy.BeamLimitingDeviceRotationDirection),
     ControlPointIndex(copy.ControlPointIndex),
     CumulativeMetersetWeight(copy.CumulativeMetersetWeight),
+    ExternalContourEntryPoint(copy.ExternalContourEntryPoint),
     GantryAngle(copy.GantryAngle),
     GantryPitchAngle(copy.GantryPitchAngle),
     GantryPitchRotationDirection(copy.GantryPitchRotationDirection),
@@ -118,6 +120,7 @@ DRTIonControlPointSequence::Item &DRTIonControlPointSequence::Item::operator=(co
         BeamLimitingDeviceRotationDirection = copy.BeamLimitingDeviceRotationDirection;
         ControlPointIndex = copy.ControlPointIndex;
         CumulativeMetersetWeight = copy.CumulativeMetersetWeight;
+        ExternalContourEntryPoint = copy.ExternalContourEntryPoint;
         GantryAngle = copy.GantryAngle;
         GantryPitchAngle = copy.GantryPitchAngle;
         GantryPitchRotationDirection = copy.GantryPitchRotationDirection;
@@ -195,6 +198,7 @@ void DRTIonControlPointSequence::Item::clear()
         SnoutPosition.clear();
         IsocenterPosition.clear();
         SurfaceEntryPoint.clear();
+        ExternalContourEntryPoint.clear();
     }
 }
 
@@ -236,7 +240,8 @@ OFBool DRTIonControlPointSequence::Item::isEmpty()
            TableTopLateralPosition.isEmpty() &&
            SnoutPosition.isEmpty() &&
            IsocenterPosition.isEmpty() &&
-           SurfaceEntryPoint.isEmpty();
+           SurfaceEntryPoint.isEmpty() &&
+           ExternalContourEntryPoint.isEmpty();
 }
 
 
@@ -289,6 +294,7 @@ OFCondition DRTIonControlPointSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, SnoutPosition, "1", "2C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, IsocenterPosition, "3", "2C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, SurfaceEntryPoint, "3", "3", "IonControlPointSequence");
+        getAndCheckElementFromDataset(item, ExternalContourEntryPoint, "3", "3", "IonControlPointSequence");
         result = EC_Normal;
     }
     return result;
@@ -337,6 +343,7 @@ OFCondition DRTIonControlPointSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmFloatingPointSingle(SnoutPosition), "1", "2C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(IsocenterPosition), "3", "2C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(SurfaceEntryPoint), "3", "3", "IonControlPointSequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(ExternalContourEntryPoint), "3", "3", "IonControlPointSequence");
     }
     return result;
 }
@@ -402,6 +409,15 @@ OFCondition DRTIonControlPointSequence::Item::getCumulativeMetersetWeight(Float6
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmDecimalString &, CumulativeMetersetWeight).getFloat64(value, pos);
+}
+
+
+OFCondition DRTIonControlPointSequence::Item::getExternalContourEntryPoint(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, ExternalContourEntryPoint).getFloat32(value, pos);
 }
 
 
@@ -805,6 +821,15 @@ OFCondition DRTIonControlPointSequence::Item::setCumulativeMetersetWeight(const 
             result = CumulativeMetersetWeight.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTIonControlPointSequence::Item::setExternalContourEntryPoint(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return ExternalContourEntryPoint.putFloat32(value, pos);
 }
 
 

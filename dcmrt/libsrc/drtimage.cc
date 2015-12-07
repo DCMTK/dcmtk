@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTImageIOD
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -58,6 +58,8 @@ DRTImageIOD::DRTImageIOD()
     StudyTime(DCM_StudyTime),
     ReferringPhysicianName(DCM_ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(),
+    ConsultingPhysicianName(DCM_ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
     IssuerOfAccessionNumberSequence(),
@@ -190,6 +192,7 @@ DRTImageIOD::DRTImageIOD()
     MultiplexedAudioChannelsDescriptionCodeSequence(),
     NumberOfFrames(DCM_NumberOfFrames),
     FrameIncrementPointer(DCM_FrameIncrementPointer),
+    StereoPairsPresent(DCM_StereoPairsPresent),
     DeviceSequence(),
     SamplesPerPixel(DCM_SamplesPerPixel),
     PhotometricInterpretation(DCM_PhotometricInterpretation),
@@ -276,6 +279,7 @@ DRTImageIOD::DRTImageIOD()
     QueryRetrieveView(DCM_QueryRetrieveView),
     ConversionSourceAttributesSequence(),
     ContentQualification(DCM_ContentQualification),
+    PrivateDataElementCharacteristicsSequence(),
     ReferencedSeriesSequence(),
     StudiesContainingOtherReferencedInstancesSequence(),
     FrameExtractionSequence()
@@ -326,6 +330,8 @@ DRTImageIOD::DRTImageIOD(const DRTImageIOD &copy)
     StudyTime(copy.StudyTime),
     ReferringPhysicianName(copy.ReferringPhysicianName),
     ReferringPhysicianIdentificationSequence(copy.ReferringPhysicianIdentificationSequence),
+    ConsultingPhysicianName(copy.ConsultingPhysicianName),
+    ConsultingPhysicianIdentificationSequence(copy.ConsultingPhysicianIdentificationSequence),
     StudyID(copy.StudyID),
     AccessionNumber(copy.AccessionNumber),
     IssuerOfAccessionNumberSequence(copy.IssuerOfAccessionNumberSequence),
@@ -458,6 +464,7 @@ DRTImageIOD::DRTImageIOD(const DRTImageIOD &copy)
     MultiplexedAudioChannelsDescriptionCodeSequence(copy.MultiplexedAudioChannelsDescriptionCodeSequence),
     NumberOfFrames(copy.NumberOfFrames),
     FrameIncrementPointer(copy.FrameIncrementPointer),
+    StereoPairsPresent(copy.StereoPairsPresent),
     DeviceSequence(copy.DeviceSequence),
     SamplesPerPixel(copy.SamplesPerPixel),
     PhotometricInterpretation(copy.PhotometricInterpretation),
@@ -544,6 +551,7 @@ DRTImageIOD::DRTImageIOD(const DRTImageIOD &copy)
     QueryRetrieveView(copy.QueryRetrieveView),
     ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
     ContentQualification(copy.ContentQualification),
+    PrivateDataElementCharacteristicsSequence(copy.PrivateDataElementCharacteristicsSequence),
     ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
     StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence),
     FrameExtractionSequence(copy.FrameExtractionSequence)
@@ -600,6 +608,8 @@ DRTImageIOD &DRTImageIOD::operator=(const DRTImageIOD &copy)
         StudyTime = copy.StudyTime;
         ReferringPhysicianName = copy.ReferringPhysicianName;
         ReferringPhysicianIdentificationSequence = copy.ReferringPhysicianIdentificationSequence;
+        ConsultingPhysicianName = copy.ConsultingPhysicianName;
+        ConsultingPhysicianIdentificationSequence = copy.ConsultingPhysicianIdentificationSequence;
         StudyID = copy.StudyID;
         AccessionNumber = copy.AccessionNumber;
         IssuerOfAccessionNumberSequence = copy.IssuerOfAccessionNumberSequence;
@@ -732,6 +742,7 @@ DRTImageIOD &DRTImageIOD::operator=(const DRTImageIOD &copy)
         MultiplexedAudioChannelsDescriptionCodeSequence = copy.MultiplexedAudioChannelsDescriptionCodeSequence;
         NumberOfFrames = copy.NumberOfFrames;
         FrameIncrementPointer = copy.FrameIncrementPointer;
+        StereoPairsPresent = copy.StereoPairsPresent;
         DeviceSequence = copy.DeviceSequence;
         SamplesPerPixel = copy.SamplesPerPixel;
         PhotometricInterpretation = copy.PhotometricInterpretation;
@@ -818,6 +829,7 @@ DRTImageIOD &DRTImageIOD::operator=(const DRTImageIOD &copy)
         QueryRetrieveView = copy.QueryRetrieveView;
         ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
         ContentQualification = copy.ContentQualification;
+        PrivateDataElementCharacteristicsSequence = copy.PrivateDataElementCharacteristicsSequence;
         ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
         StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
         FrameExtractionSequence = copy.FrameExtractionSequence;
@@ -869,6 +881,8 @@ void DRTImageIOD::clear()
     StudyTime.clear();
     ReferringPhysicianName.clear();
     ReferringPhysicianIdentificationSequence.clear();
+    ConsultingPhysicianName.clear();
+    ConsultingPhysicianIdentificationSequence.clear();
     StudyID.clear();
     AccessionNumber.clear();
     IssuerOfAccessionNumberSequence.clear();
@@ -1008,6 +1022,7 @@ void DRTImageIOD::clear()
     MultiplexedAudioChannelsDescriptionCodeSequence.clear();
     NumberOfFrames.clear();
     FrameIncrementPointer.clear();
+    StereoPairsPresent.clear();
     DeviceSequence.clear();
     PixelIntensityRelationship.clear();
     PixelIntensityRelationshipSign.clear();
@@ -1087,6 +1102,7 @@ void DRTImageIOD::clear()
     QueryRetrieveView.clear();
     ConversionSourceAttributesSequence.clear();
     ContentQualification.clear();
+    PrivateDataElementCharacteristicsSequence.clear();
     ReferencedSeriesSequence.clear();
     StudiesContainingOtherReferencedInstancesSequence.clear();
     FrameExtractionSequence.clear();
@@ -1249,6 +1265,7 @@ OFCondition DRTImageIOD::read(DcmItem &dataset)
         {
             getAndCheckElementFromDataset(dataset, NumberOfFrames, "1", "1", "MultiFrameModule");
             getAndCheckElementFromDataset(dataset, FrameIncrementPointer, "1-n", "1", "MultiFrameModule");
+            getAndCheckElementFromDataset(dataset, StereoPairsPresent, "1", "3", "MultiFrameModule");
         }
 
         // --- DeviceModule (U) ---
@@ -1355,6 +1372,7 @@ OFCondition DRTImageIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, QueryRetrieveView, "1", "1C", "SOPCommonModule");
         ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
+        PrivateDataElementCharacteristicsSequence.read(dataset, "1-n", "3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
@@ -1435,6 +1453,8 @@ OFCondition DRTImageIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
         ReferringPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, ConsultingPhysicianName, "1-n", "3", "GeneralStudyModule");
+        ConsultingPhysicianIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
         IssuerOfAccessionNumberSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
@@ -1571,6 +1591,8 @@ OFCondition DRTImageIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmTime(StudyTime), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName), "1", "2", "GeneralStudyModule");
         if (result.good()) result = ReferringPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmPersonName(ConsultingPhysicianName), "1-n", "3", "GeneralStudyModule");
+        if (result.good()) result = ConsultingPhysicianIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
         if (result.good()) result = IssuerOfAccessionNumberSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
@@ -1752,6 +1774,7 @@ OFCondition DRTImageIOD::write(DcmItem &dataset)
         {
             addElementToDataset(result, dataset, new DcmIntegerString(NumberOfFrames), "1", "1", "MultiFrameModule");
             addElementToDataset(result, dataset, new DcmAttributeTag(FrameIncrementPointer), "1-n", "1", "MultiFrameModule");
+            addElementToDataset(result, dataset, new DcmCodeString(StereoPairsPresent), "1", "3", "MultiFrameModule");
         }
 
         // --- DeviceModule (U) ---
@@ -1864,6 +1887,7 @@ OFCondition DRTImageIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(QueryRetrieveView), "1", "1C", "SOPCommonModule");
         if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
+        if (result.good()) result = PrivateDataElementCharacteristicsSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
@@ -2003,7 +2027,8 @@ OFBool DRTImageIOD::isMultiFrameModulePresent(const OFBool complete)
     } else {
         /* check whether at least one attribute is present */
         return !NumberOfFrames.isEmpty() ||
-               !FrameIncrementPointer.isEmpty();
+               !FrameIncrementPointer.isEmpty() ||
+               !StereoPairsPresent.isEmpty();
     }
 }
 
@@ -2301,6 +2326,12 @@ OFCondition DRTImageIOD::getColumns(Uint16 &value, const unsigned long pos) cons
 OFCondition DRTImageIOD::getCommentsOnThePerformedProcedureStep(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(CommentsOnThePerformedProcedureStep, value, pos);
+}
+
+
+OFCondition DRTImageIOD::getConsultingPhysicianName(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ConsultingPhysicianName, value, pos);
 }
 
 
@@ -3531,6 +3562,12 @@ OFCondition DRTImageIOD::getStationName(OFString &value, const signed long pos) 
 }
 
 
+OFCondition DRTImageIOD::getStereoPairsPresent(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(StereoPairsPresent, value, pos);
+}
+
+
 OFCondition DRTImageIOD::getStopTrim(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(StopTrim, value, pos);
@@ -4022,6 +4059,15 @@ OFCondition DRTImageIOD::setCommentsOnThePerformedProcedureStep(const OFString &
     OFCondition result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
     if (result.good())
         result = CommentsOnThePerformedProcedureStep.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTImageIOD::setConsultingPhysicianName(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = ConsultingPhysicianName.putOFStringArray(value);
     return result;
 }
 
@@ -5357,6 +5403,15 @@ OFCondition DRTImageIOD::setStationName(const OFString &value, const OFBool chec
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = StationName.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTImageIOD::setStereoPairsPresent(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = StereoPairsPresent.putOFStringArray(value);
     return result;
 }
 

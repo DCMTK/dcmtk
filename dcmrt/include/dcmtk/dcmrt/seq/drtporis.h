@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2014, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTPhysiciansOfRecordIdentificationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2014b
- *  File created on 2014-10-31 15:59:21
+ *  Generated automatically from DICOM PS 3.3-2015c
+ *  File created on 2015-12-07 16:29:33
  *
  */
 
@@ -113,6 +113,13 @@ class DCMTK_DCMRT_EXPORT DRTPhysiciansOfRecordIdentificationSequence
          */
         OFCondition getPersonAddress(OFString &value, const signed long pos = 0) const;
 
+        /** get PersonTelecomInformation (0040,1104)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getPersonTelecomInformation(OFString &value, const signed long pos = 0) const;
+
         /** get PersonTelephoneNumbers (0040,1103)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -169,6 +176,13 @@ class DCMTK_DCMRT_EXPORT DRTPhysiciansOfRecordIdentificationSequence
          */
         OFCondition setPersonAddress(const OFString &value, const OFBool check = OFTrue);
 
+        /** set PersonTelecomInformation (0040,1104)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LT) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setPersonTelecomInformation(const OFString &value, const OFBool check = OFTrue);
+
         /** set PersonTelephoneNumbers (0040,1103)
          *  @param  value  value to be set (possibly multi-valued) or "" for no value
          *  @param  check  check 'value' for conformance with VR (LO) and VM (1-n) if enabled
@@ -191,6 +205,8 @@ class DCMTK_DCMRT_EXPORT DRTPhysiciansOfRecordIdentificationSequence
         DcmShortText PersonAddress;
         /// PersonIdentificationCodeSequence (0040,1101) vr=SQ, vm=1, type=1
         DRTPersonIdentificationCodeSequence PersonIdentificationCodeSequence;
+        /// PersonTelecomInformation (0040,1104) vr=LT, vm=1, type=3
+        DcmLongText PersonTelecomInformation;
         /// PersonTelephoneNumbers (0040,1103) vr=LO, vm=1-n, type=3
         DcmLongString PersonTelephoneNumbers;
 
