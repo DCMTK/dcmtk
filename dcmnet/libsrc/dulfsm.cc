@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1391,7 +1391,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     }
 
     /* if after having counted the PDVs the length variable does not equal */
-    /* 0, the PDV lenghts did not add up correctly. Something is fishy. */
+    /* 0, the PDV lengths did not add up correctly. Something is fishy. */
     if (length != 0)
     {
        char buf[256];
@@ -2242,9 +2242,9 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     Sint32 connectTimeout = dcmConnectionTimeout.get();
 
 #ifdef HAVE_WINSOCK_H
-      u_long arg = TRUE;
+    u_long arg = TRUE;
 #else
-      int flags = 0;
+    int flags = 0;
 #endif
 
     if (connectTimeout >= 0)
@@ -2364,7 +2364,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
     if (rc < 0)
     {
-        // an error other than timeout in non-blocking mode has occured,
+        // an error other than timeout in non-blocking mode has occurred,
         // either in connect() or in select().
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */);
@@ -2963,7 +2963,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
         /* because the current PDV's length can be greater than maxLength, we need */
         /* to start another loop so that we are able to send data gradually. So, */
         /* as long as this is the first iteration or length is greater than 0 and */
-        /* at the same time no error occured, do the following */
+        /* at the same time no error occurred, do the following */
         firstTrip = OFTrue;
         while ((firstTrip || (length > 0)) && (cond.good())) {
             /* indicate that the first iteration has been executed */
@@ -3307,8 +3307,8 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
         *PDULength = (*association)->nextPDULength;
 
         /* check if the value in the length field of the PDU shows a legal value; */
-        /* there is a maximum lenght for PDUs which shall be sent over the network. */
-        /* the lenght of this PDU must not be greater than the specified maximum length. */
+        /* there is a maximum length for PDUs which shall be sent over the network. */
+        /* the length of this PDU must not be greater than the specified maximum length. */
         /* (bugfix - thanks to B. Gorissen, Philips Medical Systems) */
         if ((*PDUType == DUL_TYPEDATA) && (*PDULength > (*association)->maxPDVInput))
         {
@@ -3616,7 +3616,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
     while (l > 0)
     {
         /* receive data from the network connection; wait until */
-        /* we actually did receive data or an error occured */
+        /* we actually did receive data or an error occurred */
         do
         {
             /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain
@@ -3647,7 +3647,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
             if (rtnLen != NULL)
                 *rtnLen += (unsigned long) bytesRead;
         } else {
-            /* in case we did not receive any data, an error must have occured; return a corresponding result value */
+            /* in case we did not receive any data, an error must have occurred; return a corresponding result value */
             return DUL_NETWORKCLOSED;
         }
     }
@@ -3765,7 +3765,7 @@ setTCPBufferLength(int sock)
 **      internalList            Input list from which the two output lists
 **                              are derived
 **      SCUSCPRoleList          Role list (returned to the caller)
-**      userContextList         User context list (returend to the caller)
+**      userContextList         User context list (returned to the caller)
 **
 ** Return Values:
 **
@@ -3880,7 +3880,7 @@ findPresentationCtx(
 /* findSCUSCPRole
 **
 ** Purpose:
-**      Search for a SCUSCP role list, given the abstarct syntax as the
+**      Search for a SCUSCP role list, given the abstract syntax as the
 **      key.
 **
 ** Parameter Dictionary:

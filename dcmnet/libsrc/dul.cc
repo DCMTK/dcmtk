@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -380,7 +380,7 @@ DUL_InitializeNetwork(const char *mode,
 **
 **
 ** Algorithm:
-**      Close the socket and free the memeory occupied by the network key
+**      Close the socket and free the memory occupied by the network key
 */
 OFCondition
 DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
@@ -1450,8 +1450,8 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
         "",                     /* Called implementation class UID */
         "",                     /* Called implementation vers name */
         0,                      /* peer max pdu */
-        NULL,                   /* Requested Extended Negotation List */
-        NULL,                   /* Accepted Extended Negotation List */
+        NULL,                   /* Requested Extended Negotiation List */
+        NULL,                   /* Accepted Extended Negotiation List */
         NULL,                   /* Requested User Identify Negotiation */
         NULL,                   /* Accepted User Identify Negotiation */
         OFFalse                 /* don't use Secure Transport Layer */
@@ -2072,7 +2072,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       int sock;
       struct sockaddr_in server;
 
-      /* Create socket for internet type communication */
+      /* Create socket for Internet type communication */
       (*key)->networkSpecific.TCP.port = *(int *) parameter;
       (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
       sock = (*key)->networkSpecific.TCP.listenSocket;
@@ -2411,7 +2411,7 @@ static SC_MAP scMap[] = {
 **      Display the contents of the presentation context list
 **
 ** Parameter Dictionary:
-**      l  Head of the list of various presentation conmtexts.
+**      l  Head of the list of various presentation contexts.
 **
 ** Return Values:
 **
@@ -2650,7 +2650,7 @@ clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
 /* clearPresentationContext
 **
 ** Purpose:
-**      Free the memory oocupied by the given presentation context.
+**      Free the memory occupied by the given presentation context.
 **
 ** Parameter Dictionary:
 **      l  Head of list of the presentation contexts to be freed.
