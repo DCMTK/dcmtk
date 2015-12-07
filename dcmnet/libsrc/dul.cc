@@ -2127,7 +2127,14 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
 #endif
-      listen(sock, PRV_LISTENBACKLOG);
+      /* Listen on the socket */
+      if (listen(sock, PRV_LISTENBACKLOG) < 0)
+      {
+        char buf[256];
+        OFString msg = "TCP Initialization Error: ";
+        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+      }
     }
 
     (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer((*key)->applicationFunction);
