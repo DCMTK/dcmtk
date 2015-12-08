@@ -14951,6 +14951,8 @@ $as_echo "#define HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE 1" >>confdefs.h
 $as_echo "no" >&6; }
     fi
 
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether struct pwd contains the field pw_gecos" >&5
 $as_echo_n "checking whether struct pwd contains the field pw_gecos... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
