@@ -5,25 +5,56 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
+ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmioddir = $(top_srcdir)/../dcmiod
+dcmfgdir = $(top_srcdir)/../dcmfg
+
+
 include $(configdir)/@common_makefile@
 
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
+	-L$(dcmdatadir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmfgdir)/libsrc
+LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(ICONVLIBS)
+LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
+	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include \
 
-all:
 
-check:
+test_objs = tests.o tutils.o
+objs = $(test_objs)
+progs = tests
 
-check-exhaustive:
 
-install:
+all: $(progs)
+
+tests: $(test_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(ICONVLIBS) $(LIBS)
+
+
+check: tests
+	./tests
+
+check-exhaustive: tests
+	./tests -x
+
+
+install: all
+
 
 clean:
-	rm -f $(TRASH)
+	rm -f $(objs) $(progs) $(LOCALTRASH) $(TRASH)
 
 distclean:
-	rm -f $(DISTTRASH)
+	rm -f $(objs) $(progs) $(LOCALTRASH) $(DISTTRASH)
+
 
 dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+include $(DEP)

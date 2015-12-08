@@ -61,6 +61,12 @@ const Uint32 DCM_SEG_MAX_SEGMENTS = 65536;
 extern DCMTK_DCMSEG_EXPORT   const OFConditionConst     SG_EC_MaxSegmentsReached;
 /// error: specified segment does not exist
 extern DCMTK_DCMSEG_EXPORT   const OFConditionConst     SG_EC_NoSuchSegment;
+/// error: unknown segmentation type
+extern DCMTK_DCMSEG_EXPORT   const OFConditionConst     SG_EC_UnknownSegmentationType;
+/// error: invalid value
+extern DCMTK_DCMSEG_EXPORT   const OFConditionConst     SG_EC_InvalidValue;
+/// error: not enough data
+extern DCMTK_DCMSEG_EXPORT   const OFConditionConst     SG_EC_NotEnoughData;
 
 /** General purpose class hiding global functions, constants and types in the
  *  segmentation context from the global namespace.

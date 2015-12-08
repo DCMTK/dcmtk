@@ -69,7 +69,6 @@ void DcmSegmentation::initIODRules()
   getRules()->addRule(new IODRule(DCM_LossyImageCompressionRatio, "1-n","1C", "GeneralImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
 
   // Instance Number is also used within Content Identification Macro, disable it there
-  // TODO: Change Content Identification Macro and others to shared_ptr approach
   m_ContentIdentificationMacro.getIODRules().deleteRule(DCM_InstanceNumber);
 }
 
@@ -767,43 +766,23 @@ OFCondition DcmSegmentation::readFrames(DcmItem& dataset)
   }
 
   /* Read all frames into dedicated data structure */
-  size_t bitsPerFrame = getBitsPerFrame(rows, cols);
-  size_t bytesPerFrame = 0;
-  Uint8* src = pixels;
+  size_t pixelsPerFrame = rows * cols;
   if (m_SegmentationType == DcmSegTypes::ST_BINARY)
   {
-    /* FIXME: Padding of last byte must be implemented if byte is not completely filled */
-    if ( ((rows*cols) % 8) != 0)
-    {
-      DCMSEG_ERROR("TO BE DONE: Cannot write binary segmentations where pixel data bytes are not dividable by 8");
-      return EC_IllegalCall;
-    }
-    bytesPerFrame = DcmSegUtils::getBytesForBinaryFrame(bitsPerFrame);
-    for (size_t frameCount = 0; frameCount < numberOfFrames; frameCount++)
-    {
-      DcmIODTypes::Frame *frame = new DcmIODTypes::Frame();
-      frame->length = bytesPerFrame;
-      frame->pixData = new Uint8[bytesPerFrame];
-      memcpy(frame->pixData, src, bytesPerFrame);
-      src = src + bytesPerFrame;
-      m_Frames.push_back(frame);
-    }
+      extractFrames(pixels, numberOfFrames, pixelsPerFrame, m_Frames);
   }
   else if (m_SegmentationType == DcmSegTypes::ST_FRACTIONAL)
   {
-    bytesPerFrame = rows * cols;
     for (size_t count = 0; count < numberOfFrames; count++)
     {
       DcmIODTypes::Frame *frame = new DcmIODTypes::Frame();
-      frame->length = bytesPerFrame;
-      frame->pixData= new Uint8[bytesPerFrame];
-      memcpy(frame->pixData, pixels + count*bytesPerFrame, bytesPerFrame);
+      frame->length = pixelsPerFrame;
+      frame->pixData= new Uint8[pixelsPerFrame];
+      memcpy(frame->pixData, pixels + count* pixelsPerFrame, pixelsPerFrame);
       m_Frames.push_back(frame);
     }
   }
 
-  /* remove original pixel data copy from memory */
-  pixelData->compact();
   return result;
 }
 
@@ -940,10 +919,9 @@ OFCondition DcmSegmentation::writeMultiFrameDimensionModule(DcmItem& dataset)
 }
 
 
-OFCondition DcmSegmentation::writeFrames(DcmItem& dataset)
+OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 {
   OFCondition result;
-  // TODO: Consistency checks with attributes
   Uint16 rows,cols;
   rows = cols = 0;
   getImagePixel().getRows(rows);
@@ -951,6 +929,7 @@ OFCondition DcmSegmentation::writeFrames(DcmItem& dataset)
   size_t numBytes = getTotalBytesRequired(rows, cols, m_Frames.size());
   Uint8* pixdata = new Uint8[numBytes];
   OFVector<DcmIODTypes::Frame*>::iterator it = m_Frames.begin();
+  // Just copy bytes for each frame as is
   for (size_t count = 0; it != m_Frames.end(); count++)
   {
     memcpy(pixdata + count*(*it)->length, (*it)->pixData, (*it)->length);
@@ -960,6 +939,26 @@ OFCondition DcmSegmentation::writeFrames(DcmItem& dataset)
   delete[] pixdata;
   return result;
 }
+
+
+OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
+{
+  OFCondition rresult;
+  Uint16 rows,cols;
+  rows = cols = 0;
+  getImagePixel().getRows(rows);
+  getImagePixel().getColumns(cols);
+  size_t numBytes = getTotalBytesRequired(rows, cols, m_Frames.size());
+  // Holds the pixels for all frames. Each bit represents a pixel which is either
+  // 1 (part of segment) or 0 (not part of segment. All frames are directly
+  // concatenated, i.e. there are no unused bits between the frames.
+  Uint8* pixdata = new Uint8[numBytes];
+  memset(pixdata, 0, numBytes);
+  // Fill Pixel Data Element
+  concatFrames(m_Frames, pixdata, rows*cols);
+  return dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, numBytes, OFTrue);
+}
+
 
 
 OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
@@ -1043,7 +1042,12 @@ OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
   }
 
   /* Write frame pixel data */
-  if (result.good()) result = writeFrames(dataset);
+  if (result.good())
+  {
+    if (m_SegmentationType == DcmSegTypes::ST_BINARY) result = writeBinaryFrames(dataset);
+    else if (m_SegmentationType == DcmSegTypes::ST_BINARY) result = writeFractionalFrames(dataset);
+    else result = SG_EC_UnknownSegmentationType;
+  }
 
   return result;
 }
@@ -1073,7 +1077,8 @@ OFBool DcmSegmentation::checkPixDataLength(DcmElement* pixelData,
 
   // Find out how many bytes are needed
   size_t bytesRequired = getTotalBytesRequired(rows, cols, numberOfFrames);
-
+  // Length found in Pixel Data element is always even
+  if (bytesRequired % 2 == 1) bytesRequired++;
   /* Compare expected and actual length */
   if (length < bytesRequired)
   {
@@ -1113,14 +1118,19 @@ size_t DcmSegmentation::getTotalBytesRequired(const Uint16& rows,
 {
   size_t bytesRequired = rows * cols * numberOfFrames;
   /* for binary, we only need one bit per pixel */
+  size_t remainder = 0;
   if (m_SegmentationType == DcmSegTypes::ST_BINARY)
   {
     // check whether the 1-bit pixels exactly fit into bytes
-    size_t remainder = bytesRequired % 8;
+    remainder = (rows * cols) % 8;
     // number of bytes that work on an exact fit
     bytesRequired = bytesRequired / 8;
     // add one byte if we have a remainder
-    if (remainder > 0) bytesRequired++;
+    if (remainder > 0)
+    {
+      bytesRequired++;
+    }
+
   }
   return bytesRequired;
 }
@@ -1268,4 +1278,104 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
     }
   }
   return result;
+}
+
+
+void DcmSegmentation::extractFrames(Uint8* pixData,
+                                   const size_t numFrames,
+                                   const size_t bitsPerFrame,
+                                   OFVector< DcmIODTypes::Frame* >& results)
+{
+  // Will hold the bit position (0-7) that the current frame starts from. The
+  // first frame will always start at bit 0.
+  Uint8  bitShift = 0;
+  // Compute length in bytes we need to consider for each frame.
+  size_t frameLengthBytes = bitsPerFrame / 8;
+  // If the number of bits is not dividable by 8, we need part of an extra
+  // byte in the end. Since we like to set the unused bits to 0 in such a last
+  // byte to 0, remember the number.
+  size_t overlapBits = (8 - (bitsPerFrame % 8) % 8);
+  // Add an extra byte if we we fill a partial byte in the end
+  if (overlapBits != 0) frameLengthBytes++;
+  // Points to current reading position within pixeldata
+  Uint8* readPos = pixData;
+  // Loop over each frame and copy it to Frame structures
+  for (size_t f = 0; f < numFrames; f++)
+  {
+    // Create frame with correct length and copy 1:1 from pixel data
+    DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
+    frame->length = frameLengthBytes;
+    frame->pixData = new Uint8[frameLengthBytes];
+    memcpy(frame->pixData, readPos, frame->length);
+    // If we have been copying too much, i.e the first bytes of the frame
+    // actually belong to the former frame, shift the whole frame this amount
+    // of bytes to the left
+    if (bitShift > 0)
+    {
+      DcmSegUtils::shiftLeft(frame->pixData, frame->length, 8-bitShift);
+    }
+    // Adapt last byte by masking out unused bits (i.e. those belonging to next frame).
+    // A reader should ignore those unused bits anyway.
+    frame->pixData[frame->length-1] = (frame->pixData[frame->length-1] >> (overlapBits)) << (overlapBits);
+    // Store frame
+    results.push_back(frame);
+    // Compute the bitshift created by this frame
+    bitShift = ( 8- ((f+1) * bitsPerFrame) % 8 ) % 8;
+    // If the last byte read has not been used completely, i.e. it contains
+    // also bytes of the next frame, rewind read position to the last byte
+    // that was partially read. Otherwise skip to the next full byte.
+    if (bitShift > 0)
+    {
+      readPos = readPos + frame->length - 1;
+    }
+    else
+    {
+      readPos = readPos + frame->length;
+    }
+  }
+}
+
+
+void DcmSegmentation::concatFrames(OFVector< DcmIODTypes::Frame* > frames, Uint8* pixData, const size_t bitsPerFrame)
+{
+  // Writing position within the pixData memory
+  Uint8 *writePos = pixData;
+  OFVector<DcmIODTypes::Frame*>::iterator frame = frames.begin();
+  Uint8 freeBits = 0;
+  Uint8 firstByte = 0;
+  // Iterate over frames and copy each to pixdata memory
+  for (size_t f = 0; frame != frames.end(); f++)
+  {
+    DCMSEG_DEBUG("Packing segmentation frame #" << f+1 << "/" << frames.size());
+    // Backup first byte of the destination since it may contain bits of the
+    // last frame; mask out those bits not belonging to last frame.
+    firstByte = (writePos[0] >> freeBits) << freeBits;
+    memcpy(writePos, (*frame)->pixData, (*frame)->length);
+    // If the last frame left over some unused bits, shift the current frame
+    // that number of bits to the right and restore the original bits of the
+    // last frame
+    if (freeBits > 0)
+    {
+      DcmSegUtils::shiftRight(writePos, (*frame)->length, 8-freeBits);
+      writePos[0] |= firstByte;
+    }
+    // Compute free bits left over from this frame in the last byte written
+    freeBits = (8 - (( (f+1) * bitsPerFrame ) % 8)) % 8;
+    // If we have free bits, the last byte written to will be the first byte
+    // we write to for the next frame. Otherwise start with a fresh destination
+    // byte.
+    if (freeBits > 0)
+    {
+      writePos = writePos + (*frame)->length - 1;
+    }
+    else
+    {
+      writePos = writePos + (*frame)->length;
+    }
+    // Next frame
+    frame++;
+  }
+  // Through shifting we can have non-zero bits within the unused bits of the
+  // last byte. Fill them with zeroes (though not required by the standard).
+  *writePos = (*writePos >> freeBits) << freeBits;
 }

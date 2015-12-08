@@ -412,11 +412,18 @@ protected:
    */
   virtual OFCondition readSegments(DcmItem& item);
 
-  /** Write frames to given item
+  /** Write fractional frames to given item
    *  @param  dataset The item to write to, usually main dataset level
    *  @return EC_Normal if writing was successful, error otherwise
    */
-  virtual OFCondition writeFrames(DcmItem& dataset);
+  virtual OFCondition writeFractionalFrames(DcmItem& dataset);
+
+  /** Write binary frames to given item
+   *  @param  dataset The item to write to, usually main dataset level
+   *  @return EC_Normal if writing was successful, error otherwise
+   */
+  virtual OFCondition writeBinaryFrames(DcmItem& dataset);
+
 
   /** Write Segmentation Image Module
    *  @param dataset The item to write to, usually main dataset level
@@ -471,6 +478,39 @@ protected:
                                                       Uint16& cols,
                                                       Uint16& numberOfFrames,
                                                       OFString& colorModel);
+
+  /** Extracts Frame structures from the given pixel data element. Only
+   *  applicable for binary segmentations. Within the pixel data element, all
+   *  frames are packed next to each other, with the end of one frame and the
+   *  beginning of the next frame packed bit by bit next to each other. The
+   *  resulting Frames are a bit-by-bit copy of their original counterpart.
+   *  However, their first bit is aligned to the first bit/byte in the Frame,
+   *  and the unused bits in the last byte (if any) are zeroed out.
+   *  @param  pixData The pixel data to read from
+   *  @param  numFrames The number of frames to read
+   *  @param  bitsPerFrame The number of bits per frame (usually rows * columns)
+   *  @param  results The resulting frames. Memory for the frames is allocated
+   *          by the method, so the Vector can/should be empty before calling.
+   */
+  virtual void extractFrames(Uint8* pixData,
+                             const size_t numFrames,
+                             const size_t bitsPerFrame,
+                             OFVector< DcmIODTypes::Frame* >& results);
+
+  /** This is the counterpart to the extractFrames() function. It takes a number
+   *  of frames that are in binary segmentation format (i.e. "bit-packed") and
+   *  concatenates them together so the resulting memory block fits the Pixel
+   *  Data format for binary segmentations. Thus method ensure that frames
+   *  are aligned bit for bit concatenated to each other with only (if
+   *  applicable) having unused bits after the last frame.
+   *  @param frames The source frames
+   *  @param pixData The pixel data element data to be filled. Size must be
+   *         at least bitsPerFrame * number of frames.
+   *  @param bitsPerFrame Bits required per frame, usually rows * columns
+   */
+  virtual void concatFrames(OFVector< DcmIODTypes::Frame* > frames,
+                           Uint8* pixData,
+                           const size_t bitsPerFrame);
 
   /** Add frame to segmentation object.
    *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
