@@ -58,12 +58,13 @@
 /* Define the default directory where support data files reside. */
 #undef DEFAULT_SUPPORT_DATA_DIR
 
+/* Define if we are compiling with built-in (compiled-in) dictionary enabled.
+   */
+#undef ENABLE_BUILTIN_DICTIONARY
+
 /* Define if we are compiling for loading external dictionary from default
    path. */
 #undef ENABLE_EXTERNAL_DICTIONARY
-
-/* Define if we are compiling with built-in dictionary */
-#undef ENABLE_BUILTIN_DICTIONARY
 
 /* Define if we are compiling for enabling external private tag dictionary. */
 #undef ENABLE_PRIVATE_TAGS

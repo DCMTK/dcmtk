@@ -957,7 +957,7 @@ AC_ARG_ENABLE(builtin-dict,
     dnl including the populated dictionary object and not the
     dnl empty dummy dictionary in dcmdata
     DCMTK_ENABLE_BUILTIN_DICTIONARY=true
-    AC_DEFINE(ENABLE_BUILTIN_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
+    AC_DEFINE(ENABLE_BUILTIN_DICTIONARY, , [Define if we are compiling with built-in (compiled-in) dictionary enabled.])
     ;;
   *)
     AC_MSG_RESULT(no)

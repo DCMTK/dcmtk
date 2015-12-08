@@ -13620,6 +13620,9 @@ if test "${enable_builtin_dict+set}" = set; then :
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
                 DCMTK_ENABLE_BUILTIN_DICTIONARY=true
+
+$as_echo "#define ENABLE_BUILTIN_DICTIONARY /**/" >>confdefs.h
+
     ;;
   *)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -14947,8 +14950,6 @@ $as_echo "#define HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE 1" >>confdefs.h
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     fi
-
-o
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether struct pwd contains the field pw_gecos" >&5
 $as_echo_n "checking whether struct pwd contains the field pw_gecos... " >&6; }
