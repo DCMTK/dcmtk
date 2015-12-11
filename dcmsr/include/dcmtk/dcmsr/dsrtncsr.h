@@ -187,6 +187,14 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     size_t goDown();
 
+    /** @copydoc goUp()
+     */
+    size_t gotoParent();
+
+    /** @copydoc goDown()
+     */
+    size_t gotoChild();
+
     /** iterate over all nodes. Starts from current position!
      ** @param  searchIntoSub  flag indicating whether to search into sub-trees
      *                         ("deep search") or on the current level only
@@ -589,6 +597,20 @@ size_t DSRTreeNodeCursor<T>::goDown()
         }
     }
     return nodeID;
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::gotoParent()
+{
+    return goUp();
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::gotoChild()
+{
+    return goDown();
 }
 
 
