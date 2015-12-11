@@ -258,6 +258,16 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     void clearNodeCursorStack();
 
+    /** get cursor
+     ** @return reference to cursor (this object)
+     */
+    const DSRTreeNodeCursor<T> &getCursor() const;
+
+    /** set cursor to specified object
+     ** @param  cursor  object to set this cursor to
+     */
+    void setCursor(const DSRTreeNodeCursor<T> &cursor);
+
     /** set cursor to specified node.
      *  Clears the internal position list/stack and sets the position counter to 1.
      ** @param  node  node to which the cursor should be set
@@ -320,11 +330,7 @@ DSRTreeNodeCursor<T>::~DSRTreeNodeCursor()
 template<typename T>
 DSRTreeNodeCursor<T> &DSRTreeNodeCursor<T>::operator=(const DSRTreeNodeCursor<T> &cursor)
 {
-    NodeCursor = cursor.NodeCursor;
-    NodeCursorStack = cursor.NodeCursorStack;
-    Position = cursor.Position;
-    /* copy position list (operator= is not private anymore in class OFList) */
-    PositionList = cursor.PositionList;
+    setCursor(cursor);
     return *this;
 }
 
@@ -464,6 +470,24 @@ const T *DSRTreeNodeCursor<T>::getNextNode() const
     if (NodeCursor != NULL)
         node = NodeCursor->getNext();
     return node;
+}
+
+
+template<typename T>
+const DSRTreeNodeCursor<T> &DSRTreeNodeCursor<T>::getCursor() const
+{
+    return *this;
+}
+
+
+template<typename T>
+void DSRTreeNodeCursor<T>::setCursor(const DSRTreeNodeCursor<T> &cursor)
+{
+    NodeCursor = cursor.NodeCursor;
+    NodeCursorStack = cursor.NodeCursorStack;
+    Position = cursor.Position;
+    /* copy position list (operator= is not private anymore in class OFList) */
+    PositionList = cursor.PositionList;
 }
 
 
