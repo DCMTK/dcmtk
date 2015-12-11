@@ -198,7 +198,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     DSRCodedEntryValue &operator=(const DSRCodedEntryValue &codedEntryValue);
 
-    /** comparison operator.
+    /** comparison operator "equal".
      *  Two codes are equal if the code value, coding scheme designator and the (optional)
      *  coding scheme version are equal.  The code meaning is not relevant for this check.
      ** @param  codedEntryValue  code which should be compared to the current one
@@ -206,13 +206,31 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     OFBool operator==(const DSRCodedEntryValue &codedEntryValue) const;
 
-    /** comparison operator.
+    /** comparison operator "not equal".
+     *  Two codes are not equal if either the code value or the coding scheme designator
+     *  or the (optional) coding scheme version are not equal.  The code meaning is not
+     *  relevant for this check.
+     ** @param  codedEntryValue  code which should be compared to the current one
+     ** @return OFTrue if both codes are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRCodedEntryValue &codedEntryValue) const;
+
+    /** comparison operator "equal".
      *  Two codes are equal if the code value, coding scheme designator and the (optional)
      *  coding scheme version are equal.  The code meaning is not relevant for this check.
      ** @param  basicCodedEntry  code which should be compared to the current one
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
     OFBool operator==(const DSRBasicCodedEntry &basicCodedEntry) const;
+
+    /** comparison operator "not equal".
+     *  Two codes are not equal if either the code value or the coding scheme designator
+     *  or the (optional) coding scheme version are not equal.  The code meaning is not
+     *  relevant for this check.
+     ** @param  basicCodedEntry  code which should be compared to the current one
+     ** @return OFTrue if both codes are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRBasicCodedEntry &basicCodedEntry) const;
 
     /** clear all internal variables.
      *  Since an empty code is invalid the code becomes invalid afterwards.

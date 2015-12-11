@@ -95,6 +95,7 @@ OFTEST(dcmsr_compareCodedEntry)
     DSRCodedEntryValue codedEntry("121206", "DCM", "Distance");
     OFCHECK(codedEntry == DSRCodedEntryValue("121206", "DCM", "Wrong meaning"));
     OFCHECK(!(codedEntry == DSRCodedEntryValue("" /*empty*/, "DCM", "Distance")));
+    OFCHECK(codedEntry != DSRCodedEntryValue("" /*empty*/, "DCM", "Distance"));
 }
 
 

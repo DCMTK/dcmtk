@@ -188,12 +188,30 @@ OFBool DSRCodedEntryValue::operator==(const DSRCodedEntryValue &codedEntryValue)
 }
 
 
+OFBool DSRCodedEntryValue::operator!=(const DSRCodedEntryValue &codedEntryValue) const
+{
+    /* Code Meaning is not used for comparing the two codes */
+    return (CodeValue != codedEntryValue.CodeValue) ||
+           (CodingSchemeDesignator != codedEntryValue.CodingSchemeDesignator) ||
+           (CodingSchemeVersion != codedEntryValue.CodingSchemeVersion);
+}
+
+
 OFBool DSRCodedEntryValue::operator==(const DSRBasicCodedEntry &basicCodedEntry) const
 {
     /* Code Meaning is not used for comparing the two codes */
     return (CodeValue == basicCodedEntry.CodeValue) &&
            (CodingSchemeDesignator == basicCodedEntry.CodingSchemeDesignator) &&
            (CodingSchemeVersion == basicCodedEntry.CodingSchemeVersion);
+}
+
+
+OFBool DSRCodedEntryValue::operator!=(const DSRBasicCodedEntry &basicCodedEntry) const
+{
+    /* Code Meaning is not used for comparing the two codes */
+    return (CodeValue != basicCodedEntry.CodeValue) ||
+           (CodingSchemeDesignator != basicCodedEntry.CodingSchemeDesignator) ||
+           (CodingSchemeVersion != basicCodedEntry.CodingSchemeVersion);
 }
 
 
