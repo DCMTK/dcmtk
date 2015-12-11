@@ -213,6 +213,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryInStandardConte
 /// normal: a given coded entry is known as an extension of the context group
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryIsExtensionOfContextGroup;
 
+/// error: a value violates the value set constraint of a particular template row
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_ValueSetConstraintViolated;
+
 //@}
 
 

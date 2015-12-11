@@ -287,6 +287,8 @@ makeOFConditionConst(SR_EC_NonExtensibleContextGroup,           OFM_dcmsr, 28, O
 makeOFConditionConst(SR_EC_CodedEntryNotInContextGroup,         OFM_dcmsr, 29, OF_error, "Coded Entry not in Context Group");
 makeOFConditionConst(SR_EC_CodedEntryInStandardContextGroup,    OFM_dcmsr, 30, OF_ok,    "Coded Entry in Context Group (Standard)");
 makeOFConditionConst(SR_EC_CodedEntryIsExtensionOfContextGroup, OFM_dcmsr, 31, OF_ok,    "Coded Entry in Context Group (Extension)");
+makeOFConditionConst(SR_EC_ValueSetConstraintViolated,          OFM_dcmsr, 32, OF_error, "Value Set Constraint violated");
+
 
 // NOTE:
 // error codes 1000 and above are reserved for the submodule "cmr"
