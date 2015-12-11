@@ -787,3 +787,13 @@ DSRTypes::E_CodeValueType DSRCodedEntryValue::determineCodeValueType(const OFStr
         codeValueType = DSRTypes::CVT_Short;
     return codeValueType;
 }
+
+
+// output operators
+
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                  const DSRCodedEntryValue& codedEntryValue)
+{
+    codedEntryValue.print(stream, OFTrue /*printCodeValue*/, 0 /*flags*/);
+    return stream;
+}

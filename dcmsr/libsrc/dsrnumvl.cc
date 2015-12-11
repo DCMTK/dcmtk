@@ -689,3 +689,13 @@ OFCondition DSRNumericMeasurementValue::checkCurrentValue() const
     }
     return result;
 }
+
+
+// output operators
+
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                  const DSRNumericMeasurementValue &numericMeasurement)
+{
+    numericMeasurement.print(stream, 0 /*flags*/);
+    return stream;
+}

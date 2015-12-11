@@ -495,4 +495,16 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 };
 
 
+/** output stream operator for numeric measurement values.
+ *  Internally, the DSRNumericMeasurementValue::print() method is used, i.e. the output
+ *  looks like this: "3.5" (cm,UCUM[1.4],"centimeter") or "empty" (if the value is empty)
+ *  @param  stream              output stream to which the numeric measurement value is
+ *                              printed
+ *  @param  numericMeasurement  numeric measurement value to be printed
+ *  @return reference to output stream
+ */
+DCMTK_DCMSR_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                                     const DSRNumericMeasurementValue &numericMeasurement);
+
+
 #endif

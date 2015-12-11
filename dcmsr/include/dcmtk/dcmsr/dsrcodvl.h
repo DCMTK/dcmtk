@@ -728,4 +728,15 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 };
 
 
+/** output stream operator for coded entry values.
+ *  Internally, the DSRCodedEntryValue::print() method is used, i.e. the output looks
+ *  like this: (1234,99_OFFIS_DCMTK,"Code Meaning") or (cm,UCUM[1.4],"centimeter")
+ *  @param  stream           output stream to which the coded entry value is printed
+ *  @param  codedEntryValue  coded entry value to be printed
+ *  @return reference to output stream
+ */
+DCMTK_DCMSR_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                                     const DSRCodedEntryValue& codedEntryValue);
+
+
 #endif
