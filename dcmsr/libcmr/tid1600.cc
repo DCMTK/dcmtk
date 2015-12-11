@@ -45,7 +45,10 @@
 
 // conditions constants
 makeOFConditionConst(CMR_EC_NoImageLibraryGroup,                           OFM_dcmsr, 1600, OF_error, "No Image Library Group");
+makeOFConditionConst(CMR_EC_NoImageLibraryEntry,                           OFM_dcmsr, 1601, OF_error, "No Image Library Entry");
 makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors, OFM_dcmsr, 1602, OF_error, "Cannot add multiple Image Library Entry Descriptors");
+makeOFConditionConst(CMR_EC_MissingImageLibraryEntryDescriptorModality,    OFM_dcmsr, 1603, OF_error, "Missing Image Library Entry Descriptor 'Modality'");
+makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_dcmsr, 1604, OF_error, "Wrong Image Library Entry Descriptor 'Modality'");
 
 
 TID1600_ImageLibrary::TID1600_ImageLibrary()
@@ -81,7 +84,6 @@ OFCondition TID1600_ImageLibrary::addImageGroup()
     }
     return result;
 }
-
 
 
 OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
@@ -182,6 +184,131 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
         /* in case of error, make sure that memory is freed */
         DELETE_ERROR(subTree);
     }
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::getImageEntryModality(DSRCodedEntryValue &modalityCode)
+{
+    OFCondition result = CMR_EC_NoImageLibraryEntry;
+    /* go to last image library entry (if any) */
+    if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_ENTRY) > 0)
+    {
+        /* get value of TID 1602 (Image Library Entry Descriptors) Row 1 */
+        if ((gotoNamedChildNode(CODE_DCM_Modality, OFFalse /*searchIntoSub*/) > 0))
+        {
+            modalityCode = getCurrentContentItem().getCodeValue();
+            result = EC_Normal;
+        } else
+            result = CMR_EC_MissingImageLibraryEntryDescriptorModality;
+    }
+    /* in case of error, clear the result variable */
+    if (result.bad())
+        modalityCode.clear();
+    return result;
+}
+
+
+// set methods
+
+OFCondition TID1600_ImageLibrary::setPETImageRadionuclide(const CID4020_PETRadionuclide &radionuclide,
+                                                          const OFBool check)
+{
+    /* remember current node */
+    const DSRDocumentTreeNodeCursor cursor(getCursor());
+    /* go to image library entry and check for expected modality */
+    OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
+    /* set content item value (and add a new content item if needed) */
+    if (result.good())
+        result = setCodeContentItemFromValue(CODE_SRT_Radionuclide, radionuclide, "TID 1607 - Row 1", check);
+    /* in case of error, reset cursor to stored node */
+    if (result.bad())
+        setCursor(cursor);
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalAgent(const CID4021_PETRadiopharmaceutical &agent,
+                                                                      const OFBool check)
+{
+    /* remember current node */
+    const DSRDocumentTreeNodeCursor cursor(getCursor());
+    /* go to image library entry and check for expected modality */
+    OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
+    /* set content item value (and add a new content item if needed) */
+    if (result.good())
+        result = setCodeContentItemFromValue(CODE_SRT_RadiopharmaceuticalAgent, agent, "TID 1607 - Row 2", check);
+    /* in case of error, reset cursor to stored node */
+    if (result.bad())
+        setCursor(cursor);
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStartDateTime(const OFString &dateTime,
+                                                                              const OFBool check)
+{
+    /* remember current node */
+    const DSRDocumentTreeNodeCursor cursor(getCursor());
+    /* go to image library entry and check for expected modality */
+    OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
+    /* set content item value (and add a new content item if needed) */
+    if (result.good())
+        result = setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, dateTime, "TID 1607 - Row 4", check);
+    /* in case of error, reset cursor to stored node */
+    if (result.bad())
+        setCursor(cursor);
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStopDateTime(const OFString &dateTime,
+                                                                             const OFBool check)
+{
+    /* remember current node */
+    const DSRDocumentTreeNodeCursor cursor(getCursor());
+    /* go to image library entry and check for expected modality */
+    OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
+    /* set content item value (and add a new content item if needed) */
+    if (result.good())
+        result = setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, dateTime, "TID 1607 - Row 5", check);
+    /* in case of error, reset cursor to stored node */
+    if (result.bad())
+        setCursor(cursor);
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalVolume(const DSRNumericMeasurementValue &volume,
+                                                                       const OFBool check)
+{
+    /* remember current node */
+    const DSRDocumentTreeNodeCursor cursor(getCursor());
+    /* go to image library entry and check for expected modality */
+    OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
+    /* set content item value (and add a new content item if needed) */
+    if (result.good())
+        result = setNumericContentItemFromValue(CODE_DCM_RadiopharmaceuticalVolume, volume, CODE_UCUM_Cm3, "TID 1607 - Row 6", check);
+    /* in case of error, reset cursor to stored node */
+    if (result.bad())
+        setCursor(cursor);
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setPETImageRadionuclideTotalDose(const DSRNumericMeasurementValue &totalDose,
+                                                                   const OFBool check)
+{
+    /* remember current node */
+    const DSRDocumentTreeNodeCursor cursor(getCursor());
+    /* go to image library entry and check for expected modality */
+    OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
+    /* set content item value (and add a new content item if needed) */
+    if (result.good())
+        result = setNumericContentItemFromValue(CODE_DCM_RadionuclideTotalDose, totalDose, CODE_UCUM_Bq, "TID 1607 - Row 7", check);
+    /* in case of error, reset cursor to stored node */
+    if (result.bad())
+        setCursor(cursor);
     return result;
 }
 
@@ -391,7 +518,7 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
     OFCondition result = EC_Normal;
     /* TID 1605 (Image Library Entry Descriptors for CT) Row 1 */
     DcmSequenceOfItems *ctAcquisitionTypeSequence = NULL;
-    /* - tbd: only check in functional groups sequences? */
+    /* - tbd: only check in functional groups sequences? might use "dcmfg" for this purpose */
     if (dataset.findAndGetSequence(DCM_CTAcquisitionTypeSequence, ctAcquisitionTypeSequence, OFTrue /*searchIntoSub*/).good())
     {
         DcmItem *item = ctAcquisitionTypeSequence->getItem(0);
@@ -416,7 +543,7 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
     }
     /* TID 1605 (Image Library Entry Descriptors for CT) Row 2 */
     DcmSequenceOfItems *ctReconstructionSequence = NULL;
-    /* - tbd: only check in functional groups sequences? */
+    /* - tbd: only check in functional groups sequences? might use "dcmfg" for this purpose */
     if (dataset.findAndGetSequence(DCM_CTReconstructionSequence, ctReconstructionSequence, OFTrue /*searchIntoSub*/).good())
     {
         DcmItem *item = ctReconstructionSequence->getItem(0);
@@ -484,15 +611,15 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 4 */
             CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, "TID 1607 - Row 4", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 5 */
-            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, "TID 1607 - Row 4b", check));
+            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, "TID 1607 - Row 5", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 6 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_Cm3, "TID 1607 - Row 5", check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_Cm3, "TID 1607 - Row 6", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 7 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideTotalDose, 0 /*pos*/, CODE_DCM_RadionuclideTotalDose, CODE_UCUM_Bq, "TID 1607 - Row 6", check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideTotalDose, 0 /*pos*/, CODE_DCM_RadionuclideTotalDose, CODE_UCUM_Bq, "TID 1607 - Row 7", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 8 */
-            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, "TID 1607 - Row 7", check));
+            CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, "TID 1607 - Row 8", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 9 */
-            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SRT_RouteOfAdministration, "TID 1607 - Row 8", check));
+            CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SRT_RouteOfAdministration, "TID 1607 - Row 9", check));
         }
     }
     /* TID 1607 (Image Library Entry Descriptors for PET) Row 10 to 11
@@ -505,6 +632,150 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
      * - contained in TID 15101 (NM/PET Protocol Context), i.e. available from Modality Worklist, or
      * - tbd: in TID 3470 (NM/PET Acquisition Context), i.e. from the Acquisition Context Module
      */
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::goAndCheckImageLibraryEntry(const DSRCodedEntryValue &modalityCode)
+{
+    OFCondition result = CMR_EC_NoImageLibraryEntry;
+    /* go to last image library entry (if any) */
+    if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_ENTRY) > 0)
+    {
+        /* check whether TID 1602 (Image Library Entry Descriptors) Row 1 has correct value */
+        if ((gotoNamedChildNode(CODE_DCM_Modality, OFFalse /*searchIntoSub*/) > 0) &&
+            (getCurrentContentItem().getCodeValue() == modalityCode))
+        {
+            result = EC_Normal;
+        } else
+            result = CMR_EC_WrongImageLibraryEntryDescriptorModality;
+    }
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setStringContentItemFromValue(const E_ValueType valueType,
+                                                                const DSRCodedEntryValue &conceptName,
+                                                                const OFString &stringValue,
+                                                                const OFString &annotationText,
+                                                                const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* check concept name and coded entry value */
+    if (conceptName.isValid())
+    {
+        if (!stringValue.empty())
+        {
+            /* check whether content item is already present.
+             * (we assume that the content item we are searching for is a successor of the current one)
+             */
+            if (gotoNextNamedNode(conceptName, OFFalse /*searchIntoSub*/) == 0)
+            {
+                CHECK_RESULT(addContentItem(RT_hasAcqContext, valueType, conceptName));
+            } else {
+                /* make sure that the value type of the existing content item is correct */
+                if (getCurrentContentItem().getValueType() == valueType)
+                {
+                    DCMSR_CMR_DEBUG("Replacing value of '" << conceptName.getCodeMeaning()
+                        << "' content item (" << annotationText << ") with \"" << stringValue << "\"");
+                } else {
+                    DCMSR_CMR_WARN("Cannot replace value of '" << conceptName.getCodeMeaning()
+                        << "' content item (" << annotationText << ") ... wrong value type");
+                    result = SR_EC_InvalidContentItem;
+                }
+            }
+            CHECK_RESULT(getCurrentContentItem().setStringValue(stringValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText(annotationText));
+        } else
+            result = SR_EC_InvalidValue;
+    } else
+        result = SR_EC_InvalidConceptName;
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setCodeContentItemFromValue(const DSRCodedEntryValue &conceptName,
+                                                              const DSRCodedEntryValue &codeValue,
+                                                              const OFString &annotationText,
+                                                              const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* check concept name and coded entry value */
+    if (conceptName.isValid())
+    {
+        if (codeValue.isValid())
+        {
+            /* check whether content item is already present.
+             * (we assume that the content item we are searching for is a successor of the current one)
+             */
+            if (gotoNextNamedNode(conceptName, OFFalse /*searchIntoSub*/) == 0)
+            {
+                CHECK_RESULT(addContentItem(RT_hasAcqContext, VT_Code, conceptName));
+            } else {
+                /* make sure that the value type of the existing content item is correct */
+                if (getCurrentContentItem().getValueType() == VT_Code)
+                {
+                    DCMSR_CMR_DEBUG("Replacing value of '" << conceptName.getCodeMeaning()
+                        << "' content item (" << annotationText << ") with " << codeValue);
+                } else {
+                    DCMSR_CMR_WARN("Cannot replace value of '" << conceptName.getCodeMeaning()
+                        << "' content item (" << annotationText << ") ... wrong value type");
+                    result = SR_EC_InvalidContentItem;
+                }
+            }
+            CHECK_RESULT(getCurrentContentItem().setCodeValue(codeValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText(annotationText));
+        } else
+            result = SR_EC_InvalidValue;
+    } else
+        result = SR_EC_InvalidConceptName;
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::setNumericContentItemFromValue(const DSRCodedEntryValue &conceptName,
+                                                                 const DSRNumericMeasurementValue &numericValue,
+                                                                 const DSRCodedEntryValue &measurementUnit,
+                                                                 const OFString &annotationText,
+                                                                 const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* check concept name and coded entry value */
+    if (conceptName.isValid())
+    {
+        if (numericValue.isValid())
+        {
+            /* check whether content item is already present.
+             * (we assume that the content item we are searching for is a successor of the current one)
+             */
+            if (gotoNextNamedNode(conceptName, OFFalse /*searchIntoSub*/) == 0)
+            {
+                CHECK_RESULT(addContentItem(RT_hasAcqContext, VT_Num, conceptName));
+            } else {
+                /* make sure that the value type of the existing content item is correct */
+                if (getCurrentContentItem().getValueType() == VT_Num)
+                {
+                    DCMSR_CMR_DEBUG("Replacing value of '" << conceptName.getCodeMeaning()
+                        << "' content item (" << annotationText << ") with " << numericValue);
+                } else {
+                    DCMSR_CMR_WARN("Cannot replace value of '" << conceptName.getCodeMeaning()
+                        << "' content item (" << annotationText << ") ... wrong value type");
+                    result = SR_EC_InvalidContentItem;
+                }
+            }
+            /* check whether measurement unit meets the template constraint */
+            if (result.good() && !measurementUnit.isEmpty() && (numericValue.getMeasurementUnit() != measurementUnit))
+            {
+                DCMSR_CMR_WARN("Wrong measurement unit for '" << conceptName.getCodeMeaning()
+                    << "' content item (" << annotationText << ")");
+                result = SR_EC_ValueSetConstraintViolated;
+            }
+            CHECK_RESULT(getCurrentContentItem().setNumericValue(numericValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText(annotationText));
+        } else
+            result = SR_EC_InvalidValue;
+    } else
+        result = SR_EC_InvalidConceptName;
     return result;
 }
 

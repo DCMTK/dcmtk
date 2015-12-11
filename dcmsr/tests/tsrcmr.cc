@@ -28,11 +28,13 @@
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
+#include "dcmtk/dcmsr/codes/ucum.h"
 #include "dcmtk/dcmsr/cmr/init.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/cmr/cid29e.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
 #include "dcmtk/dcmsr/cmr/cid244e.h"
+#include "dcmtk/dcmsr/cmr/cid4020.h"
 #include "dcmtk/dcmsr/cmr/cid4031e.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/cid10013e.h"
@@ -268,14 +270,24 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     OFCHECK(library.addImageEntryDescriptors(dataset1).good());
     OFCHECK(library.addImageGroup().good());
     OFCHECK(library.addImageEntry(dataset2, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(library.setPETImageRadionuclide(CID4020_PETRadionuclide::_18_Fluorine).good());
+    OFCHECK(library.setPETImageRadiopharmaceuticalAgent(CID4021_PETRadiopharmaceutical::Fluorodeoxyglucose_F18).good());
+    OFCHECK(library.setPETImageRadiopharmaceuticalStartDateTime("20151212").good());
+    OFCHECK(library.setPETImageRadiopharmaceuticalVolume(DSRNumericMeasurementValue("99.9", CODE_UCUM_Cm3)).good());
+    OFCHECK(library.setPETImageRadionuclideTotalDose(DSRNumericMeasurementValue("9999", CODE_UCUM_Bq)).good());
     OFCHECK(library.addImageEntry(dataset1, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(library.setPETImageRadionuclide(CID4020_PETRadionuclide::_18_Fluorine).bad());
     OFCHECK(library.addImageEntry(dataset3, TID1600_ImageLibrary::withoutDescriptors).good());
     OFCHECK(library.addImageEntry(dataset4, TID1600_ImageLibrary::withAllDescriptors).good());
     OFCHECK(library.addImageEntryDescriptors(dataset3).good());
+    /* check modality code of most recently added entry */
+    DSRCodedEntryValue modality;
+    OFCHECK(library.getImageEntryModality(modality).good());
+    OFCHECK(modality == CODE_DCM_DigitalRadiography);
     /* try to add another invocation of TID 1602 */
     OFCHECK(library.addImageEntryDescriptors(dataset4).bad());
     /* check number of expected content items */
-    OFCHECK_EQUAL(library.countNodes(), 58);
+    OFCHECK_EQUAL(library.countNodes(), 61);
 
     /* output content of the tree (in debug mode only) */
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))

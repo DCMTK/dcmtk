@@ -18,6 +18,8 @@
 #include "dcmtk/dcmsr/dsrstpl.h"
 
 #include "dcmtk/dcmsr/cmr/define.h"
+#include "dcmtk/dcmsr/cmr/cid4020.h"
+#include "dcmtk/dcmsr/cmr/cid4021.h"
 
 
 /*-----------------------*
@@ -30,8 +32,14 @@
 
 /// error: there is no image library group to add image entries to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryGroup;
+/// error: there is no image library entry to add descriptors to
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntry;
 /// error: cannot add multiple image library entry descriptors (see TID 1600 Row 3)
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors;
+/// error: the current (most recently added) image library entry has no modality descriptor
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_MissingImageLibraryEntryDescriptorModality;
+/// error: the current (most recently added) image library entry has the wrong modality descriptor
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_WrongImageLibraryEntryDescriptorModality;
 
 //@}
 
@@ -96,6 +104,87 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      */
     OFCondition addImageEntryDescriptors(DcmItem &dataset,
                                          const OFBool check = OFTrue);
+
+    /** go to the most recently added image library entry and get the value of the
+     *  descriptor 'Modality' (TID 1602 - Row 1)
+     ** @param  modalityCode  reference to coded entry that will store the result
+     *                        (cleared if an error occurs)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getImageEntryModality(DSRCodedEntryValue &modalityCode);
+
+  // --- set modality-specific content manually ---
+
+    /** set the value of the descriptor 'Radionuclide' (TID 1607 - Row 1) for the current
+     *  (most recently added) PET image library entry to the given value.
+     *  If the content item already exists, its value is overwritten.  Otherwise, a new
+     *  content item is added to the end of the list of image library entry descriptors.
+     ** @param  radionuclide  coded entry to be set (from CID 4020 - PET Radionuclide)
+     *  @param  check         if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPETImageRadionuclide(const CID4020_PETRadionuclide &radionuclide,
+                                        const OFBool check = OFTrue);
+
+    /** set the value of the descriptor 'Radiopharmaceutical Agent' (TID 1607 - Row 2)
+     *  for the current (most recently added) PET image library entry to the given value.
+     *  If the content item already exists, its value is overwritten.  Otherwise, a new
+     *  content item is added to the end of the list of image library entry descriptors.
+     ** @param  agent  coded entry to be set (from CID 4021 - PET Radiopharmaceutical)
+     *  @param  check  if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPETImageRadiopharmaceuticalAgent(const CID4021_PETRadiopharmaceutical &agent,
+                                                    const OFBool check = OFTrue);
+
+    /** set the value of the descriptor 'Radiopharmaceutical Start Date Time' (TID 1607 -
+     *  Row 4) for the current (most recently added) PET image library entry to the given
+     *  value.
+     *  If the content item already exists, its value is overwritten.  Otherwise, a new
+     *  content item is added to the end of the list of image library entry descriptors.
+     ** @param  dateTime  date/time value to be set (associated DICOM VR=DT)
+     *  @param  check     if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPETImageRadiopharmaceuticalStartDateTime(const OFString &dateTime,
+                                                            const OFBool check = OFTrue);
+
+    /** set the value of the descriptor 'Radiopharmaceutical Stop Date Time' (TID 1607 -
+     *  Row 5) for the current (most recently added) PET image library entry to the given
+     *  value.
+     *  If the content item already exists, its value is overwritten.  Otherwise, a new
+     *  content item is added to the end of the list of image library entry descriptors.
+     ** @param  dateTime  date/time value to be set (associated DICOM VR=DT)
+     *  @param  check     if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPETImageRadiopharmaceuticalStopDateTime(const OFString &dateTime,
+                                                           const OFBool check = OFTrue);
+
+    /** set the value of the descriptor 'Radiopharmaceutical Volume' (TID 1607 - Row 6)
+     *  for the current (most recently added) PET image library entry to the given value.
+     *  If the content item already exists, its value is overwritten.  Otherwise, a new
+     *  content item is added to the end of the list of image library entry descriptors.
+     ** @param  volume  numeric measurement value to be set (measurement unit should be
+     *                  CODE_UCUM_Cm3 or a coded entry that is identical to this)
+     *  @param  check   if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPETImageRadiopharmaceuticalVolume(const DSRNumericMeasurementValue &volume,
+                                                     const OFBool check = OFTrue);
+
+    /** set the value of the descriptor 'Radiopharmaceutical Total Dose' (TID 1607 -
+     *  Row 7) for the current (most recently added) PET image library entry to the given
+     *  value.
+     *  If the content item already exists, its value is overwritten.  Otherwise, a new
+     *  content item is added to the end of the list of image library entry descriptors.
+     ** @param  totalDose  numeric measurement value to be set (measurement unit should
+     *                     be CODE_UCUM_Bq or a coded entry that is identical to this)
+     *  @param  check      if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPETImageRadionuclideTotalDose(const DSRNumericMeasurementValue &totalDose,
+                                                 const OFBool check = OFTrue);
 
 
   protected:
@@ -169,7 +258,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                 const OFBool check);
 
     /** add image library entry descriptors for PET (TID 1607).
-     *  @note The template rows 9 to 14 are not yet supported by this method.
+     *  @note The template rows 10 to 15 are not yet supported by this method.
      ** @param  tree     subtree to which the content items should be added
      *  @param  dataset  DICOM dataset from which the values should be copied
      *  @param  check    if enabled, check values for validity before setting them
@@ -178,6 +267,62 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
     OFCondition addPositronEmissionTomographyDescriptors(DSRDocumentSubTree &tree,
                                                          DcmItem &dataset,
                                                          const OFBool check);
+
+    /** go to the most recently added image library entry and check the value of the
+     *  descriptor 'Modality' (TID 1602 - Row 1)
+     ** @param  modalityCode  coded entry (from CID 29) associated with the modality.
+     *                        Used to check the image library entry.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition goAndCheckImageLibraryEntry(const DSRCodedEntryValue &modalityCode);
+
+    /** search for a particular content item (given by the concept name and value type)
+     *  and set its string value.  If not found, a new content item is added to the
+     *  current position and the value is set.
+     ** @param  valueType       value type of the content item to be set/added
+     *  @param  conceptName     concept name of the content item to be set/added
+     *  @param  stringValue     string value of the content item to be set/added
+     *  @param  annotationText  text used to annotate the content item (might be empty)
+     *  @param  check           if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setStringContentItemFromValue(const E_ValueType valueType,
+                                              const DSRCodedEntryValue &conceptName,
+                                              const OFString &stringValue,
+                                              const OFString &annotationText,
+                                              const OFBool check);
+
+    /** search for a particular CODE content item (given by the concept name) and set its
+     *  coded entry value.  If not found, a new content item is added to the current
+     *  position and the value is set.
+     ** @param  conceptName     concept name of the content item to be set/added
+     *  @param  codeValue       coded entry value of the content item to be set/added
+     *  @param  annotationText  text used to annotate the content item (might be empty)
+     *  @param  check           if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setCodeContentItemFromValue(const DSRCodedEntryValue &conceptName,
+                                            const DSRCodedEntryValue &codeValue,
+                                            const OFString &annotationText,
+                                            const OFBool check);
+
+    /** search for a particular NUM content item (given by the concept name) and set its
+     *  numeric measurement value.  If not found, a new content item is added to the
+     *  current position and the value is set.
+     ** @param  conceptName      concept name of the content item to be set/added
+     *  @param  numericValue     numeric measurement value of the content item to be
+     *                           set/added
+     *  @param  measurementUnit  measurement unit that should be used by 'numericValue'
+     *                           (optional, might be empty).  Used for checking purposes.
+     *  @param  annotationText   text used to annotate the content item (might be empty)
+     *  @param  check            if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setNumericContentItemFromValue(const DSRCodedEntryValue &conceptName,
+                                               const DSRNumericMeasurementValue &numericValue,
+                                               const DSRCodedEntryValue &measurementUnit,
+                                               const OFString &annotationText,
+                                               const OFBool check);
 
   // --- static helper functions ---
 
@@ -204,7 +349,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                        const OFString &annotationText,
                                                        const OFBool check);
 
-    /** add a content item with a coded entry value copied from the given dataset.
+    /** add a CODE content item with a coded entry value copied from the given dataset.
      *  The content item is only created and added to the subtree if the specified code
      *  sequence is present in the 'dataset' and its value is valid (not empty).
      ** @param  tree            subtree to which the content items should be added
@@ -223,7 +368,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                      const OFString &annotationText,
                                                      const OFBool check);
 
-    /** add a content item with a numeric value copied from the given dataset.
+    /** add a NUM content item with a numeric value copied from the given dataset.
      *  The content item is only created and added to the subtree if the specified data
      *  element is present in the 'dataset' and its value (retrieved as a string) is not
      *  empty.
@@ -247,7 +392,6 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                         const DSRCodedEntryValue &measurementUnit,
                                                         const OFString &annotationText,
                                                         const OFBool check);
-
 };
 
 
