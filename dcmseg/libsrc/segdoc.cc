@@ -943,7 +943,7 @@ OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
 {
-  OFCondition rresult;
+  OFCondition result;
   Uint16 rows,cols;
   rows = cols = 0;
   getImagePixel().getRows(rows);
@@ -956,7 +956,9 @@ OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
   memset(pixdata, 0, numBytes);
   // Fill Pixel Data Element
   concatFrames(m_Frames, pixdata, rows*cols);
-  return dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, numBytes, OFTrue);
+  result = dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, numBytes, OFTrue);
+  delete [] pixdata;
+  return result;
 }
 
 
@@ -1294,7 +1296,7 @@ void DcmSegmentation::extractFrames(Uint8* pixData,
   // If the number of bits is not dividable by 8, we need part of an extra
   // byte in the end. Since we like to set the unused bits to 0 in such a last
   // byte to 0, remember the number.
-  size_t overlapBits = (8 - (bitsPerFrame % 8) % 8);
+  size_t overlapBits = (8 - (bitsPerFrame % 8)) % 8;
   // Add an extra byte if we we fill a partial byte in the end
   if (overlapBits != 0) frameLengthBytes++;
   // Points to current reading position within pixeldata
@@ -1336,7 +1338,9 @@ void DcmSegmentation::extractFrames(Uint8* pixData,
 }
 
 
-void DcmSegmentation::concatFrames(OFVector< DcmIODTypes::Frame* > frames, Uint8* pixData, const size_t bitsPerFrame)
+void DcmSegmentation::concatFrames(OFVector< DcmIODTypes::Frame* > frames,
+                                   Uint8* pixData,
+                                   const size_t bitsPerFrame)
 {
   // Writing position within the pixData memory
   Uint8 *writePos = pixData;
@@ -1377,5 +1381,8 @@ void DcmSegmentation::concatFrames(OFVector< DcmIODTypes::Frame* > frames, Uint8
   }
   // Through shifting we can have non-zero bits within the unused bits of the
   // last byte. Fill them with zeroes (though not required by the standard).
-  *writePos = (*writePos >> freeBits) << freeBits;
+  if (freeBits > 0)
+  {
+    *writePos = (*writePos >> freeBits) << freeBits;
+  }
 }
