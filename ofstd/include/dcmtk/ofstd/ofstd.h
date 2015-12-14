@@ -30,6 +30,7 @@
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
 #include "dcmtk/ofstd/oftraits.h"   /* for OFenable_if, ... */
 #include "dcmtk/ofstd/ofcond.h"     /* for OFCondition */
+#include "dcmtk/ofstd/oflimits.h"   /* for OFnumeric_limits<T>::max() */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -879,15 +880,60 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static long getProcessID();
 
-     /** check whether the addition of two 32-bit integers yields in an overflow
+    /** check whether the addition of two 32-bit integers yields in an overflow
      *  @param summand1 first integer value to be added
      *  @param summand2 second integer value to be added
      *  @return OFTrue if an overflow occurred during the addition, OFFalse otherwise
      */
     static inline OFBool check32BitAddOverflow(const Uint32 summand1,
                                                const Uint32 summand2)
+     {
+       return (0xffffffff - summand1 < summand2);
+     }
+
+    /** check whether subtraction is safe (i.e. no underflow occurs) and if so,
+     *  perform it (i.e. compute minuend-subtrahend=difference). Only works for
+     *  unsigned types.
+     *  @param minuend number to subtract from
+     *  @param subtrahend number to subtract from minuend
+     *  @param difference difference, if subraction is safe, otherwise the
+     *    parameter value is not touched by the function
+     *  @return OFTrue if subtraction is safe and could be performed, OFFalse
+     *   otherwise
+     */
+    template <typename T>
+    static OFBool DCMTK_OFSTD_EXPORT
+    safeSubtract(T minuend, T subtrahend, T& difference)
     {
-      return (0xffffffff - summand1 < summand2);
+      assert(!OFnumeric_limits<T>::is_signed);
+      if (minuend < subtrahend) {
+        return OFFalse;
+      } else {
+        difference = minuend - subtrahend;
+        return OFTrue;
+      }
+    }
+
+    /** check whether addition is safe (i.e. no overflow occurs) and if so,
+     *  perform it (i.e. compute a+b=sum). Only works for unsigned types.
+     *  @param a first number to add
+     *  @param b second number to add
+     *  @param sum resulting sum of both numbers, if addition is safe, otherwise
+     *    parameter value is not touched by the function
+     *  @return OFTrue if addition is safe and could be performed, OFFalse
+     *    otherwise
+     */
+    template <typename T>
+    static OFBool DCMTK_OFSTD_EXPORT
+    safeAdd(T a, T b, T& sum)
+    {
+      assert(!OFnumeric_limits<T>::is_signed);
+      if (OFnumeric_limits<T>::max() - a < b) {
+        return OFFalse;
+      } else {
+        sum = a + b;
+        return OFTrue;
+      }
     }
 
     /** Thread-safe version of gethostbyname.

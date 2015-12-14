@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -69,6 +69,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"  // for OFStandard::safeSubtract() and safeAdd()
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/dcmnet/lst.h"
@@ -109,6 +110,9 @@ static OFCondition
 makeLengthError(const char *pdu, unsigned long bufSize, unsigned long minSize = 0,
         unsigned long length = 0);
 
+static OFCondition
+makeUnderflowError(const char *pdu, unsigned long minuend, unsigned long subtrahend);
+
 /* parseAssociate
 **
 ** Purpose:
@@ -119,7 +123,7 @@ makeLengthError(const char *pdu, unsigned long bufSize, unsigned long minSize = 
 **      buf             Buffer holding the PDU in the stream format
 **      pduLength       Length of the buffer
 **      assoc           The Associate PDU to be extracted
-**                      (returend to the caller)
+**                      (returned to the caller)
 **
 ** Return Values:
 **
@@ -236,6 +240,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             DCMNET_TRACE("Successfully parsed Presentation Context");
             break;
         case DUL_TYPEUSERINFO:
+            // parse user info, which can contain several sub-items like User
+            // Identity Negotiation or SOP Class Extended Negotiation
             cond = parseUserInfo(&assoc->userInfo, buf, &itemLength, assoc->type, pduLength);
             if (cond.bad())
                 return cond;
@@ -246,7 +252,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
         default:
             cond = parseDummy(buf, &itemLength, pduLength);
             buf += itemLength;
-            pduLength -= itemLength;
+            if (!OFStandard::safeSubtract(pduLength, itemLength, pduLength))
+              return makeUnderflowError("unknown item type", pduLength, itemLength);
             break;
         }
     }
@@ -405,7 +412,8 @@ parsePresentationContext(unsigned char type,
             default:
                 cond = parseDummy(buf, &length, presentationLength);
                 buf += length;
-                presentationLength -= length;
+                if (!OFStandard::safeSubtract(presentationLength, length, presentationLength))
+                  return makeUnderflowError("unknown presentation context type", presentationLength, length);
                 break;
             }
         }
@@ -440,7 +448,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
               unsigned char *buf,
               unsigned long *itemLength,
               unsigned char typeRQorAC,
-              unsigned long availData)
+              unsigned long availData /* bytes left for in this PDU */)
 {
     unsigned short userLength;
     unsigned long length;
@@ -449,25 +457,34 @@ parseUserInfo(DUL_USERINFO * userInfo,
     SOPClassExtendedNegotiationSubItem *extNeg = NULL;
     UserIdentityNegotiationSubItem *usrIdent = NULL;
 
-    // The minimum allowed size is 4 byte, else we read past the buffer end
+    // minimum allowed size is 4 byte (case where the length of the user data is 0),
+    // else we read past the buffer end
     if (availData < 4)
         return makeLengthError("user info", availData, 4);
 
+    // skip item type (50H) field
     userInfo->type = *buf++;
+    // skip unused ("reserved") field
     userInfo->rsv1 = *buf++;
+    // get and remeber announced length of user data
     EXTRACT_SHORT_BIG(buf, userInfo->length);
+    // .. and skip over the two length field bytes
     buf += 2;
 
+    // userLength contains announced length of full user item structure,
+    // will be used here to count down the available data later
     userLength = userInfo->length;
+    // itemLength contains full length of the user item including the 4 bytes extra header (type, reserved + 2 for length)
     *itemLength = userLength + 4;
 
-    // Does this item claim to be larger than the available data?
-    if (availData - 4 < userLength)
+    // does this item claim to be larger than the available data?
+    if (availData < *itemLength)
         return makeLengthError("user info", availData, 0, userLength);
 
     DCMNET_TRACE("Parsing user info field ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)userInfo->type
             << STD_NAMESPACE dec << "), Length: " << (unsigned long)userInfo->length);
+    // parse through different types of user items as long as we have data
     while (userLength > 0) {
         DCMNET_TRACE("Parsing remaining " << (long)userLength << " bytes of User Information" << OFendl
                 << "Next item type: "
@@ -493,7 +510,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
         case DUL_TYPEASYNCOPERATIONS:
             cond = parseDummy(buf, &length, userLength);
             buf += length;
-            userLength -= (unsigned short) length;
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+              return makeLengthError("asynchronous operation user item type", userLength, length);
             break;
         case DUL_TYPESCUSCPROLE:
             role = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
@@ -545,9 +563,14 @@ parseUserInfo(DUL_USERINFO * userInfo,
           userLength -= (unsigned short) length;
           break;
         default:
-            cond = parseDummy(buf, &length, userLength);
+            // we hit an unknown user item that is not defined in the standard
+            // or still unknown to DCMTK
+            cond = parseDummy(buf, &length /* returns bytes "handled" by parseDummy */, userLength /* data available in bytes for user item */);
+            // skip the bytes read
             buf += length;
-            userLength -= (unsigned short) length;
+            // subtract bytes of parsed data from available data bytes
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(unsigned short, length), userLength))
+              return makeUnderflowError("unknown user item", userLength, length);
             break;
         }
     }
@@ -604,8 +627,9 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 **      User Length
 **
 ** Parameter Dictionary:
-**      buf             The buffer that is to be parsed
-**      itemLength      Length of structure extracted.
+**      buf             The buffer that is to be parsed (input/output value)
+**      itemLength      Length of structure extracted (output value)
+*       availData       Number of bytes announced to be available for this sub item (input value)
 **
 ** Return Values:
 **
@@ -617,23 +641,26 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 static OFCondition
 parseDummy(unsigned char *buf, unsigned long *itemLength, unsigned long availData)
 {
-    unsigned short
-        userLength;
-
     // Is there enough data for the length field?
     if (availData < 4)
         return makeLengthError("dummy item", availData, 4);
 
+    // Get announced length of this sub-item and skip over the bytes read
+    // 1 byte item-type (e.g. 58H for User Identity Negotiation), 1 byte reserved,
+    // and 2 bytes length field
+    unsigned short userLength;
     buf++;
     buf++;
     EXTRACT_SHORT_BIG(buf, userLength);
     buf += 2;
 
+    // Return full length (announced + 4 extra bytes)
+    *itemLength = userLength + 4;
+
     // Is there less data than the length field claims there is?
     if (availData - 4 < userLength)
         return makeLengthError("dummy item", availData, 0, userLength);
 
-    *itemLength = userLength + 4;
     return EC_Normal;
 }
 
@@ -682,8 +709,11 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
     if (role->length - 4 < UIDLength)
         return makeLengthError("SCU-SCP role list UID", role->length, 0, UIDLength);
 
-    (void) memcpy(role->SOPClassUID, buf, UIDLength);
-    role->SOPClassUID[UIDLength] = '\0';
+    OFStandard::strlcpy(role->SOPClassUID, (char*)buf, sizeof(role->SOPClassUID));
+    if (UIDLength > sizeof(role->SOPClassUID))
+    {
+      DCMNET_WARN("Provided role SOP Class UID " << role->SOPClassUID << " is shorter than its announced length " << UIDLength << " (ignored)");
+    }
     buf += UIDLength;
     role->SCURole = *buf++;
     role->SCPRole = *buf++;
@@ -705,7 +735,6 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 ** Return Values:
 **
 */
-
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
                 unsigned long *length, unsigned long availData)
@@ -794,6 +823,31 @@ makeLengthError(const char *pdu, unsigned long bufSize, unsigned long minSize,
     OFSTRINGSTREAM_FREESTR(tmpString)
     return ret;
 }
+
+/* makeUnderflowError
+ *
+ * This function is used to generate the OFCondition code if an underflow
+ * computation has been detected.
+ *
+ * @param pdu The name of the field or PDU which caused the invalid computation
+ * @param minuend The field (probably length) subtracted from
+ * @param subtrahend The number subtracted from minuend
+ */
+static OFCondition
+makeUnderflowError(const char *pdu, unsigned long minuend,
+        unsigned long subtrahend)
+{
+  OFStringStream stream;
+  stream << "DUL Illegal " << pdu << ". Got " << minuend << " bytes of data and told to subtrat " << subtrahend << " bytes of data";
+  stream << "." << OFStringStream_ends;
+
+  OFCondition ret;
+  OFSTRINGSTREAM_GETSTR(stream, tmpString)
+  ret = makeDcmnetCondition(DULC_INCORRECTBUFFERLENGTH, OF_error, tmpString);
+  OFSTRINGSTREAM_FREESTR(tmpString)
+  return ret;
+}
+
 
 /* trim_trailing_spaces
 **

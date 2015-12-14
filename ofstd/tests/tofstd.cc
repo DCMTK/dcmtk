@@ -256,3 +256,40 @@ OFTEST(ofstd_OFStandard_removeRootDirFromPathname)
     OFCHECK_EQUAL(result.getCharPointer(), nullPtr);
     OFCHECK(OFStandard::removeRootDirFromPathname(result, nullPtr, nullPtr).good());
 }
+
+
+OFTEST(ofstd_safeSubtractAndAdd)
+{
+  // --------------- Subtraction ----------------
+
+  unsigned int a = 1;
+  unsigned int b = 2;
+  // check whether underflow occurs (it should)
+  OFCHECK(OFStandard::safeSubtract(a, b, a) == OFFalse);
+  // check whether a has not been modified
+  OFCHECK_EQUAL(a, 1);
+
+  a = OFnumeric_limits<unsigned int>::max();
+  b = OFnumeric_limits<unsigned int>::max()-1;
+  // check whether no underflow occured (it shouldnt)
+  OFCHECK(OFStandard::safeSubtract(a, b, a) == OFTrue);
+  // check whether the result a was computed as expected
+  OFCHECK_EQUAL(a, 1);
+
+  // --------------- Addition ----------------
+
+  a = OFnumeric_limits<unsigned int>::max()-1;
+  b = OFnumeric_limits<unsigned int>::max()-1;
+  // check whether overflow occured (it should)
+  OFCHECK(OFStandard::safeAdd(a, b, a) == OFFalse);
+  // check whether a has not been modified
+  OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max()-1);
+
+  b = 1; // a still equals max-1
+  // check whether no overflow occured (it shouldnt)
+  OFCHECK(OFStandard::safeAdd(a, b, a) == OFTrue);
+  // check whether the result a was computed as expected.
+  // dividing and then multiplying by 2 is required since max may be be an
+  // odd number so that max/2 is rounded to the floor number.
+  OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max());
+}
