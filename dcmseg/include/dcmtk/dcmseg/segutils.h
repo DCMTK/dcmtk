@@ -55,15 +55,14 @@ public:
   /** Unpacks a binary segmentation frame into a "sparse" pixel data frame where
    *  every resulting byte represents a single bit of the frame being either
    *  0 (not set) or 1 (set).
-   *  @param  buffer The input buffer with the frame in packed format
-   *  @param  firstBitUsed First bit position (from the left) to start with in
-   *          input buffer.
-   *  @param  numBits Number of bits per frame
+   *  @param  frame The input buffer with the frame in packed format
+   *  @param  rows The rows of the frame
+   *  @param  cols The cols of the frame
    *  @return The segmentation frame in unpacked format. NULL in case of error.
    */
-  static DcmIODTypes::Frame* unpackBinaryFrame(Uint8*& buffer,
-                                               Uint8& firstBitUsed,
-                                               size_t numBits);
+  static DcmIODTypes::Frame* unpackBinaryFrame(const DcmIODTypes::Frame* frame,
+                                               Uint16 rows,
+                                               Uint16 cols);
 
   /** Shifts the given memory block some defined number of bits to the right
    *  Bits that fall off the last byte are lost (i.e. no "cycled" shift).

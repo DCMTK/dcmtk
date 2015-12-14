@@ -66,18 +66,19 @@ DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(Uint8* pixelData,
 }
 
 
-DcmIODTypes::Frame* DcmSegUtils::unpackBinaryFrame(Uint8*& buffer,
-                                                   Uint8& bitPos,
-                                                   size_t numBits)
+DcmIODTypes::Frame* DcmSegUtils::unpackBinaryFrame(const DcmIODTypes::Frame* frame,
+                                                   Uint16 rows,
+                                                   Uint16 cols)
 {
   // Sanity checking
-  if ( (buffer == NULL) || (bitPos > 7) || (numBits== 0) )
+  if ( (frame == NULL) || (rows == 0) || (cols == 0) )
   {
     DCMSEG_ERROR("Cannot unpack binary frame, invalid input data");
     return NULL;
   }
 
   // Create result frame in memory
+  size_t numBits = rows * cols;
   DcmIODTypes::Frame* result = new DcmIODTypes::Frame();
   if (result)
   {
@@ -90,24 +91,22 @@ DcmIODTypes::Frame* DcmSegUtils::unpackBinaryFrame(Uint8*& buffer,
     return NULL;
   }
   memset(result->pixData, 0, result->length);
+
+  // Transform and copy from packed frame to unpacked result frame
   size_t bytePos = 0;
-  for (; numBits > 0; numBits--)
+  for (size_t count = 0; count < numBits; count++)
   {
-    // check whether bit at bitPos is set. We count bits from the left.
-    if ( (buffer[bytePos] & (1 << (7-bitPos))) )
+    // Compute byte position
+    bytePos = count / 8;
+    // Bit position (0-7) within byte
+    Uint8 bitpos = (count % 8);
+    if ( (frame->pixData[bytePos] & (1 << bitpos) /* check whether bit at bitpos is set*/) )
     {
-      result->pixData[bytePos] = 1;
+      result->pixData[count] = 1;
     }
     else
     {
-      result->pixData[bytePos] = 0;
-    }
-    bytePos++;
-    bitPos++;
-    if (bitPos == 8)
-    {
-      bitPos = 0;
-      buffer++;
+      result->pixData[count] = 0;
     }
   }
   return result;
