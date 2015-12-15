@@ -30,6 +30,8 @@
  */
 //@{
 
+/// error: there is no image library to add image groups to
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibrary;
 /// error: there is no image library group to add image entries to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryGroup;
 /// error: there is no image library entry to add descriptors to
@@ -70,9 +72,35 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
         withAllDescriptors
     };
 
-    /** default constructor
+    /** default constructor.
+     *  Also creates an empty image library by calling createImageLibrary().
      */
     TID1600_ImageLibrary();
+
+    /** check whether the current internal state is valid.
+     *  That means, whether the base class is valid and hasImageLibrary() returns true.
+     ** @return OFTrue if valid, OFFalse otherwise
+     */
+    virtual OFBool isValid() const;
+
+    /** check whether the content item 'Image Library' (TID 1600 - Row 1) is present.
+     *  Initially, this mandatory content item is created by the constructor of this
+     *  class.  After clear() has been called, it can be created again by calling
+     *  createNewImageLibrary().
+     ** @return OFTrue if the image library is present, OFFalse otherwise
+     */
+    OFBool hasImageLibrary() const;
+
+    /** check whether there is an image group in this image library (TID 1600 - Row 2)
+     ** @return OFTrue if at least one image group is present, OFFalse otherwise
+     */
+    OFBool hasImageLibraryGroup() const;
+
+    /** clear the internally stored tree of content items and create the mandatory
+     *  content item 'Image Library' (TID 1600 - Row 1) as the root node of this template
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition createNewImageLibrary();
 
     /** add an image group to the image library
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -188,6 +216,13 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
 
 
   protected:
+
+    /** create the mandatory content item 'Image Library' (TID 1600 - Row 1) as the root
+     *  node of this template.  It is expected that the tree is currently empty.
+     ** @return status, EC_Normal if successful, an error code otherwise (e.g.\ if the
+     *          tree is not empty)
+     */
+    OFCondition createImageLibrary();
 
     /** add image library entry descriptors (TID 1602) to given document subtree.
      *  This method also calls addModalitySpecificDescriptors() in order to add the

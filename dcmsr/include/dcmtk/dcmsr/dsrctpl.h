@@ -48,6 +48,10 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
 
   public:
 
+    /** clear non-static member variables
+     */
+    virtual void clear();
+
     /** check whether template identification is set
      ** @return OFTrue if set, OFFalse otherwise
      */
@@ -115,6 +119,11 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
     /** destructor
      */
     virtual ~DSRTemplateCommon();
+
+    /** clear all entries in the list of node IDs, i.e.\ set them to their initial value,
+     *  which is 0
+     */
+    void clearEntriesInNodeList();
 
     /** reserve a certain number of entries in the list of node IDs.  Using this method
      *  can help to avoid unwanted memory allocations and copying of list entries.

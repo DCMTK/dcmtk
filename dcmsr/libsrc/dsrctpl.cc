@@ -45,6 +45,12 @@ DSRTemplateCommon::~DSRTemplateCommon()
 }
 
 
+void DSRTemplateCommon::clear()
+{
+    clearEntriesInNodeList();
+}
+
+
 OFBool DSRTemplateCommon::hasTemplateIdentification() const
 {
     /* mapping resource UID is optional, so do not check it */
@@ -78,6 +84,14 @@ OFBool DSRTemplateCommon::isTemplateIdentificationValid(const OFBool check) cons
 
 
 // protected methods
+
+void DSRTemplateCommon::clearEntriesInNodeList()
+{
+    /* set all entries to 0 */
+    for (size_t i = 0; i < NodeList.size(); ++i)
+        NodeList[i] = 0;
+}
+
 
 void DSRTemplateCommon::reserveEntriesInNodeList(const size_t count)
 {

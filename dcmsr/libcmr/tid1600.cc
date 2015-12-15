@@ -33,8 +33,9 @@
 #define DELETE_ERROR(pointer) if (result.bad()) delete pointer
 
 // index positions in node list (makes source code more readable)
-#define LAST_IMAGE_LIBRARY_GROUP 0
-#define LAST_IMAGE_LIBRARY_ENTRY 1
+#define IMAGE_LIBRARY            0
+#define LAST_IMAGE_LIBRARY_GROUP 1
+#define LAST_IMAGE_LIBRARY_ENTRY 2
 
 // general information on TID 1600 (Image Library)
 #define TEMPLATE_NUMBER      "1600"
@@ -44,43 +45,82 @@
 
 
 // conditions constants
-makeOFConditionConst(CMR_EC_NoImageLibraryGroup,                           OFM_dcmsr, 1600, OF_error, "No Image Library Group");
-makeOFConditionConst(CMR_EC_NoImageLibraryEntry,                           OFM_dcmsr, 1601, OF_error, "No Image Library Entry");
-makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors, OFM_dcmsr, 1602, OF_error, "Cannot add multiple Image Library Entry Descriptors");
-makeOFConditionConst(CMR_EC_MissingImageLibraryEntryDescriptorModality,    OFM_dcmsr, 1603, OF_error, "Missing Image Library Entry Descriptor 'Modality'");
-makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_dcmsr, 1604, OF_error, "Wrong Image Library Entry Descriptor 'Modality'");
+makeOFConditionConst(CMR_EC_NoImageLibrary,                                OFM_dcmsr, 1600, OF_error, "No Image Library");
+makeOFConditionConst(CMR_EC_NoImageLibraryGroup,                           OFM_dcmsr, 1601, OF_error, "No Image Library Group");
+makeOFConditionConst(CMR_EC_NoImageLibraryEntry,                           OFM_dcmsr, 1602, OF_error, "No Image Library Entry");
+makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors, OFM_dcmsr, 1603, OF_error, "Cannot add multiple Image Library Entry Descriptors");
+makeOFConditionConst(CMR_EC_MissingImageLibraryEntryDescriptorModality,    OFM_dcmsr, 1604, OF_error, "Missing Image Library Entry Descriptor 'Modality'");
+makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_dcmsr, 1605, OF_error, "Wrong Image Library Entry Descriptor 'Modality'");
 
 
 TID1600_ImageLibrary::TID1600_ImageLibrary()
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
-    /* need to store last image library group and entry */
-    reserveEntriesInNodeList(2);
+    /* need to store image library, last image library group and entry */
+    reserveEntriesInNodeList(3);
     /* TID 1600 (Image Library) Row 1 */
-    if (addChildContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary).good())
-        getCurrentContentItem().setAnnotationText("TID 1600 - Row 1");
+    createImageLibrary();
+}
+
+
+OFBool TID1600_ImageLibrary::isValid() const
+{
+    /* check whether base class is valid and image library exists */
+    return DSRSubTemplate::isValid() && hasImageLibrary();
+}
+
+
+OFBool TID1600_ImageLibrary::hasImageLibrary() const
+{
+    /* check for image library (TID 1600 - Row 1) */
+    return (getEntryFromNodeList(IMAGE_LIBRARY) > 0);
+}
+
+
+OFBool TID1600_ImageLibrary::hasImageLibraryGroup() const
+{
+    /* check for image library group (TID 1600 - Row 2) */
+    return (getEntryFromNodeList(LAST_IMAGE_LIBRARY_GROUP) > 0);
+}
+
+
+OFCondition TID1600_ImageLibrary::createNewImageLibrary()
+{
+    clear();
+    /* TID 1600 (Image Library) Row 1 */
+    return createImageLibrary();
 }
 
 
 OFCondition TID1600_ImageLibrary::addImageGroup()
 {
-    OFCondition result = EC_Normal;
-    /* go to last image library group (if any) */
-    if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
+    OFCondition result = CMR_EC_NoImageLibrary;
+    /* check whether image library exists */
+    if (hasImageLibrary())
     {
-        /* TID 1600 (Image Library) Row 2, append to last group */
-        STORE_RESULT(addContentItem(RT_contains, VT_Container, CODE_DCM_ImageLibraryGroup));
-    } else {
-        /* TID 1600 (Image Library) Row 2, create first group (child) */
-        STORE_RESULT(addChildContentItem(RT_contains, VT_Container, CODE_DCM_ImageLibraryGroup));
-    }
-    CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1600 - Row 2"));
-    /* store ID of recently added node for later use */
-    if (result.good())
-    {
-        storeEntryInNodeList(LAST_IMAGE_LIBRARY_GROUP, getNodeID());
-        storeEntryInNodeList(LAST_IMAGE_LIBRARY_ENTRY, 0 /* forget last entry */);
+        /* go to last image library group (if any) */
+        if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
+        {
+            /* TID 1600 (Image Library) Row 2, append to last group */
+            STORE_RESULT(addContentItem(RT_contains, VT_Container, CODE_DCM_ImageLibraryGroup));
+        }
+        /* go to image library (root node) */
+        else if (gotoEntryFromNodeList(this, IMAGE_LIBRARY) > 0)
+        {
+            /* TID 1600 (Image Library) Row 2, create first group (child) */
+            STORE_RESULT(addChildContentItem(RT_contains, VT_Container, CODE_DCM_ImageLibraryGroup));
+        } else {
+            /* should never happen but ... */
+            result = SR_EC_InvalidTemplateStructure;
+        }
+        CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1600 - Row 2"));
+        /* store ID of recently added node for later use */
+        if (result.good())
+        {
+            storeEntryInNodeList(LAST_IMAGE_LIBRARY_GROUP, getNodeID());
+            storeEntryInNodeList(LAST_IMAGE_LIBRARY_ENTRY, 0 /* forget last entry */);
+        }
     }
     return result;
 }
@@ -90,62 +130,69 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
                                                 const AddImageMode mode,
                                                 const OFBool check)
 {
-    OFCondition result = EC_MemoryExhausted;
-    /* create a new subtree in order to "rollback" in case of error */
-    DSRDocumentSubTree *tid1601 = new DSRDocumentSubTree;
-    if (tid1601 != NULL)
+    OFCondition result = CMR_EC_NoImageLibraryGroup;
+    /* check whether image library group exists */
+    if (hasImageLibraryGroup())
     {
-        DSRImageReferenceValue imageRef;
-        /* TID 1601 (Image Library Entry) Row 1 */
-        STORE_RESULT(tid1601->addContentItem(RT_contains, VT_Image, DSRCodedEntryValue()));
-        CHECK_RESULT(imageRef.setReference(dataset, check));
-        CHECK_RESULT(tid1601->getCurrentContentItem().setImageReference(imageRef, check));
-        CHECK_RESULT(tid1601->getCurrentContentItem().setAnnotationText("TID 1601 - Row 1"));
-        const size_t lastNode = tid1601->getNodeID();
-        /* TID 1601 (Image Library Entry) Row 2 */
-        if (mode == withAllDescriptors)
+        /* create a new subtree in order to "rollback" in case of error */
+        DSRDocumentSubTree *tid1601 = new DSRDocumentSubTree;
+        if (tid1601 != NULL)
         {
-            /* create a new subtree for TID 1602 (Image Library Entry Descriptors) */
-            DSRDocumentSubTree *tid1602 = new DSRDocumentSubTree;
-            if (tid1602 != NULL)
+            DSRImageReferenceValue imageRef;
+            /* TID 1601 (Image Library Entry) Row 1 */
+            STORE_RESULT(tid1601->addContentItem(RT_contains, VT_Image, DSRCodedEntryValue()));
+            CHECK_RESULT(imageRef.setReference(dataset, check));
+            CHECK_RESULT(tid1601->getCurrentContentItem().setImageReference(imageRef, check));
+            CHECK_RESULT(tid1601->getCurrentContentItem().setAnnotationText("TID 1601 - Row 1"));
+            const size_t lastNode = tid1601->getNodeID();
+            /* TID 1601 (Image Library Entry) Row 2 */
+            if (mode == withAllDescriptors)
             {
-                /* call the function doing the real work */
-                result = addImageEntryDescriptors(*tid1602, dataset, check);
-                /* if everything was OK, insert new subtree into the template */
-                if (result.good() && !tid1602->isEmpty())
+                /* create a new subtree for TID 1602 (Image Library Entry Descriptors) */
+                DSRDocumentSubTree *tid1602 = new DSRDocumentSubTree;
+                if (tid1602 != NULL)
                 {
-                    /* insert subtree below current node */
-                    result = tid1601->insertSubTree(tid1602);
-                }
-                /* in case of error, make sure that memory is freed */
-                DELETE_ERROR(tid1602);
-            } else
-                result = EC_MemoryExhausted;
-        }
-        /* if everything was OK, insert new subtree into the template */
-        if (result.good())
-        {
-            E_AddMode addMode = AM_afterCurrent;
-            /* go to last image library entry (if any) */
-            if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_ENTRY) > 0)
-                addMode = AM_afterCurrent;
-            /* go to last image library group (if any) */
-            else if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
-                addMode = AM_belowCurrent;
-            else
-                result = CMR_EC_NoImageLibraryGroup;
-            /* there is at least an image library group */
+                    /* call the function doing the real work */
+                    result = addImageEntryDescriptors(*tid1602, dataset, check);
+                    /* if everything was OK, insert new subtree into the template */
+                    if (result.good() && !tid1602->isEmpty())
+                    {
+                        /* insert subtree below current node */
+                        result = tid1601->insertSubTree(tid1602);
+                    }
+                    /* in case of error, make sure that memory is freed */
+                    DELETE_ERROR(tid1602);
+                } else
+                    result = EC_MemoryExhausted;
+            }
+            /* if everything was OK, insert new subtree into the template */
             if (result.good())
             {
-                /* insert subtree at current position */
-                result = insertSubTree(tid1601, addMode);
-                /* store ID of recently added node for later use */
+                E_AddMode addMode = AM_afterCurrent;
+                /* go to last image library entry (if any) */
+                if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_ENTRY) > 0)
+                    addMode = AM_afterCurrent;
+                /* go to last image library group */
+                else if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
+                    addMode = AM_belowCurrent;
+                else {
+                    /* should never happen but ... */
+                    result = CMR_EC_NoImageLibraryGroup;
+                }
+                /* there is at least an image library group */
                 if (result.good())
-                    storeEntryInNodeList(LAST_IMAGE_LIBRARY_ENTRY, lastNode);
+                {
+                    /* insert subtree at current position */
+                    result = insertSubTree(tid1601, addMode);
+                    /* store ID of recently added node for later use */
+                    if (result.good())
+                        storeEntryInNodeList(LAST_IMAGE_LIBRARY_ENTRY, lastNode);
+                }
             }
-        }
-        /* in case of error, make sure that memory is freed */
-        DELETE_ERROR(tid1601);
+            /* in case of error, make sure that memory is freed */
+            DELETE_ERROR(tid1601);
+        } else
+            result = EC_MemoryExhausted;
     }
     return result;
 }
@@ -154,35 +201,41 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
 OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
                                                            const OFBool check)
 {
-    OFCondition result = EC_MemoryExhausted;
-    /* create a new subtree in order to "rollback" in case of error */
-    DSRDocumentSubTree *subTree = new DSRDocumentSubTree;
-    if (subTree != NULL)
+    OFCondition result = CMR_EC_NoImageLibraryGroup;
+    /* check whether image library group exists */
+    if (hasImageLibraryGroup())
     {
-        /* call the function doing the real work */
-        result = addImageEntryDescriptors(*subTree, dataset, check);
-        /* if everything was OK, insert new subtree into the template */
-        if (result.good() && !subTree->isEmpty())
+        /* create a new subtree in order to "rollback" in case of error */
+        DSRDocumentSubTree *subTree = new DSRDocumentSubTree;
+        if (subTree != NULL)
         {
-            /* go to last image library group (if any) */
-            if (gotoLastEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
+            /* call the function doing the real work */
+            result = addImageEntryDescriptors(*subTree, dataset, check);
+            /* if everything was OK, insert new subtree into the template */
+            if (result.good() && !subTree->isEmpty())
             {
-
-                /* check whether TID 1600 (Image Library) Row 3 is already there */
-                const DSRDocumentTreeNode *childNode = getChildNode();
-                if ((childNode != NULL) && (childNode->getRelationshipType() == RT_hasAcqContext))
+                /* go to last image library group (if any) */
+                if (gotoLastEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
                 {
-                    /* only a single invocation of the included template allowed */
-                    result = CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors;
+                    /* check whether TID 1600 (Image Library) Row 3 is already there */
+                    const DSRDocumentTreeNode *childNode = getChildNode();
+                    if ((childNode != NULL) && (childNode->getRelationshipType() == RT_hasAcqContext))
+                    {
+                        /* only a single invocation of the included template allowed */
+                        result = CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors;
+                    } else {
+                        /* insert subtree at current position */
+                        result = insertSubTree(subTree, AM_belowCurrentBeforeFirstChild);
+                    }
                 } else {
-                    /* insert subtree at current position */
-                    result = insertSubTree(subTree, AM_belowCurrentBeforeFirstChild);
+                    /* should never happen but ... */
+                    result = CMR_EC_NoImageLibraryGroup;
                 }
-            } else
-                result = CMR_EC_NoImageLibraryGroup;
-        }
-        /* in case of error, make sure that memory is freed */
-        DELETE_ERROR(subTree);
+            }
+            /* in case of error, make sure that memory is freed */
+            DELETE_ERROR(subTree);
+        } else
+            result = EC_MemoryExhausted;
     }
     return result;
 }
@@ -314,6 +367,22 @@ OFCondition TID1600_ImageLibrary::setPETImageRadionuclideTotalDose(const DSRNume
 
 
 // protected methods
+
+OFCondition TID1600_ImageLibrary::createImageLibrary()
+{
+    OFCondition result = SR_EC_InvalidTemplateStructure;
+    if (isEmpty())
+    {
+        /* TID 1600 (Image Library) Row 1 */
+        STORE_RESULT(addChildContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary));
+        CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1600 - Row 1"));
+        /* store ID of root node for later use */
+        if (result.good())
+            storeEntryInNodeList(IMAGE_LIBRARY, getNodeID());
+    }
+    return result;
+}
+
 
 OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &tree,
                                                            DcmItem &dataset,

@@ -216,6 +216,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CodedEntryIsExtensionOfCo
 /// error: a value violates the value set constraint of a particular template row
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_ValueSetConstraintViolated;
 
+/// error: the internally managed structure of a template class is invalid
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidTemplateStructure;
+
 //@}
 
 

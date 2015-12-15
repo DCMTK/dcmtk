@@ -160,6 +160,8 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     OFList<CID7445_DeviceParticipatingRoles> procRoles;
     procRoles.push_back(CID7445_DeviceParticipatingRoles::IrradiatingDevice);
     procRoles.push_back(CID7445_DeviceParticipatingRoles::Recording);
+    /* empty template is not valid */
+    OFCHECK(!obsContext.isValid());
     /* add person and device observers */
     OFCHECK(obsContext.addPersonObserver("Doe^John", "", CID7452_OrganizationalRoles::Physician, CID7453_PerformingRoles::Referring).good());
     OFCHECK(obsContext.addDeviceObserver("1.2.4.5.6.7.8.9.0").good());
@@ -191,6 +193,8 @@ OFTEST(dcmsr_TID1001_ObservationContext)
 OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
 {
     TID1204_LanguageOfContentItemAndDescendants lang;
+    /* empty template is not valid */
+    OFCHECK(!lang.isValid());
     /* add language */
     OFCHECK(lang.setLanguage(CID5000_Languages::German_DE).good());
     OFCHECK(lang.isValid());
@@ -265,6 +269,8 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
             OFCHECK(DSRCodedEntryValue("4711b", "99TEST", "some even more strange modifier").writeSequenceItem(*item2, DCM_ViewModifierCodeSequence).good());
     }
     /* add two image groups */
+    OFCHECK(library.isValid());
+    OFCHECK(library.hasImageLibrary());
     OFCHECK(library.addImageGroup().good());
     OFCHECK(library.addImageEntry(dataset1).good());
     OFCHECK(library.addImageEntryDescriptors(dataset1).good());
@@ -295,6 +301,18 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
         library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
                             DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode | DSRTypes::PF_printAnnotation);
     }
+
+    /* empty template is not valid */
+    library.clear();
+    OFCHECK(!library.isValid());
+    OFCHECK(!library.hasImageLibrary());
+    /* cannot add image group to empty template */
+    OFCHECK(library.addImageGroup().bad());
+    /* try again... */
+    OFCHECK(library.createNewImageLibrary().good());
+    OFCHECK(library.isValid());
+    OFCHECK(library.hasImageLibrary());
+    OFCHECK(library.addImageGroup().good());
 }
 
 

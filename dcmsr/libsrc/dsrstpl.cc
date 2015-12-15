@@ -67,7 +67,9 @@ DSRDocumentSubTree *DSRSubTemplate::cloneTree() const
 
 void DSRSubTemplate::clear()
 {
+    /* call clear() method of base classes */
     DSRDocumentSubTree::clear();
+    DSRTemplateCommon::clear();
 }
 
 
