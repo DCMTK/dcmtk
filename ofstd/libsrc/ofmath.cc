@@ -26,7 +26,7 @@
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
 #include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofmath.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
@@ -87,7 +87,7 @@ static int my_isinf(double x)
 }
 #endif /* HAVE_ISINF */
 
-OFBool OFStandard::isnan( float f )
+OFBool OFMath::isnan( float f )
 {
 #ifdef HAVE_WINDOWS_H
   return _isnan(f) != 0;
@@ -98,7 +98,7 @@ OFBool OFStandard::isnan( float f )
 #endif
 }
 
-OFBool OFStandard::isnan( double d )
+OFBool OFMath::isnan( double d )
 {
 #ifdef HAVE_WINDOWS_H
   return _isnan(d) != 0;
@@ -109,7 +109,7 @@ OFBool OFStandard::isnan( double d )
 #endif
 }
 
-OFBool OFStandard::isinf( float f )
+OFBool OFMath::isinf( float f )
 {
 #ifdef HAVE_PROTOTYPE_STD__ISINF
   return STD_NAMESPACE isinf( f );
@@ -120,7 +120,7 @@ OFBool OFStandard::isinf( float f )
 #endif
 }
 
-OFBool OFStandard::isinf( double d )
+OFBool OFMath::isinf( double d )
 {
 #ifdef HAVE_PROTOTYPE_STD__ISINF
   return STD_NAMESPACE isinf( d );

@@ -97,6 +97,7 @@
 #include "dcmtk/ofstd/offile.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/oftuple.h"
+#include "dcmtk/ofstd/ofmath.h"
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
@@ -2398,14 +2399,14 @@ void OFStandard::ftoa(
   if (!dst || !siz) return;
 
   // check if val is NAN
-  if (OFStandard::isnan(val))
+  if (OFMath::isnan(val))
   {
     OFStandard::strlcpy(dst, "nan", siz);
     return;
   }
 
   // check if val is infinity
-  if (OFStandard::isinf(val))
+  if (OFMath::isinf(val))
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);

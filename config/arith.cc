@@ -207,7 +207,7 @@ static int test_inf( STD_NAMESPACE ostream& out, const char* name )
     const int has_inf = print_flag
     (
         out,
-        OFStandard::isinf(t),
+        OFMath::isinf(t),
         "HAS_INFINITY",
         name,
         7
@@ -236,7 +236,7 @@ static int test_qnan( STD_NAMESPACE ostream& out, const char* name )
     const int has_qnan = print_flag
     (
         out,
-        OFStandard::isnan( t ),
+        OFMath::isnan( t ),
         "HAS_QUIET_NAN",
         name,
         7
@@ -336,7 +336,7 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
 {
     // Create signaling NaNs and test if they really are signaling NaNs
     const T& t = guess<T>::snan();
-    int flag = OFStandard::isnan( t ) && test_trap( &provoke_snan<T> );
+    int flag = OFMath::isnan( t ) && test_trap( &provoke_snan<T> );
     // Disable floating point exceptions that have been enabled for the test,
     // Windows and Unix version.
 #ifdef HAVE_WINDOWS_H

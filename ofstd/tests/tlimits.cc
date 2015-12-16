@@ -5,6 +5,7 @@
 #include "dcmtk/ofstd/oflimits.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oftraits.h"
+#include "dcmtk/ofstd/ofmath.h"   // for isinf and isnan
 
 template<typename T>
 static void checkMinMax()
@@ -14,12 +15,12 @@ static void checkMinMax()
     OFCHECK
     (
         OFnumeric_limits<T>::max() >= max_plus_one ||
-        ( OFnumeric_limits<T>::has_infinity && OFStandard::isinf( max_plus_one ) )
+        ( OFnumeric_limits<T>::has_infinity && OFMath::isinf( max_plus_one ) )
     );
     OFCHECK
     (
         OFnumeric_limits<T>::lowest() <= lowest_minus_one ||
-        ( OFnumeric_limits<T>::has_infinity && OFStandard::isinf( lowest_minus_one ) )
+        ( OFnumeric_limits<T>::has_infinity && OFMath::isinf( lowest_minus_one ) )
     );
     OFCHECK( ( OFnumeric_limits<T>::lowest() == OFnumeric_limits<T>::min() ) || !OFnumeric_limits<T>::is_integer );
 }
@@ -27,7 +28,7 @@ static void checkMinMax()
 template<typename T>
 static OFTypename OFenable_if<OFnumeric_limits<T>::has_quiet_NaN>::type checkNaN()
 {
-    (OFStandard::isnan)( OFnumeric_limits<T>::quiet_NaN() );
+    (OFMath::isnan)( OFnumeric_limits<T>::quiet_NaN() );
 }
 
 template<typename T>
@@ -39,7 +40,7 @@ static OFTypename OFenable_if<!OFnumeric_limits<T>::has_quiet_NaN>::type checkNa
 template<typename T>
 static OFTypename OFenable_if<OFnumeric_limits<T>::has_infinity>::type checkInfinity()
 {
-    (OFStandard::isinf)( OFnumeric_limits<T>::infinity() );
+    (OFMath::isinf)( OFnumeric_limits<T>::infinity() );
 }
 
 template<typename T>
