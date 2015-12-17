@@ -849,7 +849,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *   otherwise
      */
     template <typename T>
-    static OFBool DCMTK_OFSTD_EXPORT
+    static OFBool
     safeSubtract(T minuend, T subtrahend, T& difference)
     {
       assert(!OFnumeric_limits<T>::is_signed);
@@ -871,7 +871,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *    otherwise
      */
     template <typename T>
-    static OFBool DCMTK_OFSTD_EXPORT
+    static OFBool
     safeAdd(T a, T b, T& sum)
     {
       assert(!OFnumeric_limits<T>::is_signed);
