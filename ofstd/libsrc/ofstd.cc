@@ -1974,14 +1974,14 @@ void OFStandard::ftoa(
   unsigned char fmtch = 'G';
 
   // check if val is NAN
-  if (isnan(val))
+  if (OFMath::isnan(val))
   {
     OFStandard::strlcpy(dst, "nan", siz);
     return;
   }
 
   // check if val is infinity
-  if (isinf(val))
+  if (OFMath::isinf(val))
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
