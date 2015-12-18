@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
 #include "dcmtk/ofstd/oftraits.h"   /* for OFenable_if, ... */
 
-class OFMath
+class DCMTK_OFSTD_EXPORT OFMath
 {
 
 public:
