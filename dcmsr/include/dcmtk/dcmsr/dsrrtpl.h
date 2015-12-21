@@ -104,7 +104,7 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
      *  document tree starting from the root node
      ** @return always returns OFTrue since this class handles root templates
      */
-    OFBool isRootTemplate() const
+    inline OFBool isRootTemplate() const
     {
         return OFTrue;
     }
