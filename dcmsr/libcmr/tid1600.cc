@@ -215,7 +215,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
             if (result.good() && !subTree->isEmpty())
             {
                 /* go to last image library group (if any) */
-                if (gotoLastEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
+                if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_GROUP) > 0)
                 {
                     /* check whether TID 1600 (Image Library) Row 3 is already there */
                     const DSRDocumentTreeNode *childNode = getChildNode();
