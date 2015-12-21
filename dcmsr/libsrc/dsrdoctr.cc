@@ -326,7 +326,7 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
 }
 
 
-OFBool DSRDocumentTree::canInsertSubTree(DSRDocumentSubTree *tree,
+OFBool DSRDocumentTree::canInsertSubTree(const DSRDocumentSubTree *tree,
                                          const E_AddMode addMode,
                                          const E_RelationshipType defaultRelType)
 {

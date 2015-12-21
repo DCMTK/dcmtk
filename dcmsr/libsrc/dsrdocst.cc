@@ -495,7 +495,7 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
 }
 
 
-OFBool DSRDocumentSubTree::canInsertSubTree(DSRDocumentSubTree *tree,
+OFBool DSRDocumentSubTree::canInsertSubTree(const DSRDocumentSubTree *tree,
                                             const E_AddMode addMode,
                                             const E_RelationshipType defaultRelType)
 {
@@ -869,8 +869,8 @@ void DSRDocumentSubTree::updateTreeForOutput()
 }
 
 
-OFCondition DSRDocumentSubTree::checkSubTreeConstraints(DSRDocumentSubTree *tree,
-                                                        DSRIODConstraintChecker *checker)
+OFCondition DSRDocumentSubTree::checkSubTreeConstraints(const DSRDocumentSubTree *tree,
+                                                        const DSRIODConstraintChecker *checker)
 {
     OFCondition result = EC_Normal;
     /* make sure that the passed tree pointer is valid */

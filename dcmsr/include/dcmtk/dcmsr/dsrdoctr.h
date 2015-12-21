@@ -198,7 +198,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      *                          type is used if the one of a top-level node is "unknown".
      ** @return OFTrue if specified subtree can be inserted, OFFalse otherwise
      */
-    virtual OFBool canInsertSubTree(DSRDocumentSubTree *tree,
+    virtual OFBool canInsertSubTree(const DSRDocumentSubTree *tree,
                                     const E_AddMode addMode = AM_belowCurrent,
                                     const E_RelationshipType defaultRelType = RT_unknown);
 
