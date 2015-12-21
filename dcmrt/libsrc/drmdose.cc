@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,7 +59,7 @@ protected:
     signedT getPixelSigned(Uint32 pixelNumber)
     {
         signedT result;
-        if (pixelData_.getPartialValue(&result, pixelNumber * sizeof(signedT), sizeof(signedT)).bad())
+        if (pixelData_.getPartialValue(&result, OFstatic_cast(Uint32, pixelNumber * sizeof(signedT)), OFstatic_cast(Uint32, sizeof(signedT))).bad())
             return -1;
         return result;
     }
@@ -67,7 +67,7 @@ protected:
     unsignedT getPixelUnsigned(Uint32 pixelNumber)
     {
         unsignedT result;
-        if (pixelData_.getPartialValue(&result, pixelNumber * sizeof(unsignedT), sizeof(unsignedT)).bad())
+        if (pixelData_.getPartialValue(&result, OFstatic_cast(Uint32, pixelNumber * sizeof(unsignedT)), OFstatic_cast(Uint32, sizeof(unsignedT))).bad())
             return -1;
         return result;
     }
@@ -82,7 +82,7 @@ protected:
             cond = EC_MemoryExhausted;
         } else {
             // First, get the "raw" pixel data
-            cond = pixelData_.getPartialValue(tmp, offset * sizeof(signedT), length * sizeof(signedT));
+            cond = pixelData_.getPartialValue(tmp, OFstatic_cast(Uint32, offset * sizeof(signedT)), OFstatic_cast(Uint32, length * sizeof(signedT)));
             if (cond.good()) {
                 result.clear();
                 result.reserve(length);
@@ -105,7 +105,7 @@ protected:
             cond = EC_MemoryExhausted;
         } else {
             // First, get the "raw" pixel data
-            cond = pixelData_.getPartialValue(tmp, offset * sizeof(unsignedT), length * sizeof(unsignedT));
+            cond = pixelData_.getPartialValue(tmp, OFstatic_cast(Uint32, offset * sizeof(unsignedT)), OFstatic_cast(Uint32, length * sizeof(unsignedT)));
             if (cond.good()) {
                 result.clear();
                 result.reserve(length);

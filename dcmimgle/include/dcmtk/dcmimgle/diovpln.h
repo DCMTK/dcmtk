@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -506,7 +506,7 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
     int result = 0;
     if (Valid && (Data != NULL))
     {
-        const Uint32 frameNumber = FirstFrame + frame;
+        const Uint32 frameNumber = OFstatic_cast(Uint32, FirstFrame + frame);
         DCMIMGLE_TRACE("reset overlay plane in group 0x" << STD_NAMESPACE hex << GroupNumber << " to start position");
         DCMIMGLE_TRACE("  frameNumber: " << frameNumber << " (" << FirstFrame << "+" << frame
             << "), ImageFrameOrigin: " << ImageFrameOrigin << ", NumberOfFrames: " << NumberOfFrames);

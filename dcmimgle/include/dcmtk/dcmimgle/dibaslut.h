@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -221,7 +221,7 @@ class DCMTK_DCMIMGLE_EXPORT DiBaseLUT
      */
     inline Uint32 getAbsMaxRange() const
     {
-        return DicomImageClass::maxval(Bits, 0);
+        return OFstatic_cast(Uint32, DicomImageClass::maxval(Bits, 0));
     }
 
     /** check whether LUT is valid
