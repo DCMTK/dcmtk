@@ -275,13 +275,23 @@ template<typename T = DSRTreeNode> class DSRTree
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node
      *  should be created with new() - do not use a reference to a local variable.
-     *  If the node could be added successfully the cursor is set to it automatically.
+     *  If the node could be added successfully, the cursor is set to it automatically.
      ** @param  node     pointer to the new node to be added
      *  @param  addMode  flag specifying at which position to add the new node
-     ** @return ID of the new added node if successful, 0 otherwise
+     ** @return ID of the new node if successful, 0 otherwise
      */
     virtual size_t addNode(T *node,
                            const E_AddMode addMode = AM_afterCurrent);
+
+    /** replace current node by the given one.
+     *  Please note that no copy of the given node is created.  Therefore, the node
+     *  should be created with new() - do not use a reference to a local variable.  If
+     *  the node could be replaced successfully, the "old" node (and all of its child
+     *  nodes) are deleted, and the cursor is set to the new one.
+     ** @param  node  pointer to the new node to replace the current one
+     ** @return ID of the new node if successful, 0 otherwise
+     */
+    virtual size_t replaceNode(T *node);
 
     /** extract current node from tree.
      *  Please note that not only the specified node but also all of its child nodes are
@@ -347,6 +357,12 @@ template<typename T = DSRTreeNode> class DSRTree
      ** @return pointer to root node, might be NULL (empty tree)
      */
     virtual T *getRoot() const;
+
+    /** delete a tree given by its root node.
+     *  Please note that the given 'rootNode' pointer becomes invalid afterwards.
+     ** @param  rootNode  pointer to the root node of the tree to be deleted
+     */
+    virtual void deleteTreeFromRootNode(T *rootNode);
 
 
   private:
@@ -743,6 +759,56 @@ size_t DSRTree<T>::addNode(T *node,
 
 
 template<typename T>
+size_t DSRTree<T>::replaceNode(T *node)
+{
+    size_t nodeID = 0;
+    /* make sure that 'node' points to a single node or to the "root" of a subtree */
+    if ((node != NULL) && (node->Prev == NULL))
+    {
+        if (this->NodeCursor != NULL)
+        {
+            /* connect to previous node */
+            if (this->NodeCursor->Prev != NULL)
+            {
+                (this->NodeCursor->Prev)->Next = node;
+                /* remove reference to former sibling */
+                this->NodeCursor->Prev = NULL;
+            } else {
+                /* is there any direct parent node? */
+                if (!this->NodeCursorStack.empty())
+                {
+                    DSRTreeNode *parent = this->NodeCursorStack.top();
+                    if (parent != NULL)
+                        parent->Down = node;
+                }
+            }
+            /* connect to next node */
+            if (this->NodeCursor->Next != NULL)
+            {
+                DSRTreeNode *lastNode = node;
+                /* goto last node (sibling), if any */
+                while (lastNode->Next != NULL)
+                    lastNode = lastNode->Next;
+                (this->NodeCursor->Next)->Prev = lastNode;
+                lastNode->Next = this->NodeCursor->Next;
+                /* remove reference to former sibling */
+                this->NodeCursor->Next = NULL;
+            }
+            /* check whether root node has been replaced */
+            if (this->NodeCursor == this->RootNode)
+                this->RootNode = node;
+            /* free memory of old (now replaced) node */
+            deleteTreeFromRootNode(this->NodeCursor);
+            /* set cursor to new node */
+            this->NodeCursor = node;
+            nodeID = node->getIdent();
+        }
+    }
+    return nodeID;
+}
+
+
+template<typename T>
 T *DSRTree<T>::extractNode()
 {
     T *cursor = this->NodeCursor;
@@ -890,6 +956,15 @@ template<typename T>
 T *DSRTree<T>::getRoot() const
 {
     return RootNode;
+}
+
+
+template<typename T>
+void DSRTree<T>::deleteTreeFromRootNode(T *rootNode)
+{
+    /* create a temporary tree object from the given node, */
+    /* the content will be deleted during destruction */
+    DSRTree<T> tree(rootNode);
 }
 
 

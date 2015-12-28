@@ -467,10 +467,20 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @param  node     pointer to the new node to be added
      *  @param  addMode  flag specifying at which position to add the new node
      *                   (e.g. after or below the current node)
-     ** @return ID of the new added node if successful, 0 otherwise
+     ** @return ID of the new node if successful, 0 otherwise
      */
     virtual size_t addNode(DSRDocumentTreeNode *node,
                            const E_AddMode addMode = AM_afterCurrent);
+
+    /** replace current node by the given one.
+     *  Please note that no copy of the given node is created.  Therefore, the node
+     *  should be created with new() - do not use a reference to a local variable.  If
+     *  the node could be replaced successfully, the "old" node (and all of its child
+     *  nodes) are deleted, and the cursor is set to the new one.
+     ** @param  node  pointer to the new node to replace the current one
+     ** @return ID of the new node if successful, 0 otherwise
+     */
+    virtual size_t replaceNode(DSRDocumentTreeNode *node);
 
     /** extract current node from tree.
      *  Please note that not only the specified node but also all of its child nodes are

@@ -710,6 +710,13 @@ size_t DSRDocumentSubTree::addNode(DSRDocumentTreeNode *node,
 }
 
 
+size_t DSRDocumentSubTree::replaceNode(DSRDocumentTreeNode *node)
+{
+    /* might add further checks later on */
+    return DSRTree<DSRDocumentTreeNode>::replaceNode(node);
+}
+
+
 DSRDocumentTreeNode *DSRDocumentSubTree::extractNode()
 {
     /* might add further checks later on */

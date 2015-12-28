@@ -214,6 +214,36 @@ OFTEST(dcmsr_addTreeNode_5)
 }
 
 
+OFTEST(dcmsr_replaceTreeNode)
+{
+    DSRTree<> tree;
+    const size_t nodeID = tree.getNextNodeID();
+    OFCHECK_EQUAL(tree.countNodes(), 0);
+    /* first, create a simple tree of 6 nodes and check the references */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), nodeID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 3);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), nodeID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), nodeID + 5);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 4);
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 2);
+    OFCHECK_EQUAL(tree.gotoPrevious(), nodeID + 1);
+    OFCHECK_EQUAL(tree.goUp(), nodeID + 0);
+    OFCHECK_EQUAL(tree.countNodes(), 6);
+    /* then, replace one of the nodes */
+    OFCHECK_EQUAL(tree.gotoNode(nodeID + 2), nodeID + 2);
+    OFCHECK_EQUAL(tree.replaceNode(new DSRTreeNode()), nodeID + 6);
+    /* a subtree of 3 nodes has been replaced by 1 node */
+    OFCHECK_EQUAL(tree.countNodes(), 4);
+    /* finally, replace the root node */
+    OFCHECK_EQUAL(tree.gotoRoot(), nodeID + 0);
+    OFCHECK_EQUAL(tree.replaceNode(new DSRTreeNode()), nodeID + 7);
+    OFCHECK_EQUAL(tree.countNodes(), 1);
+}
+
+
 OFTEST(dcmsr_getPosition)
 {
     DSRTree<> tree;
