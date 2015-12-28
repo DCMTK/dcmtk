@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,10 +59,14 @@ class DCMTK_DCMSR_EXPORT DSRIODConstraintChecker
      */
     virtual OFBool isTemplateSupportRequired() const = 0;
 
-    /** get identifier of the root template
-     ** @return root template identifier (TID) if required, NULL otherwise
+    /** get identifier and mapping resource of the root template (if any)
+     ** @param  templateIdentifier  identifier of the root template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the root template
+     *                              (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual const char *getRootTemplateIdentifier() const = 0;
+    virtual OFCondition getRootTemplateIdentification(OFString &templateIdentifier,
+                                                      OFString &mappingResource) const = 0;
 
     /** get the associated document type of the SR IOD (abstract)
      ** @return document type (see DSRTypes::E_DocumentType)

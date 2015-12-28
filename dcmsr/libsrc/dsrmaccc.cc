@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2014, OFFIS e.V.
+ *  Copyright (C) 2010-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,9 +49,12 @@ OFBool DSRMacularGridThicknessAndVolumeReportConstraintChecker::isTemplateSuppor
 }
 
 
-const char *DSRMacularGridThicknessAndVolumeReportConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRMacularGridThicknessAndVolumeReportConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                                   OFString &mappingResource) const
 {
-    return "2100";
+    templateIdentifier = "2100";
+    mappingResource = "DCMR";
+    return EC_Normal;
 }
 
 

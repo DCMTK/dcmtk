@@ -356,8 +356,10 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
             /* check whether the current document tree is valid, i.e. the root node is a container */
             if (isValid())
             {
-                /* determine template identifier (TID) expected for the new document type */
-                const OFString expectedTemplateIdentifier = OFSTRING_GUARD(checker->getRootTemplateIdentifier());
+                /* determine template identifier (TID) and mapping resource expected for the new document type */
+                OFString expectedTemplateIdentifier;
+                OFString expectedMappingResource;
+                checker->getRootTemplateIdentification(expectedTemplateIdentifier, expectedMappingResource);
                 /* check whether the expected template (if known) has been used */
                 if (!expectedTemplateIdentifier.empty())
                 {
@@ -375,13 +377,20 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
                                 DCMSR_WARN("Incorrect value for MappingResourceUID (" << mappingResourceUID << "), "
                                     << UID_DICOMContentMappingResource << " expected");
                             }
-                            /* compare with expected TID */
-                            if (templateIdentifier != expectedTemplateIdentifier)
-                            {
-                                DCMSR_WARN("Incorrect value for TemplateIdentifier ("
-                                    << ((templateIdentifier.empty()) ? "<empty>" : templateIdentifier) << "), "
-                                    << expectedTemplateIdentifier << " expected");
-                            }
+                        }
+                        /* compare with expected mapping resource */
+                        if (mappingResource != expectedMappingResource)
+                        {
+                            DCMSR_WARN("Incorrect value for MappingResource ("
+                                << ((mappingResource.empty()) ? "<empty>" : mappingResource) << "), "
+                                << expectedMappingResource << " expected");
+                        }
+                        /* compare with expected template identifier */
+                        if (templateIdentifier != expectedTemplateIdentifier)
+                        {
+                            DCMSR_WARN("Incorrect value for TemplateIdentifier ("
+                                << ((templateIdentifier.empty()) ? "<empty>" : templateIdentifier) << "), "
+                                << expectedTemplateIdentifier << " expected");
                         }
                     }
                 }

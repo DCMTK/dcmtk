@@ -49,9 +49,12 @@ OFBool DSRRadiopharmaceuticalRadiationDoseConstraintChecker::isTemplateSupportRe
 }
 
 
-const char *DSRRadiopharmaceuticalRadiationDoseConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRRadiopharmaceuticalRadiationDoseConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                                OFString &mappingResource) const
 {
-    return NULL;
+    templateIdentifier.clear();
+    mappingResource.clear();
+    return EC_Normal;
 }
 
 

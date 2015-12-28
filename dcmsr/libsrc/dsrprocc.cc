@@ -49,9 +49,12 @@ OFBool DSRProcedureLogConstraintChecker::isTemplateSupportRequired() const
 }
 
 
-const char *DSRProcedureLogConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRProcedureLogConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                            OFString &mappingResource) const
 {
-    return NULL;
+    templateIdentifier.clear();
+    mappingResource.clear();
+    return EC_Normal;
 }
 
 

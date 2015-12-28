@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2014, OFFIS e.V.
+ *  Copyright (C) 2005-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,9 +49,12 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::isTemplateSupportRequired() cons
 }
 
 
-const char *DSRXRayRadiationDoseSRConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRXRayRadiationDoseSRConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                   OFString &mappingResource) const
 {
-    return NULL;
+    templateIdentifier.clear();
+    mappingResource.clear();
+    return EC_Normal;
 }
 
 

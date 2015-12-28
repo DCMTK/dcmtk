@@ -49,9 +49,12 @@ OFBool DSRImplantationPlanSRDocumentConstraintChecker::isTemplateSupportRequired
 }
 
 
-const char *DSRImplantationPlanSRDocumentConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRImplantationPlanSRDocumentConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                          OFString &mappingResource) const
 {
-    return "7000";
+    templateIdentifier = "7000";
+    mappingResource = "DCMR";
+    return EC_Normal;
 }
 
 

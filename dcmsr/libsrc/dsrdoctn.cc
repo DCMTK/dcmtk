@@ -656,13 +656,16 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     /* read ObservationUID (optional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationUID, ObservationUID, "1", "3");
     /* determine template identifier expected for this document */
-    const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? OFSTRING_GUARD(constraintChecker->getRootTemplateIdentifier()) : "";
+    OFString expectedTemplateIdentifier;
+    OFString expectedMappingResource;
+    if (constraintChecker != NULL)
+        constraintChecker->getRootTemplateIdentification(expectedTemplateIdentifier, expectedMappingResource);
     /* read ContentTemplateSequence (conditional) */
     DcmItem *ditem = NULL;
     if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
     {
         if (ValueType != VT_Container)
-            DCMSR_WARN("Found ContentTemplateSequence for content item that is not a CONTAINER");
+            DCMSR_WARN("Found ContentTemplateSequence for content item \"" << posString << "\" which is not a CONTAINER");
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResourceUID, MappingResourceUID, "1", "3", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", "ContentTemplateSequence");
@@ -688,27 +691,27 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         /* check whether the expected template (if known) has been used */
         if (!expectedTemplateIdentifier.empty())
         {
-            /* check for DICOM Content Mapping Resource */
-            if (MappingResource == "DCMR")
+            /* compare with expected mapping resource */
+            if (MappingResource != expectedMappingResource)
             {
-                /* compare with expected TID */
-                if (TemplateIdentifier != expectedTemplateIdentifier)
-                {
-                    DCMSR_WARN("Incorrect value for TemplateIdentifier ("
-                        << ((TemplateIdentifier.empty()) ? "<empty>" : TemplateIdentifier) << "), "
-                        << expectedTemplateIdentifier << " expected");
-                }
-            } else if (!MappingResource.empty())
-                printUnknownValueWarningMessage("MappingResource", MappingResource.c_str());
+                DCMSR_WARN("Incorrect value for MappingResource ("
+                    << ((MappingResource.empty()) ? "<empty>" : MappingResource) << "), "
+                    << expectedMappingResource << " expected");
+            }
+            /* compare with expected template identifier */
+            if (TemplateIdentifier != expectedTemplateIdentifier)
+            {
+                DCMSR_WARN("Incorrect value for TemplateIdentifier ("
+                    << ((TemplateIdentifier.empty()) ? "<empty>" : TemplateIdentifier) << "), "
+                    << expectedTemplateIdentifier << " expected");
+            }
         }
     }
     /* only check template identifier on dataset level (root node) */
     else if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
     {
         DCMSR_WARN("ContentTemplateSequence missing or empty, TemplateIdentifier "
-            << expectedTemplateIdentifier
-            /* DICOM Content Mapping Resource is currently hard-coded (see above) */
-            <<  " (DCMR) expected");
+            << expectedTemplateIdentifier << " (" << expectedMappingResource << ") expected");
     }
     /* read ContentSequence */
     if (result.good())

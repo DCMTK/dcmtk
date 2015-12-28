@@ -49,9 +49,12 @@ OFBool DSRComprehensive3DSRConstraintChecker::isTemplateSupportRequired() const
 }
 
 
-const char *DSRComprehensive3DSRConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRComprehensive3DSRConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                 OFString &mappingResource) const
 {
-    return NULL;
+    templateIdentifier.clear();
+    mappingResource.clear();
+    return EC_Normal;
 }
 
 

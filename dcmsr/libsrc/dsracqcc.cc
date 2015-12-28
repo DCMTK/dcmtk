@@ -49,9 +49,12 @@ OFBool DSRAcquisitionContextConstraintChecker::isTemplateSupportRequired() const
 }
 
 
-const char *DSRAcquisitionContextConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRAcquisitionContextConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                  OFString &mappingResource) const
 {
-    return NULL;
+    templateIdentifier.clear();
+    mappingResource.clear();
+    return EC_Normal;
 }
 
 

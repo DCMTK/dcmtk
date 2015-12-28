@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2015, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,9 +49,12 @@ OFBool DSRKeyObjectSelectionDocumentConstraintChecker::isTemplateSupportRequired
 }
 
 
-const char *DSRKeyObjectSelectionDocumentConstraintChecker::getRootTemplateIdentifier() const
+OFCondition DSRKeyObjectSelectionDocumentConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                          OFString &mappingResource) const
 {
-    return "2010";
+    templateIdentifier = "2010";
+    mappingResource = "DCMR";
+    return EC_Normal;
 }
 
 
