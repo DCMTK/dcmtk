@@ -121,6 +121,24 @@ OFBool DSRDocumentSubTree::isValidDocumentTree(const E_RelationshipType defaultR
 }
 
 
+OFBool DSRDocumentSubTree::isExpandedDocumentTree() const
+{
+    OFBool result = OFTrue;
+    DSRDocumentTreeNodeCursor cursor(getRoot());
+    if (cursor.isValid())
+    {
+        const DSRDocumentTreeNode *node = NULL;
+        /* search for a single INCLUDE template node */
+        do {
+            node = cursor.getNode();
+            if (node != NULL)
+                result = (node->getValueType() != VT_includedTemplate);
+        } while (result && cursor.iterate());
+    }
+    return result;
+}
+
+
 OFBool DSRDocumentSubTree::hasTemplateIdentification() const
 {
     OFBool result = OFFalse;
@@ -670,6 +688,78 @@ DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const size_t stopAfterNodeI
 {
     /* create a copy of the specified subtree */
     return new DSRDocumentSubTree(NodeCursor, stopAfterNodeID);
+}
+
+
+OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree) const
+{
+    OFCondition result = EC_Normal;
+    if (!isEmpty())
+    {
+        /* first, create a clone of this tree */
+        tree = clone();
+        if (tree != NULL)
+        {
+            const DSRDocumentTreeNode *node = NULL;
+            /* iterate over all nodes */
+            do {
+                node = tree->getNode();
+                if (node != NULL)
+                {
+                    /* and expand the included templates (if any) */
+                    if (node->getValueType() == VT_includedTemplate)
+                    {
+                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValuePtr();
+                        if (subTempl != NULL)
+                        {
+                            /* clone the subtree managed by the template */
+                            DSRDocumentSubTree *subTree = subTempl->cloneTree();
+                            if (subTree != NULL)
+                            {
+                                /* check whether there are any "unknown" relationships on top level */
+                                if (!subTree->isEmpty())
+                                {
+                                    const E_RelationshipType defaultRelType = node->getRelationshipType();
+                                    DSRDocumentTreeNodeCursor cursor(subTree->getRoot());
+                                    do {
+                                        DSRDocumentTreeNode *curNode = cursor.getNode();
+                                        /* if so, replace them with the "default" relationship type */
+                                        if ((curNode != NULL) && (curNode->getRelationshipType() == RT_unknown))
+                                            curNode->setRelationshipType(defaultRelType);
+                                    } while (cursor.gotoNext() > 0);
+                                }
+                                /* replace the current node (and its children) with the cloned subtree */
+                                if (tree->replaceNode(subTree->getRoot()) > 0)
+                                {
+                                    /* "forget" reference to root node */
+                                    subTree->getAndRemoveRootNode();
+                                } else
+                                    result = SR_EC_CannotInsertSubTree;
+                                /* free memory */
+                                delete subTree;
+                            } else
+                                result = EC_MemoryExhausted;
+                        }
+                    }
+                } else
+                    result = SR_EC_InvalidDocumentTree;
+            } while (result.good() && tree->iterate());
+            /* finally, set cursor back to root node */
+            if (result.good())
+                tree->gotoRoot();
+            else
+            {
+                /* in case of error, free memory */
+                delete tree;
+                tree = NULL;
+            }
+        } else
+            result = EC_MemoryExhausted;
+    } else {
+        tree = NULL;
+        result = SR_EC_EmptyDocumentTree;
+    }
+    return result;
 }
 
 

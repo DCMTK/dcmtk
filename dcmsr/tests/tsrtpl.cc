@@ -25,11 +25,12 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmsr/dsrdocst.h"
 #include "dcmtk/dcmsr/dsrrtpl.h"
 #include "dcmtk/dcmsr/dsrstpl.h"
 
 
-/* minimal test class for root templates (Basic Diagnostic Imaging Report) */
+/* minimal test class for root template (Basic Diagnostic Imaging Report) */
 class SRTestTemplate2000
   : public DSRRootTemplate
 {
@@ -40,11 +41,11 @@ class SRTestTemplate2000
       : DSRRootTemplate(DSRTypes::DT_BasicTextSR, "2000", "DCMR", UID_DICOMContentMappingResource)
     {
         /* make sure that at least the root CONTAINER is there */
-        addContentItem(RT_isRoot, VT_Container);
+        OFCHECK(addContentItem(RT_isRoot, VT_Container) > 0);
     }
 };
 
-/* minimal test class for sub-templates (Person Observer Identifying Attributes) */
+/* minimal test class for sub-template (Person Observer Identifying Attributes) */
 class SRTestTemplate1003
   : public DSRSubTemplate
 {
@@ -56,11 +57,11 @@ class SRTestTemplate1003
     {
         setExtensible();
         /* make sure that at least the PNAME content item is there */
-        addContentItem(RT_unknown, VT_PName, DSRCodedEntryValue("121008", "DCM", "Person Observer Name"));
+        OFCHECK(addContentItem(RT_unknown, VT_PName, DSRCodedEntryValue("121008", "DCM", "Person Observer Name")).good());
     }
 };
 
-/* minimal test class for sub-templates (Planar ROI Measurements) */
+/* minimal test class for sub-template (Planar ROI Measurements) */
 class SRTestTemplate1410
   : public DSRSubTemplate
 {
@@ -72,7 +73,28 @@ class SRTestTemplate1410
     {
         setExtensible();
         /* make sure that at least the "root" CONTAINER is there */
-        addContentItem(RT_unknown, VT_Container, DSRCodedEntryValue("125007", "DCM", "Measurement Group"));
+        OFCHECK(addContentItem(RT_unknown, VT_Container, DSRCodedEntryValue("125007", "DCM", "Measurement Group")).good());
+        /* ... and two mandatory child nodes */
+        OFCHECK(addChildContentItem(RT_hasObsContext, VT_Text, DSRCodedEntryValue("112039", "DCM", "Tracking Identifier")).good());
+        OFCHECK(addContentItem(RT_hasObsContext, VT_UIDRef, DSRCodedEntryValue("112040", "DCM", "Tracking Unique Identifier")).good());
+    }
+};
+
+/* minimal test class for root template with included templates (Measurement Report) */
+class SRTestTemplate1500
+  : public DSRRootTemplate
+{
+
+  public:
+
+    SRTestTemplate1500()
+      : DSRRootTemplate(DSRTypes::DT_EnhancedSR, "1500", "DCMR", UID_DICOMContentMappingResource)
+    {
+        /* make sure that at least the root CONTAINER is there */
+        OFCHECK(addContentItem(RT_isRoot, VT_Container, DSRCodedEntryValue("126000", "DCM", "Imaging Measurement Report")).good());
+        /* ... and include two sub-templates */
+        OFCHECK(includeTemplate(new SRTestTemplate1003, AM_belowCurrent, RT_hasObsContext).good());
+        OFCHECK(includeTemplate(new SRTestTemplate1410, AM_afterCurrent, RT_contains).good());
     }
 };
 
@@ -118,7 +140,7 @@ OFTEST(dcmsr_subTemplate_1)
     OFCHECK_EQUAL(doc.getTree().countNodes(), 0);
     OFCHECK_EQUAL(tree.getDocumentType(), DSRTypes::DT_EnhancedSR);
     OFCHECK_EQUAL(tree.countNodes(), 0);
-    OFCHECK_EQUAL(templ.countNodes(), 1);
+    OFCHECK_EQUAL(templ.countNodes(), 3);
     OFCHECK_EQUAL(templ.getTemplateIdentifier(), "1410");
     OFCHECK_EQUAL(templ.getMappingResource(), "DCMR");
     OFCHECK_EQUAL(templ.getMappingResourceUID(), "");
@@ -130,7 +152,7 @@ OFTEST(dcmsr_subTemplate_1)
     OFCHECK(doc.setTree(tree).good());
     /* finally, perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_EnhancedSR);
-    OFCHECK_EQUAL(doc.getTree().countNodes(), 1);
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 3);
     OFString templID, mapResource;
     OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
     OFCHECK_EQUAL(templID, "1410");
@@ -166,5 +188,30 @@ OFTEST(dcmsr_subTemplate_2)
     OFString templID, mapResource;
     OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
     OFCHECK_EQUAL(templID, "2000");
+    OFCHECK_EQUAL(mapResource, "DCMR");
+}
+
+
+OFTEST(dcmsr_createExpandedTree)
+{
+    /* first, create an empty SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    /* then, create an almost empty "Measurement Report" (TID 1500) */
+    SRTestTemplate1500 templ;
+    OFCHECK_EQUAL(templ.countNodes(), 3);
+    /* and set its content as the document tree (with expanded sub-templates) */
+    OFCHECK(doc.getTree().isEmpty());
+    OFCHECK(doc.setTreeFromRootTemplate(templ, OFTrue /*expandTree*/).good());
+    OFCHECK(doc.getTree().isExpandedDocumentTree());
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 5);
+    /* do the same without expanding the (included) sub-templates */
+    OFCHECK(doc.setTreeFromRootTemplate(templ, OFFalse /*expandTree*/).good());
+    OFCHECK(!doc.getTree().isExpandedDocumentTree());
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 3);
+    /* and perform some further checks */
+    OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_EnhancedSR);
+    OFString templID, mapResource;
+    OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
+    OFCHECK_EQUAL(templID, "1500");
     OFCHECK_EQUAL(mapResource, "DCMR");
 }

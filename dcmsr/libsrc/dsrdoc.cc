@@ -1897,10 +1897,30 @@ OFCondition DSRDocument::setTree(const DSRDocumentTree &tree)
 }
 
 
-OFCondition DSRDocument::setTreeFromRootTemplate(DSRRootTemplate &rootTemplate)
+OFCondition DSRDocument::setTreeFromRootTemplate(DSRRootTemplate &rootTemplate,
+                                                 const OFBool expandTree)
 {
-    /* call the functions doing the real work */
-    return setTree(rootTemplate.getTree());
+    OFCondition result = EC_Normal;
+    /* check whether to expand the included templates (if any) */
+    if (expandTree)
+    {
+        DSRDocumentSubTree *tree = NULL;
+        /* expand tree managed by the template and replace the currently stored tree */
+        result = rootTemplate.getTree().createExpandedSubTree(tree);
+        if (result.good())
+            result = DocumentTree.changeDocumentType(rootTemplate.getDocumentType(), OFTrue /*deleteTree*/);
+        if (result.good())
+            result = DocumentTree.insertSubTree(tree, AM_belowCurrent, RT_unknown, OFFalse /*deleteIfFail*/);
+        /* update IOD-specific DICOM attributes */
+        updateAttributes(OFFalse /*updateAll*/);
+        /* in case of error, free memory */
+        if (result.bad())
+            delete tree;
+    } else {
+        /* call the functions doing the real work */
+        result = setTree(rootTemplate.getTree());
+    }
+    return result;
 }
 
 

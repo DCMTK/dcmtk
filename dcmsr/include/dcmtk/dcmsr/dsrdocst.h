@@ -125,6 +125,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFBool isValidDocumentTree(const E_RelationshipType defaultRelType = RT_unknown) const;
 
+    /** check whether this subtree is an expanded document tree.
+     *  Expanded means that no instances of DSRIncludedTemplateTreeNode exist in the document
+     *  tree, i.e. no templates were included or all of them were replaced by their content
+     *  (subtree).
+     ** @return OFTrue if subtree is an expanded document tree, OFFalse otherwise
+     */
+    virtual OFBool isExpandedDocumentTree() const;
+
     /** check whether template identification is set
      ** @return OFTrue if template identification is set, OFFalse otherwise
      */
@@ -404,6 +412,16 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @return pointer to a copy of the specified subtree, NULL in case of error
      */
     virtual DSRDocumentSubTree *cloneSubTree(const size_t stopAfterNodeID = 0) const;
+
+    /** created an expanded version of this (sub)tree.
+     *  Expanded means that no instance of DSRIncludedTemplateTreeNode will exist in the new
+     *  document tree, i.e. all of them are replaced by their content (subtree).  Please note
+     *  that the returned subtree has to be deleted by the caller if it is not inserted into
+     *  the document tree using insertSubTree().
+     ** @param  tree  variable that will store the pointer to the new subtree
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createExpandedSubTree(DSRDocumentSubTree *&tree) const;
 
     /** get template identifier and mapping resource from the root node of this tree.  See
      *  DSRDocumentTreeNode::getTemplateIdentification() for details on template identification.
