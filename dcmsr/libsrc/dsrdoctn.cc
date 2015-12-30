@@ -568,7 +568,7 @@ OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templ
     }
     if (result.good())
     {
-        if ((ValueType != VT_Container) && !templateIdentifier.empty())
+        if ((ValueType != VT_Container) && (ValueType != VT_includedTemplate) && !templateIdentifier.empty())
             DCMSR_WARN("Template identification should only be specified for CONTAINER content items");
         /* set current values, might be empty */
         TemplateIdentifier = templateIdentifier;

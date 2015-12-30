@@ -142,6 +142,7 @@ const size_t DSRTypes::PF_printInvalidCodes              = 1 << 9;
 const size_t DSRTypes::PF_printNodeID                    = 1 << 10;
 const size_t DSRTypes::PF_indicateEnhancedEncodingMode   = 1 << 11;
 const size_t DSRTypes::PF_printAnnotation                = 1 << 12;
+const size_t DSRTypes::PF_printIncludedTemplateNode      = 1 << 13;
 /* shortcuts */
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
@@ -334,23 +335,24 @@ static const S_RelationshipTypeNameMap RelationshipTypeNameMap[] =
 
 static const S_ValueTypeNameMap ValueTypeNameMap[] =
 {
-    {DSRTypes::VT_invalid,     "",               "item",      "invalid/unknown value type"},
-    {DSRTypes::VT_Text,        "TEXT",           "text",      "Text"},
-    {DSRTypes::VT_Code,        "CODE",           "code",      "Code"},
-    {DSRTypes::VT_Num,         "NUM",            "num",       "Number"},
-    {DSRTypes::VT_DateTime,    "DATETIME",       "datetime",  "Date/Time"},
-    {DSRTypes::VT_Date,        "DATE",           "date",      "Date"},
-    {DSRTypes::VT_Time,        "TIME",           "time",      "Time"},
-    {DSRTypes::VT_UIDRef,      "UIDREF",         "uidref",    "UID Reference"},
-    {DSRTypes::VT_PName,       "PNAME",          "pname",     "Person Name"},
-    {DSRTypes::VT_SCoord,      "SCOORD",         "scoord",    "Spatial Coordinates"},
-    {DSRTypes::VT_SCoord3D,    "SCOORD3D",       "scoord3d",  "Spatial Coordinates (3D)"},
-    {DSRTypes::VT_TCoord,      "TCOORD",         "tcoord",    "Temporal Coordinates"},
-    {DSRTypes::VT_Composite,   "COMPOSITE",      "composite", "Composite Object"},
-    {DSRTypes::VT_Image,       "IMAGE",          "image",     "Image"},
-    {DSRTypes::VT_Waveform,    "WAVEFORM",       "waveform",  "Waveform"},
-    {DSRTypes::VT_Container,   "CONTAINER",      "container", "Container"},
-    {DSRTypes::VT_byReference, "(by-reference)", "reference", "(by-reference)"}
+    {DSRTypes::VT_invalid,          "",               "item",      "invalid/unknown value type"},
+    {DSRTypes::VT_Text,             "TEXT",           "text",      "Text"},
+    {DSRTypes::VT_Code,             "CODE",           "code",      "Code"},
+    {DSRTypes::VT_Num,              "NUM",            "num",       "Number"},
+    {DSRTypes::VT_DateTime,         "DATETIME",       "datetime",  "Date/Time"},
+    {DSRTypes::VT_Date,             "DATE",           "date",      "Date"},
+    {DSRTypes::VT_Time,             "TIME",           "time",      "Time"},
+    {DSRTypes::VT_UIDRef,           "UIDREF",         "uidref",    "UID Reference"},
+    {DSRTypes::VT_PName,            "PNAME",          "pname",     "Person Name"},
+    {DSRTypes::VT_SCoord,           "SCOORD",         "scoord",    "Spatial Coordinates"},
+    {DSRTypes::VT_SCoord3D,         "SCOORD3D",       "scoord3d",  "Spatial Coordinates (3D)"},
+    {DSRTypes::VT_TCoord,           "TCOORD",         "tcoord",    "Temporal Coordinates"},
+    {DSRTypes::VT_Composite,        "COMPOSITE",      "composite", "Composite Object"},
+    {DSRTypes::VT_Image,            "IMAGE",          "image",     "Image"},
+    {DSRTypes::VT_Waveform,         "WAVEFORM",       "waveform",  "Waveform"},
+    {DSRTypes::VT_Container,        "CONTAINER",      "container", "Container"},
+    {DSRTypes::VT_byReference,      "(by-reference)", "reference", "(by-reference)"},
+    {DSRTypes::VT_includedTemplate, "(template)",     "template",  "(template)"}
 };
 
 

@@ -26,6 +26,8 @@
 #include "dcmtk/dcmsr/dsrdocst.h"
 #include "dcmtk/dcmsr/dsrcontn.h"
 #include "dcmtk/dcmsr/dsrreftn.h"
+#include "dcmtk/dcmsr/dsrtpltn.h"
+#include "dcmtk/dcmsr/dsrstpl.h"
 #include "dcmtk/dcmsr/dsriodcc.h"
 
 
@@ -147,7 +149,8 @@ OFBool DSRDocumentSubTree::canUseTemplateIdentification() const
 
 
 OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
-                                      const size_t flags)
+                                      const size_t flags,
+                                      const OFString &linePrefix)
 {
     OFCondition result = EC_Normal;
     DSRDocumentTreeNodeCursor cursor(getRoot());
@@ -158,64 +161,89 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
         /* update the document tree for output (if needed) */
         updateTreeForOutput();
         OFString tmpString;
-        size_t level = 0;
         const DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
             node = cursor.getNode();
             if (node != NULL)
             {
-                /* print node ID (might be useful for debugging purposes) */
-                if (flags & PF_printNodeID)
-                    stream << "id:" << node->getNodeID() << " ";
-                /* print node position */
-                if (flags & PF_printItemPosition)
+                /* special handling for included templates */
+                if (node->getValueType() == VT_includedTemplate)
                 {
-                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION)
-                    stream << cursor.getPosition(tmpString) << "  ";
-                } else {
-                    /* use line indentation */
-                    level = cursor.getLevel();
-                    if (level > 0)  // valid ?
-                        stream << OFString((level - 1) * 2, ' ');
-                }
-                /* print node content */
-                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                stream << "<";
-                result = node->print(stream, flags);
-                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                stream << ">";
-                /* print observation date/time (optional) */
-                if (!node->getObservationDateTime().empty())
-                {
-                    stream << " {" << dicomToReadableDateTime(node->getObservationDateTime(), tmpString) << "}";
-                }
-                /* print annotation (optional) */
-                if (node->hasAnnotation() && (flags & PF_printAnnotation))
-                {
-                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ANNOTATION)
-                    stream << "  \"" << node->getAnnotation().getText() << "\"";
-                }
-                /* print template identification (conditional) */
-                if (node->hasTemplateIdentification() && (flags & PF_printTemplateIdentification))
-                {
-                    OFString templateIdentifier;
-                    OFString mappingResource;
-                    OFString mappingResourceUID;
-                    if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
+                    OFString newPrefix(linePrefix);
+                    /* prepare line prefix for nested content */
+                    if (flags & PF_printItemPosition)
                     {
-                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                        stream << "  # ";
-                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
-                        stream << "TID " << templateIdentifier;
-                        stream << " (" << mappingResource;
-                        if (!mappingResourceUID.empty())
-                            stream << ", " << mappingResourceUID;
-                        stream << ")";
+                        DSRDocumentTreeNodeCursor parentCursor(cursor);
+                        if (parentCursor.gotoParent() > 0)
+                        {
+                            newPrefix += parentCursor.getPosition(tmpString);
+                            newPrefix += '.';
+                        }
+                    } else {
+                        /* use line indentation */
+                        const size_t level = cursor.getLevel();
+                        if (level > 0)  // valid ?
+                            newPrefix += OFString((level - 1) * 2, ' ');
                     }
+                    /* print separate line for internal template node (if enabled) */
+                    node->print(stream, flags);
+                    /* print content of referenced template (typecast needed here) */
+                    result = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, newPrefix);
+                } else {
+                    /* print node ID (might be useful for debugging purposes) */
+                    if (flags & PF_printNodeID)
+                        stream << "id:" << node->getNodeID() << " ";
+                    /* print node position */
+                    if (flags & PF_printItemPosition)
+                    {
+                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION)
+                        stream << linePrefix << cursor.getPosition(tmpString) << "  ";
+                    } else {
+                        stream << linePrefix;
+                        /* use line indentation */
+                        const size_t level = cursor.getLevel();
+                        if (level > 0)  // valid ?
+                            stream << OFString((level - 1) * 2, ' ');
+                    }
+                    /* print node content */
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                    stream << "<";
+                    result = node->print(stream, flags);
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                    stream << ">";
+                    /* print observation date/time (optional) */
+                    if (!node->getObservationDateTime().empty())
+                    {
+                        stream << " {" << dicomToReadableDateTime(node->getObservationDateTime(), tmpString) << "}";
+                    }
+                    /* print annotation (optional) */
+                    if (node->hasAnnotation() && (flags & PF_printAnnotation))
+                    {
+                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ANNOTATION)
+                        stream << "  \"" << node->getAnnotation().getText() << "\"";
+                    }
+                    /* print template identification (conditional) */
+                    if (node->hasTemplateIdentification() && (flags & PF_printTemplateIdentification))
+                    {
+                        OFString templateIdentifier;
+                        OFString mappingResource;
+                        OFString mappingResourceUID;
+                        if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
+                        {
+                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                            stream << "  # ";
+                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
+                            stream << "TID " << templateIdentifier;
+                            stream << " (" << mappingResource;
+                            if (!mappingResourceUID.empty())
+                                stream << ", " << mappingResourceUID;
+                            stream << ")";
+                        }
+                    }
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
+                    stream << OFendl;
                 }
-                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
-                stream << OFendl;
             } else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.iterate());
@@ -735,6 +763,33 @@ size_t DSRDocumentSubTree::removeNode()
 {
     /* might add further checks later on */
     return DSRTree<DSRDocumentTreeNode>::removeNode();
+}
+
+
+OFCondition DSRDocumentSubTree::includeTemplate(const DSRSharedSubTemplate &subTemplate,
+                                                const E_AddMode addMode,
+                                                const E_RelationshipType defaultRelType)
+{
+    OFCondition result = EC_Normal;
+    /* make sure that managed object exists */
+    if (subTemplate)
+    {
+        /* create node that stores the reference to the included template */
+        DSRDocumentTreeNode *node = new DSRIncludedTemplateTreeNode(subTemplate, defaultRelType);
+        if (node != NULL)
+        {
+            /* check whether adding the node actually works */
+            if (addNode(node, addMode) == 0)
+            {
+                result = SR_EC_CannotAddContentItem;
+                /* if not, delete node */
+                delete node;
+            }
+        } else
+            result = EC_MemoryExhausted;
+    } else
+        result = EC_IllegalParameter;
+    return result;
 }
 
 

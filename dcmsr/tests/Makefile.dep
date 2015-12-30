@@ -126,7 +126,8 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrtcoto.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrimgvl.h ../include/dcmtk/dcmsr/dsrimgfr.h \
  ../include/dcmtk/dcmsr/dsrimgse.h ../include/dcmtk/dcmsr/dsrwavvl.h \
- ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrrtpl.h \
+ ../include/dcmtk/dcmsr/dsrwavch.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmsr/dsrrtpl.h \
  ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/dsrsoprf.h \
  ../include/dcmtk/dcmsr/dsrrefin.h ../include/dcmtk/dcmsr/dsrcsidl.h
 tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -317,13 +318,16 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrcomvl.h ../include/dcmtk/dcmsr/dsrimgvl.h \
  ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrimgse.h \
  ../include/dcmtk/dcmsr/dsrwavvl.h ../include/dcmtk/dcmsr/dsrwavch.h \
- ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/cmr/cid7452.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmsr/dsrctpl.h \
+ ../include/dcmtk/dcmsr/cmr/cid7452.h \
  ../include/dcmtk/dcmsr/cmr/cid7453.h \
  ../include/dcmtk/dcmsr/cmr/tid1204.h \
  ../include/dcmtk/dcmsr/cmr/cid5000.h \
  ../include/dcmtk/dcmsr/cmr/cid5001.h \
+ ../include/dcmtk/dcmsr/cmr/tid1500.h ../include/dcmtk/dcmsr/dsrrtpl.h \
  ../include/dcmtk/dcmsr/cmr/tid1600.h \
  ../include/dcmtk/dcmsr/cmr/cid4021.h \
+ ../include/dcmtk/dcmsr/cmr/cid7021.h \
  ../include/dcmtk/dcmsr/cmr/srnumvl.h
 tsrcodvl.o: tsrcodvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
@@ -570,7 +574,8 @@ tsrdoc.o: tsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrtcoto.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrimgvl.h ../include/dcmtk/dcmsr/dsrimgfr.h \
  ../include/dcmtk/dcmsr/dsrimgse.h ../include/dcmtk/dcmsr/dsrwavvl.h \
- ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrrtpl.h \
+ ../include/dcmtk/dcmsr/dsrwavch.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmsr/dsrrtpl.h \
  ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/dsrsoprf.h \
  ../include/dcmtk/dcmsr/dsrrefin.h ../include/dcmtk/dcmsr/dsrcsidl.h
 tsrdoctr.o: tsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -702,7 +707,8 @@ tsrdoctr.o: tsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrtcoto.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrimgvl.h ../include/dcmtk/dcmsr/dsrimgfr.h \
  ../include/dcmtk/dcmsr/dsrimgse.h ../include/dcmtk/dcmsr/dsrwavvl.h \
- ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrrtpl.h \
+ ../include/dcmtk/dcmsr/dsrwavch.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmsr/dsrrtpl.h \
  ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/dsrsoprf.h \
  ../include/dcmtk/dcmsr/dsrrefin.h ../include/dcmtk/dcmsr/dsrcsidl.h \
  ../include/dcmtk/dcmsr/dsrnumtn.h ../include/dcmtk/dcmsr/dsrtextn.h \
@@ -954,7 +960,8 @@ tsrtpl.o: tsrtpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrtcoto.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrimgvl.h ../include/dcmtk/dcmsr/dsrimgfr.h \
  ../include/dcmtk/dcmsr/dsrimgse.h ../include/dcmtk/dcmsr/dsrwavvl.h \
- ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrrtpl.h \
+ ../include/dcmtk/dcmsr/dsrwavch.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmsr/dsrrtpl.h \
  ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/dsrsoprf.h \
  ../include/dcmtk/dcmsr/dsrrefin.h ../include/dcmtk/dcmsr/dsrcsidl.h \
  ../include/dcmtk/dcmsr/dsrstpl.h

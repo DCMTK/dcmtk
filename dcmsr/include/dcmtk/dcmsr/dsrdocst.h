@@ -30,14 +30,23 @@
 #include "dcmtk/dcmsr/dsrdoctn.h"
 #include "dcmtk/dcmsr/dsrcitem.h"
 
+#include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/dcmdata/dcitem.h"
 
 
-/*-----------------------*
- *  forward declaration  *
- *-----------------------*/
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
 
 class DSRIODConstraintChecker;
+class DSRSubTemplate;
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+typedef OFshared_ptr<DSRSubTemplate> DSRSharedSubTemplate;
 
 
 /*--------------------------*
@@ -131,12 +140,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     virtual OFBool canUseTemplateIdentification() const;
 
     /** print current SR document tree to specified output stream
-     ** @param  stream  output stream
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @param  stream      output stream
+     *  @param  flags       flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  linePrefix  string that is prepended to each output line (optional)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition print(STD_NAMESPACE ostream &stream,
-                              const size_t flags = 0);
+                              const size_t flags = 0,
+                              const OFString &linePrefix = "");
 
     /** get reference to current content item.
      *  This mechanism allows to access all content items without using pointers.
@@ -504,6 +515,27 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *          occurred or the tree is now empty.
      */
     virtual size_t removeNode();
+
+    /** include specified sub-template, i.e.\ add a new DSRIncludedTemplateTreeNode, which
+     *  references this template, to the current content item.
+     *  Please note that no checks are performed that would make sure that the template
+     *  with its top-level nodes can actually be added, e.g. by using an IOD constraint
+     *  checker.  This is also the reason why this method is "protected" and not "public",
+     *  i.e. it can only be used by derived classes, e.g. DSRSubTemplate and its children.
+     ** @param  subTemplate     shared pointer to a sub-template that should be included
+     *                          into this tree (at the current position)
+     *  @param  addMode         flag specifying at which position to add the 'subTemplate'
+     *                          (e.g. after or below the current node)
+     *  @param  defaultRelType  default relationship type that will be used when the
+     *                          subtree that is managed by the 'subTemplate' is inserted
+     *                          into this tree and the relationship type of one of the
+     *                          top-level nodes is "unknown".  Also see documentation of
+     *                          createExpandedTree().
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition includeTemplate(const DSRSharedSubTemplate &subTemplate,
+                                        const E_AddMode addMode = AM_belowCurrent,
+                                        const E_RelationshipType defaultRelType = RT_unknown);
 
     /** check the by-reference relationships (if any) for validity.
      *  This function checks whether all by-reference relationships possibly contained

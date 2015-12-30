@@ -437,6 +437,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// print annotation of a content item (optional, e.g. user-defined information)
     static const size_t PF_printAnnotation;
 
+    /// print internal "included template" node (might be useful for debugging purposes)
+    static const size_t PF_printIncludedTemplateNode;
+
     /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;
     //@}
@@ -570,6 +573,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         VT_Container,
         /// internal type used to indicate by-reference relationships
         VT_byReference,
+        /// internal type used to indicate (enclose) included templates
+        VT_includedTemplate,
         /// internal type used to mark the last entry
         VT_last = VT_byReference
     };
