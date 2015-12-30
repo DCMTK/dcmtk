@@ -32,6 +32,7 @@
 #include "dcmtk/ofstd/ofcond.h"     /* for OFCondition */
 #include "dcmtk/ofstd/oflimits.h"   /* for OFnumeric_limits<T>::max() */
 
+#define INCLUDE_CASSERT
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -630,7 +631,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** convert character string to an octal format stream.
      *  All non-ASCII and control characters (code < #32 and >= #127) are converted to their
-     *  octal representation, i.e. to '\ooo' where 'ooo' are the three octal digits of the
+     *  octal representation, i.e. to '\\ooo' where 'ooo' are the three octal digits of the
      *  character.  All other characters are output as is.  See section 6.1.2.3 in DICOM PS 3.5.
      ** @param out stream used for the output
      *  @param sourceString source string to be converted.  May contain one or more NULL bytes.
@@ -644,7 +645,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** convert character string to an octal format string.
      *  All non-ASCII and control characters (code < #32 and >= #127) are converted to their
-     *  octal representation, i.e. to '\ooo' where 'ooo' are the three octal digits of the
+     *  octal representation, i.e. to '\\ooo' where 'ooo' are the three octal digits of the
      *  character.  All other characters are output as is.  See section 6.1.2.3 in DICOM PS 3.5.
      ** @param sourceString source string to be converted.  May contain one or more NULL bytes.
      *  @param octalString reference to character string where the result should be stored
@@ -834,16 +835,16 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static inline OFBool check32BitAddOverflow(const Uint32 summand1,
                                                const Uint32 summand2)
-     {
-       return (0xffffffff - summand1 < summand2);
-     }
+    {
+      return (0xffffffff - summand1 < summand2);
+    }
 
-    /** check whether subtraction is safe (i.e. no underflow occurs) and if so,
-     *  perform it (i.e. compute minuend-subtrahend=difference). Only works for
+    /** check whether subtraction is safe (i.e.\ no underflow occurs) and if so,
+     *  perform it (i.e.\ compute minuend-subtrahend=difference). Only works for
      *  unsigned types.
      *  @param minuend number to subtract from
      *  @param subtrahend number to subtract from minuend
-     *  @param difference difference, if subraction is safe, otherwise the
+     *  @param difference difference, if subtraction is safe, otherwise the
      *    parameter value is not touched by the function
      *  @return OFTrue if subtraction is safe and could be performed, OFFalse
      *   otherwise
@@ -861,8 +862,8 @@ class DCMTK_OFSTD_EXPORT OFStandard
       }
     }
 
-    /** check whether addition is safe (i.e. no overflow occurs) and if so,
-     *  perform it (i.e. compute a+b=sum). Only works for unsigned types.
+    /** check whether addition is safe (i.e.\ no overflow occurs) and if so,
+     *  perform it (i.e.\ compute a+b=sum). Only works for unsigned types.
      *  @param a first number to add
      *  @param b second number to add
      *  @param sum resulting sum of both numbers, if addition is safe, otherwise
@@ -911,7 +912,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
 
     /** On Posix-like platform, this method executes setuid(getuid()),
      *  which causes the application to revert from root privileges to
-     *  thos of the calling user when the program is installed as
+     *  those of the calling user when the program is installed as
      *  setuid root. DCMTK command line tools that open a socket for
      *  incoming DICOM network connections will call this method immediately
      *  after opening the socket. Since DICOM by default operates on
