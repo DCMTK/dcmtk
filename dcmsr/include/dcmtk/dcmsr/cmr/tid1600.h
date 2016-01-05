@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1600_ImageLibrary
@@ -22,9 +22,9 @@
 #include "dcmtk/dcmsr/cmr/cid4021.h"
 
 
-/*-----------------------*
+/*------------------------*
  *  constant definitions  *
- *-----------------------*/
+ *------------------------*/
 
 /** @name specific error conditions for TID 1600 in module dcmsr/cmr
  */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1204_LanguageOfContentItemAndDescendants
@@ -27,7 +27,7 @@
  *---------------------*/
 
 /** Implementation of DCMR Template:
- *  TID 1204 - Language of Content Item and Descendants
+ *  TID 1204 - Language of Content Item and Descendants.
  *  All added content items are annotated with a text in the format "TID 1204 - Row [n]".
  */
 class DCMTK_CMR_EXPORT TID1204_LanguageOfContentItemAndDescendants
