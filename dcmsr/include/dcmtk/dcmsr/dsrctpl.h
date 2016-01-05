@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -127,9 +127,12 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
 
     /** reserve a certain number of entries in the list of node IDs.  Using this method
      *  can help to avoid unwanted memory allocations and copying of list entries.
-     ** @param  count  number of entries to be reserved (for later use)
+     ** @param  count       number of entries to be reserved (for later use)
+     *  @param  initialize  initialize all entries with a value of 0 if OFTrue, just
+     *                      reserve but do not create them otherwise (default)
      */
-    void reserveEntriesInNodeList(const size_t count);
+    void reserveEntriesInNodeList(const size_t count,
+                                  const OFBool initialize = OFFalse);
 
     /** store given entry at a certain position in the list of node IDs
      ** @param  pos     index of the list entry to use for storage (starting from 0)

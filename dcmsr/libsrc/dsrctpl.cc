@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -93,9 +93,18 @@ void DSRTemplateCommon::clearEntriesInNodeList()
 }
 
 
-void DSRTemplateCommon::reserveEntriesInNodeList(const size_t count)
+void DSRTemplateCommon::reserveEntriesInNodeList(const size_t count,
+                                                 const OFBool initialize)
 {
-    NodeList.reserve(count);
+    /* check whether the entries should be initialized... */
+    if (initialize)
+    {
+        NodeList.resize(count);
+        clearEntriesInNodeList();
+    } else {
+        /* ... or only reserved (not created and initialized) */
+        NodeList.reserve(count);
+    }
 }
 
 
