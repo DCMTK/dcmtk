@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -70,7 +70,9 @@ DSRDocumentTree *DSRRootTemplate::cloneTree() const
 
 void DSRRootTemplate::clear()
 {
+    /* call clear() method of base classes */
     DSRDocumentTree::clear();
+    DSRTemplateCommon::clear();
 }
 
 
