@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -63,7 +63,7 @@ OFTEST(dcmsr_changeDocumentType_2)
     /* and, try to change the document type */
     OFCHECK(doc.changeDocumentType(DSRTypes::DT_BasicTextSR).bad());
     OFCHECK(doc.changeDocumentType(DSRTypes::DT_EnhancedSR).bad());
-    OFCHECK(doc.changeDocumentType(DSRTypes::DT_ColonCadSR).bad());
+    OFCHECK(doc.changeDocumentType(DSRTypes::DT_XRayRadiationDoseSR).bad());
     OFCHECK(doc.changeDocumentType(DSRTypes::DT_Comprehensive3DSR).good());
     OFCHECK(doc.changeDocumentType(DSRTypes::DT_ComprehensiveSR).good());
 }
