@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -136,6 +136,9 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
 
     using DSRDocumentTree::getDocumentType;
     using DSRDocumentTree::print;
+    using DSRDocumentTree::write;
+    using DSRDocumentTree::writeXML;
+    using DSRDocumentTree::renderHTML;
     using DSRDocumentTree::countNodes;
     using DSRDocumentTree::gotoNamedNode;
     using DSRDocumentTree::gotoNextNamedNode;

@@ -127,7 +127,53 @@ OFCondition DSRIncludedTemplateTreeNode::printTemplate(STD_NAMESPACE ostream &st
 }
 
 
+OFCondition DSRIncludedTemplateTreeNode::write(DcmItem &dataset,
+                                               DcmStack *markedItems)
+{
+    /* write content of included template */
+    return ReferencedTemplate->write(dataset, markedItems);
+}
+
+
+OFCondition DSRIncludedTemplateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
+                                                  const size_t flags) const
+{
+    /* write content of included template in XML format */
+    return ReferencedTemplate->writeXML(stream, flags);
+}
+
+
+OFCondition DSRIncludedTemplateTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
+                                                    STD_NAMESPACE ostream &annexStream,
+                                                    const size_t nestingLevel,
+                                                    size_t &annexNumber,
+                                                    const size_t flags) const
+{
+    /* render content of included template in HTML/XHTML format */
+    return ReferencedTemplate->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags);
+}
+
+
 // protected methods
+
+OFCondition DSRIncludedTemplateTreeNode::read(DcmItem & /*dataset*/,
+                                              const DSRIODConstraintChecker * /*constraintChecker*/,
+                                              const size_t /*flags*/)
+{
+    /* invalid: no content to read */
+    return EC_IllegalCall;
+}
+
+
+OFCondition DSRIncludedTemplateTreeNode::readXML(const DSRXMLDocument & /*doc*/,
+                                                 DSRXMLCursor /*cursor*/,
+                                                 const E_DocumentType /*documentType*/,
+                                                 const size_t /*flags*/)
+{
+    /* invalid: no content to read */
+    return EC_IllegalCall;
+}
+
 
 OFCondition DSRIncludedTemplateTreeNode::setConceptName(const DSRCodedEntryValue & /*conceptName*/,
                                                         const OFBool /*check*/)

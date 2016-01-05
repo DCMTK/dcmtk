@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -128,6 +128,9 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
   // --- introduce some methods from base class to public API
 
     using DSRDocumentSubTree::print;
+    using DSRDocumentSubTree::write;
+    using DSRDocumentSubTree::writeXML;
+    using DSRDocumentSubTree::renderHTML;
     using DSRDocumentSubTree::countNodes;
     using DSRDocumentSubTree::gotoNamedNode;
     using DSRDocumentSubTree::gotoNextNamedNode;

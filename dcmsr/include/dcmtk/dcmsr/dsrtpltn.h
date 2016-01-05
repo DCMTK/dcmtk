@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -108,6 +108,38 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
                                       const size_t flags,
                                       const OFString &linePrefix) const;
 
+    /** write content of included template to dataset
+     ** @param  dataset      DICOM dataset to which the template should be written
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *                       Can be used to digitally sign parts of the document tree.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmItem &dataset,
+                              DcmStack *markedItems = NULL);
+
+    /** write content of included template in XML format
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
+                                 const size_t flags) const;
+
+    /** render content of included template in HTML/XHTML format
+     ** @param  docStream     output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
+                                   STD_NAMESPACE ostream &annexStream,
+                                   const size_t nestingLevel,
+                                   size_t &annexNumber,
+                                   const size_t flags) const;
 
   protected:
 
@@ -118,6 +150,28 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     {
         return ReferencedTemplate.get();
     }
+
+    /** read content item from dataset
+     ** @param  dataset            dummy parameter
+     *  @param  constraintChecker  dummy parameter
+     *  @param  flags              dummy parameter
+     ** @return always returns EC_IllegalCall, since this method should not be called
+     */
+    virtual OFCondition read(DcmItem &dataset,
+                             const DSRIODConstraintChecker *constraintChecker,
+                             const size_t flags);
+
+    /** read general XML document tree node data
+     ** @param  doc           dummy parameter
+     *  @param  cursor        dummy parameter
+     *  @param  documentType  dummy parameter
+     *  @param  flags         dummy parameter
+     ** @return always returns EC_IllegalCall, since this method should not be called
+     */
+    virtual OFCondition readXML(const DSRXMLDocument &doc,
+                                DSRXMLCursor cursor,
+                                const E_DocumentType documentType,
+                                const size_t flags);
 
     /** set the concept name
      ** @param  conceptName  dummy parameter
