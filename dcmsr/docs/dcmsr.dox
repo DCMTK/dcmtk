@@ -20,6 +20,12 @@ Here are some further classes that are useful when implementing SR templates:
 \li \b DSRRootTemplate
 \li \b DSRSubTemplate
 
+Currently, the following SR templates are implemented (see notes for details):
+\li \b TID1001_ObservationContext
+\li \b TID1204_LanguageOfContentItemAndDescendants
+\li \b TID1500_MeasurementReport
+\li \b TID1600_ImageLibrary
+
 \section Tools
 
 This module contains the following command line tools:
