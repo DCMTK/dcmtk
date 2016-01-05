@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1001_ObservationContext
@@ -71,14 +71,14 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
         if (organizationRole.hasSelectedValue())
         {
             CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_PersonObserverRoleInTheOrganization));
-            CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(organizationRole.getSelectedValue(), check));
+            CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(organizationRole, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1003 - Row 3"));
         }
         /* TID 1003 (Person Observer Identifying Attributes) Row 4 */
         if (procedureRole.hasSelectedValue())
         {
             CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_PersonObserverRoleInThisProcedure));
-            CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(procedureRole.getSelectedValue(), check));
+            CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(procedureRole, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1003 - Row 4"));
         }
         /* if everything was OK, insert new subtree into the template */
