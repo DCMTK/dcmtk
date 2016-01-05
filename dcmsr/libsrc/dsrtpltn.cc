@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -109,6 +109,9 @@ OFCondition DSRIncludedTemplateTreeNode::print(STD_NAMESPACE ostream &stream,
             stream << " with default relationship type "
                    << relationshipTypeToDefinedTerm(getRelationshipType());
         }
+        /* print annotation (optional) */
+        if (hasAnnotation() && (flags & PF_printAnnotation))
+            stream << "  \"" << getAnnotation().getText() << "\"";
         stream << OFendl;
     }
     return EC_Normal;
