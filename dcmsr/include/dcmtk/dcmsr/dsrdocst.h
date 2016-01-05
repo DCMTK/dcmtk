@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,13 +149,47 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
     /** print current SR document tree to specified output stream
      ** @param  stream      output stream
-     *  @param  flags       flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  flags       optional flag used to customize the output (see DSRTypes::PF_xxx)
      *  @param  linePrefix  string that is prepended to each output line (optional)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition print(STD_NAMESPACE ostream &stream,
                               const size_t flags = 0,
                               const OFString &linePrefix = "");
+
+    /** write current SR document tree to DICOM dataset
+     ** @param  dataset      reference to DICOM dataset where the current tree should be
+     *                       written to.  The 'dataset' is not cleared before writing to it!
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *                       Can be used to digitally sign parts of the document tree.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmItem &dataset,
+                              DcmStack *markedItems = NULL);
+
+    /** write current SR document tree in XML format
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
+                                 const size_t flags = 0);
+
+    /** render current SR document tree in HTML/XHTML format
+     ** @param  docStream     output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
+                                   STD_NAMESPACE ostream &annexStream,
+                                   const size_t nestingLevel,
+                                   size_t &annexNumber,
+                                   const size_t flags);
 
     /** get reference to current content item.
      *  This mechanism allows to access all content items without using pointers.

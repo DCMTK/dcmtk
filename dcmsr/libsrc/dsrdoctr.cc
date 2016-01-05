@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -202,73 +202,13 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRDocumentTree::write(DcmItem &dataset,
-                                   DcmStack *markedItems)
-{
-    OFCondition result = SR_EC_InvalidDocumentTree;
-    /* check whether root node has correct relationship and value type */
-    if (isValid())
-    {
-        DSRDocumentTreeNode *node = getRoot();
-        if (node != NULL)
-        {
-            /* check and update by-reference relationships (if applicable) */
-            checkByReferenceRelationships(CM_updatePositionString);
-            /* update the document tree for output (if needed) */
-            updateTreeForOutput();
-            /* start writing from root node */
-            result = node->write(dataset, markedItems);
-        }
-    }
-    return result;
-}
-
-
-OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream &stream,
-                                      const size_t flags)
-{
-    OFCondition result = SR_EC_InvalidDocumentTree;
-    /* check whether root node has correct relationship and value type */
-    if (isValid())
-    {
-        DSRDocumentTreeNode *node = getRoot();
-        /* start writing from root node */
-        if (node != NULL)
-        {
-            /* check by-reference relationships (if applicable) */
-            checkByReferenceRelationships(CM_resetReferenceTargetFlag);
-            /* update the document tree for output (if needed) */
-            updateTreeForOutput();
-            /* start writing from root node */
-            result = node->writeXML(stream, flags);
-        }
-    }
-    return result;
-}
-
-
 OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
                                         STD_NAMESPACE ostream &annexStream,
                                         const size_t flags)
 {
-    OFCondition result = SR_EC_InvalidDocumentTree;
-    /* check whether root node has correct relationship and value type */
-    if (isValid())
-    {
-        DSRDocumentTreeNode *node = getRoot();
-        /* start rendering from root node */
-        if (node != NULL)
-        {
-            /* check by-reference relationships (if applicable) */
-            checkByReferenceRelationships(CM_resetReferenceTargetFlag);
-            /* update the document tree for output (if needed) */
-            updateTreeForOutput();
-            size_t annexNumber = 1;
-            /* start rendering from root node */
-            result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly);
-        }
-    }
-    return result;
+    size_t annexNumber = 1;
+    /* call the function doing the real work */
+    return DSRDocumentSubTree::renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags);
 }
 
 

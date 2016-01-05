@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,17 +104,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
                              const E_DocumentType documentType,
                              const size_t flags = 0);
 
-    /** write current SR document tree to DICOM dataset
-     ** @param  dataset      reference to DICOM dataset where the current tree should be
-     *                       written to.  The 'dataset' is not cleared before writing to it!
-     *  @param  markedItems  optional stack where pointers to all 'marked' content items
-     *                       (DICOM datasets/items) are added to during the write process.
-     *                       Can be used to digitally sign parts of the document tree.
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition write(DcmItem &dataset,
-                              DcmStack *markedItems = NULL);
-
     /** read XML document tree
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node
@@ -124,14 +113,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     virtual OFCondition readXML(const DSRXMLDocument &doc,
                                 DSRXMLCursor cursor,
                                 const size_t flags);
-
-    /** write current SR document tree in XML format
-     ** @param  stream  output stream to which the XML document is written
-     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags);
 
     /** render current SR document tree in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written

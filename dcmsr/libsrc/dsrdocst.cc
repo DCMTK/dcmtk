@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -265,6 +265,77 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
             } else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.iterate());
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::write(DcmItem &dataset,
+                                      DcmStack *markedItems)
+{
+    OFCondition result = SR_EC_InvalidDocumentTree;
+    /* check whether document tree is valid */
+    if (isValid())
+    {
+        DSRDocumentTreeNode *node = getRoot();
+        if (node != NULL)
+        {
+            /* check and update by-reference relationships (if applicable) */
+            checkByReferenceRelationships(CM_updatePositionString);
+            /* update the document tree for output (if needed) */
+            updateTreeForOutput();
+            /* start writing from root node */
+            result = node->write(dataset, markedItems);
+        }
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::writeXML(STD_NAMESPACE ostream &stream,
+                                         const size_t flags)
+{
+    OFCondition result = SR_EC_InvalidDocumentTree;
+    /* check whether document tree is valid */
+    if (isValid())
+    {
+        DSRDocumentTreeNode *node = getRoot();
+        /* start writing from root node */
+        if (node != NULL)
+        {
+            /* check by-reference relationships (if applicable) */
+            checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+            /* update the document tree for output (if needed) */
+            updateTreeForOutput();
+            /* start writing from root node */
+            result = node->writeXML(stream, flags);
+        }
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::renderHTML(STD_NAMESPACE ostream &docStream,
+                                           STD_NAMESPACE ostream &annexStream,
+                                           const size_t nestingLevel,
+                                           size_t &annexNumber,
+                                           const size_t flags)
+{
+    OFCondition result = SR_EC_InvalidDocumentTree;
+    /* check whether document tree is valid */
+    if (isValid())
+    {
+        DSRDocumentTreeNode *node = getRoot();
+        /* start rendering from root node */
+        if (node != NULL)
+        {
+            /* check by-reference relationships (if applicable) */
+            checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+            /* update the document tree for output (if needed) */
+            updateTreeForOutput();
+            /* start rendering from root node */
+            result = node->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_internalUseOnly);
+        }
     }
     return result;
 }
