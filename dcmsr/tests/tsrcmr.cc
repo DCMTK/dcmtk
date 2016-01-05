@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -41,6 +41,7 @@
 #include "dcmtk/dcmsr/cmr/cid10033e.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
 #include "dcmtk/dcmsr/cmr/tid1204.h"
+#include "dcmtk/dcmsr/cmr/tid1500.h"
 #include "dcmtk/dcmsr/cmr/tid1600.h"
 #include "dcmtk/dcmsr/cmr/srnumvl.h"
 
@@ -203,6 +204,56 @@ OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
     OFCHECK(lang.setLanguage(CID5000_Languages::German, CID5001_Countries::Germany).good());
     OFCHECK(lang.isValid());
     OFCHECK_EQUAL(lang.countNodes(), 2);
+}
+
+
+OFTEST(dcmsr_TID1500_MeasurementReport)
+{
+    TID1500_MeasurementReport report(CID7021_MeasurementReportDocumentTitles::ImagingMeasurementReport);
+    DSRCodedEntryValue title;
+    /* check initial settings */
+    OFCHECK(!report.isValid());
+    OFCHECK(report.getDocumentTitle(title).good());
+    OFCHECK(title == CODE_DCM_ImagingMeasurementReport);
+    /* create a new report */
+    OFCHECK(report.createNewMeasurementReport(CID7021_MeasurementReportDocumentTitles::PETMeasurementReport).good());
+    OFCHECK(report.getDocumentTitle(title).good());
+    OFCHECK(title == CODE_DCM_PETMeasurementReport);
+    /* set the language */
+    OFCHECK(report.setLanguage(CID5000_Languages::English).good());
+    /* set details on the observation context */
+    OFCHECK(report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization").good());
+    /* create new image library (needed after clear) */
+    OFCHECK(report.getImageLibrary().createNewImageLibrary().good());
+    /* set two values for "procedure reported" */
+    OFCHECK(!report.isValid());
+    OFCHECK(!report.hasProcedureReported());
+    OFCHECK(report.addProcedureReported(CID100_QuantitativeDiagnosticImagingProcedures::PETWholeBody).good());
+    OFCHECK(report.addProcedureReported(DSRCodedEntryValue("4711", "99TEST", "Some other test code")).good());
+    OFCHECK(report.hasProcedureReported());
+    OFCHECK(report.isValid());
+
+    // to be continued ...
+
+    /* check number of content items (expected) */
+    OFCHECK_EQUAL(report.getTree().countNodes(), 7);
+    /* create an expanded version of the tree */
+    DSRDocumentSubTree *tree = NULL;
+    OFCHECK(report.getTree().createExpandedSubTree(tree).good());
+    /* and check whether all content items are there */
+    if (tree != NULL)
+    {
+        OFCHECK_EQUAL(tree->countNodes(), 9);
+        delete tree;
+    } else
+        OFCHECK_FAIL("could create expanded tree");
+
+    /* output content of the tree (in debug mode only) */
+    if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        report.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                           DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printIncludedTemplateNode);
+    }
 }
 
 
