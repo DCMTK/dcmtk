@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CMR_SRNumericMeasurementValue
@@ -68,13 +68,13 @@ OFCondition CMR_SRNumericMeasurementValue::setNumericValueQualifier(CID42_Numeri
 OFCondition CMR_SRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const
 {
     /* first, perform some basic checks (done by the base class) */
-    OFCondition status = DSRNumericMeasurementValue::checkNumericValueQualifier(valueQualifier);
-    if (status.good() && !valueQualifier.isEmpty())
+    OFCondition result = DSRNumericMeasurementValue::checkNumericValueQualifier(valueQualifier);
+    if (result.good() && !valueQualifier.isEmpty())
     {
         /* then, also check for conformance with CID 42 */
         static const CID42_NumericValueQualifier contextGroup;
         if (contextGroup.findCodedEntry(valueQualifier).bad())
-            status = SR_EC_CodedEntryNotInContextGroup;
+            result = SR_EC_CodedEntryNotInContextGroup;
     }
-    return status;
+    return result;
 }
