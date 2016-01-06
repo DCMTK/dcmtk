@@ -523,7 +523,8 @@ OFCondition DSRDocumentSubTree::addContentItem(DSRDocumentTreeNode *node,
 
 OFCondition DSRDocumentSubTree::addContentItem(const E_RelationshipType relationshipType,
                                                const E_ValueType valueType,
-                                               const DSRCodedEntryValue &conceptName)
+                                               const DSRCodedEntryValue &conceptName,
+                                               const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* call the functions doing the real work */
@@ -532,7 +533,7 @@ OFCondition DSRDocumentSubTree::addContentItem(const E_RelationshipType relation
         if (!conceptName.isEmpty())
         {
             /* use a more appropriate error code than the one returned */
-            if (getCurrentContentItem().setConceptName(conceptName).bad())
+            if (getCurrentContentItem().setConceptName(conceptName, check).bad())
                 result = SR_EC_InvalidConceptName;
         }
     } else
@@ -543,7 +544,8 @@ OFCondition DSRDocumentSubTree::addContentItem(const E_RelationshipType relation
 
 OFCondition DSRDocumentSubTree::addChildContentItem(const E_RelationshipType relationshipType,
                                                     const E_ValueType valueType,
-                                                    const DSRCodedEntryValue &conceptName)
+                                                    const DSRCodedEntryValue &conceptName,
+                                                    const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* call the functions doing the real work */
@@ -552,7 +554,7 @@ OFCondition DSRDocumentSubTree::addChildContentItem(const E_RelationshipType rel
         if (!conceptName.isEmpty())
         {
             /* use a more appropriate error code than the one returned */
-            if (getCurrentContentItem().setConceptName(conceptName).bad())
+            if (getCurrentContentItem().setConceptName(conceptName, check).bad())
                 result = SR_EC_InvalidConceptName;
         }
     } else

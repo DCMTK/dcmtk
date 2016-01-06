@@ -326,11 +326,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *                            to the current one
      *  @param  valueType         value type of node to be added
      *  @param  conceptName       concept name of the node to be added
+     *  @param  check             if enabled, check 'conceptName for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition addContentItem(const E_RelationshipType relationshipType,
                                        const E_ValueType valueType,
-                                       const DSRCodedEntryValue &conceptName);
+                                       const DSRCodedEntryValue &conceptName,
+                                       const OFBool check = OFTrue);
 
     /** add specified content item below the current one.
      *  If possible, this method creates a new node as specified and adds it below the current
@@ -342,11 +344,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *                            to the current one
      *  @param  valueType         value type of node to be added
      *  @param  conceptName       concept name of the node to be added
+     *  @param  check             if enabled, check 'conceptName for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition addChildContentItem(const E_RelationshipType relationshipType,
                                             const E_ValueType valueType,
-                                            const DSRCodedEntryValue &conceptName);
+                                            const DSRCodedEntryValue &conceptName,
+                                            const OFBool check = OFTrue);
 
     /** add specified by-reference relationship to the current content item.
      *  If possible, this method creates a new pseudo-node (relationship) and adds it to the
