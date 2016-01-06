@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -248,6 +248,14 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      ** @return OFTrue if code is empty, OFFalse otherwise
      */
     virtual OFBool isEmpty() const;
+
+    /** check whether the current code is complete, i.e.\ whether the three mandatory
+     *  components of the code are non-empty.  This is just a basic check that might be useful
+     *  for "validating" input data.  See isValid() for a more sophisticated way of checking
+     *  the current code.
+     ** @return OFTrue if code is complete, OFFalse otherwise
+     */
+    virtual OFBool isComplete() const;
 
     /** print code.
      *  The output of a typical code triple looks like this: (1234,99_OFFIS_DCMTK,"Code

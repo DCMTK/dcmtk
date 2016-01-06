@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -25,6 +25,29 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmsr/dsrcodvl.h"
+
+
+OFTEST(dcmsr_validCompleteOrEmptyCode)
+{
+    /* first, define some code constants (disable check if needed) */
+    const DSRCodedEntryValue code1("0815", "99TEST", "some test code");
+    const DSRCodedEntryValue code2("0816", "99TEST", "", DSRTypes::CVT_Short, OFFalse /*check*/);
+    const DSRCodedEntryValue code3("a little too long\\with VM>1", "99TEST", "some invalid test code", DSRTypes::CVT_Short, OFFalse /*check*/);
+    const DSRCodedEntryValue code4("", "", "");
+    /* then, perform some tests with these codes */
+    OFCHECK(code1.isValid());
+    OFCHECK(code1.isComplete());
+    OFCHECK(!code1.isEmpty());
+    OFCHECK(!code2.isValid());
+    OFCHECK(!code2.isComplete());
+    //OFCHECK(!code2.isEmpty());    // doesn't work because incomplete codes are never accepted
+    OFCHECK(!code3.isValid());
+    OFCHECK(code3.isComplete());
+    OFCHECK(!code3.isEmpty());
+    OFCHECK(!code4.isValid());
+    OFCHECK(!code4.isComplete());
+    OFCHECK(code4.isEmpty());
+}
 
 
 OFTEST(dcmsr_setCodeValueType)
