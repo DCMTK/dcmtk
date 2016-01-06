@@ -81,22 +81,44 @@ OFBool TID1500_MeasurementReport::isValid() const
 
 OFBool TID1500_MeasurementReport::hasProcedureReported() const
 {
-    /* check for image library group (TID 1500 - Row 4) */
+    /* check for content item at TID 1500 (Measurement Report) Row 4 */
     return (getEntryFromNodeList(LAST_PROCEDURE_REPORTED) > 0);
 }
 
 
-OFBool TID1500_MeasurementReport::hasImagingMeasurements() const
+OFBool TID1500_MeasurementReport::hasImagingMeasurements(const OFBool checkChildren) const
 {
-    /* check for image library group (TID 1500 - Row 6) */
-    return (getEntryFromNodeList(IMAGING_MEASUREMENTS) > 0);
+    OFBool result = OFFalse;
+    /* need to check for child nodes? */
+    if (checkChildren)
+    {
+        DSRDocumentTreeNodeCursor cursor(getRoot());
+        /* go to content item at TID 1500 (Measurement Report) Row 6 */
+        if (gotoEntryFromNodeList(cursor, IMAGING_MEASUREMENTS) > 0)
+            result = cursor.hasChildNodes();
+    } else {
+        /* check for content item at TID 1500 (Measurement Report) Row 6 */
+        result = (getEntryFromNodeList(IMAGING_MEASUREMENTS) > 0);
+    }
+    return result;
 }
 
 
-OFBool TID1500_MeasurementReport::hasQualitativeEvaluations() const
+OFBool TID1500_MeasurementReport::hasQualitativeEvaluations(const OFBool checkChildren) const
 {
-    /* check for image library group (TID 1500 - Row 12) */
-    return (getEntryFromNodeList(QUALITATIVE_EVALUATIONS) > 0);
+    OFBool result = OFFalse;
+    /* need to check for child nodes? */
+    if (checkChildren)
+    {
+        DSRDocumentTreeNodeCursor cursor(getRoot());
+        /* go to content item at TID 1500 (Measurement Report) Row 12 */
+        if (gotoEntryFromNodeList(cursor, QUALITATIVE_EVALUATIONS) > 0)
+            result = cursor.hasChildNodes();
+    } else {
+        /* check for content item at TID 1500 (Measurement Report) Row 12 */
+        result = (getEntryFromNodeList(QUALITATIVE_EVALUATIONS) > 0);
+    }
+    return result;
 }
 
 

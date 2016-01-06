@@ -88,18 +88,26 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
      *  by the constructor of this class.  After clear() has been called or no document
      *  title is passed to the constructor, it can be created again by calling
      *  createNewMeasurementReport().
+     ** @param  checkChildren  optional flag indicating whether to also check for any
+     *                         children, i.e.\ whether the respective content item has
+     *                         child nodes.  By default, the presence of the higher-level
+     *                         CONTAINER is checked only.
      ** @return OFTrue if imaging measurements are present, OFFalse otherwise
      */
-    OFBool hasImagingMeasurements() const;
+    OFBool hasImagingMeasurements(const OFBool checkChildren = OFFalse) const;
 
     /** check whether there is an 'Qualitative Evaluations' content item (TID 1500 -
      *  Row 12) in this measurement report.  Initially, this conditional content item is
      *  created by the constructor of this class.  After clear() has been called or no
      *  document title is passed to the constructor, it can be created again by calling
      *  createNewMeasurementReport().
+     ** @param  checkChildren  optional flag indicating whether to also check for any
+     *                         children, i.e.\ whether the respective content item has
+     *                         child nodes.  By default, the presence of the higher-level
+     *                         CONTAINER is checked only.
      ** @return OFTrue if imaging measurements are present, OFFalse otherwise
      */
-    OFBool hasQualitativeEvaluations() const;
+    OFBool hasQualitativeEvaluations(const OFBool checkChildren = OFFalse) const;
 
     /** get language of this report as defined by TID 1204 (Language of Content Item and
      *  Descendants).  This included template is mandatory, i.e. should not be empty.

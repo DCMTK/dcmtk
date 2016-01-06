@@ -232,6 +232,11 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(report.addProcedureReported(DSRCodedEntryValue("4711", "99TEST", "Some other test code")).good());
     OFCHECK(report.hasProcedureReported());
     OFCHECK(report.isValid());
+    /* some further checks */
+    OFCHECK(report.hasImagingMeasurements());
+    OFCHECK(report.hasQualitativeEvaluations());
+    OFCHECK(!report.hasImagingMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(!report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
 
     // to be continued ...
 

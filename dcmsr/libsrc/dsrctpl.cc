@@ -128,6 +128,22 @@ size_t DSRTemplateCommon::getEntryFromNodeList(const size_t pos) const
 }
 
 
+size_t DSRTemplateCommon::gotoEntryFromNodeList(DSRDocumentTreeNodeCursor &cursor,
+                                                const size_t pos) const
+{
+    size_t nodeID = 0;
+    /* make sure that cursor is valid and list entry exists */
+    if ((cursor.isValid()) && (pos < NodeList.size()))
+    {
+        nodeID = NodeList[pos];
+        /* check whether current node is already the right one */
+        if (cursor.getNodeID() != nodeID)
+            nodeID = cursor.gotoNode(nodeID);
+    }
+    return nodeID;
+}
+
+
 size_t DSRTemplateCommon::gotoEntryFromNodeList(DSRDocumentSubTree *tree,
                                                 const size_t pos)
 {

@@ -27,6 +27,7 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrdoctn.h"
 
 
 /*-----------------------*
@@ -146,6 +147,15 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
      ** @return node ID that is stored at the given position, 0 if not found or set
      */
     size_t getEntryFromNodeList(const size_t pos) const;
+
+    /** set given cursor to a specific node
+     ** @param  cursor  reference to document tree node cursor that is used to start
+     *                  searching the node from and that is set afterwards
+     *  @param  pos     index of the list entry that stores the ID of the node
+     ** @return ID of the new current node within the tree if successful, 0 otherwise
+     */
+    size_t gotoEntryFromNodeList(DSRDocumentTreeNodeCursor &cursor,
+                                 const size_t pos) const;
 
     /** set internal cursor of a given document tree to a specific node
      ** @param  tree  pointer to document tree where nodes and cursor are stored
