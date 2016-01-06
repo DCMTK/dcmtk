@@ -178,6 +178,50 @@ OFCondition TID1500_MeasurementReport::addProcedureReported(const CID100_Quantit
 }
 
 
+OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                                                const DSRCodedEntryValue &codeValue,
+                                                                const OFBool check)
+{
+    OFCondition result = EC_IllegalParameter;
+    /* make sure that the parameters are non-empty */
+    if (conceptName.isComplete() && codeValue.isComplete())
+    {
+        /* go to last content item at TID 1500 (Measurement Report) Row 12 */
+        if (gotoLastEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
+        {
+            /* TID 1500 (Measurement Report) Row 13 */
+            STORE_RESULT(addChildContentItem(RT_contains, VT_Code, conceptName, check));
+            CHECK_RESULT(getCurrentContentItem().setCodeValue(codeValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 13"));
+        } else
+            result = CMR_EC_NoMeasurementReport;
+    }
+    return result;
+}
+
+
+OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                                                const OFString &stringValue,
+                                                                const OFBool check)
+{
+    OFCondition result = EC_IllegalParameter;
+    /* make sure that the parameters are non-empty */
+    if (conceptName.isComplete() && !stringValue.empty())
+    {
+        /* go to last content item at TID 1500 (Measurement Report) Row 12 */
+        if (gotoLastEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
+        {
+            /* TID 1500 (Measurement Report) Row 14 */
+            STORE_RESULT(addChildContentItem(RT_contains, VT_Text, conceptName, check));
+            CHECK_RESULT(getCurrentContentItem().setStringValue(stringValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 14"));
+        } else
+            result = CMR_EC_NoMeasurementReport;
+    }
+    return result;
+}
+
+
 // protected methods
 
 OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title)

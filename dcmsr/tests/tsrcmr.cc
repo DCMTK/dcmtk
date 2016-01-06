@@ -237,18 +237,23 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(report.hasQualitativeEvaluations());
     OFCHECK(!report.hasImagingMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(!report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
+    /* now, add some qualitative evaluations */
+    const DSRCodedEntryValue code("1234", "99TEST", "not bad");
+    OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), code).good());
+    OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("4711", "99TEST", "Some other test code"), "very good").good());
+    OFCHECK(report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
 
     // to be continued ...
 
     /* check number of content items (expected) */
-    OFCHECK_EQUAL(report.getTree().countNodes(), 8);
+    OFCHECK_EQUAL(report.getTree().countNodes(), 10);
     /* create an expanded version of the tree */
     DSRDocumentSubTree *tree = NULL;
     OFCHECK(report.getTree().createExpandedSubTree(tree).good());
     /* and check whether all content items are there */
     if (tree != NULL)
     {
-        OFCHECK_EQUAL(tree->countNodes(), 10);
+        OFCHECK_EQUAL(tree->countNodes(), 12);
         delete tree;
     } else
         OFCHECK_FAIL("could create expanded tree");

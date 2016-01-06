@@ -173,6 +173,28 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     OFCondition addProcedureReported(const CID100_QuantitativeDiagnosticImagingProcedures &procedure,
                                      const OFBool check = OFTrue);
 
+    /** add a qualitative evaluation related to the entire subject of the report as a
+     *  coded entry (TID 1500 - Row 13)
+     ** @param  conceptName  coded entry to be set as the concept name
+     *  @param  codeValue    coded entry to be set as the value of the new content item
+     *  @param  check        if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                         const DSRCodedEntryValue &codeValue,
+                                         const OFBool check = OFTrue);
+
+    /** add a qualitative evaluation related to the entire subject of the report in
+     *  text form (TID 1500 - Row 14)
+     ** @param  conceptName  coded entry to be set as the concept name
+     *  @param  stringValue  character string to be set as the value of the content item
+     *  @param  check        if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                         const OFString &stringValue,
+                                         const OFBool check = OFTrue);
+
 
   protected:
 
