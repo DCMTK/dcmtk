@@ -161,14 +161,15 @@ size_t DSRTemplateCommon::gotoEntryFromNodeList(DSRDocumentSubTree *tree,
 
 
 size_t DSRTemplateCommon::gotoLastEntryFromNodeList(DSRDocumentSubTree *tree,
-                                                    const size_t lastPos)
+                                                    const size_t lastPos,
+                                                    const size_t firstPos)
 {
     size_t nodeID = 0;
     /* make sure that tree is valid and list entry exists */
-    if ((tree != NULL) && (lastPos < NodeList.size()))
+    if ((tree != NULL) && (firstPos <= lastPos) && (lastPos < NodeList.size()))
     {
         size_t pos = lastPos + 1;
-        while ((pos > 0) && (nodeID == 0))
+        while ((pos > firstPos) && (nodeID == 0))
             nodeID = NodeList[--pos];
         /* check whether current node is already the right one */
         if (tree->getNodeID() != nodeID)

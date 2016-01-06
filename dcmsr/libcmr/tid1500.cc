@@ -162,8 +162,8 @@ OFCondition TID1500_MeasurementReport::addProcedureReported(const CID100_Quantit
     /* make sure that there is a coded entry */
     if (procedure.hasSelectedValue())
     {
-        /* go to content item at TID 1500 (Measurement Report) Row 3 or 4 */
-        if (gotoLastEntryFromNodeList(this, LAST_PROCEDURE_REPORTED) > 0)
+        /* go to last content item at TID 1500 (Measurement Report) Row 3 or 4 */
+        if (gotoLastEntryFromNodeList(this, LAST_PROCEDURE_REPORTED, OBSERVATION_CONTEXT) > 0)
         {
             /* TID 1500 (Measurement Report) Row 4 */
             STORE_RESULT(addContentItem(RT_hasConceptMod, VT_Code, CODE_DCM_ProcedureReported));

@@ -171,12 +171,14 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
      *  entry with a non-zero value (valid node ID) is found or the first list entry
      *  is reached.  This approach in particular supports handling of template tables
      *  where the order of content items is significant.
-     ** @param  tree     pointer to document tree where nodes and cursor are stored
-     *  @param  lastPos  index of the last node list entry to start searching from
+     ** @param  tree      pointer to document tree where nodes and cursor are stored
+     *  @param  lastPos   index of the last node list entry to start searching from
+     *  @param  firstPos  optional index of the node list entry to stop searching
      ** @return ID of the new current node within the tree if successful, 0 otherwise
      */
     size_t gotoLastEntryFromNodeList(DSRDocumentSubTree *tree,
-                                     const size_t lastPos);
+                                     const size_t lastPos,
+                                     const size_t firstPos = 0);
 
 
   private:
