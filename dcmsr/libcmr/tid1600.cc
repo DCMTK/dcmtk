@@ -52,6 +52,7 @@ makeOFConditionConst(CMR_EC_NoImageLibraryEntry,                           OFM_d
 makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors, OFM_dcmsr, 1603, OF_error, "Cannot add multiple Image Library Entry Descriptors");
 makeOFConditionConst(CMR_EC_MissingImageLibraryEntryDescriptorModality,    OFM_dcmsr, 1604, OF_error, "Missing Image Library Entry Descriptor 'Modality'");
 makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_dcmsr, 1605, OF_error, "Wrong Image Library Entry Descriptor 'Modality'");
+makeOFConditionConst(CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded,       OFM_dcmsr, 1606, OF_ok,    "No Image Library Entry Descriptors to be added");
 
 
 TID1600_ImageLibrary::TID1600_ImageLibrary()
@@ -160,9 +161,13 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
                     {
                         /* insert subtree below current node */
                         STORE_RESULT(tid1601->insertSubTree(tid1602));
+                        /* in case of error, make sure that memory is freed */
+                        BAD_RESULT(delete tid1602);
+                    } else {
+                        CHECK_RESULT(CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded);
+                        /* delete the new subtree since it has not been inserted */
+                        delete tid1602;
                     }
-                    /* in case of error, make sure that memory is freed */
-                    BAD_RESULT(delete tid1602);
                 } else
                     result = EC_MemoryExhausted;
             }
@@ -231,9 +236,13 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
                     /* should never happen but ... */
                     result = CMR_EC_NoImageLibraryGroup;
                 }
+                /* in case of error, make sure that memory is freed */
+                BAD_RESULT(delete subTree);
+            } else {
+                CHECK_RESULT(CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded);
+                /* delete the new subtree since it has not been inserted */
+                delete subTree;
             }
-            /* in case of error, make sure that memory is freed */
-            BAD_RESULT(delete subTree);
         } else
             result = EC_MemoryExhausted;
     }

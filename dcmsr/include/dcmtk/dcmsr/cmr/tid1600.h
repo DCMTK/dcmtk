@@ -42,6 +42,8 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_CannotAddMultipleImageLibr
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_MissingImageLibraryEntryDescriptorModality;
 /// error: the current (most recently added) image library entry has the wrong modality descriptor
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_WrongImageLibraryEntryDescriptorModality;
+/// normal: there are no image library entry descriptors to be added (copied from the dataset)
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded;
 
 //@}
 
@@ -110,6 +112,8 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
     /** add an image entry to the current image group, i.e.\ add content items for
      *  TID 1601 (Image Library Entry).  The values of the content items (including
      *  the image reference) are copied from the data elements of the given 'dataset'.
+     *  If no descriptors were added, CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded
+     *  is returned.
      ** @param  dataset  DICOM dataset from which the values should be copied
      *  @param  mode     mode specifying which optional content items are to be added
      *  @param  check    if enabled, check values for validity before setting them
@@ -120,10 +124,11 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                               const AddImageMode mode = withoutDescriptors,
                               const OFBool check = OFTrue);
 
-    /** add an image entry descriptors to the current image group, i.e.\ add content
+    /** add image entry descriptors to the current image group, i.e.\ add content
      *  items for TID 1602 (Image Library Entry Descriptors) and included templates.
      *  The values of the content items are copied from the data elements of the given
-     *  'dataset'.
+     *  'dataset'.  If none were added, CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded
+     *  is returned.
      *  Please note that this method should only be called once for each image group.
      ** @param  dataset  DICOM dataset from which the values should be copied
      *  @param  check    if enabled, check values for validity before setting them
