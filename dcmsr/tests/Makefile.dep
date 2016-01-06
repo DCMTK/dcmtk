@@ -326,7 +326,7 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid5001.h \
  ../include/dcmtk/dcmsr/cmr/tid1500.h ../include/dcmtk/dcmsr/dsrrtpl.h \
  ../include/dcmtk/dcmsr/cmr/tid1600.h \
- ../include/dcmtk/dcmsr/cmr/cid4021.h \
+ ../include/dcmtk/dcmsr/cmr/cid4021.h ../include/dcmtk/dcmsr/cmr/cid100.h \
  ../include/dcmtk/dcmsr/cmr/cid7021.h \
  ../include/dcmtk/dcmsr/cmr/srnumvl.h
 tsrcodvl.o: tsrcodvl.cc ../../config/include/dcmtk/config/osconfig.h \

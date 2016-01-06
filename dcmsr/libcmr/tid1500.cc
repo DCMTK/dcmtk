@@ -15,6 +15,7 @@
 #include "dcmtk/dcmsr/cmr/tid1500.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
+#include "dcmtk/dcmsr/codes/umls.h"
 
 #include "dcmtk/dcmsr/dsrtpltn.h"
 
@@ -29,6 +30,7 @@
 #define OBSERVATION_CONTEXT     1
 #define LAST_PROCEDURE_REPORTED 2
 #define IMAGING_MEASUREMENTS    3
+#define QUALITATIVE_EVALUATIONS 4
 
 // general information on TID 1500 (Measurement Report)
 #define TEMPLATE_NUMBER      "1500"
@@ -51,7 +53,7 @@ TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementRe
 {
     setExtensible(TEMPLATE_TYPE);
     /* need to store position of various content items */
-    reserveEntriesInNodeList(4, OFTrue /*initialize*/);
+    reserveEntriesInNodeList(5, OFTrue /*initialize*/);
     /* if specified, create an initial report */
     if (title.hasSelectedValue())
         createMeasurementReport(title);
@@ -72,7 +74,7 @@ OFBool TID1500_MeasurementReport::isValid() const
     /* check whether base class is valid and all members are valid */
     return DSRRootTemplate::isValid() &&
         Language->isValid() && ObservationContext->isValid() && ImageLibrary->isValid() &&
-        hasProcedureReported() && hasImagingMeasurements();
+        hasProcedureReported() && hasImagingMeasurements() && hasQualitativeEvaluations();
 }
 
 
@@ -87,6 +89,13 @@ OFBool TID1500_MeasurementReport::hasImagingMeasurements() const
 {
     /* check for image library group (TID 1500 - Row 6) */
     return (getEntryFromNodeList(IMAGING_MEASUREMENTS) > 0);
+}
+
+
+OFBool TID1500_MeasurementReport::hasQualitativeEvaluations() const
+{
+    /* check for image library group (TID 1500 - Row 12) */
+    return (getEntryFromNodeList(QUALITATIVE_EVALUATIONS) > 0);
 }
 
 
@@ -182,6 +191,12 @@ OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_Mea
             /* store ID of current node for later use */
             if (result.good())
                 storeEntryInNodeList(IMAGING_MEASUREMENTS, getNodeID());
+            /* TID 1500 (Measurement Report) Row 12 */
+            CHECK_RESULT(addContentItem(RT_contains, VT_Container, CODE_UMLS_QualitativeEvaluations));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 12"));
+            /* store ID of current node for later use */
+            if (result.good())
+                storeEntryInNodeList(QUALITATIVE_EVALUATIONS, getNodeID());
             /* if anything went wrong, clear the report */
             if (result.bad())
                 clear();

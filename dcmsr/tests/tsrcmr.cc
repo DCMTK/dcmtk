@@ -236,14 +236,14 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     // to be continued ...
 
     /* check number of content items (expected) */
-    OFCHECK_EQUAL(report.getTree().countNodes(), 7);
+    OFCHECK_EQUAL(report.getTree().countNodes(), 8);
     /* create an expanded version of the tree */
     DSRDocumentSubTree *tree = NULL;
     OFCHECK(report.getTree().createExpandedSubTree(tree).good());
     /* and check whether all content items are there */
     if (tree != NULL)
     {
-        OFCHECK_EQUAL(tree->countNodes(), 9);
+        OFCHECK_EQUAL(tree->countNodes(), 10);
         delete tree;
     } else
         OFCHECK_FAIL("could create expanded tree");

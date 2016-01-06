@@ -3157,9 +3157,10 @@ tid1500.o: tid1500.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid5001.h \
  ../include/dcmtk/dcmsr/cmr/tid1600.h \
  ../include/dcmtk/dcmsr/cmr/cid4020.h \
- ../include/dcmtk/dcmsr/cmr/cid4021.h \
+ ../include/dcmtk/dcmsr/cmr/cid4021.h ../include/dcmtk/dcmsr/cmr/cid100.h \
  ../include/dcmtk/dcmsr/cmr/cid7021.h ../include/dcmtk/dcmsr/cmr/logger.h \
- ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/dsrtpltn.h
+ ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/codes/umls.h \
+ ../include/dcmtk/dcmsr/dsrtpltn.h
 tid1600.o: tid1600.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/tid1600.h ../include/dcmtk/dcmsr/dsrstpl.h \
  ../include/dcmtk/dcmsr/dsrdoctr.h ../include/dcmtk/dcmsr/dsrdocst.h \

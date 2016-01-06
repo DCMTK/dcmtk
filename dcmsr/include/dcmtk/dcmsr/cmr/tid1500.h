@@ -71,8 +71,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** check whether the current internal state is valid.
      *  That means, whether the base class is valid, the included templates TID 1204,
-     *  1001 and 1600 are valid, and hasProcedureReported() and hasImagingMeasurements()
-     *  return true.
+     *  1001 and 1600 are valid, and hasProcedureReported(), hasImagingMeasurements()
+     *  as well as hasQualitativeEvaluations() return true.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -91,6 +91,15 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
      ** @return OFTrue if imaging measurements are present, OFFalse otherwise
      */
     OFBool hasImagingMeasurements() const;
+
+    /** check whether there is an 'Qualitative Evaluations' content item (TID 1500 -
+     *  Row 12) in this measurement report.  Initially, this conditional content item is
+     *  created by the constructor of this class.  After clear() has been called or no
+     *  document title is passed to the constructor, it can be created again by calling
+     *  createNewMeasurementReport().
+     ** @return OFTrue if imaging measurements are present, OFFalse otherwise
+     */
+    OFBool hasQualitativeEvaluations() const;
 
     /** get language of this report as defined by TID 1204 (Language of Content Item and
      *  Descendants).  This included template is mandatory, i.e. should not be empty.
@@ -127,7 +136,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** create a new measurement report.
      *  Clear the report and create the mandatory (and conditional) content items of
-     *  this template, i.e.\ TID 1500 - Row 1 to 6.
+     *  this template, i.e.\ TID 1500 - Row 1 to 6 and 12.
      ** @param  title  document title to be set (from CID 7021 - Measurement Report
      *                 Document Titles), i.e.\ the concept name of the root node
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -160,7 +169,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
   protected:
 
     /** expect an empty tree and create the mandatory (and conditional) content items
-     *  of this template, i.e.\ TID 1500 - Row 1 to 6.
+     *  of this template, i.e.\ TID 1500 - Row 1 to 6 and 12.
      ** @param  title  document title to be set (from CID 7021)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
