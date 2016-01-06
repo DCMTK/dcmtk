@@ -19,7 +19,8 @@
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call
 #define STORE_RESULT(call) result = call
-#define DELETE_ERROR(pointer) if (result.bad()) delete pointer
+#define GOOD_RESULT(call) if (result.good()) call
+#define BAD_RESULT(call) if (result.bad()) call
 
 // index positions in node list (makes source code more readable)
 #define LAST_PERSON_OBSERVER 0
@@ -88,13 +89,12 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
             /* order is significant, so go to last person observer */
             gotoLastEntryFromNodeList(this, LAST_PERSON_OBSERVER);
             /* insert subtree at current position */
-            result = insertSubTree(subTree, AM_afterCurrent);
+            STORE_RESULT(insertSubTree(subTree, AM_afterCurrent));
             /* store ID of recently added node for later use */
-            if (result.good())
-                storeEntryInNodeList(LAST_PERSON_OBSERVER, lastNode);
+            GOOD_RESULT(storeEntryInNodeList(LAST_PERSON_OBSERVER, lastNode));
         }
         /* in case of error, make sure that memory is freed */
-        DELETE_ERROR(subTree);
+        BAD_RESULT(delete subTree);
     }
     return result;
 }
@@ -178,13 +178,12 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
             /* order is significant, so go to last device (or person) observer */
             gotoLastEntryFromNodeList(this, LAST_DEVICE_OBSERVER);
             /* insert subtree at current position */
-            result = insertSubTree(subTree, AM_afterCurrent);
+            STORE_RESULT(insertSubTree(subTree, AM_afterCurrent));
             /* store ID of recently added node for later use */
-            if (result.good())
-                storeEntryInNodeList(LAST_DEVICE_OBSERVER, lastNode);
+            GOOD_RESULT(storeEntryInNodeList(LAST_DEVICE_OBSERVER, lastNode));
         }
         /* in case of error, make sure that memory is freed */
-        DELETE_ERROR(subTree);
+        BAD_RESULT(delete subTree);
 }
     return result;
 }

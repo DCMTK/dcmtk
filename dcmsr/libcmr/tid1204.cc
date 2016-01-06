@@ -19,6 +19,8 @@
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call
 #define STORE_RESULT(call) result = call
+#define GOOD_RESULT(call) if (result.good()) call
+#define BAD_RESULT(call) if (result.bad()) call
 
 // general information on TID 1204 (Language of Content Item and Descendants)
 #define TEMPLATE_NUMBER      "1204"
@@ -52,11 +54,7 @@ OFCondition TID1204_LanguageOfContentItemAndDescendants::setLanguage(const CID50
         CHECK_RESULT(subTree.getCurrentContentItem().setCodeValue(country, check));
         CHECK_RESULT(subTree.getCurrentContentItem().setAnnotationText("TID 1204 - Row 2"));
     }
-    /* if everything was OK, insert new subtree into the template */
-    if (result.good())
-    {
-        /* replace currently stored subtree (if any) */
-        swap(subTree);
-    }
+    /* if everything was OK, replace current subtree of the template */
+    GOOD_RESULT(swap(subTree));
     return result;
 }

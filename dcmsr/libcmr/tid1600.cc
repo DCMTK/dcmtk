@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1600_ImageLibrary
@@ -30,7 +30,8 @@
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call
 #define STORE_RESULT(call) result = call
-#define DELETE_ERROR(pointer) if (result.bad()) delete pointer
+#define GOOD_RESULT(call) if (result.good()) call
+#define BAD_RESULT(call) if (result.bad()) call
 
 // index positions in node list (makes source code more readable)
 #define IMAGE_LIBRARY            0
@@ -153,15 +154,15 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
                 if (tid1602 != NULL)
                 {
                     /* call the function doing the real work */
-                    result = addImageEntryDescriptors(*tid1602, dataset, check);
+                    STORE_RESULT(addImageEntryDescriptors(*tid1602, dataset, check));
                     /* if everything was OK, insert new subtree into the template */
                     if (result.good() && !tid1602->isEmpty())
                     {
                         /* insert subtree below current node */
-                        result = tid1601->insertSubTree(tid1602);
+                        STORE_RESULT(tid1601->insertSubTree(tid1602));
                     }
                     /* in case of error, make sure that memory is freed */
-                    DELETE_ERROR(tid1602);
+                    BAD_RESULT(delete tid1602);
                 } else
                     result = EC_MemoryExhausted;
             }
@@ -183,14 +184,13 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
                 if (result.good())
                 {
                     /* insert subtree at current position */
-                    result = insertSubTree(tid1601, addMode);
+                    STORE_RESULT(insertSubTree(tid1601, addMode));
                     /* store ID of recently added node for later use */
-                    if (result.good())
-                        storeEntryInNodeList(LAST_IMAGE_LIBRARY_ENTRY, lastNode);
+                    GOOD_RESULT(storeEntryInNodeList(LAST_IMAGE_LIBRARY_ENTRY, lastNode));
                 }
             }
             /* in case of error, make sure that memory is freed */
-            DELETE_ERROR(tid1601);
+            BAD_RESULT(delete tid1601);
         } else
             result = EC_MemoryExhausted;
     }
@@ -210,7 +210,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
         if (subTree != NULL)
         {
             /* call the function doing the real work */
-            result = addImageEntryDescriptors(*subTree, dataset, check);
+            STORE_RESULT(addImageEntryDescriptors(*subTree, dataset, check));
             /* if everything was OK, insert new subtree into the template */
             if (result.good() && !subTree->isEmpty())
             {
@@ -225,7 +225,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
                         result = CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors;
                     } else {
                         /* insert subtree at current position */
-                        result = insertSubTree(subTree, AM_belowCurrentBeforeFirstChild);
+                        STORE_RESULT(insertSubTree(subTree, AM_belowCurrentBeforeFirstChild));
                     }
                 } else {
                     /* should never happen but ... */
@@ -233,7 +233,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
                 }
             }
             /* in case of error, make sure that memory is freed */
-            DELETE_ERROR(subTree);
+            BAD_RESULT(delete subTree);
         } else
             result = EC_MemoryExhausted;
     }
@@ -256,8 +256,7 @@ OFCondition TID1600_ImageLibrary::getImageEntryModality(DSRCodedEntryValue &moda
             result = CMR_EC_MissingImageLibraryEntryDescriptorModality;
     }
     /* in case of error, clear the result variable */
-    if (result.bad())
-        modalityCode.clear();
+    BAD_RESULT(modalityCode.clear());
     return result;
 }
 
@@ -272,11 +271,9 @@ OFCondition TID1600_ImageLibrary::setPETImageRadionuclide(const CID4020_PETRadio
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    if (result.good())
-        result = setCodeContentItemFromValue(CODE_SRT_Radionuclide, radionuclide, "TID 1607 - Row 1", check);
+    CHECK_RESULT(setCodeContentItemFromValue(CODE_SRT_Radionuclide, radionuclide, "TID 1607 - Row 1", check));
     /* in case of error, reset cursor to stored node */
-    if (result.bad())
-        setCursor(cursor);
+    BAD_RESULT(setCursor(cursor));
     return result;
 }
 
@@ -289,11 +286,9 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalAgent(const CID4
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    if (result.good())
-        result = setCodeContentItemFromValue(CODE_SRT_RadiopharmaceuticalAgent, agent, "TID 1607 - Row 2", check);
+    CHECK_RESULT(setCodeContentItemFromValue(CODE_SRT_RadiopharmaceuticalAgent, agent, "TID 1607 - Row 2", check));
     /* in case of error, reset cursor to stored node */
-    if (result.bad())
-        setCursor(cursor);
+    BAD_RESULT(setCursor(cursor));
     return result;
 }
 
@@ -306,11 +301,9 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStartDateTime(co
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    if (result.good())
-        result = setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, dateTime, "TID 1607 - Row 4", check);
+    CHECK_RESULT(setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, dateTime, "TID 1607 - Row 4", check));
     /* in case of error, reset cursor to stored node */
-    if (result.bad())
-        setCursor(cursor);
+    BAD_RESULT(setCursor(cursor));
     return result;
 }
 
@@ -323,11 +316,9 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStopDateTime(con
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    if (result.good())
-        result = setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, dateTime, "TID 1607 - Row 5", check);
+    CHECK_RESULT(setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, dateTime, "TID 1607 - Row 5", check));
     /* in case of error, reset cursor to stored node */
-    if (result.bad())
-        setCursor(cursor);
+    BAD_RESULT(setCursor(cursor));
     return result;
 }
 
@@ -340,11 +331,9 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalVolume(const DSR
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    if (result.good())
-        result = setNumericContentItemFromValue(CODE_DCM_RadiopharmaceuticalVolume, volume, CODE_UCUM_Cm3, "TID 1607 - Row 6", check);
+    CHECK_RESULT(setNumericContentItemFromValue(CODE_DCM_RadiopharmaceuticalVolume, volume, CODE_UCUM_Cm3, "TID 1607 - Row 6", check));
     /* in case of error, reset cursor to stored node */
-    if (result.bad())
-        setCursor(cursor);
+    BAD_RESULT(setCursor(cursor));
     return result;
 }
 
@@ -357,11 +346,9 @@ OFCondition TID1600_ImageLibrary::setPETImageRadionuclideTotalDose(const DSRNume
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    if (result.good())
-        result = setNumericContentItemFromValue(CODE_DCM_RadionuclideTotalDose, totalDose, CODE_UCUM_Bq, "TID 1607 - Row 7", check);
+    CHECK_RESULT(setNumericContentItemFromValue(CODE_DCM_RadionuclideTotalDose, totalDose, CODE_UCUM_Bq, "TID 1607 - Row 7", check));
     /* in case of error, reset cursor to stored node */
-    if (result.bad())
-        setCursor(cursor);
+    BAD_RESULT(setCursor(cursor));
     return result;
 }
 
@@ -377,8 +364,7 @@ OFCondition TID1600_ImageLibrary::createImageLibrary()
         STORE_RESULT(addChildContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary));
         CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1600 - Row 1"));
         /* store ID of root node for later use */
-        if (result.good())
-            storeEntryInNodeList(IMAGE_LIBRARY, getNodeID());
+        GOOD_RESULT(storeEntryInNodeList(IMAGE_LIBRARY, getNodeID()));
     }
     return result;
 }

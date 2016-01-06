@@ -23,7 +23,8 @@
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call
 #define STORE_RESULT(call) result = call
-#define DELETE_ERROR(pointer) if (result.bad()) delete pointer
+#define GOOD_RESULT(call) if (result.good()) call
+#define BAD_RESULT(call) if (result.bad()) call
 
 // index positions in node list (makes source code more readable)
 #define MEASUREMENT_REPORT      0
@@ -147,8 +148,7 @@ OFCondition TID1500_MeasurementReport::addProcedureReported(const CID100_Quantit
             CHECK_RESULT(getCurrentContentItem().setCodeValue(procedure, check));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 4"));
             /* store ID of recently added node for later use */
-            if (result.good())
-                storeEntryInNodeList(LAST_PROCEDURE_REPORTED, getNodeID());
+            GOOD_RESULT(storeEntryInNodeList(LAST_PROCEDURE_REPORTED, getNodeID()));
         } else
             result = CMR_EC_NoMeasurementReport;
     }
@@ -179,27 +179,20 @@ OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_Mea
             /* TID 1500 (Measurement Report) Row 3 */
             CHECK_RESULT(includeTemplate(ObservationContext, AM_afterCurrent, RT_hasObsContext));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 3"));
-            /* store ID of current node for later use */
-            if (result.good())
-                storeEntryInNodeList(OBSERVATION_CONTEXT, getNodeID());
+            GOOD_RESULT(storeEntryInNodeList(OBSERVATION_CONTEXT, getNodeID()));
             /* TID 1500 (Measurement Report) Row 5 */
             CHECK_RESULT(includeTemplate(ImageLibrary, AM_afterCurrent, RT_contains));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 5"));
             /* TID 1500 (Measurement Report) Row 6 */
             CHECK_RESULT(addContentItem(RT_contains, VT_Container, CODE_DCM_ImagingMeasurements));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 6"));
-            /* store ID of current node for later use */
-            if (result.good())
-                storeEntryInNodeList(IMAGING_MEASUREMENTS, getNodeID());
+            GOOD_RESULT(storeEntryInNodeList(IMAGING_MEASUREMENTS, getNodeID()));
             /* TID 1500 (Measurement Report) Row 12 */
             CHECK_RESULT(addContentItem(RT_contains, VT_Container, CODE_UMLS_QualitativeEvaluations));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 12"));
-            /* store ID of current node for later use */
-            if (result.good())
-                storeEntryInNodeList(QUALITATIVE_EVALUATIONS, getNodeID());
+            GOOD_RESULT(storeEntryInNodeList(QUALITATIVE_EVALUATIONS, getNodeID()));
             /* if anything went wrong, clear the report */
-            if (result.bad())
-                clear();
+            BAD_RESULT(clear());
         } else
             result = SR_EC_InvalidTemplateStructure;
     }
