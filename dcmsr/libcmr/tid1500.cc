@@ -186,8 +186,8 @@ OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEn
     /* make sure that the parameters are non-empty */
     if (conceptName.isComplete() && codeValue.isComplete())
     {
-        /* go to last content item at TID 1500 (Measurement Report) Row 12 */
-        if (gotoLastEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
+        /* go to content item at TID 1500 (Measurement Report) Row 12 */
+        if (gotoEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
         {
             /* TID 1500 (Measurement Report) Row 13 */
             STORE_RESULT(addChildContentItem(RT_contains, VT_Code, conceptName, check));
@@ -208,8 +208,8 @@ OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEn
     /* make sure that the parameters are non-empty */
     if (conceptName.isComplete() && !stringValue.empty())
     {
-        /* go to last content item at TID 1500 (Measurement Report) Row 12 */
-        if (gotoLastEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
+        /* go to content item at TID 1500 (Measurement Report) Row 12 */
+        if (gotoEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
         {
             /* TID 1500 (Measurement Report) Row 14 */
             STORE_RESULT(addChildContentItem(RT_contains, VT_Text, conceptName, check));
