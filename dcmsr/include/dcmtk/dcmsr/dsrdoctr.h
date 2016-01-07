@@ -125,7 +125,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
                                    const size_t flags = 0);
 
     /** get document type
-     ** return current document type (might be DSRTypes::DT_invalid)
+     ** @return current document type (might be DSRTypes::DT_invalid)
      */
     inline E_DocumentType getDocumentType() const
     {

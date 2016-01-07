@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -610,7 +610,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     /** read document relationship macro
      ** @param  dataset            DICOM dataset from which the data should be read
      *  @param  constraintChecker  checks relationship content constraints of the associated IOD
-     *  @param  posString          location of the current content item (e.g. "1.2.3")
+     *  @param  posString          location of the current content item (e.g.\ "1.2.3")
      *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -630,7 +630,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 
     /** read document content macro
      ** @param  dataset    DICOM dataset from which the data should be read
-     *  @param  posString  location of the current content item (e.g. "1.2.3")
+     *  @param  posString  location of the current content item (e.g.\ "1.2.3")
      *  @param  flags      flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -647,7 +647,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     /** read content sequence
      ** @param  dataset            DICOM dataset from which the data should be read
      *  @param  constraintChecker  checks relationship content constraints of the associated IOD
-     *  @param  posString          location of the current content item (e.g. "1.2.3")
+     *  @param  posString          location of the current content item (e.g.\ "1.2.3")
      *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -718,10 +718,10 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 
   private:
 
-    /// flag indicating whether the content item is marked (e.g. used for digital signatures).
+    /// flag indicating whether the content item is marked (e.g.\ used for digital signatures).
     /// The default value is OFFalse.
     OFBool             MarkFlag;
-    /// flag indicating whether the content item is referenced (by-reference relationship)
+    /// flag indicating whether the content item is referenced (by-reference relationship).
     /// The default value is OFFalse.
     OFBool             ReferenceTarget;
 
