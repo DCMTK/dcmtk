@@ -139,6 +139,18 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     virtual OFCondition print(STD_NAMESPACE ostream &stream,
                               const size_t flags) const;
 
+    /** print extended information on the content item.
+     *  The following details are printed (if present and output is enabled): observation
+     *  date/time (in curly brackets), annotation text (in quotation marks) and template
+     *  identification (after a hash mark).  This method is intended to be called after
+     *  the general print() method, e.g. like it is done by DSRDocumentSubTree::print().
+     ** @param  stream  output stream to which the extended information should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition printExtended(STD_NAMESPACE ostream &stream,
+                                      const size_t flags) const;
+
     /** read content item from dataset.
      *  A number of readXXX() methods are called (see "protected" part) in order to retrieve all
      *  possibly nested content items from the dataset.

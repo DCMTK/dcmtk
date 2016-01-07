@@ -136,6 +136,38 @@ OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream &stream,
 }
 
 
+OFCondition DSRDocumentTreeNode::printExtended(STD_NAMESPACE ostream &stream,
+                                               const size_t flags) const
+{
+    /* print observation date/time (optional) */
+    if (!ObservationDateTime.empty())
+    {
+        OFString tmpString;
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+        stream << " {" << dicomToReadableDateTime(ObservationDateTime, tmpString) << "}";
+    }
+    /* print annotation (optional) */
+    if (hasAnnotation() && (flags & PF_printAnnotation))
+    {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ANNOTATION)
+        stream << "  \"" << getAnnotation().getText() << "\"";
+    }
+    /* print template identification (conditional) */
+    if (hasTemplateIdentification() && (flags & PF_printTemplateIdentification))
+    {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+        stream << "  # ";
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
+        stream << "TID " << TemplateIdentifier;
+        stream << " (" << MappingResource;
+        if (!MappingResourceUID.empty())
+            stream << ", " << MappingResourceUID;
+        stream << ")";
+    }
+    return EC_Normal;
+}
+
+
 OFCondition DSRDocumentTreeNode::read(DcmItem &dataset,
                                       const DSRIODConstraintChecker *constraintChecker,
                                       const size_t flags)

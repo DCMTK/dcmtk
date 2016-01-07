@@ -230,35 +230,9 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     result = node->print(stream, flags);
                     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                     stream << ">";
-                    /* print observation date/time (optional) */
-                    if (!node->getObservationDateTime().empty())
-                    {
-                        stream << " {" << dicomToReadableDateTime(node->getObservationDateTime(), tmpString) << "}";
-                    }
-                    /* print annotation (optional) */
-                    if (node->hasAnnotation() && (flags & PF_printAnnotation))
-                    {
-                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ANNOTATION)
-                        stream << "  \"" << node->getAnnotation().getText() << "\"";
-                    }
-                    /* print template identification (conditional) */
-                    if (node->hasTemplateIdentification() && (flags & PF_printTemplateIdentification))
-                    {
-                        OFString templateIdentifier;
-                        OFString mappingResource;
-                        OFString mappingResourceUID;
-                        if (node->getTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).good())
-                        {
-                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                            stream << "  # ";
-                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
-                            stream << "TID " << templateIdentifier;
-                            stream << " (" << mappingResource;
-                            if (!mappingResourceUID.empty())
-                                stream << ", " << mappingResourceUID;
-                            stream << ")";
-                        }
-                    }
+                    /* print extended information on the node */
+                    if (result.good())
+                        result = node->printExtended(stream, flags);
                     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
                     stream << OFendl;
                 }
