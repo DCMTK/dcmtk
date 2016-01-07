@@ -112,16 +112,19 @@ OFTEST(dcmsr_CID7445_DeviceParticipatingRoles)
     CID7445_DeviceParticipatingRoles ctxGroup1;
     OFCHECK(!ctxGroup1.hasSelectedValue());
     OFCHECK(!ctxGroup1.hasCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "Some test code")));
+    OFCHECK(!ctxGroup1.hasExtendedCodedEntries());
     /* add an extended code to the context group */
     OFCHECK(ctxGroup1.addCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "Some test code")).good());
     OFCHECK(ctxGroup1.hasCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "Some test code")));
     OFCHECK(ctxGroup1.findCodedEntry(CODE_DCM_Recording) == SR_EC_CodedEntryInStandardContextGroup);
     OFCHECK(ctxGroup1.findCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "Some test code")) == SR_EC_CodedEntryIsExtensionOfContextGroup);
+    OFCHECK(ctxGroup1.hasExtendedCodedEntries());
     /* try again with a non-extensible context group */
     CID7445_DeviceParticipatingRoles ctxGroup2(DSRBasicCodedEntry("4711", "99TEST", "Some other test code"));
     ctxGroup2.setExtensible(OFFalse);
     OFCHECK(ctxGroup2.hasSelectedValue());
     OFCHECK(ctxGroup2.addCodedEntry(DSRBasicCodedEntry("4711", "99TEST", "Some other test code")).bad());
+    OFCHECK(!ctxGroup2.hasExtendedCodedEntries());
     /* check whether the currently selected code is valid */
     OFCHECK(ctxGroup2.checkSelectedValue(OFFalse /*definedContextGroup*/).good());
     OFCHECK(ctxGroup2.checkSelectedValue(OFTrue /*definedContextGroup*/).bad());

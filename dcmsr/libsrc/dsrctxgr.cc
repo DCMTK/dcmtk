@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -84,6 +84,12 @@ OFCondition DSRContextGroup::findCodedEntry(const DSRCodedEntryValue &codedEntry
 {
     /* not interested in the coded entry that was found */
     return findCodedEntry(codedEntryValue, NULL /*foundCodedEntry*/);
+}
+
+
+OFBool DSRContextGroup::hasExtendedCodedEntries() const
+{
+    return !ExtendedCodes.empty();
 }
 
 

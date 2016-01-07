@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -57,7 +57,7 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
     /** check whether context group is extensible
      ** @return OFTrue if extensible, OFFalse otherwise
      */
-    virtual OFBool isExtensible() const
+    inline OFBool isExtensible() const
     {
         return ExtensibleMode;
     }
@@ -65,7 +65,7 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
     /** change mode specifying whether the context group is extensible or non-extensible
      ** @param  mode  set context group type to extensible if OFTrue (default)
      */
-    virtual void setExtensible(const OFBool mode = OFTrue)
+    inline void setExtensible(const OFBool mode = OFTrue)
     {
         ExtensibleMode = mode;
     }
@@ -149,6 +149,12 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
      *          if not interested in the type of the entry.
      */
     virtual OFCondition findCodedEntry(const DSRCodedEntryValue &codedEntryValue) const;
+
+    /** check whether this context group has any extended coded entries.
+     *  Extended coded entries are those non-standard codes added by addCodedEntry().
+     ** @return OFTrue if there are any extended coded entries, OFFalse otherwise
+     */
+    virtual OFBool hasExtendedCodedEntries() const;
 
     /** add a coded entry to this context group as an extension, i.e.\ as a non-standard
      *  code.  Adding a new coded entry by this method only works for extensible context
