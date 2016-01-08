@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2015-08-26 19:54:59 by J. Riesmeier
+ *  File created on 2016-01-08 15:04:42 by J. Riesmeier
  *
  */
 
@@ -160,7 +160,7 @@ CID100_QuantitativeDiagnosticImagingProcedures::CodeList &CID100_QuantitativeDia
         Codes->insert(OFMake_pair(PETCT_METImagingOfWholeBody, DSRBasicCodedEntry("P5-08118", "SRT", "PET/CT MET imaging of whole body")));
         Codes->insert(OFMake_pair(CT_HEAD_PERFUSION_WITH_IV_CONTRAST, DSRBasicCodedEntry("RPID96", "RADLEX", "CT HEAD PERFUSION WITH IV CONTRAST")));
         Codes->insert(OFMake_pair(NM_HEAD_PERFUSION_BRAIN_SPECT, DSRBasicCodedEntry("RPID5258", "RADLEX", "NM HEAD PERFUSION BRAIN SPECT")));
-        Codes->insert(OFMake_pair(NM_HEAD_PERFUSION_BRAIN_PET_CT_AV_45, DSRBasicCodedEntry("RPID5427", "RADLEX", "NM HEAD PERFUSION BRAIN PET-CT AV-45")));
+        Codes->insert(OFMake_pair(NM_HEAD_PERFUSION_BRAIN_PET_CT_AV45, DSRBasicCodedEntry("RPID5427", "RADLEX", "NM HEAD PERFUSION BRAIN PET-CT AV-45")));
     }
     /* should never be NULL */
     return *Codes;

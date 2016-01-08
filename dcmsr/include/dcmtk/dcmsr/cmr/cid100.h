@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2015-08-26 19:54:59 by J. Riesmeier
+ *  File created on 2016-01-08 15:04:42 by J. Riesmeier
  *
  */
 
@@ -61,7 +61,7 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
         /// (RPID5258,RADLEX,"NM HEAD PERFUSION BRAIN SPECT")
         NM_HEAD_PERFUSION_BRAIN_SPECT,
         /// (RPID5427,RADLEX,"NM HEAD PERFUSION BRAIN PET-CT AV-45")
-        NM_HEAD_PERFUSION_BRAIN_PET_CT_AV_45
+        NM_HEAD_PERFUSION_BRAIN_PET_CT_AV45
     };
 
     /** (default) constructor

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7453_PerformingRoles
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2015-08-23 14:59:26 by J. Riesmeier
+ *  File created on 2016-01-08 15:04:59 by J. Riesmeier
  *
  */
 
