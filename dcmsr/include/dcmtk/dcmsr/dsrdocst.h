@@ -586,7 +586,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *                          subtree that is managed by the 'subTemplate' is inserted
      *                          into this tree and the relationship type of one of the
      *                          top-level nodes is "unknown".  Also see documentation of
-     *                          createExpandedTree().
+     *                          createExpandedSubTree().
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition includeTemplate(const DSRSharedSubTemplate &subTemplate,

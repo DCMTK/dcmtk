@@ -759,13 +759,17 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
                         const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValuePtr();
                         if (subTempl != NULL)
                         {
-                            /* clone the subtree managed by the template */
-                            DSRDocumentSubTree *subTree = subTempl->cloneTree();
-                            if (subTree != NULL)
+                            /* template has no content items */
+                            if (subTempl->isEmpty())
                             {
-                                /* check whether there are any "unknown" relationships on top level */
-                                if (!subTree->isEmpty())
+                                /* just remove current node (included template) */
+                                tree->removeNode();
+                            } else {
+                                /* clone the subtree managed by the template */
+                                DSRDocumentSubTree *subTree = subTempl->cloneTree();
+                                if (subTree != NULL)
                                 {
+                                    /* check whether there are any "unknown" relationships on top level */
                                     const E_RelationshipType defaultRelType = node->getRelationshipType();
                                     DSRDocumentTreeNodeCursor cursor(subTree->getRoot());
                                     do {
@@ -774,18 +778,18 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
                                         if ((curNode != NULL) && (curNode->getRelationshipType() == RT_unknown))
                                             curNode->setRelationshipType(defaultRelType);
                                     } while (cursor.gotoNext() > 0);
-                                }
-                                /* replace the current node (and its children) with the cloned subtree */
-                                if (tree->replaceNode(subTree->getRoot()) > 0)
-                                {
-                                    /* "forget" reference to root node */
-                                    subTree->getAndRemoveRootNode();
+                                    /* replace the current node (and its children) with the cloned subtree */
+                                    if (tree->replaceNode(subTree->getRoot()) > 0)
+                                    {
+                                        /* "forget" reference to root node */
+                                        subTree->getAndRemoveRootNode();
+                                    } else
+                                        result = SR_EC_CannotInsertSubTree;
+                                    /* free memory */
+                                    delete subTree;
                                 } else
-                                    result = SR_EC_CannotInsertSubTree;
-                                /* free memory */
-                                delete subTree;
-                            } else
-                                result = EC_MemoryExhausted;
+                                    result = EC_MemoryExhausted;
+                            }
                         }
                     }
                 } else
