@@ -1643,21 +1643,20 @@ dsrctpl.o: dsrctpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrdocst.h \
+ ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrdoctn.h \
  ../include/dcmtk/dcmsr/dsrtree.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
- ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrdoctn.h \
- ../include/dcmtk/dcmsr/dsrcodvl.h \
+ ../include/dcmtk/dcmsr/dsrtnant.h ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
- ../include/dcmtk/dcmsr/dsrcitem.h ../include/dcmtk/dcmsr/dsrnumvl.h \
- ../include/dcmtk/dcmsr/dsrscovl.h ../include/dcmtk/dcmsr/dsrscogr.h \
- ../include/dcmtk/dcmsr/dsrtlist.h ../include/dcmtk/dcmsr/dsrsc3vl.h \
- ../include/dcmtk/dcmsr/dsrsc3gr.h ../include/dcmtk/dcmsr/dsrtcovl.h \
- ../include/dcmtk/dcmsr/dsrtcodt.h ../include/dcmtk/dcmsr/dsrtcosp.h \
- ../include/dcmtk/dcmsr/dsrtcoto.h ../include/dcmtk/dcmsr/dsrcomvl.h \
- ../include/dcmtk/dcmsr/dsrimgvl.h ../include/dcmtk/dcmsr/dsrimgfr.h \
- ../include/dcmtk/dcmsr/dsrimgse.h ../include/dcmtk/dcmsr/dsrwavvl.h \
- ../include/dcmtk/dcmsr/dsrwavch.h \
+ ../include/dcmtk/dcmsr/dsrdocst.h ../include/dcmtk/dcmsr/dsrcitem.h \
+ ../include/dcmtk/dcmsr/dsrnumvl.h ../include/dcmtk/dcmsr/dsrscovl.h \
+ ../include/dcmtk/dcmsr/dsrscogr.h ../include/dcmtk/dcmsr/dsrtlist.h \
+ ../include/dcmtk/dcmsr/dsrsc3vl.h ../include/dcmtk/dcmsr/dsrsc3gr.h \
+ ../include/dcmtk/dcmsr/dsrtcovl.h ../include/dcmtk/dcmsr/dsrtcodt.h \
+ ../include/dcmtk/dcmsr/dsrtcosp.h ../include/dcmtk/dcmsr/dsrtcoto.h \
+ ../include/dcmtk/dcmsr/dsrcomvl.h ../include/dcmtk/dcmsr/dsrimgvl.h \
+ ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrimgse.h \
+ ../include/dcmtk/dcmsr/dsrwavvl.h ../include/dcmtk/dcmsr/dsrwavch.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h
 dsrctxgr.o: dsrctxgr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrctxgr.h ../include/dcmtk/dcmsr/dsrcodvl.h \
