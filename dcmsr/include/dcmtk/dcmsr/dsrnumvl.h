@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,7 +35,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for numeric measurement values
+/** Class for numeric values and measurements
  */
 class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 {
@@ -49,7 +49,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
     DSRNumericMeasurementValue();
 
     /** constructor
-     ** @param  numericValue     numeric measurement value (VR=DS, mandatory)
+     ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  check            if enabled, check 'numericValue' and 'measurementUnit' for
      *                           validity before setting them.  See corresponding setValue()
@@ -60,7 +60,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
                                const OFBool check = OFTrue);
 
     /** constructor
-     ** @param  numericValue     numeric measurement value (VR=DS, mandatory)
+     ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  valueQualifier   code representing the numeric value qualifier (optional).
      *                           Can also be used to specify the reason for the absence of

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CMR_SRNumericMeasurementValue
@@ -23,7 +23,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for SR numeric measurement values
+/** Class for SR numeric values and measurements
  *  (extended version with additional support of the DICOM Content Mapping Resource)
  */
 class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue
@@ -37,7 +37,7 @@ class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue
     CMR_SRNumericMeasurementValue();
 
     /** constructor
-     ** @param  numericValue     numeric measurement value (VR=DS, mandatory)
+     ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  check            if enabled, check 'numericValue' and 'measurementUnit' for
      *                           validity before setting them.  See corresponding setValue()
@@ -48,7 +48,7 @@ class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue
                                   const OFBool check = OFTrue);
 
     /** constructor
-     ** @param  numericValue     numeric measurement value (VR=DS, mandatory)
+     ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  valueQualifier   code representing the numeric value qualifier (optional).
      *                           Can also be used to specify the reason for the absence of

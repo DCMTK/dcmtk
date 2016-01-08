@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -639,7 +639,7 @@ void DSRNumericMeasurementValue::removeRationalRepresentation()
 
 OFCondition DSRNumericMeasurementValue::checkNumericValue(const OFString &numericValue) const
 {
-    /* numeric measurement value should never be empty */
+    /* numeric value should never be empty */
     return numericValue.empty() ? SR_EC_InvalidValue
                                 : DcmDecimalString::checkStringValue(numericValue, "1");
 }
