@@ -60,7 +60,7 @@ DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(Uint8* pixelData,
   {
     // Compute byte position
     bytePos = count / 8;
-    frame->pixData[bytePos] |= (pixelData[count] != 0) /* value to set */ << (7-(count % 8) /* bit position (0-7) within byte */);
+    frame->pixData[bytePos] |= (pixelData[count] != 0) /* value to set */ << (count % 8 /* bit position (0-7) within byte */);
   }
   return frame;
 }
