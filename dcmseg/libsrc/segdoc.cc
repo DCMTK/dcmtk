@@ -31,8 +31,6 @@
 #include "dcmtk/dcmfg/fgfact.h"
 #include "dcmtk/dcmfg/fgderimg.h"
 
-
-
 // default constructor (protected, instance creation via create() function)
 DcmSegmentation::DcmSegmentation()
 : DcmIODImage(),
@@ -954,13 +952,13 @@ OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
   // concatenated, i.e. there are no unused bits between the frames.
   Uint8* pixdata = new Uint8[numBytes];
   memset(pixdata, 0, numBytes);
+
   // Fill Pixel Data Element
   concatFrames(m_Frames, pixdata, rows*cols);
   result = dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, numBytes, OFTrue);
   delete [] pixdata;
   return result;
 }
-
 
 
 OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
@@ -1309,9 +1307,9 @@ void DcmSegmentation::extractFrames(Uint8* pixData,
     frame->length = frameLengthBytes;
     frame->pixData = new Uint8[frameLengthBytes];
     memcpy(frame->pixData, readPos, frame->length);
-    // If we have been copying too much, i.e the first bytes of the frame
+    // If we have been copying too much, i.e the first bits of the frame
     // actually belong to the former frame, shift the whole frame this amount
-    // of bytes to the left
+    // of bits to the left in order to shift the superfluous bits out
     if (bitShift > 0)
     {
       DcmSegUtils::shiftLeft(frame->pixData, frame->length, 8-bitShift);
