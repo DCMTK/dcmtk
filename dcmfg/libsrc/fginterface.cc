@@ -653,7 +653,7 @@ OFBool FGInterface::check()
     }
     if (!foundFrameContent)
     {
-      DCMFG_ERROR("Frame Content FGfunctioanl group missing for frame # " << frameCount );
+      DCMFG_ERROR("Frame Content Functional group missing for frame # " << frameCount );
       numErrors++;
     }
   }
