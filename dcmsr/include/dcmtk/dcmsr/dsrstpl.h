@@ -87,8 +87,8 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
     virtual void clear();
 
     /** check whether the current internal state is valid.
-     *  That means, whether the internally stored subtree is valid (non-empty) and the
-     *  template identification is valid.
+     *  That means, whether both the internally stored subtree and the template
+     *  identification are valid.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -127,11 +127,12 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
 
   // --- introduce some methods from base class to public API
 
+    using DSRDocumentSubTree::isEmpty;
+    using DSRDocumentSubTree::isCursorValid;
     using DSRDocumentSubTree::print;
     using DSRDocumentSubTree::write;
     using DSRDocumentSubTree::writeXML;
     using DSRDocumentSubTree::renderHTML;
-    using DSRDocumentSubTree::isEmpty;
     using DSRDocumentSubTree::countNodes;
     using DSRDocumentSubTree::gotoNamedNode;
     using DSRDocumentSubTree::gotoNextNamedNode;

@@ -101,6 +101,13 @@ OFBool DSRDocumentSubTree::isValid() const
 }
 
 
+OFBool DSRDocumentSubTree::isCursorValid() const
+{
+    /* check whether cursor points to an existing node */
+    return DSRTreeNodeCursor<DSRDocumentTreeNode>::isValid();
+}
+
+
 OFBool DSRDocumentSubTree::isValidDocumentTree(const E_RelationshipType defaultRelType) const
 {
     OFBool result = OFFalse;

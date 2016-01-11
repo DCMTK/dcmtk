@@ -95,7 +95,9 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
      */
     virtual void clear();
 
-    /** check whether the current internal state is valid
+    /** check whether the current internal state is valid.
+     *  That means, whether both the internally stored document tree and the template
+     *  identification are valid.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -134,12 +136,13 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
 
   // --- introduce some methods from base class to public API
 
+    using DSRDocumentTree::isEmpty;
+    using DSRDocumentTree::isCursorValid;
     using DSRDocumentTree::getDocumentType;
     using DSRDocumentTree::print;
     using DSRDocumentTree::write;
     using DSRDocumentTree::writeXML;
     using DSRDocumentTree::renderHTML;
-    using DSRDocumentTree::isEmpty;
     using DSRDocumentTree::countNodes;
     using DSRDocumentTree::gotoNamedNode;
     using DSRDocumentTree::gotoNextNamedNode;

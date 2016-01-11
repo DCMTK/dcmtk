@@ -115,6 +115,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFBool isValid() const;
 
+    /** check whether the internal cursor, which points to the current content item, is valid
+     ** @return OFTrue if cursor is valid, OFFalse otherwise
+     */
+    virtual OFBool isCursorValid() const;
+
     /** check whether this subtree is a valid document tree.
      *  In order to be a valid document tree, there should be a single root node only, with
      *  the value type "CONTAINER", and the internal relationship type of this node should be
