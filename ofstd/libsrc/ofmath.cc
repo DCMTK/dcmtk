@@ -25,6 +25,7 @@
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
+#define INCLUDE_IOSTREAM
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofmath.h"
 
