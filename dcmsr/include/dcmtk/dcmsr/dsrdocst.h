@@ -202,6 +202,20 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual DSRContentItem &getCurrentContentItem();
 
+    /** count number of content items (nodes) in the document tree.
+     *  This method iterates over all nodes that are stored in the document tree.
+     *  By default, included sub-templates are counted as a single node (see options).
+     ** @param  searchIntoSubTemplates      optional flag indicating whether to also
+     *                                      count the content of included sub-templates
+     *                                      (i.e.\ the nodes of the managed subtrees)
+     *  @param  countIncludedTemplateNodes  optional flag indicating whether to count
+     *                                      the DSRIncludedTemplateTreeNode instances
+     *                                      as nodes.  See includeTemplate() for details.
+     ** @return number of nodes, 0 if document tree is empty
+     */
+    size_t countNodes(const OFBool searchIntoSubTemplates = OFFalse,
+                      const OFBool countIncludedTemplateNodes = OFTrue) const;
+
     /** set internal cursor to a named node.
      *  If more than one node exists with the given concept name, the first one will
      *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.

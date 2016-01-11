@@ -329,6 +329,44 @@ DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
 }
 
 
+size_t DSRDocumentSubTree::countNodes(const OFBool searchIntoSubTemplates,
+                                      const OFBool countIncludedTemplateNodes) const
+{
+    size_t count = 0;
+    /* check whether special handling of included templates is needed */
+    if (searchIntoSubTemplates || !countIncludedTemplateNodes)
+    {
+        DSRDocumentTreeNodeCursor cursor(getRoot());
+        if (cursor.isValid())
+        {
+            /* iterate over all nodes */
+            do {
+                if (cursor.getNode()->getValueType() == VT_includedTemplate)
+                {
+                    /* special handling: count nodes of included subtree */
+                    if (searchIntoSubTemplates)
+                    {
+                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, cursor.getNode())->getValuePtr();
+                        if (subTempl != NULL)
+                            count += subTempl->countNodes(searchIntoSubTemplates, countIncludedTemplateNodes);
+                    }
+                    /* also need to count "included template" node */
+                    if (countIncludedTemplateNodes)
+                        ++count;
+                } else {
+                  /* standard case */
+                  ++count;
+                }
+            } while (cursor.iterate());
+        }
+    } else {
+        /* call the inherited function */
+        count = DSRTree<DSRDocumentTreeNode>::countNodes();
+    }
+    return count;
+}
+
+
 size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
                                          const OFBool startFromRoot,
                                          const OFBool searchIntoSub)
