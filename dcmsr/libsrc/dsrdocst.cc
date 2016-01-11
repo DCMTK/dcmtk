@@ -782,10 +782,12 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
         tree = clone();
         if (tree != NULL)
         {
-            const DSRDocumentTreeNode *node = NULL;
+            OFBool nodeDeleted;
+            const DSRDocumentTreeNode *node;
             /* iterate over all nodes */
             do {
                 node = tree->getNode();
+                nodeDeleted = OFFalse;
                 if (node != NULL)
                 {
                     /* and expand the included templates (if any) */
@@ -798,7 +800,7 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
                             if (subTempl->isEmpty())
                             {
                                 /* just remove current node (included template) */
-                                tree->removeNode();
+                                nodeDeleted = (tree->removeNode() > 0);
                             } else {
                                 /* clone the subtree managed by the template */
                                 DSRDocumentSubTree *subTree = subTempl->cloneTree();
@@ -829,7 +831,7 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
                     }
                 } else
                     result = SR_EC_InvalidDocumentTree;
-            } while (result.good() && tree->iterate());
+            } while (result.good() && (nodeDeleted || tree->iterate()));
             /* finally, set cursor back to root node */
             if (result.good())
                 tree->gotoRoot();
