@@ -565,12 +565,9 @@ void DSRTree<T>::clearAnnotations()
     DSRTreeNodeCursor<T> cursor(RootNode);
     if (cursor.isValid())
     {
-        T *node;
         /* iterate over all nodes */
         do {
-            node = cursor.getNode();
-            if (node != NULL)
-                node->clearAnnotation();
+            cursor.getNode()->clearAnnotation();
         } while (cursor.iterate());
     }
 }

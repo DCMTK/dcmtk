@@ -353,12 +353,9 @@ void DSRDocumentTree::unmarkAllContentItems()
     DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
-        DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = cursor.getNode();
-            if (node != NULL)
-                node->setMark(OFFalse);
+            cursor.getNode()->setMark(OFFalse);
         } while (cursor.iterate());
     }
 }
@@ -369,12 +366,9 @@ void DSRDocumentTree::removeSignatures()
     DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
-        DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = cursor.getNode();
-            if (node != NULL)
-                node->removeSignatures();
+            cursor.getNode()->removeSignatures();
         } while (cursor.iterate());
     }
 }

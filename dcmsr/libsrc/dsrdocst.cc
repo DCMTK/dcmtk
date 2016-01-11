@@ -134,12 +134,9 @@ OFBool DSRDocumentSubTree::isExpandedDocumentTree() const
     DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
-        const DSRDocumentTreeNode *node = NULL;
         /* search for a single INCLUDE template node */
         do {
-            node = cursor.getNode();
-            if (node != NULL)
-                result = (node->getValueType() != VT_includedTemplate);
+            result = (cursor.getNode()->getValueType() != VT_includedTemplate);
         } while (result && cursor.iterate());
     }
     return result;
@@ -186,65 +183,61 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
         /* update the document tree for output (if needed) */
         updateTreeForOutput();
         OFString tmpString;
-        const DSRDocumentTreeNode *node = NULL;
+        const DSRDocumentTreeNode *node;
         /* iterate over all nodes */
         do {
             node = cursor.getNode();
-            if (node != NULL)
+            /* special handling for included templates */
+            if (node->getValueType() == VT_includedTemplate)
             {
-                /* special handling for included templates */
-                if (node->getValueType() == VT_includedTemplate)
+                OFString newPrefix(linePrefix);
+                /* prepare line prefix for nested content */
+                if (flags & PF_printItemPosition)
                 {
-                    OFString newPrefix(linePrefix);
-                    /* prepare line prefix for nested content */
-                    if (flags & PF_printItemPosition)
+                    DSRDocumentTreeNodeCursor parentCursor(cursor);
+                    if (parentCursor.gotoParent() > 0)
                     {
-                        DSRDocumentTreeNodeCursor parentCursor(cursor);
-                        if (parentCursor.gotoParent() > 0)
-                        {
-                            newPrefix += parentCursor.getPosition(tmpString);
-                            newPrefix += '.';
-                        }
-                    } else {
-                        /* use line indentation */
-                        const size_t level = cursor.getLevel();
-                        if (level > 0)  // valid ?
-                            newPrefix += OFString((level - 1) * 2, ' ');
+                        newPrefix += parentCursor.getPosition(tmpString);
+                        newPrefix += '.';
                     }
-                    /* print separate line for internal template node (if enabled) */
-                    node->print(stream, flags);
-                    /* print content of referenced template (typecast needed here) */
-                    result = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, newPrefix);
                 } else {
-                    /* print node ID (might be useful for debugging purposes) */
-                    if (flags & PF_printNodeID)
-                        stream << "id:" << node->getNodeID() << " ";
-                    /* print node position */
-                    if (flags & PF_printItemPosition)
-                    {
-                        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION)
-                        stream << linePrefix << cursor.getPosition(tmpString) << "  ";
-                    } else {
-                        stream << linePrefix;
-                        /* use line indentation */
-                        const size_t level = cursor.getLevel();
-                        if (level > 0)  // valid ?
-                            stream << OFString((level - 1) * 2, ' ');
-                    }
-                    /* print node content */
-                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                    stream << "<";
-                    result = node->print(stream, flags);
-                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
-                    stream << ">";
-                    /* print extended information on the node */
-                    if (result.good())
-                        result = node->printExtended(stream, flags);
-                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
-                    stream << OFendl;
+                    /* use line indentation */
+                    const size_t level = cursor.getLevel();
+                    if (level > 0)  // valid ?
+                        newPrefix += OFString((level - 1) * 2, ' ');
                 }
-            } else
-                result = SR_EC_InvalidDocumentTree;
+                /* print separate line for internal template node (if enabled) */
+                node->print(stream, flags);
+                /* print content of referenced template (typecast needed here) */
+                result = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, newPrefix);
+            } else {
+                /* print node ID (might be useful for debugging purposes) */
+                if (flags & PF_printNodeID)
+                    stream << "id:" << node->getNodeID() << " ";
+                /* print node position */
+                if (flags & PF_printItemPosition)
+                {
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION)
+                    stream << linePrefix << cursor.getPosition(tmpString) << "  ";
+                } else {
+                    stream << linePrefix;
+                    /* use line indentation */
+                    const size_t level = cursor.getLevel();
+                    if (level > 0)  // valid ?
+                        stream << OFString((level - 1) * 2, ' ');
+                }
+                /* print node content */
+                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                stream << "<";
+                result = node->print(stream, flags);
+                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                stream << ">";
+                /* print extended information on the node */
+                if (result.good())
+                    result = node->printExtended(stream, flags);
+                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
+                stream << OFendl;
+            }
         } while (result.good() && cursor.iterate());
     }
     return result;
@@ -376,7 +369,7 @@ size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
     {
         if (startFromRoot)
             gotoRoot();
-        const DSRDocumentTreeNode *node = NULL;
+        const DSRDocumentTreeNode *node;
         /* iterate over all nodes */
         do {
             node = getNode();
@@ -593,7 +586,7 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
         if (cursor.isValid())
         {
             /* goto specified target node (might be improved later on) */
-            if (cursor.gotoNode(referencedNodeID))
+            if (cursor.gotoNode(referencedNodeID) > 0)
             {
                 OFString sourceString;
                 OFString targetString;
@@ -603,25 +596,22 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
                 if (sourceString.substr(0, targetString.length()) != targetString)
                 {
                     const DSRDocumentTreeNode *targetNode = cursor.getNode();
-                    if (targetNode != NULL)
+                    const E_ValueType targetValueType = targetNode->getValueType();
+                    /* check whether relationship is valid/allowed */
+                    if (canAddByReferenceRelationship(relationshipType, targetValueType))
                     {
-                        const E_ValueType targetValueType = targetNode->getValueType();
-                        /* check whether relationship is valid/allowed */
-                        if (canAddByReferenceRelationship(relationshipType, targetValueType))
+                        DSRDocumentTreeNode *node = new DSRByReferenceTreeNode(relationshipType, referencedNodeID, targetValueType);
+                        if (node != NULL)
                         {
-                            DSRDocumentTreeNode *node = new DSRByReferenceTreeNode(relationshipType, referencedNodeID, targetValueType);
-                            if (node != NULL)
+                            nodeID = addNode(node, AM_belowCurrent);
+                            /* in case of error, free allocated memory */
+                            if (nodeID == 0)
                             {
-                                nodeID = addNode(node, AM_belowCurrent);
-                                /* in case of error, free allocated memory */
-                                if (nodeID == 0)
-                                {
-                                    delete node;
-                                    node = NULL;
-                                } else {
-                                    /* otherwise, go back to current node */
-                                    goUp();
-                                }
+                                delete node;
+                                node = NULL;
+                            } else {
+                                /* otherwise, go back to current node */
+                                goUp();
                             }
                         }
                     }
@@ -996,95 +986,89 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
             DSRDocumentTreeNodeCursor cursor(getRoot());
             if (cursor.isValid())
             {
-                const DSRDocumentTreeNode *node = NULL;
                 /* for all content items */
                 do {
-                    node = cursor.getNode();
-                    if (node != NULL)
+                    /* only check/update by-reference relationships */
+                    if (cursor.getNode()->getValueType() == VT_byReference)
                     {
-                        /* only check/update by-reference relationships */
-                        if (node->getValueType() == VT_byReference)
+                        size_t refNodeID = 0;
+                        OFString nodePosString;
+                        cursor.getPosition(nodePosString);
+                        /* type cast to access members of by-reference class */
+                        DSRByReferenceTreeNode *byRefNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, cursor.getNode()));
+                        if (flags & RF_showCurrentlyProcessedItem)
+                            DCMSR_INFO("Updating by-reference relationship in content item " << nodePosString);
+                        /* start searching from root node, be careful with large trees! (tbd: might be improved later on) */
+                        DSRDocumentTreeNodeCursor refCursor(getRoot());
+                        if (mode & CM_updateNodeID)
                         {
-                            size_t refNodeID = 0;
-                            OFString nodePosString;
-                            cursor.getPosition(nodePosString);
-                            /* type cast to access members of by-reference class */
-                            DSRByReferenceTreeNode *byRefNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, node));
-                            if (flags & RF_showCurrentlyProcessedItem)
-                                DCMSR_INFO("Updating by-reference relationship in content item " << nodePosString);
-                            /* start searching from root node, be careful with large trees! (tbd: might be improved later on) */
-                            DSRDocumentTreeNodeCursor refCursor(getRoot());
-                            if (mode & CM_updateNodeID)
+                            /* update node ID (based on position string) */
+                            refNodeID = refCursor.gotoNode(byRefNode->getReferencedContentItem());
+                            const DSRDocumentTreeNode *targetNode = (refNodeID > 0) ? refCursor.getNode() : NULL;
+                            const E_ValueType targetValueType = (targetNode != NULL) ? targetNode->getValueType() : VT_invalid;
+                            byRefNode->updateReference(refNodeID, targetValueType);
+                        } else {
+                            /* node ID is expected to be valid */
+                            refNodeID = refCursor.gotoNode(byRefNode->getReferencedNodeID());
+                            if (mode & CM_updatePositionString)
                             {
-                                /* update node ID (based on position string) */
-                                refNodeID = refCursor.gotoNode(byRefNode->getReferencedContentItem());
-                                const DSRDocumentTreeNode *targetNode = (refNodeID > 0) ? refCursor.getNode() : NULL;
-                                const E_ValueType targetValueType = (targetNode != NULL) ? targetNode->getValueType() : VT_invalid;
-                                byRefNode->updateReference(refNodeID, targetValueType);
-                            } else {
-                                /* node ID is expected to be valid */
-                                refNodeID = refCursor.gotoNode(byRefNode->getReferencedNodeID());
-                                if (mode & CM_updatePositionString)
-                                {
-                                    OFString refPosString;
-                                    /* update position string */
-                                    if (refNodeID > 0)
-                                        refCursor.getPosition(refPosString);
-                                    byRefNode->updateReference(refPosString);
-                                } else if (refNodeID == 0)
-                                    byRefNode->invalidateReference();
-                            }
-                            const OFString refContentItem(byRefNode->getReferencedContentItem());
-                            if (refNodeID > 0)
+                                OFString refPosString;
+                                /* update position string */
+                                if (refNodeID > 0)
+                                    refCursor.getPosition(refPosString);
+                                byRefNode->updateReference(refPosString);
+                            } else if (refNodeID == 0)
+                                byRefNode->invalidateReference();
+                        }
+                        const OFString refContentItem(byRefNode->getReferencedContentItem());
+                        if (refNodeID > 0)
+                        {
+                            /* source and target content items should not be identical */
+                            if (refNodeID != cursor.getNodeID())
                             {
-                                /* source and target content items should not be identical */
-                                if (refNodeID != cursor.getNodeID())
+                                /* check whether target node is an ancestor of source node (prevent loops) */
+                                if (refContentItem.empty() || (nodePosString.substr(0, refContentItem.length()) != refContentItem))
                                 {
-                                    /* check whether target node is an ancestor of source node (prevent loops) */
-                                    if (refContentItem.empty() || (nodePosString.substr(0, refContentItem.length()) != refContentItem))
+                                    /* refCursor should now point to the reference target (refNodeID > 0) */
+                                    const DSRDocumentTreeNode *parentNode = cursor.getParentNode();
+                                    DSRDocumentTreeNode *targetNode = refCursor.getNode();
+                                    if ((parentNode != NULL) && (targetNode != NULL))
                                     {
-                                        /* refCursor should now point to the reference target (refNodeID > 0) */
-                                        const DSRDocumentTreeNode *parentNode = cursor.getParentNode();
-                                        DSRDocumentTreeNode *targetNode = refCursor.getNode();
-                                        if ((parentNode != NULL) && (targetNode != NULL))
+                                        /* specify that this content item is target of an by-reference relationship */
+                                        targetNode->setReferenceTarget();
+                                        /* do we really need to check the constraints? */
+                                        E_RelationshipType relationshipType = byRefNode->getRelationshipType();
+                                        if (!(flags & RF_ignoreRelationshipConstraints) &&
+                                            (!(flags & RF_acceptUnknownRelationshipType) || (relationshipType != RT_unknown)))
                                         {
-                                            /* specify that this content item is target of an by-reference relationship */
-                                            targetNode->setReferenceTarget();
-                                            /* do we really need to check the constraints? */
-                                            E_RelationshipType relationshipType = byRefNode->getRelationshipType();
-                                            if (!(flags & RF_ignoreRelationshipConstraints) &&
-                                                (!(flags & RF_acceptUnknownRelationshipType) || (relationshipType != RT_unknown)))
+                                            /* check whether relationship is valid */
+                                            if ((ConstraintChecker != NULL) &&
+                                                !ConstraintChecker->checkContentRelationship(parentNode->getValueType(), relationshipType,
+                                                                                                targetNode->getValueType(), OFTrue /*byReference*/))
                                             {
-                                                /* check whether relationship is valid */
-                                                if ((ConstraintChecker != NULL) &&
-                                                    !ConstraintChecker->checkContentRelationship(parentNode->getValueType(), relationshipType,
-                                                                                                 targetNode->getValueType(), OFTrue /*byReference*/))
-                                                {
-                                                    if (refContentItem.empty())
-                                                        DCMSR_WARN("Invalid by-reference relationship at content item \"" << nodePosString << "\"");
-                                                    else {
-                                                        DCMSR_WARN("Invalid by-reference relationship between content item \""
-                                                            << nodePosString << "\" and \"" << refContentItem << "\"");
-                                                    }
+                                                if (refContentItem.empty())
+                                                    DCMSR_WARN("Invalid by-reference relationship at content item \"" << nodePosString << "\"");
+                                                else {
+                                                    DCMSR_WARN("Invalid by-reference relationship between content item \""
+                                                        << nodePosString << "\" and \"" << refContentItem << "\"");
                                                 }
                                             }
-                                        } else
-                                            DCMSR_WARN("Corrupted data structures while checking by-reference relationships");
-                                    } else {
-                                        DCMSR_WARN("By-reference relationship from \"" << nodePosString << "\" to ancestor content item \""
-                                            << refContentItem << "\" (loop check)");
-                                    }
-                                } else
-                                    DCMSR_WARN("Source and target content item of by-reference relationship are identical");
-                            } else {
-                                if (refContentItem.empty())
-                                    DCMSR_WARN("Target content item of by-reference relationship does not exist");
-                                else
-                                    DCMSR_WARN("Target content item \"" << refContentItem << "\" of by-reference relationship does not exist");
-                            }
+                                        }
+                                    } else
+                                        DCMSR_WARN("Corrupted data structures while checking by-reference relationships");
+                                } else {
+                                    DCMSR_WARN("By-reference relationship from \"" << nodePosString << "\" to ancestor content item \""
+                                        << refContentItem << "\" (loop check)");
+                                }
+                            } else
+                                DCMSR_WARN("Source and target content item of by-reference relationship are identical");
+                        } else {
+                            if (refContentItem.empty())
+                                DCMSR_WARN("Target content item of by-reference relationship does not exist");
+                            else
+                                DCMSR_WARN("Target content item \"" << refContentItem << "\" of by-reference relationship does not exist");
                         }
-                    } else
-                        result = SR_EC_InvalidDocumentTree;
+                    }
                 } while (result.good() && cursor.iterate());
             }
         }
@@ -1099,13 +1083,10 @@ void DSRDocumentSubTree::resetReferenceTargetFlag()
     DSRDocumentTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
-        DSRDocumentTreeNode *node = NULL;
         /* iterate over all nodes */
         do {
-            node = cursor.getNode();
             /* and reset the flag */
-            if (node != NULL)
-                node->setReferenceTarget(OFFalse);
+            cursor.getNode()->setReferenceTarget(OFFalse);
         } while (cursor.iterate());
     }
 }

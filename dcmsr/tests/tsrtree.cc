@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2015, OFFIS e.V.
+ *  Copyright (C) 2012-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -533,9 +533,8 @@ OFTEST(dcmsr_gotoAnnotatedTreeNode)
     OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("bastard")), 0 /* not found */);
     OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("first child")), nodeID + 1);
     /* clear annotation of current node and try again */
-    DSRTreeNode *node = tree.getNode();
-    if (node!= NULL)
-        node->clearAnnotation();
+    if (tree.isValid())
+        tree.getNode()->clearAnnotation();
     else
         OFCHECK_FAIL("could not get current node");
     OFCHECK_EQUAL(tree.gotoNode(DSRTreeNodeAnnotation("first child")), 0 /* not found */);
