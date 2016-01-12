@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -93,8 +93,8 @@ class SRTestTemplate1500
         /* make sure that at least the root CONTAINER is there */
         OFCHECK(addContentItem(RT_isRoot, VT_Container, DSRCodedEntryValue("126000", "DCM", "Imaging Measurement Report")).good());
         /* ... and include two sub-templates */
-        OFCHECK(includeTemplate(new SRTestTemplate1003, AM_belowCurrent, RT_hasObsContext).good());
-        OFCHECK(includeTemplate(new SRTestTemplate1410, AM_afterCurrent, RT_contains).good());
+        OFCHECK(includeTemplate(DSRSharedSubTemplate(new SRTestTemplate1003()), AM_belowCurrent, RT_hasObsContext).good());
+        OFCHECK(includeTemplate(DSRSharedSubTemplate(new SRTestTemplate1410()), AM_afterCurrent, RT_contains).good());
     }
 };
 

@@ -78,7 +78,7 @@ OFBool DSRIncludedTemplateTreeNode::isValid() const
 OFBool DSRIncludedTemplateTreeNode::hasValidValue() const
 {
     /* check whether the reference to the included template is valid */
-    return ReferencedTemplate;
+    return ReferencedTemplate ? OFTrue : OFFalse;
 }
 
 
