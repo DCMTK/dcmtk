@@ -339,7 +339,7 @@ size_t DSRDocumentSubTree::countNodes(const OFBool searchIntoSubTemplates,
                     /* special handling: count nodes of included subtree */
                     if (searchIntoSubTemplates)
                     {
-                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, cursor.getNode())->getValuePtr();
+                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, cursor.getNode())->getValue().get();
                         if (subTempl != NULL)
                             count += subTempl->countNodes(searchIntoSubTemplates, countIncludedTemplateNodes);
                     }
@@ -793,7 +793,7 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
                     /* and expand the included templates (if any) */
                     if (node->getValueType() == VT_includedTemplate)
                     {
-                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValuePtr();
+                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValue().get();
                         if (subTempl != NULL)
                         {
                             /* template has no content items */

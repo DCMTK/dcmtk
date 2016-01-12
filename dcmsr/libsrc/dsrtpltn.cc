@@ -154,6 +154,14 @@ OFCondition DSRIncludedTemplateTreeNode::renderHTML(STD_NAMESPACE ostream &docSt
 }
 
 
+OFCondition DSRIncludedTemplateTreeNode::setValue(const DSRSharedSubTemplate &referencedTemplate)
+{
+    ReferencedTemplate = referencedTemplate;
+    /* currently, no checks are performed */
+    return EC_Normal;
+}
+
+
 // protected methods
 
 OFCondition DSRIncludedTemplateTreeNode::read(DcmItem & /*dataset*/,

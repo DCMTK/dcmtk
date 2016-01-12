@@ -39,8 +39,6 @@
 class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
   : public DSRDocumentTreeNode
 {
-    // allow DSRDocumentSubTree to access protected method getValuePtr()
-    friend class DSRDocumentSubTree;
 
   public:
 
@@ -141,15 +139,23 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
                                    size_t &annexNumber,
                                    const size_t flags) const;
 
-  protected:
-
-    /** get pointer to included template, i.e.\ the value of this content item
-     ** @return pointer to included template (might be NULL)
+    /** get reference to included template, i.e.\ the value of this content item
+     ** @return reference to included template.  The managed pointer might be NULL.
      */
-    inline const DSRSubTemplate *getValuePtr() const
+    inline const DSRSharedSubTemplate &getValue() const
     {
-        return ReferencedTemplate.get();
+        return ReferencedTemplate;
     }
+
+    /** set reference to included template, i.e.\ the value of this content item.
+     *  Currently, no checks are performed on the passed 'referencedTemplate' parameter.
+     ** @param  referencedTemplate  shared pointer to template that should be managed
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setValue(const DSRSharedSubTemplate &referencedTemplate);
+
+
+  protected:
 
     /** read content item from dataset
      ** @param  dataset            dummy parameter
