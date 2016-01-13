@@ -39,7 +39,7 @@ OFTEST(dcmsr_setNumericMeasurementValue)
     OFCHECK(numValue.isEmpty());
     OFCHECK(numValue.isValid());
     OFCHECK(!numValue.isComplete());
-    OFCHECK(numValue.setValue("", DSRCodedEntryValue(), CODE_DCM_NotANumber, OFTrue /*check*/).good());
+    OFCHECK(numValue.setValue(CODE_DCM_NotANumber, OFTrue /*check*/).good());
     OFCHECK(numValue.isEmpty());
     OFCHECK(numValue.isValid());
     OFCHECK(numValue.isComplete());

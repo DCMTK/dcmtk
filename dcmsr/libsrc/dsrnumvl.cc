@@ -54,6 +54,20 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericVa
 }
 
 
+DSRNumericMeasurementValue::DSRNumericMeasurementValue(const DSRCodedEntryValue &valueQualifier,
+                                                       const OFBool check)
+  : NumericValue(),
+    MeasurementUnit(),
+    ValueQualifier(),
+    FloatingPointValue(DCM_FloatingPointValue),
+    RationalNumeratorValue(DCM_RationalNumeratorValue),
+    RationalDenominatorValue(DCM_RationalDenominatorValue)
+{
+    /* use the set method for checking purposes */
+    setValue(valueQualifier, check);
+}
+
+
 DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericValue,
                                                        const DSRCodedEntryValue &measurementUnit,
                                                        const DSRCodedEntryValue &valueQualifier,
@@ -476,6 +490,15 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
     const DSRCodedEntryValue valueQualifier;
     /* call the function doing the real work */
     return setValue(numericValue, measurementUnit, valueQualifier, check);
+}
+
+
+OFCondition DSRNumericMeasurementValue::setValue(const DSRCodedEntryValue &valueQualifier,
+                                                 const OFBool check)
+{
+    const DSRCodedEntryValue measurementUnit;
+    /* call the function doing the real work */
+    return setValue("" /*numericValue*/, measurementUnit, valueQualifier, check);
 }
 
 

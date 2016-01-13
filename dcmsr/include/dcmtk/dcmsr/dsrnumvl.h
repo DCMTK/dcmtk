@@ -60,6 +60,17 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
                                const OFBool check = OFTrue);
 
     /** constructor
+     ** @param  valueQualifier  code representing the numeric value qualifier.  Used to
+     *                          specify the reason for the absence of the measured value
+     *                          sequence, i.e. why the numeric value and measurement unit
+     *                          are empty.
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See corresponding setValue() method for details.
+     */
+    DSRNumericMeasurementValue(const DSRCodedEntryValue &valueQualifier,
+                               const OFBool check = OFTrue);
+
+    /** constructor
      ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  valueQualifier   code representing the numeric value qualifier (optional).
@@ -278,6 +289,19 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      */
     OFCondition setValue(const OFString &numericValue,
                          const DSRCodedEntryValue &measurementUnit,
+                         const OFBool check = OFTrue);
+
+    /** set empty numeric value and measurement unit with a numeric value qualifier.
+     *  Before setting the value, it is usually checked.  If the value is invalid, the
+     *  current numeric measurement value is not replaced and remains unchanged.
+     ** @param  valueQualifier  numeric value qualifier to be set.  Used to specify the
+     *                          reason for the absence of the measured value sequence,
+     *                          i.e. why the numeric value and measurement unit are empty.
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See checkNumericValueQualifier() method for details.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setValue(const DSRCodedEntryValue &valueQualifier,
                          const OFBool check = OFTrue);
 
     /** set numeric value, measurement unit and numeric value qualifier.
