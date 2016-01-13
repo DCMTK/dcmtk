@@ -74,10 +74,11 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
         withAllDescriptors
     };
 
-    /** default constructor.
-     *  Also creates an empty image library by calling createImageLibrary().
+    /** (default) constructor
+     ** @param  createLibrary  flag indicating whether to create an empty image library
+     *                         by calling createImageLibrary() during startup (default)
      */
-    TID1600_ImageLibrary();
+    TID1600_ImageLibrary(const OFBool createLibrary = OFTrue);
 
     /** check whether the current internal state is valid.
      *  That means, whether the base class is valid and hasImageLibrary() returns true.
@@ -87,8 +88,8 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
 
     /** check whether the content item 'Image Library' (TID 1600 - Row 1) is present.
      *  Initially, this mandatory content item is created by the constructor of this
-     *  class.  After clear() has been called, it can be created again by calling
-     *  createNewImageLibrary().
+     *  class (if not disabled).  After clear() has been called, it can be created again
+     *  by calling createNewImageLibrary().
      ** @return OFTrue if the image library is present, OFFalse otherwise
      */
     OFBool hasImageLibrary() const;

@@ -55,14 +55,15 @@ makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_d
 makeOFConditionConst(CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded,       OFM_dcmsr, 1606, OF_ok,    "No Image Library Entry Descriptors to be added");
 
 
-TID1600_ImageLibrary::TID1600_ImageLibrary()
+TID1600_ImageLibrary::TID1600_ImageLibrary(const OFBool createLibrary)
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
     /* need to store image library, last image library group and entry */
     reserveEntriesInNodeList(3);
     /* TID 1600 (Image Library) Row 1 */
-    createImageLibrary();
+    if (createLibrary)
+        createImageLibrary();
 }
 
 
