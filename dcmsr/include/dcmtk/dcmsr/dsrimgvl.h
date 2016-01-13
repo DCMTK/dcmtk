@@ -350,6 +350,14 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
         return FrameList;
     }
 
+    /** get read-only access to list of referenced frame numbers
+     ** @return constant reference to frame list
+     */
+    inline const DSRImageFrameList &getFrameList() const
+    {
+        return FrameList;
+    }
+
     /** get reference to list of referenced segment numbers.
      *  According to the DICOM standard, this list is required if the referenced image is
      *  a segmentation object, and the reference does not apply to all segments and the list
@@ -357,6 +365,14 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      ** @return reference to segment list
      */
     inline DSRImageSegmentList &getSegmentList()
+    {
+        return SegmentList;
+    }
+
+    /** get read-only access to list of referenced segment numbers
+     ** @return constant reference to segment list
+     */
+    inline const DSRImageSegmentList &getSegmentList() const
     {
         return SegmentList;
     }
