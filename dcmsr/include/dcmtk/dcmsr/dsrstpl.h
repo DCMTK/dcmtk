@@ -105,7 +105,7 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
     /** get read-only access to internally stored subtree.
      *  This method is not "const" because the template identification is set/updated
      *  automatically for the root node of the subtree (if applicable).
-     ** @return get constant reference to internally stored subtree
+     ** @return constant reference to internally stored subtree
      */
     virtual const DSRDocumentSubTree &getTree();
 

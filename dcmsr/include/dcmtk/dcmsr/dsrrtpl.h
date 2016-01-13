@@ -114,7 +114,7 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
     /** get read-only access to internally stored document tree.
      *  This method is not "const" because the template identification is set/updated
      *  automatically for the root node of the document tree (if applicable).
-     ** @return get constant reference to internally stored document tree
+     ** @return constant reference to internally stored document tree
      */
     virtual const DSRDocumentTree &getTree();
 
