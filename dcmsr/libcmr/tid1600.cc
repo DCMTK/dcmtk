@@ -371,7 +371,7 @@ OFCondition TID1600_ImageLibrary::createImageLibrary()
     if (isEmpty())
     {
         /* TID 1600 (Image Library) Row 1 */
-        STORE_RESULT(addChildContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary));
+        STORE_RESULT(addContentItem(RT_unknown, VT_Container, CODE_DCM_ImageLibrary));
         CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1600 - Row 1"));
         /* store ID of root node for later use */
         GOOD_RESULT(storeEntryInNodeList(IMAGE_LIBRARY, getNodeID()));
@@ -392,7 +392,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
         /* determine modality code from CID 29 */
         const CID29e_AcquisitionModality contextGroup;
         DSRCodedEntryValue modalityCode(contextGroup.mapModality(modality));
-        if (modalityCode.isValid())
+        if (modalityCode.isComplete())
         {
             CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_Modality, check));
             CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(modalityCode, check));
@@ -412,14 +412,14 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
         {
             /* alternatively, determine target region code from CID 4031 (using PS 3.16 Annex L) */
             regionCode = CID4031e_CommonAnatomicRegions::mapBodyPartExamined(bodyPartExamined);
-            if (!regionCode.isValid())
+            if (!regionCode.isComplete())
             {
                 /* report this as a debug message (avoid too many warnings) */
                 DCMSR_CMR_DEBUG("Cannot map Body Part Examined '" << bodyPartExamined << "' to a coded entry (no mapping to CID 4031 defined)");
             }
         }
     }
-    if (regionCode.isValid())
+    if (regionCode.isComplete())
     {
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_TargetRegion, check));
         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(regionCode, check));
@@ -431,7 +431,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
     {
         /* determine image laterality code from CID 244 */
         DSRCodedEntryValue lateralityCode(CID244e_Laterality::mapImageLaterality(imageLaterality));
-        if (lateralityCode.isValid())
+        if (lateralityCode.isComplete())
         {
             CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageLaterality, check));
             CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(lateralityCode, check));
@@ -594,7 +594,7 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
             {
                 /* determine CT acquisition type code from CID 10013 */
                 DSRCodedEntryValue acquisitionTypeCode(CID10013e_CTAcquisitionType::mapAcquisitionType(acquisitionType));
-                if (acquisitionTypeCode.isValid())
+                if (acquisitionTypeCode.isComplete())
                 {
                     CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_CTAcquisitionType, check));
                     CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(acquisitionTypeCode, check));
@@ -619,7 +619,7 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
             {
                 /* determine CT reconstruction algorithm code from CID 10033 */
                 DSRCodedEntryValue reconstructionAlgorithmCode(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm(reconstructionAlgorithm));
-                if (reconstructionAlgorithmCode.isValid())
+                if (reconstructionAlgorithmCode.isComplete())
                 {
                     CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ReconstructionAlgorithm, check));
                     CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(reconstructionAlgorithmCode, check));
@@ -727,7 +727,7 @@ OFCondition TID1600_ImageLibrary::setStringContentItemFromValue(const E_ValueTyp
 {
     OFCondition result = EC_Normal;
     /* check concept name and coded entry value */
-    if (conceptName.isValid())
+    if (conceptName.isComplete())
     {
         if (!stringValue.empty())
         {
@@ -766,9 +766,9 @@ OFCondition TID1600_ImageLibrary::setCodeContentItemFromValue(const DSRCodedEntr
 {
     OFCondition result = EC_Normal;
     /* check concept name and coded entry value */
-    if (conceptName.isValid())
+    if (conceptName.isComplete())
     {
-        if (codeValue.isValid())
+        if (codeValue.isComplete())
         {
             /* check whether content item is already present.
              * (we assume that the content item we are searching for is a successor of the current one)
@@ -806,9 +806,9 @@ OFCondition TID1600_ImageLibrary::setNumericContentItemFromValue(const DSRCodedE
 {
     OFCondition result = EC_Normal;
     /* check concept name and coded entry value */
-    if (conceptName.isValid())
+    if (conceptName.isComplete())
     {
-        if (numericValue.isValid())
+        if (numericValue.isComplete())
         {
             /* check whether content item is already present.
              * (we assume that the content item we are searching for is a successor of the current one)
@@ -881,7 +881,7 @@ OFCondition TID1600_ImageLibrary::addCodeContentItemFromDataset(DSRDocumentSubTr
     OFCondition result = EC_Normal;
     DSRCodedEntryValue codedEntry;
     /* get coded entry from code sequence in dataset */
-    if (codedEntry.readSequence(dataset, tagKey, "3" /*type*/).good() && codedEntry.isValid())
+    if (codedEntry.readSequence(dataset, tagKey, "3" /*type*/).good() && codedEntry.isComplete())
     {
         CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, conceptName, check));
         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(codedEntry, check));

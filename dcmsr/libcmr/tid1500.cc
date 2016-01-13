@@ -231,7 +231,7 @@ OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_Mea
         if (isEmpty())
         {
             /* TID 1500 (Measurement Report) Row 1 */
-            STORE_RESULT(addChildContentItem(RT_isRoot, VT_Container, title));
+            STORE_RESULT(addContentItem(RT_isRoot, VT_Container, title));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 1"));
             /* store ID of root node for later use */
             if (result.good())
