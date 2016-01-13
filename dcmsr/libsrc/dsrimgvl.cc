@@ -146,6 +146,12 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 }
 
 
+OFBool DSRImageReferenceValue::isSegmentation() const
+{
+    return isSegmentationObject(SOPClassUID);
+}
+
+
 OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream &stream,
                                           const size_t flags) const
 {
@@ -340,7 +346,7 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset,
             }
         }
         /* check data and report warnings if any */
-        checkListData(FrameList, SegmentList, OFTrue /*reportWarnings*/);
+        checkListData(SOPClassUID, FrameList, SegmentList, OFTrue /*reportWarnings*/);
     }
     return result;
 }
@@ -397,7 +403,7 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
         }
     }
     /* check data and report warnings if any */
-    checkListData(FrameList, SegmentList, OFTrue /*reportWarnings*/);
+    checkListData(SOPClassUID, FrameList, SegmentList, OFTrue /*reportWarnings*/);
     return result;
 }
 
@@ -650,14 +656,20 @@ OFBool DSRImageReferenceValue::appliesToSegment(const Uint16 segmentNumber) cons
 }
 
 
+OFBool DSRImageReferenceValue::isSegmentationObject(const OFString &sopClassUID) const
+{
+    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2015c) */
+    return (sopClassUID == UID_SegmentationStorage) || (sopClassUID == UID_SurfaceSegmentationStorage);
+}
+
+
 OFCondition DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2014a) */
-        if (!dcmIsImageStorageSOPClassUID(sopClassUID.c_str()) &&
-            (sopClassUID != UID_SegmentationStorage))
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2015c) */
+        if (!dcmIsImageStorageSOPClassUID(sopClassUID.c_str()) && !isSegmentationObject(sopClassUID))
         {
             result = SR_EC_InvalidValue;
         }
@@ -695,7 +707,8 @@ OFCondition DSRImageReferenceValue::checkRealWorldValueMapping(const DSRComposit
 // helper macro to avoid annoying check of boolean flag
 #define REPORT_WARNING(msg) { if (reportWarnings) DCMSR_WARN(msg); }
 
-OFCondition DSRImageReferenceValue::checkListData(const DSRImageFrameList &frameList,
+OFCondition DSRImageReferenceValue::checkListData(const OFString &sopClassUID,
+                                                  const DSRImageFrameList &frameList,
                                                   const DSRImageSegmentList &segmentList,
                                                   const OFBool reportWarnings) const
 {
@@ -706,7 +719,13 @@ OFCondition DSRImageReferenceValue::checkListData(const DSRImageFrameList &frame
         /* this is just a warning since only one list will ever be written */
         REPORT_WARNING("Both Referenced Frame Number and Referenced Segment Number present in IMAGE content item")
     }
-    /* tbd: check whether referenced image is a segmentation object? (see "type 1C" condition) */
+    /* check whether referenced image is a segmentation object (see "type 1C" condition) */
+    if (!segmentList.isEmpty() && !isSegmentationObject(sopClassUID))
+    {
+        REPORT_WARNING("Referenced Segment Number present in IMAGE content item for non-segmentation object")
+        result = SR_EC_InvalidValue;
+    }
+    /* tbd: check whether referenced image is a multi-frame image? (see "type 1C" condition) */
     return result;
 }
 
@@ -719,6 +738,6 @@ OFCondition DSRImageReferenceValue::checkCurrentValue() const
     if (result.good())
         result = checkRealWorldValueMapping(RealWorldValueMapping);
     if (result.good())
-        result = checkListData(FrameList, SegmentList);
+        result = checkListData(SOPClassUID, FrameList, SegmentList);
     return result;
 }

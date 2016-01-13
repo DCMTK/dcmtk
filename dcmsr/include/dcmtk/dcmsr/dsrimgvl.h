@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -134,6 +134,11 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      ** @return OFTrue if the content is short, OFFalse otherwise
      */
     virtual OFBool isShort(const size_t flags) const;
+
+    /** check whether the current image reference points to a DICOM segmentation object
+     ** @return OFTrue if a segmentation object is referenced, OFFalse otherwise
+     */
+    virtual OFBool isSegmentation() const;
 
     /** print image reference.
      *  The output of a typical image reference value looks like this: (CT image,"1.2.3") or
@@ -397,10 +402,16 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      */
     virtual OFCondition writeItem(DcmItem &dataset) const;
 
+    /** check whether the given SOP class UID refers to a DICOM segmentation object
+     ** @param  sopClassUID  SOP class UID to be checked
+     ** @return OFTrue if the UID refers to a segmentation object, OFFalse otherwise
+     */
+    virtual OFBool isSegmentationObject(const OFString &sopClassUID) const;
+
     /** check the specified SOP class UID for validity.
      *  This method further specializes the checks performed in the base class
-     *  DSRCompositeReferenceValue.  All image SOP classes that are defined in
-     *  DICOM PS 3.6-2014a and the "Segmentation Storage SOP Class" are allowed.
+     *  DSRCompositeReferenceValue.  All image and segmentation SOP classes that
+     *  are defined in DICOM PS 3.6-2015c are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
@@ -424,15 +435,19 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     virtual OFCondition checkRealWorldValueMapping(const DSRCompositeReferenceValue &referenceValue) const;
 
     /** check the given list of frame and segment numbers for validity.
-     *  The only check that is currently performed is that either both lists are empty or only
-     *  one of them is non-empty, because otherwise the "type 1C" condition would be violated.
-     ** @param  frameList       list of referenced frame numbers to be checked
+     *  Either both lists have to be empty or only one of them has to be non-empty,
+     *  because otherwise the "type 1C" condition would be violated.  Also the list
+     *  of segment numbers should only be non-empty for one of the DICOM segmentation
+     *  objects (see isSegmentationObject()).
+     ** @param  sopClassUID     SOP class UID of the image object to be checked
+     *  @param  frameList       list of referenced frame numbers to be checked
      *  @param  segmentList     list of referenced segment numbers to be checked
-     *  @param  reportWarnings  if enabled, report a warning message on each deviation from an
-     *                          expected value to the logger
+     *  @param  reportWarnings  if enabled, report a warning message on each deviation
+     *                          from an expected value to the logger
      ** @return status, EC_Normal if checked data is valid, an error code otherwise
      */
-    OFCondition checkListData(const DSRImageFrameList &frameList,
+    OFCondition checkListData(const OFString &sopClassUID,
+                              const DSRImageFrameList &frameList,
                               const DSRImageSegmentList &segmentList,
                               const OFBool reportWarnings = OFFalse) const;
 
