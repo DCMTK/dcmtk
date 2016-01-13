@@ -26,6 +26,13 @@
 #include "dcmtk/dcmsr/cmr/cid7021.h"
 
 
+// include this file in doxygen documentation
+
+/** @file tid1500.h
+ *  @brief Interface class and error constants for TID 1500 in module dcmsr/cmr
+ */
+
+
 /*------------------------*
  *  constant definitions  *
  *------------------------*/
