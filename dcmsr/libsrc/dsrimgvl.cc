@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -700,10 +700,11 @@ OFCondition DSRImageReferenceValue::checkListData(const DSRImageFrameList &frame
                                                   const OFBool reportWarnings) const
 {
     OFCondition result = EC_Normal;
+    /* check whether both lists of referenced frame and segment numbers are non-empty */
     if (!frameList.isEmpty() && !segmentList.isEmpty())
     {
         /* this is just a warning since only one list will ever be written */
-        REPORT_WARNING("Both ReferencedFrameNumber and ReferencedSegmentNumber present in IMAGE content item")
+        REPORT_WARNING("Both Referenced Frame Number and Referenced Segment Number present in IMAGE content item")
     }
     /* tbd: check whether referenced image is a segmentation object? (see "type 1C" condition) */
     return result;

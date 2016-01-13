@@ -314,21 +314,21 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
                             /* check whether the correct Mapping Resource UID is used (if present) */
                             if (!mappingResourceUID.empty() && (mappingResourceUID != UID_DICOMContentMappingResource))
                             {
-                                DCMSR_WARN("Incorrect value for MappingResourceUID (" << mappingResourceUID << "), "
+                                DCMSR_WARN("Incorrect value for Mapping Resource UID (" << mappingResourceUID << "), "
                                     << UID_DICOMContentMappingResource << " expected");
                             }
                         }
                         /* compare with expected mapping resource */
                         if (mappingResource != expectedMappingResource)
                         {
-                            DCMSR_WARN("Incorrect value for MappingResource ("
+                            DCMSR_WARN("Incorrect value for Mapping Resource ("
                                 << ((mappingResource.empty()) ? "<empty>" : mappingResource) << "), "
                                 << expectedMappingResource << " expected");
                         }
                         /* compare with expected template identifier */
                         if (templateIdentifier != expectedTemplateIdentifier)
                         {
-                            DCMSR_WARN("Incorrect value for TemplateIdentifier ("
+                            DCMSR_WARN("Incorrect value for Template Identifier ("
                                 << ((templateIdentifier.empty()) ? "<empty>" : templateIdentifier) << "), "
                                 << expectedTemplateIdentifier << " expected");
                         }

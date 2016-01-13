@@ -692,7 +692,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
     {
         if (ValueType != VT_Container)
-            DCMSR_WARN("Found ContentTemplateSequence for content item \"" << posString << "\" which is not a CONTAINER");
+            DCMSR_WARN("Found Content Template Sequence for content item \"" << posString << "\" which is not a CONTAINER");
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResourceUID, MappingResourceUID, "1", "3", "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", "ContentTemplateSequence");
@@ -702,7 +702,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
             /* check whether the correct Mapping Resource UID is used (if present) */
             if (!MappingResourceUID.empty() && (MappingResourceUID != UID_DICOMContentMappingResource))
             {
-                DCMSR_WARN("Incorrect value for MappingResourceUID (" << MappingResourceUID << "), "
+                DCMSR_WARN("Incorrect value for Mapping Resource UID (" << MappingResourceUID << "), "
                     << UID_DICOMContentMappingResource << " expected");
             }
             /* check for a common error: Template Identifier includes "TID" prefix */
@@ -710,8 +710,8 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
             {
                 if ((TemplateIdentifier.find_first_not_of("0123456789") != OFString_npos) || (TemplateIdentifier.at(0) == '0'))
                 {
-                    DCMSR_DEBUG("Reading invalid TemplateIdentifier (" << TemplateIdentifier << ")");
-                    DCMSR_WARN("TemplateIdentifier shall be a string of digits without leading zeros");
+                    DCMSR_DEBUG("Reading invalid Template Identifier (" << TemplateIdentifier << ")");
+                    DCMSR_WARN("Template Identifier shall be a string of digits without leading zeros");
                 }
             }
         }
@@ -721,14 +721,14 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
             /* compare with expected mapping resource */
             if (MappingResource != expectedMappingResource)
             {
-                DCMSR_WARN("Incorrect value for MappingResource ("
+                DCMSR_WARN("Incorrect value for Mapping Resource ("
                     << ((MappingResource.empty()) ? "<empty>" : MappingResource) << "), "
                     << expectedMappingResource << " expected");
             }
             /* compare with expected template identifier */
             if (TemplateIdentifier != expectedTemplateIdentifier)
             {
-                DCMSR_WARN("Incorrect value for TemplateIdentifier ("
+                DCMSR_WARN("Incorrect value for Template Identifier ("
                     << ((TemplateIdentifier.empty()) ? "<empty>" : TemplateIdentifier) << "), "
                     << expectedTemplateIdentifier << " expected");
             }
@@ -737,7 +737,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     /* only check template identifier on dataset level (root node) */
     else if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
     {
-        DCMSR_WARN("ContentTemplateSequence missing or empty, TemplateIdentifier "
+        DCMSR_WARN("Content Template Sequence missing or empty, Template Identifier "
             << expectedTemplateIdentifier << " (" << expectedMappingResource << ") expected");
     }
     /* read ContentSequence */
@@ -778,7 +778,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
             if (result.good())
             {
                 if (ValueType != VT_Container)
-                    DCMSR_WARN("Writing ContentTemplateSequence for content item that is not a CONTAINER");
+                    DCMSR_WARN("Writing Content Template Sequence for content item that is not a CONTAINER");
                 /* write item data */
                 putStringValueToDataset(*ditem, DCM_MappingResource, MappingResource);
                 putStringValueToDataset(*ditem, DCM_MappingResourceUID, MappingResourceUID, OFFalse /*allowEmpty*/);

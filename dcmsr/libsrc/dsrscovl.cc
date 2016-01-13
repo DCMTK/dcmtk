@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -289,9 +289,9 @@ OFCondition DSRSpatialCoordinatesValue::checkGraphicData(const DSRTypes::E_Graph
     OFCondition result = SR_EC_InvalidValue;
     // check graphic type and data
     if (graphicType == DSRTypes::GT_invalid)
-        REPORT_WARNING("Invalid GraphicType for SCOORD content item")
+        REPORT_WARNING("Invalid Graphic Type for SCOORD content item")
     else if (graphicDataList.isEmpty())
-        REPORT_WARNING("No GraphicData for SCOORD content item")
+        REPORT_WARNING("No Graphic Data for SCOORD content item")
     else
     {
         const size_t count = graphicDataList.getNumberOfItems();
@@ -299,39 +299,39 @@ OFCondition DSRSpatialCoordinatesValue::checkGraphicData(const DSRTypes::E_Graph
         {
             case DSRTypes::GT_Point:
                 if (count > 1)
-                    REPORT_WARNING("GraphicData has too many entries, only a single entry expected")
+                    REPORT_WARNING("Graphic Data has too many entries, only a single entry expected")
                 result = EC_Normal;
                 break;
             case DSRTypes::GT_Multipoint:
                 if (count < 1)
-                    REPORT_WARNING("GraphicData has too few entries, at least one entry expected")
+                    REPORT_WARNING("Graphic Data has too few entries, at least one entry expected")
                 result = EC_Normal;
                 break;
             case DSRTypes::GT_Polyline:
 /*
                 // not required any more according to CP-233
                 if (graphicDataList.getItem(1) != graphicDataList.getItem(count))
-                    REPORT_WARNING("First and last entry in GraphicData are not equal (POLYLINE)")
+                    REPORT_WARNING("First and last entry in Graphic Data are not equal (POLYLINE)")
 */
                 result = EC_Normal;
                 break;
             case DSRTypes::GT_Circle:
                 if (count < 2)
-                    REPORT_WARNING("GraphicData has too few entries, exactly two entries expected")
+                    REPORT_WARNING("Graphic Data has too few entries, exactly two entries expected")
                 else
                 {
                     if (count > 2)
-                        REPORT_WARNING("GraphicData has too many entries, exactly two entries expected")
+                        REPORT_WARNING("Graphic Data has too many entries, exactly two entries expected")
                     result = EC_Normal;
                 }
                 break;
             case DSRTypes::GT_Ellipse:
                 if (count < 4)
-                    REPORT_WARNING("GraphicData has too few entries, exactly four entries expected")
+                    REPORT_WARNING("Graphic Data has too few entries, exactly four entries expected")
                 else
                 {
                     if (count > 4)
-                        REPORT_WARNING("GraphicData has too many entries, exactly four entries expected")
+                        REPORT_WARNING("Graphic Data has too many entries, exactly four entries expected")
                     result = EC_Normal;
                 }
                 break;

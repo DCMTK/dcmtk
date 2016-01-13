@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -542,7 +542,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             if (CompletionFlagEnum == CF_invalid)
                 printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
             else if ((CompletionFlagEnum == CF_Partial) && (documentType == DT_XRayRadiationDoseSR))
-                DCMSR_WARN("Invalid value for CompletionFlag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
+                DCMSR_WARN("Invalid value for Completion Flag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
             /* get and check VerificationFlag / VerifyingObserverSequence */
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
             if (VerificationFlagEnum == VF_invalid)
@@ -605,7 +605,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
 
         /* checking particular values */
         if ((CompletionFlagEnum == CF_Partial) && (getDocumentType() == DT_XRayRadiationDoseSR))
-            DCMSR_WARN("Invalid value for CompletionFlag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
+            DCMSR_WARN("Invalid value for Completion Flag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
 
         /* write general document attributes */
 

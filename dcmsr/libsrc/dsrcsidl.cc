@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -133,7 +133,7 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset) const
                     putStringValueToDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, OFFalse /*allowEmpty*/);
                 else if (!item->CodingSchemeExternalID.empty())
                 {
-                    DCMSR_WARN("Both CodingSchemeUID and CodingSchemeExternalID present for \""
+                    DCMSR_WARN("Both Coding Scheme UID and Coding Scheme External ID present for \""
                         << item->CodingSchemeDesignator << "\", the latter will be ignored");
                 }
                 putStringValueToDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, OFFalse /*allowEmpty*/);
@@ -251,8 +251,8 @@ OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSch
                 result = EC_MemoryExhausted;
             }
         } else {
-            DCMSR_WARN("CodingSchemeDesignator \"" << codingSchemeDesignator
-                << "\" already exists in CodingSchemeIdentificationSequence ... overwriting");
+            DCMSR_WARN("Coding Scheme Designator \"" << codingSchemeDesignator
+                << "\" already exists in Coding Scheme Identification Sequence ... overwriting");
             /* gotoItem() was successful, set item pointer */
             item = *Iterator;
         }

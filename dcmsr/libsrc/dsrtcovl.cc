@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -336,21 +336,21 @@ OFCondition DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRan
 {
     OFCondition result = EC_Normal;
     if (temporalRangeType == DSRTypes::TRT_invalid)
-        REPORT_WARNING("Invalid TemporalRangeType for TCOORD content item")
+        REPORT_WARNING("Invalid Temporal Range Type for TCOORD content item")
     const OFBool list1 = !samplePositionList.isEmpty();
     const OFBool list2 = !timeOffsetList.isEmpty();
     const OFBool list3 = !dateTimeList.isEmpty();
     if (list1 && list2 && list3)
-        REPORT_WARNING("ReferencedSamplePositions/TimeOffsets/DateTime present in TCOORD content item")
+        REPORT_WARNING("Referenced Sample Positions/Time Offsets/DateTime present in TCOORD content item")
     else if (list1 && list2)
-        REPORT_WARNING("ReferencedSamplePositions/TimeOffsets present in TCOORD content item")
+        REPORT_WARNING("Referenced Sample Positions/Time Offsets present in TCOORD content item")
     else if (list1 && list3)
-        REPORT_WARNING("ReferencedSamplePositions/DateTime present in TCOORD content item")
+        REPORT_WARNING("Referenced Sample Positions/DateTime present in TCOORD content item")
     else if (list2 && list3)
-        REPORT_WARNING("ReferencedTimeOffsets/DateTime present in TCOORD content item")
+        REPORT_WARNING("Referenced Time Offsets/DateTime present in TCOORD content item")
     else if (!list1 && !list2 && !list3)
     {
-        REPORT_WARNING("ReferencedSamplePositions/TimeOffsets/DateTime empty in TCOORD content item")
+        REPORT_WARNING("Referenced Sample Positions/Time Offsets/DateTime empty in TCOORD content item")
         /* invalid: all lists are empty (type 1C condition violated) */
         result = SR_EC_InvalidValue;
     }
