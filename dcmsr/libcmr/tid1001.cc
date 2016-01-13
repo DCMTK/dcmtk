@@ -54,7 +54,7 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
     if (subTree != NULL)
     {
         /* TID 1002 (Observer Context) Row 1 */
-        STORE_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_ObserverType));
+        STORE_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_ObserverType, check));
         CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(CODE_DCM_Person, check));
         CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1002 - Row 1"));
         /* TID 1003 (Person Observer Identifying Attributes) Row 1 */
@@ -64,21 +64,21 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
         /* TID 1003 (Person Observer Identifying Attributes) Row 2 */
         if (!organizationName.empty())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_PersonObserverOrganizationName));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_PersonObserverOrganizationName, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(organizationName, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1003 - Row 2"));
         }
         /* TID 1003 (Person Observer Identifying Attributes) Row 3 */
         if (organizationRole.hasSelectedValue())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_PersonObserverRoleInTheOrganization));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_PersonObserverRoleInTheOrganization, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(organizationRole, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1003 - Row 3"));
         }
         /* TID 1003 (Person Observer Identifying Attributes) Row 4 */
         if (procedureRole.hasSelectedValue())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_PersonObserverRoleInThisProcedure));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_PersonObserverRoleInThisProcedure, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(procedureRole, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1003 - Row 4"));
         }
@@ -115,7 +115,7 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
     if (subTree != NULL)
     {
         /* TID 1002 (Observer Context) Row 1 */
-        STORE_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_ObserverType));
+        STORE_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_ObserverType, check));
         CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(CODE_DCM_Device, check));
         CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1002 - Row 1"));
         /* TID 1004 (Device Observer Identifying Attributes) Row 1 */
@@ -125,35 +125,35 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
         /* TID 1004 (Device Observer Identifying Attributes) Row 2 */
         if (!deviceName.empty())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverName));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverName, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(deviceName, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 2"));
         }
         /* TID 1004 (Device Observer Identifying Attributes) Row 3 */
         if (!manufacturer.empty())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverManufacturer));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverManufacturer, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(manufacturer, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 3"));
         }
         /* TID 1004 (Device Observer Identifying Attributes) Row 4 */
         if (!modelName.empty())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverModelName));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverModelName, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(modelName, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 4"));
         }
         /* TID 1004 (Device Observer Identifying Attributes) Row 5 */
         if (!serialNumber.empty())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverSerialNumber));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverSerialNumber, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(serialNumber, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 5"));
         }
         /* TID 1004 (Device Observer Identifying Attributes) Row 6 */
         if (!physicalLocation.empty())
         {
-            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverPhysicalLocationDuringObservation));
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_DeviceObserverPhysicalLocationDuringObservation, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(physicalLocation, check));
             CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 6"));
         }
@@ -165,7 +165,7 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
             /* iterate over all list entries */
             while ((iter != last) && result.good())
             {
-                STORE_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_DeviceRoleInProcedure));
+                STORE_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Code, CODE_DCM_DeviceRoleInProcedure, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(iter->getSelectedValue(), check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 7"));
                 ++iter;

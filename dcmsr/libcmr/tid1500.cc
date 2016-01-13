@@ -43,9 +43,6 @@
 makeOFConditionConst(CMR_EC_NoMeasurementReport, OFM_dcmsr, 1500, OF_error, "No Measurement Report");
 
 
-// conditions constants
-
-
 TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title)
   : DSRRootTemplate(DT_EnhancedSR, TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
     Language(new TID1204_LanguageOfContentItemAndDescendants),
@@ -166,7 +163,7 @@ OFCondition TID1500_MeasurementReport::addProcedureReported(const CID100_Quantit
         if (gotoLastEntryFromNodeList(this, LAST_PROCEDURE_REPORTED, OBSERVATION_CONTEXT) > 0)
         {
             /* TID 1500 (Measurement Report) Row 4 */
-            STORE_RESULT(addContentItem(RT_hasConceptMod, VT_Code, CODE_DCM_ProcedureReported));
+            STORE_RESULT(addContentItem(RT_hasConceptMod, VT_Code, CODE_DCM_ProcedureReported, check));
             CHECK_RESULT(getCurrentContentItem().setCodeValue(procedure, check));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 4"));
             /* store ID of recently added node for later use */

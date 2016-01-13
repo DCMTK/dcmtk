@@ -143,7 +143,7 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
         {
             DSRImageReferenceValue imageRef;
             /* TID 1601 (Image Library Entry) Row 1 */
-            STORE_RESULT(tid1601->addContentItem(RT_contains, VT_Image, DSRCodedEntryValue()));
+            STORE_RESULT(tid1601->addContentItem(RT_contains, VT_Image, DSRCodedEntryValue(), check));
             CHECK_RESULT(imageRef.setReference(dataset, check));
             CHECK_RESULT(tid1601->getCurrentContentItem().setImageReference(imageRef, check));
             CHECK_RESULT(tid1601->getCurrentContentItem().setAnnotationText("TID 1601 - Row 1"));
@@ -394,7 +394,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
         DSRCodedEntryValue modalityCode(contextGroup.mapModality(modality));
         if (modalityCode.isValid())
         {
-            CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_Modality));
+            CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_Modality, check));
             CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(modalityCode, check));
             CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1602 - Row 1"));
         } else {
@@ -421,7 +421,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
     }
     if (regionCode.isValid())
     {
-        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_TargetRegion));
+        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_TargetRegion, check));
         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(regionCode, check));
         CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1602 - Row 2"));
     }
@@ -433,7 +433,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
         DSRCodedEntryValue lateralityCode(CID244e_Laterality::mapImageLaterality(imageLaterality));
         if (lateralityCode.isValid())
         {
-            CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageLaterality));
+            CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageLaterality, check));
             CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(lateralityCode, check));
             CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1602 - Row 3"));
         } else {
@@ -516,7 +516,7 @@ OFCondition TID1600_ImageLibrary::addProjectionRadiographyDescriptors(DSRDocumen
                     DSRCodedEntryValue modifierCode;
                     if (modifierCode.readSequenceItem(*OFstatic_cast(DcmItem *, object), DCM_ViewModifierCodeSequence).good())
                     {
-                        CHECK_RESULT(tree.addChildContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageViewModifier));
+                        CHECK_RESULT(tree.addChildContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ImageViewModifier, check));
                         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(modifierCode, check));
                         CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1603 - Row 2"));
                         tree.goUp();
@@ -596,7 +596,7 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
                 DSRCodedEntryValue acquisitionTypeCode(CID10013e_CTAcquisitionType::mapAcquisitionType(acquisitionType));
                 if (acquisitionTypeCode.isValid())
                 {
-                    CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_CTAcquisitionType));
+                    CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_CTAcquisitionType, check));
                     CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(acquisitionTypeCode, check));
                     CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1605 - Row 1"));
                 } else {
@@ -621,7 +621,7 @@ OFCondition TID1600_ImageLibrary::addComputedTomographyDescriptors(DSRDocumentSu
                 DSRCodedEntryValue reconstructionAlgorithmCode(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm(reconstructionAlgorithm));
                 if (reconstructionAlgorithmCode.isValid())
                 {
-                    CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ReconstructionAlgorithm));
+                    CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, CODE_DCM_ReconstructionAlgorithm, check));
                     CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(reconstructionAlgorithmCode, check));
                     CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1605 - Row 2"));
                 } else {
@@ -646,7 +646,7 @@ OFCondition TID1600_ImageLibrary::addMagneticResonanceDescriptors(DSRDocumentSub
     if ((getStringValueFromDataset(dataset, DCM_PulseSequenceName, sequenceName).good() && !sequenceName.empty()) ||
         (getStringValueFromDataset(dataset, DCM_SequenceName, sequenceName).good() && !sequenceName.empty()))
     {
-        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Text, DSRCodedEntryValue("110909", "DCM", "Pulse Sequence Name") /* wrong definition? CODE_DCM_PulseSequenceName */));
+        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Text, DSRCodedEntryValue("110909", "DCM", "Pulse Sequence Name") /* wrong definition? CODE_DCM_PulseSequenceName */, check));
         CHECK_RESULT(tree.getCurrentContentItem().setStringValue(sequenceName, check));
         CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1606 - Row 1"));
     }
@@ -736,7 +736,7 @@ OFCondition TID1600_ImageLibrary::setStringContentItemFromValue(const E_ValueTyp
              */
             if (gotoNextNamedNode(conceptName, OFFalse /*searchIntoSub*/) == 0)
             {
-                CHECK_RESULT(addContentItem(RT_hasAcqContext, valueType, conceptName));
+                CHECK_RESULT(addContentItem(RT_hasAcqContext, valueType, conceptName, check));
             } else {
                 /* make sure that the value type of the existing content item is correct */
                 if (getCurrentContentItem().getValueType() == valueType)
@@ -775,7 +775,7 @@ OFCondition TID1600_ImageLibrary::setCodeContentItemFromValue(const DSRCodedEntr
              */
             if (gotoNextNamedNode(conceptName, OFFalse /*searchIntoSub*/) == 0)
             {
-                CHECK_RESULT(addContentItem(RT_hasAcqContext, VT_Code, conceptName));
+                CHECK_RESULT(addContentItem(RT_hasAcqContext, VT_Code, conceptName, check));
             } else {
                 /* make sure that the value type of the existing content item is correct */
                 if (getCurrentContentItem().getValueType() == VT_Code)
@@ -815,7 +815,7 @@ OFCondition TID1600_ImageLibrary::setNumericContentItemFromValue(const DSRCodedE
              */
             if (gotoNextNamedNode(conceptName, OFFalse /*searchIntoSub*/) == 0)
             {
-                CHECK_RESULT(addContentItem(RT_hasAcqContext, VT_Num, conceptName));
+                CHECK_RESULT(addContentItem(RT_hasAcqContext, VT_Num, conceptName, check));
             } else {
                 /* make sure that the value type of the existing content item is correct */
                 if (getCurrentContentItem().getValueType() == VT_Num)
@@ -862,7 +862,7 @@ OFCondition TID1600_ImageLibrary::addStringContentItemFromDataset(DSRDocumentSub
     if (getStringValueFromDataset(dataset, tagKey, stringValue, pos).good() && !stringValue.empty())
     {
         /* create new content item, set concept name and value */
-        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, valueType, conceptName));
+        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, valueType, conceptName, check));
         CHECK_RESULT(tree.getCurrentContentItem().setStringValue(stringValue, check));
         if (!annotationText.empty())
             CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText(annotationText));
@@ -883,7 +883,7 @@ OFCondition TID1600_ImageLibrary::addCodeContentItemFromDataset(DSRDocumentSubTr
     /* get coded entry from code sequence in dataset */
     if (codedEntry.readSequence(dataset, tagKey, "3" /*type*/).good() && codedEntry.isValid())
     {
-        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, conceptName));
+        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Code, conceptName, check));
         CHECK_RESULT(tree.getCurrentContentItem().setCodeValue(codedEntry, check));
         if (!annotationText.empty())
             CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText(annotationText));
@@ -907,7 +907,7 @@ OFCondition TID1600_ImageLibrary::addNumericContentItemFromDataset(DSRDocumentSu
     if (getStringValueFromDataset(dataset, tagKey, numericValue, pos).good() && !numericValue.empty())
     {
         /* create new content item, set concept name and value */
-        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Num, conceptName));
+        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Num, conceptName, check));
         CHECK_RESULT(tree.getCurrentContentItem().setNumericValue(DSRNumericMeasurementValue(numericValue, measurementUnit), check));
         if (!annotationText.empty())
             CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText(annotationText));
