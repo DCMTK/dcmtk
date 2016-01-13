@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,9 +41,15 @@ class DcmInputStream;
 class DcmWriteCache;
 class DcmSpecificCharacterSet;
 
+// include this file in doxygen documentation
+
+/** @file dcobject.h
+ *  @brief interface to DICOM object/dataset handling
+ */
+
 // Undefined Length Identifier now defined in dctypes.h
 
-// Maxinum number of read bytes for a Value Element
+// Maximum number of read bytes for a Value Element
 const Uint32 DCM_MaxReadLength = 4096;
 
 // Maximum length of tag and length in a DICOM element
@@ -59,13 +65,13 @@ const Uint32 DCM_OptPrintValueLength = 40;
 const Uint32 DCM_OptPrintAttributeNameLength = 35;
 
 /** This flags defines whether automatic correction should be applied to input
- *  data (e.g. stripping of padding blanks, removal of blanks in UIDs, etc).
+ *  data (e.g.\ stripping of padding blanks, removal of blanks in UIDs, etc).
  *  Default is enabled.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
 /** This flag defines the handling of illegal odd-length attributes: If flag is
- *  true, odd lengths are respected (i.e. an odd number of bytes is read from
+ *  true, odd lengths are respected (i.e.\ an odd number of bytes is read from
  *  the input stream.) After successful reading, padding to even number of bytes
  *  is enforced by adding a zero pad byte if dcmEnableAutomaticInputDataCorrection
  *  is true. Otherwise the odd number of bytes remains as read.
@@ -91,7 +97,7 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableCP246Support; /* default O
 
 /** DCMTK releases up to 3.5.3 created a non-conforming byte stream
  *  as input to the MAC algorithm when creating or verifying digital signatures
- *  including compressed pixel data (i.e. signatures including attribute
+ *  including compressed pixel data (i.e.\ signatures including attribute
  *  (7FE0,0010) in an encapsulated transfer syntax). This has been fixed
  *  in DCMTK 3.5.4, but this flag allows to revert to the old behavior
  *  in order to create or verify signatures that are compatible with older
@@ -144,7 +150,7 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmPreferLengthFieldSizeFromDataDic
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse */
 
 /** This flag indicates, whether parsing errors during reading
- *  should be ignored, ie whether the parser should try to recover and
+ *  should be ignored, i.e.\ whether the parser should try to recover and
  *  parse the rest of the stream.
  *  This flag does not work for all parsing errors (at this time)
  *  making sense but was introduced afterwards.
@@ -157,7 +163,7 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default 
  *  Data attribute. To prevent the parser for "stumbling" over that
  *  garbage, it is possible to tell the parser to stop after a
  *  specific element. The flag is only sensitive to elements on
- *  dataset level, ie. inside sequence any occurence of the specified
+ *  dataset level, i.e. inside sequence any occurrence of the specified
  *  tag is ignored. Caution: Note that if Pixel Data is chosen
  *  as stop element, any attributes behind will not be parsed, e. g.
  *  any digital signature attributes coming after.
@@ -570,7 +576,7 @@ class DCMTK_DCMDATA_EXPORT DcmObject
     virtual OFCondition loadAllDataIntoMemory() = 0;
 
     /** return the current value of the Length field (which is different from the functionality
-     *  of the public getLength method). Only needed for internal purposes and for checker tools
+     *  of the public getLength() method). Only needed for internal purposes and for checker tools
      *  that verify values against the length field.
      *  @return current value of length field
      */
@@ -578,7 +584,7 @@ class DCMTK_DCMDATA_EXPORT DcmObject
 
  protected:
 
-    /** print line indentation, e.g. a couple of spaces for each nesting level.
+    /** print line indentation, e.g.\ a couple of spaces for each nesting level.
      *  Depending on the value of 'flags' other visualizations are also possible.
      *  @param out output stream
      *  @param flags used to customize the output (see DCMTypes::PF_xxx)
@@ -616,8 +622,7 @@ class DCMTK_DCMDATA_EXPORT DcmObject
                           DcmTag *tag = NULL);
 
     /** print given text with element information.
-     *  Calls printInfoLineStart() and printInfoLineEnd() to frame the
-     *  'info' text.
+     *  Calls printInfoLineStart() and printInfoLineEnd() to frame the 'info' text.
      *  @param out output stream
      *  @param flags used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
