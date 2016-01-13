@@ -121,7 +121,15 @@ OFBool DSRNumericMeasurementValue::isValid() const
 
 OFBool DSRNumericMeasurementValue::isEmpty() const
 {
+    /* the NumericValueQualifierCodeSequence is not checked */
     return NumericValue.empty() && MeasurementUnit.isEmpty();
+}
+
+
+OFBool DSRNumericMeasurementValue::isComplete() const
+{
+    /* officially, the NumericValueQualifierCodeSequence is optional (type 3) */
+    return (!NumericValue.empty() && MeasurementUnit.isComplete()) || ValueQualifier.isComplete();
 }
 
 

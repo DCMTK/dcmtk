@@ -111,6 +111,15 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      */
     virtual OFBool isEmpty() const;
 
+    /** check whether the current numeric measurement value is complete, i.e.\ whether the
+     *  numeric value is non-empty and the measurement unit is complete, or whether the
+     *  value qualifier is complete.  This is just a basic check that might be useful for
+     *  "validating" input data.  See isValid() for a more sophisticated way of checking
+     *  the current numeric measurement value.
+     ** @return OFTrue if value is complete, OFFalse otherwise
+     */
+    virtual OFBool isComplete() const;
+
     /** print numeric measurement value.
      *  The output of a typical numeric measurement value looks like this:
      *  "3.5" (cm,UCUM[1.4],"centimeter").  If the value is empty the text "empty" is printed
