@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CMR_ContentMappingResource
@@ -44,10 +44,14 @@ class DCMTK_CMR_EXPORT CMR_ContentMappingResource
      *  - CID4031_CommonAnatomicRegions
      *  - CID5000_Languages
      *  - CID5001_Countries
+     *  - CID6147_ResponseCriteria
      *  - CID7021_MeasurementReportDocumentTitles
+     *  - CID7181_AbstractMultiDimensionalImageModelComponentUnits
      *  - CID7445_DeviceParticipatingRoles
      *  - CID7452_OrganizationalRoles
      *  - CID7453_PerformingRoles
+     *  - CID7464_GeneralRegionOfInterestMeasurementModifiers
+     *  - CID7469_GenericIntensityAndSizeMeasurements
      *  - CID10013_CTAcquisitionType
      *  - CID10033_CTReconstructionAlgorithm
      *

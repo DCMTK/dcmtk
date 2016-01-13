@@ -3052,10 +3052,14 @@ init.o: init.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid4031.h \
  ../include/dcmtk/dcmsr/cmr/cid5000.h \
  ../include/dcmtk/dcmsr/cmr/cid5001.h \
+ ../include/dcmtk/dcmsr/cmr/cid6147.h \
  ../include/dcmtk/dcmsr/cmr/cid7021.h \
+ ../include/dcmtk/dcmsr/cmr/cid7181.h \
  ../include/dcmtk/dcmsr/cmr/cid7445.h \
  ../include/dcmtk/dcmsr/cmr/cid7452.h \
  ../include/dcmtk/dcmsr/cmr/cid7453.h \
+ ../include/dcmtk/dcmsr/cmr/cid7464.h \
+ ../include/dcmtk/dcmsr/cmr/cid7469.h \
  ../include/dcmtk/dcmsr/cmr/cid10013.h \
  ../include/dcmtk/dcmsr/cmr/cid10033.h
 logger.o: logger.cc ../../config/include/dcmtk/config/osconfig.h \

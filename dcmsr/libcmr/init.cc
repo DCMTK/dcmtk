@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CMR_ContentMappingResource
@@ -24,10 +24,14 @@
 #include "dcmtk/dcmsr/cmr/cid4031.h"
 #include "dcmtk/dcmsr/cmr/cid5000.h"
 #include "dcmtk/dcmsr/cmr/cid5001.h"
+#include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7021.h"
+#include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/cid7452.h"
 #include "dcmtk/dcmsr/cmr/cid7453.h"
+#include "dcmtk/dcmsr/cmr/cid7464.h"
+#include "dcmtk/dcmsr/cmr/cid7469.h"
 #include "dcmtk/dcmsr/cmr/cid10013.h"
 #include "dcmtk/dcmsr/cmr/cid10033.h"
 
@@ -49,10 +53,14 @@ void CMR_ContentMappingResource::initializeAllContextGroups()
     CID4031_CommonAnatomicRegions::initialize();
     CID5000_Languages::initialize();
     CID5001_Countries::initialize();
+    CID6147_ResponseCriteria::initialize();
     CID7021_MeasurementReportDocumentTitles::initialize();
+    CID7181_AbstractMultiDimensionalImageModelComponentUnits::initialize();
     CID7445_DeviceParticipatingRoles::initialize();
     CID7452_OrganizationalRoles::initialize();
     CID7453_PerformingRoles::initialize();
+    CID7464_GeneralRegionOfInterestMeasurementModifiers::initialize();
+    CID7469_GenericIntensityAndSizeMeasurements::initialize();
     CID10013_CTAcquisitionType::initialize();
     CID10033_CTReconstructionAlgorithm::initialize();
 }
@@ -71,10 +79,14 @@ void CMR_ContentMappingResource::cleanupAllContextGroups()
     CID4031_CommonAnatomicRegions::cleanup();
     CID5000_Languages::cleanup();
     CID5001_Countries::cleanup();
+    CID6147_ResponseCriteria::cleanup();
     CID7021_MeasurementReportDocumentTitles::cleanup();
+    CID7181_AbstractMultiDimensionalImageModelComponentUnits::cleanup();
     CID7445_DeviceParticipatingRoles::cleanup();
     CID7452_OrganizationalRoles::cleanup();
     CID7453_PerformingRoles::cleanup();
+    CID7464_GeneralRegionOfInterestMeasurementModifiers::cleanup();
+    CID7469_GenericIntensityAndSizeMeasurements::initialize();
     CID10013_CTAcquisitionType::cleanup();
     CID10033_CTReconstructionAlgorithm::cleanup();
 }
