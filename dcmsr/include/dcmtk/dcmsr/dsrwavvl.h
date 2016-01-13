@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,8 +91,8 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     virtual OFBool isShort(const size_t flags) const;
 
     /** print waveform reference.
-     *  The output of a typical waveform reference value looks like this: (HemodynamicWaveform
-     *  Storage,"1.2.3")
+     *  The output of a typical waveform reference value looks like this:
+     *  (HemodynamicWaveformStorage,"1.2.3")
      *  If the SOP class UID is unknown, the UID is printed instead of the related name.
      ** @param  stream  output stream to which the image reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
@@ -204,7 +204,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     /** check the specified SOP class UID for validity.
      *  This method further specializes the checks performed in the base class
      *  DSRCompositeReferenceValue.  All waveform SOP classes that are defined
-     *  in DICOM PS 3.6-2014a are allowed.
+     *  in DICOM PS 3.6-2015c are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
