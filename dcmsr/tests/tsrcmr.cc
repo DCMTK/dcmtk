@@ -384,12 +384,14 @@ OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
 {
     CMR_SRNumericMeasurementValue numValue;
     /* set coded entry from context group and check the value */
-    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CID42_NumericValueQualifier::NotANumber)).good());
+    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CID42_NumericValueQualifier::NotANumber, OFTrue /*enhancedEncodingMode*/)).good());
     OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_NotANumber);
+    OFCHECK(numValue.getNumericValueQualifier().usesEnhancedEncodingMode());
     OFCHECK(numValue.isValid());
     /* set coded entry from context group (using its type) and check the value */
     OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier::ValueUnknown).good());
     OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_ValueUnknown);
+    OFCHECK(!numValue.getNumericValueQualifier().usesEnhancedEncodingMode());
     OFCHECK(numValue.isValid());
     /* set numeric measurement value to tree node */
     DSRNumTreeNode numNode(DSRTypes::RT_hasProperties);
@@ -399,6 +401,9 @@ OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
     OFCHECK(numValue.isValid());
     OFCHECK(numValue.setNumericValueQualifier(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), OFFalse /*check*/).good());
     OFCHECK(!numValue.isValid());
+    /* check assignment operator */
+    numValue = DSRNumericMeasurementValue(CODE_DCM_NotANumber);
+    OFCHECK(numValue.isValid());
 }
 
 

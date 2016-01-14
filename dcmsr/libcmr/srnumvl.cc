@@ -29,9 +29,16 @@ CMR_SRNumericMeasurementValue::CMR_SRNumericMeasurementValue(const OFString &num
 }
 
 
+CMR_SRNumericMeasurementValue::CMR_SRNumericMeasurementValue(const CID42_NumericValueQualifier &valueQualifier,
+                                                             const OFBool check)
+  : DSRNumericMeasurementValue(valueQualifier, check)
+{
+}
+
+
 CMR_SRNumericMeasurementValue::CMR_SRNumericMeasurementValue(const OFString &numericValue,
                                                              const DSRCodedEntryValue &measurementUnit,
-                                                             const DSRCodedEntryValue &valueQualifier,
+                                                             const CID42_NumericValueQualifier &valueQualifier,
                                                              const OFBool check)
   : DSRNumericMeasurementValue(numericValue, measurementUnit, valueQualifier, check)
 {
@@ -39,6 +46,12 @@ CMR_SRNumericMeasurementValue::CMR_SRNumericMeasurementValue(const OFString &num
 
 
 CMR_SRNumericMeasurementValue::CMR_SRNumericMeasurementValue(const CMR_SRNumericMeasurementValue &numericMeasurement)
+  : DSRNumericMeasurementValue(numericMeasurement)
+{
+}
+
+
+CMR_SRNumericMeasurementValue::CMR_SRNumericMeasurementValue(const DSRNumericMeasurementValue &numericMeasurement)
   : DSRNumericMeasurementValue(numericMeasurement)
 {
 }
@@ -57,11 +70,11 @@ CMR_SRNumericMeasurementValue &CMR_SRNumericMeasurementValue::operator=(const CM
 }
 
 
-OFCondition CMR_SRNumericMeasurementValue::setNumericValueQualifier(CID42_NumericValueQualifier::EnumType valueQualifier,
-                                                                    const OFBool enhancedEncodingMode)
+OFCondition CMR_SRNumericMeasurementValue::setNumericValueQualifier(const CID42_NumericValueQualifier &valueQualifier,
+                                                                    const OFBool check)
 {
     /* map type to coded entry and call the method doing the real work */
-    return setNumericValueQualifier(CID42_NumericValueQualifier::getCodedEntry(valueQualifier, enhancedEncodingMode), OFFalse /*check*/);
+    return DSRNumericMeasurementValue::setNumericValueQualifier(valueQualifier, check);
 }
 
 

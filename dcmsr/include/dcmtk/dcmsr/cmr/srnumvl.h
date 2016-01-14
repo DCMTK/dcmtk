@@ -48,23 +48,40 @@ class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue
                                   const OFBool check = OFTrue);
 
     /** constructor
+     ** @param  valueQualifier  code representing the numeric value qualifier.  Used to
+     *                          specify the reason for the absence of the measured value
+     *                          sequence, i.e. why the numeric value and measurement unit
+     *                          are empty.
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See corresponding setValue() method for details.
+     */
+    CMR_SRNumericMeasurementValue(const CID42_NumericValueQualifier &valueQualifier,
+                                  const OFBool check = OFTrue);
+
+    /** constructor
      ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
      *  @param  valueQualifier   code representing the numeric value qualifier (optional).
      *                           Can also be used to specify the reason for the absence of
-     *                           the measured value sequence.
+     *                           the measured value sequence (where 'numericValue' and
+     *                           'measurementUnit' are stored).
      *  @param  check            if enabled, check values for validity before setting them.
      *                           See corresponding setValue() method for details.
      */
     CMR_SRNumericMeasurementValue(const OFString &numericValue,
                                   const DSRCodedEntryValue &measurementUnit,
-                                  const DSRCodedEntryValue &valueQualifier,
+                                  const CID42_NumericValueQualifier &valueQualifier,
                                   const OFBool check = OFTrue);
 
     /** copy constructor
      ** @param  numericMeasurement  numeric measurement value to be copied (not checked !)
      */
     CMR_SRNumericMeasurementValue(const CMR_SRNumericMeasurementValue &numericMeasurement);
+
+    /** copy constructor
+     ** @param  numericMeasurement  numeric measurement value to be copied (not checked !)
+     */
+    CMR_SRNumericMeasurementValue(const DSRNumericMeasurementValue &numericMeasurement);
 
     /** destructor
      */
@@ -79,12 +96,16 @@ class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue
     /** set numeric value qualifier.
      *  This optional code specifies the qualification of the Numeric Value in the Measured
      *  Value Sequence, or the reason for the absence of the Measured Value Sequence Item.
-     ** @param  valueQualifier        numeric value qualifier to be set
-     *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
+     *  Before setting the code, it is usually checked.  If the code is invalid the current
+     *  code is not replaced and remains unchanged.
+     ** @param  valueQualifier  numeric value qualifier to be set (optional).  Use an empty
+     *                          code to remove the current value.
+     *  @param  check           if enabled, check value for validity before setting it.
+     *                          See checkNumericValueQualifier() method for details.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setNumericValueQualifier(CID42_NumericValueQualifier::EnumType valueQualifier,
-                                         const OFBool enhancedEncodingMode = OFFalse);
+    OFCondition setNumericValueQualifier(const CID42_NumericValueQualifier &valueQualifier,
+                                         const OFBool check = OFTrue);
 
   // --- reintroduce method from base class
 
