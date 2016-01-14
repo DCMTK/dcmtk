@@ -86,7 +86,7 @@ void CMR_ContentMappingResource::cleanupAllContextGroups()
     CID7452_OrganizationalRoles::cleanup();
     CID7453_PerformingRoles::cleanup();
     CID7464_GeneralRegionOfInterestMeasurementModifiers::cleanup();
-    CID7469_GenericIntensityAndSizeMeasurements::initialize();
+    CID7469_GenericIntensityAndSizeMeasurements::cleanup();
     CID10013_CTAcquisitionType::cleanup();
     CID10033_CTReconstructionAlgorithm::cleanup();
 }
