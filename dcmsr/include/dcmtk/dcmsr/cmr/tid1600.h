@@ -20,6 +20,7 @@
 #include "dcmtk/dcmsr/cmr/define.h"
 #include "dcmtk/dcmsr/cmr/cid4020.h"
 #include "dcmtk/dcmsr/cmr/cid4021.h"
+#include "dcmtk/dcmsr/cmr/srnumvl.h"
 
 
 // include this file in doxygen documentation
@@ -211,7 +212,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *  @param  check   if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPETImageRadiopharmaceuticalVolume(const DSRNumericMeasurementValue &volume,
+    OFCondition setPETImageRadiopharmaceuticalVolume(const CMR_SRNumericMeasurementValue &volume,
                                                      const OFBool check = OFTrue);
 
     /** set the value of the descriptor 'Radiopharmaceutical Total Dose' (TID 1607 -
@@ -224,7 +225,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *  @param  check      if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPETImageRadionuclideTotalDose(const DSRNumericMeasurementValue &totalDose,
+    OFCondition setPETImageRadionuclideTotalDose(const CMR_SRNumericMeasurementValue &totalDose,
                                                  const OFBool check = OFTrue);
 
 

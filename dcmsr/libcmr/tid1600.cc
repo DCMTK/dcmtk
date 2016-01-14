@@ -24,7 +24,6 @@
 #include "dcmtk/dcmsr/codes/ucum.h"
 
 #include "dcmtk/dcmsr/dsrdattn.h"
-#include "dcmtk/dcmsr/dsrnumvl.h"
 
 
 // helper macros for checking the return value of API calls
@@ -333,7 +332,7 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStopDateTime(con
 }
 
 
-OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalVolume(const DSRNumericMeasurementValue &volume,
+OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalVolume(const CMR_SRNumericMeasurementValue &volume,
                                                                        const OFBool check)
 {
     /* remember current node */
@@ -348,7 +347,7 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalVolume(const DSR
 }
 
 
-OFCondition TID1600_ImageLibrary::setPETImageRadionuclideTotalDose(const DSRNumericMeasurementValue &totalDose,
+OFCondition TID1600_ImageLibrary::setPETImageRadionuclideTotalDose(const CMR_SRNumericMeasurementValue &totalDose,
                                                                    const OFBool check)
 {
     /* remember current node */
