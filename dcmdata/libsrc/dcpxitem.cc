@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -210,49 +210,56 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
 OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
                                    const size_t flags)
 {
-    /* XML start tag for "item" */
-    out << "<pixel-item";
-    /* value length in bytes = 0..max */
-    out << " len=\"" << getLengthField() << "\"";
-    /* value loaded = no (or absent)*/
-    if (!valueLoaded())
-        out << " loaded=\"no\"";
-    /* pixel item contains binary data */
-    if (!(flags & DCMTypes::XF_writeBinaryData))
-        out << " binary=\"hidden\"";
-    else if (flags & DCMTypes::XF_encodeBase64)
-        out << " binary=\"base64\"";
-    else
-        out << " binary=\"yes\"";
-    out << ">";
-    /* write element value (if loaded) */
-    if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
+    if (flags & DCMTypes::XF_useNativeModel)
     {
-        /* encode binary data as Base64 */
-        if (flags & DCMTypes::XF_encodeBase64)
+        /* in Native DICOM Model, there is no concept of a "pixel item" */
+        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+            "Cannot convert Pixel Item to Native DICOM Model");
+    } else {
+        /* XML start tag for "item" */
+        out << "<pixel-item";
+        /* value length in bytes = 0..max */
+        out << " len=\"" << getLengthField() << "\"";
+        /* value loaded = no (or absent)*/
+        if (!valueLoaded())
+            out << " loaded=\"no\"";
+        /* pixel item contains binary data */
+        if (!(flags & DCMTypes::XF_writeBinaryData))
+            out << " binary=\"hidden\"";
+        else if (flags & DCMTypes::XF_encodeBase64)
+            out << " binary=\"base64\"";
+        else
+            out << " binary=\"yes\"";
+        out << ">";
+        /* write element value (if loaded) */
+        if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
         {
-            /* pixel items always contain 8 bit data, therefore, byte swapping not required */
-            OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, getLengthField()));
-        } else {
-            /* get and check 8 bit data */
-            Uint8 *byteValues = NULL;
-            if (getUint8Array(byteValues).good() && (byteValues != NULL))
+            /* encode binary data as Base64 */
+            if (flags & DCMTypes::XF_encodeBase64)
             {
-                const unsigned long count = getLengthField();
-                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
-                /* print byte values in hex mode */
-                out << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
-                for (unsigned long i = 1; i < count; i++)
-                    out << "\\" << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
-                /* reset i/o manipulators */
-                out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                /* pixel items always contain 8 bit data, therefore, byte swapping not required */
+                OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, getLengthField()));
+            } else {
+                /* get and check 8 bit data */
+                Uint8 *byteValues = NULL;
+                if (getUint8Array(byteValues).good() && (byteValues != NULL))
+                {
+                    const unsigned long count = getLengthField();
+                    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                    /* print byte values in hex mode */
+                    out << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                    for (unsigned long i = 1; i < count; i++)
+                        out << "\\" << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                    /* reset i/o manipulators */
+                    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                }
             }
         }
+        /* XML end tag for "item" */
+        out << "</pixel-item>" << OFendl;
+        /* always report success */
+        return EC_Normal;
     }
-    /* XML end tag for "item" */
-    out << "</pixel-item>" << OFendl;
-    /* always report success */
-    return EC_Normal;
 }
 
 
