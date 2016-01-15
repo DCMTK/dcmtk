@@ -70,6 +70,24 @@ CMR_SRNumericMeasurementValue &CMR_SRNumericMeasurementValue::operator=(const CM
 }
 
 
+OFCondition CMR_SRNumericMeasurementValue::setValue(const CID42_NumericValueQualifier &valueQualifier,
+                                                    const OFBool check)
+{
+    /* map type to coded entry and call the method doing the real work */
+    return DSRNumericMeasurementValue::setValue(valueQualifier, check);
+}
+
+
+OFCondition CMR_SRNumericMeasurementValue::setValue(const OFString &numericValue,
+                                                    const DSRCodedEntryValue &measurementUnit,
+                                                    const CID42_NumericValueQualifier &valueQualifier,
+                                                    const OFBool check)
+{
+    /* map type to coded entry and call the method doing the real work */
+    return DSRNumericMeasurementValue::setValue(numericValue, measurementUnit, valueQualifier, check);
+}
+
+
 OFCondition CMR_SRNumericMeasurementValue::setNumericValueQualifier(const CID42_NumericValueQualifier &valueQualifier,
                                                                     const OFBool check)
 {
