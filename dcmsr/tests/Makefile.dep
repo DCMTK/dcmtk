@@ -303,6 +303,7 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid4020.h \
  ../include/dcmtk/dcmsr/cmr/cid4031e.h \
  ../include/dcmtk/dcmsr/cmr/cid4031.h \
+ ../include/dcmtk/dcmsr/cmr/cid7181.h \
  ../include/dcmtk/dcmsr/cmr/cid7445.h \
  ../include/dcmtk/dcmsr/cmr/cid10013e.h \
  ../include/dcmtk/dcmsr/cmr/cid10013.h \
@@ -328,7 +329,8 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/tid1600.h \
  ../include/dcmtk/dcmsr/cmr/cid4021.h \
  ../include/dcmtk/dcmsr/cmr/srnumvl.h ../include/dcmtk/dcmsr/cmr/cid100.h \
- ../include/dcmtk/dcmsr/cmr/cid7021.h
+ ../include/dcmtk/dcmsr/cmr/cid7021.h \
+ ../include/dcmtk/dcmsr/cmr/srnumvlu.h
 tsrcodvl.o: tsrcodvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \

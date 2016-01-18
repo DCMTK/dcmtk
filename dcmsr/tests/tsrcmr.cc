@@ -36,6 +36,7 @@
 #include "dcmtk/dcmsr/cmr/cid244e.h"
 #include "dcmtk/dcmsr/cmr/cid4020.h"
 #include "dcmtk/dcmsr/cmr/cid4031e.h"
+#include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 #include "dcmtk/dcmsr/cmr/cid10013e.h"
 #include "dcmtk/dcmsr/cmr/cid10033e.h"
@@ -44,6 +45,7 @@
 #include "dcmtk/dcmsr/cmr/tid1500.h"
 #include "dcmtk/dcmsr/cmr/tid1600.h"
 #include "dcmtk/dcmsr/cmr/srnumvl.h"
+#include "dcmtk/dcmsr/cmr/srnumvlu.h"
 
 
 OFTEST(dcmsr_CID29e_AcquisitionModality)
@@ -403,6 +405,52 @@ OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
     OFCHECK(!numValue.isValid());
     /* check assignment operator */
     numValue = DSRNumericMeasurementValue(CODE_DCM_NotANumber);
+    OFCHECK(numValue.isValid());
+}
+
+
+OFTEST(dcmsr_CMR_SRNumericMeasurementValueWithUnits_baselineGroup)
+{
+    /* start without a numeric value (but with a value qualifier) */
+    CMR_SRNumericMeasurementValueWithUnits<CMR_CID7181> numValue(CMR_CID42::NotANumber);
+    OFCHECK(numValue.isEmpty());
+    OFCHECK(numValue.isValid());
+    OFCHECK(numValue.getNumericValue().empty());
+    OFCHECK(numValue.getMeasurementUnit().isEmpty());
+    OFCHECK(!numValue.getNumericValueQualifier().isEmpty());
+    /* set numeric value and measurement unit (from given context group) */
+    OFCHECK(numValue.setValue("999", CMR_CID7181::Counts).good());
+    OFCHECK(!numValue.isEmpty());
+    OFCHECK(numValue.isValid());
+    OFCHECK_EQUAL(numValue.getNumericValue(), "999");
+    OFCHECK_EQUAL(numValue.getMeasurementUnit(), CMR_CID7181::getCodedEntry(CMR_CID7181::Counts));
+    /* set coded entry that is not part of the context group */
+    OFCHECK(numValue.setNumericValueQualifier(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), OFTrue /*check*/).bad());
+}
+
+
+OFTEST(dcmsr_CMR_SRNumericMeasurementValueWithUnits_definedGroup)
+{
+    /* start with a numeric value that has an unknown measurement unit */
+    const DSRCodedEntryValue validUnit(CMR_CID7181::getCodedEntry(CMR_CID7181::Counts));
+    const DSRCodedEntryValue validQualifier(CMR_CID42::getCodedEntry(CMR_CID42::MeasurementFailure));
+    const DSRCodedEntryValue invalidUnit("0815", "99TEST", "Some test code");
+    const DSRCodedEntryValue invalidQualifier("4711", "99TEST", "Some other test code");
+    CMR_SRNumericMeasurementValueWithUnits<CMR_CID7181, OFTrue /*T_DefinedGroup*/> numValue("1.5", invalidUnit);
+    /* coded entry is not part of the defined context group (i.e. not set)*/
+    OFCHECK(numValue.isEmpty());
+    OFCHECK(numValue.isValid());
+    /* try with a valid (defined) measurement unit */
+    OFCHECK(numValue.setValue("1.5", CMR_CID7181::Counts).good());
+    OFCHECK(numValue.isValid());
+    /* try to disable the (extended) validity check */
+    OFCHECK(numValue.setValue("1.5", invalidUnit, invalidQualifier, OFFalse /*check*/).good());
+    OFCHECK(!numValue.isValid());
+    OFCHECK(numValue.isComplete());
+    OFCHECK_EQUAL(numValue.getMeasurementUnit(), invalidUnit);
+    /* finally, set the measurement unit and value qualifier manually */
+    OFCHECK(numValue.setMeasurementUnit(validUnit).good());
+    OFCHECK(numValue.setNumericValueQualifier(validQualifier).good());
     OFCHECK(numValue.isValid());
 }
 

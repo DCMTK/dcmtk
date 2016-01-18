@@ -79,6 +79,8 @@ OFTEST_REGISTER(dcmsr_TID1204_LanguageOfContentItemAndDescendants);
 OFTEST_REGISTER(dcmsr_TID1500_MeasurementReport);
 OFTEST_REGISTER(dcmsr_TID1600_ImageLibrary);
 OFTEST_REGISTER(dcmsr_CMR_SRNumericMeasurementValue);
+OFTEST_REGISTER(dcmsr_CMR_SRNumericMeasurementValueWithUnits_baselineGroup);
+OFTEST_REGISTER(dcmsr_CMR_SRNumericMeasurementValueWithUnits_definedGroup);
 /* the following should be the last test case */
 OFTEST_REGISTER(dcmsr_cleanupContentMappingResource);
 OFTEST_MAIN("dcmsr")

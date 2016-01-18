@@ -146,8 +146,8 @@ class DCMTK_CMR_EXPORT CMR_SRNumericMeasurementValue
 
   // --- reintroduce method from base class
 
-     using DSRNumericMeasurementValue::setValue;
-     using DSRNumericMeasurementValue::setNumericValueQualifier;
+    using DSRNumericMeasurementValue::setValue;
+    using DSRNumericMeasurementValue::setNumericValueQualifier;
 
 
   protected:

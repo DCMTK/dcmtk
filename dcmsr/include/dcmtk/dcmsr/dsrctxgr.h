@@ -241,7 +241,7 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
                                        DSRCodedEntryValue *foundCodedEntry,
                                        const OFBool enhancedEncodingMode = OFFalse) const;
 
-    /** check whether the currently selected coded entry is valid.
+    /** check whether a given coded entry is valid.
      *  Internally, the method hasCodedEntry() is used if 'definedContextGroup' is OFTrue.
      ** @param  codedEntryValue      coded entry to be checked
      *  @param  definedContextGroup  flag indicating whether this context group is used as
