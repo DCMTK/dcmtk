@@ -20,8 +20,8 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 
 LOCALDEFS =
 
-objs = iodcommn.o  iodmacro.o iodimage.o iodrules.o iodutil.o iodtypes.o  \
-	modacquisitioncontext.o modbase.o modcommoninstanceref.o \
+objs =  cielabutil.o iodcommn.o  iodmacro.o iodimage.o iodrules.o iodutil.o \
+	iodtypes.o modacquisitioncontext.o modbase.o modcommoninstanceref.o \
 	modenhequipment.o modenhusimage.o modenhusseries.o modequipment.o \
 	modfor.o modgeneralimage.o modgeneralseries.o modgeneralstudy.o \
 	modhelp.o  modimagepixel.o  modmultiframefg.o  \

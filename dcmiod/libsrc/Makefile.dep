@@ -1,3 +1,6 @@
+cielabutil.o: cielabutil.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 iodcommn.o: iodcommn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmiod/iodcommn.h ../include/dcmtk/dcmiod/iodrules.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \

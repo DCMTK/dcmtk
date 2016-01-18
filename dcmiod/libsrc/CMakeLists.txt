@@ -1,5 +1,6 @@
 # create library from source files
 DCMTK_ADD_LIBRARY(dcmiod
+  cielabutil
   iodcommn
   iodmacro
   iodimage
