@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #define INCLUDE_CMATH                // for pow() function
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmiod/ioddef.h"
 
 
 /** Class supporting color space conversions from and to CIELab. In some IODs
@@ -36,7 +37,7 @@
  *  as well as CIEXYZ. The class uses double floating point precision for
  *  calculations.
  */
-class IODCIELabUtil
+class DCMTK_DCMIOD_EXPORT IODCIELabUtil
 {
 public:
 
