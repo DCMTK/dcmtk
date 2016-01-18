@@ -55,4 +55,12 @@ class DCMTK_CMR_EXPORT TID1204_LanguageOfContentItemAndDescendants
 };
 
 
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the SR template class
+typedef TID1204_LanguageOfContentItemAndDescendants CMR_TID1204;
+
+
 #endif

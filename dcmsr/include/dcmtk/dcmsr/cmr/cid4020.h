@@ -6,7 +6,7 @@
  *  Header file for class CID4020_PETRadionuclide
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:46 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:35 by J. Riesmeier
  *
  */
 
@@ -211,5 +211,14 @@ class DCMTK_CMR_EXPORT CID4020_PETRadionuclide
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID4020_PETRadionuclide CMR_CID4020;
+
 
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID29e_AcquisitionModality
@@ -81,5 +81,14 @@ class DCMTK_CMR_EXPORT CID29e_AcquisitionModality
 
     using CID29_AcquisitionModality::selectValue;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID29e_AcquisitionModality CMR_CID29e;
+
 
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID244e_Laterality
@@ -90,5 +90,14 @@ class DCMTK_CMR_EXPORT CID244e_Laterality
 
     using CID244_Laterality::selectValue;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID244e_Laterality CMR_CID244e;
+
 
 #endif

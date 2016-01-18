@@ -6,7 +6,7 @@
  *  Header file for class CID10013_CTAcquisitionType
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:05:05 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:55 by J. Riesmeier
  *
  */
 
@@ -151,5 +151,14 @@ class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID10013_CTAcquisitionType CMR_CID10013;
+
 
 #endif

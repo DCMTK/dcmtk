@@ -6,7 +6,7 @@
  *  Header file for class CID7464_GeneralRegionOfInterestMeasurementModifiers
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:05:01 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:51 by J. Riesmeier
  *
  */
 
@@ -167,5 +167,14 @@ class DCMTK_CMR_EXPORT CID7464_GeneralRegionOfInterestMeasurementModifiers
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID7464_GeneralRegionOfInterestMeasurementModifiers CMR_CID7464;
+
 
 #endif

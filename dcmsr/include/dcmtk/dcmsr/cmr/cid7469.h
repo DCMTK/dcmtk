@@ -6,7 +6,7 @@
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:05:03 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:53 by J. Riesmeier
  *
  */
 
@@ -421,5 +421,14 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID7469_GenericIntensityAndSizeMeasurements CMR_CID7469;
+
 
 #endif

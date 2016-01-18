@@ -97,12 +97,12 @@ OFTEST(dcmsr_CID4031e_CommonAnatomicRegions)
     DSRCodedEntryValue codedEntry = ctxGroup;
     OFCHECK(ctxGroup.hasSelectedValue());
     OFCHECK(ctxGroup.getSelectedValue() == codedEntry);
-    OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("ABDOMEN").getCodeMeaning(), "Abdomen");
-    OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("KNEE").getCodeMeaning(), "Knee");
-    OFCHECK_EQUAL(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("ZYGOMA").getCodeMeaning(), "Zygoma");
+    OFCHECK_EQUAL(CMR_CID4031e::mapBodyPartExamined("ABDOMEN").getCodeMeaning(), "Abdomen");
+    OFCHECK_EQUAL(CMR_CID4031e::mapBodyPartExamined("KNEE").getCodeMeaning(), "Knee");
+    OFCHECK_EQUAL(CMR_CID4031e::mapBodyPartExamined("ZYGOMA").getCodeMeaning(), "Zygoma");
     /* invalid/unknown defined terms */
-    OFCHECK(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("XYZ").isEmpty());
-    OFCHECK(CID4031e_CommonAnatomicRegions::mapBodyPartExamined("").isEmpty());
+    OFCHECK(CMR_CID4031e::mapBodyPartExamined("XYZ").isEmpty());
+    OFCHECK(CMR_CID4031e::mapBodyPartExamined("").isEmpty());
     OFCHECK(ctxGroup.selectValue("XYZ").bad());
 }
 
@@ -130,9 +130,9 @@ OFTEST(dcmsr_CID7445_DeviceParticipatingRoles)
     OFCHECK(ctxGroup2.checkSelectedValue(OFTrue /*definedContextGroup*/).bad());
     /* select another value (by two different ways) */
     OFCHECK(ctxGroup2.selectValue(CODE_DCM_XRayReadingDevice).good());
-    OFCHECK(ctxGroup2.selectValue(CID7445_DeviceParticipatingRoles::IrradiatingDevice).good());
+    OFCHECK(ctxGroup2.selectValue(CMR_CID7445::IrradiatingDevice).good());
     /* and finally, check the static get() function */
-    DSRCodedEntryValue codeValue = CID7445_DeviceParticipatingRoles::getCodedEntry(CID7445_DeviceParticipatingRoles::Recording, OFTrue /*enhancedEncodingMode*/);
+    DSRCodedEntryValue codeValue = CMR_CID7445::getCodedEntry(CMR_CID7445::Recording, OFTrue /*enhancedEncodingMode*/);
     OFCHECK(codeValue == CODE_DCM_Recording);
     OFCHECK_EQUAL(codeValue.getContextIdentifier(), "7445");
     OFCHECK_EQUAL(codeValue.getMappingResource(), "DCMR");
@@ -141,20 +141,20 @@ OFTEST(dcmsr_CID7445_DeviceParticipatingRoles)
 
 OFTEST(dcmsr_CID10013e_CTAcquisitionType)
 {
-    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("SEQUENCED") == CODE_DCM_SequencedAcquisition);
-    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("CONSTANT_ANGLE") == CODE_DCM_ConstantAngleAcquisition);
-    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("FREE") == CODE_DCM_FreeAcquisition);
+    OFCHECK(CMR_CID10013e::mapAcquisitionType("SEQUENCED") == CODE_DCM_SequencedAcquisition);
+    OFCHECK(CMR_CID10013e::mapAcquisitionType("CONSTANT_ANGLE") == CODE_DCM_ConstantAngleAcquisition);
+    OFCHECK(CMR_CID10013e::mapAcquisitionType("FREE") == CODE_DCM_FreeAcquisition);
     /* invalid/unknown defined terms */
-    OFCHECK(CID10013e_CTAcquisitionType::mapAcquisitionType("XYZ").isEmpty());
+    OFCHECK(CMR_CID10013e::mapAcquisitionType("XYZ").isEmpty());
 }
 
 
 OFTEST(dcmsr_CID10033e_CTReconstructionAlgorithm)
 {
-    OFCHECK(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm("FILTER_BACK_PROJ") == CODE_DCM_FilteredBackProjection);
-    OFCHECK(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm("ITERATIVE") == CODE_DCM_IterativeReconstruction);
+    OFCHECK(CMR_CID10033e::mapReconstructionAlgorithm("FILTER_BACK_PROJ") == CODE_DCM_FilteredBackProjection);
+    OFCHECK(CMR_CID10033e::mapReconstructionAlgorithm("ITERATIVE") == CODE_DCM_IterativeReconstruction);
     /* invalid/unknown defined terms */
-    OFCHECK(CID10033e_CTReconstructionAlgorithm::mapReconstructionAlgorithm("XYZ").isEmpty());
+    OFCHECK(CMR_CID10033e::mapReconstructionAlgorithm("XYZ").isEmpty());
 }
 
 
@@ -162,12 +162,12 @@ OFTEST(dcmsr_TID1001_ObservationContext)
 {
     TID1001_ObservationContext obsContext;
     OFList<CID7445_DeviceParticipatingRoles> procRoles;
-    procRoles.push_back(CID7445_DeviceParticipatingRoles::IrradiatingDevice);
-    procRoles.push_back(CID7445_DeviceParticipatingRoles::Recording);
+    procRoles.push_back(CMR_CID7445::IrradiatingDevice);
+    procRoles.push_back(CMR_CID7445::Recording);
     /* empty template is not valid */
     OFCHECK(!obsContext.isValid());
     /* add person and device observers */
-    OFCHECK(obsContext.addPersonObserver("Doe^John", "", CID7452_OrganizationalRoles::Physician, CID7453_PerformingRoles::Referring).good());
+    OFCHECK(obsContext.addPersonObserver("Doe^John", "", CMR_CID7452::Physician, CMR_CID7453::Referring).good());
     OFCHECK(obsContext.addDeviceObserver("1.2.4.5.6.7.8.9.0").good());
     OFCHECK(obsContext.addDeviceObserver("007", "Some Name", "Some Manufacturer", "Some Model Name", "", "", procRoles, OFFalse /*check*/).good());
     OFCHECK(obsContext.addPersonObserver("Doe^Jane", "Some Organization").good());
@@ -212,14 +212,14 @@ OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
 
 OFTEST(dcmsr_TID1500_MeasurementReport)
 {
-    TID1500_MeasurementReport report(CID7021_MeasurementReportDocumentTitles::ImagingMeasurementReport);
+    TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
     DSRCodedEntryValue title;
     /* check initial settings */
     OFCHECK(!report.isValid());
     OFCHECK(report.getDocumentTitle(title).good());
     OFCHECK(title == CODE_DCM_ImagingMeasurementReport);
     /* create a new report */
-    OFCHECK(report.createNewMeasurementReport(CID7021_MeasurementReportDocumentTitles::PETMeasurementReport).good());
+    OFCHECK(report.createNewMeasurementReport(CMR_CID7021::PETMeasurementReport).good());
     OFCHECK(report.getDocumentTitle(title).good());
     OFCHECK(title == CODE_DCM_PETMeasurementReport);
     /* set the language */
@@ -231,7 +231,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     /* set two values for "procedure reported" */
     OFCHECK(!report.isValid());
     OFCHECK(!report.hasProcedureReported());
-    OFCHECK(report.addProcedureReported(CID100_QuantitativeDiagnosticImagingProcedures::PETWholeBody).good());
+    OFCHECK(report.addProcedureReported(CMR_CID100::PETWholeBody).good());
     OFCHECK(report.addProcedureReported(DSRCodedEntryValue("4711", "99TEST", "Some other test code")).good());
     OFCHECK(report.hasProcedureReported());
     OFCHECK(report.isValid());
@@ -384,12 +384,12 @@ OFTEST(dcmsr_CMR_SRNumericMeasurementValue)
 {
     CMR_SRNumericMeasurementValue numValue;
     /* set coded entry from context group and check the value */
-    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CID42_NumericValueQualifier::NotANumber, OFTrue /*enhancedEncodingMode*/)).good());
+    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier(CMR_CID42::NotANumber, OFTrue /*enhancedEncodingMode*/)).good());
     OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_NotANumber);
     OFCHECK(numValue.getNumericValueQualifier().usesEnhancedEncodingMode());
     OFCHECK(numValue.isValid());
     /* set coded entry from context group (using its type) and check the value */
-    OFCHECK(numValue.setNumericValueQualifier(CID42_NumericValueQualifier::ValueUnknown).good());
+    OFCHECK(numValue.setNumericValueQualifier(CMR_CID42::ValueUnknown).good());
     OFCHECK(numValue.getNumericValueQualifier() == CODE_DCM_ValueUnknown);
     OFCHECK(!numValue.getNumericValueQualifier().usesEnhancedEncodingMode());
     OFCHECK(numValue.isValid());

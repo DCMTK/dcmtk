@@ -6,7 +6,7 @@
  *  Header file for class CID7453_PerformingRoles
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:59 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:49 by J. Riesmeier
  *
  */
 
@@ -161,5 +161,14 @@ class DCMTK_CMR_EXPORT CID7453_PerformingRoles
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID7453_PerformingRoles CMR_CID7453;
+
 
 #endif

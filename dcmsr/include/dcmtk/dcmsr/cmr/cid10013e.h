@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID10013e_CTAcquisitionType
@@ -90,5 +90,14 @@ class DCMTK_CMR_EXPORT CID10013e_CTAcquisitionType
 
     using CID10013_CTAcquisitionType::selectValue;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID10013e_CTAcquisitionType CMR_CID10013e;
+
 
 #endif

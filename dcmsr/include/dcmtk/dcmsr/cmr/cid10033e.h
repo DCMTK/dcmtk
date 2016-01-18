@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID10033e_CTReconstructionAlgorithm
@@ -94,5 +94,14 @@ class DCMTK_CMR_EXPORT CID10033e_CTReconstructionAlgorithm
 
     using CID10033_CTReconstructionAlgorithm::selectValue;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID10033e_CTReconstructionAlgorithm CMR_CID10033e;
+
 
 #endif

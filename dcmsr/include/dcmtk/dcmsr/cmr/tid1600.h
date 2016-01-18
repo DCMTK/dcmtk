@@ -444,4 +444,12 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
 };
 
 
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the SR template class
+typedef TID1600_ImageLibrary CMR_TID1600;
+
+
 #endif

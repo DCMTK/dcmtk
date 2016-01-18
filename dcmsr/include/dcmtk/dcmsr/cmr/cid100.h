@@ -6,7 +6,7 @@
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:42 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:31 by J. Riesmeier
  *
  */
 
@@ -165,5 +165,14 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID100_QuantitativeDiagnosticImagingProcedures CMR_CID100;
+
 
 #endif

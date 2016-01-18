@@ -6,7 +6,7 @@
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:47 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:36 by J. Riesmeier
  *
  */
 
@@ -293,5 +293,14 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID4021_PETRadiopharmaceutical CMR_CID4021;
+
 
 #endif

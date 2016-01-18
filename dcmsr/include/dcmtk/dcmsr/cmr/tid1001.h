@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1001_ObservationContext
@@ -105,6 +105,14 @@ class DCMTK_CMR_EXPORT TID1001_ObservationContext
      */
     OFCondition addSubjectContext();
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the SR template class
+typedef TID1001_ObservationContext CMR_TID1001;
 
 
 #endif

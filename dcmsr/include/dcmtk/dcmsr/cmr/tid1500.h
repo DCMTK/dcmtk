@@ -224,4 +224,12 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 };
 
 
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the SR template class
+typedef TID1500_MeasurementReport CMR_TID1500;
+
+
 #endif

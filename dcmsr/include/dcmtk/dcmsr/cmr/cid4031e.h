@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4031_CommonAnatomicRegions_Enhanced
@@ -94,5 +94,14 @@ class DCMTK_CMR_EXPORT CID4031e_CommonAnatomicRegions
 
     using CID4031_CommonAnatomicRegions::selectValue;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID4031e_CommonAnatomicRegions CMR_CID4031e;
+
 
 #endif

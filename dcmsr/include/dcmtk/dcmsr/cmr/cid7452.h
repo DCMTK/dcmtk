@@ -6,7 +6,7 @@
  *  Header file for class CID7452_OrganizationalRoles
  *
  *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:58 by J. Riesmeier
+ *  File created on 2016-01-16 12:26:48 by J. Riesmeier
  *
  */
 
@@ -177,5 +177,14 @@ class DCMTK_CMR_EXPORT CID7452_OrganizationalRoles
     /// pointer to internal code list (use a static variable for singleton pattern)
     static CodeList *Codes;
 };
+
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
+// define short name for the context group class
+typedef CID7452_OrganizationalRoles CMR_CID7452;
+
 
 #endif
