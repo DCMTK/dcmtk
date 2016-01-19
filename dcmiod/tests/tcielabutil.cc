@@ -79,7 +79,7 @@ OFTEST(dcmiod_tcielabutil)
   // roundtrip is less than around 1 promille
 
   // Initialize random numbers
-  srand (time (NULL));
+  srand (OFstatic_cast(unsigned int, time (NULL)));
 
   // We do 1000 runs
   for (size_t run = 0; run < 1000; run++)
