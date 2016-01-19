@@ -418,8 +418,8 @@ public:
     checkElementValue(source, seqKey, cardinality, type, exists, module.c_str());
     if (source)
     {
-      const size_t card = source->card();
-      for (size_t count = 0; count < card; count++)
+      const unsigned long card = source->card();
+      for (unsigned long count = 0; count < card; count++)
       {
         DcmItem *item = source->getItem(count);
         if (item != NULL)
