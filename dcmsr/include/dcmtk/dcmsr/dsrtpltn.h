@@ -100,7 +100,8 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      ** @param  stream      output stream to which the template should be printed
      *  @param  flags       flag used to customize the output (see DSRTypes::PF_xxx)
      *  @param  linePrefix  string that is prepended to each output line (optional)
-     ** @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful (or included template is empty, so there
+     *          is nothing to do), an error code otherwise
      */
     virtual OFCondition printTemplate(STD_NAMESPACE ostream &stream,
                                       const size_t flags,
@@ -111,7 +112,8 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
      *                       Can be used to digitally sign parts of the document tree.
-     ** @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful (or included template is empty, so there
+     *          is nothing to do), an error code otherwise
      */
     virtual OFCondition write(DcmItem &dataset,
                               DcmStack *markedItems = NULL);
@@ -119,7 +121,8 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     /** write content of included template in XML format
      ** @param  stream  output stream to which the XML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
-     ** @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful (or included template is empty, so there
+     *          is nothing to do), an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
                                  const size_t flags) const;
@@ -131,7 +134,8 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
-     ** @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful (or included template is empty, so there
+     *          is nothing to do), an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,

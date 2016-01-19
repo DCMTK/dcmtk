@@ -122,24 +122,33 @@ OFCondition DSRIncludedTemplateTreeNode::printTemplate(STD_NAMESPACE ostream &st
                                                        const size_t flags,
                                                        const OFString &linePrefix) const
 {
-    /* print content of included template */
-    return ReferencedTemplate->print(stream, flags, linePrefix);
+    OFCondition result = EC_Normal;
+    /* print content of included template (if non-empty) */
+    if (!ReferencedTemplate->isEmpty())
+        result = ReferencedTemplate->print(stream, flags, linePrefix);
+    return result;
 }
 
 
 OFCondition DSRIncludedTemplateTreeNode::write(DcmItem &dataset,
                                                DcmStack *markedItems)
 {
-    /* write content of included template */
-    return ReferencedTemplate->write(dataset, markedItems);
+    OFCondition result = EC_Normal;
+    /* write content of included template (if non-empty) */
+    if (!ReferencedTemplate->isEmpty())
+        result = ReferencedTemplate->write(dataset, markedItems);
+    return result;
 }
 
 
 OFCondition DSRIncludedTemplateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                                   const size_t flags) const
 {
-    /* write content of included template in XML format */
-    return ReferencedTemplate->writeXML(stream, flags);
+    OFCondition result = EC_Normal;
+    /* write content of included template in XML format (if non-empty) */
+    if (!ReferencedTemplate->isEmpty())
+        result = ReferencedTemplate->writeXML(stream, flags);
+    return result;
 }
 
 
@@ -149,8 +158,11 @@ OFCondition DSRIncludedTemplateTreeNode::renderHTML(STD_NAMESPACE ostream &docSt
                                                     size_t &annexNumber,
                                                     const size_t flags) const
 {
-    /* render content of included template in HTML/XHTML format */
-    return ReferencedTemplate->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags);
+    OFCondition result = EC_Normal;
+    /* render content of included template in HTML/XHTML format (if non-empty) */
+    if (!ReferencedTemplate->isEmpty())
+        result = ReferencedTemplate->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags);
+    return result;
 }
 
 
