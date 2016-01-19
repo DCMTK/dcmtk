@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2015, OFFIS e.V.
+ *  Copyright (C) 2002-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,7 +113,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
                         << "element absent (on the main dataset level) but extended characters used in file: " << ifname);
                     OFLOG_DEBUG(dcm2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
-                    return EC_IllegalCall;
+                    return makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");;
                 } else {
                     OFString sopClass;
                     csetString = defaultCharset;
@@ -141,7 +141,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     else {
                         OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Character set '"
                             << defaultCharset << "' specified with option --charset-assume not supported");
-                        return EC_IllegalCall;
+                        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Cannot select character set");
                     }
                     /* check whether this file is a DICOMDIR */
                     if (dfile->getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).bad() ||
