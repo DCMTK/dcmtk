@@ -133,9 +133,10 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 
     /** print numeric measurement value.
      *  The output of a typical numeric measurement value looks like this:
-     *  "3.5" (cm,UCUM[1.4],"centimeter").  If the value is empty the text "empty" is printed
-     *  instead.  The numeric value qualifier as well as the possibly available additional
-     *  floating point and rational representations of the numeric value are never printed.
+     *  "3.5" (cm,UCUM[1.4],"centimeter").  If the value is empty, the text "empty" is printed
+     *  instead, followed by the numeric value qualifier (if present).  The possibly available
+     *  additional floating point and rational representations of the numeric value are never
+     *  printed.
      ** @param  stream  output stream to which the numeric measurement value should be printed
      *  @param  flags   flag used to customize the output (not used)
      ** @return status, EC_Normal if successful, an error code otherwise

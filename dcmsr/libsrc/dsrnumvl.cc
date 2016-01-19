@@ -154,6 +154,12 @@ OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream &stream,
     {
         /* empty value */
         stream << "empty";
+        /* check for optional numeric value qualifier */
+        if (!ValueQualifier.isEmpty())
+        {
+            stream << " ";
+            ValueQualifier.print(stream, OFTrue /*printCodeValue*/, flags);
+        }
     } else {
         OFString printString;
         stream << "\"" << DSRTypes::convertToPrintString(NumericValue, printString) << "\" ";
