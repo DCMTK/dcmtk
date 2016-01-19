@@ -25,7 +25,7 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmiod/cielabutil.h"
 #define INCLUDE_CSTDLIB               // for srand()
-#define INCLUDE_TIME                  // for time() initialization of srand()
+#define INCLUDE_CTIME                 // for time() initialization of srand()
 #include "dcmtk/ofstd/ofstdinc.h"
 
 OFTEST(dcmiod_tcielabutil)
