@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -494,6 +494,7 @@ void DcmItem::print(STD_NAMESPACE ostream &out,
 OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
                               const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     if (!(flags & DCMTypes::XF_useNativeModel))
     {
         /* XML start tag for "item" */
@@ -513,16 +514,18 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
         elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-            dO->writeXML(out, flags);
-        } while (elementList->seek(ELP_next));
+            l_error = dO->writeXML(out, flags);
+        } while (l_error.good() && elementList->seek(ELP_next));
     }
-    if (!(flags & DCMTypes::XF_useNativeModel))
+    if (l_error.good())
     {
-        /* XML end tag for "item" */
-        out << "</item>" << OFendl;
+        if (!(flags & DCMTypes::XF_useNativeModel))
+        {
+            /* XML end tag for "item" */
+            out << "</item>" << OFendl;
+        }
     }
-    /* always report success */
-    return EC_Normal;
+    return l_error;
 }
 
 

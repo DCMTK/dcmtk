@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -291,6 +291,7 @@ void DcmDataset::print(STD_NAMESPACE ostream&out,
 OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     /* the Native DICOM Model as defined for Application Hosting needs special handling */
     if (flags & DCMTypes::XF_useNativeModel)
     {
@@ -318,18 +319,20 @@ OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream &out,
         elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-            dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
-        } while (elementList->seek(ELP_next));
+            l_error = dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
+        } while (l_error.good() && elementList->seek(ELP_next));
     }
-    /* write XML end tag (depending on output format) */
-    if (flags & DCMTypes::XF_useNativeModel)
+    if (l_error.good())
     {
-        out << "</NativeDicomModel>" << OFendl;
-    } else {
-        out << "</data-set>" << OFendl;
+        /* write XML end tag (depending on output format) */
+        if (flags & DCMTypes::XF_useNativeModel)
+        {
+            out << "</NativeDicomModel>" << OFendl;
+        } else {
+            out << "</data-set>" << OFendl;
+        }
     }
-    /* always report success */
-    return EC_Normal;
+    return l_error;
 }
 
 

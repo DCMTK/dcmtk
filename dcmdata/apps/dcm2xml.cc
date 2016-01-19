@@ -547,16 +547,24 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* write content in XML format to file */
-                        if (writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
-                                      opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
+                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
+                            opt_defaultCharset, opt_writeFlags, opt_checkAllStrings);
+                        if (status.bad())
+                        {
+                            OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
                             result = 2;
+                        }
                     } else
                         result = 1;
                 } else {
                     /* write content in XML format to standard output */
-                    if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
-                                  opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
+                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
+                        opt_defaultCharset, opt_writeFlags, opt_checkAllStrings);
+                    if (status.bad())
+                    {
+                        OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");
                         result = 3;
+                    }
                 }
             }
         } else {

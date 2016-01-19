@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1254,10 +1254,11 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
 OFCondition DcmDirectoryRecord::writeXML(STD_NAMESPACE ostream &out,
                                          const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     if (flags & DCMTypes::XF_useNativeModel)
     {
         /* in Native DICOM Model, there is no concept of a DICOMDIR */
-        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+        l_error = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
             "Cannot convert Directory Record to Native DICOM Model");
     } else {
         /* XML start tag for "item" */
@@ -1278,16 +1279,18 @@ OFCondition DcmDirectoryRecord::writeXML(STD_NAMESPACE ostream &out,
             elementList->seek(ELP_first);
             do {
                 dO = elementList->get();
-                dO->writeXML(out, flags);
-            } while (elementList->seek(ELP_next));
+                l_error = dO->writeXML(out, flags);
+            } while (l_error.good() && elementList->seek(ELP_next));
         }
-        if (lowerLevelList->card() > 0)
-            lowerLevelList->writeXML(out, flags);
-        /* XML end tag for "item" */
-        out << "</item>" << OFendl;
-        /* always report success */
-        return EC_Normal;
+        if (l_error.good())
+        {
+            if (lowerLevelList->card() > 0)
+                lowerLevelList->writeXML(out, flags);
+            /* XML end tag for "item" */
+            out << "</item>" << OFendl;
+        }
     }
+    return l_error;
 }
 
 

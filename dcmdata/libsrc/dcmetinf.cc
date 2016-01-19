@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -173,10 +173,11 @@ void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
 OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream &out,
                                   const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     if (flags & DCMTypes::XF_useNativeModel)
     {
         /* in Native DICOM Model, there is no concept of a "file format" */
-        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+        l_error = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
             "Cannot convert File Meta Information to Native DICOM Model");
     } else {
         OFString xmlString;
@@ -193,14 +194,16 @@ OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream &out,
             do
             {
                 dO = elementList->get();
-                dO->writeXML(out, flags);
-            } while (elementList->seek(ELP_next));
+                l_error = dO->writeXML(out, flags);
+            } while (l_error.good() && elementList->seek(ELP_next));
         }
-        /* XML end tag for "meta-header" */
-        out << "</meta-header>" << OFendl;
-        /* always report success */
-        return EC_Normal;
+        if (l_error.good())
+        {
+            /* XML end tag for "meta-header" */
+            out << "</meta-header>" << OFendl;
+        }
     }
+    return l_error;
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -181,6 +181,7 @@ void DcmFileFormat::print(STD_NAMESPACE ostream &out,
 OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     if (flags & DCMTypes::XF_useNativeModel)
     {
         /* in Native DICOM Model, there is no concept of a "file format" */
@@ -188,13 +189,12 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
         if (dset != NULL)
         {
             /* write content of dataset */
-            return dset->writeXML(out, flags);
+            l_error = dset->writeXML(out, flags);
         } else {
-            return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
+            l_error = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
                 "Cannot convert to Native DICOM Model: No dataset present");
         }
     } else {
-        OFCondition result = EC_CorruptedData;
         /* XML start tag for "file-format" */
         out << "<file-format";
         if (flags & DCMTypes::XF_useXMLNamespace)
@@ -208,14 +208,19 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
             itemList->seek(ELP_first);
             do {
                 dO = itemList->get();
-                dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
-            } while (itemList->seek(ELP_next));
-            result = EC_Normal;
+                l_error = dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
+            } while (l_error.good() && itemList->seek(ELP_next));
+        } else {
+            /* a file format should never be empty */
+            l_error = EC_CorruptedData;
         }
-        /* XML end tag for "file-format" */
-        out << "</file-format>" << OFendl;
-        return result;
+        if (l_error.good())
+        {
+            /* XML end tag for "file-format" */
+            out << "</file-format>" << OFendl;
+        }
     }
+    return l_error;
 }
 
 
