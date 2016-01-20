@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -193,6 +193,10 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
 #else
   int nfound = select(maxsocketfd + 1, &fdset, NULL, NULL, &t);
 #endif
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DU_logSelectResult(nfound);
+  }
   if (nfound<=0) return OFFalse;      /* none available for reading */
 
   for (i=0; i<connCount; i++)
@@ -317,7 +321,14 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
 #else
   nfound = select(getSocket() + 1, &fdset, NULL, NULL, &t);
 #endif
-  if (nfound <= 0) return OFFalse;
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DU_logSelectResult(nfound);
+  }
+  if (nfound <= 0)
+  {
+    return OFFalse;
+  }
   else
   {
     if (FD_ISSET(getSocket(), &fdset)) return OFTrue;
@@ -358,3 +369,4 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
   }
   return "unknown error code";
 }
+

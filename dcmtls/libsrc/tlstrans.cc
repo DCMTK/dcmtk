@@ -57,6 +57,7 @@ END_EXTERN_C
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmnet/dcompat.h"    /* to make sure we have a select prototype */
+#include "dcmtk/dcmnet/diutil.h"
 
 
 DcmTLSConnection::DcmTLSConnection(int openSocket, SSL *newTLSConnection)
@@ -273,6 +274,10 @@ OFBool DcmTLSConnection::networkDataAvailable(int timeout)
 #else
   nfound = select(getSocket() + 1, &fdset, NULL, NULL, &t);
 #endif
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DU_logSelectResult(nfound);
+  }
   if (nfound <= 0) return OFFalse;
   else
   {

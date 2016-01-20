@@ -2288,6 +2288,11 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             rc = select(s + 1, NULL, &fdSet, NULL, &timeout);
         } while (rc == -1 && errno == EINTR);
 
+        if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        {
+            DU_logSelectResult(rc);
+        }
+
         // reset socket to blocking mode
 #ifdef HAVE_WINSOCK_H
         arg = FALSE;

@@ -1591,6 +1591,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
                             &fdset, NULL, NULL, &timeout_val);
 #endif
+            if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+            {
+                DU_logSelectResult(nfound);
+            }
             if (nfound > 0) {
                 if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
                     connected++;
@@ -1618,6 +1622,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
                                 &fdset, NULL, NULL, &timeout_val);
 #endif
+                if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+                {
+                    DU_logSelectResult(nfound);
+                }
                 if (nfound > 0) {
                     if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
                                  &fdset))

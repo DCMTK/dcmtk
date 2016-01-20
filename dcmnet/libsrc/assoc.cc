@@ -1684,6 +1684,10 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
 #else
     nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+      DU_logSelectResult(nfound);
+    }
     return nfound > 0;
 }
 

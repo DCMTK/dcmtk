@@ -854,3 +854,39 @@ DU_neventReportStatusString(Uint16 statusCode)
     }
     return s;
 }
+
+void DU_logSelectResult(int selectReturnValue)
+{
+  if (selectReturnValue < 0)
+  {
+#ifdef HAVE_WINSOCK_H
+    // Error codes taken from: https://msdn.microsoft.com/de-de/library/windows/desktop/ms740141%28v=vs.85%29.aspx
+    // in order to circumvent usage of overcomplicated FormatMessage() call.
+    OFString err;
+    switch(WSAGetLastError())
+    {
+      case WSANOTINITIALISED: err = "A successful WSAStartup call must occur before using this function."; break;
+      case WSAEFAULT: err = "The Windows Sockets implementation was unable to allocate needed resources for its internal operations, or the readfds, writefds, exceptfds, or timeval parameters are not part of the user address space."; break;
+      case WSAENETDOWN: err = "The network subsystem has failed."; break;
+      case WSAEINVAL: err = "The time-out value is not valid, or all three descriptor parameters were null."; break;
+      case WSAEINTR: err = "A blocking Windows Socket 1.1 call was canceled through WSACancelBlockingCall."; break;
+      case WSAEINPROGRESS: err = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function."; break;
+      case WSAENOTSOCK: err = "One of the descriptor sets contains an entry that is not a socket."; break;
+      default: err = "Unknown Windows Socket error";
+    }
+    DCMNET_DEBUG("Windows Sokcket error while waiting for incoming network data: " << err);
+#else
+    // POSIX interface
+    DCMNET_DEBUG("Error while waiting for incoming network data: " << strerror(errno));
+#endif
+  }
+  else if (selectReturnValue == 0)
+  {
+    DCMNET_DEBUG("Timeout while waiting for incoming network data");
+  }
+  else
+  {
+    // This function is only meant to be used for return values <= 0
+    DCMNET_TRACE("Receiving data via select()");
+  }
+}

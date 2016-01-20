@@ -58,6 +58,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmnet/dcompat.h"     /* compatability routines */
 #include "dcmtk/dcmnet/dul.h"
+#include "dcmtk/dcmnet/diutil.h"
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
 
@@ -208,6 +209,10 @@ int main(int argc, char *argv[])
       nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
 
+      if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+      {
+          DU_logSelectResult(nfound);
+      }
 
       if (nfound > 0)
       {

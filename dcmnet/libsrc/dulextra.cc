@@ -97,6 +97,7 @@
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dcmtk/dcmnet/dcmtrans.h"
+#include "dcmtk/dcmnet/diutil.h"
 
 OFBool
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout)
@@ -152,6 +153,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 #else
     nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        DU_logSelectResult(nfound);
+    }
     if (nfound <= 0) assocWaiting = OFFalse;
     else
     {
