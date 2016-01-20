@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *
  *  Header file with SNOMED-RT Code Definitions (Coding Scheme "SRT")
  *
@@ -43,7 +43,10 @@
 
 #define CODE_SRT_Radionuclide                   DSRBasicCodedEntry("C-10072", "SRT", "Radionuclide")
 #define CODE_SRT_RadiopharmaceuticalAgent       DSRBasicCodedEntry("F-61FDB", "SRT", "Radiopharmaceutical agent")
-#define CODE_SRT_HalfLifeOfRadiopharmaceutical  DSRBasicCodedEntry("R-42806", "SRT", "Half-life of radiopharmaceutical")
+#define CODE_SRT_MeasurementMethod              DSRBasicCodedEntry("G-C036", "SRT", "Measurement Method")
+#define CODE_SRT_FindingSite                    DSRBasicCodedEntry("G-C0E3", "SRT", "Finding Site")
 #define CODE_SRT_RouteOfAdministration          DSRBasicCodedEntry("G-C340", "SRT", "Route of Administration")
+#define CODE_SRT_HalfLifeOfRadiopharmaceutical  DSRBasicCodedEntry("R-42806", "SRT", "Half-life of radiopharmaceutical")
+#define CODE_SRT_AorticArch                     DSRBasicCodedEntry("T-42300", "SRT", "Aortic arch")
 
 #endif
