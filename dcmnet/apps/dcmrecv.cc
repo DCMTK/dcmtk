@@ -276,8 +276,6 @@ int main(int argc, char *argv[])
     storageSCP.setFilenameGenerationMode(opt_filenameGeneration);
     storageSCP.setFilenameExtension(opt_filenameExtension);
     storageSCP.setDatasetStorageMode(opt_datasetStorage);
-    storageSCP.setConnectionTimeout(30);
-    storageSCP.setConnectionBlockingMode(DUL_NOBLOCK);
 
     /* load association negotiation profile from configuration file (if specified) */
     if ((opt_configFile != NULL) && (opt_profileName != NULL))
