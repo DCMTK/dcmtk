@@ -206,8 +206,16 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     if (level > 0)  // valid ?
                         newPrefix += OFString((level - 1) * 2, ' ');
                 }
-                /* print separate line for internal template node (if enabled) */
-                node->print(stream, flags);
+                /* print separate line for internal template node (if requested) */
+                if (flags & PF_printIncludedTemplateNode)
+                {
+                    /* print node ID (might be useful for debugging purposes) */
+                    if (flags & PF_printNodeID)
+                        stream << "id:" << getNodeID() << " ";
+                    /* print content of template node */
+                    node->print(stream, flags);
+                    stream << OFendl;
+                }
                 /* print content of referenced template (typecast needed here) */
                 result = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, newPrefix);
             } else {

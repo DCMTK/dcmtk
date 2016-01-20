@@ -85,35 +85,24 @@ OFBool DSRIncludedTemplateTreeNode::hasValidValue() const
 OFCondition DSRIncludedTemplateTreeNode::print(STD_NAMESPACE ostream &stream,
                                                const size_t flags) const
 {
-    /* print separate line for internal template node (if requested) */
-    if (flags & PF_printIncludedTemplateNode)
+    stream << "# INCLUDE ";
+    /* check whether template identification is set */
+    if (hasTemplateIdentification())
     {
-        /* print node ID (might be useful for debugging purposes) */
-        if (flags & PF_printNodeID)
-            stream << "id:" << getNodeID() << " ";
-        stream << "# INCLUDE ";
-        /* check whether template identification is set */
-        if (hasTemplateIdentification())
-        {
-            OFString templateIdentifier;
-            OFString mappingResource;
-            getTemplateIdentification(templateIdentifier, mappingResource);
-            stream << "TID " << templateIdentifier << " (" << mappingResource << ")";
-        } else {
-            /* no details on the template available */
-            stream << "<unknown template>";
-        }
-        /* check whether default relationship type is specified */
-        if (getRelationshipType() != RT_unknown)
-        {
-            stream << " with default relationship type "
-                   << relationshipTypeToDefinedTerm(getRelationshipType());
-        }
-        /* print annotation (optional) */
-        if (hasAnnotation() && (flags & PF_printAnnotation))
-            stream << "  \"" << getAnnotation().getText() << "\"";
-        stream << OFendl;
+        OFString templateIdentifier;
+        OFString mappingResource;
+        getTemplateIdentification(templateIdentifier, mappingResource);
+        stream << "TID " << templateIdentifier << " (" << mappingResource << ")";
+    } else {
+        /* no details on the template available */
+        stream << "<unknown template>";
     }
+    /* check whether default relationship type is specified */
+    if (getRelationshipType() != RT_unknown)
+        stream << " with default relationship type " << relationshipTypeToDefinedTerm(getRelationshipType());
+    /* print annotation (optional) */
+    if (hasAnnotation() && (flags & PF_printAnnotation))
+        stream << "  \"" << getAnnotation().getText() << "\"";
     return EC_Normal;
 }
 

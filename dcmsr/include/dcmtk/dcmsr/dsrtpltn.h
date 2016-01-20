@@ -86,9 +86,6 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
 
     /** print content item.
      *  A typical output looks like this: # INCLUDE TID 1600 (DCMR)
-     *  In contrast to other classes that are derived from DSRDocumentTreeNode,
-     *  this method prints a separate line, but if and only if the 'flag'
-     *  DSRTypes::PF_printIncludedTemplateNode is set.
      ** @param  stream  output stream to which the content item should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
