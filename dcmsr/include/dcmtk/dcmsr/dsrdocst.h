@@ -480,6 +480,20 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFCondition createExpandedSubTree(DSRDocumentSubTree *&tree) const;
 
+    /** compare template identification of the root node with given values.
+     *  Please note that the comparison only takes place if there is a single node at the
+     *  root of the tree and its value type is CONTAINER.
+     ** @param  templateIdentifier  template identifier to compare with
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional).
+     *                              Not used for comparison if the value is empty.
+     ** @result OFTrue if template identification can be compared and the values are
+     *          identical, OFFalse otherwise
+     */
+    virtual OFBool compareTemplateIdentification(const OFString &templateIdentifier,
+                                                 const OFString &mappingResource,
+                                                 const OFString &mappingResourceUID = "") const;
+
     /** get template identifier and mapping resource from the root node of this tree.  See
      *  DSRDocumentTreeNode::getTemplateIdentification() for details on template identification.
      *  Please note that the template identification is only retrieved if there is a single node

@@ -166,6 +166,8 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     OFList<CID7445_DeviceParticipatingRoles> procRoles;
     procRoles.push_back(CMR_CID7445::IrradiatingDevice);
     procRoles.push_back(CMR_CID7445::Recording);
+    /* check template identification */
+    OFCHECK(obsContext.compareTemplateIdentication("1001", "DCMR"));
     /* empty template is not valid */
     OFCHECK(!obsContext.isValid());
     /* add person and device observers */
@@ -199,6 +201,8 @@ OFTEST(dcmsr_TID1001_ObservationContext)
 OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
 {
     TID1204_LanguageOfContentItemAndDescendants lang;
+    /* check template identification */
+    OFCHECK(lang.compareTemplateIdentication("1204", "DCMR"));
     /* empty template is not valid */
     OFCHECK(!lang.isValid());
     /* add language */
@@ -220,6 +224,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(!report.isValid());
     OFCHECK(report.getDocumentTitle(title).good());
     OFCHECK(title == CODE_DCM_ImagingMeasurementReport);
+    OFCHECK(report.compareTemplateIdentication("1500", "DCMR"));
     /* create a new report */
     OFCHECK(report.createNewMeasurementReport(CMR_CID7021::PETMeasurementReport).good());
     OFCHECK(report.getDocumentTitle(title).good());
@@ -276,6 +281,8 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
 {
     TID1600_ImageLibrary library;
     DcmItem *item1, *item2;
+    /* check template identification */
+    OFCHECK(library.compareTemplateIdentication("1600", "DCMR"));
     /* create four image datasets */
     DcmDataset dataset1;
     OFCHECK(dataset1.putAndInsertString(DCM_SOPClassUID, UID_CTImageStorage).good());

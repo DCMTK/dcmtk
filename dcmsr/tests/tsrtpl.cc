@@ -120,10 +120,10 @@ OFTEST(dcmsr_rootTemplate)
     /* and perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_BasicTextSR);
     OFCHECK_EQUAL(doc.getTree().countNodes(), 1);
-    OFString templID, mapResource;
-    OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
-    OFCHECK_EQUAL(templID, "2000");
-    OFCHECK_EQUAL(mapResource, "DCMR");
+    OFCHECK(doc.getTree().compareTemplateIdentification("2000", "DCMR"));
+    OFCHECK(doc.getTree().compareTemplateIdentification("2000", "DCMR", UID_DICOMContentMappingResource));
+    OFCHECK(!doc.getTree().compareTemplateIdentification("200", "DCMR"));
+    OFCHECK(!doc.getTree().compareTemplateIdentification("2000", "DCM"));
 }
 
 
@@ -153,10 +153,7 @@ OFTEST(dcmsr_subTemplate_1)
     /* finally, perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_EnhancedSR);
     OFCHECK_EQUAL(doc.getTree().countNodes(), 3);
-    OFString templID, mapResource;
-    OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
-    OFCHECK_EQUAL(templID, "1410");
-    OFCHECK_EQUAL(mapResource, "DCMR");
+    OFCHECK(doc.getTree().compareTemplateIdentification("1410", "DCMR"));
 }
 
 
@@ -185,10 +182,7 @@ OFTEST(dcmsr_subTemplate_2)
     /* and perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_BasicTextSR);
     OFCHECK_EQUAL(doc.getTree().countNodes(), 2);
-    OFString templID, mapResource;
-    OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
-    OFCHECK_EQUAL(templID, "2000");
-    OFCHECK_EQUAL(mapResource, "DCMR");
+    OFCHECK(doc.getTree().compareTemplateIdentification("2000", "DCMR"));
 }
 
 
@@ -210,8 +204,5 @@ OFTEST(dcmsr_createExpandedTree)
     OFCHECK_EQUAL(doc.getTree().countNodes(), 3);
     /* and perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_EnhancedSR);
-    OFString templID, mapResource;
-    OFCHECK(doc.getTree().getTemplateIdentification(templID, mapResource).good());
-    OFCHECK_EQUAL(templID, "1500");
-    OFCHECK_EQUAL(mapResource, "DCMR");
+    OFCHECK(doc.getTree().compareTemplateIdentification("1500", "DCMR"));
 }

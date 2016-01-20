@@ -83,6 +83,18 @@ OFBool DSRTemplateCommon::isTemplateIdentificationValid(const OFBool check) cons
 }
 
 
+OFBool DSRTemplateCommon::compareTemplateIdentication(const OFString &templateIdentifier,
+                                                      const OFString &mappingResource,
+                                                      const OFString &mappingResourceUID) const
+{
+    OFBool result = (TemplateIdentifier == templateIdentifier) && (MappingResource == mappingResource);
+    /* mapping resource UID is optional, so only check it if present */
+    if (result && !MappingResourceUID.empty() && !mappingResourceUID.empty())
+        result = (MappingResourceUID == mappingResourceUID);
+    return result;
+}
+
+
 // protected methods
 
 void DSRTemplateCommon::clearEntriesInNodeList()

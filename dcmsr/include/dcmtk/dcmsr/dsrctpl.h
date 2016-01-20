@@ -73,6 +73,17 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
         return ExtensibleMode;
     }
 
+    /** compare template identification with given values
+     ** @param  templateIdentifier  template identifier to compare with
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional).
+     *                              Not used for comparison if the value is empty.
+     ** @result OFTrue if template identification is identical, OFFalse otherwise
+     */
+    virtual OFBool compareTemplateIdentication(const OFString &templateIdentifier,
+                                               const OFString &mappingResource,
+                                               const OFString &mappingResourceUID = "") const;
+
     /** get template identifier
      ** @return identifier of the template
      */

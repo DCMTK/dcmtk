@@ -411,6 +411,17 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     virtual OFCondition setObservationUID(const OFString &observationUID,
                                           const OFBool check = OFTrue);
 
+    /** compare template identification with given values
+     ** @param  templateIdentifier  template identifier to compare with
+     *  @param  mappingResource     mapping resource that defines the template
+     *  @param  mappingResourceUID  uniquely identifies the mapping resource (optional).
+     *                              Not used for comparison if the value is empty.
+     ** @result OFTrue if template identification is identical, OFFalse otherwise
+     */
+    virtual OFBool compareTemplateIdentification(const OFString &templateIdentifier,
+                                                 const OFString &mappingResource,
+                                                 const OFString &mappingResourceUID = "") const;
+
     /** get template identifier and mapping resource.
      *  This value pair identifies the template that was used to create this content item
      *  (and its children).  According to the DICOM standard, it is "required if a template

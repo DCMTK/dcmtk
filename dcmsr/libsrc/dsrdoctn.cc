@@ -543,6 +543,18 @@ OFCondition DSRDocumentTreeNode::setObservationUID(const OFString &observationUI
 }
 
 
+OFBool DSRDocumentTreeNode::compareTemplateIdentification(const OFString &templateIdentifier,
+                                                          const OFString &mappingResource,
+                                                          const OFString &mappingResourceUID) const
+{
+    OFBool result = (TemplateIdentifier == templateIdentifier) && (MappingResource == mappingResource);
+    /* mapping resource UID is optional, so only check it if present */
+    if (result && !MappingResourceUID.empty() && !mappingResourceUID.empty())
+        result = (MappingResourceUID == mappingResourceUID);
+    return result;
+}
+
+
 OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIdentifier,
                                                            OFString &mappingResource) const
 {

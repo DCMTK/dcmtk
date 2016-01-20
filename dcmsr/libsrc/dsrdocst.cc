@@ -851,6 +851,21 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
 }
 
 
+OFBool DSRDocumentSubTree::compareTemplateIdentification(const OFString &templateIdentifier,
+                                                         const OFString &mappingResource,
+                                                         const OFString &mappingResourceUID) const
+{
+    OFBool result = OFFalse;
+    /* check whether template identification is possible */
+    if (canUseTemplateIdentification())
+    {
+        /* compare with template identification of root CONTAINER */
+        result = getRoot()->compareTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID);
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentSubTree::getTemplateIdentification(OFString &templateIdentifier,
                                                           OFString &mappingResource) const
 {
