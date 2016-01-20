@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -576,7 +576,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         /// internal type used to indicate (enclose) included templates
         VT_includedTemplate,
         /// internal type used to mark the last entry
-        VT_last = VT_byReference
+        VT_last = VT_includedTemplate
     };
 
     /** Softcopy presentation state types.  Used for content item IMAGE.
