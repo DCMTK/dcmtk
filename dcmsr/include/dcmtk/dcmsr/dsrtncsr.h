@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,8 +62,9 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     DSRTreeNodeCursor(const DSRTreeNodeCursor<T> &cursor);
 
-    /** constructor
-     ** @param  node  pointer to tree node used to initialize the cursor (set to this node)
+    /** constructor.
+     *  See comments on setCursor(T*) method.
+     ** @param  node  pointer to tree node used to initialize the cursor
      */
     DSRTreeNodeCursor(T *node);
 
@@ -77,13 +78,15 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     DSRTreeNodeCursor<T> &operator=(const DSRTreeNodeCursor<T> &cursor);
 
-    /** assignment operator
+    /** assignment operator.
+     *  See comments on setCursor(T*) method.
      ** @param  node  node to which the cursor should be set
      ** @return reference to modified cursor (this object)
      */
     DSRTreeNodeCursor<T> &operator=(T *node);
 
-    /** clear all member variables
+    /** clear all member variables.
+     *  The cursor becomes invalid afterwards (same state as after default construction).
      */
     virtual void clear();
 
