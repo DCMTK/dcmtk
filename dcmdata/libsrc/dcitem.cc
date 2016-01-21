@@ -3751,6 +3751,42 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
 }
 
 
+OFCondition DcmItem::putAndInsertUint32Array(const DcmTag& tag,
+                                             const Uint32 *value,
+                                             const unsigned long count,
+                                             const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_OL:
+            elem = new DcmOtherLong(tag);
+            break;
+        case EVR_UL:
+            elem = new DcmUnsignedLong(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint32Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
 OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
                                         const Sint32 value,
                                         const unsigned long pos,

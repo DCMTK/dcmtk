@@ -1089,6 +1089,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: OL, UL
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint32Array(const DcmTag &tag,
+                                       const Uint32 *value,
+                                       const unsigned long count,
+                                       const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: SL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
