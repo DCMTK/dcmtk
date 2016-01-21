@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -165,7 +165,7 @@ void DcmFloatingPointDouble::print(STD_NAMESPACE ostream&out,
         errorFlag = getFloat64Array(doubleVals);
         if (doubleVals != NULL)
         {
-            const unsigned long count = getVM();
+            const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Float64)) /* do not use getVM()! */;
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
                 DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
             unsigned long printedLength = 0;
