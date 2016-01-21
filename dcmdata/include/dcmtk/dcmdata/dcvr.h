@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,13 +42,13 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration;
  *  introduced after the first edition of the DICOM standard (1993).
  *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
  */
-extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherFloatVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=OD, which has been
  *  introduced after the first edition of the DICOM standard (1993).
  *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
  */
-extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration; /* default OFTrue */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the generation of VR=UR, which has been
  *  introduced after the first edition of the DICOM standard (1993).

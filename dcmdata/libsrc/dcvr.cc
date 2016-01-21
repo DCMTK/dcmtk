@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,8 +34,8 @@
 */
 OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
-OFGlobal<OFBool> dcmEnableOtherFloatStringVRGeneration(OFTrue);
-OFGlobal<OFBool> dcmEnableOtherDoubleStringVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableOtherFloatVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableOtherDoubleVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedCharactersVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
@@ -47,8 +47,8 @@ void dcmEnableGenerationOfNewVRs()
 {
     dcmEnableUnknownVRGeneration.set(OFTrue);
     dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-    dcmEnableOtherFloatStringVRGeneration.set(OFTrue);
-    dcmEnableOtherDoubleStringVRGeneration.set(OFTrue);
+    dcmEnableOtherFloatVRGeneration.set(OFTrue);
+    dcmEnableOtherDoubleVRGeneration.set(OFTrue);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
     dcmEnableUnlimitedCharactersVRGeneration.set(OFTrue);
 }
@@ -57,8 +57,8 @@ void dcmDisableGenerationOfNewVRs()
 {
     dcmEnableUnknownVRGeneration.set(OFFalse);
     dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-    dcmEnableOtherFloatStringVRGeneration.set(OFFalse);
-    dcmEnableOtherDoubleStringVRGeneration.set(OFFalse);
+    dcmEnableOtherFloatVRGeneration.set(OFFalse);
+    dcmEnableOtherDoubleVRGeneration.set(OFFalse);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
     dcmEnableUnlimitedCharactersVRGeneration.set(OFFalse);
 }
@@ -285,7 +285,7 @@ DcmVR::getValidEVR() const
             }
             break;
         case EVR_OF:
-            if (!dcmEnableOtherFloatStringVRGeneration.get())
+            if (!dcmEnableOtherFloatVRGeneration.get())
             {
                 if (dcmEnableUnknownVRGeneration.get())
                     evr = EVR_UN; /* handle OF as if UN */
@@ -294,7 +294,7 @@ DcmVR::getValidEVR() const
             }
             break;
         case EVR_OD:
-            if (!dcmEnableOtherDoubleStringVRGeneration.get())
+            if (!dcmEnableOtherDoubleVRGeneration.get())
             {
                 if (dcmEnableUnknownVRGeneration.get())
                     evr = EVR_UN; /* handle OD as if UN */
