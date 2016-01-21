@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2013, OFFIS e.V.
+ *  Copyright (C) 2002-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,7 @@
 #include "dcmtk/ofstd/ofuuid.h"
 
 #include "dcmtk/dcmdata/dcvrof.h"
-#include "dcmtk/dcmdata/dcvrfl.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcuid.h"      /* for UID generation */
 
 
 // ********************************

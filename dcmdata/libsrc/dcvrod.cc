@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013, OFFIS e.V.
+ *  Copyright (C) 2013-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,7 @@
 #include "dcmtk/ofstd/ofuuid.h"
 
 #include "dcmtk/dcmdata/dcvrod.h"
-#include "dcmtk/dcmdata/dcvrfd.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcuid.h"      /* for UID generation */
 
 
 // ********************************
@@ -79,7 +77,7 @@ DcmEVR DcmOtherDouble::ident() const
 
 
 OFCondition DcmOtherDouble::checkValue(const OFString & /*vm*/,
-                                      const OFBool /*oldFormat*/)
+                                       const OFBool /*oldFormat*/)
 {
     /* currently no checks are performed */
     return EC_Normal;
@@ -88,7 +86,7 @@ OFCondition DcmOtherDouble::checkValue(const OFString & /*vm*/,
 
 unsigned long DcmOtherDouble::getVM()
 {
-    /* value multiplicity for OF is defined as 1 */
+    /* value multiplicity for OD is defined as 1 */
     return 1;
 }
 
@@ -101,7 +99,7 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
 {
     /* always write XML start tag */
     writeXMLStartTag(out, flags);
-    /* OF data requires special handling in the Native DICOM Model format */
+    /* OD data requires special handling in the Native DICOM Model format */
     if (flags & DCMTypes::XF_useNativeModel)
     {
         /* for an empty value field, we do not need to do anything */
