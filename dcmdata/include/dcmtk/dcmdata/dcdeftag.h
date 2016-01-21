@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-11-16 19:19:09
+**   Date: 2016-01-20 22:48:20
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2015-11-16 19:19:09"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-01-20 22:48:20"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3987
+** Number of entries: 4003
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2654,6 +2654,22 @@
 #define DCM_LongTrianglePointIndexList           DcmTagKey(0x0066, 0x0041)
 #define DCM_LongEdgePointIndexList               DcmTagKey(0x0066, 0x0042)
 #define DCM_LongVertexPointIndexList             DcmTagKey(0x0066, 0x0043)
+#define DCM_TrackSetSequence                     DcmTagKey(0x0066, 0x0101)
+#define DCM_TrackSequence                        DcmTagKey(0x0066, 0x0102)
+#define DCM_RecommendedDisplayCIELabValueList    DcmTagKey(0x0066, 0x0103)
+#define DCM_TrackingAlgorithmIdentificationSequence DcmTagKey(0x0066, 0x0104)
+#define DCM_TrackSetNumber                       DcmTagKey(0x0066, 0x0105)
+#define DCM_TrackSetLabel                        DcmTagKey(0x0066, 0x0106)
+#define DCM_TrackSetDescription                  DcmTagKey(0x0066, 0x0107)
+#define DCM_TrackSetAnatomicalTypeCodeSequence   DcmTagKey(0x0066, 0x0108)
+#define DCM_MeasurementsSequence                 DcmTagKey(0x0066, 0x0121)
+#define DCM_TrackSetStatisticsSequence           DcmTagKey(0x0066, 0x0124)
+#define DCM_FloatingPointValues                  DcmTagKey(0x0066, 0x0125)
+#define DCM_TrackPointIndexList                  DcmTagKey(0x0066, 0x0129)
+#define DCM_TrackStatisticsSequence              DcmTagKey(0x0066, 0x0130)
+#define DCM_MeasurementValuesSequence            DcmTagKey(0x0066, 0x0132)
+#define DCM_DiffusionAcquisitionCodeSequence     DcmTagKey(0x0066, 0x0133)
+#define DCM_DiffusionModelCodeSequence           DcmTagKey(0x0066, 0x0134)
 #define DCM_ImplantSize                          DcmTagKey(0x0068, 0x6210)
 #define DCM_ImplantTemplateVersion               DcmTagKey(0x0068, 0x6221)
 #define DCM_ReplacedImplantTemplateSequence      DcmTagKey(0x0068, 0x6222)

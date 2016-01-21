@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2015-11-16 19:19:09
+**   Date: 2016-01-20 22:48:29
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -20936,6 +20936,70 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0066, 0x0043, 0x0066, 0x0043,
       EVR_UL, "LongVertexPointIndexList", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0101, 0x0066, 0x0101,
+      EVR_SQ, "TrackSetSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0102, 0x0066, 0x0102,
+      EVR_SQ, "TrackSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0103, 0x0066, 0x0103,
+      EVR_OW, "RecommendedDisplayCIELabValueList", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0104, 0x0066, 0x0104,
+      EVR_SQ, "TrackingAlgorithmIdentificationSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0105, 0x0066, 0x0105,
+      EVR_UL, "TrackSetNumber", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0106, 0x0066, 0x0106,
+      EVR_LO, "TrackSetLabel", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0107, 0x0066, 0x0107,
+      EVR_UT, "TrackSetDescription", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0108, 0x0066, 0x0108,
+      EVR_SQ, "TrackSetAnatomicalTypeCodeSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0121, 0x0066, 0x0121,
+      EVR_SQ, "MeasurementsSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0124, 0x0066, 0x0124,
+      EVR_SQ, "TrackSetStatisticsSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0125, 0x0066, 0x0125,
+      EVR_OF, "FloatingPointValues", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0129, 0x0066, 0x0129,
+      EVR_OL, "TrackPointIndexList", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0130, 0x0066, 0x0130,
+      EVR_SQ, "TrackStatisticsSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0132, 0x0066, 0x0132,
+      EVR_SQ, "MeasurementValuesSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0133, 0x0066, 0x0133,
+      EVR_SQ, "DiffusionAcquisitionCodeSequence", 1, 1, "Supplement_181",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0134, 0x0066, 0x0134,
+      EVR_SQ, "DiffusionModelCodeSequence", 1, 1, "Supplement_181",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0068, 0x6210, 0x0068, 0x6210,

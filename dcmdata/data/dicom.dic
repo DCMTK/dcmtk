@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2015, OFFIS e.V.
+#  Copyright (C) 1994-2016, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -23,11 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2015c and PS 3.7-2015c.
 # File created on 2015-07-05 12:23:01 by J. Riesmeier on thinkpad.
-# File updated manually on 2015-11-16 by J. Riesmeier.
+# File updated manually on 2016-01-20 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 156, 184
+# - Supplement 156, 181, 184
 # - CP 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1461, 1478 (WC), 1487
 # "WC" means "Draft Final Text - Waiting for Codes"
 #
@@ -3615,6 +3615,27 @@
 (0070,1A03)	FD	RecommendedAnimationRate	1	Supplement_156
 (0070,1A04)	SQ	AnimationCurveSequence	1	Supplement_156
 (0070,1A05)	FD	AnimationStepSize	1	Supplement_156
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 181 (Tractography Results Storage SOP Class)
+#
+(0066,0101)	SQ	TrackSetSequence	1	Supplement_181
+(0066,0102)	SQ	TrackSequence	1	Supplement_181
+(0066,0103)	OW	RecommendedDisplayCIELabValueList	1	Supplement_181
+(0066,0104)	SQ	TrackingAlgorithmIdentificationSequence	1	Supplement_181
+(0066,0105)	UL	TrackSetNumber	1	Supplement_181
+(0066,0106)	LO	TrackSetLabel	1	Supplement_181
+(0066,0107)	UT	TrackSetDescription	1	Supplement_181
+(0066,0108)	SQ	TrackSetAnatomicalTypeCodeSequence	1	Supplement_181
+(0066,0121)	SQ	MeasurementsSequence	1	Supplement_181
+(0066,0124)	SQ	TrackSetStatisticsSequence	1	Supplement_181
+(0066,0125)	OF	FloatingPointValues	1	Supplement_181
+(0066,0129)	OL	TrackPointIndexList	1	Supplement_181
+(0066,0130)	SQ	TrackStatisticsSequence	1	Supplement_181
+(0066,0132)	SQ	MeasurementValuesSequence	1	Supplement_181
+(0066,0133)	SQ	DiffusionAcquisitionCodeSequence	1	Supplement_181
+(0066,0134)	SQ	DiffusionModelCodeSequence	1	Supplement_181
 #
 #---------------------------------------------------------------------------
 #
