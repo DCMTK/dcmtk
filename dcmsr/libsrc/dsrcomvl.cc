@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,6 +84,12 @@ OFBool DSRCompositeReferenceValue::isValid() const
 OFBool DSRCompositeReferenceValue::isEmpty() const
 {
     return SOPClassUID.empty() && SOPInstanceUID.empty();
+}
+
+
+OFBool DSRCompositeReferenceValue::isComplete() const
+{
+    return !SOPClassUID.empty() && !SOPInstanceUID.empty();
 }
 
 

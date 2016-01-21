@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,10 +89,18 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     virtual OFBool isValid() const;
 
     /** check whether the current reference value is empty.
-     *  Checks whether both UIDs of the reference value are empty.
+     *  Checks whether both mandatory UIDs of the reference value are empty.
      ** @return OFTrue if value is empty, OFFalse otherwise
      */
     virtual OFBool isEmpty() const;
+
+    /** check whether the current reference value is complete, i.e.\ whether both
+     *  mandatory UIDs are non-empty.  This is just a basic check that might be useful
+     *  for "validating" input data.  See isValid() for a more sophisticated way of
+     *  checking the current reference value.
+     ** @return OFTrue if value is complete, OFFalse otherwise
+     */
+    virtual OFBool isComplete() const;
 
     /** print reference value.
      *  The output of a typical composite reference value looks like this: (BasicTextSR,"1.2.3").
