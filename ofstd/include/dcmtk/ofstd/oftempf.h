@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,7 +84,7 @@ public:
     /** Create a new temporary file.
      *  @param fileName after this call, this will contain the name of the file
      *         that was created
-     *  @param fd if not NULL, this will be set to a file descriptor for this
+     *  @param fd_out if not NULL, this will be set to a file descriptor for this
      *         file
      *  @param flags additional flags to pass to open() as its third argument
      *  @param dir the directory in which the file should be created.

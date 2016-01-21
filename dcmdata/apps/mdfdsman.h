@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,7 +36,7 @@ class DcmElement;
 
 
 /** This class encapsulates data structures and operations for modifying
- *  Dicom files. Therefore it allows the process of load->modify->save to
+ *  DICOM files. Therefore it allows the process of load->modify->save to
  *  provide this service.
  */
 class MdfDatasetManager
@@ -56,7 +56,7 @@ public:
         @param readMode read file with or without metaheader. Default=autodetect
         @param xfer try to read with this transfer syntax. Default=autodetect
         @param createIfNecessary If true, the file is created if it does not exist
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition loadFile(const char *file_name,
                          const E_FileReadMode readMode = ERM_autoDetect,
@@ -76,7 +76,7 @@ public:
      *  @param no_reservation_checks if true, any missing private reservation
      *                               tags are ignored when inserting private
      *                               tags. Only makes sense w/o only_modify
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition modifyOrInsertPath(OFString tag_path,
                                    const OFString &value,
@@ -98,7 +98,7 @@ public:
      *  @param no_reservation_checks if true, any missing private reservation
      *                               tags are ignored when inserting private
      *                               tags. Only makes sense w/o only_modify
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition modifyOrInsertFromFile(OFString tag_path,
                                        const OFString &filename,
@@ -110,13 +110,13 @@ public:
     /** Modifies all matching tags in dataset to a new value
      *  @param tag_path denotes, which tag to modify
      *  @param value denotes new value of tag
-     *  @param update_metaheader if true, metaheader uids are updated,
-     *         if related dataset uids are changed, (default=true)
+     *  @param update_metaheader if true, metaheader UIDs are updated,
+     *         if related dataset UIDs are changed, (default=true)
      *  @param count returns holds the number of tags, that were affected
      *  @param ignore_missing_tags if true, tags that could not be found
      *                             while modifying (only_modify must be true)
      *                             are handled as non-errors
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition modifyAllTags(OFString tag_path,
                               const OFString &value,
@@ -131,13 +131,13 @@ public:
      *  @param ignore_missing_tags if true, tags that could not be found
      *                             while modifying (only_modify must be true)
      *                             are handled as non-errors
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition deleteTag(OFString tag_path,
                           const OFBool all_tags,
                           const OFBool ignore_missing_tags);
 
-    /** Deletes all private data from file, ie. all tags having
+    /** Deletes all private data from file,\ i.e. all tags having
      *  odd group numbers.
      *  @return EC_Normal, if deletion was successful; error code otherwise
      */
@@ -146,7 +146,7 @@ public:
     /** Inserts new Study, Series or SOP Instance UID. If SOP Instance
      *  UID is generated, the related tag in the metaheader is deleted, too
      *  so that the new UID is also applied there when saving to disk later.
-     *  @param uidkey [in] The Instance UID to insert (study, series or sop
+     *  @param uidKey [in] The Instance UID to insert (study, series or sop
      *                instance UID key permitted).
      *  @return EC_Normal, if insertion was successful, error otherwise
      */
@@ -157,12 +157,12 @@ public:
      *  @param file_name filename to save to
      *  @param opt_xfer transfer syntax to save to (EXS_Unknown: dont change)
      *  @param opt_enctype write with explicit or implicit length encoding
-     *  @param opt_glenc option to set group lenghth calculation mode
+     *  @param opt_glenc option to set group length calculation mode
      *  @param opt_padenc sets padding option
      *  @param opt_filepad pad file to a multiple of this options value
      *  @param opt_itempad pad item to a multiple of this options value
      *  @param opt_dataset if true:ony write only dataset, else write fileformat
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition saveFile(const char *file_name,
                          E_TransferSyntax opt_xfer = EXS_Unknown,
@@ -175,7 +175,7 @@ public:
 
     /** Saves current dataset back to file using original filename and original
      *  parameters like transfer syntax, padding etc.
-     *  @return returns EC_normal if everything is ok, else an error
+     *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition saveFile();
 
@@ -190,7 +190,7 @@ public:
 
     /** Returns the DcmFileFormat, that this MdfDatasetManager handles.
      *  You should use the returned object with care to avoid
-     *  sideeffects with other class methods, that modify this object, too.
+     *  side-effects with other class methods, that modify this object, too.
      *  @return returns the DcmFileFormat, this MdfDatasetManager manages and
      *          NULL, if no file is loaded
      */
@@ -219,7 +219,7 @@ protected:
 
     /** If key is the tag for SOPInstanceUID or SOPClassUID, then this function
      *  removes the related MediaStorage UIDs from the metaheader. The
-     *  metaheader is then updated automagically when the file is saved back to
+     *  metaheader is then updated "automagically" when the file is saved back to
      *  disk.
      *  @param key tag to examine
      */

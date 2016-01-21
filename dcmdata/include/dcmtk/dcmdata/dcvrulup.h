@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,10 +53,10 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLongOffset
      */
     virtual ~DcmUnsignedLongOffset();
 
-    /** assignment operator. 
-     *  @param the offset to be copied
+    /** assignment operator.
+     *  @param obj the offset to be copied
      */
-    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
+    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &obj);
 
     /** clone method
      *  @return deep copy of this object
@@ -65,7 +65,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLongOffset
     {
       return new DcmUnsignedLongOffset(*this);
     }
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -78,7 +78,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLongOffset
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);    
+    virtual OFCondition copyFrom(const DcmObject& rhs);
 
     /** get element type identifier
      *  @return type identifier of this class (internal type: EVR_up)

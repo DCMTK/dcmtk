@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,13 +29,13 @@
 
 
 /// magic string identifying DICOM files
-#define DCM_Magic                       "DICM"
+#define DCM_Magic "DICM"
 
 /// length of magic string identifying DICOM files
-#define DCM_MagicLen                    4
+#define DCM_MagicLen 4
 
 /// length of DICOM file preamble, in bytes
-#define DCM_PreambleLen                 128
+#define DCM_PreambleLen 128
 
 /// transfer syntax used for encoding DICOM meta-headers
 #define META_HEADER_DEFAULT_TRANSFERSYNTAX EXS_LittleEndianExplicit
@@ -59,7 +59,7 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
     DcmMetaInfo(const DcmMetaInfo &old);
 
     /** assignment operator.
-     *  @param the metainfo to be copied
+     *  @param obj the metainfo to be copied
      */
     DcmMetaInfo &operator=(const DcmMetaInfo &obj);
 

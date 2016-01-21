@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmTransferSyntaxMap
  *
  */
@@ -65,7 +65,7 @@ public:
 
   /** get transfer syntax list denoted by given key
    *  @param ts the name of the transfer syntax list
-   *  @param the transfer syntax list
+   *  @return the transfer syntax list
    */
   const DcmTransferSyntaxList* getTSList(const OFString& ts);
 
@@ -85,9 +85,7 @@ public:
    *  @param transferSyntaxUID transfer syntax UID
    *  @return EC_Normal if successful, an error code otherwise
    */
-  OFCondition add(
-    const char *key,
-    const char *transferSyntaxUID);
+  OFCondition add(const char *key, const char *transferSyntaxUID);
 
   /** checks if the key is known
    *  @param key key name, must not be NULL
