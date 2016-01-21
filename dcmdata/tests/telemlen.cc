@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,6 +111,7 @@ OFTEST(dcmdata_elementLength_pixelSequence)
 TEST_VR(EVR_OB)
 TEST_VR(EVR_OD)
 TEST_VR(EVR_OF)
+TEST_VR(EVR_OL)
 TEST_VR(EVR_OW)
 TEST_VR(EVR_SQ)
 TEST_VR(EVR_UC)

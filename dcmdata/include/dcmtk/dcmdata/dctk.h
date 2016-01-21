@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -94,6 +94,7 @@
 #include "dcmtk/dcmdata/dcvrfd.h"
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcvrod.h"
+#include "dcmtk/dcmdata/dcvrol.h"
 
 // misc supporting tools
 #include "dcmtk/dcmdata/cmdlnarg.h"

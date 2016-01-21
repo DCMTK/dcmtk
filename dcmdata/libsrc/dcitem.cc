@@ -54,6 +54,7 @@
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcvrof.h"
+#include "dcmtk/dcmdata/dcvrol.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrsl.h"
@@ -2293,15 +2294,18 @@ OFCondition newDicomElement(DcmElement *&newElement,
             break;
         case EVR_up : // for (0004,eeee) according to DICOM standard
         case EVR_UL :
-        {
-            // generate tag with VR from dictionary!
-            DcmTag ulupTag(tag.getXTag());
-            if (ulupTag.getEVR() == EVR_up)
-                newElement = new DcmUnsignedLongOffset(ulupTag, length);
-            else
-                newElement = new DcmUnsignedLong(tag, length);
-        }
-        break;
+            {
+                // generate tag with VR from dictionary!
+                DcmTag ulupTag(tag.getXTag());
+                if (ulupTag.getEVR() == EVR_up)
+                    newElement = new DcmUnsignedLongOffset(ulupTag, length);
+                else
+                    newElement = new DcmUnsignedLong(tag, length);
+            }
+            break;
+        case EVR_OL :
+            newElement = new DcmOtherLong(tag, length);
+            break;
         case EVR_FL :
             newElement = new DcmFloatingPointSingle(tag, length);
             break;
@@ -2856,6 +2860,7 @@ OFCondition DcmItem::findAndGetLongInt(const DcmTagKey& tagKey,
         switch (elem->ident())
         {
             case EVR_UL:
+            case EVR_OL:
             case EVR_up:
                 Uint32 ul;
                 status = elem->getUint32(ul, pos);
@@ -3331,6 +3336,9 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_OF:
             elem = new DcmOtherFloat(tag);
             break;
+        case EVR_OL:
+            elem = new DcmOtherLong(tag);
+            break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
             break;
@@ -3716,6 +3724,9 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
         case EVR_UL:
             elem = new DcmUnsignedLong(tag);
             break;
+        case EVR_OL:
+            elem = new DcmOtherLong(tag);
+            break;
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
@@ -4030,6 +4041,9 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
             break;
         case EVR_OF:
             elem = new DcmOtherFloat(tag);
+            break;
+        case EVR_OL:
+            elem = new DcmOtherLong(tag);
             break;
         case EVR_PN:
             elem = new DcmPersonName(tag);

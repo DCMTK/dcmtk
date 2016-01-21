@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,7 +63,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLong
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
-     *  components of the object, preferrably in the order declared in the
+     *  components of the object, preferably in the order declared in the
      *  object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.

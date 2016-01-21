@@ -50,6 +50,12 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherFloatVRGeneration; /*
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherDoubleVRGeneration; /* default OFTrue */
 
+/** Global flag to enable/disable the generation of VR=OL, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOtherLongVRGeneration; /* default OFTrue */
+
 /** Global flag to enable/disable the generation of VR=UR, which has been
  *  introduced after the first edition of the DICOM standard (1993).
  *  If disabled, the VR=UT (if enabled), VR=UN (if enabled) or alternatively
@@ -134,6 +140,9 @@ enum DcmEVR
 
     /// other float
     EVR_OF,
+
+    /// other long
+    EVR_OL,
 
     /// other word
     EVR_OW,

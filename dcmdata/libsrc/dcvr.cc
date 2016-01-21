@@ -36,6 +36,7 @@ OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherFloatVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherDoubleVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableOtherLongVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedCharactersVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
@@ -49,6 +50,7 @@ void dcmEnableGenerationOfNewVRs()
     dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
     dcmEnableOtherFloatVRGeneration.set(OFTrue);
     dcmEnableOtherDoubleVRGeneration.set(OFTrue);
+    dcmEnableOtherLongVRGeneration.set(OFTrue);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
     dcmEnableUnlimitedCharactersVRGeneration.set(OFTrue);
 }
@@ -59,6 +61,7 @@ void dcmDisableGenerationOfNewVRs()
     dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     dcmEnableOtherFloatVRGeneration.set(OFFalse);
     dcmEnableOtherDoubleVRGeneration.set(OFFalse);
+    dcmEnableOtherLongVRGeneration.set(OFFalse);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
     dcmEnableUnlimitedCharactersVRGeneration.set(OFFalse);
 }
@@ -101,6 +104,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_OB, "OB", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OD, "OD", sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OF, "OF", sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OL, "OL", sizeof(Uint32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OW, "OW", sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_PN, "PN", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_SH, "SH", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
@@ -300,6 +304,15 @@ DcmVR::getValidEVR() const
                     evr = EVR_UN; /* handle OD as if UN */
                 else
                     evr = EVR_OB; /* handle OD as if OB */
+            }
+            break;
+        case EVR_OL:
+            if (!dcmEnableOtherLongVRGeneration.get())
+            {
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle OL as if UN */
+                else
+                    evr = EVR_OB; /* handle OL as if OB */
             }
             break;
         case EVR_UR:

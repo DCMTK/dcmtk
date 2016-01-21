@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,8 +34,8 @@
  *        two characters.  If the VR can determined from the tag, this part
  *        of a line is optional.
  * Value: There are several rules for writing values:
- *        1. US, SS, SL, UL, FD, FL are written as decimal strings that can
- *           be read by scanf().
+ *        1. US, SS, SL, UL, FD, FL, OD, OF and OL are written as decimal
+ *           strings that can be read by scanf().
  *        2. AT is written as '(gggg,eeee)' with additional spaces stripped
  *           off automatically and gggg and eeee being decimal strings that
  *           can be read by scanf().
