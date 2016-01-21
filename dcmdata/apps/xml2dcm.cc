@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -300,9 +300,8 @@ static OFCondition putElementContent(xmlNodePtr current,
         } else {
             OFString dicomVal;
             /* convert character set from UTF-8 (for specific VRs only) */
-            if (((dcmEVR == EVR_PN) || (dcmEVR == EVR_SH) || (dcmEVR == EVR_LO) ||
-                 (dcmEVR == EVR_ST) || (dcmEVR == EVR_LT) || (dcmEVR == EVR_UT)) &&
-                (xmlStrlen(elemVal) > 0) && convertUtf8ToCharset(elemVal, dicomVal))
+            if (element->isAffectedBySpecificCharacterSet() &&
+               (xmlStrlen(elemVal) > 0) && convertUtf8ToCharset(elemVal, dicomVal))
             {
                 result = element->putOFStringArray(dicomVal);
             } else {
