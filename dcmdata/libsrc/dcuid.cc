@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -240,6 +240,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SurfaceScanMeshStorage,                              "SurfaceScanMeshStorage" },
     { UID_SurfaceScanPointCloudStorage,                        "SurfaceScanPointCloudStorage" },
     { UID_SurfaceSegmentationStorage,                          "SurfaceSegmentationStorage" },
+    { UID_TractographyResultsStorage,                          "TractographyResultsStorage" },
     { UID_TwelveLeadECGWaveformStorage,                        "TwelveLeadECGWaveformStorage" },
     { UID_UltrasoundImageStorage,                              "UltrasoundImageStorage" },
     { UID_UltrasoundMultiframeImageStorage,                    "UltrasoundMultiframeImageStorage" },
@@ -636,6 +637,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_SurfaceScanMeshStorage,
     UID_SurfaceScanPointCloudStorage,
     UID_SurfaceSegmentationStorage,
+    UID_TractographyResultsStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
     UID_UltrasoundMultiframeImageStorage,
@@ -820,6 +822,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_ParametricMapStorage,
 //  UID_RadiopharmaceuticalRadiationDoseSRStorage,
 //  UID_RTBrachyApplicationSetupDeliveryInstructionStorage,
+//  UID_TractographyResultsStorage,
 //  UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
 //  UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
     // retired
@@ -1150,6 +1153,7 @@ static const DcmModalityTable modalities[] = {
     { UID_SurfaceScanMeshStorage,                                  "SSm", 4096 },
     { UID_SurfaceScanPointCloudStorage,                            "SSp", 4096 },
     { UID_SurfaceSegmentationStorage,                              "SGs", 4096 },
+    { UID_TractographyResultsStorage,                              "TR",  4096 },
     { UID_TwelveLeadECGWaveformStorage,                            "TLE", 4096 },
     { UID_UltrasoundImageStorage,                                  "US",  512 * 512 },
     { UID_UltrasoundMultiframeImageStorage,                        "USm", 512 * 512 },

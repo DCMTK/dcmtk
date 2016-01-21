@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -433,6 +433,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_DeformableSpatialRegistrationStorage                   "1.2.840.10008.5.1.4.1.1.66.3"
 #define UID_SegmentationStorage                                    "1.2.840.10008.5.1.4.1.1.66.4"
 #define UID_SurfaceSegmentationStorage                             "1.2.840.10008.5.1.4.1.1.66.5"
+#define UID_TractographyResultsStorage                             "1.2.840.10008.5.1.4.1.1.66.6"
 #define UID_RealWorldValueMappingStorage                           "1.2.840.10008.5.1.4.1.1.67"
 #define UID_SurfaceScanMeshStorage                                 "1.2.840.10008.5.1.4.1.1.68.1"
 #define UID_SurfaceScanPointCloudStorage                           "1.2.840.10008.5.1.4.1.1.68.2"
