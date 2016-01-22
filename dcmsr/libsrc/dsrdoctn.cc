@@ -314,7 +314,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
     /* write optional template identification */
     if ((flags & XF_writeTemplateIdentification) && !(flags & XF_templateElementEnclosesItems))
     {
-        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+        if (hasTemplateIdentification())
         {
             if (flags & XF_templateIdentifierAsAttribute)
             {
@@ -384,7 +384,7 @@ void DSRDocumentTreeNode::writeXMLItemStart(STD_NAMESPACE ostream &stream,
     /* write optional template identification */
     if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
-        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+        if (hasTemplateIdentification())
         {
             stream << "<template resource=\"" << MappingResource << "\"";
             if (!MappingResourceUID.empty())
@@ -420,7 +420,7 @@ void DSRDocumentTreeNode::writeXMLItemEnd(STD_NAMESPACE ostream &stream,
     /* close optional template identification */
     if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
-        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+        if (hasTemplateIdentification())
             stream << "</template>" << OFendl;
     }
 }
@@ -782,7 +782,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     /* write ContentTemplateSequence (conditional) */
     if (result.good())
     {
-        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+        if (hasTemplateIdentification())
         {
             DcmItem *ditem = NULL;
             /* create sequence with a single item */
