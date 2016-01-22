@@ -181,7 +181,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
                                  const size_t flags = 0);
 
-    /** render current SR document tree in HTML/XHTML format
+    /** render current SR document tree in HTML/XHTML format.
+     *  Please note that included (non-expanded) sub-templates are not supported.
      ** @param  docStream     output stream to which the main HTML/XHTML document is written
      *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
      *  @param  nestingLevel  current nesting level.  Used to render section headings.

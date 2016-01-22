@@ -290,6 +290,7 @@ makeOFConditionConst(SR_EC_CodedEntryInStandardContextGroup,    OFM_dcmsr, 30, O
 makeOFConditionConst(SR_EC_CodedEntryIsExtensionOfContextGroup, OFM_dcmsr, 31, OF_ok,    "Coded Entry in Context Group (Extension)");
 makeOFConditionConst(SR_EC_ValueSetConstraintViolated,          OFM_dcmsr, 32, OF_error, "Value Set Constraint violated");
 makeOFConditionConst(SR_EC_InvalidTemplateStructure,            OFM_dcmsr, 33, OF_error, "Invalid Template Structure");
+makeOFConditionConst(SR_EC_CannotProcessIncludedTemplates,      OFM_dcmsr, 34, OF_error, "Cannot process Document Tree with included Templates");
 
 
 // NOTE:

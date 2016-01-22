@@ -124,22 +124,6 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
                                  const size_t flags) const;
 
-    /** render content of included template in HTML/XHTML format
-     ** @param  docStream     output stream to which the main HTML/XHTML document is written
-     *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
-     *  @param  nestingLevel  current nesting level.  Used to render section headings.
-     *  @param  annexNumber   reference to the variable where the current annex number is stored.
-     *                        Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
-     ** @return status, EC_Normal if successful (or included template is empty, so there
-     *          is nothing to do), an error code otherwise
-     */
-    virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
-                                   STD_NAMESPACE ostream &annexStream,
-                                   const size_t nestingLevel,
-                                   size_t &annexNumber,
-                                   const size_t flags) const;
-
     /** get reference to included template, i.e.\ the value of this content item
      ** @return reference to included template.  The managed pointer might be NULL.
      */
@@ -162,7 +146,7 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      ** @param  dataset            dummy parameter
      *  @param  constraintChecker  dummy parameter
      *  @param  flags              dummy parameter
-     ** @return always returns EC_IllegalCall, since this method should not be called
+     ** @return always returns SR_EC_CannotProcessIncludedTemplates
      */
     virtual OFCondition read(DcmItem &dataset,
                              const DSRIODConstraintChecker *constraintChecker,
@@ -173,12 +157,26 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      *  @param  cursor        dummy parameter
      *  @param  documentType  dummy parameter
      *  @param  flags         dummy parameter
-     ** @return always returns EC_IllegalCall, since this method should not be called
+     ** @return always returns SR_EC_CannotProcessIncludedTemplates
      */
     virtual OFCondition readXML(const DSRXMLDocument &doc,
                                 DSRXMLCursor cursor,
                                 const E_DocumentType documentType,
                                 const size_t flags);
+
+    /** render content item in HTML/XHTML format
+     ** @param  docStream     dummy parameter
+     *  @param  annexStream   dummy parameter
+     *  @param  nestingLevel  dummy parameter
+     *  @param  annexNumber   dummy parameter
+     *  @param  flags         dummy parameter
+     ** @return always returns SR_EC_CannotProcessIncludedTemplates
+     */
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
+                                   STD_NAMESPACE ostream &annexStream,
+                                   const size_t nestingLevel,
+                                   size_t &annexNumber,
+                                   const size_t flags) const;
 
     /** set the concept name
      ** @param  conceptName  dummy parameter

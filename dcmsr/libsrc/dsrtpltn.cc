@@ -122,6 +122,7 @@ OFCondition DSRIncludedTemplateTreeNode::printTemplate(STD_NAMESPACE ostream &st
 OFCondition DSRIncludedTemplateTreeNode::write(DcmItem &dataset,
                                                DcmStack *markedItems)
 {
+COUT << "WRITE TEMPL: " << getNodeID() << OFendl;
     OFCondition result = EC_Normal;
     /* write content of included template (if non-empty) */
     if (!ReferencedTemplate->isEmpty())
@@ -141,20 +142,6 @@ OFCondition DSRIncludedTemplateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRIncludedTemplateTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
-                                                    STD_NAMESPACE ostream &annexStream,
-                                                    const size_t nestingLevel,
-                                                    size_t &annexNumber,
-                                                    const size_t flags) const
-{
-    OFCondition result = EC_Normal;
-    /* render content of included template in HTML/XHTML format (if non-empty) */
-    if (!ReferencedTemplate->isEmpty())
-        result = ReferencedTemplate->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags);
-    return result;
-}
-
-
 OFCondition DSRIncludedTemplateTreeNode::setValue(const DSRSharedSubTemplate &referencedTemplate)
 {
     ReferencedTemplate = referencedTemplate;
@@ -169,8 +156,8 @@ OFCondition DSRIncludedTemplateTreeNode::read(DcmItem & /*dataset*/,
                                               const DSRIODConstraintChecker * /*constraintChecker*/,
                                               const size_t /*flags*/)
 {
-    /* invalid: no content to read */
-    return EC_IllegalCall;
+    /* invalid: cannot read document with included templates */
+    return SR_EC_CannotProcessIncludedTemplates;
 }
 
 
@@ -179,8 +166,19 @@ OFCondition DSRIncludedTemplateTreeNode::readXML(const DSRXMLDocument & /*doc*/,
                                                  const E_DocumentType /*documentType*/,
                                                  const size_t /*flags*/)
 {
-    /* invalid: no content to read */
-    return EC_IllegalCall;
+    /* invalid: cannot read document with included templates */
+    return SR_EC_CannotProcessIncludedTemplates;
+}
+
+
+OFCondition DSRIncludedTemplateTreeNode::renderHTML(STD_NAMESPACE ostream & /*docStream*/,
+                                                    STD_NAMESPACE ostream & /*annexStream*/,
+                                                    const size_t /*nestingLevel*/,
+                                                    size_t & /*annexNumber*/,
+                                                    const size_t /*flags*/) const
+{
+    /* invalid: cannot render document with included templates */
+    return SR_EC_CannotProcessIncludedTemplates;
 }
 
 

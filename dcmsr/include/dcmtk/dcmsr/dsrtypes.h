@@ -219,6 +219,9 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_ValueSetConstraintViolate
 /// error: the internally managed structure of a template class is invalid
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidTemplateStructure;
 
+/// error: cannot process document tree with included templates
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotProcessIncludedTemplates;
+
 //@}
 
 
