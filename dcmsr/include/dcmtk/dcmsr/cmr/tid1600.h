@@ -158,7 +158,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
   // --- set modality-specific content manually ---
 
     /** set the value of the descriptor 'Radionuclide' (TID 1607 - Row 1) for the current
-     *  (most recently added) PET image library entry to the given value.
+     *  (most recently added) PET image library entry.
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  radionuclide  coded entry to be set (from CID 4020 - PET Radionuclide)
@@ -169,7 +169,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                         const OFBool check = OFTrue);
 
     /** set the value of the descriptor 'Radiopharmaceutical Agent' (TID 1607 - Row 2)
-     *  for the current (most recently added) PET image library entry to the given value.
+     *  for the current (most recently added) PET image library entry.
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  agent  coded entry to be set (from CID 4021 - PET Radiopharmaceutical)
@@ -180,8 +180,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                     const OFBool check = OFTrue);
 
     /** set the value of the descriptor 'Radiopharmaceutical Start Date Time' (TID 1607 -
-     *  Row 4) for the current (most recently added) PET image library entry to the given
-     *  value.
+     *  Row 4) for the current (most recently added) PET image library entry.
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  dateTime  date/time value to be set (associated DICOM VR=DT)
@@ -192,8 +191,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                             const OFBool check = OFTrue);
 
     /** set the value of the descriptor 'Radiopharmaceutical Stop Date Time' (TID 1607 -
-     *  Row 5) for the current (most recently added) PET image library entry to the given
-     *  value.
+     *  Row 5) for the current (most recently added) PET image library entry.
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  dateTime  date/time value to be set (associated DICOM VR=DT)
@@ -204,7 +202,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                            const OFBool check = OFTrue);
 
     /** set the value of the descriptor 'Radiopharmaceutical Volume' (TID 1607 - Row 6)
-     *  for the current (most recently added) PET image library entry to the given value.
+     *  for the current (most recently added) PET image library entry.
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  volume  numeric measurement value to be set (measurement unit should be
@@ -216,8 +214,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                                                      const OFBool check = OFTrue);
 
     /** set the value of the descriptor 'Radiopharmaceutical Total Dose' (TID 1607 -
-     *  Row 7) for the current (most recently added) PET image library entry to the given
-     *  value.
+     *  Row 7) for the current (most recently added) PET image library entry.
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  totalDose  numeric measurement value to be set (measurement unit should
@@ -233,8 +230,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
 
     /** create the mandatory content item 'Image Library' (TID 1600 - Row 1) as the root
      *  node of this template.  It is expected that the tree is currently empty.
-     ** @return status, EC_Normal if successful, an error code otherwise (e.g.\ if the
-     *          tree is not empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition createImageLibrary();
 
