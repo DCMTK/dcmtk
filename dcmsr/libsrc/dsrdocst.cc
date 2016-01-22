@@ -252,28 +252,6 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRDocumentSubTree::write(DcmItem &dataset,
-                                      DcmStack *markedItems)
-{
-    OFCondition result = SR_EC_InvalidDocumentTree;
-    /* check whether document tree is valid */
-    if (isValid())
-    {
-        DSRDocumentTreeNode *node = getRoot();
-        if (node != NULL)
-        {
-            /* check and update by-reference relationships (if applicable) */
-            checkByReferenceRelationships(CM_updatePositionString);
-            /* update the document tree for output (if needed) */
-            updateTreeForOutput();
-            /* start writing from root node */
-            result = node->write(dataset, markedItems);
-        }
-    }
-    return result;
-}
-
-
 OFCondition DSRDocumentSubTree::writeXML(STD_NAMESPACE ostream &stream,
                                          const size_t flags)
 {

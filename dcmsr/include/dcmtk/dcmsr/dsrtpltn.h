@@ -104,17 +104,6 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
                                       const size_t flags,
                                       const OFString &linePrefix) const;
 
-    /** write content of included template to dataset
-     ** @param  dataset      DICOM dataset to which the template should be written
-     *  @param  markedItems  optional stack where pointers to all 'marked' content items
-     *                       (DICOM datasets/items) are added to during the write process.
-     *                       Can be used to digitally sign parts of the document tree.
-     ** @return status, EC_Normal if successful (or included template is empty, so there
-     *          is nothing to do), an error code otherwise
-     */
-    virtual OFCondition write(DcmItem &dataset,
-                              DcmStack *markedItems = NULL);
-
     /** write content of included template in XML format
      ** @param  stream  output stream to which the XML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
@@ -151,6 +140,14 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     virtual OFCondition read(DcmItem &dataset,
                              const DSRIODConstraintChecker *constraintChecker,
                              const size_t flags);
+
+    /** write content item to dataset
+     ** @param  dataset      dummy parameter
+     *  @param  markedItems  dummy parameter
+     ** @return always returns SR_EC_CannotProcessIncludedTemplates
+     */
+    virtual OFCondition write(DcmItem &dataset,
+                              DcmStack *markedItems = NULL);
 
     /** read general XML document tree node data
      ** @param  doc           dummy parameter

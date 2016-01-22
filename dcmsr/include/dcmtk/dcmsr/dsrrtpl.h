@@ -140,7 +140,6 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
     using DSRDocumentTree::isCursorValid;
     using DSRDocumentTree::getDocumentType;
     using DSRDocumentTree::print;
-    using DSRDocumentTree::write;
     using DSRDocumentTree::writeXML;
     using DSRDocumentTree::renderHTML;
     using DSRDocumentTree::countNodes;

@@ -119,18 +119,6 @@ OFCondition DSRIncludedTemplateTreeNode::printTemplate(STD_NAMESPACE ostream &st
 }
 
 
-OFCondition DSRIncludedTemplateTreeNode::write(DcmItem &dataset,
-                                               DcmStack *markedItems)
-{
-COUT << "WRITE TEMPL: " << getNodeID() << OFendl;
-    OFCondition result = EC_Normal;
-    /* write content of included template (if non-empty) */
-    if (!ReferencedTemplate->isEmpty())
-        result = ReferencedTemplate->write(dataset, markedItems);
-    return result;
-}
-
-
 OFCondition DSRIncludedTemplateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                                   const size_t flags) const
 {
@@ -157,6 +145,14 @@ OFCondition DSRIncludedTemplateTreeNode::read(DcmItem & /*dataset*/,
                                               const size_t /*flags*/)
 {
     /* invalid: cannot read document with included templates */
+    return SR_EC_CannotProcessIncludedTemplates;
+}
+
+
+OFCondition DSRIncludedTemplateTreeNode::write(DcmItem & /*dataset*/,
+                                               DcmStack * /*markedItems*/)
+{
+    /* invalid: cannot write document with included templates */
     return SR_EC_CannotProcessIncludedTemplates;
 }
 

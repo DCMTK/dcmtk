@@ -136,6 +136,35 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
 }
 
 
+OFCondition DSRDocumentTree::write(DcmItem &dataset,
+                                   DcmStack *markedItems)
+{
+    OFCondition result = SR_EC_InvalidDocumentTree;
+    /* check whether document tree is valid */
+    if (isValid())
+    {
+        /* check whether document tree contains any included templates */
+        if (isExpandedDocumentTree())
+        {
+            DSRDocumentTreeNode *node = getRoot();
+            if (node != NULL)
+            {
+                /* check and update by-reference relationships (if applicable) */
+                checkByReferenceRelationships(CM_updatePositionString);
+                /* update the document tree for output (if needed) */
+                updateTreeForOutput();
+                /* start writing from root node */
+                result = node->write(dataset, markedItems);
+            }
+        } else {
+            /* tbd: cannot write document with included templates */
+            result = SR_EC_CannotProcessIncludedTemplates;
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                                      DSRXMLCursor cursor,
                                      const size_t flags)

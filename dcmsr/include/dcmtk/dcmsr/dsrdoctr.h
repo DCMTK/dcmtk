@@ -104,6 +104,18 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
                              const E_DocumentType documentType,
                              const size_t flags = 0);
 
+    /** write current SR document tree to DICOM dataset.
+     *  Please note that included (non-expanded) sub-templates are not supported.
+     ** @param  dataset      reference to DICOM dataset where the current tree should be
+     *                       written to.  The 'dataset' is not cleared before writing to it!
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *                       Can be used to digitally sign parts of the document tree.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmItem &dataset,
+                              DcmStack *markedItems = NULL);
+
     /** read XML document tree
      ** @param  doc     document containing the XML file content
      *  @param  cursor  cursor pointing to the starting node

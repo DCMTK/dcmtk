@@ -635,7 +635,7 @@ OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /*dataset*/,
 
 OFCondition DSRDocumentTreeNode::writeContentItem(DcmItem & /*dataset*/) const
 {
-    /* no content to insert */
+    /* no content to write */
     return EC_Normal;
 }
 
@@ -771,7 +771,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
         addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures), "1-n", "3", "SOPCommonModule");
         DCMSR_WARN("Writing possibly incorrect digital signature - same as read from dataset");
     }
-    /* add to mark stack */
+    /* add to marked items stack */
     if (MarkFlag && (markedItems != NULL))
         markedItems->push(&dataset);
     /* write ObservationDateTime (conditional) */

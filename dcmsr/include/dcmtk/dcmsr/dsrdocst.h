@@ -162,17 +162,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                               const size_t flags = 0,
                               const OFString &linePrefix = "");
 
-    /** write current SR document tree to DICOM dataset
-     ** @param  dataset      reference to DICOM dataset where the current tree should be
-     *                       written to.  The 'dataset' is not cleared before writing to it!
-     *  @param  markedItems  optional stack where pointers to all 'marked' content items
-     *                       (DICOM datasets/items) are added to during the write process.
-     *                       Can be used to digitally sign parts of the document tree.
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition write(DcmItem &dataset,
-                              DcmStack *markedItems = NULL);
-
     /** write current SR document tree in XML format
      ** @param  stream  output stream to which the XML document is written
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
