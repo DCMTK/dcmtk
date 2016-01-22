@@ -281,16 +281,18 @@ OFCondition DSRDocumentSubTree::writeXML(STD_NAMESPACE ostream &stream,
     /* check whether document tree is valid */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = getRoot();
+        DSRDocumentTreeNodeCursor cursor(getRoot());
         /* start writing from root node */
-        if (node != NULL)
+        if (cursor.isValid())
         {
             /* check by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_resetReferenceTargetFlag);
             /* update the document tree for output (if needed) */
             updateTreeForOutput();
-            /* start writing from root node */
-            result = node->writeXML(stream, flags);
+            /* write current node (and its siblings) */
+            do {
+                result = cursor.getNode()->writeXML(stream, flags);
+            } while (result.good() && cursor.gotoNext());
         }
     }
     return result;
@@ -822,7 +824,7 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
                                         /* if so, replace them with the "default" relationship type */
                                         if ((curNode != NULL) && (curNode->getRelationshipType() == RT_unknown))
                                             curNode->setRelationshipType(defaultRelType);
-                                    } while (cursor.gotoNext() > 0);
+                                    } while (cursor.gotoNext());
                                     /* replace the current node (and its children) with the cloned subtree */
                                     if (tree->replaceNode(subTree->getRoot()) > 0)
                                     {
