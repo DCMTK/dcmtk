@@ -126,6 +126,17 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
                                 DSRXMLCursor cursor,
                                 const size_t flags);
 
+    /** render current SR document tree in HTML/XHTML format.
+     *  Please note that included (non-expanded) sub-templates are not supported.
+     ** @param  docStream    output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
+     *  @param  flags        optional flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
+                                   STD_NAMESPACE ostream &annexStream,
+                                   const size_t flags = 0);
+
     /** get document type
      ** @return current document type (might be DSRTypes::DT_invalid)
      */

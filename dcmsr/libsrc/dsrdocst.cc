@@ -277,51 +277,6 @@ OFCondition DSRDocumentSubTree::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRDocumentSubTree::renderHTML(STD_NAMESPACE ostream &docStream,
-                                           STD_NAMESPACE ostream &annexStream,
-                                           const size_t flags)
-{
-    size_t annexNumber = 1;
-    /* call the function doing the real work */
-    return renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags);
-}
-
-
-OFCondition DSRDocumentSubTree::renderHTML(STD_NAMESPACE ostream &docStream,
-                                           STD_NAMESPACE ostream &annexStream,
-                                           const size_t nestingLevel,
-                                           size_t &annexNumber,
-                                           const size_t flags)
-{
-    OFCondition result = SR_EC_InvalidDocumentTree;
-    /* check whether document tree is valid */
-    if (isValid())
-    {
-        /* check whether document tree contains any included templates */
-        if (isExpandedDocumentTree())
-        {
-            DSRDocumentTreeNodeCursor cursor(getRoot());
-            /* start rendering from root node */
-            if (cursor.isValid())
-            {
-                /* check by-reference relationships (if applicable) */
-                checkByReferenceRelationships(CM_resetReferenceTargetFlag);
-                /* update the document tree for output (if needed) */
-                updateTreeForOutput();
-                /* render current node (and its siblings) */
-                do {
-                    result = cursor.getNode()->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_internalUseOnly);
-                } while (result.good() && cursor.gotoNext());
-            }
-        } else {
-            /* tbd: cannot render document with included templates */
-            result = SR_EC_CannotProcessIncludedTemplates;
-        }
-    }
-    return result;
-}
-
-
 DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
 {
     CurrentContentItem.setTreeNode(getNode());

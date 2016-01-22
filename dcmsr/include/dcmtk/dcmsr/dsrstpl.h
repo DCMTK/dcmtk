@@ -131,7 +131,6 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
     using DSRDocumentSubTree::isCursorValid;
     using DSRDocumentSubTree::print;
     using DSRDocumentSubTree::writeXML;
-    using DSRDocumentSubTree::renderHTML;
     using DSRDocumentSubTree::countNodes;
     using DSRDocumentSubTree::gotoNamedNode;
     using DSRDocumentSubTree::gotoNextNamedNode;

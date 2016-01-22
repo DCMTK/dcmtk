@@ -231,6 +231,37 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
 }
 
 
+OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
+                                        STD_NAMESPACE ostream &annexStream,
+                                        const size_t flags)
+{
+    OFCondition result = SR_EC_InvalidDocumentTree;
+    /* check whether document tree is valid */
+    if (isValid())
+    {
+        /* check whether document tree contains any included templates */
+        if (isExpandedDocumentTree())
+        {
+            DSRDocumentTreeNode *node = getRoot();
+            if (node != NULL)
+            {
+                size_t annexNumber = 1;
+                /* check by-reference relationships (if applicable) */
+                checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+                /* update the document tree for output (if needed) */
+                updateTreeForOutput();
+                /* start rendering from root node */
+                result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly);
+            }
+        } else {
+            /* tbd: cannot render document with included templates */
+            result = SR_EC_CannotProcessIncludedTemplates;
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType,
                                                 const OFBool deleteTree)
 {
