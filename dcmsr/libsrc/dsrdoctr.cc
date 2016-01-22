@@ -202,16 +202,6 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
-                                        STD_NAMESPACE ostream &annexStream,
-                                        const size_t flags)
-{
-    size_t annexNumber = 1;
-    /* call the function doing the real work */
-    return DSRDocumentSubTree::renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags);
-}
-
-
 OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType,
                                                 const OFBool deleteTree)
 {
