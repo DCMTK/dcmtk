@@ -119,7 +119,7 @@ OFTEST(dcmiod_tcielabutil)
     IODCIELabUtil::rgb2Xyz(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::xyz2Lab(o1, o2, o3, r1, r2, r3);
     IODCIELabUtil::lab2DicomLab(r1, r2, r3, o1, o2, o3);
-    IODCIELabUtil::dicomlab2RGB(o1, o2, o3, r1, r2, r3);
+    IODCIELabUtil::dicomLab2RGB(o1, o2, o3, r1, r2, r3);
 
     OFCHECK( fabs(i1 - o1) < 0.001 );
     OFCHECK( fabs(i2 - o2) < 0.001 );

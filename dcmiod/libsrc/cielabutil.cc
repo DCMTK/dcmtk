@@ -30,7 +30,7 @@ const double IODCIELabUtil::D65_WHITEPOINT_Y = 1.0;
 const double IODCIELabUtil::D65_WHITEPOINT_Z = 1.088754;
 
 
-void IODCIELabUtil::dicomlab2RGB(double& R, double& G, double& B, double LDicom, double aDicom, double bDicom)
+void IODCIELabUtil::dicomLab2RGB(double& R, double& G, double& B, double LDicom, double aDicom, double bDicom)
 {
   double L, a, b;
   dicomlab2Lab(L, a, b, LDicom, aDicom, bDicom);

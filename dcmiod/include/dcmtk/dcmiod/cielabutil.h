@@ -57,7 +57,7 @@ public:
    *  @param  aDicom Input DICOM CIELab "a" component (red<->green) with 0 <= a <= 65535
    *  @param  bDicom Input DIOCM CIELab "b" component (blue<->yellow) with 0 <= a <= 65535
    */
-  static void dicomlab2RGB(double& R, double& G, double& B, double LDicom, double aDicom, double bDicom);
+  static void dicomLab2RGB(double& R, double& G, double& B, double LDicom, double aDicom, double bDicom);
 
   /** Convert sRGB color representation to CIELab color representation as found
    *  in DICOM. See DICOM part 3 for details.
