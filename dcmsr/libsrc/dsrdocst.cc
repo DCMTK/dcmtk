@@ -309,16 +309,18 @@ OFCondition DSRDocumentSubTree::renderHTML(STD_NAMESPACE ostream &docStream,
     /* check whether document tree is valid */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = getRoot();
+        DSRDocumentTreeNodeCursor cursor(getRoot());
         /* start rendering from root node */
-        if (node != NULL)
+        if (cursor.isValid())
         {
             /* check by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_resetReferenceTargetFlag);
             /* update the document tree for output (if needed) */
             updateTreeForOutput();
-            /* start rendering from root node */
-            result = node->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_internalUseOnly);
+            /* render current node (and its siblings) */
+            do {
+                result = cursor.getNode()->renderHTML(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_internalUseOnly);
+            } while (result.good() && cursor.gotoNext());
         }
     }
     return result;
