@@ -211,7 +211,7 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                 {
                     /* print node ID (might be useful for debugging purposes) */
                     if (flags & PF_printNodeID)
-                        stream << "id:" << getNodeID() << " ";
+                        stream << "id:" << node->getNodeID() << " ";
                     /* print content of template node */
                     node->print(stream, flags);
                     stream << OFendl;
