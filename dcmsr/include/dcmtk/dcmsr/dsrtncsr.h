@@ -240,6 +240,12 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     size_t getLevel() const;
 
+    /** get position counter on the current level.
+     *  The counter starts with 1 for the first child node.
+     ** @return position counter on the current level if valid, 0 otherwise
+     */
+    size_t getPosition() const;
+
     /** get position string of the current node.
      *  Specifies the position of each node by means of a dot separated string of
      *  position counters.  The first figure of this string specifies the position
@@ -793,6 +799,16 @@ size_t DSRTreeNodeCursor<T>::getLevel() const
     if (NodeCursor != NULL)
         level = NodeCursorStack.size() + 1;
     return level;
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::getPosition() const
+{
+    size_t position = 0;
+    if (NodeCursor != NULL)
+        position = Position;
+    return position;
 }
 
 
