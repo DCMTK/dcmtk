@@ -206,7 +206,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *  If the content item already exists, its value is overwritten.  Otherwise, a new
      *  content item is added to the end of the list of image library entry descriptors.
      ** @param  volume  numeric measurement value to be set (measurement unit should be
-     *                  CODE_UCUM_Cm3 or a coded entry that is identical to this)
+     *                  CODE_UCUM_cm3 or a coded entry that is identical to this)
      *  @param  check   if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
