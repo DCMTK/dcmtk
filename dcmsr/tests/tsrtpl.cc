@@ -116,7 +116,7 @@ OFTEST(dcmsr_rootTemplate)
     OFCHECK(templ.isRootTemplate());
     OFCHECK(!templ.isExtensible());
     /* replace the document tree with the content of the template */
-    OFCHECK(doc.setTreeFromRootTemplate(templ).good());
+    OFCHECK(doc.setTreeFromRootTemplate(templ, OFFalse /*expandTree*/).good());
     /* and perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_BasicTextSR);
     OFCHECK_EQUAL(doc.getTree().countNodes(), 1);
@@ -178,7 +178,7 @@ OFTEST(dcmsr_subTemplate_2)
     OFCHECK_EQUAL(templ1.countNodes(), 2);
     OFCHECK_EQUAL(templ2.countNodes(), 1);
     /* replace the document tree with the content of the template */
-    OFCHECK(doc.setTreeFromRootTemplate(templ1).good());
+    OFCHECK(doc.setTreeFromRootTemplate(templ1, OFFalse /*expandTree*/).good());
     /* and perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_BasicTextSR);
     OFCHECK_EQUAL(doc.getTree().countNodes(), 2);

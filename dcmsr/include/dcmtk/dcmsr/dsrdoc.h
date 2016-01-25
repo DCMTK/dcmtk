@@ -221,21 +221,22 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** set document tree from root template.
      *  Replace the currently stored document tree with the one from the given root template.
-     *  This is mainly a convenience function, so the additional comments on the above setTree()
-     *  method also apply.  However, this method also allows for expanding the document tree.
+     *  By default, this method expands the tree, i.e. instances of DSRIncludedTemplateTreeNode
+     *  that were added to the tree with DSRDocumentSubTree::includeTemplate() are replaced by
+     *  their content, i.e. by the internally managed subtree.
+     *  Please note that the additional comments on the above setTree() method also apply.
      ** @param  rootTemplate  template specifying the document tree to be set (content will be
      *                        copied).  This parameter cannot be "const" because of
      *                        DSRRootTemplate::getTree(), which is called internally and which
      *                        modifies the tree.
-     *  @param  expandTree    optional flag that activates the expanding of the document tree
-     *                        before setting it.  Expanding means that all included templates,
-     *                        i.e. instances of DSRIncludedTemplateTreeNode that were added to
-     *                        the tree with DSRDocumentSubTree::includeTemplate(), are replaced
-     *                        by their content, i.e. by the internally managed subtree.
+     *  @param  expandTree    optional flag that allows for disabling the expanding of the
+     *                        document tree before setting it.  Please note that various
+     *                        output methods like write() or renderHTML() do not yet work on
+     *                        such trees.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setTreeFromRootTemplate(DSRRootTemplate &rootTemplate,
-                                                const OFBool expandTree = OFFalse);
+                                                const OFBool expandTree = OFTrue);
 
     /** get specific character set type.
      *  If the type is unknown, the original DICOM defined term can be retrieved
