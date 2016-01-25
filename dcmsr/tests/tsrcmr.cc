@@ -175,7 +175,7 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     /* add person and device observers */
     OFCHECK(obsContext.addPersonObserver("Doe^John", "", CMR_CID7452::Physician, CMR_CID7453::Referring).good());
     OFCHECK(obsContext.addDeviceObserver("1.2.4.5.6.7.8.9.0").good());
-    OFCHECK(obsContext.addDeviceObserver("007", "Some Name", "Some Manufacturer", "Some Model Name", "", "", procRoles, OFFalse /*check*/).good());
+    OFCHECK(obsContext.addDeviceObserver("007", "Some Name", "Some Manufacturer", "Some Model Name", "", "", procRoles, "AETITLE", OFFalse /*check*/).good());
     OFCHECK(obsContext.addPersonObserver("Doe^Jane", "Some Organization").good());
     /* check some additions that should fail */
     OFCHECK(obsContext.addPersonObserver("").bad());
@@ -183,7 +183,7 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     OFCHECK(obsContext.addDeviceObserver("01").bad());
     /* check whether all nodes are present */
     OFCHECK(obsContext.isValid());
-    OFCHECK_EQUAL(obsContext.countNodes(), 16);
+    OFCHECK_EQUAL(obsContext.countNodes(), 17);
     /* check whether annotations are as expected */
     OFCHECK(obsContext.gotoAnnotatedNode("TID 1004 - Row 1") > 0);
     OFCHECK(obsContext.gotoNextAnnotatedNode("TID 1004 - Row 1") > 0);

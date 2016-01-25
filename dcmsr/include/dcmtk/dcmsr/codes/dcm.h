@@ -1,12 +1,13 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
  *  Generated automatically from DICOM PS 3.16-2015c
  *  File created on 2015-08-23 14:58:58 by J. Riesmeier
+ *  Last modified on 2016-01-25 by Riesmeier
  *
  */
 
@@ -3203,5 +3204,10 @@
 #define CODE_DCM_IEC61217GantryContinuousRollAngle                         DSRBasicCodedEntry("126809", "DCM", "IEC61217 Gantry Continuous Roll Angle")
 #define CODE_DCM_IEC61217GantryContinuousPitchAngle                        DSRBasicCodedEntry("126810", "DCM", "IEC61217 Gantry Continuous Pitch Angle")
 #define CODE_DCM_IEC61217GantryContinuousYawAngle                          DSRBasicCodedEntry("126811", "DCM", "IEC61217 Gantry Continuous Yaw Angle")
+
+// recently approved correction items
+
+#define CODE_DCM_StationAETitle                                            DSRBasicCodedEntry("110119", "DCM", "Station AE Title")   // added from CP-1516
+
 
 #endif

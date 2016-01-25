@@ -107,6 +107,7 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
                                                           const OFString &serialNumber,
                                                           const OFString &physicalLocation,
                                                           const DeviceParticipatingRolesList &procedureRoles,
+                                                          const OFString &stationAEtitle,
                                                           const OFBool check)
 {
     OFCondition result = EC_MemoryExhausted;
@@ -170,6 +171,13 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
                 CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 7"));
                 ++iter;
             }
+        }
+        /* TID 1004 (Device Observer Identifying Attributes) Row 8 */
+        if (!stationAEtitle.empty())
+        {
+            CHECK_RESULT(subTree->addContentItem(RT_hasObsContext, VT_Text, CODE_DCM_StationAETitle, check));
+            CHECK_RESULT(subTree->getCurrentContentItem().setStringValue(stationAEtitle, check));
+            CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1004 - Row 8"));
         }
         /* if everything was OK, insert new subtree into the template */
         if (result.good())
