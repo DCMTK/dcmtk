@@ -111,6 +111,7 @@ dsracqcc.o: dsracqcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrbascc.o: dsrbascc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -226,6 +227,7 @@ dsrbascc.o: dsrbascc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrc3dcc.o: dsrc3dcc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -341,6 +343,7 @@ dsrc3dcc.o: dsrc3dcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrchecc.o: dsrchecc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -456,6 +459,7 @@ dsrchecc.o: dsrchecc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrcitem.o: dsrcitem.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -570,6 +574,7 @@ dsrcitem.o: dsrcitem.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrdoctn.h \
  ../include/dcmtk/dcmsr/dsrtree.h ../include/dcmtk/dcmsr/dsrtncsr.h \
@@ -705,6 +710,7 @@ dsrcodtn.o: dsrcodtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcodtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -825,6 +831,7 @@ dsrcodvl.o: dsrcodvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
@@ -942,6 +949,7 @@ dsrcolcc.o: dsrcolcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrcomcc.o: dsrcomcc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -1057,6 +1065,7 @@ dsrcomcc.o: dsrcomcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrcomtn.o: dsrcomtn.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -1171,6 +1180,7 @@ dsrcomtn.o: dsrcomtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcomtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -1292,6 +1302,7 @@ dsrcomvl.o: dsrcomvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h
@@ -1407,6 +1418,7 @@ dsrcontn.o: dsrcontn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcontn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -1527,6 +1539,7 @@ dsrcsidl.o: dsrcsidl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrxmld.h \
  ../include/dcmtk/dcmsr/dsrxmlc.h
@@ -1642,6 +1655,7 @@ dsrctpl.o: dsrctpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrdoctn.h \
  ../include/dcmtk/dcmsr/dsrtree.h ../include/dcmtk/dcmsr/dsrtncsr.h \
@@ -1771,6 +1785,7 @@ dsrctxgr.o: dsrctxgr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h
@@ -1886,6 +1901,7 @@ dsrdattn.o: dsrdattn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrdattn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -2009,6 +2025,7 @@ dsrdoc.o: dsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -2144,6 +2161,7 @@ dsrdocst.o: dsrdocst.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -2277,6 +2295,7 @@ dsrdoctn.o: dsrdoctn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -2398,6 +2417,7 @@ dsrdoctr.o: dsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -2529,6 +2549,7 @@ dsrdtitn.o: dsrdtitn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrdtitn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -2651,6 +2672,7 @@ dsrenhcc.o: dsrenhcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrimgfr.o: dsrimgfr.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2765,6 +2787,7 @@ dsrimgfr.o: dsrimgfr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrimgse.o: dsrimgse.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2879,6 +2902,7 @@ dsrimgse.o: dsrimgse.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrimgtn.o: dsrimgtn.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2993,6 +3017,7 @@ dsrimgtn.o: dsrimgtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrimgtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -3116,6 +3141,7 @@ dsrimgvl.o: dsrimgvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrtlist.h \
@@ -3256,6 +3282,7 @@ dsrimpcc.o: dsrimpcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsriodcc.o: dsriodcc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -3370,6 +3397,7 @@ dsriodcc.o: dsriodcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrkeycc.o: dsrkeycc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -3485,6 +3513,7 @@ dsrkeycc.o: dsrkeycc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrmaccc.o: dsrmaccc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -3600,6 +3629,7 @@ dsrmaccc.o: dsrmaccc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrmamcc.o: dsrmamcc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -3715,6 +3745,7 @@ dsrmamcc.o: dsrmamcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrnumtn.o: dsrnumtn.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -3829,6 +3860,7 @@ dsrnumtn.o: dsrnumtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrnumtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -3950,6 +3982,7 @@ dsrnumvl.o: dsrnumvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrnumvl.h \
  ../include/dcmtk/dcmsr/dsrcodvl.h \
@@ -4067,6 +4100,7 @@ dsrpnmtn.o: dsrpnmtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrpnmtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -4189,6 +4223,7 @@ dsrprocc.o: dsrprocc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrrefin.o: dsrrefin.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -4303,6 +4338,7 @@ dsrrefin.o: dsrrefin.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
@@ -4419,6 +4455,7 @@ dsrreftn.o: dsrreftn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrreftn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -4540,6 +4577,7 @@ dsrrrdcc.o: dsrrrdcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrrtpl.o: dsrrtpl.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -4656,6 +4694,7 @@ dsrrtpl.o: dsrrtpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -4786,6 +4825,7 @@ dsrsc3gr.o: dsrsc3gr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrsc3tn.o: dsrsc3tn.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -4900,6 +4940,7 @@ dsrsc3tn.o: dsrsc3tn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrsc3tn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -5022,6 +5063,7 @@ dsrsc3vl.o: dsrsc3vl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrsc3gr.h \
  ../include/dcmtk/dcmsr/dsrtlist.h ../include/dcmtk/dcmsr/dsrxmld.h \
@@ -5138,6 +5180,7 @@ dsrscogr.o: dsrscogr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrscotn.o: dsrscotn.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -5252,6 +5295,7 @@ dsrscotn.o: dsrscotn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrscotn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -5374,6 +5418,7 @@ dsrscovl.o: dsrscovl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrscogr.h \
  ../include/dcmtk/dcmsr/dsrtlist.h ../include/dcmtk/dcmsr/dsrxmld.h \
@@ -5491,6 +5536,7 @@ dsrsoprf.o: dsrsoprf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
@@ -5608,6 +5654,7 @@ dsrspecc.o: dsrspecc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
 dsrstpl.o: dsrstpl.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -5724,6 +5771,7 @@ dsrstpl.o: dsrstpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -5852,6 +5900,7 @@ dsrstrvl.o: dsrstrvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrxmld.h \
  ../include/dcmtk/dcmsr/dsrxmlc.h
@@ -5967,6 +6016,7 @@ dsrtcodt.o: dsrtcodt.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrtcosp.o: dsrtcosp.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -6081,6 +6131,7 @@ dsrtcosp.o: dsrtcosp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrtcotn.o: dsrtcotn.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -6195,6 +6246,7 @@ dsrtcotn.o: dsrtcotn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtcotn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -6318,6 +6370,7 @@ dsrtcoto.o: dsrtcoto.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h
 dsrtcovl.o: dsrtcovl.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -6432,6 +6485,7 @@ dsrtcovl.o: dsrtcovl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtcodt.h \
  ../include/dcmtk/dcmsr/dsrtlist.h ../include/dcmtk/dcmsr/dsrtcosp.h \
@@ -6549,6 +6603,7 @@ dsrtextn.o: dsrtextn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtextn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -6670,6 +6725,7 @@ dsrtimtn.o: dsrtimtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtimtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -6791,6 +6847,7 @@ dsrtpltn.o: dsrtpltn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtpltn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -6922,6 +6979,7 @@ dsrtree.o: dsrtree.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -7038,6 +7096,7 @@ dsrtypes.o: dsrtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtextn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -7181,6 +7240,7 @@ dsruidtn.o: dsruidtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsruidtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -7302,6 +7362,7 @@ dsrwavch.o: dsrwavch.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrtlist.h \
  ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h
@@ -7417,6 +7478,7 @@ dsrwavtn.o: dsrwavtn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrwavtn.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
@@ -7539,6 +7601,7 @@ dsrwavvl.o: dsrwavvl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrcomvl.h \
  ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrtlist.h \
@@ -7665,6 +7728,7 @@ dsrxmld.o: dsrxmld.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h ../include/dcmtk/dcmsr/dsrxmlc.h
 dsrxrdcc.o: dsrxrdcc.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -7780,5 +7844,6 @@ dsrxrdcc.o: dsrxrdcc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmsr/dsdefine.h
