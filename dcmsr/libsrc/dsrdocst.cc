@@ -197,6 +197,7 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     DSRDocumentTreeNodeCursor parentCursor(cursor);
                     if (parentCursor.gotoParent() > 0)
                     {
+                        /* tbd: position string is still not correct in some cases */
                         newPrefix += parentCursor.getPosition(tmpString);
                         newPrefix += '.';
                     }
@@ -992,7 +993,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                             if (mode & CM_updatePositionString)
                             {
                                 OFString refPosString;
-                                /* update position string */
+                                /* update position string (tbd: does not yet work correctly with "included templates" */
                                 if (refNodeID > 0)
                                     refCursor.getPosition(refPosString);
                                 byRefNode->updateReference(refPosString);
