@@ -267,10 +267,16 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(measurements.setSourceSeriesForSegmentation("6.7.8.9.0").good());
     OFCHECK(measurements.setFinding(DSRBasicCodedEntry("0815", "99TEST", "Some test code")).good());
     OFCHECK(!measurements.isValid());
+    /* test two ways of adding a referenced segment */
     DSRImageReferenceValue segment(UID_SegmentationStorage, "1.0.2.0.3.0");
     segment.getSegmentList().addItem(1);
+    DcmDataset dataset;
+    OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_SurfaceSegmentationStorage).good());
+    OFCHECK(dataset.putAndInsertString(DCM_SOPInstanceUID, "99.0").good());
+    OFCHECK(dataset.putAndInsertString(DCM_TrackingID, "blabla").good());
     OFCHECK(measurements.setReferencedSegment(segment).good());
     OFCHECK(measurements.setReferencedSegment(DSRImageReferenceValue(UID_SegmentationStorage, "1.0")).bad());
+    OFCHECK(measurements.setReferencedSegment(dataset, 1).good());
     OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
     OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_CTImageStorage, "2.0")).bad());
     OFCHECK(measurements.setFindingSite(CODE_SRT_AorticArch).good());

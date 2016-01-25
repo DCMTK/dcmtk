@@ -23,6 +23,8 @@
 #include "dcmtk/dcmsr/codes/srt.h"
 #include "dcmtk/dcmsr/codes/umls.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+
 
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call
@@ -270,6 +272,33 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setReferencedSegm
         }
     } else
         result = EC_IllegalParameter;
+    return result;
+}
+
+
+template<typename T1, typename T2, typename T3, typename T4>
+OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setReferencedSegment(DcmItem &dataset,
+                                                                                    const Uint16 segmentNumber,
+                                                                                    const OFBool copyTracking,
+                                                                                    const OFBool check)
+{
+    DSRImageReferenceValue segment;
+    /* first, create the referenced image/segment object */
+    OFCondition result = segment.setReference(dataset, check);
+    segment.getSegmentList().addItem(segmentNumber);
+    /* then, add/set the corresponding content item */
+    CHECK_RESULT(setReferencedSegment(segment, check));
+    /* need to copy tracking information? (introduced with CP-1496) */
+    if (copyTracking)
+    {
+        OFString trackingID, trackingUID;
+        /* get tracking ID from dataset (if present) and add/set content item */
+        if (getStringValueFromDataset(dataset, DCM_TrackingID, trackingID).good())
+            CHECK_RESULT(setTrackingIdentifier(trackingID, check));
+        /* get tracking UID from dataset (if present) and add/set content item */
+        if (getStringValueFromDataset(dataset, DCM_TrackingUID, trackingUID).good())
+            CHECK_RESULT(setTrackingUniqueIdentifier(trackingUID, check));
+    }
     return result;
 }
 

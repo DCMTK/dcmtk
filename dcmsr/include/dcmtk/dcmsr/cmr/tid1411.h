@@ -195,6 +195,23 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     OFCondition setReferencedSegment(const DSRImageReferenceValue &segment,
                                      const OFBool check = OFTrue);
 
+    /** set the value of the 'Referenced Segment' content item (TID 1411 - Row 7).
+     *  A measurement group is created automatically (if none is present).  If the
+     *  content item already exists, its value is overwritten.
+     ** @param  dataset        DICOM dataset from which the values for the referenced
+     *                         segment (e.g. SOP class UID and SOP instance UID) should
+     *                         be retrieved
+     *  @param  segmentNumber  number of the segment that should be referenced
+     *  @param  copyTracking   flag indicating whether to copy tracking information
+     *                         (tracking ID and UID) from the 'dataset', if available
+     *  @param  check          if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setReferencedSegment(DcmItem &dataset,
+                                     const Uint16 segmentNumber,
+                                     const OFBool copyTracking = OFTrue,
+                                     const OFBool check = OFTrue);
+
     /** set the value of the 'Source series for segmentation' content item (TID 1411 -
      *  Row 12).  A measurement group is created automatically (if none is present).
      *  If the content item already exists, its value is overwritten.
