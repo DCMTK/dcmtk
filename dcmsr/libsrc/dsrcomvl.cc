@@ -238,6 +238,13 @@ OFCondition DSRCompositeReferenceValue::renderHTML(STD_NAMESPACE ostream &docStr
 }
 
 
+const OFString DSRCompositeReferenceValue::getSOPClassName(const OFString &defaultName) const
+{
+    /* lookup name associated with the SOP class UID */
+    return SOPClassUID.empty() ? "" : dcmFindNameOfUID(SOPClassUID.c_str(), defaultName.c_str());
+}
+
+
 OFCondition DSRCompositeReferenceValue::getValue(DSRCompositeReferenceValue &referenceValue) const
 {
     referenceValue = *this;

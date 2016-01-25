@@ -176,6 +176,13 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
         return SOPClassUID;
     }
 
+    /** get name associated with the SOP class UID (if any)
+     ** @param  defaultName  string value that is returned if the SOP class UID is unknown
+     ** @return name associated with the current SOP class UID (might be empty, e.g. in case
+     *          the SOP class UID is empty or 'defaultName' is an empty string)
+     */
+    const OFString getSOPClassName(const OFString &defaultName = "unknown SOP Class UID") const;
+
     /** get SOP instance UID
      ** @return current SOP instance UID (might be invalid or an empty string)
      */

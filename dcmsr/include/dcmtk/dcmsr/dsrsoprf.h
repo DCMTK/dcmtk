@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2015, OFFIS e.V.
+ *  Copyright (C) 2002-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -233,6 +233,15 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      ** @return reference to the resulting string (might be empty)
      */
     const OFString &getSOPClassUID(OFString &stringValue) const;
+
+    /** get name associated with the SOP class UID of the currently selected entry
+     ** @param  stringValue  reference to string variable in which the result is stored
+     *  @param  defaultName  string value that is returned if the SOP class UID is unknown
+     ** @return reference to the resulting string (might be empty even if 'defaultName' is
+     *          non-empty, e.g. in case no entry is currently selected)
+     */
+    const OFString &getSOPClassName(OFString &stringValue,
+                                    const OFString &defaultName = "unknown SOP Class UID") const;
 
     /** get the retrieve application entity title of the currently selected entry (optional).
      *  The resulting string may contain multiple values separated by a backslash ("\").

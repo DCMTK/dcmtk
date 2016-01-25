@@ -1319,6 +1319,21 @@ const OFString &DSRSOPInstanceReferenceList::getSOPClassUID(OFString &stringValu
 }
 
 
+const OFString &DSRSOPInstanceReferenceList::getSOPClassName(OFString &stringValue,
+                                                             const OFString &defaultName) const
+{
+    OFString sopClassUID;
+    /* retrieve SOP class UID of current entry */
+    if (!getSOPClassUID(sopClassUID).empty())
+    {
+        /* lookup name associated with the SOP class UID */
+        stringValue = dcmFindNameOfUID(sopClassUID.c_str(), defaultName.c_str());
+    } else
+        stringValue.clear();
+    return stringValue;
+}
+
+
 const OFString &DSRSOPInstanceReferenceList::getRetrieveAETitle(OFString &stringValue) const
 {
     /* check whether current series is valid */
