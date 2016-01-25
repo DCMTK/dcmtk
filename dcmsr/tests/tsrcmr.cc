@@ -247,7 +247,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     /* some further checks */
     OFCHECK(report.hasImagingMeasurements());
     OFCHECK(report.hasVolumetricROIMeasurements());
-    OFCHECK(report.hasQualitativeEvaluations());
+    OFCHECK(!report.hasQualitativeEvaluations());
     OFCHECK(!report.hasImagingMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(!report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(!report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));

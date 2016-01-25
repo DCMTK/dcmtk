@@ -75,7 +75,7 @@ OFBool TID1500_MeasurementReport::isValid() const
     /* check whether base class is valid and all required content items are present */
     return DSRRootTemplate::isValid() &&
         Language->isValid() && ObservationContext->isValid() && ImageLibrary->isValid() &&
-        hasProcedureReported() && hasImagingMeasurements() && hasQualitativeEvaluations();
+        hasProcedureReported() && (hasImagingMeasurements() || hasQualitativeEvaluations());
 }
 
 
@@ -269,11 +269,13 @@ OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEn
     /* make sure that the parameters are non-empty */
     if (conceptName.isComplete() && codeValue.isComplete())
     {
+        /* create content item at TID 1500 (Measurement Report) Row 12 if not existing */
+        result = createQualitativeEvaluations();
         /* go to content item at TID 1500 (Measurement Report) Row 12 */
         if (gotoEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
         {
             /* TID 1500 (Measurement Report) Row 13 */
-            STORE_RESULT(addChildContentItem(RT_contains, VT_Code, conceptName, check));
+            CHECK_RESULT(addChildContentItem(RT_contains, VT_Code, conceptName, check));
             CHECK_RESULT(getCurrentContentItem().setCodeValue(codeValue, check));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 13"));
         } else
@@ -291,11 +293,13 @@ OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEn
     /* make sure that the parameters are non-empty */
     if (conceptName.isComplete() && !stringValue.empty())
     {
+        /* create content item at TID 1500 (Measurement Report) Row 12 if not existing */
+        result = createQualitativeEvaluations();
         /* go to content item at TID 1500 (Measurement Report) Row 12 */
         if (gotoEntryFromNodeList(this, QUALITATIVE_EVALUATIONS) > 0)
         {
             /* TID 1500 (Measurement Report) Row 14 */
-            STORE_RESULT(addChildContentItem(RT_contains, VT_Text, conceptName, check));
+            CHECK_RESULT(addChildContentItem(RT_contains, VT_Text, conceptName, check));
             CHECK_RESULT(getCurrentContentItem().setStringValue(stringValue, check));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 14"));
         } else
@@ -340,14 +344,30 @@ OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_Mea
             CHECK_RESULT(includeTemplate(VolumetricROIMeasurements, AM_belowCurrent, RT_contains));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 8"));
             GOOD_RESULT(storeEntryInNodeList(LAST_VOLUMETRIC_ROI_MEASUREMENTS, getNodeID()));
-            /* TID 1500 (Measurement Report) Row 12 */
-            CHECK_RESULT(addContentItem(RT_contains, VT_Container, CODE_UMLS_QualitativeEvaluations));
-            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 12"));
-            GOOD_RESULT(storeEntryInNodeList(QUALITATIVE_EVALUATIONS, getNodeID()));
             /* if anything went wrong, clear the report */
             BAD_RESULT(clear());
         } else
             result = SR_EC_InvalidTemplateStructure;
+    }
+    return result;
+}
+
+
+OFCondition TID1500_MeasurementReport::createQualitativeEvaluations()
+{
+    OFCondition result = EC_Normal;
+    /* check whether content item at TID 1500 (Measurement Report) Row 12 already exists */
+    if (!hasQualitativeEvaluations())
+    {
+        /* if not, go to the preceding content item, which always exists */
+        if (gotoEntryFromNodeList(this, IMAGING_MEASUREMENTS) > 0)
+        {
+            /* ... and add TID 1500 (Measurement Report) Row 12 */
+            STORE_RESULT(addContentItem(RT_contains, VT_Container, CODE_UMLS_QualitativeEvaluations));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 12"));
+            GOOD_RESULT(storeEntryInNodeList(QUALITATIVE_EVALUATIONS, getNodeID()));
+        } else
+            result = CMR_EC_NoMeasurementReport;
     }
     return result;
 }

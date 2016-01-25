@@ -90,8 +90,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** check whether the current internal state is valid.
      *  That means, check whether the base class is valid, the mandatory included
-     *  templates TID 1204, 1001 and 1600 are valid, and whether hasProcedureReported(),
-     *  hasImagingMeasurements() as well as hasQualitativeEvaluations() return true.
+     *  templates TID 1204, 1001 and 1600 are valid, and whether hasProcedureReported()
+     *  as well as hasImagingMeasurements() or hasQualitativeEvaluations() return true.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -130,10 +130,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     OFBool hasImagingMeasurements(const OFBool checkChildren = OFFalse) const;
 
     /** check whether there is an 'Qualitative Evaluations' content item (TID 1500 -
-     *  Row 12) in this measurement report.  Initially, this conditional content item is
-     *  created by the constructor of this class.  After clear() has been called or no
-     *  document title is passed to the constructor, it can be created again by calling
-     *  createNewMeasurementReport().
+     *  Row 12) in this measurement report
      ** @param  checkChildren  optional flag indicating whether to also check for any
      *                         children, i.e.\ whether the respective content item has
      *                         child nodes.  By default, the presence of the higher-level
@@ -188,7 +185,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** create a new measurement report.
      *  Clear the report and create the mandatory (and other supported) content items of
-     *  this template, i.e.\ TID 1500 - Row 1 to 6, 8 and 12.
+     *  this template, i.e.\ TID 1500 - Row 1 to 6 and 8.
      ** @param  title  document title to be set (from CID 7021 - Measurement Report
      *                 Document Titles), i.e.\ the concept name of the root node
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -227,7 +224,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     OFCondition addVolumetricROIMeasurements();
 
     /** add a qualitative evaluation related to the entire subject of the report as a
-     *  coded entry (TID 1500 - Row 13)
+     *  coded entry (TID 1500 - Row 13).  The higher-level CONTAINER (Row 12) is created
+     *  automatically (if none is present).
      ** @param  conceptName  coded entry to be set as the concept name
      *  @param  codeValue    coded entry to be set as the value of the new content item
      *  @param  check        if enabled, check values for validity before setting them
@@ -238,7 +236,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
                                          const OFBool check = OFTrue);
 
     /** add a qualitative evaluation related to the entire subject of the report in
-     *  text form (TID 1500 - Row 14)
+     *  text form (TID 1500 - Row 14).  The higher-level CONTAINER (Row 12) is created
+     *  automatically (if none is present).
      ** @param  conceptName  coded entry to be set as the concept name
      *  @param  stringValue  character string to be set as the value of the content item
      *  @param  check        if enabled, check values for validity before setting them
@@ -252,12 +251,18 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
   protected:
 
     /** create the mandatory (and other supported) content items of this template,
-     *  i.e.\ TID 1500 - Row 1 to 6, 8 and 12.  It is expected that the tree is currently
+     *  i.e.\ TID 1500 - Row 1 to 6 and 8.  It is expected that the tree is currently
      *  empty.
      ** @param  title  coded entry that specifies the document title to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title);
+
+    /** create the 'Qualitative Evaluations' content item (TID 1500 - Row 12) if not
+     *  existing yet
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition createQualitativeEvaluations();
 
 
   private:
