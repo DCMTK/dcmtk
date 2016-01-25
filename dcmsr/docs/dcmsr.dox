@@ -23,6 +23,7 @@ Here are some further classes that are useful when implementing SR templates:
 Currently, the following SR templates are implemented (see notes for details):
 \li \b TID1001_ObservationContext
 \li \b TID1204_LanguageOfContentItemAndDescendants
+\li \b TID1411_VolumetricROIMeasurements
 \li \b TID1500_MeasurementReport
 \li \b TID1600_ImageLibrary
 
@@ -58,7 +59,8 @@ if (status.good())
 \endcode
 
 The following example shows how to create a DICOM Structured Report and save
-it to a file (see \ref src_mkreport "mkreport" source file for details):
+it to a file (further details can be found in the \ref src_mkreport "mkreport"
+source file):
 
 \code
 DSRDocument document;
@@ -66,7 +68,7 @@ document.setPatientName("Doe^John");
 /* ... */
 document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 document.getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue(/* some code */));
-document.getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent);
+document.getTree().addChildContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code, CODE_DCM_ObserverType);
 /* ... */
 DcmFileFormat fileformat;
 OFCondition status = document.write(*fileformat.getDataset())
@@ -100,6 +102,27 @@ if (imagePtr != NULL)
   imagePtr->getFrameList().addItem(5);
 }
 /* ... */
+\endcode
+
+In addition, there are specific DSRDocumentTree::addContentItem() and
+DSRDocumentTree::addChildContentItem() methods that expect a pointer to a newly
+created DSRDocumentTreeNode instance.
+
+The final example shows how to deal with SR templates, e.g. when creating a
+DICOM Structured Report that is based on TID 1500 (Measurement Report):
+
+\code
+TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
+report.setLanguage(CID5000_Languages::English);
+report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization");
+/* ... */
+DSRDocument document;
+document.setPatientName("Last Name^First Name");
+/* ... */
+if (document.setTreeFromRootTemplate(report).good())
+  document.print(cout, DSRTypes::PF_printTemplateIdentification);
+else
+  cerr << "Error: cannot set template content as document tree" << endl;
 \endcode
 
 */
