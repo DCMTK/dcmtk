@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-01-20 22:48:29
+**   Date: 2016-01-25 17:53:36
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -518,6 +518,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x0054, 0x0008, 0x0054,
       EVR_AE, "RetrieveAETitle", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0055, 0x0008, 0x0055,
+      EVR_AE, "StationAETitle", 1, 1, "CP_1516",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0056, 0x0008, 0x0056,
@@ -20702,6 +20706,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "UsedSegmentsSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0062, 0x0020, 0x0062, 0x0020,
+      EVR_UT, "TrackingID", 1, 1, "CP_1496",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0062, 0x0021, 0x0062, 0x0021,
+      EVR_UI, "TrackingUID", 1, 1, "CP_1496",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0064, 0x0002, 0x0064, 0x0002,
       EVR_SQ, "DeformableRegistrationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20923,19 +20935,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0066, 0x0040, 0x0066, 0x0040,
-      EVR_UL, "LongPrimitivePointIndexList", 1, -1, "DICOM",
+      EVR_OL, "LongPrimitivePointIndexList", 1, 1, "CP_1499",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0066, 0x0041, 0x0066, 0x0041,
-      EVR_UL, "LongTrianglePointIndexList", 3, -1, "DICOM",
+      EVR_OL, "LongTrianglePointIndexList", 1, 1, "CP_1499",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0066, 0x0042, 0x0066, 0x0042,
-      EVR_UL, "LongEdgePointIndexList", 2, -1, "DICOM",
+      EVR_OL, "LongEdgePointIndexList", 1, 1, "CP_1499",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0066, 0x0043, 0x0066, 0x0043,
-      EVR_UL, "LongVertexPointIndexList", 1, -1, "DICOM",
+      EVR_OL, "LongVertexPointIndexList", 1, 1, "CP_1499",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0066, 0x0101, 0x0066, 0x0101,
@@ -26184,6 +26196,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "PatientSupportAccessoryCode", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0355, 0x300a, 0x0355,
+      EVR_LO, "TrayAccessoryCode", 1, 1, "CP_1504",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0356, 0x300a, 0x0356,
       EVR_FL, "FixationLightAzimuthalAngle", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -26394,6 +26410,54 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x0453, 0x300a, 0x0453,
       EVR_SQ, "DeviceMotionParameterCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0501, 0x300a, 0x0501,
+      EVR_FL, "DistalDepthFraction", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0502, 0x300a, 0x0502,
+      EVR_FL, "DistalDepth", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0503, 0x300a, 0x0503,
+      EVR_FL, "NominalRangeModulatioFractions", 2, 2, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0504, 0x300a, 0x0504,
+      EVR_FL, "NominalRangeModulatedRegionDepths", 2, 2, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0505, 0x300a, 0x0505,
+      EVR_SQ, "DepthDoseParametersSequence", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0506, 0x300a, 0x0506,
+      EVR_SQ, "DeliveredDepthDoseParametersSequence", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0507, 0x300a, 0x0507,
+      EVR_FL, "DeliveredDistalDepthFraction", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0508, 0x300a, 0x0508,
+      EVR_FL, "DeliveredDistalDepth", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0509, 0x300a, 0x0509,
+      EVR_FL, "DeliveredNominalRangeModulationFractions", 2, 2, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0510, 0x300a, 0x0510,
+      EVR_FL, "DeliveredNominalRangeModulatedRegionDepths", 2, 2, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0511, 0x300a, 0x0511,
+      EVR_CS, "DeliveredReferenceDoseDefinition", 1, 1, "CP_1460",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0512, 0x300a, 0x0512,
+      EVR_CS, "ReferenceDoseDefinition", 1, 1, "CP_1460",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0002, 0x300c, 0x0002,

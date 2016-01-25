@@ -23,12 +23,13 @@
 #
 # Generated automatically from DICOM PS 3.6-2015c and PS 3.7-2015c.
 # File created on 2015-07-05 12:23:01 by J. Riesmeier on thinkpad.
-# File updated manually on 2016-01-20 by J. Riesmeier.
+# File updated manually on 2016-01-25 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
 # - Supplement 156, 181, 184
-# - CP 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1461, 1478 (WC), 1487
+# - CP 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1460, 1461, 1478 (WC), 1487,
+#      1496, 1499, 1504, 1516
 # "WC" means "Draft Final Text - Waiting for Codes"
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -3658,7 +3659,8 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1461, 1478 (WC), 1487
+# Correction Items 1364, 1431, 1432, 1441, 1454, 1457, 1458, 1460, 1461, 1478 (WC),
+#                  1487, 1496, 1499, 1504, 1516
 #
 (0008,119A)	SQ	OtherFailuresSequence	1	CP_1364
 (300A,0090)	CS	BeamDoseType	1	CP_1431
@@ -3676,6 +3678,18 @@
 (0010,0028)	US	SubjectRelativePositionInImage	3	CP_1457
 (0040,9213)	FD	DoubleFloatRealWorldValueLastValueMapped	1	CP_1458
 (0040,9214)	FD	DoubleFloatRealWorldValueFirstValueMapped	1	CP_1458
+(300A,0501)	FL	DistalDepthFraction	1	CP_1460
+(300A,0502)	FL	DistalDepth	1	CP_1460
+(300A,0503)	FL	NominalRangeModulatioFractions	2	CP_1460
+(300A,0504)	FL	NominalRangeModulatedRegionDepths	2	CP_1460
+(300A,0505)	SQ	DepthDoseParametersSequence	1	CP_1460
+(300A,0506)	SQ	DeliveredDepthDoseParametersSequence	1	CP_1460
+(300A,0507)	FL	DeliveredDistalDepthFraction	1	CP_1460
+(300A,0508)	FL	DeliveredDistalDepth	1	CP_1460
+(300A,0509)	FL	DeliveredNominalRangeModulationFractions	2	CP_1460
+(300A,0510)	FL	DeliveredNominalRangeModulatedRegionDepths	2	CP_1460
+(300A,0511)	CS	DeliveredReferenceDoseDefinition	1	CP_1460
+(300A,0512)	CS	ReferenceDoseDefinition	1	CP_1460
 (0018,1320)	FL	B1rms	1	CP_1461
 (0010,0212)	UC	StrainDescription	1	CP_1478
 (0010,0213)	LO	StrainNomenclature	1	CP_1478
@@ -3686,6 +3700,14 @@
 (0010,0218)	UT	StrainAdditionalInformation	1	CP_1478
 (0010,0219)	SQ	StrainCodeSequence	1	CP_1478
 (0070,030B)	FD	FrameOfReferenceToDisplayedCoordinateSystemTransformationMatrix	16	CP_1487
+(0062,0020)	UT	TrackingID	1	CP_1496
+(0062,0021)	UI	TrackingUID	1	CP_1496
+(0066,0040)	OL	LongPrimitivePointIndexList	1	CP_1499
+(0066,0041)	OL	LongTrianglePointIndexList	1	CP_1499
+(0066,0042)	OL	LongEdgePointIndexList	1	CP_1499
+(0066,0043)	OL	LongVertexPointIndexList	1	CP_1499
+(300A,0355)	LO	TrayAccessoryCode	1	CP_1504
+(0008,0055)	AE	StationAETitle	1	CP_1516
 #
 #---------------------------------------------------------------------------
 #

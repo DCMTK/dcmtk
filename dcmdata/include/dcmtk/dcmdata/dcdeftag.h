@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-01-20 22:48:20
+**   Date: 2016-01-25 17:53:33
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-01-20 22:48:20"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-01-25 17:53:33"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4003
+** Number of entries: 4019
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -136,6 +136,7 @@
 #define DCM_QueryRetrieveLevel                   DcmTagKey(0x0008, 0x0052)
 #define DCM_QueryRetrieveView                    DcmTagKey(0x0008, 0x0053)
 #define DCM_RetrieveAETitle                      DcmTagKey(0x0008, 0x0054)
+#define DCM_StationAETitle                       DcmTagKey(0x0008, 0x0055)
 #define DCM_InstanceAvailability                 DcmTagKey(0x0008, 0x0056)
 #define DCM_FailedSOPInstanceUIDList             DcmTagKey(0x0008, 0x0058)
 #define DCM_Modality                             DcmTagKey(0x0008, 0x0060)
@@ -2595,6 +2596,8 @@
 #define DCM_SegmentationFractionalType           DcmTagKey(0x0062, 0x0010)
 #define DCM_SegmentedPropertyTypeModifierCodeSequence DcmTagKey(0x0062, 0x0011)
 #define DCM_UsedSegmentsSequence                 DcmTagKey(0x0062, 0x0012)
+#define DCM_TrackingID                           DcmTagKey(0x0062, 0x0020)
+#define DCM_TrackingUID                          DcmTagKey(0x0062, 0x0021)
 #define DCM_DeformableRegistrationSequence       DcmTagKey(0x0064, 0x0002)
 #define DCM_SourceFrameOfReferenceUID            DcmTagKey(0x0064, 0x0003)
 #define DCM_DeformableRegistrationGridSequence   DcmTagKey(0x0064, 0x0005)
@@ -3798,6 +3801,7 @@
 #define DCM_PatientSupportType                   DcmTagKey(0x300a, 0x0350)
 #define DCM_PatientSupportID                     DcmTagKey(0x300a, 0x0352)
 #define DCM_PatientSupportAccessoryCode          DcmTagKey(0x300a, 0x0354)
+#define DCM_TrayAccessoryCode                    DcmTagKey(0x300a, 0x0355)
 #define DCM_FixationLightAzimuthalAngle          DcmTagKey(0x300a, 0x0356)
 #define DCM_FixationLightPolarAngle              DcmTagKey(0x300a, 0x0358)
 #define DCM_MetersetRate                         DcmTagKey(0x300a, 0x035a)
@@ -3851,6 +3855,18 @@
 #define DCM_DeviceMotionExecutionMode            DcmTagKey(0x300a, 0x0451)
 #define DCM_DeviceMotionObservationMode          DcmTagKey(0x300a, 0x0452)
 #define DCM_DeviceMotionParameterCodeSequence    DcmTagKey(0x300a, 0x0453)
+#define DCM_DistalDepthFraction                  DcmTagKey(0x300a, 0x0501)
+#define DCM_DistalDepth                          DcmTagKey(0x300a, 0x0502)
+#define DCM_NominalRangeModulatioFractions       DcmTagKey(0x300a, 0x0503)
+#define DCM_NominalRangeModulatedRegionDepths    DcmTagKey(0x300a, 0x0504)
+#define DCM_DepthDoseParametersSequence          DcmTagKey(0x300a, 0x0505)
+#define DCM_DeliveredDepthDoseParametersSequence DcmTagKey(0x300a, 0x0506)
+#define DCM_DeliveredDistalDepthFraction         DcmTagKey(0x300a, 0x0507)
+#define DCM_DeliveredDistalDepth                 DcmTagKey(0x300a, 0x0508)
+#define DCM_DeliveredNominalRangeModulationFractions DcmTagKey(0x300a, 0x0509)
+#define DCM_DeliveredNominalRangeModulatedRegionDepths DcmTagKey(0x300a, 0x0510)
+#define DCM_DeliveredReferenceDoseDefinition     DcmTagKey(0x300a, 0x0511)
+#define DCM_ReferenceDoseDefinition              DcmTagKey(0x300a, 0x0512)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)
 #define DCM_ReferencedBeamNumber                 DcmTagKey(0x300c, 0x0006)
