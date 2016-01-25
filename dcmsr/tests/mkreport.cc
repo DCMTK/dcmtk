@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -531,7 +531,7 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_03", OFFIS_CODING_SCHEME_DESIGNATOR, "Treatment"));
     doc->getTree().getCurrentContentItem().setStringValue("The plan of treatment is as follows: 4500 rad, 15 treatment sessions, using 100 kV radiation.\nThe reason for treatment, expected acute reaction, and remote possibility of complication was discussed with this patient at some length, and he accepted therapy as outlined.");
 
-    // add additional information on UCUM coding scheme (UID from CP 372)
+    // add additional information on UCUM coding scheme (UID from CP-372)
     doc->getCodingSchemeIdentification().addItem("UCUM");
     doc->getCodingSchemeIdentification().setCodingSchemeUID("2.16.840.1.113883.6.8");
     doc->getCodingSchemeIdentification().setCodingSchemeName("Unified Code for Units of Measure");
