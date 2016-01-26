@@ -198,13 +198,14 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     /** set the value of the 'Referenced Segment' content item (TID 1411 - Row 7).
      *  A measurement group is created automatically (if none is present).  If the
      *  content item already exists, its value is overwritten.
-     *  If 'copyTracking' is enabled and the 'dataset' contains tracking information,
-     *  setTrackingIdentifier() and/or setTrackingUniqueIdentifier() are also called
-     *  by this method.
+     *  If 'copyTracking' is enabled and the 'dataset' contains appropriate tracking
+     *  information for the given 'segmentNumber', setTrackingIdentifier() and
+     *  setTrackingUniqueIdentifier() are also called by this method.
      ** @param  dataset        DICOM dataset from which the values for the referenced
      *                         segment (e.g. SOP class UID and SOP instance UID) should
      *                         be retrieved
-     *  @param  segmentNumber  number of the segment that should be referenced
+     *  @param  segmentNumber  number of the segment that should be referenced.  The
+     *                         value is only checked when 'copyTracking' is enabled.
      *  @param  copyTracking   flag indicating whether to copy tracking information
      *                         (tracking ID and UID) from the 'dataset', if available
      *  @param  check          if enabled, check values for validity before setting them

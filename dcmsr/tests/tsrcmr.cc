@@ -271,9 +271,16 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     DSRImageReferenceValue segment(UID_SegmentationStorage, "1.0.2.0.3.0");
     segment.getSegmentList().addItem(1);
     DcmDataset dataset;
+    DcmItem *ditem = NULL;
     OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_SurfaceSegmentationStorage).good());
     OFCHECK(dataset.putAndInsertString(DCM_SOPInstanceUID, "99.0").good());
-    OFCHECK(dataset.putAndInsertString(DCM_TrackingID, "blabla").good());
+    OFCHECK(dataset.findOrCreateSequenceItem(DCM_SegmentSequence, ditem).good());
+    if (ditem != NULL)
+    {
+        OFCHECK(ditem->putAndInsertUint16(DCM_SegmentNumber, 1).good());
+        OFCHECK(ditem->putAndInsertString(DCM_TrackingID, "blabla").good());
+        OFCHECK(ditem->putAndInsertString(DCM_TrackingUID, "1.2.3").good());
+    }
     OFCHECK(measurements.setReferencedSegment(segment).good());
     OFCHECK(measurements.setReferencedSegment(DSRImageReferenceValue(UID_SegmentationStorage, "1.0")).bad());
     OFCHECK(measurements.setReferencedSegment(dataset, 1).good());
@@ -335,7 +342,8 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
         report.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
-                           DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printIncludedTemplateNode);
+                           DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printIncludedTemplateNode |
+                           DSRTypes::PF_printLongSOPClassName);
     }
 }
 
@@ -435,7 +443,8 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
         library.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
-                            DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode | DSRTypes::PF_printAnnotation);
+                            DSRTypes::PF_printNodeID | DSRTypes::PF_indicateEnhancedEncodingMode | DSRTypes::PF_printAnnotation |
+                            DSRTypes::PF_printLongSOPClassName);
     }
 
     /* empty template is not valid */

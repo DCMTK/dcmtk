@@ -289,15 +289,56 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setReferencedSegm
     /* then, add/set the corresponding content item */
     CHECK_RESULT(setReferencedSegment(segment, check));
     /* need to copy tracking information? (introduced with CP-1496) */
-    if (copyTracking)
+    if (copyTracking && result.good())
     {
-        OFString trackingID, trackingUID;
-        /* get tracking ID from dataset (if present) and add/set content item */
-        if (getStringValueFromDataset(dataset, DCM_TrackingID, trackingID).good())
-            CHECK_RESULT(setTrackingIdentifier(trackingID, check));
-        /* get tracking UID from dataset (if present) and add/set content item */
-        if (getStringValueFromDataset(dataset, DCM_TrackingUID, trackingUID).good())
-            CHECK_RESULT(setTrackingUniqueIdentifier(trackingUID, check));
+        DcmSequenceOfItems *dseq = NULL;
+        /* get SegmentSequence (should always be present) */
+        result = dataset.findAndGetSequence(DCM_SegmentSequence, dseq);
+        checkElementValue(dseq, DCM_SegmentSequence, "1-n", "1", result, "SegmentDescriptionMacro");
+        if (result.good())
+        {
+            DcmObject *dobj = NULL;
+            OFBool segmentFound = OFFalse;
+            /* iterate over all items in this sequence */
+            while (((dobj = dseq->nextInContainer(dobj)) != NULL) && !segmentFound)
+            {
+                Uint16 number = 0;
+                DcmItem *ditem = OFstatic_cast(DcmItem *, dobj);
+                /* search for given segment number */
+                if (ditem->findAndGetUint16(DCM_SegmentNumber, number).good())
+                {
+                    if (segmentNumber == number)
+                    {
+                        OFString trackingID, trackingUID;
+                        /* get tracking ID and UID from current item (if present) and add/set content item */
+                        getAndCheckStringValueFromDataset(*ditem, DCM_TrackingID, trackingID, "1", "1C", "SegmentSequence");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_TrackingUID, trackingUID, "1", "1C", "SegmentSequence");
+                        if (!trackingID.empty() && !trackingUID.empty())
+                        {
+                            CHECK_RESULT(setTrackingIdentifier(trackingID, check));
+                            CHECK_RESULT(setTrackingUniqueIdentifier(trackingUID, check));
+                        }
+                        else if (trackingID.empty() != trackingUID.empty())
+                        {
+                            /* report a violation of the type 1C conditions */
+                            DCMSR_CMR_WARN("Either Tracking ID or Tracking UID is absent/empty in referenced segmentation object");
+                        }
+                        /* given segment number found */
+                        segmentFound = OFTrue;
+                    }
+                }
+            }
+            /* report a warning if referenced segment could not be found */
+            if (!segmentFound)
+            {
+                DCMSR_CMR_WARN("Cannot copy tracking information for '" << CODE_DCM_ReferencedSegment.CodeMeaning << "' content item (TID 1411 - Row 7) ... segment not found");
+                DCMSR_CMR_DEBUG("Cannot find given Segment Number (" << segmentNumber << ") in Segment Sequence of referenced segmentation object");
+            }
+        } else {
+            /* report a warning if referenced segment could not be found */
+            DCMSR_CMR_WARN("Cannot copy tracking information for '" << CODE_DCM_ReferencedSegment.CodeMeaning << "' content item (TID 1411 - Row 7) ... segment not found");
+        }
+        /* tbc: return with an error in case the tracking information could not be copied? */
     }
     return result;
 }
