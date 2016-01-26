@@ -1504,6 +1504,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 case AP_GeneralPurposeBDMPEG2MPatHL:
                 case AP_GeneralPurposeBDMPEG4HPatLV41:
                 case AP_GeneralPurposeBDMPEG4HPatLV41BD:
+                case AP_GeneralPurposeBDMPEG4HPatLV42_2D:
+                case AP_GeneralPurposeBDMPEG4HPatLV42_3D:
+                case AP_GeneralPurposeBDMPEG4StereoHPatLV42:
                 case AP_USBandFlashJPEG:
                 case AP_USBandFlashJPEG2000:
                 case AP_GeneralPurposeMIME:
@@ -1518,6 +1521,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         expectedTransferSyntax = UID_MPEG4HighProfileLevel4_1TransferSyntax;
                     else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD)
                         expectedTransferSyntax = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+                    else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_2D)
+                        expectedTransferSyntax = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+                    else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_3D)
+                        expectedTransferSyntax = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+                    else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4StereoHPatLV42)
+                        expectedTransferSyntax = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
                     /* is it an image ? */
                     for (int i = 0; i < numberOfDcmImageSOPClassUIDs && !found; i++)
                         found = compare(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
@@ -1809,6 +1818,45 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     oss << expXferName << " expected but " << xferName << " found: " << filename
                                         << OFStringStream_ends;
                                 }
+                                OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                                if (TransferSyntaxCheck)
+                                {
+                                    DCMDATA_ERROR(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    DCMDATA_WARN(tmpString);
+                                OFSTRINGSTREAM_FREESTR(tmpString)
+                            }
+                            break;
+                        case AP_GeneralPurposeBDMPEG4HPatLV42_2D:
+                        case AP_GeneralPurposeBDMPEG4HPatLV42_3D:
+                        case AP_GeneralPurposeBDMPEG4StereoHPatLV42:
+                            /* compare with expected transfer syntax */
+                            found = compare(transferSyntax, expectedTransferSyntax);
+                            if (found)
+                            {
+                                /* check for multi-frame composite IOD */
+                                if (!isMultiframeStorageSOPClass(mediaSOPClassUID))
+                                {
+                                    /* create error message */
+                                    OFOStringStream oss;
+                                    oss << xferName << " only for multi-frame composite IODs: " << filename
+                                        << OFStringStream_ends;
+                                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                                    if (TransferSyntaxCheck)
+                                    {
+                                        DCMDATA_ERROR(tmpString);
+                                        result = EC_ApplicationProfileViolated;
+                                    } else
+                                        DCMDATA_WARN(tmpString);
+                                    OFSTRINGSTREAM_FREESTR(tmpString)
+                                }
+                            } else {
+                                const OFString expXferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
+                                /* create error message */
+                                OFOStringStream oss;
+                                oss << expXferName << " expected but " << xferName << " found: " << filename
+                                    << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -2644,6 +2692,9 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                             (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
                             (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
                             (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_2D) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_3D) ||
+                            (ApplicationProfile == AP_GeneralPurposeBDMPEG4StereoHPatLV42) ||
                             (ApplicationProfile == AP_USBandFlashJPEG) ||
                             (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                             (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -2934,6 +2985,9 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_2D) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_3D) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4StereoHPatLV42) ||
                 (ApplicationProfile == AP_USBandFlashJPEG) ||
                 (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -3024,6 +3078,9 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_2D) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_3D) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4StereoHPatLV42) ||
                 (ApplicationProfile == AP_USBandFlashJPEG) ||
                 (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -3611,6 +3668,9 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL) ||
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41) ||
                 (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_2D) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV42_3D) ||
+                (ApplicationProfile == AP_GeneralPurposeBDMPEG4StereoHPatLV42) ||
                 (ApplicationProfile == AP_USBandFlashJPEG) ||
                 (ApplicationProfile == AP_USBandFlashJPEG2000))
             {
@@ -4092,6 +4152,9 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                 case AP_GeneralPurposeBDMPEG2MPatHL:
                 case AP_GeneralPurposeBDMPEG4HPatLV41:
                 case AP_GeneralPurposeBDMPEG4HPatLV41BD:
+                case AP_GeneralPurposeBDMPEG4HPatLV42_2D:
+                case AP_GeneralPurposeBDMPEG4HPatLV42_3D:
+                case AP_GeneralPurposeBDMPEG4StereoHPatLV42:
                 case AP_USBandFlashJPEG:
                 case AP_USBandFlashJPEG2000:
                     copyElementType1(dataset, DCM_Rows, record, sourceFilename);
@@ -5119,6 +5182,15 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
             break;
         case AP_GeneralPurposeBDMPEG4HPatLV41BD:
             result = "STD-GEN-BD-MPEG4-HPLV41BD";
+            break;
+        case AP_GeneralPurposeBDMPEG4HPatLV42_2D:
+            result = "STD-GEN-BD-MPEG4-HPLV42-2D";
+            break;
+        case AP_GeneralPurposeBDMPEG4HPatLV42_3D:
+            result = "STD-GEN-BD-MPEG4-HPLV42-3D";
+            break;
+        case AP_GeneralPurposeBDMPEG4StereoHPatLV42:
+            result = "STD-GEN-BD-MPEG4-SHPLV42";
             break;
         case AP_USBandFlashJPEG:
             result = "STD-GEN-USB/MMC/CF/SD-JPEG";

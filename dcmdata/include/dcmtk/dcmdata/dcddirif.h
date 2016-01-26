@@ -133,6 +133,12 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
         AP_GeneralPurposeBDMPEG4HPatLV41,
         /// General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
         AP_GeneralPurposeBDMPEG4HPatLV41BD,
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 2D video (STD-GEN-BD-MPEG4-HPLV42-2D)
+        AP_GeneralPurposeBDMPEG4HPatLV42_2D,
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 3D video (STD-GEN-BD-MPEG4-HPLV42-3D)
+        AP_GeneralPurposeBDMPEG4HPatLV42_3D,
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 Stereo HiP\@Level4.2 (STD-GEN-BD-MPEG4-SHPLV42)
+        AP_GeneralPurposeBDMPEG4StereoHPatLV42,
         /// General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
         AP_USBandFlashJPEG,
         /// General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)

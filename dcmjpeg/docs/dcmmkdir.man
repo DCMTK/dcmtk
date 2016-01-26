@@ -32,6 +32,12 @@ Currently the following profiles are supported (others might be added later):
     (STD-GEN-BD-MPEG4-HPLV41)
 \li General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible
     HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
+\li General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 2D
+    video (STD-GEN-BD-MPEG4-HPLV42-2D)
+\li General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 3D
+    video (STD-GEN-BD-MPEG4-HPLV42-3D)
+\li General Purpose BD Interchange with MPEG-4 AVC/H.264 Stereo HiP\@Level4.2
+    (STD-GEN-BD-MPEG4-SHPLV42)
 \li General Purpose USB and Flash Memory Interchange with JPEG
     (STD-GEN-USB/MMC/CF/SD-JPEG)
 \li General Purpose USB and Flash Memory Interchange with JPEG 2000
@@ -242,6 +248,18 @@ profiles:
   -Pbb  --general-bd-mpeg4-hpbd
           General Purpose BD Interchange with MPEG-4 AVC/H.264
           BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
+
+        --general-bd-mpeg4-hp2d
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.2 for 2D video (STD-GEN-BD-MPEG4-HPLV42-2D)
+
+        --general-bd-mpeg4-hp3d
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.2 for 3D video (STD-GEN-BD-MPEG4-HPLV42-3D)
+
+        --general-bd-mpeg4-hpst
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          Stereo HiP@Level4.2 (STD-GEN-BD-MPEG4-SHPLV42)
 
   -Pfl  --usb-and-flash-jpeg
           General Purpose USB/Flash Memory Interchange with JPEG
@@ -459,6 +477,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
