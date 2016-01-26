@@ -122,6 +122,7 @@ const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 7;
 const size_t DSRTypes::XF_addSchemaReference             = 1 << 8;
 const size_t DSRTypes::XF_validateSchema                 = 1 << 9;
 const size_t DSRTypes::XF_templateElementEnclosesItems   = 1 << 10;
+const size_t DSRTypes::XF_addCommentsForIncludedTemplate = 1 << 11;
 /* shortcuts */
 const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
                                                            DSRTypes::XF_relationshipTypeAsAttribute |

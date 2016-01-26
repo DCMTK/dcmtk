@@ -390,6 +390,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// read/write: template identification element encloses content items
     static const size_t XF_templateElementEnclosesItems;
 
+    /// write: add comments with details at beginning/end of included template (might be useful for debugging purposes)
+    static const size_t XF_addCommentsForIncludedTemplate;
+
     /// shortcut: combines all XF_xxxAsAttribute write flags (see above)
     static const size_t XF_encodeEverythingAsAttribute;
     //@}

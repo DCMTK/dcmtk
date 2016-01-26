@@ -89,8 +89,7 @@ OFCondition DSRIncludedTemplateTreeNode::print(STD_NAMESPACE ostream &stream,
     /* check whether template identification is set */
     if (hasTemplateIdentification())
     {
-        OFString templateIdentifier;
-        OFString mappingResource;
+        OFString templateIdentifier, mappingResource;
         getTemplateIdentification(templateIdentifier, mappingResource);
         stream << "TID " << templateIdentifier << " (" << mappingResource << ")";
     } else {
@@ -125,7 +124,20 @@ OFCondition DSRIncludedTemplateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
     OFCondition result = EC_Normal;
     /* write content of included template in XML format (if non-empty) */
     if (!ReferencedTemplate->isEmpty())
+    {
+        OFString templateIdentifier, mappingResource;
+        /* output details on beginning of included template (if enabled) */
+        if (hasTemplateIdentification() && (flags & XF_addCommentsForIncludedTemplate))
+        {
+            getTemplateIdentification(templateIdentifier, mappingResource);
+            stream << "<!-- BEGIN: included template TID " << templateIdentifier << " (" << mappingResource << ") -->" << OFendl;
+        }
+        /* write content of referenced document subtree */
         result = ReferencedTemplate->writeXML(stream, flags);
+        /* output details on end of included template (if available, see above) */
+        if (!templateIdentifier.empty() && !mappingResource.empty())
+            stream << "<!-- END: included template TID " << templateIdentifier << " (" << mappingResource << ") -->" << OFendl;
+    }
     return result;
 }
 
