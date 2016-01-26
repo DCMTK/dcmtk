@@ -85,7 +85,7 @@ Alternatively, many properties of the document tree can be accessed and
 modified directly as the following example shows:
 
 \code
-DSRDocument document(DSRTypes::DT_KeyObjectDoc);
+DSRDocument document(DSRTypes::DT_KeyObjectSelectionDocument);
 /* ... */
 document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 DSRCodedEntryValue *codePtr = document.getTree().getCurrentContentItem().getConceptNamePtr();
@@ -115,6 +115,10 @@ DICOM Structured Report that is based on TID 1500 (Measurement Report):
 TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
 report.setLanguage(CID5000_Languages::English);
 report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization");
+/* ... */
+TID1500_MeasurementReport::TID1411_Measurements &measurements = report.getVolumetricROIMeasurements();
+measurements.setActivitySession("1");
+measurements.setTrackingIdentifier("aorta reference region");
 /* ... */
 DSRDocument document;
 document.setPatientName("Last Name^First Name");
