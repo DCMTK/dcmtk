@@ -43,7 +43,7 @@ tcielabutil.o: tcielabutil.cc \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmiod/cielabutil.h
+ ../include/dcmtk/dcmiod/cielabutil.h ../include/dcmtk/dcmiod/ioddef.h
 tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \

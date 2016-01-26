@@ -86,10 +86,10 @@ oflist.o: oflist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/ofstd/ofstream.h
 ofmath.o: ofmath.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofmath.h \
- ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
- ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofexport.h \
- ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/oftraits.h
+ ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/ofstd/ofmath.h ../include/dcmtk/ofstd/oftypes.h \
+ ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
+ ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/oftraits.h
 ofstd.o: ofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \

@@ -110,6 +110,7 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
  ../include/dcmtk/dcmrt/seq/drtbrs.h \
@@ -394,6 +395,7 @@ tsearch.o: tsearch.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrod.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmrt/seq/drtadcs.h ../include/dcmtk/dcmrt/seq/drtecs.h \
  ../include/dcmtk/dcmrt/seq/drtass.h ../include/dcmtk/dcmrt/seq/drtbads.h \

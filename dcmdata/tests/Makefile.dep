@@ -79,7 +79,8 @@ tchval.o: tchval.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/vrscan.h \
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/vrscan.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h
 tdict.o: tdict.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
@@ -209,8 +210,8 @@ telemlen.o: telemlen.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpxitem.h \
- ../include/dcmtk/dcmdata/dcostrmb.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/dcpxitem.h ../include/dcmtk/dcmdata/dcostrmb.h
 tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
@@ -438,8 +439,9 @@ tparent.o: tparent.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h dctmacro.h \
- ../include/dcmtk/dcmdata/dcistrmb.h ../include/dcmtk/dcmdata/dcostrmb.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ dctmacro.h ../include/dcmtk/dcmdata/dcistrmb.h \
+ ../include/dcmtk/dcmdata/dcostrmb.h
 tparser.o: tparser.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
@@ -522,9 +524,9 @@ tparser.o: tparser.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpxitem.h \
- ../include/dcmtk/dcmdata/dcistrmb.h ../include/dcmtk/dcmdata/dcostrmb.h \
- dctmacro.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/dcpxitem.h ../include/dcmtk/dcmdata/dcistrmb.h \
+ ../include/dcmtk/dcmdata/dcostrmb.h dctmacro.h
 tpath.o: tpath.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
@@ -606,7 +608,8 @@ tpath.o: tpath.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpath.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/dcpath.h
 tpread.o: tpread.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
@@ -688,8 +691,9 @@ tpread.o: tpread.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcostrmz.h \
- ../include/dcmtk/dcmdata/dcistrmz.h ../include/dcmtk/dcmdata/dcfcache.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/dcostrmz.h ../include/dcmtk/dcmdata/dcistrmz.h \
+ ../include/dcmtk/dcmdata/dcfcache.h
 tspchrs.o: tspchrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
