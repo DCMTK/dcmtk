@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,12 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcvr.h"
+
+// include this file in doxygen documentation
+
+/** @file dcxfer.h
+ *  @brief definition and handling of transfer syntaxes
+ */
 
 /** enumeration of all DICOM transfer syntaxes known to the toolkit
  */

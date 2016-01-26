@@ -26,6 +26,12 @@
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 
+// include this file in doxygen documentation
+
+/** @file dcvr.h
+ *  @brief definition and handling of value representations (VR)
+ */
+
 /** Global flag to enable/disable the generation of VR=UN, which has been
  *  introduced after the first edition of the DICOM standard (1993).
  *  If disabled, the VR=OB is used instead.
