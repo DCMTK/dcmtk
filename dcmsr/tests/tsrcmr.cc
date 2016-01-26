@@ -277,8 +277,12 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(measurements.setReferencedSegment(segment).good());
     OFCHECK(measurements.setReferencedSegment(DSRImageReferenceValue(UID_SegmentationStorage, "1.0")).bad());
     OFCHECK(measurements.setReferencedSegment(dataset, 1).good());
+    dataset.clear();
+    OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_RealWorldValueMappingStorage).good());
+    OFCHECK(dataset.putAndInsertString(DCM_SOPInstanceUID, "99.9").good());
     OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
     OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_CTImageStorage, "2.0")).bad());
+    OFCHECK(measurements.setRealWorldValueMap(dataset).good());
     OFCHECK(measurements.setFindingSite(CODE_SRT_AorticArch).good());
     OFCHECK(measurements.setMeasurementMethod(DSRCodedEntryValue(CODE_DCM_SUVBodyWeightCalculationMethod)).good());
     OFCHECK(!measurements.isValid());

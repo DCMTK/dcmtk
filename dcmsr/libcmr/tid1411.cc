@@ -353,6 +353,19 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setRealWorldValue
 }
 
 
+template<typename T1, typename T2, typename T3, typename T4>
+OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setRealWorldValueMap(DcmItem &dataset,
+                                                                                    const OFBool check)
+{
+    DSRCompositeReferenceValue valueMap;
+    /* first, create the referenced composite object */
+    OFCondition result = valueMap.setReference(dataset, check);
+    /* then, add/set the corresponding content item */
+    CHECK_RESULT(setRealWorldValueMap(valueMap, check));
+    return result;
+}
+
+
 template<typename T1, typename T2, typename T_Method, typename T4>
 OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T_Method, T4>::setMeasurementMethod(const T_Method &method,
                                                                                           const OFBool check)

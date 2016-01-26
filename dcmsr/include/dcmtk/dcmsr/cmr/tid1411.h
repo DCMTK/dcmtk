@@ -198,6 +198,9 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     /** set the value of the 'Referenced Segment' content item (TID 1411 - Row 7).
      *  A measurement group is created automatically (if none is present).  If the
      *  content item already exists, its value is overwritten.
+     *  If 'copyTracking' is enabled and the 'dataset' contains tracking information,
+     *  setTrackingIdentifier() and/or setTrackingUniqueIdentifier() are also called
+     *  by this method.
      ** @param  dataset        DICOM dataset from which the values for the referenced
      *                         segment (e.g. SOP class UID and SOP instance UID) should
      *                         be retrieved
@@ -232,6 +235,18 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setRealWorldValueMap(const DSRCompositeReferenceValue &valueMap,
+                                     const OFBool check = OFTrue);
+
+    /** set the value of the 'Real World Value Map used for measurement' content item
+     *  (TID 1411 - Row 14).  A measurement group is created automatically (if none is
+     *  present).  If the content item already exists, its value is overwritten.
+     ** @param  dataset  DICOM dataset from which the values for the reference to a
+     *                   real world value mapping object (SOP class UID and SOP instance
+     *                   UID) should be retrieved
+     *  @param  check    if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setRealWorldValueMap(DcmItem &dataset,
                                      const OFBool check = OFTrue);
 
     /** set the value of the 'Measurement Method' content item (TID 1419 - Row 1).
