@@ -101,7 +101,8 @@ static const char *DRTypeNames[] =
     "IMPLANT GROUP",
     "IMPLANT ASSY",
     "PLAN",
-    "SURFACE SCAN"
+    "SURFACE SCAN",
+    "TRACT"
 };
 
 static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames) / sizeof(DRTypeNames[0])));
@@ -341,7 +342,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                     break;
             }
             break;
-        case ERT_FilmBox:
+        case ERT_FilmBox:  // retired
             switch (lowerRecord)
             {
                 case ERT_ImageBox:
@@ -353,7 +354,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                     break;
             }
             break;
-        case ERT_FilmSession:
+        case ERT_FilmSession:  // retired
             switch (lowerRecord)
             {
                 case ERT_FilmBox:
@@ -378,7 +379,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                     break;
             }
             break;
-        case ERT_PrintQueue:
+        case ERT_PrintQueue:  // retired
             switch (lowerRecord)
             {
                 case ERT_FilmSession:
@@ -390,7 +391,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                     break;
             }
             break;
-        case ERT_Results:
+        case ERT_Results:  // retired
             switch (lowerRecord)
             {
                 case ERT_Interpretation:
@@ -430,6 +431,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Measurement:
                 case ERT_Plan:
                 case ERT_SurfaceScan:
+                case ERT_Tract:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -454,7 +456,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                     break;
             }
             break;
-        case ERT_Topic:
+        case ERT_Topic:  // retired
             switch (lowerRecord)
             {
                 case ERT_Curve:
@@ -486,7 +488,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                     break;
             }
             break;
-        case ERT_Mrdr:
+        case ERT_Mrdr:  // retired
             l_error = EC_IllegalCall;
             break;
         case ERT_Curve:
@@ -524,6 +526,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_ImplantAssy:
         case ERT_Plan:
         case ERT_SurfaceScan:
+        case ERT_Tract:
         case ERT_Private:
             switch (lowerRecord)
             {
@@ -593,7 +596,7 @@ E_DirRecType DcmDirectoryRecord::lookForRecordType()
 static void hostToDicomFilename(char *fname)
 {
     /*
-    ** Massage filename into dicom format.
+    ** Massage filename into DICOM format.
     ** Eliminate any invalid characters.
     ** Most commonly there is a '.' at the end of a filename.
     */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -122,7 +122,9 @@ typedef enum {
     /// plan
     ERT_Plan = 44,
     /// surface scan
-    ERT_SurfaceScan = 45
+    ERT_SurfaceScan = 45,
+    /// tractography
+    ERT_Tract = 46
 } E_DirRecType;
 
 
