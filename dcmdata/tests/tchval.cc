@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2015, OFFIS e.V.
+ *  Copyright (C) 2009-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -250,6 +250,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "UI-10", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0\\99", "2") )
   CHECK_GOOD( "UI-11", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0.123.456.789.0.111222333444555666777888999000", "1") )
   CHECK_BAD ( "UI-12", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0.123.456.789.10.111222333444555666777888999000", "1") )
+  CHECK_BAD ( "UI-13", DcmUniqueIdentifier::checkStringValue("007", "1") )
 
   /* test "Universal Resource Identifier or Universal Resource Locator (URI/URL)" */
   CHECK_GOOD( "UR-01", DcmUniversalResourceIdentifierOrLocator::checkStringValue("http://www.dcmtk.org/ ") )
