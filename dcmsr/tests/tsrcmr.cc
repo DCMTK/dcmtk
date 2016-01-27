@@ -173,8 +173,8 @@ OFTEST(dcmsr_TID1001_ObservationContext)
     /* empty template is not valid */
     OFCHECK(!obsContext.isValid());
     /* add person and device observers */
-    OFCHECK(obsContext.addPersonObserver("Doe^John", "", CMR_CID7452::Physician, CMR_CID7453::Referring).good());
     OFCHECK(obsContext.addDeviceObserver("1.2.4.5.6.7.8.9.0").good());
+    OFCHECK(obsContext.addPersonObserver("Doe^John", "", CMR_CID7452::Physician, CMR_CID7453::Referring).good());
     OFCHECK(obsContext.addDeviceObserver("007", "Some Name", "Some Manufacturer", "Some Model Name", "", "", procRoles, "AETITLE", OFFalse /*check*/).good());
     OFCHECK(obsContext.addPersonObserver("Doe^Jane", "Some Organization").good());
     /* check some additions that should fail */

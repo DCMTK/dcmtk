@@ -87,9 +87,16 @@ OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &person
         {
             const size_t lastNode = subTree->getNodeID();
             /* order is significant, so go to last person observer */
-            gotoLastEntryFromNodeList(this, LAST_PERSON_OBSERVER);
-            /* insert subtree at current position */
-            STORE_RESULT(insertSubTree(subTree, AM_afterCurrent));
+            if (gotoLastEntryFromNodeList(this, LAST_PERSON_OBSERVER) > 0)
+            {
+                /* insert subtree at current position */
+                STORE_RESULT(insertSubTree(subTree, AM_afterCurrent));
+            } else {
+                /* this is the first person observer (but there might be device observers) */
+                gotoRoot();
+                /* insert subtree before current position (at the beginning of the tree) */
+                STORE_RESULT(insertSubTree(subTree, AM_beforeCurrent));
+            }
             /* store ID of recently added node for later use */
             GOOD_RESULT(storeEntryInNodeList(LAST_PERSON_OBSERVER, lastNode));
         }
