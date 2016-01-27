@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -697,6 +697,9 @@ size_t DSRTree<T>::addNode(T *node,
                     else if (!this->NodeCursorStack.empty() && (this->Position == 1))
                         this->NodeCursorStack.top()->Down = node;
                     this->NodeCursor->Prev = lastNode;
+                    /* check whether root node has been replaced */
+                    if (this->NodeCursor == this->RootNode)
+                        this->RootNode = node;
                     break;
                 case AM_belowCurrent:
                     /* store old position */
@@ -746,6 +749,7 @@ size_t DSRTree<T>::addNode(T *node,
             }
             this->NodeCursor = node;
         } else {
+            /* originally, the tree was empty */
             this->RootNode = this->NodeCursor = node;
             this->Position = 1;
         }

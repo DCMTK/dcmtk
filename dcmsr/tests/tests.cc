@@ -28,6 +28,7 @@ OFTEST_REGISTER(dcmsr_addTreeNode_2);
 OFTEST_REGISTER(dcmsr_addTreeNode_3);
 OFTEST_REGISTER(dcmsr_addTreeNode_4);
 OFTEST_REGISTER(dcmsr_addTreeNode_5);
+OFTEST_REGISTER(dcmsr_addTreeNode_6);
 OFTEST_REGISTER(dcmsr_replaceTreeNode);
 OFTEST_REGISTER(dcmsr_getPosition);
 OFTEST_REGISTER(dcmsr_countChildNodes);
