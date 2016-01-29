@@ -155,12 +155,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     /** print current SR document tree to specified output stream
      ** @param  stream      output stream
      *  @param  flags       optional flag used to customize the output (see DSRTypes::PF_xxx)
-     *  @param  linePrefix  string that is prepended to each output line (optional)
+     *  @param  posCounter  optional pointer to position counter that should be used
+     *                      for line indentation or numbering of nested content items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition print(STD_NAMESPACE ostream &stream,
                               const size_t flags = 0,
-                              const OFString &linePrefix = "");
+                              DSRPositionCounter *posCounter = NULL);
 
     /** write current SR document tree in XML format
      ** @param  stream  output stream to which the XML document is written

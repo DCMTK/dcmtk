@@ -108,12 +108,17 @@ OFCondition DSRIncludedTemplateTreeNode::print(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRIncludedTemplateTreeNode::printTemplate(STD_NAMESPACE ostream &stream,
                                                        const size_t flags,
-                                                       const OFString &linePrefix) const
+                                                       DSRPositionCounter *posCounter)
 {
     OFCondition result = EC_Normal;
     /* print content of included template (if non-empty) */
     if (!ReferencedTemplate->isEmpty())
-        result = ReferencedTemplate->print(stream, flags, linePrefix);
+        result = ReferencedTemplate->print(stream, flags, posCounter);
+    else if (posCounter != NULL)
+    {
+        /* make sure that empty templates are not counted */
+        --(*posCounter);
+    }
     return result;
 }
 

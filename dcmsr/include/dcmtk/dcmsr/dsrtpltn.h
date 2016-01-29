@@ -96,13 +96,14 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     /** print content of included template
      ** @param  stream      output stream to which the template should be printed
      *  @param  flags       flag used to customize the output (see DSRTypes::PF_xxx)
-     *  @param  linePrefix  string that is prepended to each output line (optional)
+     *  @param  posCounter  optional pointer to position counter that should be used
+     *                      for line indentation or numbering of nested content items
      ** @return status, EC_Normal if successful (or included template is empty, so there
      *          is nothing to do), an error code otherwise
      */
     virtual OFCondition printTemplate(STD_NAMESPACE ostream &stream,
                                       const size_t flags,
-                                      const OFString &linePrefix) const;
+                                      DSRPositionCounter *posCounter = NULL);
 
     /** write content of included template in XML format
      ** @param  stream  output stream to which the XML document is written

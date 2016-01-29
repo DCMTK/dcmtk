@@ -172,10 +172,11 @@ OFBool DSRDocumentSubTree::canUseTemplateIdentification() const
 
 OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                                       const size_t flags,
-                                      const OFString &linePrefix)
+                                      DSRPositionCounter *posCounter)
 {
     OFCondition result = EC_Normal;
-    DSRDocumentTreeNodeCursor cursor(getRoot());
+    /* initialize cursor with root node (and optional position counter) */
+    DSRDocumentTreeNodeCursor cursor(getRoot(), posCounter);
     if (cursor.isValid())
     {
         /* check and update by-reference relationships (if applicable) */
@@ -183,30 +184,13 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
         /* update the document tree for output (if needed) */
         updateTreeForOutput();
         OFString tmpString;
-        const DSRDocumentTreeNode *node;
+        DSRDocumentTreeNode *node;
         /* iterate over all nodes */
         do {
             node = cursor.getNode();
             /* special handling for included templates */
             if (node->getValueType() == VT_includedTemplate)
             {
-                OFString newPrefix(linePrefix);
-                /* prepare line prefix for nested content */
-                if (flags & PF_printItemPosition)
-                {
-                    DSRDocumentTreeNodeCursor parentCursor(cursor);
-                    if (parentCursor.gotoParent() > 0)
-                    {
-                        /* tbd: position string is still not correct in some cases */
-                        newPrefix += parentCursor.getPosition(tmpString);
-                        newPrefix += '.';
-                    }
-                } else {
-                    /* use line indentation */
-                    const size_t level = cursor.getLevel();
-                    if (level > 0)  // valid ?
-                        newPrefix += OFString((level - 1) * 2, ' ');
-                }
                 /* print separate line for internal template node (if requested) */
                 if (flags & PF_printIncludedTemplateNode)
                 {
@@ -217,8 +201,9 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     node->print(stream, flags);
                     stream << OFendl;
                 }
-                /* print content of referenced template (typecast needed here) */
-                result = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, newPrefix);
+                /* print content of included template (subtree) */
+                if (node->hasValidValue())
+                    result = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, &cursor.getPositionCounter());
             } else {
                 /* print node ID (might be useful for debugging purposes) */
                 if (flags & PF_printNodeID)
@@ -227,11 +212,10 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                 if (flags & PF_printItemPosition)
                 {
                     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION)
-                    stream << linePrefix << cursor.getPosition(tmpString) << "  ";
+                    stream << cursor.getPosition(tmpString) << "  ";
                 } else {
-                    stream << linePrefix;
                     /* use line indentation */
-                    const size_t level = cursor.getLevel();
+                    const size_t level = cursor.getPositionCounter().getLevel();
                     if (level > 0)  // valid ?
                         stream << OFString((level - 1) * 2, ' ');
                 }
@@ -249,6 +233,9 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
             }
         } while (result.good() && cursor.iterate());
     }
+    /* store and return current value of position counter (if needed) */
+    if (posCounter != NULL)
+        *posCounter = cursor.getPositionCounter();
     return result;
 }
 
@@ -982,7 +969,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                         DSRDocumentTreeNodeCursor refCursor(getRoot());
                         if (mode & CM_updateNodeID)
                         {
-                            /* update node ID (based on position string) */
+                            /* update node ID (based on position string; tbc: what about included templates?) */
                             refNodeID = refCursor.gotoNode(byRefNode->getReferencedContentItem());
                             const DSRDocumentTreeNode *targetNode = (refNodeID > 0) ? refCursor.getNode() : NULL;
                             const E_ValueType targetValueType = (targetNode != NULL) ? targetNode->getValueType() : VT_invalid;

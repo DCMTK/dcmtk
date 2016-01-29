@@ -63,9 +63,12 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
 
     /** constructor.
      *  See comments on setCursor(T*) method.
-     ** @param  node  pointer to tree node used to initialize the cursor
+     ** @param  node      pointer to tree node used to initialize the cursor
+     *  @param  position  optional pointer to position counter that should be used to
+     *                    initialize the internal counter
      */
-    DSRTreeNodeCursor(T *node);
+    DSRTreeNodeCursor(T *node,
+                      const DSRPositionCounter *position = NULL);
 
     /** destructor
      */
@@ -239,11 +242,12 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      */
     inline size_t getLevel() const;
 
-    /** get position counter on the current level.
-     *  The counter starts with 1 for the first child node.
-     ** @return position counter on the current level if valid, 0 otherwise
+    /** get reference to internal position counter.
+     *  Please note that this method allows for manipulating the internal position
+     *  counter, so handle with care!
+     ** @return reference to internal position counter
      */
-    inline size_t getPosition() const;
+    inline DSRPositionCounter &getPositionCounter();
 
     /** get position string of the current node.
      *  Specifies the position of each node by means of a dot separated string of
@@ -317,12 +321,17 @@ DSRTreeNodeCursor<T>::DSRTreeNodeCursor(const DSRTreeNodeCursor<T> &cursor)
 
 
 template<typename T>
-DSRTreeNodeCursor<T>::DSRTreeNodeCursor(T *node)
+DSRTreeNodeCursor<T>::DSRTreeNodeCursor(T *node,
+                                        const DSRPositionCounter *position)
   : NodeCursor(node),
     NodeCursorStack(),
     Position()
 {
-    Position.initialize(NodeCursor != NULL);
+    /* check whether a valid position counter is given */
+    if ((position != NULL) && position->isValid())
+        Position = *position;
+    else
+        Position.initialize(NodeCursor != NULL);
 }
 
 
@@ -776,12 +785,9 @@ size_t DSRTreeNodeCursor<T>::getLevel() const
 
 
 template<typename T>
-size_t DSRTreeNodeCursor<T>::getPosition() const
+DSRPositionCounter &DSRTreeNodeCursor<T>::getPositionCounter()
 {
-    size_t position = 0;
-    if (NodeCursor != NULL)
-        position = Position;
-    return position;
+    return Position;
 }
 
 
