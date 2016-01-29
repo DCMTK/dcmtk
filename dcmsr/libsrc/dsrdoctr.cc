@@ -80,6 +80,14 @@ OFBool DSRDocumentTree::isValid() const
 }
 
 
+OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream &stream,
+                                   const size_t flags)
+{
+    /* call the inherited method (hide additional parameters) */
+    return DSRDocumentSubTree::print(stream, flags);
+}
+
+
 OFCondition DSRDocumentTree::read(DcmItem &dataset,
                                   const E_DocumentType documentType,
                                   const size_t flags)

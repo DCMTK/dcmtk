@@ -91,6 +91,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      */
     virtual OFBool isValid() const;
 
+    /** print current SR document tree to specified output stream
+     ** @param  stream  output stream
+     *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition print(STD_NAMESPACE ostream &stream,
+                              const size_t flags = 0);
+
     /** read SR document tree from DICOM dataset.
      *  Please note that the current document tree is also deleted if the reading fails.
      *  If logging is enabled, the reason for any error might be obtained from the
