@@ -224,7 +224,7 @@ template<typename T = DSRTreeNode> class DSRTree
     /** check whether tree has any nodes
      ** @return OFTrue if tree is empty, OFFalse otherwise
      */
-    OFBool isEmpty() const;
+    inline OFBool isEmpty() const;
 
     /** count number of nodes in the tree.
      *  This method iterates over all nodes that are stored in the tree.
@@ -236,12 +236,12 @@ template<typename T = DSRTreeNode> class DSRTree
      *  The node ID uniquely identifies a content item in the document tree.
      ** @return ID of the next node to be created (should never be 0)
      */
-    size_t getNextNodeID() const;
+    inline size_t getNextNodeID() const;
 
     /** set internal cursor to root node
      ** @return ID of root node if successful, 0 otherwise
      */
-    size_t gotoRoot();
+    inline size_t gotoRoot();
 
     /** set internal cursor to specified node
      ** @param  searchID       ID of the node to set the cursor to

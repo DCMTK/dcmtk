@@ -107,27 +107,27 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
     /** check whether the current node has a parent
      ** @return OFTrue if the current node has a parent, OFFalse otherwise
      */
-    OFBool hasParentNode() const;
+    inline OFBool hasParentNode() const;
 
     /** check whether the current node has any children
      ** @return OFTrue if the current node has any children, OFFalse otherwise
      */
-    OFBool hasChildNodes() const;
+    inline OFBool hasChildNodes() const;
 
     /** check whether the current node has a preceding sibling
      ** @return OFTrue if the current node has a preceding sibling, OFFalse otherwise
      */
-    OFBool hasPreviousNode() const;
+    inline OFBool hasPreviousNode() const;
 
     /** check whether the current node has a following sibling
      ** @return OFTrue if the current node has a following sibling, OFFalse otherwise
      */
-    OFBool hasNextNode() const;
+    inline OFBool hasNextNode() const;
 
     /** check whether the current node has any siblings
      ** @return OFTrue if the current node has any siblings, OFFalse otherwise
      */
-    OFBool hasSiblingNodes() const;
+    inline OFBool hasSiblingNodes() const;
 
     /** get pointer to current node
      ** @return pointer to current node (might be NULL)
@@ -192,11 +192,11 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
 
     /** @copydoc goUp()
      */
-    size_t gotoParent();
+    inline size_t gotoParent();
 
     /** @copydoc goDown()
      */
-    size_t gotoChild();
+    inline size_t gotoChild();
 
     /** iterate over all nodes. Starts from current position!
      ** @param  searchIntoSub  flag indicating whether to search into sub-trees
@@ -232,19 +232,19 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      *  the navigation methods above do return this ID too.
      ** @return ID of the current node if valid, 0 otherwise
      */
-    size_t getNodeID() const;
+    inline size_t getNodeID() const;
 
     /** get current level.
      *  The level starts with 1 for the root node, then 2 for its child nodes, etc.
      ** @return number of the current level if valid, 0 otherwise
      */
-    size_t getLevel() const;
+    inline size_t getLevel() const;
 
     /** get position counter on the current level.
      *  The counter starts with 1 for the first child node.
      ** @return position counter on the current level if valid, 0 otherwise
      */
-    size_t getPosition() const;
+    inline size_t getPosition() const;
 
     /** get position string of the current node.
      *  Specifies the position of each node by means of a dot separated string of
@@ -270,12 +270,12 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
     /** get cursor
      ** @return reference to cursor (this object)
      */
-    const DSRTreeNodeCursor<T> &getCursor() const;
+    inline const DSRTreeNodeCursor<T> &getCursor() const;
 
     /** set cursor to specified object
      ** @param  cursor  object to set this cursor to
      */
-    void setCursor(const DSRTreeNodeCursor<T> &cursor);
+    inline void setCursor(const DSRTreeNodeCursor<T> &cursor);
 
     /** set cursor to specified node.
      *  Clears the internal position list/stack and sets the position counter to 1.
