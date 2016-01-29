@@ -22,7 +22,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 	-I$(dcmimgledir)/include -I$(dcmimagedir)/include
 LOCALDEFS =
 
-objs = dsrdoc.o dsrtree.o dsrdoctn.o dsrdoctr.o dsrdocst.o \
+objs = dsrdoc.o dsrposcn.o dsrtree.o dsrdoctn.o dsrdoctr.o dsrdocst.o \
 	dsrctpl.o dsrrtpl.o dsrstpl.o dsrctxgr.o dsrcitem.o dsrtypes.o \
 	dsrimgfr.o dsrimgse.o dsrscogr.o dsrsc3gr.o dsrtcodt.o dsrtcosp.o \
 	dsrtcoto.o dsrwavch.o dsrstrvl.o dsrcodvl.o dsrnumvl.o dsrscovl.o \

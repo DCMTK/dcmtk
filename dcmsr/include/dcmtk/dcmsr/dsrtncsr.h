@@ -26,12 +26,11 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstack.h"
-#include "dcmtk/ofstd/oflist.h"
 
 #include "dcmtk/dcmsr/dsdefine.h"
 #include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrposcn.h"
 #include "dcmtk/dcmsr/dsrtnant.h"
 
 
@@ -257,8 +256,8 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      *  @param  separator  character used to separate the figures (default: '.')
      ** @return reference to the resulting position string (empty if invalid)
      */
-    const OFString &getPosition(OFString &position,
-                                const char separator = '.') const;
+    inline const OFString &getPosition(OFString &position,
+                                       const char separator = '.') const;
 
 
   protected:
@@ -278,7 +277,8 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
     inline void setCursor(const DSRTreeNodeCursor<T> &cursor);
 
     /** set cursor to specified node.
-     *  Clears the internal position list/stack and sets the position counter to 1.
+     *  Clears the internal position counter and sets the position of the current level
+     *  to 1 (if the passed 'node' is valid) or 0 (if the 'node' is invalid).
      ** @param  node  node to which the cursor should be set
      ** @return ID of the new current node if successful, 0 otherwise
      */
@@ -289,10 +289,8 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
     /// stack of node pointers. Used to store the cursor position of upper levels.
     OFStack<T *> NodeCursorStack;
 
-    /// current position within the current level
-    size_t Position;
-    /// list of position counters in upper levels
-    OFList<size_t> PositionList;
+    /// counter for the current position within the current level and on upper levels
+    DSRPositionCounter Position;
 };
 
 
@@ -304,8 +302,7 @@ template<typename T>
 DSRTreeNodeCursor<T>::DSRTreeNodeCursor()
   : NodeCursor(NULL),
     NodeCursorStack(),
-    Position(0),
-    PositionList()
+    Position()
 {
 }
 
@@ -314,8 +311,7 @@ template<typename T>
 DSRTreeNodeCursor<T>::DSRTreeNodeCursor(const DSRTreeNodeCursor<T> &cursor)
   : NodeCursor(cursor.NodeCursor),
     NodeCursorStack(cursor.NodeCursorStack),
-    Position(cursor.Position),
-    PositionList(cursor.PositionList)
+    Position(cursor.Position)
 {
 }
 
@@ -324,9 +320,9 @@ template<typename T>
 DSRTreeNodeCursor<T>::DSRTreeNodeCursor(T *node)
   : NodeCursor(node),
     NodeCursorStack(),
-    Position((node != NULL) ? 1 : 0),
-    PositionList()
+    Position()
 {
+    Position.initialize(NodeCursor != NULL);
 }
 
 
@@ -357,8 +353,7 @@ void DSRTreeNodeCursor<T>::clear()
 {
     NodeCursor = NULL;
     clearNodeCursorStack();
-    Position = 0;
-    PositionList.clear();
+    Position.clear();
 }
 
 
@@ -495,8 +490,6 @@ void DSRTreeNodeCursor<T>::setCursor(const DSRTreeNodeCursor<T> &cursor)
     NodeCursor = cursor.NodeCursor;
     NodeCursorStack = cursor.NodeCursorStack;
     Position = cursor.Position;
-    /* copy position list (operator= is not private anymore in class OFList) */
-    PositionList = cursor.PositionList;
 }
 
 
@@ -505,14 +498,10 @@ size_t DSRTreeNodeCursor<T>::setCursor(T *node)
 {
     size_t nodeID = 0;
     NodeCursor = node;
-    clearNodeCursorStack();
-    PositionList.clear();
     if (NodeCursor != NULL)
-    {
         nodeID = NodeCursor->getIdent();
-        Position = 1;
-    } else
-        Position = 0;
+    clearNodeCursorStack();
+    Position.initialize(NodeCursor != NULL);
     return nodeID;
 }
 
@@ -599,11 +588,7 @@ size_t DSRTreeNodeCursor<T>::goUp()
             {
                 NodeCursor = cursor;
                 nodeID = NodeCursor->getIdent();
-                if (!PositionList.empty())
-                {
-                    Position = PositionList.back();
-                    PositionList.pop_back();
-                }
+                Position.goUp();
             }
         }
     }
@@ -622,11 +607,7 @@ size_t DSRTreeNodeCursor<T>::goDown()
             NodeCursorStack.push(NodeCursor);
             NodeCursor = NodeCursor->getDown();
             nodeID = NodeCursor->getIdent();
-            if (Position > 0)
-            {
-                PositionList.push_back(Position);
-                Position = 1;
-            }
+            Position.goDown();
         }
     }
     return nodeID;
@@ -659,11 +640,7 @@ size_t DSRTreeNodeCursor<T>::iterate(const OFBool searchIntoSub)
             NodeCursorStack.push(NodeCursor);
             NodeCursor = NodeCursor->getDown();
             nodeID = NodeCursor->getIdent();
-            if (Position > 0)
-            {
-                PositionList.push_back(Position);
-                Position = 1;
-            }
+            Position.goDown();
         }
         else if (NodeCursor->getNext() != NULL)
         {
@@ -678,11 +655,7 @@ size_t DSRTreeNodeCursor<T>::iterate(const OFBool searchIntoSub)
                 {
                     NodeCursor = NodeCursorStack.top();
                     NodeCursorStack.pop();
-                    if (!PositionList.empty())
-                    {
-                        Position = PositionList.back();
-                        PositionList.pop_back();
-                    }
+                    Position.goUp();
                 } else
                     NodeCursor = NULL;
             } while ((NodeCursor != NULL) && (NodeCursor->getNext() == NULL));
@@ -816,24 +789,7 @@ template<typename T>
 const OFString &DSRTreeNodeCursor<T>::getPosition(OFString &position,
                                                   const char separator) const
 {
-    position.clear();
-    if (Position > 0)
-    {
-        char stringBuf[20];
-        const OFListConstIterator(size_t) endPos = PositionList.end();
-        OFListConstIterator(size_t) iterator = PositionList.begin();
-        while (iterator != endPos)
-        {
-            if (!position.empty())
-                position += separator;
-            position += DSRTypes::numberToString(*iterator, stringBuf);
-            iterator++;
-        }
-        if (!position.empty())
-            position += separator;
-        position += DSRTypes::numberToString(Position, stringBuf);
-    }
-    return position;
+    return Position.getString(position, separator);
 }
 
 

@@ -703,11 +703,7 @@ size_t DSRTree<T>::addNode(T *node,
                     break;
                 case AM_belowCurrent:
                     /* store old position */
-                    if (this->Position > 0)
-                    {
-                        this->PositionList.push_back(this->Position);
-                        this->Position = 1;
-                    }
+                    this->Position.goDown();
                     this->NodeCursorStack.push(this->NodeCursor);
                     /* parent node has already child nodes */
                     if (this->NodeCursor->Down != NULL)
@@ -728,11 +724,7 @@ size_t DSRTree<T>::addNode(T *node,
                     break;
                 case AM_belowCurrentBeforeFirstChild:
                     /* store old position */
-                    if (this->Position > 0)
-                    {
-                        this->PositionList.push_back(this->Position);
-                        this->Position = 1;
-                    }
+                    this->Position.goDown();
                     this->NodeCursorStack.push(this->NodeCursor);
                     /* parent node has already child nodes */
                     if (this->NodeCursor->Down != NULL)
@@ -751,7 +743,7 @@ size_t DSRTree<T>::addNode(T *node,
         } else {
             /* originally, the tree was empty */
             this->RootNode = this->NodeCursor = node;
-            this->Position = 1;
+            this->Position.initialize();
         }
         nodeID = this->NodeCursor->getIdent();
     }
@@ -850,20 +842,18 @@ T *DSRTree<T>::extractNode()
             {
                 this->NodeCursor = this->NodeCursorStack.top();
                 this->NodeCursorStack.pop();
-                this->Position = this->PositionList.back();
-                this->PositionList.pop_back();
+                this->Position.goUp();
                 /* should never be NULL, but ... */
                 if (this->NodeCursor != NULL)
                     this->NodeCursor->Down = NULL;
                 else
                 {
                     this->RootNode = NULL;                  // tree is now empty
-                    this->Position = 0;
+                    this->Position.clear();
                 }
             } else {
                 this->RootNode = this->NodeCursor = NULL;   // tree is now empty
-                this->Position = 0;
-                this->PositionList.clear();
+                this->Position.clear();
             }
         }
         /* remove references to former siblings */
