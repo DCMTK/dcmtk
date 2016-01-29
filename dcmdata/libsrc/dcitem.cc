@@ -1324,6 +1324,9 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* for this element; hence lastElementComplete is true again */
                     if (errorFlag.good())
                         lastElementComplete = OFTrue;
+                    /* in data sets, group 0x0000 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed */
+                    if ((newTag.getGroup() == 0x0000) || (newTag.getGroup() == 0x0002) || !newTag.hasValidGroup())
+                        DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
                 }
             } else
             {
