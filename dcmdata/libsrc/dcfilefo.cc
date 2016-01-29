@@ -192,7 +192,7 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
             l_error = dset->writeXML(out, flags);
         } else {
             l_error = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error,
-                "Cannot convert to Native DICOM Model: No dataset present");
+                "Cannot convert to Native DICOM Model: No data set present");
         }
     } else {
         /* XML start tag for "file-format" */

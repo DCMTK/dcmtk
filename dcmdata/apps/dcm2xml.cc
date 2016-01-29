@@ -111,7 +111,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
                     OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
-                        << "element absent (on the main dataset level) but extended characters used in file: " << ifname);
+                        << "element absent (on the main data set level) but extended characters used in file: " << ifname);
                     OFLOG_DEBUG(dcm2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
                     return makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");;
                 } else {
@@ -158,7 +158,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 {
                     /* use "debug" instead of "warn" in order to avoid too much output in default mode */
                     OFLOG_DEBUG(dcm2xmlLogger, "ignoring character set '" << defaultCharset
-                        << "' specified with option --charset-assume since it is not needed for this dataset");
+                        << "' specified with option --charset-assume since it is not needed for this data set");
                 }
                 /* by default, we use UTF-8 encoding */
                 encString = "UTF-8";

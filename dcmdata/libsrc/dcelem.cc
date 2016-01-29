@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1465,7 +1465,7 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                     DCMDATA_WARN("Cannot write private creator for group 0x"
                         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
                         << tag.getGTag() << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
-                        << " to XML output: Not present in dataset");
+                        << " to XML output: Not present in data set");
                 }
             }
         } else {

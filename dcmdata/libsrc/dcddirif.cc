@@ -2810,7 +2810,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const OFFilename &filename,
             /* check for empty dataset */
             if ((dataset == NULL) || (dataset->card() == 0))
             {
-                DCMDATA_ERROR("file contains no data (no dataset): " << filename);
+                DCMDATA_ERROR("file contains no data (no data set): " << filename);
                 result = EC_CorruptedData;
             }
             /* only proceed if previous checks have been passed */

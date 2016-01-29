@@ -369,13 +369,13 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                     case EXS_LittleEndianExplicit:
                     case EXS_BigEndianExplicit:
                     case EXS_BigEndianImplicit:
-                        DCMDATA_DEBUG("DcmDataset::read() trying to detect transfer syntax of uncompressed dataset");
+                        DCMDATA_DEBUG("DcmDataset::read() trying to detect transfer syntax of uncompressed data set");
                         OriginalXfer = checkTransferSyntax(inStream);
                         if ((xfer != EXS_Unknown) && (OriginalXfer != xfer))
-                            DCMDATA_WARN("DcmDataset: Wrong transfer syntax specified, detecting from dataset");
+                            DCMDATA_WARN("DcmDataset: Wrong transfer syntax specified, detecting from data set");
                         break;
                     default:
-                        DCMDATA_DEBUG("DcmDataset::read() dataset seems to be compressed, so transfer syntax is not detected");
+                        DCMDATA_DEBUG("DcmDataset::read() data set seems to be compressed, so transfer syntax is not detected");
                         OriginalXfer = xfer;
                         break;
                 }
@@ -387,7 +387,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                 /* If the transfer syntax is given, we want to use it. */
                 if (xfer == EXS_Unknown)
                 {
-                    DCMDATA_DEBUG("DcmDataset::read() trying to detect transfer syntax of dataset (because it is unknown)");
+                    DCMDATA_DEBUG("DcmDataset::read() trying to detect transfer syntax of data set (because it is unknown)");
                     OriginalXfer = checkTransferSyntax(inStream);
                 } else
                     OriginalXfer = xfer;

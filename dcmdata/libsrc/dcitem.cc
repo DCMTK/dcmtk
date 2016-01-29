@@ -1014,7 +1014,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             if (newEVR != vr.getEVR())
             {
                 /* ignore explicit VR in dataset if tag is defined in data dictionary */
-                DCMDATA_DEBUG("DcmItem::readTagAndLength() ignoring explicit VR in dataset ("
+                DCMDATA_DEBUG("DcmItem::readTagAndLength() ignoring explicit VR in data set ("
                     << vr.getVRName() << ") for element " << newTag
                     << ", using the one from data dictionary (" << newTag.getVRName() << ")");
             }
@@ -1183,7 +1183,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         {
             // produce diagnostics
             DCMDATA_WARN("DcmItem: Element " << newTag
-                << " found twice in one dataset/item, ignoring second entry");
+                << " found twice in one data set or item, ignoring second entry");
             delete subElem;
         }
     }
@@ -1295,9 +1295,9 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                 /* if desired, accept premature sequence delimitation item and continue as if item has been completely read. */
                 /* The stream position has been rewound to the start position of the sequence end */
                 /* delimiter tag in order to let DcmSequenceOfItems handle the delimiter in the reading routine. */
-                else if ( (errorFlag == EC_PrematureSequDelimitationItem) && dcmIgnoreParsingErrors.get() )
+                else if ((errorFlag == EC_PrematureSequDelimitationItem) && dcmIgnoreParsingErrors.get())
                 {
-                     DCMDATA_WARN("DcmItem: Sequence delimitation occured before all bytes announced by explicit item length could be read"
+                     DCMDATA_WARN("DcmItem: Sequence delimitation occurred before all bytes announced by explicit item length could be read"
                          << ", trying to continue as if item was completely read");
                     errorFlag = EC_ItemEnd;  // make sure that error code leads to normal return from item reading loop
                     break; // we are completed with the item since sequence is closed
@@ -1328,8 +1328,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     if ((newTag.getGroup() == 0x0000) || (newTag.getGroup() == 0x0002) || !newTag.hasValidGroup())
                         DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
                 }
-            } else
-            {
+            } else {
                 /* if lastElementComplete is false, we have only read the current element's */
                 /* tag and length (and possibly VR) information as well as maybe some data */
                 /* data value information. We need to continue reading the data value */
@@ -1354,7 +1353,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                           ident() == EVR_dataset)
                     {
                         DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
-                            << " encountered, skipping rest of dataset");
+                            << " encountered, skipping rest of data set");
                         readStopElem = OFTrue;
                     }
                 }
