@@ -602,6 +602,17 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                         const E_AddMode addMode = AM_belowCurrent,
                                         const E_RelationshipType defaultRelType = RT_unknown);
 
+    /** expand all "included template" content items in a given (sub)tree.
+     *  Expanding means that all instances of DSRIncludedTemplateTreeNode are replaced by
+     *  their content (subtree).
+     *  Please note that the internal cursor of the given 'tree' is set to the root node
+     *  if no error occurred.  Otherwise, the cursor points to the content item that
+     *  caused the problem.
+     ** @param  tree  pointer to the subtree that should be expanded
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition expandIncludedTemplates(DSRDocumentSubTree *tree) const;
+
     /** check the by-reference relationships (if any) for validity.
      *  This function checks whether all by-reference relationships possibly contained
      *  in the document tree are valid according to the following restrictions: source
@@ -638,7 +649,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition checkSubTreeConstraints(const DSRDocumentSubTree *tree,
-                                                const DSRIODConstraintChecker *checker);
+                                                const DSRIODConstraintChecker *checker) const;
 
     /// check relationship content constraints of the associated IOD
     DSRIODConstraintChecker *ConstraintChecker;

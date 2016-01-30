@@ -732,62 +732,11 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
         tree = clone();
         if (tree != NULL)
         {
-            OFBool nodeDeleted;
-            const DSRDocumentTreeNode *node;
-            /* iterate over all nodes */
-            do {
-                node = tree->getNode();
-                nodeDeleted = OFFalse;
-                if (node != NULL)
-                {
-                    /* and expand the included templates (if any) */
-                    if (node->getValueType() == VT_includedTemplate)
-                    {
-                        const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValue().get();
-                        if (subTempl != NULL)
-                        {
-                            /* template has no content items */
-                            if (subTempl->isEmpty())
-                            {
-                                /* just remove current node (included template) */
-                                nodeDeleted = (tree->removeNode() > 0);
-                            } else {
-                                /* clone the subtree managed by the template */
-                                DSRDocumentSubTree *subTree = subTempl->cloneTree();
-                                if (subTree != NULL)
-                                {
-                                    /* check whether there are any "unknown" relationships on top level */
-                                    const E_RelationshipType defaultRelType = node->getRelationshipType();
-                                    DSRDocumentTreeNodeCursor cursor(subTree->getRoot());
-                                    do {
-                                        DSRDocumentTreeNode *curNode = cursor.getNode();
-                                        /* if so, replace them with the "default" relationship type */
-                                        if ((curNode != NULL) && (curNode->getRelationshipType() == RT_unknown))
-                                            curNode->setRelationshipType(defaultRelType);
-                                    } while (cursor.gotoNext());
-                                    /* replace the current node (and its children) with the cloned subtree */
-                                    if (tree->replaceNode(subTree->getRoot()) > 0)
-                                    {
-                                        /* "forget" reference to root node */
-                                        subTree->getAndRemoveRootNode();
-                                    } else
-                                        result = SR_EC_CannotInsertSubTree;
-                                    /* free memory */
-                                    delete subTree;
-                                } else
-                                    result = EC_MemoryExhausted;
-                            }
-                        }
-                    }
-                } else
-                    result = SR_EC_InvalidDocumentTree;
-            } while (result.good() && (nodeDeleted || tree->iterate()));
-            /* finally, set cursor back to root node */
-            if (result.good())
-                tree->gotoRoot();
-            else
+            /* expand all "included template" nodes in the new tree */
+            result = expandIncludedTemplates(tree);
+            /* in case of error, free memory */
+            if (result.bad())
             {
-                /* in case of error, free memory */
                 delete tree;
                 tree = NULL;
             }
@@ -936,6 +885,71 @@ OFCondition DSRDocumentSubTree::includeTemplate(const DSRSharedSubTemplate &subT
 }
 
 
+OFCondition DSRDocumentSubTree::expandIncludedTemplates(DSRDocumentSubTree *tree) const
+{
+    OFCondition result = EC_Normal;
+    /* make sure that the passed tree pointer is valid and the tree is not empty */
+    if ((tree != NULL) && (tree->gotoRoot() > 0))
+    {
+        OFBool nodeDeleted;
+        const DSRDocumentTreeNode *node;
+        /* iterate over all nodes */
+        do {
+            node = tree->getNode();
+            nodeDeleted = OFFalse;
+            if (node != NULL)
+            {
+                /* and expand the included templates (if any) */
+                if (node->getValueType() == VT_includedTemplate)
+                {
+                    const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValue().get();
+                    if (subTempl != NULL)
+                    {
+                        /* template has no content items */
+                        if (subTempl->isEmpty())
+                        {
+                            /* just remove current node (included template) */
+                            nodeDeleted = (tree->removeNode() > 0);
+                        } else {
+                            /* clone the subtree managed by the template */
+                            DSRDocumentSubTree *subTree = subTempl->cloneTree();
+                            if (subTree != NULL)
+                            {
+                                /* check whether there are any "unknown" relationships on top level */
+                                const E_RelationshipType defaultRelType = node->getRelationshipType();
+                                DSRDocumentTreeNodeCursor cursor(subTree->getRoot());
+                                do {
+                                    DSRDocumentTreeNode *curNode = cursor.getNode();
+                                    /* if so, replace them with the "default" relationship type */
+                                    if ((curNode != NULL) && (curNode->getRelationshipType() == RT_unknown))
+                                        curNode->setRelationshipType(defaultRelType);
+                                } while (cursor.gotoNext());
+                                /* replace the current node (and its children) with the cloned subtree */
+                                if (tree->replaceNode(subTree->getRoot()) > 0)
+                                {
+                                    /* "forget" reference to root node */
+                                    subTree->getAndRemoveRootNode();
+                                } else
+                                    result = SR_EC_CannotInsertSubTree;
+                                /* free memory */
+                                delete subTree;
+                            } else
+                                result = EC_MemoryExhausted;
+                        }
+                    }
+                }
+            } else
+                result = SR_EC_InvalidDocumentTree;
+        } while (result.good() && (nodeDeleted || tree->iterate()));
+        /* finally, set cursor back to root node */
+        if (result.good())
+            tree->gotoRoot();
+    } else
+        result = EC_IllegalParameter;
+    return result;
+}
+
+
 OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                                               const size_t flags)
 {
@@ -1066,7 +1080,7 @@ void DSRDocumentSubTree::updateTreeForOutput()
 
 
 OFCondition DSRDocumentSubTree::checkSubTreeConstraints(const DSRDocumentSubTree *tree,
-                                                        const DSRIODConstraintChecker *checker)
+                                                        const DSRIODConstraintChecker *checker) const
 {
     OFCondition result = EC_Normal;
     /* make sure that the passed tree pointer is valid */
