@@ -424,7 +424,7 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
                 result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
         } else {
             /* certain relationships are never allowed */
-            result = (relationshipType != RT_isRoot) && (relationshipType != RT_unknown);
+            result = (relationshipType != RT_isRoot) && (relationshipType != RT_unknown) && (targetValueType != VT_includedTemplate);
         }
     }
     return result;

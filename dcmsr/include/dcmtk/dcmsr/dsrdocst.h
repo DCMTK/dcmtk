@@ -267,7 +267,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     /** check whether specified by-reference relationship can be added to the current
      *  content item.
      *  Always returns true if no constraint checker is available but 'relationshipType' and
-     *  'targetValueType' have valid values.
+     *  'targetValueType' have valid values.  The value type DSRTypes::VT_includedTemplate is
+     *  never allowed for the target content item.
      ** @param  relationshipType  type of relationship between current and target node
      *  @param  targetValueType   value type of the referenced node (target content item)
      ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
