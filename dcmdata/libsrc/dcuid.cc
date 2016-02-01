@@ -1384,21 +1384,11 @@ typedef bool(WINAPI *pSnmpExtensionInit) (
         OUT HANDLE *hPollForTrapEvent,
         OUT AsnObjectIdentifier *supportedView);
 
-typedef bool(WINAPI *pSnmpExtensionTrap) (
-        OUT AsnObjectIdentifier *enterprise,
-        OUT AsnInteger32 *genericTrap,
-        OUT AsnInteger32 *specificTrap,
-        OUT AsnTimeticks *timeStamp,
-        OUT SnmpVarBindList *variableBindings);
-
 typedef bool(WINAPI *pSnmpExtensionQuery) (
         IN BYTE requestType,
         IN OUT SnmpVarBindList *variableBindings,
         OUT AsnInteger32 *errorStatus,
         OUT AsnInteger32 *errorIndex);
-
-typedef bool(WINAPI *pSnmpExtensionInitEx) (
-        OUT AsnObjectIdentifier *supportedView);
 
 typedef struct _ASTAT_
 {
@@ -1475,9 +1465,7 @@ static unsigned char *getMACAddress(unsigned char buffer[6])
                 int dtmp;
                 int j = 0;
                 pSnmpExtensionInit m_Init = (pSnmpExtensionInit)GetProcAddress(m_hInst2, "SnmpExtensionInit");
-                /* pSnmpExtensionInitEx m_InitEx = (pSnmpExtensionInitEx)GetProcAddress(m_hInst2, "SnmpExtensionInitEx"); */
                 pSnmpExtensionQuery m_Query = (pSnmpExtensionQuery)GetProcAddress(m_hInst2, "SnmpExtensionQuery");
-                /* pSnmpExtensionTrap m_Trap = (pSnmpExtensionTrap)GetProcAddress(m_hInst2, "SnmpExtensionTrap"); */
                 m_Init(GetTickCount(), &PollForTrapEvent, &SupportedView);
                 /* initialize the variable list to be retrieved by m_Query */
                 varBindList.list = varBind;
