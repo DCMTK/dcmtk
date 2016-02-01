@@ -61,6 +61,7 @@ OFTEST_REGISTER(dcmsr_rootTemplate);
 OFTEST_REGISTER(dcmsr_subTemplate_1);
 OFTEST_REGISTER(dcmsr_subTemplate_2);
 OFTEST_REGISTER(dcmsr_createExpandedTree);
+OFTEST_REGISTER(dcmsr_templateWithByReferenceRelationships);
 OFTEST_REGISTER(dcmsr_validCompleteOrEmptyCode);
 OFTEST_REGISTER(dcmsr_setCodeValueType);
 OFTEST_REGISTER(dcmsr_determineCodeValueType);

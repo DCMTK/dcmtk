@@ -45,7 +45,9 @@ DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
     ConstraintChecker(NULL),
     CurrentContentItem()
 {
-    /* the real work is done in the base class DSRTree */
+    /* the real work is done in the base class DSRTree,
+     * so just update the by-reference relationships (if any) */
+    checkByReferenceRelationships(CM_updateNodeID);
 }
 
 
@@ -565,11 +567,25 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
                             }
                         }
                     }
+                } else {
+                    /* report a warning with some details to the debug logger */
+                    DCMSR_DEBUG("Invalid by-reference relationship from content item \""
+                        << sourceString << "\" to \"" << targetString << "\" (loop check)");
                 }
+            } else {
+                /* report a warning with some details to the debug logger */
+                DCMSR_DEBUG("Target content item of by-reference relationship does not exist");
             }
         }
     }
     return nodeID;
+}
+
+
+OFCondition DSRDocumentSubTree::updateByReferenceRelationships()
+{
+    /* update the position strings of by-reference relationships */
+    return checkByReferenceRelationships(CM_updatePositionString);
 }
 
 
@@ -1025,7 +1041,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                             /* check whether relationship is valid */
                                             if ((ConstraintChecker != NULL) &&
                                                 !ConstraintChecker->checkContentRelationship(parentNode->getValueType(), relationshipType,
-                                                                                                targetNode->getValueType(), OFTrue /*byReference*/))
+                                                                                             targetNode->getValueType(), OFTrue /*byReference*/))
                                             {
                                                 if (refContentItem.empty())
                                                     DCMSR_WARN("Invalid by-reference relationship at content item \"" << nodePosString << "\"");

@@ -84,6 +84,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  Please note that the internal cursor is not copied but reset, i.e. set to the root
      *  node.  Also the IOD constraint checker is not copied by this class but recreated
      *  by the derived class DSRDocumentTree (based on the corresponding document type).
+     *  This constructor also updates any by-reference relationships, i.e. translates the
+     *  references from the source 'tree' (based on the position string) to the IDs of the
+     *  newly created nodes.
      ** @param  tree  subtree to be copied
      */
     DSRDocumentSubTree(const DSRDocumentSubTree &tree);
@@ -357,6 +360,15 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual size_t addByReferenceRelationship(const E_RelationshipType relationshipType,
                                               const size_t referencedNodeID);
+
+    /** update the position strings used to encode by-reference relationships (if any).
+     *  Internally, this method calls checkByReferenceRelationships() with the 'mode'
+     *  parameter being DSRTypes::CM_updatePositionString.  It should be called before
+     *  this subtree is cloned in order to make sure that the by-reference relationships
+     *  (if any) still work on the cloned subtree.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition updateByReferenceRelationships();
 
     /** check whether specified subtree can be inserted at the current position, i.e.\ added
      *  to the current content item.  Internally, the method canAddContentItem() is used for

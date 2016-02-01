@@ -98,6 +98,29 @@ class SRTestTemplate1500
     }
 };
 
+/* minimal test class for template with by-reference relationship (Measurement Group) */
+class SRTestTemplate1501
+  : public DSRSubTemplate
+{
+
+  public:
+
+    SRTestTemplate1501()
+      : DSRSubTemplate("1501", "DCMR", UID_DICOMContentMappingResource)
+    {
+        setExtensible();
+        /* make sure that at least the top-level CONTAINER is there */
+        OFCHECK(addContentItem(RT_contains, VT_Container, DSRCodedEntryValue("125007,", "DCM", "Measurement Group")).good());
+        /* ... and add two measurements, one referring to the other */
+        OFCHECK(addChildContentItem(RT_contains, VT_Num, DSRCodedEntryValue("12345", "99TEST", "Some Measurement")).good());
+        const size_t nodeID = getNodeID();
+        OFCHECK(addContentItem(RT_contains, VT_Num, DSRCodedEntryValue("09876", "99TEST", "Some other Measurement")).good());
+        OFCHECK(addByReferenceRelationship(RT_inferredFrom, nodeID) > 0);
+        /* update by-reference relationships (prepare for cloning) */
+        OFCHECK(updateByReferenceRelationships().good());
+    }
+};
+
 
 OFTEST(dcmsr_rootTemplate)
 {
@@ -205,4 +228,24 @@ OFTEST(dcmsr_createExpandedTree)
     /* and perform some further checks */
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_EnhancedSR);
     OFCHECK(doc.getTree().compareTemplateIdentification("1500", "DCMR"));
+}
+
+
+OFTEST(dcmsr_templateWithByReferenceRelationships)
+{
+    /* first, create an almost empty "Planar ROI Measurements" (TID 1410) */
+    SRTestTemplate1410 templ;
+    /* insert sub-template with by-reference relationship */
+    OFCHECK(templ.insertTemplate(SRTestTemplate1501(), DSRTypes::AM_afterCurrent, DSRTypes::RT_contains).good());
+    /* then, go to the source content item of the by-reference relationship */
+    OFCHECK(templ.gotoNamedNode(DSRCodedEntryValue("09876", "99TEST", "Some other Measurement")) > 0);
+    /* check whether the correct content item has been found */
+    OFCHECK(templ.getCurrentContentItem().getValueType() == DSRTypes::VT_Num);
+    /* and, finally, check whether the by-reference relationship is still valid */
+    OFCHECK(templ.gotoChild() > 0);
+    OFCHECK(templ.getCurrentContentItem().getValueType() == DSRTypes::VT_byReference);
+    OFCHECK(templ.getCurrentContentItem().getReferencedNodeID() > 0);
+
+    // TODO: continue with the test case as soon as support for by-reference relationships
+    //       and "included templates" has improved, i.e. the position counter works as expected
 }
