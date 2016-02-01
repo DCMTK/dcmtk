@@ -140,7 +140,7 @@ template<typename T = DSRTreeNode> class DSRTreeNodeCursor
      *  Can be used to have a lookup to the parent node without changing the cursor.
      ** @return pointer to parent node (if any), NULL otherwise
      */
-    virtual const T *getParentNode();
+    virtual const T *getParentNode() const;
 
     /** get pointer to first child node.
      *  Can be used to have a lookup to the first child node without changing the cursor.
@@ -444,14 +444,11 @@ T *DSRTreeNodeCursor<T>::getNode() const
 
 
 template<typename T>
-const T *DSRTreeNodeCursor<T>::getParentNode()
+const T *DSRTreeNodeCursor<T>::getParentNode() const
 {
     T *node = NULL;
     if (hasParentNode())
-    {
-        /* this method is not "const" because of OFStack.top() */
         node = NodeCursorStack.top();
-    }
     return node;
 }
 
