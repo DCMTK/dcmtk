@@ -132,6 +132,14 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
     using DSRDocumentSubTree::print;
     using DSRDocumentSubTree::writeXML;
     using DSRDocumentSubTree::countNodes;
+    using DSRDocumentSubTree::iterate;
+    using DSRDocumentSubTree::gotoRoot;
+    using DSRDocumentSubTree::gotoFirst;
+    using DSRDocumentSubTree::gotoLast;
+    using DSRDocumentSubTree::gotoPrevious;
+    using DSRDocumentSubTree::gotoNext;
+    using DSRDocumentSubTree::gotoParent;
+    using DSRDocumentSubTree::gotoChild;
     using DSRDocumentSubTree::gotoNamedNode;
     using DSRDocumentSubTree::gotoNextNamedNode;
     using DSRDocumentSubTree::gotoAnnotatedNode;
