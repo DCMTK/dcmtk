@@ -142,6 +142,12 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
     using DSRDocumentTree::print;
     using DSRDocumentTree::writeXML;
     using DSRDocumentTree::countNodes;
+    using DSRDocumentTree::countChildNodes;
+    using DSRDocumentTree::hasParentNode;
+    using DSRDocumentTree::hasChildNodes;
+    using DSRDocumentTree::hasPreviousNode;
+    using DSRDocumentTree::hasNextNode;
+    using DSRDocumentTree::hasSiblingNodes;
     using DSRDocumentTree::iterate;
     using DSRDocumentTree::gotoRoot;
     using DSRDocumentTree::gotoFirst;
