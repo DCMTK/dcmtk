@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -26,11 +26,12 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmsr/dsrtpltn.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/dsrtextn.h"
 
 
-OFTEST(dcmsr_addContentItem)
+OFTEST(dcmsr_addContentItem_1)
 {
     /* first, create an SR document to get an empty SR tree */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
@@ -58,6 +59,16 @@ OFTEST(dcmsr_addContentItem)
     OFCHECK(tree.addContentItem(DSRTypes::RT_unknown, DSRTypes::VT_Text) == 0);
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container) == 0);
     /* NB: this test does not always delete allocated memory (if adding a node fails) */
+}
+
+
+OFTEST(dcmsr_addContentItem_2)
+{
+    /* first, create an empty document subtree */
+    DSRDocumentSubTree tree;
+    /* then, try to add some invalid content items */
+    OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_byReference), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
+    OFCHECK(tree.addContentItem(new DSRIncludedTemplateTreeNode(DSRSharedSubTemplate(NULL), DSRTypes::RT_contains), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
 }
 
 

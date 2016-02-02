@@ -381,30 +381,34 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
     /* never accept invalid types */
     if ((relationshipType != RT_invalid) && (valueType != VT_invalid))
     {
-        const DSRDocumentTreeNode *node = getNode();
-        if (node != NULL)
+        /* also do not accept internal types */
+        if ((valueType != VT_byReference) && (valueType != VT_includedTemplate))
         {
-            /* do we have an IOD constraint checker? */
-            if (ConstraintChecker != NULL)
+            const DSRDocumentTreeNode *node = getNode();
+            if (node != NULL)
             {
-                if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
+                /* do we have an IOD constraint checker? */
+                if (ConstraintChecker != NULL)
                 {
-                    /* check parent node */
-                    node = getParentNode();
-                    if (node != NULL)
+                    if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
+                    {
+                        /* check parent node */
+                        node = getParentNode();
+                        if (node != NULL)
+                            result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
+                    } else
                         result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
-                } else
-                    result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
+                }
+                /* a root node can only be added to an empty tree */
+                else if (relationshipType != RT_isRoot)
+                {
+                    /* "unknown" relationships are only allowed on top-level */
+                    result = (!hasParentNode() && (addMode != AM_belowCurrent)) || (relationshipType != RT_unknown);
+                }
+            } else {
+                /* no special rules for root node (at least in a subtree) */
+                result = OFTrue;
             }
-            /* a root node can only be added to an empty tree */
-            else if (relationshipType != RT_isRoot)
-            {
-                /* "unknown" relationships are only allowed on top-level */
-                result = (!hasParentNode() && (addMode != AM_belowCurrent)) || (relationshipType != RT_unknown);
-            }
-        } else {
-            /* no special rules for root node (at least in a subtree) */
-            result = OFTrue;
         }
     }
     return result;

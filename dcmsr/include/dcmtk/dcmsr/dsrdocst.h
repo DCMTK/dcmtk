@@ -253,7 +253,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
 
     /** check whether specified content item can be added to the current one.
      *  This method can be used to decide which type of content items can be added prior
-     *  to really doing so.
+     *  to really doing so.  Please note that only by-value relationships are supported.
      *  Always returns true if no constraint checker is available but 'relationshipType'
      *  and 'valueType' have valid values.
      ** @param  relationshipType  relationship type of node to be checked with regard to
