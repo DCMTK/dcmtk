@@ -1,10 +1,10 @@
 /*!
 
-\page mod_dcmsr dcmsr: a structured report library and utility apps
+\page mod_dcmsr dcmsr: a structured reporting library and utility apps
 
 This module contains classes to read, write, create, modify, access, print and
-render DICOM Structured Reporting documents (formerly Supplement 23). The list
-of supported SOP classes is provided in DSRTypes::E_DocumentType.
+render DICOM Structured Reporting (SR) documents. The list of supported SOP
+classes is provided in DSRTypes::E_DocumentType.
 
 The main interface classes are:
 \li \b DSRDocument
