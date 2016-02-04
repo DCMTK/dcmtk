@@ -112,7 +112,7 @@ OFCondition DSRIncludedTemplateTreeNode::printTemplate(STD_NAMESPACE ostream &st
 {
     OFCondition result = EC_Normal;
     /* print content of included template (if non-empty) */
-    if (!ReferencedTemplate->isEmpty())
+    if (hasValidValue() && !ReferencedTemplate->isEmpty())
         result = ReferencedTemplate->print(stream, flags, posCounter);
     else if (posCounter != NULL)
     {
@@ -128,7 +128,7 @@ OFCondition DSRIncludedTemplateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 {
     OFCondition result = EC_Normal;
     /* write content of included template in XML format (if non-empty) */
-    if (!ReferencedTemplate->isEmpty())
+    if (hasValidValue() && !ReferencedTemplate->isEmpty())
     {
         OFString templateIdentifier, mappingResource;
         /* output details on beginning of included template (if enabled) */
