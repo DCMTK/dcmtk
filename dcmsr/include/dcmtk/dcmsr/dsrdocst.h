@@ -265,7 +265,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFBool canAddContentItem(const E_RelationshipType relationshipType,
                                      const E_ValueType valueType,
-                                     const E_AddMode addMode = AM_afterCurrent);
+                                     const E_AddMode addMode = AM_afterCurrent) const;
 
     /** check whether specified by-reference relationship can be added to the current
      *  content item.
@@ -277,7 +277,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
      */
     virtual OFBool canAddByReferenceRelationship(const E_RelationshipType relationshipType,
-                                                 const E_ValueType targetValueType);
+                                                 const E_ValueType targetValueType) const;
 
     /** add specified content item to the current one.
      *  If possible, this method creates a new node as specified and adds it to the current
@@ -385,7 +385,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFBool canInsertSubTree(const DSRDocumentSubTree *tree,
                                     const E_AddMode addMode = AM_belowCurrent,
-                                    const E_RelationshipType defaultRelType = RT_unknown);
+                                    const E_RelationshipType defaultRelType = RT_unknown) const;
 
     /** insert specified subtree to this tree, i.e.\ add it to the current content item.
      *  If possible, this method adds a given new subtree to the current content item.

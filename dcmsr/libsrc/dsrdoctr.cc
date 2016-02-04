@@ -307,7 +307,7 @@ OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentTyp
 
 OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipType,
                                           const E_ValueType valueType,
-                                          const E_AddMode addMode)
+                                          const E_AddMode addMode) const
 {
     OFBool result = OFFalse;
     if (isEmpty())
@@ -326,7 +326,7 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
 
 OFBool DSRDocumentTree::canInsertSubTree(const DSRDocumentSubTree *tree,
                                          const E_AddMode addMode,
-                                         const E_RelationshipType defaultRelType)
+                                         const E_RelationshipType defaultRelType) const
 {
     OFBool result = OFFalse;
     if (isEmpty())

@@ -375,7 +375,7 @@ size_t DSRDocumentSubTree::gotoNextAnnotatedNode(const OFString &annotationText)
 
 OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationshipType,
                                              const E_ValueType valueType,
-                                             const E_AddMode addMode)
+                                             const E_AddMode addMode) const
 {
     OFBool result = OFFalse;
     /* never accept invalid types */
@@ -416,7 +416,7 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
 
 
 OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipType relationshipType,
-                                                         const E_ValueType targetValueType)
+                                                         const E_ValueType targetValueType) const
 {
     OFBool result = OFFalse;
     /* never accept invalid types */
@@ -595,7 +595,7 @@ OFCondition DSRDocumentSubTree::updateByReferenceRelationships()
 
 OFBool DSRDocumentSubTree::canInsertSubTree(const DSRDocumentSubTree *tree,
                                             const E_AddMode addMode,
-                                            const E_RelationshipType defaultRelType)
+                                            const E_RelationshipType defaultRelType) const
 {
     OFBool result = OFFalse;
     if (tree != NULL)

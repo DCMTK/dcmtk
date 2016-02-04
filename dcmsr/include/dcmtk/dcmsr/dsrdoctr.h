@@ -185,7 +185,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      */
     virtual OFBool canAddContentItem(const E_RelationshipType relationshipType,
                                      const E_ValueType valueType,
-                                     const E_AddMode addMode = AM_afterCurrent);
+                                     const E_AddMode addMode = AM_afterCurrent) const;
 
     /** check whether specified subtree can be inserted at the current position, i.e.\ added
      *  to the current content item.
@@ -202,7 +202,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      */
     virtual OFBool canInsertSubTree(const DSRDocumentSubTree *tree,
                                     const E_AddMode addMode = AM_belowCurrent,
-                                    const E_RelationshipType defaultRelType = RT_unknown);
+                                    const E_RelationshipType defaultRelType = RT_unknown) const;
 
     /** check whether the document tree complies with the constraints of the given checker.
      *  This method also checks whether the currently stored document tree is either empty
