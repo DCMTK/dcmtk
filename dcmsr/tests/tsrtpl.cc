@@ -38,7 +38,7 @@ class SRTestTemplate2000
   public:
 
     SRTestTemplate2000()
-      : DSRRootTemplate(DSRTypes::DT_BasicTextSR, "2000", "DCMR", UID_DICOMContentMappingResource)
+      : DSRRootTemplate(DT_BasicTextSR, "2000", "DCMR", UID_DICOMContentMappingResource)
     {
         /* make sure that at least the root CONTAINER is there */
         OFCHECK(addContentItem(RT_isRoot, VT_Container) > 0);
@@ -88,7 +88,7 @@ class SRTestTemplate1500
   public:
 
     SRTestTemplate1500()
-      : DSRRootTemplate(DSRTypes::DT_EnhancedSR, "1500", "DCMR", UID_DICOMContentMappingResource)
+      : DSRRootTemplate(DT_EnhancedSR, "1500", "DCMR", UID_DICOMContentMappingResource)
     {
         /* make sure that at least the root CONTAINER is there */
         OFCHECK(addContentItem(RT_isRoot, VT_Container, DSRCodedEntryValue("126000", "DCM", "Imaging Measurement Report")).good());
@@ -118,6 +118,42 @@ class SRTestTemplate1501
         OFCHECK(addByReferenceRelationship(RT_inferredFrom, nodeID) > 0);
         /* update by-reference relationships (prepare for cloning) */
         OFCHECK(updateByReferenceRelationships().good());
+    }
+};
+
+
+/* minimal test class for included sub-template with contained by-reference relationship */
+class SRTestTemplate1410with1501
+  : public DSRSubTemplate
+{
+
+  public:
+
+    SRTestTemplate1410with1501()
+      : DSRSubTemplate("1410", "DCMR")
+    {
+        setExtensible();
+        /* insert sub-template some content items */
+        OFCHECK(insertTemplate(SRTestTemplate1410(), AM_belowCurrent, RT_contains).good());
+        /* include sub-template with by-reference relationship */
+        OFCHECK(includeTemplate(DSRSharedSubTemplate(new SRTestTemplate1501()), AM_belowCurrent, RT_contains).good());
+    }
+};
+
+
+/* minimal test class for root template with the mandatory CONTAINER */
+class SRTestRootTemplate
+  : public DSRRootTemplate
+{
+
+  public:
+
+    SRTestRootTemplate()
+      : DSRRootTemplate(DT_ComprehensiveSR, "0815", "99TEST")
+    {
+        setExtensible();
+        /* make sure that at least the root CONTAINER is there */
+        OFCHECK(addContentItem(RT_isRoot, VT_Container, DSRCodedEntryValue("1234", "99TEST", "Some test code")).good());
     }
 };
 
@@ -231,7 +267,7 @@ OFTEST(dcmsr_createExpandedTree)
 }
 
 
-OFTEST(dcmsr_templateWithByReferenceRelationships)
+OFTEST(dcmsr_templateWithByReferenceRelationship_1)
 {
     /* first, create an almost empty "Planar ROI Measurements" (TID 1410) */
     SRTestTemplate1410 templ;
@@ -246,6 +282,29 @@ OFTEST(dcmsr_templateWithByReferenceRelationships)
     OFCHECK(templ.getCurrentContentItem().getValueType() == DSRTypes::VT_byReference);
     OFCHECK(templ.getCurrentContentItem().getReferencedNodeID() > 0);
 
-    // TODO: continue with the test case as soon as support for by-reference relationships
-    //       and "included templates" has improved, i.e. the position counter works as expected
+    // tbd: by-reference relationships do not yet work correctly if contained
+    //      in an "included template" content item, i.e. in a nested subtree
+}
+
+
+OFTEST(dcmsr_templateWithByReferenceRelationship_2)
+{
+    DSRDocument doc;
+    /* first, create a sub-template with included sub-template */
+    SRTestTemplate1410with1501 subTempl;
+    OFCHECK_EQUAL(subTempl.countNodes(), 4);
+    OFCHECK_EQUAL(subTempl.countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 7);
+    /* then, create a root template with a CONTAINER content item */
+    SRTestRootTemplate rootTempl;
+    OFCHECK_EQUAL(rootTempl.countNodes(), 1);
+    /* and insert the sub-template into it */
+    OFCHECK(rootTempl.insertTemplate(subTempl).good());
+    OFCHECK_EQUAL(rootTempl.countNodes(), 5);
+    OFCHECK_EQUAL(rootTempl.countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 8);
+    /* finally, set its content as the document tree */
+    OFCHECK(doc.setTreeFromRootTemplate(rootTempl, OFTrue /*expandTree*/).good());
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 8);
+
+    // tbd: by-reference relationships do not yet work correctly if contained
+    //      in an "included template" content item, i.e. in a nested subtree
 }

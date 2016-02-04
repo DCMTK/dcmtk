@@ -1128,6 +1128,13 @@ OFCondition DSRDocumentSubTree::checkSubTreeConstraints(const DSRDocumentSubTree
                             check = checker->checkContentRelationship(parent->getValueType(),
                                                                       node->getRelationshipType(), targetValueType,
                                                                       OFTrue /*byReference*/);
+                        }
+                        /* is it an included template? */
+                        else if (node->getValueType() == VT_includedTemplate)
+                        {
+                            // tbd: need to implement a proper check for this case
+                            DCMSR_TRACE("DSRDocumentSubTree::checkSubTreeConstraints() Need to check subtree of included template "
+                                << "at node id:" << node->getNodeID() << " ... not yet implemented");
                         } else {
                             /* check whether the relationship with parent is allowed */
                             check = checker->checkContentRelationship(parent->getValueType(),
