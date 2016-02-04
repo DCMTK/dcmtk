@@ -190,23 +190,9 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
         /* iterate over all nodes */
         do {
             node = cursor.getNode();
-            /* special handling for included templates */
-            if (node->getValueType() == VT_includedTemplate)
+            /* check whether to print node ID, position, indentation at all */
+            if ((node->getValueType() != VT_includedTemplate) || !(flags & PF_hideIncludedTemplateNodes))
             {
-                /* print separate line for internal template node (if requested) */
-                if (flags & PF_printIncludedTemplateNode)
-                {
-                    /* print node ID (might be useful for debugging purposes) */
-                    if (flags & PF_printNodeID)
-                        stream << "id:" << node->getNodeID() << " ";
-                    /* print content of template node */
-                    node->print(stream, flags);
-                    stream << OFendl;
-                }
-                /* print content of included template (subtree) */
-                if (node->hasValidValue())
-                    result = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, &cursor.getPositionCounter());
-            } else {
                 /* print node ID (might be useful for debugging purposes) */
                 if (flags & PF_printNodeID)
                     stream << "id:" << node->getNodeID() << " ";
@@ -221,6 +207,25 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     if (level > 0)  // valid ?
                         stream << OFString((level - 1) * 2, ' ');
                 }
+            }
+            /* special handling for included templates */
+            if (node->getValueType() == VT_includedTemplate)
+            {
+                /* print separate line for internal template node (if requested) */
+                if (!(flags & PF_hideIncludedTemplateNodes))
+                {
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                    /* print content of template node */
+                    node->print(stream, flags);
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
+                    stream << OFendl;
+                }
+                /* increase position counter even if internal template node is not shown */
+                ++cursor.getPositionCounter();
+                /* print content of included template (subtree) */
+                if (node->hasValidValue())
+                    result = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, &cursor.getPositionCounter());
+            } else {
                 /* print node content */
                 DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                 stream << "<";
@@ -600,8 +605,7 @@ OFBool DSRDocumentSubTree::canInsertSubTree(const DSRDocumentSubTree *tree,
     OFBool result = OFFalse;
     if (tree != NULL)
     {
-        const DSRDocumentTreeNode *currentNode = getNode();
-        if (currentNode != NULL)
+        if (getNode() != NULL)
         {
             /* check whether the top-level nodes of the subtree can be added */
             DSRDocumentTreeNodeCursor cursor(tree->getRoot());

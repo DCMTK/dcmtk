@@ -342,8 +342,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
         report.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
-                           DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printIncludedTemplateNode |
-                           DSRTypes::PF_printLongSOPClassName);
+                           DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
     }
 }
 

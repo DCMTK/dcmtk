@@ -443,8 +443,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// print annotation of a content item (optional, e.g. user-defined information)
     static const size_t PF_printAnnotation;
 
-    /// print internal "included template" node (might be useful for debugging purposes)
-    static const size_t PF_printIncludedTemplateNode;
+    /// do not print internal "included template" nodes (position counter is still increased)
+    static const size_t PF_hideIncludedTemplateNodes;
 
     /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;

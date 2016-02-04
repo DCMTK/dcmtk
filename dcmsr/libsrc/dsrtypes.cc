@@ -143,7 +143,7 @@ const size_t DSRTypes::PF_printInvalidCodes              = 1 << 9;
 const size_t DSRTypes::PF_printNodeID                    = 1 << 10;
 const size_t DSRTypes::PF_indicateEnhancedEncodingMode   = 1 << 11;
 const size_t DSRTypes::PF_printAnnotation                = 1 << 12;
-const size_t DSRTypes::PF_printIncludedTemplateNode      = 1 << 13;
+const size_t DSRTypes::PF_hideIncludedTemplateNodes      = 1 << 13;
 /* shortcuts */
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
