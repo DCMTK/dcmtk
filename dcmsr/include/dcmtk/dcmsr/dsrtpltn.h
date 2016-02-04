@@ -42,7 +42,8 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
 
   public:
 
-    /** constructor
+    /** constructor.
+     *  Also sets the template identification if available from 'referencedTemplate'.
      ** @param  referencedTemplate  shared pointer to template that should be managed
      *  @param  defaultRelType      default relationship type of the included template
      */
