@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -217,9 +217,10 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *                      encoding specified by 'codePage')
      *  @param  toString    reference to variable in which the pointer to the
      *                      converted string (using the UTF-16 character
-     *                      encoding) is stored.  Might be NULL in case of
-     *                      error.  Please note that the buffer is created
-     *                      with new[] and has to be deleted by the caller.
+     *                      encoding) is stored.  Might only be NULL if memory
+     *                      is exhausted.  Please note that the buffer is
+     *                      created with new[] and has to be deleted by the
+     *                      caller.
      *  @param  toLength    number of converted characters, i.e.\ length of
      *                      'toString'
      *  @param  codePage    identifier of the code page to be used for the
@@ -246,9 +247,10 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *                      without the trailing NULL byte)
      *  @param  toString    reference to variable in which the pointer to the
      *                      converted string (using the UTF-16 character
-     *                      encoding) is stored.  Might be NULL in case of
-     *                      error.  Please note that the buffer is created
-     *                      with new[] and has to be deleted by the caller.
+     *                      encoding) is stored.  Might only be NULL if memory
+     *                      is exhausted.  Please note that the buffer is
+     *                      created with new[] and has to be deleted by the
+     *                      caller.
      *  @param  toLength    number of converted characters, i.e.\ length of
      *                      'toString'
      *  @param  codePage    identifier of the code page to be used for the
