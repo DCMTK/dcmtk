@@ -220,11 +220,23 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
                     stream << OFendl;
                 }
-                /* increase position counter even if internal template node is not shown */
-                ++cursor.getPositionCounter();
                 /* print content of included template (subtree) */
                 if (node->hasValidValue())
-                    result = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->printTemplate(stream, flags, &cursor.getPositionCounter());
+                {
+                    DSRSubTemplate *subTempl = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->getValue().get();
+                    /* further indent included subtree */
+                    if (!(flags & PF_hideIncludedTemplateNodes))
+                        cursor.getPositionCounter().goDown();
+                    /* only print non-empty template (subtree) */
+                    if (!subTempl->isEmpty())
+                        result = subTempl->print(stream, flags, &cursor.getPositionCounter());
+                    /* make sure that empty templates are not counted */
+                    else if (flags & PF_hideIncludedTemplateNodes)
+                        --cursor.getPositionCounter();
+                    /* reset indentation of included subtree */
+                    if (!(flags & PF_hideIncludedTemplateNodes))
+                        cursor.getPositionCounter().goUp();
+                }
             } else {
                 /* print node content */
                 DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)

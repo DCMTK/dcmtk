@@ -80,7 +80,7 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     virtual OFBool isValid() const;
 
     /** check whether the value of the content item, i.e.\ the reference to the included
-     *  template is valid.
+     *  template is valid.  See getValue().
      ** @return OFTrue if the value is valid, OFFalse otherwise
      */
     virtual OFBool hasValidValue() const;
@@ -101,18 +101,6 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      */
     virtual OFCondition print(STD_NAMESPACE ostream &stream,
                               const size_t flags) const;
-
-    /** print content of included template
-     ** @param  stream      output stream to which the template should be printed
-     *  @param  flags       flag used to customize the output (see DSRTypes::PF_xxx)
-     *  @param  posCounter  optional pointer to position counter that should be used
-     *                      for line indentation or numbering of nested content items
-     ** @return status, EC_Normal if successful (or included template is empty, so there
-     *          is nothing to do), an error code otherwise
-     */
-    virtual OFCondition printTemplate(STD_NAMESPACE ostream &stream,
-                                      const size_t flags,
-                                      DSRPositionCounter *posCounter = NULL);
 
     /** write content of included template in XML format
      ** @param  stream  output stream to which the XML document is written
