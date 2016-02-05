@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2014, OFFIS e.V.
+ *  Copyright (C) 2006-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,7 +140,7 @@ public:
    *    alternative representation.  Only works on Windows systems.
    */
   OFFilename(const wchar_t *filename,
-             const OFBool convert = OFFalse);
+             const OFBool convert = OFTrue);
 #endif
 
   /** copy constructor
@@ -226,7 +226,7 @@ public:
    *    representation.  Only works on Windows systems.
    */
   void set(const wchar_t *filename,
-           const OFBool convert = OFFalse);
+           const OFBool convert = OFTrue);
 #endif
 
 private:
