@@ -85,6 +85,14 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      */
     virtual OFBool hasValidValue() const;
 
+    /** check whether the content is short.
+     *  This method is used to check whether the rendered output of this content item can
+     *  be expanded inline or not (used for renderHTML()).
+     ** @param  flags  flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return OFTrue if the content is short, OFFalse otherwise
+     */
+    virtual OFBool isShort(const size_t flags) const;
+
     /** print content item.
      *  A typical output looks like this: # INCLUDE TID 1600 (DCMR)
      ** @param  stream  output stream to which the content item should be printed

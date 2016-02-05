@@ -82,6 +82,12 @@ OFBool DSRIncludedTemplateTreeNode::hasValidValue() const
 }
 
 
+OFBool DSRIncludedTemplateTreeNode::isShort(const size_t /*flags*/) const
+{
+    return !hasValidValue();
+}
+
+
 OFCondition DSRIncludedTemplateTreeNode::print(STD_NAMESPACE ostream &stream,
                                                const size_t flags) const
 {
