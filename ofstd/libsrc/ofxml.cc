@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -213,7 +213,8 @@ XMLCSTR XMLNode::getError(XMLError xerror)
 // If you plan to "port" the library to a new system/compiler, all you have to do is
 // to edit the following lines.
 #ifdef XML_NO_WIDE_CHAR
-char myIsTextWideChar(const void *b, int len) { return FALSE; }
+// DCMTK: uncomment parameter names to avoid compiler warnings
+char myIsTextWideChar(const void * /*b*/, int /*len*/) { return FALSE; }
 #else
     #if defined (UNDER_CE) || !defined(_XMLWINDOWS)
     char myIsTextWideChar(const void *b, int len) // inspired by the Wine API: RtlIsTextUnicode
@@ -317,7 +318,8 @@ char myIsTextWideChar(const void *b, int len) { return FALSE; }
 #else
 // for gcc and CC
     #ifdef XML_NO_WIDE_CHAR
-        char *myWideCharToMultiByte(const wchar_t *s) { return NULL; }
+        // DCMTK: uncomment parameter name to avoid compiler warning
+        char *myWideCharToMultiByte(const wchar_t * /*s*/) { return NULL; }
     #else
         char *myWideCharToMultiByte(const wchar_t *s)
         {

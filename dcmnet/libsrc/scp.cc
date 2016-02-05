@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2015, OFFIS e.V.
+ *  Copyright (C) 2009-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1894,21 +1894,21 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters &params,
 
 // ----------------------------------------------------------------------------
 
-OFBool DcmSCP::checkCalledAETitleAccepted(const OFString& calledAETitle)
+OFBool DcmSCP::checkCalledAETitleAccepted(const OFString& /*calledAETitle*/)
 {
   return OFTrue;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool DcmSCP::checkCallingAETitleAccepted(const OFString& callingAETitle)
+OFBool DcmSCP::checkCallingAETitleAccepted(const OFString& /*callingAETitle*/)
 {
   return OFTrue;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool DcmSCP::checkCallingHostAccepted(const OFString& hostOrIP)
+OFBool DcmSCP::checkCallingHostAccepted(const OFString& /*hostOrIP*/)
 {
   return OFTrue;
 }

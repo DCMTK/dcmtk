@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -296,7 +296,7 @@ void OFUUID::printHex(STD_NAMESPACE ostream& stream) const
     stream.fill(fill_char);
 }
 
-static void divide_by(Uint32 n, Uint32 d, Uint32& res, Uint32& rem)
+static void divide_by_10(Uint32 n, Uint32& res, Uint32& rem)
 {
     // This calculates res = m / d and rem = m % d where m = n + rem * 2^32
 
@@ -342,10 +342,10 @@ void OFUUID::printInteger(STD_NAMESPACE ostream& stream) const
     // As long as the result isn't 0, divide by 10 and print the remainder
     while (data[0] != 0 || data[1] != 0 || data[2] != 0 || data[3] != 0) {
         Uint32 rem = 0;
-        divide_by(data[0], 10, data[0], rem);
-        divide_by(data[1], 10, data[1], rem);
-        divide_by(data[2], 10, data[2], rem);
-        divide_by(data[3], 10, data[3], rem);
+        divide_by_10(data[0], data[0], rem);
+        divide_by_10(data[1], data[1], rem);
+        divide_by_10(data[2], data[2], rem);
+        divide_by_10(data[3], data[3], rem);
 
         assert(rem <= 9);
         buffer[--idx] = OFstatic_cast(char, rem + '0');

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -921,7 +921,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
 }
 
 
-void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry &transferEntry)
+void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry & /*transferEntry*/)
 {
     // do nothing in the default implementation
 }

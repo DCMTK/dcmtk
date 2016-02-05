@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -164,6 +164,8 @@ void OFFilename::set(const char *filename,
         }
 #endif
 #endif
+        /* avoid compiler warning on unused variable */
+        (void)convert;
     }
 }
 
@@ -193,6 +195,8 @@ void OFFilename::set(const wchar_t *filename,
             filename_ = strdup(tmpString.c_str());
         }
 #endif
+        /* avoid compiler warning on unused variable */
+        (void)convert;
     }
 }
 #endif

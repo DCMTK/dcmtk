@@ -1,13 +1,14 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTModifiedAttributesSequence
  *
  *  Generated automatically from DICOM PS 3.3-2015c
  *  File created on 2015-12-07 16:29:33
+ *  Last modified on 2016-02-05 by Riesmeier
  *
  */
 
@@ -67,24 +68,26 @@ OFBool DRTModifiedAttributesSequence::Item::isValid() const
 }
 
 
-OFCondition DRTModifiedAttributesSequence::Item::read(DcmItem &item)
+OFCondition DRTModifiedAttributesSequence::Item::read(DcmItem & /*item*/)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         /* re-initialize object */
         clear();
+        /* manual comment: nothing to do */
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTModifiedAttributesSequence::Item::write(DcmItem &item)
+OFCondition DRTModifiedAttributesSequence::Item::write(DcmItem & /*item*/)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
+        /* manual comment: nothing to do */
         result = EC_Normal;
     }
     return result;

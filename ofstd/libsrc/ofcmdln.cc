@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1254,7 +1254,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
 
 
 OFCommandLine::E_ParseStatus OFCommandLine::parseArgumentList(OFList<OFString> &argList,
-                                                              const int flags)
+                                                              const int /*flags*/)
 {
     ArgumentList.clear();                                                // initialize lists/positions
     ParamPosList.clear();

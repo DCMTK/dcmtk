@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,8 +156,8 @@ public:
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  thresh  threshhold value specifying percentage of histogram border which
-     *                  shall be ignored (defaut: 5%).
+     ** @param  thresh  threshold value specifying percentage of histogram border which
+     *                  shall be ignored (default: 5%).
      *
      *  @return EC_Normal if successful, else an error code
      */
@@ -239,7 +239,7 @@ private:
      * Hide DRTImageIOD::read(). DicomImage() doesn't allow the dataset that was
      * used for loading the image to be deleted. Thus, read() cannot work.
      */
-    virtual OFCondition read(DcmItem &dataset)
+    virtual OFCondition read(DcmItem & /*dataset*/)
     {
         return EC_IllegalCall;
     }
