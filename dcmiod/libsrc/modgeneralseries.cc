@@ -82,6 +82,31 @@ void IODGeneralSeriesModule::resetRules()
   m_Rules->addRule(new IODRule(DCM_OperatorsName, "1-n","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
   m_Rules->addRule(new IODRule(DCM_BodyPartExamined, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
   m_Rules->addRule(new IODRule(DCM_PatientPosition, "1","2C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedPerformedProcedureStepSequence, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
+}
+
+
+OFCondition IODGeneralSeriesModule::read(DcmItem& source,
+                                         const OFBool clearOldData)
+{
+  if (clearOldData)
+    clearData();
+
+  IODComponent::read(source, OFFalse /* data already cleared */);
+  DcmIODUtil::readSingleItem<SOPInstanceReferenceMacro>(source, DCM_ReferencedPerformedProcedureStepSequence, m_ReferencedPPS, m_Rules->getByTag(DCM_ReferencedPerformedProcedureStepSequence));
+
+  return EC_Normal;
+}
+
+
+OFCondition IODGeneralSeriesModule::write(DcmItem& destination)
+{
+  OFCondition result = EC_Normal;
+
+  result = IODComponent::write(destination);
+  DcmIODUtil::writeSingleItem<SOPInstanceReferenceMacro>(result, DCM_ReferencedPerformedProcedureStepSequence, m_ReferencedPPS, destination, m_Rules->getByTag(DCM_ReferencedPerformedProcedureStepSequence));
+
+  return result;
 }
 
 
@@ -190,6 +215,12 @@ OFCondition IODGeneralSeriesModule::getPatientPosition(OFString &value,
                                                        const signed long pos) const
 {
   return DcmIODUtil::getStringValueFromItem(DCM_PatientPosition, *m_Item, value, pos);
+}
+
+
+SOPInstanceReferenceMacro& IODGeneralSeriesModule::getReferencedPPS()
+{
+  return m_ReferencedPPS;
 }
 
 

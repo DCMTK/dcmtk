@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmiod/ioddef.h"
+#include "dcmtk/dcmiod/iodmacro.h"
 
 /** Class representing the General Series Module:
  *
@@ -82,6 +83,21 @@ public:
    *  @param  correctInvalid Correct invalid UID if OFTrue, otherwise do nothing
    */
   virtual void ensureInstanceUID(const OFBool correctInvalid = OFFalse);
+
+  /** Read attributes from given item into this class
+   *  @param source  The source to read from
+   *  @param clearOldData If OFTrue, old data is cleared before reading. Otherwise
+   *         old data is overwritten (or amended)
+   *  @result EC_Normal if reading was successful, error otherwise
+   */
+  virtual OFCondition read(DcmItem& source,
+                           const OFBool clearOldData = OFTrue);
+
+  /** Write attributes from this class into given item
+   *  @param  destination The item to write to
+   *  @result EC_Normal if writing was successful, error otherwise
+   */
+  virtual OFCondition write(DcmItem& destination);
 
    /** Get Modality
     *  @param  value Reference to variable in which the value should be stored
@@ -178,6 +194,12 @@ public:
     */
   virtual OFCondition getPatientPosition(OFString &value,
                                          const signed long pos = 0) const;
+
+  /** Get reference to Referenced Performed Procedure Step
+   *  @return Reference to PPS
+   */
+  virtual SOPInstanceReferenceMacro& getReferencedPPS();
+
   /** Set Modality
    *  @param  value Value to be set (single value only) or "" for no value
    *  @param  checkValue Check 'value' for conformance with VR (CS) and VM (1)
@@ -293,6 +315,9 @@ private:
 
   /// The name of this module ("GeneralSeriesModule")
   static const OFString m_ModuleName;
+
+  /// Referenced Performed Procedure Step Sequence
+  SOPInstanceReferenceMacro m_ReferencedPPS;
 
 };
 
