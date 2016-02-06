@@ -63,12 +63,6 @@ public:
    */
   OFMap<OFString, DcmTransferSyntaxList*>::const_iterator end();
 
-  /** get transfer syntax list denoted by given key
-   *  @param ts the name of the transfer syntax list
-   *  @return the transfer syntax list
-   */
-  const DcmTransferSyntaxList* getTSList(const OFString& ts);
-
   /** Resets DcmTransferSyntaxMap and frees any allocated memory
    */
   void clear();

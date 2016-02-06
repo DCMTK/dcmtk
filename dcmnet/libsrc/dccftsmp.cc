@@ -77,15 +77,6 @@ OFMap<OFString, DcmTransferSyntaxList*>::const_iterator DcmTransferSyntaxMap::en
   return map_.end();
 }
 
-const DcmTransferSyntaxList* DcmTransferSyntaxMap::getTSList(const OFString& ts)
-{
-  OFMap<OFString, DcmTransferSyntaxList*>::const_iterator it = map_.begin();
-  if ( it == map_.end() )
-  {
-    return NULL;
-  }
-  return (*it).second;
-}
 
 void DcmTransferSyntaxMap::clear()
 {
@@ -96,7 +87,6 @@ void DcmTransferSyntaxMap::clear()
     map_.erase(first);
   }
 }
-
 
 size_t DcmTransferSyntaxMap::size() const
 {
