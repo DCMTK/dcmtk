@@ -66,6 +66,10 @@ void DcmSegmentation::initIODRules()
   getRules()->addRule(new IODRule(DCM_LossyImageCompressionMethod, "1-n", "1C", "GeneralImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
   getRules()->addRule(new IODRule(DCM_LossyImageCompressionRatio, "1-n","1C", "GeneralImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
 
+  // Override rule from General Series Module
+  getRules()->addRule(new IODRule(DCM_ReferencedPerformedProcedureStepSequence, "1","1C", "SegmentationSeriesModule", DcmIODTypes::IE_SERIES), OFTrue);
+  getRules()->addRule(new IODRule(DCM_SeriesNumber, "1","1", "SegmentationSeriesModule", DcmIODTypes::IE_SERIES), OFTrue);
+
   // Instance Number is also used within Content Identification Macro, disable it there
   m_ContentIdentificationMacro.getIODRules().deleteRule(DCM_InstanceNumber);
 }
@@ -140,6 +144,7 @@ OFCondition DcmSegmentation::createFractionalSegmentation(DcmSegmentation*& segm
     return result;
 
   segmentation->m_SegmentationType = DcmSegTypes::ST_FRACTIONAL;
+  segmentation->m_SegmentationFractionalType = fractType;
   segmentation->m_MaximumFractionalValue.putUint16(maxFractionalValue);
 
   return result;
@@ -421,6 +426,12 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData,
 }
 
 
+SOPInstanceReferenceMacro& DcmSegmentation::getReferencedPPS()
+{
+  return getSeries().getReferencedPPS();
+}
+
+
 const DcmIODTypes::Frame* DcmSegmentation::getFrame(const size_t& frameNo)
 {
   if (frameNo > m_Frames.size() - 1)
@@ -592,14 +603,6 @@ OFCondition DcmSegmentation::saveFile(const OFString& filename,
 
 /* -- Setter for DICOM attributes -- */
 
-OFCondition DcmSegmentation::setReferencedPPS(const OFString& refSOPClassUID,
-                                              const OFString& refSOPInstanceUID)
-{
-  //TODO
-  return EC_Normal;
-}
-
-
 OFCondition DcmSegmentation::setEquipmentInfo(const IODGeneralEquipmentModule::EquipmentInfo& equipmentInfo,
                                               const OFBool checkValue)
 {
@@ -647,13 +650,6 @@ OFCondition DcmSegmentation::setContentIdentification(const ContentIdentificatio
 
 
 /* -- Getter for DICOM attributes -- */
-
-void DcmSegmentation::getReferencedPPS(OFString& refSOPClassUID,
-                                       OFString& refSOPInstanceUID) const
-{
-  //TODO
-}
-
 
 DcmSegment* DcmSegmentation::getSegment(const unsigned int segmentNumber)
 {

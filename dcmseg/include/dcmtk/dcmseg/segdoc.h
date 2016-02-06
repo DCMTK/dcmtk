@@ -235,34 +235,12 @@ public:
   virtual OFBool getSegmentNumber(const DcmSegment* segment,
                                   unsigned int& segmentNumber);
 
-  /** Find segments by their segment label
-   *  @param segmentLabel
-   *  @return Vector of segment numbers that match the given label
+  /** Reference to the Performed Procedure Step that led to the creation of this
+   *  segmentation object. This is required if this object is created in an MPPS
+   *  or GPPS workflow.
+   *  @return Reference to the referenced PPS object
    */
-  virtual const OFVector<Uint16> findSegmentByLabel(const OFString& segmentLabel);
-
-  /** Find segments by their segment's category code
-   *  @param  categoryCode The category code to look for
-   *  @return Vector of segment numbers that match the given category
-   */
-  virtual const OFVector<Uint16> findSegmentByCategory(const CodeSequenceMacro& categoryCode);
-
-  /** Find segments by their segment's property type code
-   *  @param  propertyType The property type code to look for
-   *  @return Vector of segment numbers that match the given property type
-   */
-  virtual const OFVector<Uint16> findSegmentyByType(const CodeSequenceMacro& propertyType);
-
-  /** Reference the PPS that led to the creation of this segmentation object.
-   *  This is required if this object is created in an MPPS or GPPS workflow.
-   *  @param refSOPClassUID     The SOP Class UID of the Performed
-   *                            Procedure Step
-   *  @param refSOPInstanceUID  The SOP Instance UID of the Performed
-   *                            Procedure Step
-   *  @return EC_Normal if successful, error otherwise.
-   */
-  virtual void getReferencedPPS(OFString& refSOPClassUID,
-                                OFString& refSOPInstanceUID) const;
+  virtual SOPInstanceReferenceMacro& getReferencedPPS();
 
   /** Get (const) frame data of a specific frame
    *  @param  frameNo The number of the frame to get (starting with 0)
@@ -350,17 +328,6 @@ public:
    */
   virtual OFCondition setContentIdentification(const ContentIdentificationMacro& contentIdentification,
                                                 const OFBool checkValue = OFTrue);
-
-  /** Reference the PPS that led to the creation of this segmentation object.
-   *  This is required if this object is created in an MPPS or GPPS workflow.
-   *  @param refSOPClassUID     The SOP Class UID of the Performed
-   *                            Procedure Step
-   *  @param refSOPInstanceUID  The SOP Instance UID of the Performed
-   *                            Procedure Step
-   *  @return EC_Normal if successful, error otherwise.
-   */
-  virtual OFCondition setReferencedPPS(const OFString& refSOPClassUID,
-                                       const OFString& refSOPInstanceUID);
 
 protected:
 
