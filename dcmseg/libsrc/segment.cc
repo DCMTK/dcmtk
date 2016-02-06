@@ -222,7 +222,7 @@ OFVector< CodeSequenceMacro* >& DcmSegment::getSegmentedPropertyTypeModifierCode
 OFCondition DcmSegment::getRecommendedDisplayGrayscaleValue(Uint16& value,
                                                             const unsigned long pos)
 {
-  return m_RecommendedDisplayGrayscaleValue.getUint16(value, 0);
+  return m_RecommendedDisplayGrayscaleValue.getUint16(value, pos);
 }
 
 
