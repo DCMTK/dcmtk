@@ -215,7 +215,8 @@ public:
 
   /** Get modality (overwrite from DcmIODCommon. We always return "SEG" here)
    *  @param  value  Reference to variable in which the value should be stored
-   *  @param  pos    Index of the value to get (0..vm-1), -1 for all components
+   *  @param  pos    Index of the value to get. Not evaluated (here for
+   *          consistency with other setter functions).
    *  @return status, EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition getModality(OFString &value,
@@ -482,12 +483,9 @@ protected:
   /** Add frame to segmentation object.
    *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
    *          Pixel data is copied so it must be freed by the caller.
-   *  @param  segmentNumber The logical segment number (>=1) this frame refers
-   *          to. The segment identified by the segmentNumber must already exist.
    *  @return EC_Normal if adding was successul, error otherwise
    */
-  virtual OFCondition addFrame(Uint8* pixData,
-                               const Uint16 segmentNumber);
+  virtual OFCondition addFrame(Uint8* pixData);
 
   /// Constant code (required by Segmentation IOD) used to fill Derivation
   /// Image Functional Group

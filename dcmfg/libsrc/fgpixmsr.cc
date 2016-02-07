@@ -146,17 +146,33 @@ OFCondition FGPixelMeasures:: getSpacingBetweenSlices(Float64& value,
 OFCondition FGPixelMeasures::setPixelSpacing(const OFString& value,
                                              const OFBool checkValue)
 {
-  return m_PixelSpacing.putOFStringArray(value);
+  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "2") : EC_Normal;
+  if (result.good())
+  {
+    result = m_PixelSpacing.putOFStringArray(value);
+  }
+  return result;
 }
 
 
 OFCondition FGPixelMeasures::setSliceThickness(const OFString& value,
                                                const OFBool checkValue)
 {
-  return m_SliceThickness.putOFStringArray(value);
+  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+  if (result.good())
+  {
+    result = m_SliceThickness.putOFStringArray(value);
+  }
+  return result;
 }
 
 OFCondition FGPixelMeasures::setSpacingBetweenSlices(const OFString& value,
                                                      const OFBool checkValue)
 {
-  return m_SpacingBetweenSlices.putOFStringArray(value);}
+  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+  if (result.good())
+  {
+    result = m_SpacingBetweenSlices.putOFStringArray(value);
+  }
+  return result;
+}

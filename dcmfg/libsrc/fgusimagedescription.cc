@@ -112,7 +112,16 @@ OFCondition FGUSImageDescription::setFrameType(const DcmFGTypes::E_FGUSFrameType
   value += "\\";
   value += derivedPixelContrast;
 
-  return m_FrameType.putOFStringArray(value);
+  OFCondition result;
+  if (checkValue)
+  {
+    result = DcmCodeString::checkStringValue(value, "4");
+  }
+  if (result.good())
+  {
+    result = m_FrameType.putOFStringArray(value);
+  }
+  return result;
 }
 
 

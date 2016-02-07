@@ -201,6 +201,7 @@ OFCondition IODImagePixelModule::setPhotometricInterpretation(const OFString& va
 OFCondition IODImagePixelModule::setRows(const Uint16 value,
                                          const OFBool checkValue)
 {
+  (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_Rows, value);
 }
 
@@ -208,6 +209,7 @@ OFCondition IODImagePixelModule::setRows(const Uint16 value,
 OFCondition IODImagePixelModule::setColumns(const Uint16 value,
                                             const OFBool checkValue)
 {
+  (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_Columns, value);
 }
 
@@ -215,6 +217,7 @@ OFCondition IODImagePixelModule::setColumns(const Uint16 value,
 OFCondition IODImagePixelModule::setBitsAllocated(const Uint16 value,
                                                   const OFBool checkValue)
 {
+  (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_BitsAllocated, value);
 }
 
@@ -222,7 +225,7 @@ OFCondition IODImagePixelModule::setBitsAllocated(const Uint16 value,
 OFCondition IODImagePixelModule::setBitsStored(const Uint16 value,
                                                const OFBool checkValue)
 {
-  // TODO: check consistency between bits allocated, bits stored and high bit if possible
+  (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_BitsStored, value);
 }
 
@@ -230,7 +233,7 @@ OFCondition IODImagePixelModule::setBitsStored(const Uint16 value,
 OFCondition IODImagePixelModule::setHighBit(const Uint16 value,
                                             const OFBool checkValue)
 {
-  // TODO: check consistency between bits allocated, bits stored and high bit if possible
+  (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_HighBit, value);
 }
 

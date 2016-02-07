@@ -383,8 +383,7 @@ OFCondition DcmSegmentation::addSegment(DcmSegment* seg,
 }
 
 
-OFCondition DcmSegmentation::addFrame(Uint8* pixData,
-                                      const Uint16 segmentNumber)
+OFCondition DcmSegmentation::addFrame(Uint8* pixData)
 {
   OFCondition result;
 
@@ -530,7 +529,7 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData,
   // Insert pixel data
   if (result.good())
   {
-    result = addFrame(pixData, segmentNumber);
+    result = addFrame(pixData);
   }
 
   // Cleanup any per-frame groups that might have been inserted and return
@@ -683,31 +682,10 @@ OFBool DcmSegmentation::getSegmentNumber(const DcmSegment* segment,
 }
 
 
-const OFVector<Uint16> DcmSegmentation::findSegmentByLabel(const OFString& segmentLabel)
+OFCondition DcmSegmentation::getModality(OFString& value,
+                                         const long signed int pos) const
 {
-  // TODO
-  OFVector<Uint16> temp;
-  return temp;
-}
-
-const OFVector<Uint16> DcmSegmentation::findSegmentByCategory(const CodeSequenceMacro& categoryCode)
-{
-  // TODO
-  OFVector<Uint16> temp;
-  return temp;
-}
-
-
-const OFVector<Uint16> DcmSegmentation::findSegmentyByType(const CodeSequenceMacro& propertyType)
-{
-  // TODO
-  OFVector<Uint16> temp;
-  return temp;
-}
-
-
-OFCondition DcmSegmentation::getModality(OFString& value, const long signed int pos) const
-{
+  (void)pos;
   // Fixed for Segmentations to value "SEG"
   value = "SEG";
   return EC_Normal;

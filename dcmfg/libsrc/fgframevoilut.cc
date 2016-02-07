@@ -121,6 +121,7 @@ OFCondition FGFrameVOILUT::setWindowCenter(const OFString& value,
                                            const OFBool checkValue)
 {
   // no checks at the moment
+  (void)checkValue;
   return m_WindowCenter.putOFStringArray(value);
 }
 
@@ -128,6 +129,7 @@ OFCondition FGFrameVOILUT::setWindowWidth(const OFString& value,
                                           const OFBool checkValue)
 {
   // no checks at the moment
+  (void)checkValue;
   return m_WindowWidth.putOFStringArray(value);
 }
 

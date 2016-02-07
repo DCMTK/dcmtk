@@ -231,9 +231,8 @@ public:
 
   /** Set Laterality
    *  @param  value Value to be set
-   *  @param  checkValue Check value (no effect in this call but included for
-   *                consistency with other methods); provided value is
-   *                always checked.
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setLaterality(const DcmIODTypes::IOD_LATERALITY value,

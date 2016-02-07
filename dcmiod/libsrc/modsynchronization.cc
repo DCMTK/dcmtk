@@ -173,6 +173,7 @@ OFCondition IODSynchronizationModule::setTriggerSourceOrType(const OFString &val
 OFCondition IODSynchronizationModule::setSynchronizationChannel(const OFPair<Uint16, Uint16> &value,
                                                                 const OFBool checkValue)
 {
+  (void)checkValue;
   OFCondition result = m_Item->putAndInsertUint16(DCM_SynchronizationChannel, value.first, 0);
   if (result.good())
   {

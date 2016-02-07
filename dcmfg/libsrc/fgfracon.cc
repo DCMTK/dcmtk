@@ -265,6 +265,7 @@ OFCondition FGFrameContent::getFrameLabel(OFString& value,
 OFCondition FGFrameContent::setFrameAcquisitionNumber(const Uint16& value,
                                                       const OFBool checkValue)
 {
+  (void)checkValue;
   m_FrameAcquisitonNumber.putUint16(value);
   return EC_Normal;
 }
@@ -290,6 +291,7 @@ OFCondition FGFrameContent::setFrameAcquisitionDateTime(const OFString& value,
 OFCondition FGFrameContent::setFrameAcquisitionDuration(const Float64& value,
                                                         const OFBool checkValue)
 {
+  (void)checkValue;
   // basic checking always included
   return m_FrameAcquisitionDuration.putFloat64(value);
 }
@@ -316,7 +318,8 @@ OFCondition FGFrameContent::setDimensionIndexValues(const Uint32& value,
                                                     const unsigned int pos,
                                                     const OFBool checkValue)
 {
-  // no meaningful check possible in this context
+  // no other meaningful checks possible in this context
+  (void)checkValue;
   if (value == 0)
   {
     DCMFG_ERROR("Cannot set dimension index value 0, must be >= 1)");
@@ -329,6 +332,7 @@ OFCondition FGFrameContent::setTemporalPositionIndex(const Uint32& value,
                                                      const OFBool checkValue)
 {
   // no meaningful check possible in this context
+  (void)checkValue;
   return m_TemporalPositionIndex.putUint32(value);
 }
 
@@ -346,6 +350,7 @@ OFCondition FGFrameContent::setInStackPositionNumber(const Uint32& value,
                                                      const OFBool checkValue)
 {
   // no meaningful check possible in this context
+  (void)checkValue;
   return m_InStackPositionNumber.putUint32(value);
 }
 

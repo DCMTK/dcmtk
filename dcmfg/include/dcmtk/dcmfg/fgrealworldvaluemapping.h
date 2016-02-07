@@ -282,8 +282,8 @@ public:
    *  @param  value Value to be set. If Pixel Representation is -1 (signed
    *          pixel data) value  must be -2^15  < value < 2^15-1. Otherwise use
    *          setRealWorldValueFirstValueMappedUnSigned().
-   *  @param  checkValue Check 'value' for conformance with VR (SS) and VM (1)
-   *          if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRealWorldValueFirstValueMappeSigned(const Sint16 &value,
@@ -304,8 +304,8 @@ public:
    *  @param  value Value to be set. If Pixel Representation is -1 (signed
    *          pixel data) value  must be -2^15  < value < 2^15-1. Otherwise use
    *          setRealWorldValueLastValueMappedUnSigned().
-   *  @param  checkValue Check 'value' for conformance with VR (SS) and VM (1)
-   *          if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRealWorldValueLastValueMappedSigned(const Sint16 &value,
@@ -313,7 +313,8 @@ public:
 
   /** Set Real World Value Intercept
    *  @param  value Value to be set
-   *  @param  checkValue Check 'value' for conformance with VR (FD) and VM (1) if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRealWorldValueIntercept(const Float64& value,
@@ -321,7 +322,8 @@ public:
 
   /** Set Real World Value Slope
    *  @param  value Value to be set
-   *  @param  checkValue Check 'value' for conformance with VR (FD) and VM (1) if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRealWorldValueSlope(const Float64& value,

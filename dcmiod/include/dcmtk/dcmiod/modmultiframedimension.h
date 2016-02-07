@@ -190,7 +190,8 @@ public:
 
     /** Set Dimension Index Pointer
      *  @param  value Value to be set (single value only) or "" for no value
-     *  @param  checkValue Check 'value' for conformance with VR (PN) and VM (1) if enabled
+     *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+     *          with other setter functions).
      *  @return status EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setDimensionIndexPointer(const DcmTagKey&value,
@@ -206,7 +207,8 @@ public:
 
     /** Set Dimension Index Functional Group Pointer
      *  @param  value Value to be set (single value only) or "" for no value
-     *  @param  checkValue Check 'value' for conformance with VR and VM if enabled
+     *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+     *          with other setter functions).
      *  @return status EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setFunctionalGroupPointer(const DcmTagKey& value,
@@ -214,7 +216,9 @@ public:
 
     /** Set Dimension Index Functional Group PrivateCreator
      *  @param  value Value to be set (single value only) or "" for no value
-     *  @param  checkValue Check 'value' for conformance with VR and VM if enabled
+     *  @param  checkValue Check 'value. Not evaluated (here for consistency
+     *          with other setter functions).
+     *
      *  @return status EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setFunctionalGroupPrivateCreator(const OFString& value,

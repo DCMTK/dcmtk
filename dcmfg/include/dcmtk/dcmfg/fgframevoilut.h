@@ -134,8 +134,8 @@ public:
 
   /** Set Window Width
    *  @param  value Value to be set (single value only) or "" for no value
-   *  @param  checkValue Check 'value' for conformance with VR (DS) and VM (1)
-   *          if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setWindowWidth(const OFString& value,

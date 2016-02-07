@@ -103,7 +103,7 @@ public:
 
   /** Set Pixel Spacing
    *  @param  value Value to be set (single value only) or "" for no value
-   *  @param  checkValue Check 'value' for conformance with VR (DS) and VM (1) if
+   *  @param  checkValue Check 'value' for conformance with VR (DS) and VM (2) if
    *          enabled
    *  @return EC_Normal if successful, an error code otherwise
    */

@@ -536,6 +536,7 @@ OFCondition ImageSOPInstanceReferenceMacro::setReferencedFrameNumber(const OFVec
 OFCondition ImageSOPInstanceReferenceMacro::addReferencedFrameNumber(const Uint16& value,
                                                                      const OFBool checkValue)
 {
+  (void)checkValue;
   const unsigned long count = ReferencedFrameNumber.getVM();
   return ReferencedFrameNumber.putUint16(value, count /* starts with 0, so add new value at the end */);
 }
@@ -552,6 +553,7 @@ OFCondition ImageSOPInstanceReferenceMacro::setReferencedSegmentNumber(const OFV
 OFCondition ImageSOPInstanceReferenceMacro::addReferencedSegmentNumber(const Uint16& value,
                                                                        const OFBool checkValue)
 {
+  (void)checkValue;
   const unsigned long count = ReferencedSegmentNumber.getVM();
   return ReferencedSegmentNumber.putUint16(value, count /* starts with 0, so add new value at the end */);
 
@@ -1277,6 +1279,7 @@ void ContentIdentificationMacro::clearData()
 
 OFCondition ContentIdentificationMacro::check(const OFBool quiet)
 {
+  (void)quiet;
   OFCondition result;
   OFBool failure = m_ContentLabel.isEmpty() || m_InstanceNumber.isEmpty();
   if (!failure)
@@ -1352,7 +1355,16 @@ OFVector<ContentIdentificationMacro::AlternateContentDescriptionItem*>& ContentI
 OFCondition ContentIdentificationMacro::setInstanceNumber(const OFString& value,
                                                           const OFBool checkValue)
 {
-  return m_InstanceNumber.putOFStringArray(value);
+  OFCondition result;
+  if (checkValue)
+  {
+    result = (checkValue) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
+  }
+  if (result.good())
+  {
+    result = m_InstanceNumber.putOFStringArray(value);
+  }
+  return result;
 }
 
 

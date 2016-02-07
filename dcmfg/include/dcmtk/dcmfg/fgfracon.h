@@ -225,8 +225,8 @@ public:
 
   /** Set Frame Acquisition Number
    *  @param  value Value that should be set
-   *  @param  checkValue If OFTrue, basic checks are performed whether the value is
-   *          valid for this attribute
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal, if value was set, error otherwise
    */
   virtual OFCondition setFrameAcquisitionNumber(const Uint16& value,
@@ -281,8 +281,8 @@ public:
    *  @param  value Value that should be set (lowest index starts with 1)
    *  @param  pos The position of the value that should be set (lowest index
    *          starts with 0), i.e.\ select the 1st, 2nd, ..nth dimension
-   *  @param  checkValue If OFTrue, basic checks are performed whether the
-   *          valid for this attribute
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal, if value was set, error otherwise
    */
   virtual OFCondition setDimensionIndexValues(const Uint32& value,
@@ -291,8 +291,8 @@ public:
 
   /** Set Temporal Position Index
    *  @param  value Value that should be set
-   *  @param  checkValue If OFTrue, basic checks are performed whether the value is
-   *          valid for this attribute
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal, if value was set, error otherwise
    */
   virtual OFCondition setTemporalPositionIndex(const Uint32& value,
@@ -309,8 +309,8 @@ public:
 
   /** Set In-Stack Position Number
    *  @param  value Value that should be set
-   *  @param  checkValue If OFTrue, basic checks are performed whether the value is
-   *          valid for this attribute
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal, if value was set, error otherwise
    */
   virtual OFCondition setInStackPositionNumber(const Uint32& value,

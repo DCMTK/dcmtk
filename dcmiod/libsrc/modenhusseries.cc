@@ -93,8 +93,7 @@ IODEnhancedUSSeriesModule::~IODEnhancedUSSeriesModule()
 OFCondition IODEnhancedUSSeriesModule::getModality(OFString &value,
                                                    const signed long pos) const
 {
-  value = "US";
-  return EC_Normal;
+  return DcmIODUtil::getStringValueFromItem(DCM_Modality, *m_Item, value, pos);
 }
 
 

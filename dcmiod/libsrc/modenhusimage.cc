@@ -405,7 +405,16 @@ OFCondition IODEnhUSImageModule::setImageType(const DcmIODTypes::IOD_ENHUSIMAGET
   value += "\\";
   value += derivedPixelContrast;
 
-  return m_Item->putAndInsertOFStringArray(DCM_ImageType, value);
+  OFCondition result;
+  if (checkValue)
+  {
+    result = DcmCodeString::checkStringValue(value, "2");
+  }
+  if (result.good())
+  {
+    result = m_Item->putAndInsertOFStringArray(DCM_ImageType, value);
+  }
+  return result;
 }
 
 
@@ -534,7 +543,6 @@ OFCondition IODEnhUSImageModule::setLossyImageCompression(const OFString& value,
 
 
 OFCondition IODEnhUSImageModule::setLossyImageCompressionMethod(const OFString& value,
-                                                                const unsigned long pos,
                                                                 const OFBool checkValue)
 {
   OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1-n") : EC_Normal;
@@ -596,7 +604,8 @@ OFCondition IODEnhUSImageModule::setBoneThermalIndex(const OFString& value,
 }
 
 
-OFCondition IODEnhUSImageModule::setCranialThermalIndex(const OFString& value, const bool checkValue)
+OFCondition IODEnhUSImageModule::setCranialThermalIndex(const OFString& value,
+                                                        const bool checkValue)
 {
   OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
   if (result.good())
@@ -605,7 +614,8 @@ OFCondition IODEnhUSImageModule::setCranialThermalIndex(const OFString& value, c
 }
 
 
-OFCondition IODEnhUSImageModule::setSoftTissueThermalIndex(const OFString& value, const bool checkValue)
+OFCondition IODEnhUSImageModule::setSoftTissueThermalIndex(const OFString& value,
+                                                           const bool checkValue)
 {
   OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
   if (result.good())
@@ -614,14 +624,19 @@ OFCondition IODEnhUSImageModule::setSoftTissueThermalIndex(const OFString& value
 }
 
 
-OFCondition IODEnhUSImageModule::setDepthsOfFocus(const Float64 value, const long unsigned int pos, const bool checkValue)
+OFCondition IODEnhUSImageModule::setDepthsOfFocus(const Float64 value,
+                                                  const long unsigned int pos,
+                                                  const bool checkValue)
 {
+  (void)checkValue;
   return m_Item->putAndInsertFloat64(DCM_DepthsOfFocus, value, pos);
 }
 
 
-OFCondition IODEnhUSImageModule::setDepthsOfFocus(const OFVector< Float64 >& values, const bool checkValue)
+OFCondition IODEnhUSImageModule::setDepthsOfFocus(const OFVector< Float64 >& values,
+                                                  const bool checkValue)
 {
+  (void)checkValue;
   DcmElement* elem = newDicomElement(DCM_DepthsOfFocus);
   if (!elem)
     return EC_MemoryExhausted;
@@ -645,7 +660,8 @@ OFCondition IODEnhUSImageModule::setDepthsOfFocus(const OFVector< Float64 >& val
 }
 
 
-OFCondition IODEnhUSImageModule::setDepthsOfScanField(const OFString& value, const bool checkValue)
+OFCondition IODEnhUSImageModule::setDepthsOfScanField(const OFString& value,
+                                                      const bool checkValue)
 {
   OFCondition result = (checkValue) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
   if (result.good())

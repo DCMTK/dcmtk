@@ -257,6 +257,7 @@ OFCondition IODGeneralSeriesModule::setSeriesNumber(const OFString &value,
 OFCondition IODGeneralSeriesModule::setLaterality(const DcmIODTypes::IOD_LATERALITY laterality,
                                                   const OFBool checkValue)
 {
+  (void)checkValue;
   OFCondition result;
   switch(laterality)
   {

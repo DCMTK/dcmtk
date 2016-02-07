@@ -88,6 +88,7 @@ OFCondition FGPlanePositionVolume::setImagePositionVolume(const Float64& valueX,
                                                           const Float64& valueZ,
                                                           const OFBool checkValue)
 {
+  (void)checkValue;
   OFCondition result = m_ImagePositionVolume.putFloat64(valueX, 0);
   if (result.good()) result = m_ImagePositionVolume.putFloat64(valueY, 1);
   if (result.good()) result = m_ImagePositionVolume.putFloat64(valueZ, 2);
@@ -99,6 +100,8 @@ OFCondition FGPlanePositionVolume::setImagePositionVolume(const Float64& value,
                                                           const long unsigned int pos,
                                                           const OFBool checkValue)
 {
+  // no checks
+  (void)checkValue;
   if (pos > 2)
     return EC_ValueMultiplicityViolated;
 

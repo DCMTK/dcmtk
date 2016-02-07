@@ -174,8 +174,8 @@ public:
 
   /** Set Rows
    *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value' for conformance with VR (US) and consistency
-   *          with other attributes if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRows(const Uint16 value,
@@ -183,16 +183,16 @@ public:
 
   /** Set Columns
    *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value' for conformance with VR (US) and consistency
-   *    with other attributes if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setColumns(const Uint16 value,
                                  const OFBool checkValue = OFTrue);
   /** Set Bits Allocated
    *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value' for conformance with VR (US) and consistency
-   *    with other attributes if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setBitsAllocated(const Uint16 value,
@@ -200,8 +200,8 @@ public:
 
   /** Set Bits Stored
    *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value' for conformance with VR (US) and consistency
-   *    with other attributes if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setBitsStored(const Uint16 value,
@@ -209,8 +209,8 @@ public:
 
   /** Set High Bit
    *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value' for conformance with VR (US) and consistency
-   *    with other attributes if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setHighBit(const Uint16 value,
@@ -246,7 +246,7 @@ public:
 
   /** Set ICC Profile
    *  @param  values Reference to variable in which the values should be stored
-   *  @param  length Length of array provied in values parameter
+   *  @param  length Length of array provided in values parameter
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setICCProfile(const Uint8* values,

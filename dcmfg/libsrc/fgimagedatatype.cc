@@ -101,7 +101,7 @@ OFCondition FGImageDataType::getZeroVelocityPixelValue(Sint32& value,
   if (!m_ZeroVelocityPixelValueSS.isEmpty())
   {
     Sint16 val = 0;
-    if ( (result = m_ZeroVelocityPixelValueSS.getSint16(val)).good())
+    if ( (result = m_ZeroVelocityPixelValueSS.getSint16(val, pos)).good())
     {
       value = val;
     }
@@ -109,7 +109,7 @@ OFCondition FGImageDataType::getZeroVelocityPixelValue(Sint32& value,
   else if (!m_ZeroVelocityPixelValueUS.isEmpty())
   {
     Uint16 val = 0;
-    if ( (result = m_ZeroVelocityPixelValueUS.getUint16(val)).good())
+    if ( (result = m_ZeroVelocityPixelValueUS.getUint16(val, pos)).good())
     {
       value = val;
     }

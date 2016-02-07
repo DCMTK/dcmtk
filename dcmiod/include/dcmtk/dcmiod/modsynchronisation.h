@@ -155,8 +155,8 @@ public:
 
     /** Set Synchronization Channel
      *  @param  value Value to be set
-     *  @param  checkValue The check parameter is provided for consistency with
-     *          other methods but does not have any effect here.
+     *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+     *          with other setter functions).
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setSynchronizationChannel(const OFPair<Uint16, Uint16> &value,

@@ -495,8 +495,9 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setDimensionDescri
 
 
 OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setFunctionalGroupPointer(const DcmTagKey& value,
-                                                                                               const OFBool checkValue)
+                                                                                        const OFBool checkValue)
 {
+  (void)checkValue;
   if (value == DCM_UndefinedTagKey)
     return EC_IllegalParameter;
 
@@ -526,8 +527,9 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setFunctionalGroup
 
 
 OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setDimensionIndexPointer(const DcmTagKey& value,
-                                                                                              const OFBool checkValue)
+                                                                                       const OFBool checkValue)
 {
+  (void)checkValue;
   if (value == DCM_UndefinedTagKey)
     return EC_IllegalParameter;
 

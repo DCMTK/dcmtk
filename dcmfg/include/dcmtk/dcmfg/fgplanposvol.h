@@ -101,7 +101,8 @@ public:
    *  hand corner (center of the first voxel transmitted) of the frame, in mm.
    *  @param  value X,Y or Z coordinate of upper left hand corner voxel in mm
    *  @param  pos pos 0 is x, pos 1 is Y, pos 2 addresses Z coordinate
-   *  @param  checkValue Check coordinates for validity, including VR (FD)
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setImagePositionVolume(const Float64& value,
@@ -113,7 +114,8 @@ public:
    *  @param  valueX X coordinate of upper left hand corner voxel in mm
    *  @param  valueY coordinate of upper left hand corner voxel in mm
    *  @param  valueZ coordinate of upper left hand corner voxel in mm
-   *  @param  checkValue Check coordinates for validity, including VR (FD)
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setImagePositionVolume(const Float64& valueX,

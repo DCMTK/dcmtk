@@ -488,7 +488,6 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setLossyImageCompressionMethod(const OFString& value,
-                                                     const unsigned long pos,
                                                      const OFBool checkValue = OFTrue);
 
   /** Set Recognizable Visual Features
@@ -542,7 +541,8 @@ public:
   /** Set Depth(s) of Focus
    *  @param  value Value to be set
    *  @param  pos Index of the value to set (0..vm-1)
-   *  @param  checkValue Check 'value' for conformance if enabled, including VR (FD)
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency with
+   *          other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setDepthsOfFocus(const Float64 value,
@@ -551,7 +551,8 @@ public:
 
   /** Set Depth(s) of Focus (convenience function)
    *  @param  values Value(s) to be set
-   *  @param  checkValue Check 'value' for conformance if enabled, including VR (FD)
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency with
+   *          other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setDepthsOfFocus(const OFVector<Float64>& values,

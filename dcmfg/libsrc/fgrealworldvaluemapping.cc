@@ -266,6 +266,7 @@ CodeSequenceMacro& FGRealWorldValueMapping::RWVMItem::getMeasurementUnitsCode()
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappedUnsigned(const Uint16& value,
                                                                                          const OFBool checkValue)
 {
+  (void)checkValue;
   DcmUnsignedShort* us = new DcmUnsignedShort(DCM_RealWorldValueFirstValueMapped);
   OFCondition result = us->putUint16(value);
   if (result.good()) result = m_Item->insert(us, OFTrue /* replace old */);
@@ -277,6 +278,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMapped
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappeSigned(const Sint16& value,
                                                                                       const OFBool checkValue)
 {
+  (void)checkValue;
   DcmSignedShort* ss = new DcmSignedShort(DCM_RealWorldValueFirstValueMapped);
   OFCondition result = ss->putSint16(value);
   if (result.good()) result = m_Item->insert(ss, OFTrue /* replace old */);
@@ -287,6 +289,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappeS
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedSigned(const Sint16& value,
                                                                                       const OFBool checkValue)
 {
+  (void)checkValue;
   DcmSignedShort* ss = new DcmSignedShort(DCM_RealWorldValueLastValueMapped);
   OFCondition result = ss->putSint16(value);
   if (result.good()) result = m_Item->insert(ss, OFTrue /* replace old */);
@@ -299,6 +302,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedS
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedUnsigned(const Uint16& value,
                                                                                         const OFBool checkValue)
 {
+  (void)checkValue;
   DcmUnsignedShort* us = new DcmUnsignedShort(DCM_RealWorldValueLastValueMapped);
   OFCondition result = us->putUint16(value);
   if (result.good()) result = m_Item->insert(us, OFTrue /* replace old */);
@@ -310,6 +314,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedU
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueIntercept(const Float64& value,
                                                                           const OFBool checkValue)
 {
+  (void)checkValue;
   return m_Item->putAndInsertFloat64(DCM_RealWorldValueIntercept, value);
 }
 
@@ -317,6 +322,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueIntercept(const 
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueSlope(const Float64& value,
                                                                       const OFBool checkValue)
 {
+  (void)checkValue;
   return m_Item->putAndInsertFloat64(DCM_RealWorldValueSlope, value);
 }
 
@@ -324,6 +330,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueSlope(const Floa
 OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLUTData(const OFVector< Float64 >& value,
                                                                         const OFBool checkValue)
 {
+  (void)checkValue;
   DcmElement *elem = NULL;
   OFCondition result = m_Item->findAndGetElement(DCM_RealWorldValueLUTData, elem);
   if (result.good())
