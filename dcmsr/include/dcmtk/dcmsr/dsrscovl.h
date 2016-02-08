@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -261,6 +261,8 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinatesValue
     DSRGraphicDataList      GraphicDataList;
     /// Fiducial UID (VR=UI, VM=1, type 3)
     OFString                FiducialUID;
+    /// Pixel Origin Interpretation (VR=CS, VM=1, type 1C)
+     // - tbd: conditional attribute not yet supported
 };
 
 
