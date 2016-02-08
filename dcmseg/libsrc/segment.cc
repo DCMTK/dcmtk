@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -86,6 +86,8 @@ OFCondition DcmSegment::read(DcmItem& item,
 
   DcmIODUtil::getAndCheckElementFromDataset(item, m_RecommendedDisplayGrayscaleValue, m_Rules.getByTag(DCM_RecommendedDisplayGrayscaleValue));
   DcmIODUtil::getAndCheckElementFromDataset(item, m_RecommendedDisplayCIELabValue, m_Rules.getByTag(DCM_RecommendedDisplayCIELabValue));
+  DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingID, m_Rules.getByTag(DCM_TrackingID));
+  DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingUID, m_Rules.getByTag(DCM_TrackingUID));
 
   return EC_Normal;
 }
@@ -110,6 +112,8 @@ OFCondition DcmSegment::write(DcmItem& item)
 
   DcmIODUtil::copyElementToDataset(result, item, m_RecommendedDisplayGrayscaleValue, m_Rules.getByTag(DCM_RecommendedDisplayGrayscaleValue));
   DcmIODUtil::copyElementToDataset(result, item, m_RecommendedDisplayCIELabValue, m_Rules.getByTag(DCM_RecommendedDisplayCIELabValue));
+  DcmIODUtil::copyElementToDataset(result, item, m_TrackingID, m_Rules.getByTag(DCM_TrackingID));
+  DcmIODUtil::copyElementToDataset(result, item, m_TrackingUID, m_Rules.getByTag(DCM_TrackingUID));
 
   return result;
 }
@@ -123,6 +127,8 @@ void DcmSegment::clearData()
   m_SegmentSurfaceGenerationAlgorithmIdentification.clearData();
   m_RecommendedDisplayGrayscaleValue.clear();
   m_RecommendedDisplayCIELabValue.clear();
+  m_TrackingID.clear();
+  m_TrackingUID.clear();
 }
 
 
@@ -133,7 +139,7 @@ DcmSegment::~DcmSegment()
 }
 
 
-// protected default contstrucotr
+// protected default constructor
 DcmSegment::DcmSegment() :
   m_SegmentationDoc(NULL),
   m_SegmentDescription(),
@@ -141,6 +147,8 @@ DcmSegment::DcmSegment() :
   m_SegmentSurfaceGenerationAlgorithmIdentification(),
   m_RecommendedDisplayGrayscaleValue(DCM_RecommendedDisplayGrayscaleValue),
   m_RecommendedDisplayCIELabValue(DCM_RecommendedDisplayCIELabValue),
+  m_TrackingID(DCM_TrackingID),
+  m_TrackingUID(DCM_TrackingUID),
   m_Rules()
 {
   initIODRules();
@@ -152,6 +160,8 @@ void DcmSegment::initIODRules()
   m_Rules.addRule(new IODRule(DCM_SegmentAlgorithmName, "1","1C","SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules.addRule(new IODRule(DCM_RecommendedDisplayGrayscaleValue, "1","3","SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules.addRule(new IODRule(DCM_RecommendedDisplayCIELabValue, "3","3","SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules.addRule(new IODRule(DCM_TrackingID, "1","1C","SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules.addRule(new IODRule(DCM_TrackingUID, "1","1C","SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
 
@@ -239,6 +249,21 @@ OFCondition DcmSegment::getRecommendedDisplayCIELabValue(Uint16& L,
 
   return result;
 }
+
+
+OFCondition DcmSegment::getTrackingID(OFString& value,
+                                      const signed long pos)
+{
+  return DcmIODUtil::getStringValueFromElement(m_TrackingID, value, pos);
+}
+
+
+OFCondition DcmSegment::getTrackingUID(OFString& value,
+                                       const signed long pos)
+{
+  return DcmIODUtil::getStringValueFromElement(m_TrackingUID, value, pos);
+}
+
 
 // -------------- setters --------------------
 
@@ -333,6 +358,23 @@ OFCondition DcmSegment::setRecommendedDisplayCIELabValue(const Uint16 r,
   return result;
 }
 
+
+OFCondition DcmSegment::setTrackingID(const OFString& value,
+                                      const OFBool checkValue)
+{
+  // avoid compile warning on unused variable
+  (void)checkValue;
+  return m_TrackingID.putOFStringArray(value);
+}
+
+
+OFCondition DcmSegment::setTrackingUID(const OFString& value,
+                                       const OFBool checkValue)
+{
+  // avoid compile warning on unused variable
+  (void)checkValue;
+  return m_TrackingUID.putOFStringArray(value);
+}
 
 
 void DcmSegment::referenceSegmentationDoc(DcmSegmentation* doc)

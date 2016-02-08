@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -165,6 +165,23 @@ public:
                                                        Uint16& a,
                                                        Uint16& b);
 
+  /** Get Tracking ID
+   *  @param  value Reference to variable in which the value should be stored
+   *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition getTrackingID(OFString& value,
+                                    const signed long pos = 0);
+
+  /** Get Tracking UID
+   *  @param  value Reference to variable in which the value should be stored
+   *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition getTrackingUID(OFString& value,
+                                     const signed long pos = 0);
+
+
   // -------------- setters --------------------
 
   /** Set Segment Label
@@ -222,6 +239,24 @@ public:
                                                        const Uint16 b,
                                                        const OFBool checkValue = OFTrue);
 
+  /** Set Tracking ID
+   *  @param  value Value to be set (single value only) or "" for no value
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions) since we do not know the
+   *          character set required for serious value checking.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition setTrackingID(const OFString& value,
+                                    const OFBool checkValue = OFTrue);
+
+  /** Set Tracking UID
+   *  @param  value Value to be set (single value only) or "" for no value
+   *  @param  checkValue Check 'value' for conformance with VR (UI) and VM (1) if enabled
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition setTrackingUID(const OFString& value,
+                                     const OFBool checkValue = OFTrue);
+
   // The utility class must access the protected default constructor
   friend class DcmIODUtil;
 
@@ -263,6 +298,12 @@ private:
 
   /// Recommended Display CIELab Value (US, 3, 3)
   DcmUnsignedShort m_RecommendedDisplayCIELabValue;
+
+  /// Tracking ID (UT, 1, 1C)
+  DcmUnlimitedText m_TrackingID;
+
+  /// Tracking UID (UI, 1, 1C)
+  DcmUniqueIdentifier m_TrackingUID;
 
   /// Rules for data elements within this IOD
   IODRules m_Rules;
