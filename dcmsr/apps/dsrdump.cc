@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -95,6 +95,9 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
             }
         }
     }
+#else
+    // avoid compiler warning on unused variable
+    (void)convertToUTF8;
 #endif
     if (result.good())
     {

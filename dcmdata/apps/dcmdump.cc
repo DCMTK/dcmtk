@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -759,6 +759,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             if (stopOnErrors) return result;
         }
     }
+#else
+    // avoid compiler warning on unused variable
+    (void)convertToUTF8;
 #endif
 
     size_t pixelCounter = 0;

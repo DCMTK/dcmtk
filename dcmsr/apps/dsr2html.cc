@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -102,6 +102,9 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
             OFLOG_FATAL(dsr2htmlLogger, result.text() << ": converting file to UTF-8: " << ifname);
         }
     }
+#else
+    // avoid compiler warning on unused variable
+    (void)convertToUTF8;
 #endif
     if (result.good())
     {

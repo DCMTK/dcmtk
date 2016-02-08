@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -109,6 +109,8 @@ OFCondition OFCharacterEncoding::setTransliterationMode(const OFBool mode)
     TransliterationMode = mode;
     return EC_Normal;
 #else
+    // avoid compiler warning on unused variable
+    (void)mode;
     // return with an error because iconvctl() is not supported
     return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
         "Cannot control character encoding converter: iconvctl() not supported");
@@ -122,6 +124,8 @@ OFCondition OFCharacterEncoding::setDiscardIllegalSequenceMode(const OFBool mode
     DiscardIllegalSequenceMode = mode;
     return EC_Normal;
 #else
+    // avoid compiler warning on unused variable
+    (void)mode;
     // return with an error because iconvctl() is not supported
     return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
         "Cannot control character encoding converter: iconvctl() not supported");
@@ -158,6 +162,9 @@ OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
     // then, try to open a new descriptor for the specified character encodings
     return openDescriptor(ConversionDescriptor, fromEncoding.c_str(), toEncoding.c_str());
 #else
+    // avoid compiler warning on unused variables
+    (void)fromEncoding;
+    (void)toEncoding;
     return EC_NoEncodingLibrary;
 #endif
 }
@@ -253,6 +260,12 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
         status = EC_NoEncodingSelected;
     return status;
 #else
+    // avoid compiler warning on unused variables
+    (void)descriptor;
+    (void)fromString;
+    (void)fromLength;
+    (void)toString;
+    (void)clearMode;
     return EC_NoEncodingLibrary;
 #endif
 }
@@ -374,6 +387,9 @@ OFCondition OFCharacterEncoding::openDescriptor(T_Descriptor &descriptor,
     return status;
 #else
     descriptor = ILLEGAL_DESCRIPTOR;
+    // avoid compiler warning on unused variables
+    (void)fromEncoding;
+    (void)toEncoding;
     return EC_NoEncodingLibrary;
 #endif
 }
@@ -415,6 +431,8 @@ OFBool OFCharacterEncoding::isDescriptorValid(const T_Descriptor descriptor)
 #ifdef WITH_LIBICONV
     return (descriptor != ILLEGAL_DESCRIPTOR);
 #else
+    // avoid compiler warning on unused variable
+    (void)descriptor;
     return OFFalse;
 #endif
 }
@@ -428,6 +446,11 @@ void OFCharacterEncoding::createErrnoCondition(OFCondition &status,
     char errBuf[256];
     message.append(OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
     status = makeOFCondition(0, code, OF_error, message.c_str());
+#else
+    // avoid compiler warning on unused variables
+    (void)status;
+    (void)message;
+    (void)code;
 #endif
 }
 
