@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,10 +27,12 @@
 
 #include "dcmtk/dcmimgle/diutils.h"
 
+#ifndef DCMTK_EXPLICIT_SPECIALIZATION
 #ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
-#define EXPLICIT_SPECIALIZATION template<>
+#define DCMTK_EXPLICIT_SPECIALIZATION template<>
 #else
-#define EXPLICIT_SPECIALIZATION
+#define DCMTK_EXPLICIT_SPECIALIZATION
+#endif
 #endif
 
 
@@ -72,84 +74,84 @@ class DiPixelRepresentationTemplate
 /********************************************************************/
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Uint8>::getRepresentation() const
 {
     return EPR_Uint8;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Sint8>::getRepresentation() const
 {
     return EPR_Sint8;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Uint16>::getRepresentation() const
 {
     return EPR_Uint16;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Sint16>::getRepresentation() const
 {
     return EPR_Sint16;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Uint32>::getRepresentation() const
 {
     return EPR_Uint32;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Sint32>::getRepresentation() const
 {
     return EPR_Sint32;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Uint8>::isSigned() const
 {
     return 0;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Uint16>::isSigned() const
 {
     return 0;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Uint32>::isSigned() const
 {
     return 0;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Sint8>::isSigned() const
 {
     return 1;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Sint16>::isSigned() const
 {
     return 1;
 }
 
 
-EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
 {
     return 1;

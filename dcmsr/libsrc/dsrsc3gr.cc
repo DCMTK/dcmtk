@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2015, OFFIS e.V.
+ *  Copyright (C) 2010-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,14 +26,9 @@
 #include "dcmtk/dcmsr/dsrsc3gr.h"
 #include "dcmtk/ofstd/ofstd.h"
 
-#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
-#define EXPLICIT_SPECIALIZATION template<>
-#else
-#define EXPLICIT_SPECIALIZATION
-#endif
-
 /* declared in class DSRListOfItems<T> */
-EXPLICIT_SPECIALIZATION const DSRGraphicData3DItem DSRListOfItems<DSRGraphicData3DItem>::EmptyItem(0, 0, 0);
+DCMTK_EXPLICIT_SPECIALIZATION
+const DSRGraphicData3DItem DSRListOfItems<DSRGraphicData3DItem>::EmptyItem(0, 0, 0);
 
 
 DSRGraphicData3DList::DSRGraphicData3DList()

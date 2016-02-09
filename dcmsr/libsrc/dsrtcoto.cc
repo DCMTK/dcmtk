@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,14 +29,8 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
-#define EXPLICIT_SPECIALIZATION template<>
-#else
-#define EXPLICIT_SPECIALIZATION
-#endif
-
 /* declared in class DSRListOfItems<T> */
-EXPLICIT_SPECIALIZATION const Float64 DSRListOfItems<Float64>::EmptyItem = 0;
+DCMTK_EXPLICIT_SPECIALIZATION const Float64 DSRListOfItems<Float64>::EmptyItem = 0;
 
 
 DSRReferencedTimeOffsetList::DSRReferencedTimeOffsetList()

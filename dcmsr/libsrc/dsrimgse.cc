@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -28,14 +28,9 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
-#define EXPLICIT_SPECIALIZATION template<>
-#else
-#define EXPLICIT_SPECIALIZATION
-#endif
-
 /* declared in class DSRListOfItems<T> */
-EXPLICIT_SPECIALIZATION const Uint16 DSRListOfItems<Uint16>::EmptyItem = 0;
+DCMTK_EXPLICIT_SPECIALIZATION
+const Uint16 DSRListOfItems<Uint16>::EmptyItem = 0;
 
 
 DSRImageSegmentList::DSRImageSegmentList()

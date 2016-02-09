@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2014, OFFIS e.V.
+ *  Copyright (C) 2012-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,6 +32,14 @@
 #define DCMTK_DCMSR_EXPORT DCMTK_DECL_EXPORT
 #else
 #define DCMTK_DCMSR_EXPORT DCMTK_DECL_IMPORT
+#endif
+
+#ifndef DCMTK_EXPLICIT_SPECIALIZATION
+#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#define DCMTK_EXPLICIT_SPECIALIZATION template<>
+#else
+#define DCMTK_EXPLICIT_SPECIALIZATION
+#endif
 #endif
 
 
