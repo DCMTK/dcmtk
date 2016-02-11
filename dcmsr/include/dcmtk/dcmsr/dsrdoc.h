@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -668,10 +668,11 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** set specific character set.  The internal enumerated value is set accordingly.
      *  Please note that this method does not return an error if the given 'value' is not
-     *  supported by this class, e.g. when no mapping to the character set names needed
-     *  for HTML/XHTML or XML output is defined.  If needed, check the return value of
-     *  getSpecificCharacterSetType() for DSRTypes::CS_unknown after calling this method.
-     ** @param  value  value to be set (single value only) or "" for no value
+     *  defined by the DICOM standard or not supported by this class, e.g. when no mapping
+     *  to the character set names needed for HTML/XHTML or XML output is defined.
+     *  If needed, check the return value of the method getSpecificCharacterSetType() for
+     *  DSRTypes::CS_unknown after calling this method.
+     ** @param  value  value to be set (single or multiple values) or "" for no value
      *  @param  check  check 'value' for conformance with VR (CS) and VM (1-n) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */

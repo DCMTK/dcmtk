@@ -2290,7 +2290,6 @@ OFCondition DSRDocument::getAccessionNumber(OFString &value,
 OFCondition DSRDocument::setSpecificCharacterSet(const OFString &value,
                                                  const OFBool check)
 {
-    /* we only support a single value, i.e. no code extensions */
     OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1-n") : EC_Normal;
     if (result.good())
     {
