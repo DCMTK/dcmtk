@@ -299,10 +299,8 @@ OFCondition IODGeneralImageModule::setAcquisitionDateTime(const OFString &value,
 OFCondition IODGeneralImageModule::setImageComments(const OFString &value,
                                                     const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmLongText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_ImageComments, value);
-  return result;
+  (void)checkValue;
+  return  m_Item->putAndInsertOFStringArray(DCM_ImageComments, value);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -160,10 +160,8 @@ OFCondition IODGeneralEquipmentModule::setInstitutionName(const OFString& value,
 OFCondition IODGeneralEquipmentModule::setInstitutionAddress(const OFString& value,
                                                              const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmShortText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_InstitutionAddress, value);
-  return result;
+  (void)checkValue;
+  return m_Item->putAndInsertOFStringArray(DCM_InstitutionAddress, value);
 }
 
 

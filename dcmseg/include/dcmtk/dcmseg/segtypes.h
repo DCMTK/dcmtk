@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -294,8 +294,8 @@ public:
 
   /** Set Segment Description
    *  @param  value Value to be set (single value only) or "" for no value
-   *  @param  checkValue Check 'value' for conformance with VR (ST) and VM (1)
-   *          if enabled
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setSegmentDescription(const OFString& value,

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -318,8 +318,8 @@ public:
 
   /** Set Frame Comments
    *  @param  value Value that should be set
-   *  @param  checkValue If OFTrue, basic checks are performed whether the value is
-   *          valid for this attribute
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal, if value was set, error otherwise
    */
   virtual OFCondition setFrameComments(const OFString& value,

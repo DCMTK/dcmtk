@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -207,10 +207,8 @@ OFCondition SegmentDescriptionMacro::setSegmentLabel(const OFString& value,
 OFCondition SegmentDescriptionMacro::setSegmentDescription(const OFString& value,
                                                            const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmShortText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_SegmentDescription.putOFStringArray(value);
-  return result;
+  (void)checkValue;
+  return  m_SegmentDescription.putOFStringArray(value);
 }
 
 

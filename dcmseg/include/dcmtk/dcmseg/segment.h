@@ -242,8 +242,7 @@ public:
   /** Set Tracking ID
    *  @param  value Value to be set (single value only) or "" for no value
    *  @param  checkValue Check 'value'. Not evaluated (here for consistency
-   *          with other setter functions) since we do not know the
-   *          character set required for serious value checking.
+   *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setTrackingID(const OFString& value,

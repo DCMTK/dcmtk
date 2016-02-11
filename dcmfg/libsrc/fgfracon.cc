@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -358,11 +358,10 @@ OFCondition FGFrameContent::setInStackPositionNumber(const Uint32& value,
 OFCondition FGFrameContent::setFrameComments(const OFString& value,
                                              const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmLongText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_FrameComments.putOFStringArray(value);
-  return result;
+  (void)checkValue;
+  return m_FrameComments.putOFStringArray(value);
 }
+
 
 OFCondition FGFrameContent::setFrameLabel(const OFString& value,
                                           const OFBool checkValue)

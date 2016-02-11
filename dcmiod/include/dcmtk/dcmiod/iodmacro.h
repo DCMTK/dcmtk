@@ -842,7 +842,8 @@ public:
 
   /** Set Algorithm Parameters
    *  @param  value The value to be set
-   *  @param  checkValue If OFTrue, the given value is checked
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal, if value could be set, error otherwise
    */
   virtual OFCondition setAlgorithmParameters(const OFString& value,
@@ -1176,7 +1177,8 @@ public:
 
   /** Set Local Namespace Entity ID
    *  @param  value Value to be set
-   *  @param  checkValue If OFTrue, value is checkd for validity
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if setting was successful, error otherwise
    */
   virtual OFCondition setLocalNamespaceEntityID(const OFString& value,
@@ -1184,7 +1186,8 @@ public:
 
   /** Set Universal Entity ID
    *  @param  value Value to be set
-   *  @param  checkValue If OFTrue, value is checkd for validity
+   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
+   *          with other setter functions).
    *  @return EC_Normal if setting was successful, error otherwise
    */
   virtual OFCondition setUniversalEntityID(const OFString& value,
@@ -1192,7 +1195,7 @@ public:
 
   /** Set Universal Entity ID Type
    *  @param  value Value to be set
-   *  @param  checkValue If OFTrue, value is checkd for validity
+   *  @param  checkValue If OFTrue, value is checked for validity
    *  @return EC_Normal if setting was successful, error otherwise
    */
   virtual OFCondition setUniversalEntityIDType(const OFString& value,

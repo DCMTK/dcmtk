@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -1092,10 +1092,8 @@ OFCondition AlgorithmIdentificationMacro::setAlgorithmVersion(const OFString& va
 OFCondition AlgorithmIdentificationMacro::setAlgorithmParameters(const OFString& value,
                                                                  const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmLongText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_AlgorithmParameters.putOFStringArray(value);
-  return result;
+  (void)checkValue;
+  return m_AlgorithmParameters.putOFStringArray(value);
 }
 
 
@@ -1616,20 +1614,16 @@ void HL7HierarchicDesignatorMacro::resetRules()
 OFCondition HL7HierarchicDesignatorMacro::setLocalNamespaceEntityID(const OFString& value,
                                                                     const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmUnlimitedText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_LocalNamespaceEntityID,value);
-  return result;
+  (void)checkValue;
+  return m_Item->putAndInsertOFStringArray(DCM_LocalNamespaceEntityID,value);
 }
 
 
 OFCondition HL7HierarchicDesignatorMacro::setUniversalEntityID(const OFString& value,
                                                                const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmUnlimitedText::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_UniversalEntityID,value);
-  return result;
+  (void) checkValue;
+  return m_Item->putAndInsertOFStringArray(DCM_UniversalEntityID,value);
 }
 
 
