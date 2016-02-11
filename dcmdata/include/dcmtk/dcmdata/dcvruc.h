@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,6 +113,8 @@ class DCMTK_DCMDATA_EXPORT DcmUnlimitedCharacters
      *    (See DcmElement::checkVM() for a list of valid values.)
      *  @param charset character set (according to the value of the SpecificCharacterSet
      *    element) to be used for checking the string value. The default is ASCII (7-bit).
+     *    Currently, the VR checker only supports ASCII (ISO_IR 6) and Latin-1 (ISO_IR 100).
+     *    All other values disable the check of the value representation, e.g. "UNKNOWN".
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkStringValue(const OFString &value,
