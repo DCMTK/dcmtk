@@ -371,9 +371,16 @@ OFCondition DcmSegment::setTrackingID(const OFString& value,
 OFCondition DcmSegment::setTrackingUID(const OFString& value,
                                        const OFBool checkValue)
 {
-  // avoid compile warning on unused variable
-  (void)checkValue;
-  return m_TrackingUID.putOFStringArray(value);
+  OFCondition result;
+  if (checkValue)
+  {
+    result = DcmUniqueIdentifier::checkStringValue(value, "1");
+  }
+  if (result.good())
+  {
+    result = m_TrackingUID.putOFStringArray(value);
+  }
+  return result;
 }
 
 
