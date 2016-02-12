@@ -114,6 +114,16 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
     OFCondition writeXML(STD_NAMESPACE ostream &stream,
                          const size_t flags) const;
 
+    /** set specific character set, which is used for checking the affected element values.
+     *  Please note that this method does not return an error if the given 'value' is not
+     *  defined by the DICOM standard or not supported by this implementation.
+     ** @param  value  value to be set (single or multiple values) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1-n) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setSpecificCharacterSet(const OFString &value,
+                                        const OFBool check = OFTrue);
+
     /** add the specified item to the list of references.
      *  Before adding the item, the given UID values are usually checked.  If one of the
      *  values is invalid, nothing is done but an error is returned.  If successful, the
@@ -621,6 +631,8 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
     OFList<StudyStruct *> StudyList;
     /// internal cursor to current (selected) list item
     OFListIterator(StudyStruct *) Iterator;
+    /// specific character set used for checking purposes
+    OFString SpecificCharacterSet;
 
     // default constructor - not implemented!
     DSRSOPInstanceReferenceList();

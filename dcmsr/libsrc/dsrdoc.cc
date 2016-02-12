@@ -1924,6 +1924,13 @@ OFCondition DSRDocument::setTreeFromRootTemplate(DSRRootTemplate &rootTemplate,
 }
 
 
+const char *DSRDocument::getSpecificCharacterSet() const
+{
+    /* never return NULL */
+    return OFSTRING_GUARD(getStringValueFromElement(SpecificCharacterSet));
+}
+
+
 DSRTypes::E_CharacterSet DSRDocument::getSpecificCharacterSetType() const
 {
     return SpecificCharacterSetEnum;
@@ -2025,24 +2032,32 @@ OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
 
 DSRSOPInstanceReferenceList &DSRDocument::getPredecessorDocuments()
 {
+    /* pass current value of specific character set */
+    PredecessorDocuments.setSpecificCharacterSet(getSpecificCharacterSet());
     return PredecessorDocuments;
 }
 
 
 DSRSOPInstanceReferenceList &DSRDocument::getIdenticalDocuments()
 {
+    /* pass current value of specific character set */
+    IdenticalDocuments.setSpecificCharacterSet(getSpecificCharacterSet());
     return IdenticalDocuments;
 }
 
 
 DSRSOPInstanceReferenceList &DSRDocument::getCurrentRequestedProcedureEvidence()
 {
+    /* pass current value of specific character set */
+    CurrentRequestedProcedureEvidence.setSpecificCharacterSet(getSpecificCharacterSet());
     return CurrentRequestedProcedureEvidence;
 }
 
 
 DSRSOPInstanceReferenceList &DSRDocument::getPertinentOtherEvidence()
 {
+    /* pass current value of specific character set */
+    PredecessorDocuments.setSpecificCharacterSet(getSpecificCharacterSet());
     return PertinentOtherEvidence;
 }
 
@@ -2055,6 +2070,8 @@ DSRReferencedInstanceList &DSRDocument::getReferencedInstances()
 
 DSRCodingSchemeIdentificationList &DSRDocument::getCodingSchemeIdentification()
 {
+    /* pass current value of specific character set */
+    CodingSchemeIdentification.setSpecificCharacterSet(getSpecificCharacterSet());
     return CodingSchemeIdentification;
 }
 
@@ -2308,7 +2325,7 @@ OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value,
     if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
         if (check)
-            result = DcmLongString::checkStringValue(value, "1");
+            result = DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet());
         if (result.good())
             result = CompletionFlagDescription.putOFStringArray(value);
     }
@@ -2319,7 +2336,7 @@ OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value,
 OFCondition DSRDocument::setPatientName(const OFString &value,
                                         const OFBool check)
 {
-    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = PatientName.putOFStringArray(value);
     return result;
@@ -2349,7 +2366,7 @@ OFCondition DSRDocument::setPatientSex(const OFString &value,
 OFCondition DSRDocument::setReferringPhysicianName(const OFString &value,
                                                    const OFBool check)
 {
-    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = ReferringPhysicianName.putOFStringArray(value);
     return result;
@@ -2359,7 +2376,7 @@ OFCondition DSRDocument::setReferringPhysicianName(const OFString &value,
 OFCondition DSRDocument::setStudyDescription(const OFString &value,
                                              const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = StudyDescription.putOFStringArray(value);
     return result;
@@ -2369,7 +2386,7 @@ OFCondition DSRDocument::setStudyDescription(const OFString &value,
 OFCondition DSRDocument::setSeriesDescription(const OFString &value,
                                               const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = SeriesDescription.putOFStringArray(value);
     return result;
@@ -2379,7 +2396,7 @@ OFCondition DSRDocument::setSeriesDescription(const OFString &value,
 OFCondition DSRDocument::setProtocolName(const OFString &value,
                                          const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = ProtocolName.putOFStringArray(value);
     return result;
@@ -2389,7 +2406,7 @@ OFCondition DSRDocument::setProtocolName(const OFString &value,
 OFCondition DSRDocument::setManufacturer(const OFString &value,
                                          const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = Manufacturer.putOFStringArray(value);
     return result;
@@ -2399,7 +2416,7 @@ OFCondition DSRDocument::setManufacturer(const OFString &value,
 OFCondition DSRDocument::setManufacturerModelName(const OFString &value,
                                                   const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = ManufacturerModelName.putOFStringArray(value);
     return result;
@@ -2409,7 +2426,7 @@ OFCondition DSRDocument::setManufacturerModelName(const OFString &value,
 OFCondition DSRDocument::setDeviceSerialNumber(const OFString &value,
                                                const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = DeviceSerialNumber.putOFStringArray(value);
     return result;
@@ -2419,7 +2436,7 @@ OFCondition DSRDocument::setDeviceSerialNumber(const OFString &value,
 OFCondition DSRDocument::setSoftwareVersions(const OFString &value,
                                              const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1-n") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1-n", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = SoftwareVersions.putOFStringArray(value);
     return result;
@@ -2489,7 +2506,7 @@ OFCondition DSRDocument::setSeriesTime(const OFString &value,
 OFCondition DSRDocument::setStudyID(const OFString &value,
                                     const OFBool check)
 {
-    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = StudyID.putOFStringArray(value);
     return result;
@@ -2499,7 +2516,7 @@ OFCondition DSRDocument::setStudyID(const OFString &value,
 OFCondition DSRDocument::setPatientID(const OFString &value,
                                       const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = PatientID.putOFStringArray(value);
     return result;
@@ -2529,7 +2546,7 @@ OFCondition DSRDocument::setInstanceNumber(const OFString &value,
 OFCondition DSRDocument::setAccessionNumber(const OFString &value,
                                             const OFBool check)
 {
-    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = AccessionNumber.putOFStringArray(value);
     return result;
@@ -2687,7 +2704,7 @@ OFCondition DSRDocument::completeDocument(const OFString &description,
         if (CompletionFlagEnum != CF_Complete)
         {
             /* check parameter for conformance with VR and VM (if needed) */
-            result = (check) ? DcmLongString::checkStringValue(description, "1") : EC_Normal;
+            result = (check) ? DcmLongString::checkStringValue(description, "1", getSpecificCharacterSet()) : EC_Normal;
             if (result.good())
             {
                 /* completed for now and ever */
@@ -2733,9 +2750,9 @@ OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                     if (observerCode.isEmpty() || observerCode.isValid())
                         result = EC_Normal;
                     if (result.good())
-                        result = DcmPersonName::checkStringValue(observerName, "1");
+                        result = DcmPersonName::checkStringValue(observerName, "1", getSpecificCharacterSet());
                     if (result.good())
-                        result = DcmLongString::checkStringValue(organization, "1");
+                        result = DcmLongString::checkStringValue(organization, "1", getSpecificCharacterSet());
                     if (result.good())
                         result = DcmDateTime::checkStringValue(dateTime, "1");
                 } else {

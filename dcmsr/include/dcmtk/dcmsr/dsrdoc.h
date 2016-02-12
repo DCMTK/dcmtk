@@ -246,7 +246,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual E_CharacterSet getSpecificCharacterSetType() const;
 
     /** set specific character set type.
-     *  The DICOM defined term (see SpecificCharacterSet) is set accordingly.
+     *  The DICOM defined term (see member variable SpecificCharacterSet) is set accordingly.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
@@ -671,7 +671,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  defined by the DICOM standard or not supported by this class, e.g. when no mapping
      *  to the character set names needed for HTML/XHTML or XML output is defined.
      *  If needed, check the return value of the method getSpecificCharacterSetType() for
-     *  DSRTypes::CS_unknown after calling this method.
+     *  DSRTypes::CS_invalid or DSRTypes::CS_unknown after calling this method.
      ** @param  value  value to be set (single or multiple values) or "" for no value
      *  @param  check  check 'value' for conformance with VR (CS) and VM (1-n) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -1168,6 +1168,11 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     OFCondition checkDatasetForReading(DcmItem &dataset,
                                        E_DocumentType &documentType);
+
+    /** get current value of specific character set
+     ** @return pointer to character string (never NULL)
+     */
+    const char *getSpecificCharacterSet() const;
 
     /** update various DICOM attributes.
      *  (e.g. set the modality and SOP class UID, generate a new Study, Series and SOP instance UID

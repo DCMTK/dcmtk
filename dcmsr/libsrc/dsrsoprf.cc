@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2015, OFFIS e.V.
+ *  Copyright (C) 2002-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -767,7 +767,8 @@ void DSRSOPInstanceReferenceList::StudyStruct::removeIncompleteItems()
 DSRSOPInstanceReferenceList::DSRSOPInstanceReferenceList(const DcmTagKey &sequence)
   : SequenceTag(sequence),
     StudyList(),
-    Iterator()
+    Iterator(),
+    SpecificCharacterSet()
 {
     /* initialize list cursor */
     Iterator = StudyList.end();
@@ -794,6 +795,8 @@ void DSRSOPInstanceReferenceList::clear()
     /* make sure that the list is empty */
     StudyList.clear();
     Iterator = StudyList.end();
+    /* also clear other members */
+    SpecificCharacterSet.clear();
 }
 
 
@@ -965,6 +968,16 @@ OFCondition DSRSOPInstanceReferenceList::writeXML(STD_NAMESPACE ostream &stream,
         }
         iter++;
     }
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::setSpecificCharacterSet(const OFString &value,
+                                                                 const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        SpecificCharacterSet = value;
     return result;
 }
 
@@ -1444,7 +1457,7 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetID(const OFString
     if (series != NULL)
     {
         /* set the value (if valid) */
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+        result = (check) ? DcmShortString::checkStringValue(value, "1", SpecificCharacterSet) : EC_Normal;
         if (result.good())
             series->StorageMediaFileSetID = value;
     }

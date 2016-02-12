@@ -27,6 +27,24 @@
 #include "dcmtk/dcmsr/dsrdoc.h"
 
 
+OFTEST(dcmsr_setSpecificCharacterSet)
+{
+    /* first, create an SR document and set the character set */
+    DSRDocument doc;
+    OFCHECK(doc.setSpecificCharacterSet("ISO_IR 100").good());
+    /* then pass a value with special or invalid characters to a setXXX() method */
+    OFCHECK(doc.setPatientName("Riesmeier^J\366rg", OFTrue /*check*/).good());
+    OFCHECK(doc.setPatientName("^^^^^^", OFTrue /*check*/).bad());
+    OFCHECK(doc.setPatientName("^^^^^^", OFFalse /*check*/).good());
+    OFCHECK(doc.setStudyDescription("not allowed: \n\010\r\014", OFTrue /*check*/).bad());
+    OFCHECK(doc.setStudyDescription("not allowed: \n\010\r\014", OFFalse /*check*/).good());
+    /* disable VR checker by setting and invalid character set and try again */
+    OFCHECK(doc.setSpecificCharacterSet("UNKNOWN").good());
+    OFCHECK(doc.setPatientName("^^^^^^", OFTrue /*check*/).good());
+    OFCHECK(doc.setStudyDescription("not allowed: \n\010\r\014", OFTrue /*check*/).good());
+}
+
+
 OFTEST(dcmsr_changeDocumentType_1)
 {
     /* first, create an SR document to get an empty SR tree */
