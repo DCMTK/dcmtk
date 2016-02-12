@@ -856,12 +856,18 @@ DSRTypes::E_VerificationFlag DSRTypes::enumeratedValueToVerificationFlag(const O
 
 DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &definedTerm)
 {
-    E_CharacterSet type = CS_invalid;
-    const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
-    while ((iterator->Type != CS_last) && (definedTerm != iterator->DefinedTerm))
-        iterator++;
-    if (definedTerm == iterator->DefinedTerm)
-        type = iterator->Type;
+    E_CharacterSet type = CS_default;
+    /* empty defined term means default */
+    if (!definedTerm.empty())
+    {
+        const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
+        while ((iterator->Type != CS_last) && (definedTerm != iterator->DefinedTerm))
+            iterator++;
+        if (definedTerm == iterator->DefinedTerm)
+            type = iterator->Type;
+        else
+            type = CS_invalid;
+    }
     return type;
 }
 

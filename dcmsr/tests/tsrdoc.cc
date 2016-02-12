@@ -31,6 +31,7 @@ OFTEST(dcmsr_setSpecificCharacterSet)
 {
     /* first, create an SR document and set the character set */
     DSRDocument doc;
+    OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_ASCII);
     OFCHECK(doc.setSpecificCharacterSet("ISO_IR 100").good());
     /* then pass a value with special or invalid characters to a setXXX() method */
     OFCHECK(doc.setPatientName("Riesmeier^J\366rg", OFTrue /*check*/).good());
@@ -40,8 +41,14 @@ OFTEST(dcmsr_setSpecificCharacterSet)
     OFCHECK(doc.setStudyDescription("not allowed: \n\010\r\014", OFFalse /*check*/).good());
     /* disable VR checker by setting and invalid character set and try again */
     OFCHECK(doc.setSpecificCharacterSet("UNKNOWN").good());
+    OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_invalid);
     OFCHECK(doc.setPatientName("^^^^^^", OFTrue /*check*/).good());
     OFCHECK(doc.setStudyDescription("not allowed: \n\010\r\014", OFTrue /*check*/).good());
+    /* set default character repertoire (ASCII) */
+    OFCHECK(doc.setSpecificCharacterSet("").good());
+    OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_ASCII);
+    OFCHECK(doc.setSpecificCharacterSet("ISO_IR 6").good());
+    OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_ASCII);
 }
 
 

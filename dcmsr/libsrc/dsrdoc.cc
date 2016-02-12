@@ -57,7 +57,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     PreliminaryFlagEnum(PF_invalid),
     CompletionFlagEnum(CF_invalid),
     VerificationFlagEnum(VF_invalid),
-    SpecificCharacterSetEnum(CS_invalid),
+    SpecificCharacterSetEnum(CS_default),
     SOPClassUID(DCM_SOPClassUID),
     SOPInstanceUID(DCM_SOPInstanceUID),
     SpecificCharacterSet(DCM_SpecificCharacterSet),
@@ -122,7 +122,7 @@ void DSRDocument::clear()
     PreliminaryFlagEnum = PF_invalid;
     CompletionFlagEnum = CF_invalid;
     VerificationFlagEnum = VF_invalid;
-    SpecificCharacterSetEnum = CS_invalid;
+    SpecificCharacterSetEnum = CS_default;
     /* clear all DICOM attributes */
     SOPClassUID.clear();
     SOPInstanceUID.clear();
@@ -612,7 +612,9 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         // --- SOP Common Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPClassUID), "1", "1", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPInstanceUID), "1", "1", "SOPCommonModule");
-        addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet), "1-n", "1C", "SOPCommonModule");
+        /* never write specific character set for ASCII (default character repertoire) */
+        if (SpecificCharacterSetEnum != CS_ASCII)
+            addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet), "1-n", "1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID), "1", "3", "SOPCommonModule");

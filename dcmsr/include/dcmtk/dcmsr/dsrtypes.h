@@ -747,6 +747,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         CS_unknown = CS_invalid,
         /// ISO 646 (ISO-IR 6): ASCII
         CS_ASCII,
+        /// internal type used to indicate the default character set
+        CS_default = CS_ASCII,
         /// ISO-IR 100: Latin alphabet No. 1
         CS_Latin1,
         /// ISO-IR 101: Latin alphabet No. 2
@@ -1049,7 +1051,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      */
     static E_VerificationFlag enumeratedValueToVerificationFlag(const OFString &enumeratedValue);
 
-    /** convert DICOM defined term to character set
+    /** convert DICOM defined term to character set.
+     *  An empty defined term is mapped to DSRTypes::CS_default (which is ASCII).
      ** @param  definedTerm  defined term to be converted
      ** @return character set if successful, DSRTypes::CS_invalid otherwise
      */
