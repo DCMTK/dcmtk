@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -281,7 +281,12 @@ OFCondition IODRule::check(DcmItem& item,
     }
   } else {
     const OFCondition checkResult = elem->checkValue(m_VM, OFTrue /*oldFormat*/);
-    if (checkResult == EC_ValueRepresentationViolated)
+    if (checkResult == EC_InvalidCharacter)
+    {
+      if (!quiet) DCMIOD_WARN(tagName << " " << m_Key << " contains invalid character(s) in " << m_Module);
+      result = checkResult;
+    }
+    else if (checkResult == EC_ValueRepresentationViolated)
     {
       if (!quiet) DCMIOD_WARN(tagName << " " << m_Key << " violates VR definition in " << m_Module);
       result = checkResult;

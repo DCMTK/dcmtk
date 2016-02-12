@@ -2312,7 +2312,11 @@ OFCondition DSRDocument::setSpecificCharacterSet(const OFString &value,
     OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1-n") : EC_Normal;
     if (result.good())
     {
+        /* try to map the given string to an enum value */
         SpecificCharacterSetEnum = definedTermToCharacterSet(value);
+        if (SpecificCharacterSetEnum == CS_unknown)
+            DCMSR_WARN("Setting unknown/unsupported value for Specific Character Set: " << value);
+        /* in any case, store the passed string value */
         result = SpecificCharacterSet.putOFStringArray(value);
     }
     return result;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,6 +71,7 @@ makeOFConditionConst(EC_CannotCheck,                     OFM_dcmdata, 45, OF_err
 makeOFConditionConst(EC_MissingValue,                    OFM_dcmdata, 46, OF_error, "Missing value");
 makeOFConditionConst(EC_MissingAttribute,                OFM_dcmdata, 47, OF_error, "Missing attribute");
 makeOFConditionConst(EC_InternalError,                   OFM_dcmdata, 48, OF_error, "Internal error");
+makeOFConditionConst(EC_InvalidCharacter,                OFM_dcmdata, 49, OF_error, "Invalid character");
 
 const unsigned short EC_CODE_CannotSelectCharacterSet  = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet = 36;

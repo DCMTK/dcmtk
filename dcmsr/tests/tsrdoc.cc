@@ -44,9 +44,10 @@ OFTEST(dcmsr_setSpecificCharacterSet)
     OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_invalid);
     OFCHECK(doc.setPatientName("^^^^^^", OFTrue /*check*/).good());
     OFCHECK(doc.setStudyDescription("not allowed: \n\010\r\014", OFTrue /*check*/).good());
-    /* set default character repertoire (ASCII) */
+    /* set default character repertoire (ASCII) and try again */
     OFCHECK(doc.setSpecificCharacterSet("").good());
     OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_ASCII);
+    OFCHECK(doc.setPatientName("Riesmeier^J\366rg", OFTrue /*check*/).bad());
     OFCHECK(doc.setSpecificCharacterSet("ISO_IR 6").good());
     OFCHECK_EQUAL(doc.getSpecificCharacterSetType(), DSRTypes::CS_ASCII);
 }

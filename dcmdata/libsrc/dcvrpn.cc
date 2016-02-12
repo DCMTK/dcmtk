@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -452,10 +452,19 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
             const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
             if (dcmEnableVRCheckerForStringValues.get())
             {
+                /* check for non-ASCII characters (if default character set used) */
+                if (charset.empty() || (charset == "ISO_IR 6"))
+                {
+                    if (DcmByteString::containsExtendedCharacters(value.c_str() + posStart, length))
+                    {
+                        result = EC_InvalidCharacter;
+                        break;
+                    }
+                }
                 /* currently, the VR checker only supports ASCII and Latin-1 */
                 if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
                 {
-                    /* check value representation */
+                    /* check value representation (VR) */
                     const int vrID = DcmElement::scanValue(value, "pn", posStart, length);
                     if (vrID != 11)
                     {
@@ -468,7 +477,7 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
         }
         if (result.good() && !vm.empty())
         {
-            /* check value multiplicity */
+            /* check value multiplicity (VM) */
             result = DcmElement::checkVM(vmNum, vm);
         }
     }

@@ -1046,7 +1046,12 @@ OFBool DSRTypes::checkElementValue(DcmElement *delem,
         }
     } else {
         const OFCondition checkResult = delem->checkValue(vm, OFTrue /*oldFormat*/);
-        if (checkResult == EC_ValueRepresentationViolated)
+        if (checkResult == EC_InvalidCharacter)
+        {
+            DCMSR_WARN(tagName << " " << tagKey << " contains invalid character(s) in " << module);
+            result = acceptViolation;
+        }
+        else if (checkResult == EC_ValueRepresentationViolated)
         {
             DCMSR_WARN(tagName << " " << tagKey << " violates VR definition in " << module);
             result = acceptViolation;

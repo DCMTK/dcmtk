@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -148,7 +148,7 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownVR;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidValue;
 /// An expected Item was not found
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ItemNotFound;
-/// Given transfersyntax is unknown
+/// Given transfer syntax is unknown
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownTransferSyntax;
 /// Cannot check
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotCheck;
@@ -158,6 +158,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_MissingValue;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_MissingAttribute;
 /// Internal error
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InternalError;
+/// Invalid character, e.g. non-ASCII character used but no Specific Character Set defined
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidCharacter;
 //@}
 
 // status code constants

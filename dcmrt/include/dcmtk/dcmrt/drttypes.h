@@ -1,13 +1,14 @@
 /*
  *
- *  Copyright (c) 2008-2014, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTTypes
  *
  *  Generated manually based on dsrtypes.h
  *  File created on 2008-12-05
- *  Last modified on 2012-10-24 by Riesmeier
+ *  Last modified on 2016-02-12 by Riesmeier
  *
  */
 

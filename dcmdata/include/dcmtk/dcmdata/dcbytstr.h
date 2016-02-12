@@ -30,6 +30,12 @@
 #include "dcmtk/ofstd/ofstring.h"
 
 
+// include this file in doxygen documentation
+
+/** @file dcbytstr.h
+ *  @brief base class for all DICOM value representations storing a character string
+ */
+
 /** This flag defines whether the VR checker is actually used by the various
  *  checkStringValue() methods.  Since this checker is currently limited to
  *  ASCII and Latin-1, and the detection of the character set might fail for
@@ -75,7 +81,7 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
-     *  components of the object, preferrably in the order declared in the
+     *  components of the object, preferably in the order declared in the
      *  object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
@@ -348,6 +354,19 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
     void setNonSignificantChars(const OFString &characters) { nonSignificantChars = characters; }
 
     /* --- static helper functions --- */
+
+    /** check if a given character string contains non-ASCII characters.
+     *  Please note that this check is pretty simple and only works for single-byte character
+     *  sets that do include the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other
+     *  words: All character codes below 128 are considered to be ASCII codes and all others
+     *  are considered to be non-ASCII.
+     *  @param stringVal character string to be checked
+     *  @param stringLen length of the string (number of characters without the trailing
+     *    NULL byte)
+     * @return true if character string contains non-ASCII characters, false otherwise
+     */
+    static OFBool containsExtendedCharacters(const char *stringVal,
+                                             const Uint32 stringLen);
 
     /** check whether given string value conforms to a certain VR and VM.
      *  @param value string value to be checked (possibly multi-valued)

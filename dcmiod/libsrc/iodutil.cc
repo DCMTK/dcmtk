@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -34,7 +34,6 @@
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcitem.h"
-
 
 
 // --- static helpers ---
@@ -169,7 +168,7 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
             return EC_MemoryExhausted;
         } else if (type != "1")
         {
-          // Not type 1 or type 2 means the is type 1C,2C or 3. For those it is
+          // Not type 1 or type 2 means the is type 1C, 2C or 3. For those it is
           // fine to not insert anything
           return EC_Normal;
         }
@@ -249,7 +248,7 @@ OFCondition DcmIODUtil::checkElementValue(const DcmElement *delem,
     DCMIOD_WARN(tagName << " " << tagKey << " absent in " << module << " (type " << type << ")");
     result = IOD_EC_MissingAttribute;
   }
-  else if ((delem == NULL) || OFconst_cast(DcmElement*, delem)->isEmpty(OFTrue /*normalize*/))   // cast away constness of delem; value modification can happpen (eg. to remove padding)
+  else if ((delem == NULL) || OFconst_cast(DcmElement*, delem)->isEmpty(OFTrue /*normalize*/))   // cast away constness of delem; value modification can happen (eg. to remove padding)
   {
     /* however, type 1C should never be present with empty value */
     if (((type == "1") || (type == "1C")) && searchCond.good())
@@ -258,8 +257,12 @@ OFCondition DcmIODUtil::checkElementValue(const DcmElement *delem,
       result = EC_MissingValue;
     }
   } else {
-    result = OFconst_cast(DcmElement*, delem)->checkValue(vm, OFTrue /*oldFormat*/);   // cast away constness of delem; value modification can happpen (eg. to remove padding)
-    if (result == EC_ValueRepresentationViolated)
+    result = OFconst_cast(DcmElement*, delem)->checkValue(vm, OFTrue /*oldFormat*/);   // cast away constness of delem; value modification can happen (eg. to remove padding)
+    if (result == EC_InvalidCharacter)
+    {
+      DCMIOD_WARN(tagName << " " << tagKey << " contains invalid character(s) in " << module);
+    }
+    else if (result == EC_ValueRepresentationViolated)
     {
       DCMIOD_WARN(tagName << " " << tagKey << " violates VR definition in " << module);
     }
@@ -298,7 +301,7 @@ OFCondition DcmIODUtil::getStringValueFromElement(const DcmElement &delem,
                                                   const signed long pos)
 {
   OFCondition result = EC_Normal;
-  // cast away constness of delem; value modification can happpen (eg. to remove padding)
+  // cast away constness of delem; value modification can happen (eg. to remove padding)
   if (pos < 0)
     result = OFconst_cast(DcmElement &, delem).getOFStringArray(stringValue);
   else

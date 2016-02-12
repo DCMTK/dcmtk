@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -147,20 +147,13 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
 
 OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
 {
+    OFBool result = OFFalse;
     char *str = NULL;
     Uint32 len = 0;
     /* determine length in order to support possibly embedded NULL bytes */
-    if (getString(str, len).good() && (str != NULL))
-    {
-        const char *p = str;
-        for (Uint32 i = 0; i < len; i++)
-        {
-            /* check for 8 bit characters */
-            if (OFstatic_cast(unsigned char, *p++) > 127)
-                return OFTrue;
-        }
-    }
-    return OFFalse;
+    if (getString(str, len).good())
+        result = DcmByteString::containsExtendedCharacters(str, len);
+    return result;
 }
 
 

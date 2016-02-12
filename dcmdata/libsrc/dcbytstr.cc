@@ -690,6 +690,7 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
 
 OFBool DcmByteString::containsExtendedCharacters(const OFBool checkAllStrings)
 {
+    OFBool result = OFFalse;
     /* only check if parameter is true since derived VRs are not affected
        by the attribute SpecificCharacterSet (0008,0005) */
     if (checkAllStrings)
@@ -697,18 +698,10 @@ OFBool DcmByteString::containsExtendedCharacters(const OFBool checkAllStrings)
         char *str = NULL;
         Uint32 len = 0;
         /* determine length in order to support possibly embedded NULL bytes */
-        if (getString(str, len).good() && (str != NULL))
-        {
-            const char *p = str;
-            for (Uint32 i = 0; i < len; i++)
-            {
-                /* check for 8 bit characters */
-                if (OFstatic_cast(unsigned char, *p++) > 127)
-                    return OFTrue;
-            }
-        }
+        if (getString(str, len).good())
+            result = containsExtendedCharacters(str, len);
     }
-    return OFFalse;
+    return result;
 }
 
 
@@ -801,6 +794,25 @@ void normalizeString(OFString &string,
 // ********************************
 
 
+OFBool DcmByteString::containsExtendedCharacters(const char *stringVal,
+                                                 const Uint32 stringLen)
+{
+    if (stringVal != NULL)
+    {
+        for (Uint32 i = stringLen; i != 0; --i)
+        {
+            /* check for 8 bit characters */
+            if (OFstatic_cast(unsigned char, *stringVal++) > 127)
+                return OFTrue;
+        }
+    }
+    return OFFalse;
+}
+
+
+// ********************************
+
+
 OFCondition DcmByteString::checkStringValue(const OFString &value,
                                             const OFString &vm,
                                             const OFString &vr,
@@ -820,12 +832,21 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
                 result = EC_MaximumLengthViolated;
             else if (dcmEnableVRCheckerForStringValues.get())
             {
-                /* currently, the VR checker only supports ASCII and Latin-1 */
-                if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
+                /* check for non-ASCII characters (if default character set used) */
+                if (charset.empty() || (charset == "ISO_IR 6"))
                 {
-                    /* check value representation */
-                    if (DcmElement::scanValue(value, vr) != vrID)
-                        result = EC_ValueRepresentationViolated;
+                    if (containsExtendedCharacters(value.c_str(), value.length()))
+                        result = EC_InvalidCharacter;
+                }
+                if (result.good())
+                {
+                    /* currently, the VR checker only supports ASCII and Latin-1 */
+                    if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
+                    {
+                        /* check value representation (VR) */
+                        if (DcmElement::scanValue(value, vr) != vrID)
+                            result = EC_ValueRepresentationViolated;
+                    }
                 }
             }
         } else {
@@ -846,10 +867,19 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
                 }
                 else if (dcmEnableVRCheckerForStringValues.get())
                 {
+                    /* check for non-ASCII characters (if default character set used) */
+                    if (charset.empty() || (charset == "ISO_IR 6"))
+                    {
+                        if (containsExtendedCharacters(value.c_str() + posStart, length))
+                        {
+                            result = EC_InvalidCharacter;
+                            break;
+                        }
+                    }
                     /* currently, the VR checker only supports ASCII and Latin-1 */
                     if (charset.empty() || (charset == "ISO_IR 6") || (charset == "ISO_IR 100"))
                     {
-                        /* check value representation */
+                        /* check value representation (VR) */
                         if (DcmElement::scanValue(value, vr, posStart, length) != vrID)
                         {
                             result = EC_ValueRepresentationViolated;
@@ -861,7 +891,7 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
             }
             if (result.good())
             {
-                /* check value multiplicity */
+                /* check value multiplicity (VM) */
                 result = DcmElement::checkVM(vmNum, vm);
             }
         }
