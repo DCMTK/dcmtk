@@ -118,7 +118,9 @@ size_t DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>::iterate(const OFBool sear
         {
             NodeCursor = NodeCursor->getNext();
             nodeID = NodeCursor->getIdent();
-            ++Position;
+            /* check for special case: do not count "included template" nodes? */
+            if ((NodeCursor->getValueType() != DSRTypes::VT_includedTemplate) || !(Position.getFlags() & DSRTypes::PF_dontCountIncludedTemplateNodes))
+                ++Position;
         }
         else if (searchIntoSub && !NodeCursorStack.empty())
         {
@@ -137,7 +139,9 @@ size_t DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>::iterate(const OFBool sear
                 {
                     NodeCursor = NodeCursor->getNext();
                     nodeID = NodeCursor->getIdent();
-                    ++Position;
+                    /* check for special case: do not count "included template" nodes? */
+                    if ((NodeCursor->getValueType() != DSRTypes::VT_includedTemplate) || !(Position.getFlags() & DSRTypes::PF_dontCountIncludedTemplateNodes))
+                        ++Position;
                 }
             }
         }

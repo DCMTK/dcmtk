@@ -446,6 +446,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// do not print internal "included template" nodes (position counter is still increased)
     static const size_t PF_hideIncludedTemplateNodes;
 
+    /// do not count internal "included template" nodes (only with PF_hideIncludedTemplateNodes)
+    static const size_t PF_dontCountIncludedTemplateNodes;
+
     /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;
     //@}

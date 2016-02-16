@@ -174,11 +174,11 @@ OFBool DSRDocumentSubTree::canUseTemplateIdentification() const
 
 OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                                       const size_t flags,
-                                      DSRPositionCounter *posCounter)
+                                      const DSRPositionCounter *posCounter)
 {
     OFCondition result = EC_Normal;
     /* initialize cursor with root node (and optional position counter) */
-    DSRDocumentTreeNodeCursor cursor(getRoot(), posCounter);
+    DSRIncludedTemplateNodeCursor cursor(getRoot(), posCounter);
     if (cursor.isValid())
     {
         /* check and update by-reference relationships (if applicable) */
@@ -220,22 +220,10 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
                     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
                     stream << OFendl;
                 }
-                /* print content of included template (subtree) */
-                if (node->hasValidValue())
+                else if ((flags & PF_dontCountIncludedTemplateNodes) && !(cursor.getPositionCounter().getFlags() & PF_dontCountIncludedTemplateNodes))
                 {
-                    DSRSubTemplate *subTempl = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->getValue().get();
-                    /* further indent included subtree */
-                    if (!(flags & PF_hideIncludedTemplateNodes))
-                        cursor.getPositionCounter().goDown();
-                    /* only print non-empty template (subtree) */
-                    if (!subTempl->isEmpty())
-                        result = subTempl->print(stream, flags, &cursor.getPositionCounter());
-                    /* make sure that empty templates are not counted */
-                    else if (flags & PF_hideIncludedTemplateNodes)
-                        --cursor.getPositionCounter();
-                    /* reset indentation of included subtree */
-                    if (!(flags & PF_hideIncludedTemplateNodes))
-                        cursor.getPositionCounter().goUp();
+                    /* do not count internal "included template" nodes */
+                    --cursor.getPositionCounter();
                 }
             } else {
                 /* print node content */
@@ -252,9 +240,6 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
             }
         } while (result.good() && cursor.iterate());
     }
-    /* store and return current value of position counter (if needed) */
-    if (posCounter != NULL)
-        *posCounter = cursor.getPositionCounter();
     return result;
 }
 
