@@ -291,6 +291,12 @@ DSRContentItem &DSRDocumentSubTree::getCurrentContentItem()
 }
 
 
+const DSRDocumentTreeNode *DSRDocumentSubTree::getCurrentNode() const
+{
+    return getNode();
+}
+
+
 size_t DSRDocumentSubTree::countNodes(const OFBool searchIntoSubTemplates,
                                       const OFBool countIncludedTemplateNodes) const
 {
@@ -855,6 +861,13 @@ void DSRDocumentSubTree::swap(DSRDocumentSubTree &tree)
     /* swap other members */
     CurrentContentItem.swap(tree.CurrentContentItem);
     OFswap(ConstraintChecker, tree.ConstraintChecker);
+}
+
+
+DSRDocumentTreeNode *DSRDocumentSubTree::getNode() const
+{
+    /* just call the inherited method */
+    return DSRTree<DSRDocumentTreeNode>::getNode();
 }
 
 

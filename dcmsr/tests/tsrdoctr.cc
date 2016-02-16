@@ -107,6 +107,26 @@ OFTEST(dcmsr_copyContentItem)
 }
 
 
+OFTEST(dcmsr_getCurrentNode)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container, DSRCodedEntryValue("121111", "DCM", "Summary")).good());
+    OFCHECK(tree.addChildContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    /* and check the current node */
+    const DSRDocumentTreeNode *treeNode = tree.getCurrentNode();
+    if (treeNode != NULL)
+    {
+        OFCHECK_EQUAL(treeNode->getRelationshipType(), DSRTypes::RT_contains);
+        OFCHECK_EQUAL(treeNode->getValueType(), DSRTypes::VT_Num);
+        OFCHECK_EQUAL(treeNode->getConceptName().getCodeMeaning(), "Distance");
+    } else
+        OFCHECK_FAIL("could not get read-only access to current node");
+}
+
+
 OFTEST(dcmsr_gotoNamedNode)
 {
     /* first, create a new SR document */

@@ -42,6 +42,7 @@ OFTEST_REGISTER(dcmsr_gotoAnnotatedTreeNode);
 OFTEST_REGISTER(dcmsr_addContentItem_1);
 OFTEST_REGISTER(dcmsr_addContentItem_2);
 OFTEST_REGISTER(dcmsr_copyContentItem);
+OFTEST_REGISTER(dcmsr_getCurrentNode);
 OFTEST_REGISTER(dcmsr_gotoNamedNode);
 OFTEST_REGISTER(dcmsr_gotoAnnotatedNode);
 OFTEST_REGISTER(dcmsr_createDocSubTree);

@@ -180,6 +180,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual DSRContentItem &getCurrentContentItem();
 
+    /** get read-only access to current node (content item)
+     ** @return pointer to current node (might be NULL)
+     */
+    virtual const DSRDocumentTreeNode *getCurrentNode() const;
+
     /** count number of content items (nodes) in the document tree.
      *  This method iterates over all nodes that are stored in the document tree.
      *  By default, included sub-templates are counted as a single node (see options).
@@ -547,6 +552,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @param  tree  subtree to swap with
      */
     void swap(DSRDocumentSubTree &tree);
+
+    /** get pointer to current node.
+     *  Hide this inherited method from the public interface.
+     ** @return pointer to current node (might be NULL)
+     */
+    virtual DSRDocumentTreeNode *getNode() const;
 
     /** add new node to the current one.
      *  Please note that no copy of the given node is created.  Therefore, the node
