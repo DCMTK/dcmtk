@@ -28,6 +28,7 @@
 
 #include "dcmtk/dcmsr/dsrtree.h"
 #include "dcmtk/dcmsr/dsrdoctn.h"
+#include "dcmtk/dcmsr/dsrdncsr.h"
 #include "dcmtk/dcmsr/dsrcitem.h"
 
 #include "dcmtk/ofstd/ofmem.h"

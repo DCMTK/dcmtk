@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrdoctn.h"
+#include "dcmtk/dcmsr/dsrdncsr.h"
 #include "dcmtk/dcmsr/dsrdtitn.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 #include "dcmtk/dcmsr/dsriodcc.h"

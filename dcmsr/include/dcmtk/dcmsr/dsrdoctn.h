@@ -38,13 +38,6 @@
 class DSRIODConstraintChecker;
 
 
-/*-------------------*
- *  type definition  *
- *-------------------*/
-
-typedef DSRTreeNodeCursor<DSRDocumentTreeNode> DSRDocumentTreeNodeCursor;
-
-
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -56,7 +49,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 {
     // allow direct access to protected methods
     friend class DSRTree<DSRDocumentTreeNode>;
-    friend class DSRTreeNodeCursor<DSRDocumentTreeNode>;
+    friend class DSRTreeNodeCursor<DSRDocumentTreeNode, OFFalse>;
+    friend class DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>;
 
     // allow access to getConceptNamePtr()
     friend class DSRContentItem;

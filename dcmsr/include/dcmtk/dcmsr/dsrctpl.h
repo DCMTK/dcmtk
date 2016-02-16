@@ -28,6 +28,7 @@
 
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrdoctn.h"
+#include "dcmtk/dcmsr/dsrdncsr.h"
 
 
 /*-----------------------*
