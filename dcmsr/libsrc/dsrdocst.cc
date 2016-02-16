@@ -297,6 +297,20 @@ const DSRDocumentTreeNode *DSRDocumentSubTree::getCurrentNode() const
 }
 
 
+OFBool DSRDocumentSubTree::getCursorToRootNode(DSRDocumentTreeNodeCursor &cursor) const
+{
+    cursor = DSRDocumentTreeNodeCursor(getRoot());
+    return cursor.isValid();
+}
+
+
+OFBool DSRDocumentSubTree::getCursorToRootNode(DSRIncludedTemplateNodeCursor &cursor) const
+{
+    cursor = DSRIncludedTemplateNodeCursor(getRoot());
+    return cursor.isValid();
+}
+
+
 size_t DSRDocumentSubTree::countNodes(const OFBool searchIntoSubTemplates,
                                       const OFBool countIncludedTemplateNodes) const
 {

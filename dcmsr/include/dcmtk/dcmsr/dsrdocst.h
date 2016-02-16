@@ -186,6 +186,30 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual const DSRDocumentTreeNode *getCurrentNode() const;
 
+    /** get a cursor to the root node of this document tree.
+     *  This cursor can be used to iterate over the nodes of the document tree without
+     *  changing the internal cursor.  Please note that the cursor might become invalid,
+     *  e.g. by pointing to a non-existing node, if the content of the document tree is
+     *  modified after the cursor has been retrieved.
+     *  Included sub-templates are not supported by this type of cursor, i.e. the subtree
+     *  that is managed by an instance of DSRIncludedTemplateTreeNode is not iterated.
+     ** @param  cursor  reference to variable where the cursor is stored
+     ** @return OFTrue is the returned 'cursor' is valid, OFFalse otherwise
+     */
+    virtual OFBool getCursorToRootNode(DSRDocumentTreeNodeCursor &cursor) const;
+
+    /** get a cursor to the root node of this document tree.
+     *  This cursor can be used to iterate over the nodes of the document tree without
+     *  changing the internal cursor.  Please note that the cursor might become invalid,
+     *  e.g. by pointing to a non-existing node, if the content of the document tree is
+     *  modified after the cursor has been retrieved.
+     *  This type of cursor also supports included sub-templates, i.e. the subtree that
+     *  is managed by an instance of DSRIncludedTemplateTreeNode is also iterated.
+     ** @param  cursor  reference to variable where the cursor is stored
+     ** @return OFTrue is the returned 'cursor' is valid, OFFalse otherwise
+     */
+    virtual OFBool getCursorToRootNode(DSRIncludedTemplateNodeCursor &cursor) const;
+
     /** count number of content items (nodes) in the document tree.
      *  This method iterates over all nodes that are stored in the document tree.
      *  By default, included sub-templates are counted as a single node (see options).
