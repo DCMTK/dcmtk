@@ -42,9 +42,11 @@ class DCMTK_DCMSR_EXPORT DSRPositionCounter
 {
   public:
 
-    /** default constructor
+    /** (default) constructor
+     ** @param  flags  optional flags used to customize the processing of the counter.
+     *                 These flags are only stored but not evaluated by this class.
      */
-    DSRPositionCounter();
+    DSRPositionCounter(const size_t flags = 0);
 
     /** copy constructor
      ** @param  counter  object to be copied
@@ -97,8 +99,11 @@ class DCMTK_DCMSR_EXPORT DSRPositionCounter
     /** initialize the position counter
      ** @param  valid  flag specifying whether the counter should be initialized as
      *                 valid (default) or invalid
+     *  @param  flags  optional flags used to customize the processing of the counter.
+     *                 These flags are only stored but not evaluated by this class.
      */
-    void initialize(const OFBool valid = OFTrue);
+    void initialize(const OFBool valid = OFTrue,
+                    const size_t flags = 0);
 
     /** check whether position counter is valid (i.e.\ has been initialized)
      ** @return OFTrue if valid, OFFalse otherwise
@@ -119,6 +124,14 @@ class DCMTK_DCMSR_EXPORT DSRPositionCounter
      ** @return OFTrue if successful, OFFalse otherwise
      */
     OFBool goDown();
+
+    /** get specified flags that can be used to customize the counter
+     ** @return flags used to customize the counter
+     */
+    inline size_t getFlags() const
+    {
+        return Flags;
+    }
 
     /** get current level of the position counter.
      *  The top most (root) level is 1, the next lower level is 2, etc.
@@ -146,6 +159,8 @@ class DCMTK_DCMSR_EXPORT DSRPositionCounter
     size_t Position;
     /// list of position counters in upper levels
     OFList<size_t> PositionList;
+    /// flags used to customize the counter
+    size_t Flags;
 };
 
 

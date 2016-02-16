@@ -27,16 +27,18 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 
 
-DSRPositionCounter::DSRPositionCounter()
+DSRPositionCounter::DSRPositionCounter(const size_t flags)
   : Position(0),
-    PositionList()
+    PositionList(),
+    Flags(flags)
 {
 }
 
 
 DSRPositionCounter::DSRPositionCounter(const DSRPositionCounter &counter)
   : Position(counter.Position),
-    PositionList(counter.PositionList)
+    PositionList(counter.PositionList),
+    Flags(counter.Flags)
 {
 }
 
@@ -50,6 +52,7 @@ DSRPositionCounter &DSRPositionCounter::operator=(const DSRPositionCounter &coun
 {
     Position = counter.Position;
     PositionList = counter.PositionList;
+    Flags = counter.Flags;
     return *this;
 }
 
@@ -59,14 +62,17 @@ void DSRPositionCounter::clear()
     /* clear and invalidate position counter */
     Position = 0;
     PositionList.clear();
+    Flags = 0;
 }
 
 
-void DSRPositionCounter::initialize(const OFBool valid)
+void DSRPositionCounter::initialize(const OFBool valid,
+                                    const size_t flags)
 {
     /* distinguish valid from non-valid position counter */
     Position = (valid ? 1 : 0);
     PositionList.clear();
+    Flags = flags;
 }
 
 
