@@ -408,7 +408,7 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
 
 void DSRDocumentTree::unmarkAllContentItems()
 {
-    DSRDocumentTreeNodeCursor cursor(getRoot());
+    DSRIncludedTemplateNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         /* iterate over all nodes */
@@ -421,7 +421,7 @@ void DSRDocumentTree::unmarkAllContentItems()
 
 void DSRDocumentTree::removeSignatures()
 {
-    DSRDocumentTreeNodeCursor cursor(getRoot());
+    DSRIncludedTemplateNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         /* iterate over all nodes */

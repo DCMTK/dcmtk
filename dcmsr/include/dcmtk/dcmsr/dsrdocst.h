@@ -680,7 +680,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                                       const size_t flags = 0);
 
     /** reset flag for all content items whether they are target of a by-reference relationship.
-     *  This function calls 'setReferenceTarget(OFFalse)' for all content items.
+     *  This function calls 'setReferenceTarget(OFFalse)' for all content items in the tree.
      */
     virtual void resetReferenceTargetFlag();
 

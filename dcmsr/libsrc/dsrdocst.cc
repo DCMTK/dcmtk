@@ -1124,7 +1124,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
 
 void DSRDocumentSubTree::resetReferenceTargetFlag()
 {
-    DSRDocumentTreeNodeCursor cursor(getRoot());
+    DSRIncludedTemplateNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
         /* iterate over all nodes */
