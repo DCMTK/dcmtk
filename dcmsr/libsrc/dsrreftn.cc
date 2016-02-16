@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -100,7 +100,10 @@ OFCondition DSRByReferenceTreeNode::print(STD_NAMESPACE ostream &stream,
     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RELATIONSHIP_TYPE)
     stream << relationshipTypeToReadableName(getRelationshipType()) << " ";
     DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
-    stream << ReferencedContentItem;
+    if (ReferencedContentItem.empty())
+        stream << "?";
+    else
+        stream << ReferencedContentItem;
     /* print node ID (might be useful for debugging purposes) */
     if (flags & PF_printNodeID)
     {

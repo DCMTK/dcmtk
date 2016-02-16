@@ -93,14 +93,15 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
      */
     virtual OFBool isValid() const;
 
-    /** check whether the value of the content item, i.e.\ the reference (which has been checked
-     *  from outside of this class), is valid
+    /** check whether the value of the content item, i.e.\ the reference (which has been
+     *  checked from outside of this class), is valid
      ** @return OFTrue if the value is valid, OFFalse otherwise
      */
     virtual OFBool hasValidValue() const;
 
     /** print content item.
-     *  A typical output looks like this: inferred from 1.2.3
+     *  A typical output looks like this: inferred from 1.2.3.  If the position string
+     *  of the referenced target content item is empty, a "?" (question mark) is printed.
      ** @param  stream  output stream to which the content item should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
