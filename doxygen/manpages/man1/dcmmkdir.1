@@ -1,4 +1,4 @@
-.TH "dcmmkdir" 1 "Thu Sep 24 2015" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "Tue Feb 16 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkdir \- Create a DICOMDIR file
@@ -37,6 +37,12 @@ General Purpose BD Interchange with MPEG2 MP@HL (STD-GEN-BD-MPEG2-MPHL)
 General Purpose BD Interchange with MPEG-4 AVC/H\&.264 HiP@Level4\&.1 (STD-GEN-BD-MPEG4-HPLV41)
 .IP "\(bu" 2
 General Purpose BD Interchange with MPEG-4 AVC/H\&.264 BD-Compatible HiP@Level4\&.1 (STD-GEN-BD-MPEG4-HPLV41BD)
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG-4 AVC/H\&.264 HiP@Level4\&.2 for 2D video (STD-GEN-BD-MPEG4-HPLV42-2D)
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG-4 AVC/H\&.264 HiP@Level4\&.2 for 3D video (STD-GEN-BD-MPEG4-HPLV42-3D)
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG-4 AVC/H\&.264 Stereo HiP@Level4\&.2 (STD-GEN-BD-MPEG4-SHPLV42)
 .IP "\(bu" 2
 General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
 .IP "\(bu" 2
@@ -264,6 +270,18 @@ profiles:
           General Purpose BD Interchange with MPEG-4 AVC/H.264
           BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
 
+        --general-bd-mpeg4-hp2d
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.2 for 2D video (STD-GEN-BD-MPEG4-HPLV42-2D)
+
+        --general-bd-mpeg4-hp3d
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.2 for 3D video (STD-GEN-BD-MPEG4-HPLV42-3D)
+
+        --general-bd-mpeg4-hpst
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          Stereo HiP@Level4.2 (STD-GEN-BD-MPEG4-SHPLV42)
+
   -Pfl  --usb-and-flash-jpeg
           General Purpose USB/Flash Memory Interchange with JPEG
           (STD-GEN-USB/MMC/CF/SD-JPEG)
@@ -409,4 +427,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

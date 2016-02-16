@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "Thu Sep 24 2015" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "Tue Feb 16 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -195,8 +195,8 @@ VR:    Value Representation must be written as 2 characters as in
        between the two characters.  If the VR can be determined from
        the tag, this part of a line is optional.
 Value: There are several rules for writing values:
-       1. US, SS, SL, UL, FD, FL are written as decimal strings that
-          can be read by scanf().
+       1. US, SS, SL, UL, FD, FL, OD, OF and OL are written as decimal
+          strings that can be read by scanf().
        2. AT is written as '(gggg,eeee)' with additional spaces
           stripped off automatically and gggg and eeee being decimal
           strings that can be read by scanf().
@@ -263,4 +263,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
