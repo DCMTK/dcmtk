@@ -306,6 +306,7 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsdefine.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrtncsr.h \
  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+ ../../dcmsr/include/dcmtk/dcmsr/dsrposcn.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrtnant.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdoctn.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrcodvl.h \
