@@ -455,7 +455,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
 
     /** @name checkByReferenceRelationships() modes
-     *  These flags can be combined and passed to the checkByReferenceRelationships() method.
+     *  These modes can be combined and passed to the checkByReferenceRelationships() method.
      */
     //@{
 
@@ -467,6 +467,20 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// reset the reference target flag for all nodes
     static const size_t CM_resetReferenceTargetFlag;
+    //@}
+
+
+    /** @name checkByReferenceRelationships() bit masks
+     *  These bit masks are used to "filter" valid flags passed to checkByReferenceRelationships().
+     */
+    //@{
+
+    /// bit mask (filter) for valid print flags (see PF_xxx)
+    static const size_t CB_maskPrintFlags;
+
+    /// bit mask (filter) for valid read flags (see RF_xxx)
+    static const size_t CB_maskReadFlags;
+
     //@}
 
 

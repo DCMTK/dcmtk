@@ -28,6 +28,7 @@
 #include "dcmtk/dcmsr/dsrdocst.h"
 #include "dcmtk/dcmsr/dsrrtpl.h"
 #include "dcmtk/dcmsr/dsrstpl.h"
+#include "dcmtk/dcmsr/dsrreftn.h"
 
 
 /* minimal test class for root template (Basic Diagnostic Imaging Report) */
@@ -278,12 +279,20 @@ OFTEST(dcmsr_templateWithByReferenceRelationship_1)
     /* check whether the correct content item has been found */
     OFCHECK(templ.getCurrentContentItem().getValueType() == DSRTypes::VT_Num);
     /* and, finally, check whether the by-reference relationship is still valid */
+    OFCHECK(templ.updateByReferenceRelationships().good());
     OFCHECK(templ.gotoChild() > 0);
     OFCHECK(templ.getCurrentContentItem().getValueType() == DSRTypes::VT_byReference);
     OFCHECK(templ.getCurrentContentItem().getReferencedNodeID() > 0);
-
-    // tbd: by-reference relationships do not yet work correctly if contained
-    //      in an "included template" content item, i.e. in a nested subtree
+    const DSRDocumentTreeNode *treeNode = templ.getTree().getCurrentNode();
+    if (treeNode != NULL)
+    {
+        if (treeNode->getValueType() == DSRTypes::VT_byReference)
+        {
+            const DSRByReferenceTreeNode *node = OFstatic_cast(const DSRByReferenceTreeNode *, treeNode);
+            OFCHECK_EQUAL(node->getReferencedContentItem(), "1.3.1");
+        }
+    } else
+        OFCHECK_FAIL("could not get read-only access to current node");
 }
 
 
@@ -297,14 +306,28 @@ OFTEST(dcmsr_templateWithByReferenceRelationship_2)
     /* then, create a root template with a CONTAINER content item */
     SRTestRootTemplate rootTempl;
     OFCHECK_EQUAL(rootTempl.countNodes(), 1);
-    /* and insert the sub-template into it */
+    /* insert the sub-template into it */
     OFCHECK(rootTempl.insertTemplate(subTempl).good());
     OFCHECK_EQUAL(rootTempl.countNodes(), 5);
     OFCHECK_EQUAL(rootTempl.countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 8);
-    /* finally, set its content as the document tree */
+    /* check whether the by-reference relationship is still valid */
+    OFCHECK(rootTempl.updateByReferenceRelationships(OFTrue /*includedTemplates*/).good());
+    DSRIncludedTemplateNodeCursor cursor;
+    if (rootTempl.getTree().getCursorToRootNode(cursor))
+    {
+        do {
+            const DSRDocumentTreeNode *treeNode = cursor.getNode();
+            if (treeNode != NULL)
+            {
+                if (treeNode->getValueType() == DSRTypes::VT_byReference)
+                {
+                    const DSRByReferenceTreeNode *node = OFstatic_cast(const DSRByReferenceTreeNode *, treeNode);
+                    OFCHECK_EQUAL(node->getReferencedContentItem(), "1.1.3.1.1");
+                }
+            }
+        } while (cursor.iterate());
+    }
+    /* and, finally, set its content as the document tree */
     OFCHECK(doc.setTreeFromRootTemplate(rootTempl, OFTrue /*expandTree*/).good());
     OFCHECK_EQUAL(doc.getTree().countNodes(), 8);
-
-    // tbd: by-reference relationships do not yet work correctly if contained
-    //      in an "included template" content item, i.e. in a nested subtree
 }

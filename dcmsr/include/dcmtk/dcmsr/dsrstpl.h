@@ -153,6 +153,7 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
     using DSRDocumentSubTree::gotoAnnotatedNode;
     using DSRDocumentSubTree::gotoNextAnnotatedNode;
     using DSRDocumentSubTree::getCurrentContentItem;
+    using DSRDocumentSubTree::updateByReferenceRelationships;
 
 
   protected:

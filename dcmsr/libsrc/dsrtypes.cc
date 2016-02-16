@@ -153,6 +153,12 @@ const size_t DSRTypes::CM_updatePositionString           = 1 << 0;
 const size_t DSRTypes::CM_updateNodeID                   = 1 << 1;
 const size_t DSRTypes::CM_resetReferenceTargetFlag       = 1 << 2;
 
+/* checkByReferenceRelationships bit masks (avoid conflicts!) */
+const size_t DSRTypes::CB_maskPrintFlags                 = DSRTypes::PF_dontCountIncludedTemplateNodes;
+const size_t DSRTypes::CB_maskReadFlags                  = DSRTypes::RF_acceptUnknownRelationshipType |
+                                                           DSRTypes::RF_ignoreRelationshipConstraints |
+                                                           DSRTypes::RF_showCurrentlyProcessedItem;
+
 
 /*---------------------*
  *  type declarations  *

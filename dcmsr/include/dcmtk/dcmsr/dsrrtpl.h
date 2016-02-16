@@ -161,6 +161,7 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
     using DSRDocumentTree::gotoAnnotatedNode;
     using DSRDocumentTree::gotoNextAnnotatedNode;
     using DSRDocumentTree::getCurrentContentItem;
+    using DSRDocumentTree::updateByReferenceRelationships;
 
 
   protected:

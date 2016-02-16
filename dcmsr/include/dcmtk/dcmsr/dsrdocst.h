@@ -396,10 +396,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  Internally, this method calls checkByReferenceRelationships() with the 'mode'
      *  parameter being DSRTypes::CM_updatePositionString.  It should be called before
      *  this subtree is cloned in order to make sure that the by-reference relationships
-     *  (if any) still work on the cloned subtree.
+     *  (if any) still work on the cloned subtree.  This method should also be called
+     *  before accessing the position string of a referenced content item, see
+     *  DSRByReferenceTreeNode::getReferencedContentItem().
+     ** @param  updateIncludedTemplates  optional flag indicating whether to also update
+     *                                   the subtrees managed by included sub-templates
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition updateByReferenceRelationships();
+    virtual OFCondition updateByReferenceRelationships(const OFBool updateIncludedTemplates = OFFalse);
 
     /** check whether specified subtree can be inserted at the current position, i.e.\ added
      *  to the current content item.  Internally, the method canAddContentItem() is used for
@@ -673,12 +677,16 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  identify nodes) can be updated.
      *  Please note that the checking modes DSRTypes::CM_updatePositionString and
      *  DSRTypes::CM_updateNodeID are mutually exclusive.
-     ** @param  mode   mode used to customize the checking process (see DSRTypes::CM_xxx)
-     *  @param  flags  flag used to customize the reading process (see DSRTypes::RF_xxx)
+     ** @tparam  T_Cursor  template type used for the cursor iterating the document (sub)tree
+     ** @param   mode      mode used to customize the checking process (see DSRTypes::CM_xxx)
+     *  @param   flags     flag used to customize the reading (see DSRTypes::RF_xxx) and/or
+     *                     printing process (see DSRTypes::PF_xxx).  Conflicting definitions
+     *                     are avoided using the appropriate bit mask (see DSRTypes::CB_xxx).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition checkByReferenceRelationships(const size_t mode = 0,
-                                                      const size_t flags = 0);
+    template <typename T_Cursor>
+    OFCondition checkByReferenceRelationships(const size_t mode = 0,
+                                              const size_t flags = 0);
 
     /** reset flag for all content items whether they are target of a by-reference relationship.
      *  This function calls 'setReferenceTarget(OFFalse)' for all content items in the tree.

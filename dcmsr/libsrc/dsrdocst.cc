@@ -47,7 +47,7 @@ DSRDocumentSubTree::DSRDocumentSubTree(const DSRDocumentSubTree &tree)
 {
     /* the real work is done in the base class DSRTree,
      * so just update the by-reference relationships (if any) */
-    checkByReferenceRelationships(CM_updateNodeID);
+    checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_updateNodeID);
 }
 
 
@@ -181,8 +181,8 @@ OFCondition DSRDocumentSubTree::print(STD_NAMESPACE ostream &stream,
     DSRIncludedTemplateNodeCursor cursor(getRoot(), posCounter);
     if (cursor.isValid())
     {
-        /* check and update by-reference relationships (if applicable) */
-        checkByReferenceRelationships(CM_updatePositionString);
+        /* check and update by-reference relationships */
+        checkByReferenceRelationships<DSRIncludedTemplateNodeCursor>(CM_updatePositionString, flags & CB_maskPrintFlags);
         /* update the document tree for output (if needed) */
         updateTreeForOutput();
         OFString tmpString;
@@ -256,7 +256,7 @@ OFCondition DSRDocumentSubTree::writeXML(STD_NAMESPACE ostream &stream,
         if (cursor.isValid())
         {
             /* check by-reference relationships (if applicable) */
-            checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+            checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_resetReferenceTargetFlag);
             /* update the document tree for output (if needed) */
             updateTreeForOutput();
             /* write current node (and its siblings) */
@@ -608,10 +608,15 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
 }
 
 
-OFCondition DSRDocumentSubTree::updateByReferenceRelationships()
+OFCondition DSRDocumentSubTree::updateByReferenceRelationships(const OFBool updateIncludedTemplates)
 {
+    OFCondition result = EC_Normal;
     /* update the position strings of by-reference relationships */
-    return checkByReferenceRelationships(CM_updatePositionString);
+    if (updateIncludedTemplates)
+        result = checkByReferenceRelationships<DSRIncludedTemplateNodeCursor>(CM_updatePositionString);
+    else
+        result = checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_updatePositionString);
+    return result;
 }
 
 
@@ -940,7 +945,7 @@ OFCondition DSRDocumentSubTree::expandIncludedTemplates(DSRDocumentSubTree *tree
     if ((tree != NULL) && (tree->gotoRoot() > 0))
     {
         OFBool nodeDeleted;
-        const DSRDocumentTreeNode *node;
+        DSRDocumentTreeNode *node;
         /* iterate over all nodes */
         do {
             node = tree->getNode();
@@ -950,7 +955,7 @@ OFCondition DSRDocumentSubTree::expandIncludedTemplates(DSRDocumentSubTree *tree
                 /* and expand the included templates (if any) */
                 if (node->getValueType() == VT_includedTemplate)
                 {
-                    const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, node)->getValue().get();
+                    DSRSubTemplate *subTempl = OFstatic_cast(DSRIncludedTemplateTreeNode *, node)->getValue().get();
                     if (subTempl != NULL)
                     {
                         /* template has no content items */
@@ -959,6 +964,8 @@ OFCondition DSRDocumentSubTree::expandIncludedTemplates(DSRDocumentSubTree *tree
                             /* just remove current node (included template) */
                             nodeDeleted = (tree->removeNode() > 0);
                         } else {
+                            /* make sure that by-reference relationships are "up to date" */
+                            subTempl->updateByReferenceRelationships(OFTrue /*updateIncludedTemplates*/);
                             /* clone the subtree managed by the template */
                             DSRDocumentSubTree *subTree = subTempl->cloneTree();
                             if (subTree != NULL)
@@ -998,6 +1005,7 @@ OFCondition DSRDocumentSubTree::expandIncludedTemplates(DSRDocumentSubTree *tree
 }
 
 
+template <typename T_Cursor>
 OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                                               const size_t flags)
 {
@@ -1011,8 +1019,10 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
             /* specify for all content items not to be the target of a by-reference relationship */
             if (mode & CM_resetReferenceTargetFlag)
                 resetReferenceTargetFlag();
+            /* pass flags to reference cursor (see below) */
+            const DSRPositionCounter posCounter(flags);
             /* start at the root of the document tree */
-            DSRDocumentTreeNodeCursor cursor(getRoot());
+            T_Cursor cursor(getRoot());
             if (cursor.isValid())
             {
                 /* for all content items */
@@ -1024,14 +1034,14 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                         OFString nodePosString;
                         cursor.getPosition(nodePosString);
                         /* type cast to access members of by-reference class */
-                        DSRByReferenceTreeNode *byRefNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, cursor.getNode()));
+                        DSRByReferenceTreeNode *byRefNode = OFstatic_cast(DSRByReferenceTreeNode *, cursor.getNode());
                         if (flags & RF_showCurrentlyProcessedItem)
                             DCMSR_INFO("Updating by-reference relationship in content item " << nodePosString);
                         /* start searching from root node, be careful with large trees! (tbd: might be improved later on) */
-                        DSRDocumentTreeNodeCursor refCursor(getRoot());
+                        T_Cursor refCursor(getRoot(), &posCounter);
                         if (mode & CM_updateNodeID)
                         {
-                            /* update node ID (based on position string; tbc: what about included templates?) */
+                            /* update node ID (based on position string) */
                             refNodeID = refCursor.gotoNode(byRefNode->getReferencedContentItem());
                             const DSRDocumentTreeNode *targetNode = (refNodeID > 0) ? refCursor.getNode() : NULL;
                             const E_ValueType targetValueType = (targetNode != NULL) ? targetNode->getValueType() : VT_invalid;
@@ -1042,7 +1052,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                             if (mode & CM_updatePositionString)
                             {
                                 OFString refPosString;
-                                /* update position string (tbd: does not yet work correctly with "included templates" */
+                                /* update position string */
                                 if (refNodeID > 0)
                                     refCursor.getPosition(refPosString);
                                 byRefNode->updateReference(refPosString);

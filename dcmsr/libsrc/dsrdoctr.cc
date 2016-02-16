@@ -129,7 +129,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                         /* ... and let the node read the rest of the document */
                         result = node->read(dataset, ConstraintChecker, flags);
                         /* check and update by-reference relationships (if applicable) */
-                        checkByReferenceRelationships(CM_updateNodeID, flags);
+                        checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_updateNodeID, flags & CB_maskReadFlags);
                     } else
                         result = SR_EC_InvalidDocumentTree;
                 } else
@@ -158,7 +158,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
             if (node != NULL)
             {
                 /* check and update by-reference relationships (if applicable) */
-                checkByReferenceRelationships(CM_updatePositionString);
+                checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_updatePositionString);
                 /* update the document tree for output (if needed) */
                 updateTreeForOutput();
                 /* start writing from root node */
@@ -225,7 +225,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                     /* ... and let the node read the rest of the document */
                     result = node->readXML(doc, cursor, DocumentType, flags);
                     /* check and update by-reference relationships (if applicable) */
-                    checkByReferenceRelationships(CM_updatePositionString);
+                    checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_updatePositionString);
                 } else
                     result = SR_EC_InvalidDocumentTree;
             } else
@@ -255,7 +255,7 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
             {
                 size_t annexNumber = 1;
                 /* check by-reference relationships (if applicable) */
-                checkByReferenceRelationships(CM_resetReferenceTargetFlag);
+                checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_resetReferenceTargetFlag);
                 /* update the document tree for output (if needed) */
                 updateTreeForOutput();
                 /* start rendering from root node */
@@ -393,7 +393,7 @@ OFCondition DSRDocumentTree::checkDocumentTreeConstraints(DSRIODConstraintChecke
                     }
                 }
                 /* check by-reference relationships (update 'target value type' if applicable) */
-                result = checkByReferenceRelationships(CM_resetReferenceTargetFlag, RF_ignoreRelationshipConstraints);
+                result = checkByReferenceRelationships<DSRDocumentTreeNodeCursor>(CM_resetReferenceTargetFlag, RF_ignoreRelationshipConstraints);
                 /* check whether the nodes of this tree also comply with the given constraints */
                 if (result.good())
                     result = checkSubTreeConstraints(this, checker);
