@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -102,7 +102,7 @@ OFBool DSRRadiopharmaceuticalRadiationDoseConstraintChecker::checkContentRelatio
         }
         /* row 5 of the table */
         else if ((relationshipType == RT_hasProperties) &&
-            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num) || (targetValueType == VT_PName)))
+            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num) || (sourceValueType == VT_PName)))
         {
             result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)   || (targetValueType == VT_Num)   ||
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
