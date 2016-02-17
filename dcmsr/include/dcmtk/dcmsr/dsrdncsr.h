@@ -26,6 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
+#include "dcmtk/dcmsr/dsdefine.h"
 #include "dcmtk/dcmsr/dsrtncsr.h"
 
 
@@ -48,16 +49,16 @@ typedef DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue> DSRIncludedTemplateNodeCu
  *  declaration of template specializations  *
  *-------------------------------------------*/
 
-DCMTK_EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION DCMTK_DCMSR_EXPORT
 const DSRDocumentTreeNode *DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>::getChildNode() const;
 
-DCMTK_EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION DCMTK_DCMSR_EXPORT
 size_t DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>::countChildNodes(const OFBool searchIntoSub) const;
 
-DCMTK_EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION DCMTK_DCMSR_EXPORT
 size_t DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>::goDown();
 
-DCMTK_EXPLICIT_SPECIALIZATION
+DCMTK_EXPLICIT_SPECIALIZATION DCMTK_DCMSR_EXPORT
 size_t DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>::iterate(const OFBool searchIntoSub);
 
 

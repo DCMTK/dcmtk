@@ -28,7 +28,6 @@
 
 #include "dcmtk/ofstd/ofstack.h"
 
-#include "dcmtk/dcmsr/dsdefine.h"
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrposcn.h"
 #include "dcmtk/dcmsr/dsrtnant.h"
@@ -51,7 +50,7 @@ class DSRTreeNode;
  *              differently (depends on the particular implementation)
  */
 template<typename T = DSRTreeNode, OFBool B = OFFalse>
-class DCMTK_DCMSR_EXPORT DSRTreeNodeCursor
+class DSRTreeNodeCursor
 {
 
   public:
