@@ -510,6 +510,9 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_DICOS_DigitalXRayImageStorageForPresentation           "1.2.840.10008.5.1.4.1.1.501.2.1"
 #define UID_DICOS_DigitalXRayImageStorageForProcessing             "1.2.840.10008.5.1.4.1.1.501.2.2"
 #define UID_DICOS_ThreatDetectionReportStorage                     "1.2.840.10008.5.1.4.1.1.501.3"
+#define UID_DICOS_2DAITStorage                                     "1.2.840.10008.5.1.4.1.1.501.4"
+#define UID_DICOS_3DAITStorage                                     "1.2.840.10008.5.1.4.1.1.501.5"
+#define UID_DICOS_QuadrupoleResonanceStorage                       "1.2.840.10008.5.1.4.1.1.501.6"
 
 // DICONDE Storage
 #define UID_DICONDE_EddyCurrentImageStorage                        "1.2.840.10008.5.1.4.1.1.601.1"

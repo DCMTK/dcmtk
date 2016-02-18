@@ -281,6 +281,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DICOS_DigitalXRayImageStorageForPresentation,        "DICOS_DigitalXRayImageStorageForPresentation" },
     { UID_DICOS_DigitalXRayImageStorageForProcessing,          "DICOS_DigitalXRayImageStorageForProcessing" },
     { UID_DICOS_ThreatDetectionReportStorage,                  "DICOS_ThreatDetectionReportStorage" },
+    { UID_DICOS_2DAITStorage,                                  "DICOS_2DAITStorage" },
+    { UID_DICOS_3DAITStorage,                                  "DICOS_3DAITStorage" },
+    { UID_DICOS_QuadrupoleResonanceStorage,                    "DICOS_QuadrupoleResonanceStorage" },
     // Storage (DICONDE)
     { UID_DICONDE_EddyCurrentImageStorage,                     "DICONDE_EddyCurrentImageStorage" },
     { UID_DICONDE_EddyCurrentMultiframeImageStorage,           "DICONDE_EddyCurrentMultiframeImageStorage" },
@@ -685,6 +688,9 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_DICOS_DigitalXRayImageStorageForPresentation,
     UID_DICOS_DigitalXRayImageStorageForProcessing,
     UID_DICOS_ThreatDetectionReportStorage,
+    UID_DICOS_2DAITStorage,
+    UID_DICOS_3DAITStorage,
+    UID_DICOS_QuadrupoleResonanceStorage,
     // DICONDE
     UID_DICONDE_EddyCurrentImageStorage,
     UID_DICONDE_EddyCurrentMultiframeImageStorage,
@@ -852,6 +858,9 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_DICOS_DigitalXRayImageStorageForPresentation,
 //  UID_DICOS_DigitalXRayImageStorageForProcessing,
 //  UID_DICOS_ThreatDetectionReportStorage,
+//  UID_DICOS_2DAITStorage,
+//  UID_DICOS_3DAITStorage,
+//  UID_DICOS_QuadrupoleResonanceStorage,
     // DICONDE
 //  UID_DICONDE_EddyCurrentImageStorage,
 //  UID_DICONDE_EddyCurrentMultiframeImageStorage,
@@ -1201,6 +1210,9 @@ static const DcmModalityTable modalities[] = {
     { UID_DICOS_DigitalXRayImageStorageForPresentation,            "DXs", 2048 * 2048 * 2 },
     { UID_DICOS_DigitalXRayImageStorageForProcessing,              "DPs", 2048 * 2048 * 2 },
     { UID_DICOS_ThreatDetectionReportStorage,                      "TDR", 4096 },
+    { UID_DICOS_2DAITStorage,                                      "AI2", 4096 },
+    { UID_DICOS_3DAITStorage,                                      "AI3", 4096 },
+    { UID_DICOS_QuadrupoleResonanceStorage,                        "QR",  4096 },
     // DICONDE
     { UID_DICONDE_EddyCurrentImageStorage,                         "EC",  512 * 512 },
     { UID_DICONDE_EddyCurrentMultiframeImageStorage,               "ECm", 512 * 512 }
