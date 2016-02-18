@@ -366,7 +366,7 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      * @return true if character string contains non-ASCII characters, false otherwise
      */
     static OFBool containsExtendedCharacters(const char *stringVal,
-                                             const Uint32 stringLen);
+                                             const size_t stringLen);
 
     /** check whether given string value conforms to a certain VR and VM.
      *  @param value string value to be checked (possibly multi-valued)

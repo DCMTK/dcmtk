@@ -795,11 +795,11 @@ void normalizeString(OFString &string,
 
 
 OFBool DcmByteString::containsExtendedCharacters(const char *stringVal,
-                                                 const Uint32 stringLen)
+                                                 const size_t stringLen)
 {
     if (stringVal != NULL)
     {
-        for (Uint32 i = stringLen; i != 0; --i)
+        for (size_t i = stringLen; i != 0; --i)
         {
             /* check for 8 bit characters */
             if (OFstatic_cast(unsigned char, *stringVal++) > 127)
