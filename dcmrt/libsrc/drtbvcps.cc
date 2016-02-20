@@ -1,13 +1,14 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBeamDoseVerificationControlPointSequence
  *
  *  Generated automatically from DICOM PS 3.3-2015c
  *  File created on 2015-12-07 16:29:33
+ *  Last modified on 2016-02-20 by J. Riesmeier
  *
  */
 
@@ -24,7 +25,7 @@ DRTBeamDoseVerificationControlPointSequence::Item::Item(const OFBool emptyDefaul
     AverageBeamDosePointDepth(DCM_AverageBeamDosePointDepth),
     AverageBeamDosePointEquivalentDepth(DCM_AverageBeamDosePointEquivalentDepth),
     AverageBeamDosePointSSD(DCM_AverageBeamDosePointSSD),
-    AverageBeamDosePointSourceToExternalContourSurfaceDistance(DCM_AverageBeamDosePointSourceToExternalContourSurfaceDistance),
+    AverageBeamDosePointSourceToExternalContourSurfaceDistance(DCM_AverageBeamDosePointSourceToExternalContourDistance),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
     ReferencedControlPointIndex(DCM_ReferencedControlPointIndex)
 {
