@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:46 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:06 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4020 (PET Radionuclide)
 #define CONTEXT_GROUP_NUMBER  "4020"
-#define CONTEXT_GROUP_VERSION "20141110"
+#define CONTEXT_GROUP_VERSION "20160119"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.304"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -162,6 +162,7 @@ CID4020_PETRadionuclide::CodeList &CID4020_PETRadionuclide::getCodes()
         Codes->insert(OFMake_pair(_51_Manganese, DSRBasicCodedEntry("126601", "DCM", "^51^Manganese")));
         Codes->insert(OFMake_pair(_52_Iron, DSRBasicCodedEntry("C-130A1", "SRT", "^52^Iron")));
         Codes->insert(OFMake_pair(_52_Manganese, DSRBasicCodedEntry("C-149A1", "SRT", "^52^Manganese")));
+        Codes->insert(OFMake_pair(_52m_Manganese, DSRBasicCodedEntry("126607", "DCM", "^52m^Manganese")));
         Codes->insert(OFMake_pair(_60_Copper, DSRBasicCodedEntry("C-127A4", "SRT", "^60^Copper")));
         Codes->insert(OFMake_pair(_61_Copper, DSRBasicCodedEntry("C-127A1", "SRT", "^61^Copper")));
         Codes->insert(OFMake_pair(_62_Copper, DSRBasicCodedEntry("C-127A5", "SRT", "^62^Copper")));

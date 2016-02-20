@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7021_MeasurementReportDocumentTitles
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:52 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:12 by J. Riesmeier
  *
  */
 

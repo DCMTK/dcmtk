@@ -5,8 +5,8 @@
  *
  *  Header file for class CID11_RouteOfAdministration
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-16 12:26:26 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:20:57 by J. Riesmeier
  *
  */
 
@@ -26,7 +26,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 11 - Route of Administration.
- *  (type: extensible, version: 20100608)
+ *  (type: extensible, version: 20151110)
  */
 class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
   : public DSRContextGroup
@@ -79,7 +79,15 @@ class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
         /// (G-D173,SRT,"Intracardiac route")
         IntracardiacRoute,
         /// (R-F2C86,SRT,"Intraventricular route - cardiac")
-        IntraventricularRouteCardiac
+        IntraventricularRouteCardiac,
+        /// (127070,DCM,"Retro-orbital route")
+        RetroOrbitalRoute,
+        /// (G-D172,SRT,"Nasal route")
+        NasalRoute,
+        /// (G-D17D,SRT,"Intradermal route")
+        IntradermalRoute,
+        /// (R-F2CD4,SRT,"Intratumor route")
+        IntratumorRoute
     };
 
     /** (default) constructor

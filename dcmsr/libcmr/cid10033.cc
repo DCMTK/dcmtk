@@ -5,8 +5,8 @@
  *
  *  Source file for class CID10033_CTReconstructionAlgorithm
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:05:06 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:26 by J. Riesmeier
  *
  */
 

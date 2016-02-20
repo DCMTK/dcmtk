@@ -5,8 +5,8 @@
  *
  *  Source file for class CID11_RouteOfAdministration
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:37 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:20:57 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 11 (Route of Administration)
 #define CONTEXT_GROUP_NUMBER  "11"
-#define CONTEXT_GROUP_VERSION "20100608"
+#define CONTEXT_GROUP_VERSION "20151110"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.9"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -170,6 +170,10 @@ CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
         Codes->insert(OFMake_pair(IntracoronaryRoute, DSRBasicCodedEntry("G-D17C", "SRT", "Intracoronary route")));
         Codes->insert(OFMake_pair(IntracardiacRoute, DSRBasicCodedEntry("G-D173", "SRT", "Intracardiac route")));
         Codes->insert(OFMake_pair(IntraventricularRouteCardiac, DSRBasicCodedEntry("R-F2C86", "SRT", "Intraventricular route - cardiac")));
+        Codes->insert(OFMake_pair(RetroOrbitalRoute, DSRBasicCodedEntry("127070", "DCM", "Retro-orbital route")));
+        Codes->insert(OFMake_pair(NasalRoute, DSRBasicCodedEntry("G-D172", "SRT", "Nasal route")));
+        Codes->insert(OFMake_pair(IntradermalRoute, DSRBasicCodedEntry("G-D17D", "SRT", "Intradermal route")));
+        Codes->insert(OFMake_pair(IntratumorRoute, DSRBasicCodedEntry("R-F2CD4", "SRT", "Intratumor route")));
     }
     /* should never be NULL */
     return *Codes;

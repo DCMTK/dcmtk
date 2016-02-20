@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-16 12:26:35 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:06 by J. Riesmeier
  *
  */
 
@@ -26,7 +26,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4020 - PET Radionuclide.
- *  (type: extensible, version: 20141110)
+ *  (type: extensible, version: 20160119)
  */
 class DCMTK_CMR_EXPORT CID4020_PETRadionuclide
   : public DSRContextGroup
@@ -64,6 +64,8 @@ class DCMTK_CMR_EXPORT CID4020_PETRadionuclide
         _52_Iron,
         /// (C-149A1,SRT,"^52^Manganese")
         _52_Manganese,
+        /// (126607,DCM,"^52m^Manganese")
+        _52m_Manganese,
         /// (C-127A4,SRT,"^60^Copper")
         _60_Copper,
         /// (C-127A1,SRT,"^61^Copper")

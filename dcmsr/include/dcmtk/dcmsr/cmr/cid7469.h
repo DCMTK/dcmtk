@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-16 12:26:53 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:23 by J. Riesmeier
  *
  */
 
@@ -212,6 +212,8 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         R1,
         /// (126394,DCM,"R2"), included from CID 7180
         R2,
+        /// (113098,DCM,"Magnetization Transfer Ratio"), included from CID 7180
+        MagnetizationTransferRatio,
         /// (126312,DCM,"Ktrans"), included from CID 4107
         Ktrans,
         /// (126313,DCM,"kep"), included from CID 4107
@@ -242,6 +244,16 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         IAUC60,
         /// (126322,DCM,"IAUC90"), included from CID 4109
         IAUC90,
+        /// (126323,DCM,"IAUC180"), included from CID 4109
+        IAUC180,
+        /// (126324,DCM,"IAUCBN"), included from CID 4109
+        IAUCBN,
+        /// (126325,DCM,"IAUC60BN"), included from CID 4109
+        IAUC60BN,
+        /// (126326,DCM,"IAUC90BN"), included from CID 4109
+        IAUC90BN,
+        /// (126327,DCM,"IAUC180BN"), included from CID 4109
+        IAUC180BN,
         /// (126370,DCM,"Time of Peak Concentration"), included from CID 4109
         TimeOfPeakConcentration,
         /// (126372,DCM,"Time of Leading Half-Peak Concentration"), included from CID 4109

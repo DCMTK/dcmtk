@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:05:03 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:23 by J. Riesmeier
  *
  */
 
@@ -236,6 +236,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(FractionalOccupancySegmentation, DSRBasicCodedEntry("110855", "DCM", "Fractional Occupancy Segmentation")));
         Codes->insert(OFMake_pair(R1, DSRBasicCodedEntry("126393", "DCM", "R1")));
         Codes->insert(OFMake_pair(R2, DSRBasicCodedEntry("126394", "DCM", "R2")));
+        Codes->insert(OFMake_pair(MagnetizationTransferRatio, DSRBasicCodedEntry("113098", "DCM", "Magnetization Transfer Ratio")));
         Codes->insert(OFMake_pair(Ktrans, DSRBasicCodedEntry("126312", "DCM", "Ktrans")));
         Codes->insert(OFMake_pair(Kep, DSRBasicCodedEntry("126313", "DCM", "kep")));
         Codes->insert(OFMake_pair(Ve, DSRBasicCodedEntry("126314", "DCM", "ve")));
@@ -251,6 +252,11 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(IAUC, DSRBasicCodedEntry("126320", "DCM", "IAUC")));
         Codes->insert(OFMake_pair(IAUC60, DSRBasicCodedEntry("126321", "DCM", "IAUC60")));
         Codes->insert(OFMake_pair(IAUC90, DSRBasicCodedEntry("126322", "DCM", "IAUC90")));
+        Codes->insert(OFMake_pair(IAUC180, DSRBasicCodedEntry("126323", "DCM", "IAUC180")));
+        Codes->insert(OFMake_pair(IAUCBN, DSRBasicCodedEntry("126324", "DCM", "IAUCBN")));
+        Codes->insert(OFMake_pair(IAUC60BN, DSRBasicCodedEntry("126325", "DCM", "IAUC60BN")));
+        Codes->insert(OFMake_pair(IAUC90BN, DSRBasicCodedEntry("126326", "DCM", "IAUC90BN")));
+        Codes->insert(OFMake_pair(IAUC180BN, DSRBasicCodedEntry("126327", "DCM", "IAUC180BN")));
         Codes->insert(OFMake_pair(TimeOfPeakConcentration, DSRBasicCodedEntry("126370", "DCM", "Time of Peak Concentration")));
         Codes->insert(OFMake_pair(TimeOfLeadingHalfPeakConcentration, DSRBasicCodedEntry("126372", "DCM", "Time of Leading Half-Peak Concentration")));
         Codes->insert(OFMake_pair(BolusArrivalTime, DSRBasicCodedEntry("126371", "DCM", "Bolus Arrival Time")));

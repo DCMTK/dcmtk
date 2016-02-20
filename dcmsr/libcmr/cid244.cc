@@ -5,8 +5,8 @@
  *
  *  Source file for class CID244_Laterality
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:04 by J. Riesmeier
  *
  */
 

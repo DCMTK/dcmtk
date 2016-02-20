@@ -5,8 +5,8 @@
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-08 15:04:42 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:02 by J. Riesmeier
  *
  */
 
@@ -158,9 +158,9 @@ CID100_QuantitativeDiagnosticImagingProcedures::CodeList &CID100_QuantitativeDia
         Codes->insert(OFMake_pair(PETWholeBody, DSRBasicCodedEntry("44139-4", "LN", "PET whole body")));
         Codes->insert(OFMake_pair(PETCT_FDGImagingOfWholeBody, DSRBasicCodedEntry("P5-080FF", "SRT", "PET/CT FDG imaging of whole body")));
         Codes->insert(OFMake_pair(PETCT_METImagingOfWholeBody, DSRBasicCodedEntry("P5-08118", "SRT", "PET/CT MET imaging of whole body")));
-        Codes->insert(OFMake_pair(CT_HEAD_PERFUSION_WITH_IV_CONTRAST, DSRBasicCodedEntry("RPID96", "RADLEX", "CT HEAD PERFUSION WITH IV CONTRAST")));
-        Codes->insert(OFMake_pair(NM_HEAD_PERFUSION_BRAIN_SPECT, DSRBasicCodedEntry("RPID5258", "RADLEX", "NM HEAD PERFUSION BRAIN SPECT")));
-        Codes->insert(OFMake_pair(NM_HEAD_PERFUSION_BRAIN_PET_CT_AV45, DSRBasicCodedEntry("RPID5427", "RADLEX", "NM HEAD PERFUSION BRAIN PET-CT AV-45")));
+        Codes->insert(OFMake_pair(CTHeadPerfusionWithIVContrast, DSRBasicCodedEntry("RPID96", "RADLEX", "CT head perfusion with IV contrast")));
+        Codes->insert(OFMake_pair(NMHeadPerfusionBrainSPECT, DSRBasicCodedEntry("RPID5258", "RADLEX", "NM head perfusion brain SPECT")));
+        Codes->insert(OFMake_pair(NMHeadPerfusionBrainPET_CT_AV45, DSRBasicCodedEntry("RPID5427", "RADLEX", "NM head perfusion brain PET-CT AV-45")));
     }
     /* should never be NULL */
     return *Codes;

@@ -5,8 +5,8 @@
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-16 12:26:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 12:21:02 by J. Riesmeier
  *
  */
 
@@ -56,12 +56,12 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
         PETCT_FDGImagingOfWholeBody,
         /// (P5-08118,SRT,"PET/CT MET imaging of whole body")
         PETCT_METImagingOfWholeBody,
-        /// (RPID96,RADLEX,"CT HEAD PERFUSION WITH IV CONTRAST")
-        CT_HEAD_PERFUSION_WITH_IV_CONTRAST,
-        /// (RPID5258,RADLEX,"NM HEAD PERFUSION BRAIN SPECT")
-        NM_HEAD_PERFUSION_BRAIN_SPECT,
-        /// (RPID5427,RADLEX,"NM HEAD PERFUSION BRAIN PET-CT AV-45")
-        NM_HEAD_PERFUSION_BRAIN_PET_CT_AV45
+        /// (RPID96,RADLEX,"CT head perfusion with IV contrast")
+        CTHeadPerfusionWithIVContrast,
+        /// (RPID5258,RADLEX,"NM head perfusion brain SPECT")
+        NMHeadPerfusionBrainSPECT,
+        /// (RPID5427,RADLEX,"NM head perfusion brain PET-CT AV-45")
+        NMHeadPerfusionBrainPET_CT_AV45
     };
 
     /** (default) constructor
