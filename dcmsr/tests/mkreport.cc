@@ -24,6 +24,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmsr/codes/ucum.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 
@@ -515,7 +516,7 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("M-02550", "SNM3", "Diameter"));
-    doc->getTree().getCurrentContentItem().setNumericValue(DSRNumericMeasurementValue("1.5", DSRCodedEntryValue("cm", "UCUM", "1.4", "centimeter")));
+    doc->getTree().getCurrentContentItem().setNumericValue(DSRNumericMeasurementValue("1.5", CODE_UCUM_Centimeter));
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_01", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -531,11 +532,10 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_03", OFFIS_CODING_SCHEME_DESIGNATOR, "Treatment"));
     doc->getTree().getCurrentContentItem().setStringValue("The plan of treatment is as follows: 4500 rad, 15 treatment sessions, using 100 kV radiation.\nThe reason for treatment, expected acute reaction, and remote possibility of complication was discussed with this patient at some length, and he accepted therapy as outlined.");
 
-    // add additional information on UCUM coding scheme (UID from CP-372)
-    doc->getCodingSchemeIdentification().addItem("UCUM");
-    doc->getCodingSchemeIdentification().setCodingSchemeUID("2.16.840.1.113883.6.8");
-    doc->getCodingSchemeIdentification().setCodingSchemeName("Unified Code for Units of Measure");
-    doc->getCodingSchemeIdentification().setCodingSchemeVersion("1.4");
+    // add additional information on UCUM coding scheme
+    doc->getCodingSchemeIdentification().addItem(CODE_UCUM_CodingSchemeDesignator);
+    doc->getCodingSchemeIdentification().setCodingSchemeUID(CODE_UCUM_CodingSchemeUID);
+    doc->getCodingSchemeIdentification().setCodingSchemeName(CODE_UCUM_CodingSchemeDescription);
     doc->getCodingSchemeIdentification().setCodingSchemeResponsibleOrganization("Regenstrief Institute for Health Care, Indianapolis");
 }
 

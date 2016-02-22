@@ -51,6 +51,7 @@
 #define CODE_UCUM_Degrees           DSRBasicCodedEntry("deg", "UCUM", "deg")
 #define CODE_UCUM_Minus1To1         DSRBasicCodedEntry("{-1:1}", "UCUM", "{-1:1}")
 #define CODE_UCUM_Millimeter        DSRBasicCodedEntry("mm", "UCUM", "millimeter")
+#define CODE_UCUM_Centimeter        DSRBasicCodedEntry("cm", "UCUM", "centimeter")
 #define CODE_UCUM_cm3               DSRBasicCodedEntry("cm3", "UCUM", "cm3")
 #define CODE_UCUM_ml                DSRBasicCodedEntry("ml", "UCUM", "ml")
 #define CODE_UCUM_s                 DSRBasicCodedEntry("s", "UCUM", "s")
