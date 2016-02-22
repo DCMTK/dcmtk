@@ -58,8 +58,8 @@ DSRImageSegmentList &DSRImageSegmentList::operator=(const DSRImageSegmentList &l
 
 
 OFCondition DSRImageSegmentList::print(STD_NAMESPACE ostream &stream,
-                                     const size_t flags,
-                                     const char separator) const
+                                       const size_t flags,
+                                       const char separator) const
 {
     const OFListConstIterator(Uint16) endPos = ItemList.end();
     OFListConstIterator(Uint16) iterator = ItemList.begin();
