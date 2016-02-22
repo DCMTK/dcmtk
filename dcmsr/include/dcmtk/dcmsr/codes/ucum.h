@@ -1,6 +1,7 @@
 /*
  *
  *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with UCUM Code Definitions (Coding Scheme "UCUM")
  *
