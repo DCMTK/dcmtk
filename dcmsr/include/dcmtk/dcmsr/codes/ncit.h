@@ -5,8 +5,8 @@
  *
  *  Header file with NCIt Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated semi-automatically from DICOM PS 3.16-2015c
- *  File created on 2016-01-12 18:02:09 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016a
+ *  File created on 2016-02-20 11:44:31 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 2
+// total number of codes: 12
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -47,7 +47,17 @@
 // The "cleaned camel-case version of the code meaning" is an attempt to map the free text
 // description of the code meaning to a compiler-friendly but still human-readable representation.
 
-#define CODE_NCIt_RANO             DSRBasicCodedEntry("C114879", "NCIt", "RANO")
-#define CODE_NCIt_ActivitySession  DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")   // added from CP-1466
+#define CODE_NCIt_RANO                                                     DSRBasicCodedEntry("C114879", "NCIt", "RANO")
+#define CODE_NCIt_BronchioloalveolarAdenocarcinoma                         DSRBasicCodedEntry("C2923", "NCIt", "Bronchioloalveolar adenocarcinoma")
+#define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
+#define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
+#define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
+#define CODE_NCIt_BeddingChange                                            DSRBasicCodedEntry("C90365", "NCIt", "Bedding change")
+#define CODE_NCIt_BeddingMaterial                                          DSRBasicCodedEntry("C90366", "NCIt", "Bedding material")
+#define CODE_NCIt_EnvironmentalTemperature                                 DSRBasicCodedEntry("C90380", "NCIt", "Environmental temperature")
+#define CODE_NCIt_HousingHumidity                                          DSRBasicCodedEntry("C90395", "NCIt", "Housing humidity")
+#define CODE_NCIt_LightCycle                                               DSRBasicCodedEntry("C90419", "NCIt", "Light cycle")
+#define CODE_NCIt_WaterDelivery                                            DSRBasicCodedEntry("C90486", "NCIt", "Water delivery")
+#define CODE_NCIt_ReferenceRegion                                          DSRBasicCodedEntry("C94970", "NCIt", "Reference Region")
 
 #endif
