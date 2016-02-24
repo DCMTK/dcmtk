@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2015, OFFIS e.V.
+ *  Copyright (C) 2001-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -825,6 +825,12 @@ OFCondition OFStandard::removeRootDirFromPathname(OFFilename &result,
             result.set("", OFTrue /*convert*/);
             status = EC_Normal;
         }
+        /* check for empty root dir */
+        else if (rootLength == 0)
+        {
+            result.set(pathValue, OFTrue /*convert*/);
+            status = EC_Normal;
+        }
         /* check for "compatible" length */
         else if (rootLength <= pathLength)
         {
@@ -856,6 +862,12 @@ OFCondition OFStandard::removeRootDirFromPathname(OFFilename &result,
         if ((rootLength == 0) && (pathLength == 0))
         {
             result.set("");
+            status = EC_Normal;
+        }
+        /* check for empty root dir */
+        else if (rootLength == 0)
+        {
+            result.set(pathValue);
             status = EC_Normal;
         }
         /* check for "compatible" length */
