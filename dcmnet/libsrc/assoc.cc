@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -211,7 +211,7 @@ typedef struct {
 */
 
 /*
- * Network creation/distroy wrappers.
+ * Network creation/destroy wrappers.
  * The T_ASC_Network structure will be allocated/freed by
  * these routines.
  */
@@ -664,7 +664,6 @@ ASC_addPresentationContext(
     /* we cannot simply use DUL_MakePresentationCtx() because
     ** it takes variable arguments (for transfer syntax).
     */
-
     pc = (DUL_PRESENTATIONCONTEXT *) calloc(1, sizeof(DUL_PRESENTATIONCONTEXT));
     if (pc == NULL) return EC_MemoryExhausted;
     lst = LST_Create();
@@ -680,10 +679,13 @@ ASC_addPresentationContext(
     pc->acceptedSCRole = ascRole2dulRole(ASC_SC_ROLE_DEFAULT);
 
     /* there must be at least one transfer syntax */
-    if (transferSyntaxListCount < 1 ) return ASC_MISSINGTRANSFERSYNTAX;
+    if (transferSyntaxListCount < 1)
+    {
+      free(pc);
+      return ASC_MISSINGTRANSFERSYNTAX;
+    }
 
     /* add the transfer syntaxes */
-    OFCondition cond = EC_Normal;
     for (i=0; i<transferSyntaxListCount; i++)
     {
         transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
@@ -694,7 +696,6 @@ ASC_addPresentationContext(
     pc->proposedTransferSyntax = lst;
 
     /* add to presentation context list */
-
     lst = params->DULparams.requestedPresentationContext;
     if (lst == NULL) {
         lst = LST_Create();
@@ -858,7 +859,7 @@ ASC_acceptPresentationContext(
     if (proposedContext == NULL) return ASC_BADPRESENTATIONCONTEXTID;
     strcpy(proposedContext->acceptedTransferSyntax, transferSyntax);
 
-    /* we want to mark this proposed context as beeing ok */
+    /* we want to mark this proposed context as being ok */
     proposedContext->result = ASC_P_ACCEPTANCE;
     proposedContext->acceptedSCRole = ascRole2dulRole(acceptedRole);
 
