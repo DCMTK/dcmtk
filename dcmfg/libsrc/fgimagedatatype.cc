@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -156,7 +156,7 @@ OFCondition FGImageDataType::setZeroVelocityPixelValueUS(const Uint16 value)
 }
 
 
-/// Read Frame Content Sequence from given item
+// Read Frame Content Sequence from given item
 OFCondition FGImageDataType::read(DcmItem& item)
 {
   clearData();
@@ -169,8 +169,13 @@ OFCondition FGImageDataType::read(DcmItem& item)
   DcmElement* elem = NULL;
   DcmIODUtil::getAndCheckElementFromDataset(*seqItem, m_DataType, "1", "1", "ImageDataTypeMacro");
   DcmIODUtil::getAndCheckElementFromDataset(*seqItem, m_AliasedDataType, "1", "1", "ImageDataTypeMacro");
-
-  DcmIODUtil::getAndCheckElementFromDataset(*seqItem, *elem, "1", "1C", "ImageDataTypeMacro");
+  // We do not know the VR of Zero Velocity Pixel Value (US or SS), so we cannot
+  // use the regular getAndCheckElementFromDataset() method that implicitly gets
+  // this information via the provided element. Instead, get element first and
+  // and then check it in an extra step, afterwards access value depending on
+  // the element's VR.
+  seqItem->findAndGetElement(DCM_ZeroVelocityPixelValue, elem);
+  DcmIODUtil::checkElementValue(elem, DCM_ZeroVelocityPixelValue, "1", "1C", EC_Normal, "ImageDataTypeMacro");
   if (elem)
   {
     if (elem->getVR() == EVR_SS)
@@ -205,7 +210,7 @@ OFCondition FGImageDataType::read(DcmItem& item)
 }
 
 
-/// Writes single Frame Content Sequence into given item
+// Writes single Frame Content Sequence into given item
 OFCondition FGImageDataType::write(DcmItem& item)
 {
   DcmItem *seqItem = NULL;
