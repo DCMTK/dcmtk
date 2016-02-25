@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -85,7 +85,7 @@ OFCondition FGBase::getItemFromFGSequence(DcmItem& source,
   result = seq->getItem(itemNum);
   if (result == NULL)
   {
-    DCMFG_DEBUG("Functional Group Sequence " << seqKey << " ( " << DcmFGTypes::tagKey2FGType(seqKey) << ") does not have " << itemNum-1 << "items");
+    DCMFG_DEBUG("Functional Group Sequence " << seqKey << " (" << DcmFGTypes::tagKey2FGType(seqKey) << ") does not have " << itemNum-1 << " items");
     return FG_EC_NotEnoughItems;
   }
   return EC_Normal;
@@ -101,7 +101,7 @@ OFCondition FGBase::createNewFGSequence(DcmItem& destination,
   OFCondition result = destination.insertEmptyElement(seqKey, OFTrue /* replace old */);
   if (result.bad())
   {
-    DCMFG_ERROR("Coudl not create Functional Group with sequence " << seqKey << " ( " << DcmFGTypes::tagKey2FGType(seqKey) << ")");
+    DCMFG_ERROR("Could not create Functional Group with sequence " << seqKey << " (" << DcmFGTypes::tagKey2FGType(seqKey) << ")");
     return FG_EC_CouldNotInsertFG;
   }
   DcmItem* dummy =NULL;
@@ -110,7 +110,7 @@ OFCondition FGBase::createNewFGSequence(DcmItem& destination,
   {
     // clean up
     destination.findAndDeleteElement(seqKey);
-    DCMFG_ERROR("Could not create " << numItems << " items in Functional Group with sequence " << seqKey << " ( " << DcmFGTypes::tagKey2FGType(seqKey) << ")");
+    DCMFG_ERROR("Could not create " << numItems << " items in Functional Group with sequence " << seqKey << " (" << DcmFGTypes::tagKey2FGType(seqKey) << ")");
     return FG_EC_CouldNotInsertFG;
   }
   destination.findOrCreateSequenceItem(seqKey, firstItem, 0);

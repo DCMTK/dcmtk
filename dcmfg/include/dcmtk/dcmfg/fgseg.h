@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -39,11 +39,11 @@ public:
    */
   FGSegmentation();
 
-  /** Desctructor, frees memory
+  /** Destructor, frees memory
    */
   virtual ~FGSegmentation();
 
-  /** Returs a deep copy of this object
+  /** Returns a deep copy of this object
    *  @return Deep copy of this object
    */
   virtual FGBase *clone() const;
@@ -105,14 +105,14 @@ public:
   /** Read functional group from item, must contain the Segment Identification
    *  Sequence
    *  @param  item The item to read from
-   *  @return EC_Normal if reading was succesful, error otherwise
+   *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& item);
 
   /** Write functional group to item, will write Segment Identification
    *  Sequence
    *  @param  item The item to write to
-   *  @return EC_Normal if writing was succesful, error otherwise
+   *  @return EC_Normal if writing was successful, error otherwise
    */
   virtual OFCondition write(DcmItem& item);
 

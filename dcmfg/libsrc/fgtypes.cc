@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -66,15 +66,15 @@ OFString DcmFGTypes::FGType2OFString(const DcmFGTypes::E_FGType fgType)
     /// Plane Orientation (Patient)
     case EFG_PLANEORIENTPATIENT: return "Plane Orientation (Patient) Functional Group Macro"; break;
     /// Derivation Image
-    case EFG_DERIVATIONIMAGE: return "Deriviation Image Functional Group Macro"; break;
+    case EFG_DERIVATIONIMAGE: return "Derivation Image Functional Group Macro"; break;
     /// Cardiac Synchronization
     case EFG_CARDIACSYNC: return "Cardiac Synchronization Functional Group Macro"; break;
-    /// Frame Anantomy
+    /// Frame Anatomy
     case EFG_FRAMEANATOMY: return "Frame Anatomy Functional Group Macro"; break;
     /// Pixel Value Transformation or Identity Pixel Value Transformation
     case EFG_PIXELVALUETRANSMETA: return "Pixel Value Transformation / Identity Pixel Value Transformation Functional Group Macro"; break;
     /// Frame VOI LUT or Frame VOI LUT with LUT
-    case EFG_FRAMEVOILUTMETA: return "Frame VOI LUT / Frame VOI LUT with LUT Macro"; break;;
+    case EFG_FRAMEVOILUTMETA: return "Frame VOI LUT / Frame VOI LUT with LUT Macro"; break;
     /// Real World Value Mapping
     case EFG_REALWORLDVALUEMAPPING: return "Real World Value Mapping Functional Group Macro"; break;
     /// Contrast/Bolus Usage

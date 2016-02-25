@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -37,7 +37,7 @@ FunctionalGroups::~FunctionalGroups()
 
 void FunctionalGroups::clear()
 {
-  // free memory of underyling map
+  // free memory of underlying map
   while ( m_groups.size() > 0)
   {
     FunctionalGroups::iterator it = m_groups.begin();

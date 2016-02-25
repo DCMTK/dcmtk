@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -40,7 +40,7 @@ public:
    */
   SourceImageItem();
 
-  /** Virtual desctructor, cleans up memory
+  /** Virtual destructor, cleans up memory
    */
   virtual ~SourceImageItem();
 
@@ -131,7 +131,7 @@ public:
    */
   DerivationImageItem();
 
-  /** Virtual desctructor
+  /** Virtual destructor
    */
   virtual ~DerivationImageItem();
 
@@ -217,7 +217,7 @@ public:
    */
   virtual OFVector<CodeSequenceMacro*>& getDerivationCodeItems();
 
-  /** Get reference to source image itmes
+  /** Get reference to source image items
    *  @return Reference to source image items
    */
   virtual OFVector<SourceImageItem*>& getSourceImageItems();
@@ -279,7 +279,7 @@ public:
    */
   virtual ~FGDerivationImage();
 
-  /** Returs a deep copy of this object
+  /** Returns a deep copy of this object
    *  @return  Deep copy of this object
    */
   virtual FGBase *clone() const;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -43,7 +43,7 @@ public:
    */
   virtual ~FGFrameContent();
 
-  /** Returs a deep copy of this object
+  /** Returns a deep copy of this object
    *  @return  Deep copy of this object
    */
   virtual FGBase *clone() const;
@@ -57,7 +57,7 @@ public:
    */
   virtual void clearData();
 
-  /** Check whether the current content of this gruop consistent and complete
+  /** Check whether the current content of this group is consistent and complete
    *  @return EC_Normal, if no errors are found, error otherwise
    */
   virtual OFCondition check() const;
@@ -71,7 +71,7 @@ public:
   /** Writes the content of this class into Frame Content Sequence
    *  (newly cerated) into given item
    *  @param  item The item to write to
-   *  @return EC_Normal if writing was succesful, error otherwise
+   *  @return EC_Normal if writing was successful, error otherwise
    */
   virtual OFCondition write(DcmItem& item);
 
@@ -350,7 +350,7 @@ private:
   /// Frame Acquisition Duration (FD, 1, 1C)
   DcmFloatingPointDouble m_FrameAcquisitionDuration;
 
-  /// Cardiac Cycle Positition (CS, 1, 3)
+  /// Cardiac Cycle Position (CS, 1, 3)
   DcmCodeString m_CardiacCyclePosition;
 
   /// Respiratory Cycle Position (CS, 1, 3)

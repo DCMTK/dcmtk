@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -74,7 +74,7 @@ public:
   virtual OFBool check();
 
   /** Returns number of frames. Computed by number of per-frame
-   *  functional group items (i.e.\ the Number of Frames attribues
+   *  functional group items (i.e.\ the Number of Frames attribute
    *  is not taken into account).
    *  @return Number of frames
    */
@@ -181,7 +181,7 @@ protected:
 
   /** Get shared functional group based on its type
    *  @param  fgType The type of functional group
-   *  @return The functional group or NULL if not existant
+   *  @return The functional group or NULL if not existent
    */
   virtual FGBase* getShared(const DcmFGTypes::E_FGType fgType);
 
@@ -198,7 +198,7 @@ protected:
   /** Get per-frame functional group
    *  @param  frameNo  The frame number of the group
    *  @param  fgType The type of the group
-   *  @return The functional group or NULL if not existant
+   *  @return The functional group or NULL if not existent
    */
   virtual FGBase* getPerFrame(const Uint32 frameNo,
                               const DcmFGTypes::E_FGType fgType);

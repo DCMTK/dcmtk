@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -169,7 +169,7 @@ OFCondition FGUSImageDescription::read(DcmItem& item)
   DcmIODUtil::getAndCheckElementFromDataset(*seqItem, m_FrameType, "4", "1", "USImageDescriptionMacro");
   DcmIODUtil::getAndCheckElementFromDataset(*seqItem, m_VolumetricProperties, "1", "1", "USImageDescriptionMacro");
   DcmIODUtil::getAndCheckElementFromDataset(*seqItem, m_VolumeBasedCalculationTechnique, "1", "1", "USImageDescriptionMacro");
-  return result;;
+  return result;
 }
 
 

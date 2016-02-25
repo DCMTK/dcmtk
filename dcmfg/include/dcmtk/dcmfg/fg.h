@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -51,7 +51,7 @@ public:
    */
   FunctionalGroups();
 
-  /** Virtual desctructor, cleans up set of functional groups and
+  /** Virtual destructor, cleans up set of functional groups and
    *  frees the related memory
    */
   virtual ~FunctionalGroups();

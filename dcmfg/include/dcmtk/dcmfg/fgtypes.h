@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -79,7 +79,7 @@ extern DCMTK_DCMFG_EXPORT   const OFConditionConst     FG_EC_CouldNotReadSourceI
 extern DCMTK_DCMFG_EXPORT   const OFConditionConst     FG_EC_CouldNotAddFG;
 /// Not enough frames found
 extern DCMTK_DCMFG_EXPORT   const OFConditionConst     FG_EC_NotEnoughFrames;
-/// No stacks speficied (but expected)
+/// No stacks specified (but expected)
 extern DCMTK_DCMFG_EXPORT   const OFConditionConst     FG_EC_NoStacksFound;
 
 /*---------------------*
@@ -110,7 +110,7 @@ public:
     EFG_CONTRASTBOLUSUSAGE,
     /// Derivation Image
     EFG_DERIVATIONIMAGE,
-    /// Frame Anantomy
+    /// Frame Anatomy
     EFG_FRAMEANATOMY,
     /// Frame Content
     EFG_FRAMECONTENT,
@@ -166,9 +166,9 @@ public:
     EFGS_UNKNOWN,
     /// Functional Group can be shared or per-frame
     EFGS_BOTH,
-    /// Functional Group can only pe shared (not per-frame)
+    /// Functional Group can only be shared (not per-frame)
     EFGS_ONLYSHARED,
-    /// Functional Group can only pe per-frame (not shared)
+    /// Functional Group can only be per-frame (not shared)
     EFGS_ONLYPERFRAME
   };
 

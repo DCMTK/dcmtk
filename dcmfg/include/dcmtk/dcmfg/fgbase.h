@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -74,7 +74,7 @@ public:
    */
   virtual void clearData() =0;
 
-  /** Virtual desctructor
+  /** Virtual destructor
    */
   virtual ~FGBase();
 
@@ -103,7 +103,7 @@ public:
    */
   virtual int compare(const FGBase& rhs) const = 0;
 
-  /** Returs a deep copy of this object
+  /** Returns a deep copy of this object
    *  @return  Deep copy of this object
    */
   virtual FGBase *clone() const = 0;
@@ -182,7 +182,7 @@ public:
    */
   virtual DcmFGTypes::E_FGSharedType getSharedType() const {return m_sharedType;}
 
-  /** Returs a deep copy of this object
+  /** Returns a deep copy of this object
    *  @return  Deep copy of this object
    */
   virtual FGBase *clone() const;
@@ -232,7 +232,7 @@ public:
    */
   virtual int compare(const FGBase& rhs) const;
 
-  /** Virtual desctructor, frees memory
+  /** Virtual destructor, frees memory
    */
   virtual ~FGUnknown();
 

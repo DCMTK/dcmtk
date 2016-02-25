@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -106,7 +106,7 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
     case DcmFGTypes::EFG_PATIENTPHYSIOSTATE:
     case DcmFGTypes::EFG_TEMPORALPOSITION:
     {
-      DCMFG_DEBUG("Encountered functional group that is not explicitly supported yet:" << DcmFGTypes::FGType2OFString(fgtype) );
+      DCMFG_DEBUG("Encountered functional group that is not explicitly supported yet:" << DcmFGTypes::FGType2OFString(fgtype));
       return NULL;
       break;
     }
@@ -126,7 +126,7 @@ FGBase* FGFactory::create(const DcmTagKey& fgSequenceKey)
   if (!DcmIODUtil::isSequenceTag(fgSequenceKey))
   {
     DCMFG_ERROR("Cannot create functional group from non-sequence tag");
-    return NULL;;
+    return NULL;
   }
   FGBase* fg = NULL;
   DcmFGTypes::E_FGType fgType = DcmFGTypes::tagKey2FGType(fgSequenceKey);

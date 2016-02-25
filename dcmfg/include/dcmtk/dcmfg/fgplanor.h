@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -43,12 +43,12 @@ public:
    */
   virtual ~FGPlaneOrientationPatient();
 
-  /** Returs a deep copy of this object
+  /** Returns a deep copy of this object
    *  @return  Deep copy of this object
    */
   virtual FGBase *clone() const;
 
-  /** Convenience function to create a mininmal functional group.
+  /** Convenience function to create a minimal functional group.
    *  @param  imageOrientationPatientRowX Row X Value
    *  @param  imageOrientationPatientRowY Row Y Value
    *  @param  imageOrientationPatientRowZ Row Z Value
@@ -82,14 +82,14 @@ public:
   /** Read functional group from item, must contain the Plane Orientation
    *  Sequence
    *  @param  item The item to read from
-   *  @return EC_Normal if reading was succesful, error otherwise
+   *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& item);
 
   /** Writes functional group to given item (will write Plane Orientation
    *  Sequence to it)
    *  @param  item The item to write to
-   *  @return EC_Normal if writing was succesful, error otherwise
+   *  @return EC_Normal if writing was successful, error otherwise
    */
   virtual OFCondition write(DcmItem& item);
 

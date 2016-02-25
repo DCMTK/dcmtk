@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -89,7 +89,7 @@ OFCondition FGInterface::addShared(const FGBase& group)
   OFCondition result = insertShared(copy, OFTrue /* replace */);
   if (result.bad())
   {
-    DCMFG_ERROR("Could not add shared group of type: " << DcmFGTypes::FGType2OFString(group.getType()));;
+    DCMFG_ERROR("Could not add shared group of type: " << DcmFGTypes::FGType2OFString(group.getType()));
     delete copy;
   }
 
@@ -257,7 +257,7 @@ OFCondition FGInterface::readPerFrameFG(DcmItem& dataset)
     // FunctionalGroups* perFrameGroups = new FunctionalGroups();
     if (!oneFrameItem)
     {
-      DCMFG_ERROR("Could not get functional group item for frame #" << count << "(internal error)");
+      DCMFG_ERROR("Could not get functional group item for frame #" << count << " (internal error)");
     }
     else if (!perFrameGroups.get())
     {
@@ -275,7 +275,7 @@ OFCondition FGInterface::readPerFrameFG(DcmItem& dataset)
       }
       else
       {
-        DCMFG_ERROR("Could not read functional groups for frame #" << count << ": " << result.text() );
+        DCMFG_ERROR("Could not read functional groups for frame #" << count << ": " << result.text());
       }
     }
   }
@@ -293,7 +293,7 @@ OFCondition FGInterface::readSingleFG(DcmItem& fgItem,
   for (size_t count = 0; count < card; count++)
   {
     DcmElement *elem = fgItem.getElement(count);
-    // TODO: non-sequence elements are not explicily forbidden here(?), we could store them and re-store them later
+    // TODO: non-sequence elements are not explicitly forbidden here(?), we could store them and re-store them later
     if (elem->getVR() != EVR_SQ)
     {
       DCMFG_WARN("Found non-sequence element in functional group sequence item (ignored): " << elem->getTag());
@@ -620,7 +620,7 @@ OFBool FGInterface::check()
   for (size_t frameCount = 0; frameCount < numFrames; frameCount++)
   {
     DCMFG_TRACE("Checking frame " << frameCount << "...");
-    // Every frame requires the FrameContent functional group, check "en passent"
+    // Every frame requires the FrameContent functional group, check "en passant"
     OFBool foundFrameContent = OFFalse;
     OFMap<Uint32, FunctionalGroups*>::iterator frameFG = m_perFrame.begin();
     while (frameFG != m_perFrame.end())
@@ -653,7 +653,7 @@ OFBool FGInterface::check()
     }
     if (!foundFrameContent)
     {
-      DCMFG_ERROR("Frame Content Functional group missing for frame # " << frameCount );
+      DCMFG_ERROR("Frame Content Functional group missing for frame #" << frameCount);
       numErrors++;
     }
   }
@@ -664,7 +664,7 @@ OFBool FGInterface::check()
   {
     if ( (*it).second->getSharedType() == DcmFGTypes::EFGS_ONLYPERFRAME )
     {
-      DCMFG_ERROR("Functional group of type " << DcmFGTypes::FGType2OFString((*it).second->getType()) << " used as shared functional group but must be per-frame ");
+      DCMFG_ERROR("Functional group of type " << DcmFGTypes::FGType2OFString((*it).second->getType()) << " used as shared functional group but must be per-frame");
       numErrors++;
     }
     it++;

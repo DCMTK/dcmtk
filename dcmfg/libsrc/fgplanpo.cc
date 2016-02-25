@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -52,7 +52,7 @@ FGPlanePosPatient* FGPlanePosPatient::createMinimal(const OFString& imagePositio
     OFCondition result = fg->setImagePositionPatient(imagePositionPatientX, imagePositionPatientY, imagePositionPatientZ);
     if (result.bad())
     {
-      DCMFG_ERROR("Coudl not create new FGPlanePosPatient: Invalid data for Image Position Patient: " << result.text());
+      DCMFG_ERROR("Could not create new FGPlanePosPatient: Invalid data for Image Position Patient: " << result.text());
       delete fg;
       return NULL;
     }

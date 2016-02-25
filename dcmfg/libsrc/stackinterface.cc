@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -103,12 +103,12 @@ OFCondition FGStackInterface::read(FGInterface& fgSource)
       }
       else
       {
-        DCMFG_WARN("Rading stacks but Frame " << count << " does not provide Stack ID or In-Stack Position");
+        DCMFG_WARN("Reading stacks but Frame " << count << " does not provide Stack ID or In-Stack Position");
       }
     }
     else
     {
-      DCMFG_WARN("Rading stacks but Frame " << count << " does not provide a Frame Content functional group");
+      DCMFG_WARN("Reading stacks but Frame " << count << " does not provide a Frame Content functional group");
     }
   }
 

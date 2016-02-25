@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -43,7 +43,7 @@ public:
   /// Iterator type for iterating over the frames of a stack
   typedef OFMap<Uint32,Uint32>::iterator iterator;
 
-  /// Const terator for iterating over the frames of a stack
+  /// Const iterator for iterating over the frames of a stack
   typedef OFMap<Uint32,Uint32>::const_iterator const_iterator;
 
   /** Constructor, creates stack from Stack ID and assigned frame numbers
