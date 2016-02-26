@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -148,7 +148,7 @@ public:
 
   /** Set SOP Class UID
    *  @param  value Value to be set (single value only) or "" for no value
-   *  @param  checkValue ValueCheck 'value' for conformance with VR (UI) and
+   *  @param  checkValue Check 'value' for conformance with VR (UI) and
    *           VM (1) if enabled
    *  @return EC_Normal if successful, an error code otherwise
    */

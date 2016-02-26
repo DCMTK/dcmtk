@@ -476,7 +476,7 @@ OFCondition DcmIODUtil::getAndCheckSingleItem(DcmSequenceOfItems& seq,
   item = seq.getItem(0);
   if (item == NULL)
   {
-    DCMIOD_ERROR("Cannot read item from " << tagName << ": No item found (internal errror)");
+    DCMIOD_ERROR("Cannot read item from " << tagName << ": No item found (internal error)");
     return EC_CorruptedData;
   }
   return EC_Normal;

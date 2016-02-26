@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -30,7 +30,7 @@
 #include "dcmtk/dcmiod/iodutil.h"
 
 
-const OFString IODSynchronizationModule::m_ModuleName = "SynchronizationModul";
+const OFString IODSynchronizationModule::m_ModuleName = "SynchronizationModule";
 
 
 IODSynchronizationModule::IODSynchronizationModule(OFshared_ptr<DcmItem> item,

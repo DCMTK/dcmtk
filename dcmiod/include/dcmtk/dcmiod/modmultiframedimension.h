@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -40,7 +40,7 @@
  * > Dimension Description Label (LO, 1, 3)
  *
  * The Dimension Organization UIDs within the Dimension Organization Sequence
- * cannot be set explicitly. Instead the sequence is poplulated from the data
+ * cannot be set explicitly. Instead the sequence is populated from the data
  * found within the Dimension Index Sequence.
  */
 class DCMTK_DCMIOD_EXPORT IODMultiframeDimensionModule : public IODModule
@@ -214,7 +214,7 @@ public:
     virtual OFCondition setFunctionalGroupPointer(const DcmTagKey& value,
                                                   const OFBool checkValue = OFTrue);
 
-    /** Set Dimension Index Functional Group PrivateCreator
+    /** Set Dimension Index Functional Group Private Creator
      *  @param  value Value to be set (single value only) or "" for no value
      *  @param  checkValue Check 'value. Not evaluated (here for consistency
      *          with other setter functions).
@@ -265,8 +265,8 @@ public:
    *  @param  functionalGroupPointer The functional group where the pointer attribute can be found
    *  @param  dimensionDescriptionLabel The description label of this dimension (optional)
    *  @param  dimensionIndexPrivateCreator The private creator of the Dimension Index Pointer
-   *          attribute. Reuquired if dimensionIndexPointer points to a private attribute tag.
-   *  @param  functionalGroupPrivateCreator The private creator of the functional group. Reuired
+   *          attribute. Required if dimensionIndexPointer points to a private attribute tag.
+   *  @param  functionalGroupPrivateCreator The private creator of the functional group. Required
    *          if functionalGroupPointer points to a private attribute tag.
    *  @return EC_Normal if index could be added, error otherwise (basic parameter checking)
    *

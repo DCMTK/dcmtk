@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -90,7 +90,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition getPatientWeight(Float64 &value,
-                                       const unsigned long pos = 00) const;
+                                       const unsigned long pos = 0) const;
 
   /** Get Patient's Size (in meters)
    *  @param  value Reference to variable in which the value should be stored

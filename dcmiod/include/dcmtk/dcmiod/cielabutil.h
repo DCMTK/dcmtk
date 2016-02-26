@@ -172,7 +172,7 @@ protected:
    */
   static double gammaCorrection(double n);
 
-  /** Peform inverse sRGB gamma correction, transforms R' to R
+  /** Perform inverse sRGB gamma correction, transforms R' to R
    *  @param  n The value to invert
    *  @return The gamma-inverted value
    */
@@ -190,14 +190,14 @@ protected:
    */
   static double labfInv(double n);
 
-  /** Get the minimun of two numbers
+  /** Get the minimum of two numbers
    *  @param  a First number
    *  @param  b Second number
    *  @return The minimum of a, b. a if a and b are equal.
    */
   static double min(double a, double b);
 
-  /** Get the minimun of three numbers
+  /** Get the minimum of three numbers
    *  @param  a First number
    *  @param  b Second number
    *  @param  c Third number

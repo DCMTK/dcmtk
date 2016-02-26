@@ -73,8 +73,8 @@ public:
    */
   virtual void resetRules();
 
-  /** Get name of module ("EnhancedUSSeriesModul")
-   *  @return Name of the module ("EnhancedUSSeriesModul")
+  /** Get name of module ("EnhancedUSSeriesModule")
+   *  @return Name of the module ("EnhancedUSSeriesModule")
    */
   virtual OFString getName() const;
 
@@ -121,7 +121,7 @@ public:
 
 private:
 
-  /// The name of this module ("EnhancedUSSeriesModul")
+  /// The name of this module ("EnhancedUSSeriesModule")
   static const OFString m_ModuleName;
 
   /// Referenced Performed Procedure Step Sequence

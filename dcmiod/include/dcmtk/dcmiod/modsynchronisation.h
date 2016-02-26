@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -98,7 +98,7 @@ public:
      */
     virtual OFCondition getSynchronizationChannel(OFVector<Uint16>& value) const;
 
-    /** Get Acquisition Time Sychronized
+    /** Get Acquisition Time Synchronized
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      */

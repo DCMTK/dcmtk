@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -312,7 +312,7 @@ public:
    */
   virtual CodeSequenceMacro& getTransducerApplication();
 
-  /** Get Processing Funcion
+  /** Get Processing Function
    *  @param  value Reference to variable in which the value should be stored
    *  @param  pos Index of the value to get (0..vm-1), -1 for all values
    *  @return EC_Normal if successful, an error code otherwise
@@ -369,7 +369,7 @@ public:
 
   /** Set Image Type. Image Type contains up to four values. Value 3 and 4 are
    *  optional and can be left empty if desired. The values in their order
-   *  of occurence are:
+   *  of occurrence are:
    *  1) Pixel Data Characteristics: Either ORIGINAL or DERIVED
    *  2) Patient Examination Characteristics: Fixed to "PRIMARY", thus cannot be
    *  influenced through this function.

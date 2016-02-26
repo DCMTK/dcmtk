@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -189,7 +189,7 @@ public:
    *  @param  dataset Reference to DICOM dataset to which the element should
    *          be added
    *  @param  delem Pointer to DICOM element which should be added. The element
-   *          is always consumed by this function, i.e.\ insertion was succesful
+   *          is always consumed by this function, i.e.\ insertion was successful
    *          and therefore ownership is transferred to the dataset, or the
    *          element is deleted from memory if it could not be inserted.
    *  @param  rule  Rule describing parameters to be checked on element.
@@ -365,12 +365,12 @@ public:
     return result;
   }
 
-  /** Check whether SOP Sclass UID matches the expected value
+  /** Check whether SOP class UID matches the expected value
    *  @param  item Item to read from. NULL value causes error return value.
    *  @param  desiredSOPClass The value that is expected
    *  @param  valueFound The value actually found (empty if no value could
    *          be retrieved)
-   *  @return EC_Normal if value could be found and equals exptected value,
+   *  @return EC_Normal if value could be found and equals expected value,
    *          EC_TagNotFound if SOP Class UID is not found in dataset,
    *          EC_InvalidValue if SOP class differs from expected value.
    */
@@ -438,7 +438,7 @@ public:
             else
             {
               delete newElem;
-              DCMIOD_WARN("Could not read item #" << count << " from " << DcmTag(source->getTag()).getTagName() << " (skipping item): " << result.text() );
+              DCMIOD_WARN("Could not read item #" << count << " from " << DcmTag(source->getTag()).getTagName() << " (skipping item): " << result.text());
             }
           }
           else
@@ -466,7 +466,7 @@ public:
    *  @param  source The source DICOM item read the sequence from
    *  @param  seqKey The tag key of the sequence to be read
    *  @param  destination The destination container to read into
-   *  @param  cardinality Eexpected number of items.
+   *  @param  cardinality Expected number of items.
    *          See DcmElement::checkVM() for a list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
    *          i.e.\ "1,1C,2,2C or 3".
@@ -542,7 +542,7 @@ public:
     /* Check sequence, reports cardinality and type errors as warnings */
     checkSubSequence(result, source, seqKey, "1", type, module);
 
-    /* Try to read sequence into internal data (ignore errors as nuch as possible) */
+    /* Try to read sequence into internal data (ignore errors as much as possible) */
     DcmItem* item = NULL;
     result = source.findAndGetSequenceItem(seqKey, item, 0);
     if (item != NULL)
@@ -757,7 +757,7 @@ public:
       }
       else if (type == "1C")
       {
-        DCMIOD_TRACE("Skipping type 1C sequence " << seqKey << ": No data or imcomplete data available");
+        DCMIOD_TRACE("Skipping type 1C sequence " << seqKey << ": No data or incomplete data available");
       }
     }
 
@@ -837,7 +837,7 @@ public:
    *  copy constructing all elements.
    *  @param src  The container that should be copied. Must contain pointers
    *         to objects that are allocated on the heap, and that are
-   *         copy-constructable
+   *         copy-constructible
    *  @param dst  The container to copy the cloned elements to.
    */
   template<class Container>
@@ -892,7 +892,7 @@ private:
    */
   DcmIODUtil();
 
-  /** Undefined desctructor
+  /** Undefined destructor
    */
   ~DcmIODUtil();
 };

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -116,7 +116,7 @@ public:
 
 private:
 
-  /// Map that holds all rules, accessable by their tag key
+  /// Map that holds all rules, accessible by their tag key
   OFMap<DcmTagKey, IODRule*> m_Rules;
 };
 
@@ -231,7 +231,7 @@ private:
   /// Module (e.g.\ "PatientModule" or "component name", e.g.\ "CodeSequenceMacro"
   OFString m_Module;
 
-  /// The Inforamtion Entitity the related attribute belongs to according to the
+  /// The Information Entity the related attribute belongs to according to the
   /// DICOM Model of the Real World, e.g.\ "Patient" for the attribute
   /// "Patient Name"
   DcmIODTypes::IOD_IE m_IE;

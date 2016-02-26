@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -486,14 +486,14 @@ public:
   /** Add a Referenced Frame Number
    *  @param  value The frame number to add
    *  @param  checkValue If OFTrue, consistency checks are performed (as possible)
-   *  @return EC_Normal if succesful, error otherwise
+   *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition addReferencedFrameNumber(const Uint16& value,
                                                const OFBool checkValue = OFTrue);
   /** Set the Referenced Segment Numbers
    *  @param  values The segment numbers to add
    *  @param  checkValue  If OFTrue, consistency checks are performed (as possible)
-   *  @return EC_Normal if succesful, error otherwise
+   *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition setReferencedSegmentNumber(const OFVector<Uint16>& values,
                                                  const OFBool checkValue = OFTrue);
@@ -501,7 +501,7 @@ public:
   /** Add a Referenced Segment Number
    *  @param  value The segment number to add
    *  @param  checkValue If OFTrue, consistency checks are performed (as possible)
-   *  @return EC_Normal if succesful, error otherwise
+   *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition addReferencedSegmentNumber(const Uint16& value,
                                                  const OFBool checkValue = OFTrue);
@@ -683,7 +683,7 @@ public:
    */
   GeneralAnatomyMacro(const GeneralAnatomyMacro& rhs);
 
-  /** Virtual desctructor
+  /** Virtual destructor
    */
   virtual ~GeneralAnatomyMacro();
 
@@ -868,7 +868,7 @@ public:
 
   /** Write this macro to given item
    *  @param  item The item to write to
-   *  @return EC_Normal if writing was succesful, error otherwise
+   *  @return EC_Normal if writing was successful, error otherwise
    */
   virtual OFCondition write(DcmItem& item);
 
@@ -903,7 +903,7 @@ class DCMTK_DCMIOD_EXPORT ContentIdentificationMacro
 
 public:
 
-  /** Class repsenting an Alternate Content Description item
+  /** Class representing an Alternate Content Description item
    */
   class DCMTK_DCMIOD_EXPORT AlternateContentDescriptionItem
   {
@@ -958,7 +958,7 @@ public:
 
     private:
 
-      /// Content Desctription: (LO, VM 1, Type 1)
+      /// Content Description: (LO, VM 1, Type 1)
       DcmLongString m_ContentDescription;
 
       /// Item of Language Code Sequence: (SQ, VM 1, Type 1)
@@ -1090,7 +1090,7 @@ public:
 
   /** Write Content Identification Macro to given item
    *  @param  item The item to write to
-   *  @return EC_Normal if successul, error otherwise
+   *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition write(DcmItem& item);
 

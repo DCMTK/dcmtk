@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -133,7 +133,7 @@ OFCondition IODComponent::read(DcmItem& source,
   // Debug
   DCMIOD_DEBUG("Reading component: " << getName());
 
-  // Clear old data if desried
+  // Clear old data if desired
   if (clearOldData)
   {
     clearData();

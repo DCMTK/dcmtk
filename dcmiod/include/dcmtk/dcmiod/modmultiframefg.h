@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -111,7 +111,7 @@ public:
                                                    const unsigned int pos = 0);
 
   /** Get Concatenation Information
-   *  @return Reference to the concatentation information
+   *  @return Reference to the concatenation information
    */
   virtual ConcatenationInfo& getConcatenationInfo();
 
