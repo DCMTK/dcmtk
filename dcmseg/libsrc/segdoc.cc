@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -39,7 +39,7 @@ DcmSegmentation::DcmSegmentation()
   m_FG(DcmIODImage::getData(), DcmIODImage::getRules()),
   m_DimensionModule(DcmIODImage::getData(), DcmIODImage::getRules()),
   m_Frames(),
-  m_ImageType( "DERIVED\\PRIMARY"),
+  m_ImageType("DERIVED\\PRIMARY"),
   m_ContentIdentificationMacro(),
   m_SegmentationType(DcmSegTypes::ST_BINARY),
   m_SegmentationFractionalType(DcmSegTypes::SFT_OCCUPANCY),
@@ -289,7 +289,7 @@ OFCondition DcmSegmentation::write(DcmItem &dataset)
 
   // -- Extra Image level data --
 
-  // Write Multi-Frame Functional Groups Mdule
+  // Write Multi-Frame Functional Groups Module
   if (result.good()) result = writeMultiFrameFunctionalGroupsModule(dataset);
 
   // Write Multi-Frame Dimension Module
@@ -716,7 +716,7 @@ OFCondition DcmSegmentation::readFrames(DcmItem& dataset)
   pixelRep = 2; // invalid value for this attribute
   OFString colorModel;
 
-  /* check the typcial image pixel attributes and get correct(ed) values */
+  /* check the typical image pixel attributes and get correct(ed) values */
   result = getAndCheckImagePixelAttributes(dataset, allocated, stored, high, spp, pixelRep, rows, cols, numberOfFrames, colorModel);
   if (result.bad())
     return result;
@@ -833,12 +833,12 @@ OFCondition DcmSegmentation::getAndCheckImagePixelAttributes(DcmItem& dataset,
   }
   if (spp != 1)
   {
-    DCMSEG_WARN("Samples Per Pixel is not set correctly (" << spp << ", ignored), assuming value 1 as required for binary segmentations");
+    DCMSEG_WARN("Samples per Pixel is not set correctly (" << spp << ", ignored), assuming value 1 as required for binary segmentations");
     spp = 1;
   }
   if (pixelRep != 0)
   {
-    DCMSEG_WARN("Pixel Representation is not set (" << spp << ", ignored), assuming value 0 as required for segmentations");
+    DCMSEG_WARN("Pixel Representation is not set correctly (" << pixelRep << ", ignored), assuming value 0 as required for segmentations");
     pixelRep = 0;
   }
   if (colorModel != "MONOCHROME2")
@@ -1239,7 +1239,7 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
   // If the original transfer is encapsulated and we do not already have an uncompressed version, decompress or reject the file
   else if (xfer.isEncapsulated())
   {
-    // RLE compression is fine (truely lossless). Deflated is handled internally by DCMTK.
+    // RLE compression is fine (truly lossless). Deflated is handled internally by DCMTK.
     if (xfer.getXfer() == EXS_RLELossless)
     {
       DCMSEG_DEBUG("DICOM file is RLE-compressed, converting to uncompressed transfer syntax first");
@@ -1319,7 +1319,7 @@ void DcmSegmentation::concatFrames(OFVector< DcmIODTypes::Frame* > frames,
   OFVector<DcmIODTypes::Frame*>::iterator frame = frames.begin();
   Uint8 freeBits = 0;
   Uint8 firstByte = 0;
-  // Iterate over frames and copy each to pixdata memory
+  // Iterate over frames and copy each to pixData memory
   for (size_t f = 0; frame != frames.end(); f++)
   {
     DCMSEG_DEBUG("Packing segmentation frame #" << f+1 << "/" << frames.size());
@@ -1352,7 +1352,7 @@ void DcmSegmentation::concatFrames(OFVector< DcmIODTypes::Frame* > frames,
     frame++;
   }
   // Through shifting we can have non-zero bits within the unused bits of the
-  // last byte. Fill them with zeroes (though not required by the standard).
+  // last byte. Fill them with zeros (though not required by the standard).
   if (freeBits > 0)
   {
     *writePos = (*writePos >> freeBits) << freeBits;

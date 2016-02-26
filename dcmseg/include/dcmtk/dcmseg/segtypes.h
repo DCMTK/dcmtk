@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -111,7 +111,7 @@ class DCMTK_DCMSEG_EXPORT DcmSegTypes
     {
       /// Unknown (e.g.\ not initialized)
       SFT_UNKNOWN,
-      /// For fractional segmentations, a value defines probablity that pixel belongs to segment
+      /// For fractional segmentations, a value defines probability that pixel belongs to segment
       SFT_PROBABILITY,
       /// For fractional segmentations, a value defines how much of the pixel is covered by the segment
       SFT_OCCUPANCY
@@ -180,7 +180,7 @@ public:
 
   /** Read data from given item
    *  @param  item The item to read from
-   *  @param  clearOldData If OFtrue, old data is cleared before reading
+   *  @param  clearOldData If OFTrue, old data is cleared before reading
    *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& item,

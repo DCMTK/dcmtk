@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -33,7 +33,7 @@
 #include "dcmtk/dcmiod/modmultiframedimension.h"// for multi-frame dimension module
 #include "dcmtk/dcmdata/dcvrui.h"
 
-#include "dcmtk/dcmfg/fginterface.h"            // for mult-frame functional group interface
+#include "dcmtk/dcmfg/fginterface.h"            // for multi-frame functional group interface
 #include "dcmtk/dcmfg/fgfracon.h"               // for frame content functional group macro
 
 #include "dcmtk/dcmseg/segtypes.h"              // for segmentation data types
@@ -53,7 +53,7 @@ class DCMTK_DCMSEG_EXPORT DcmSegmentation
 
 public:
 
-  // -------------------- desctruction -------------------------------
+  // -------------------- destruction -------------------------------
 
   /** Destructor, frees memory
    */
@@ -100,8 +100,8 @@ public:
    *  added separately.
    *  @param  segmentation The resulting segmentation object if provided data is
    *          valid. Otherwise NULL is returned.
-   *  @param  rows Number of rows of segmetation frame data
-   *  @param  columns Number of rows of segmetation frame data
+   *  @param  rows Number of rows of segmentation frame data
+   *  @param  columns Number of rows of segmentation frame data
    *  @param  equipmentInfo Equipment that is responsible for creating the
    *           segmentation
    *  @param  contentIdentification Basic content identification information
@@ -118,8 +118,8 @@ public:
    *  added separately.
    *  @param  segmentation The resulting segmentation object if provided data is
    *          valid. Otherwise NULL is returned.
-   *  @param  rows Number of rows of segmetation frame data
-   *  @param  columns Number of rows of segmetation frame data
+   *  @param  rows Number of rows of segmentation frame data
+   *  @param  columns Number of rows of segmentation frame data
    *  @param  fractType Either probability (SFT_PROBABILITY) or
    *          occupancy (SFT_OCCUPANCY)
    *  @param  maxFractionalValue The value inside the frame data of this
@@ -141,7 +141,7 @@ public:
    *  @param derivationImages to image SOP instances
    *  @param derivationDescription Free text describing how the derivation was
    *         achieved.
-   *  @return The created functional group, or NULL if not successfull
+   *  @return The created functional group, or NULL if not successful
    */
   static FGDerivationImage* createDerivationImageFG(const OFVector<ImageSOPInstanceReferenceMacro>& derivationImages,
                                                     const OFString& derivationDescription);
@@ -283,7 +283,7 @@ public:
    *          The segment identified by the segmentNumber must already exist.
    *  @param  perFrameInformation The functional groups that identify this frame (i.e.
    *           which are planned to be not common for all other frames)
-   *  @return EC_Normal if adding was successul, error otherwise
+   *  @return EC_Normal if adding was successful, error otherwise
    */
   virtual OFCondition addFrame(Uint8* pixData,
                                const Uint16 segmentNumber,
@@ -304,10 +304,10 @@ public:
    *  this function should be called.
    *  @param  ratios Compression ratios (separated by backslash) of the applied
    *          lossy compression steps. Only one value (and no backslash) if only
-   *          one step was peformed.
+   *          one step was performed.
    *  @param  methods Methods (separated by backslash) of the applied
    *          lossy compression steps. Only one value (and no backslash) if only
-   *          one step was peformed.
+   *          one step was performed.
    *  @param  checkValues If OFTrue, the data provided is checked for validity
    */
   virtual OFCondition setLossyImageCompressionFlag(const OFString& ratios,
@@ -322,7 +322,7 @@ public:
   virtual OFCondition setEquipmentInfo(const IODGeneralEquipmentModule::EquipmentInfo& equipmentInfo,
                                        const OFBool checkValue = OFTrue);
 
-  /** Set content identication info for this segmentation object
+  /** Set content identification info for this segmentation object
    *  @param  contentIdentification  The content identification of this segmentation
    *  @param  checkValue If OFTrue, the data provided is checked for validity
    *          (as possible)
@@ -339,13 +339,13 @@ protected:
 
   /** Overwrites DcmIODImage::read()
    *  @param  dataset The dataset to read from
-   *  @return EC_Normal if reading succeded, error otherwise
+   *  @return EC_Normal if reading succeeded, error otherwise
    */
   OFCondition read(DcmItem &dataset);
 
   /** Overwrites DcmIODImage::write()
    *  @param  dataset The dataset to write to
-   *  @return EC_Normal if writing succeded, error otherwise
+   *  @return EC_Normal if writing succeeded, error otherwise
    */
   OFCondition write(DcmItem &dataset);
 
@@ -376,7 +376,7 @@ protected:
 
   /** Read segments from given item
    *  @param  item The item to read from
-   *  @return EC_Normal if reading was succesful, error otherwise
+   *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition readSegments(DcmItem& item);
 
@@ -483,7 +483,7 @@ protected:
   /** Add frame to segmentation object.
    *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
    *          Pixel data is copied so it must be freed by the caller.
-   *  @return EC_Normal if adding was successul, error otherwise
+   *  @return EC_Normal if adding was successful, error otherwise
    */
   virtual OFCondition addFrame(Uint8* pixData);
 
@@ -500,7 +500,7 @@ private:
   // Modules supported:
   //
   // Patient Module (through DcmIODImage)
-  // Patietn Study Module (through DcmIODImage)
+  // Patient Study Module (through DcmIODImage)
   // General Study Module (through DcmIODImage)
   // General Series Module (through DcmIODImage)
   // Segmentation Series Module

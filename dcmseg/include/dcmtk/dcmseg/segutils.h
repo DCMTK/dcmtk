@@ -38,13 +38,13 @@ public:
    *   @param  pixelData Pixel data in unpacked format
    *   @param  rows Number of rows in the pixel data
    *   @param  columns The number of columns in the pixel data
-   *   @return The frame data if successfull, NULL if an error occurs
+   *   @return The frame data if successful, NULL if an error occurs
    */
   static DcmIODTypes::Frame* packBinaryFrame(Uint8* pixelData,
                                              const Uint16 rows,
                                              const Uint16 columns);
 
-  /** Compute the number of bytes requried for a binary pixel data frame,
+  /** Compute the number of bytes required for a binary pixel data frame,
    *  given the number of pixels
    *  @param  numPixels The total number of pixels
    *  @return The number of bytes required to pack the data into a binary

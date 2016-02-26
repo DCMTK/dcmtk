@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -38,11 +38,11 @@ class DCMTK_DCMSEG_EXPORT DcmSegment
 
 public:
 
-  // -------------- constructors/destructors--------------------
+  // -------------- constructors/destructors --------------------
 
   // constructor is protected
 
-  /** Desctructor, frees memory
+  /** Destructor, frees memory
    */
   virtual ~DcmSegment();
 
@@ -86,7 +86,7 @@ public:
 
   /** Read segment from given item
    *  @param  item The item to read from (must be item as found in the
-   *          Segment Identification Sequence
+   *          Segment Identification Sequence)
    *  @param  clearOldData If true, old data is deleted first
    *  @return  EC_Normal if reading was successful, error otherwise
    */
