@@ -828,7 +828,7 @@ OFCondition DcmSegmentation::getAndCheckImagePixelAttributes(DcmItem& dataset,
   }
   if (high != depth-1)
   {
-    DCMSEG_WARN("Bits Stored is not set correctly (" << high << ", ignored), assuming value " << depth-1 << " as required for binary segmentations");
+    DCMSEG_WARN("High Bit is not set correctly (" << high << ", ignored), assuming value " << depth-1 << " as required for binary segmentations");
     high = depth -1;
   }
   if (spp != 1)
