@@ -140,6 +140,12 @@ class DCMTK_DCMSEG_EXPORT DcmSegTypes
      */
     static DcmSegTypes::E_SegmentationType OFString2Segtype( const OFString& value );
 
+    /** Return string representation from segmentation enum type
+     *  @param  value The segmentation type as enum value
+     *  @return The segmentation type as a string
+     */
+    static OFString segtype2OFString( const DcmSegTypes::E_SegmentationType& value );
+
     /** Return enum representation of fractional type string as found in
      *  segmentation objects
      *  @param  value The fractional type as a string

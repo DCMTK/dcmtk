@@ -818,32 +818,32 @@ OFCondition DcmSegmentation::getAndCheckImagePixelAttributes(DcmItem& dataset,
 
   if (allocated != depth)
   {
-    DCMSEG_WARN("Bits Allocated is not set correctly (" << allocated << ", ignored), assuming value " << depth << " as required for binary segmentations");
+    DCMSEG_WARN("Bits Allocated is not set correctly (" << allocated << ", ignored), assuming value " << depth << " as required for " << DcmSegTypes::segtype2OFString(m_SegmentationType) << " segmentation objects");
     allocated = depth;
   }
   if (stored != depth)
   {
-    DCMSEG_WARN("Bits Stored is not set correctly (" << stored << ", ignored), assuming value " << depth << " as required for binary segmentations");
+    DCMSEG_WARN("Bits Stored is not set correctly (" << stored << ", ignored), assuming value " << depth << " as required for " << DcmSegTypes::segtype2OFString(m_SegmentationType) << " segmentation objects");
     stored = depth;
   }
   if (high != depth-1)
   {
-    DCMSEG_WARN("High Bit is not set correctly (" << high << ", ignored), assuming value " << depth-1 << " as required for binary segmentations");
+    DCMSEG_WARN("High Bit is not set correctly (" << high << ", ignored), assuming value " << depth-1 << " as required for " << DcmSegTypes::segtype2OFString(m_SegmentationType) << " segmentation objects");
     high = depth -1;
   }
   if (spp != 1)
   {
-    DCMSEG_WARN("Samples per Pixel is not set correctly (" << spp << ", ignored), assuming value 1 as required for binary segmentations");
+    DCMSEG_WARN("Samples per Pixel is not set correctly (" << spp << ", ignored), assuming value 1 as required for segmentation objects");
     spp = 1;
   }
   if (pixelRep != 0)
   {
-    DCMSEG_WARN("Pixel Representation is not set correctly (" << pixelRep << ", ignored), assuming value 0 as required for segmentations");
+    DCMSEG_WARN("Pixel Representation is not set correctly (" << pixelRep << ", ignored), assuming value 0 as required for segmentation objects");
     pixelRep = 0;
   }
   if (colorModel != "MONOCHROME2")
   {
-    DCMSEG_WARN("Photometric Interpretation is not set correctly (ignored), assuming value MONOCHROME2 as required for segmentations");
+    DCMSEG_WARN("Photometric Interpretation is not set correctly (ignored), assuming value MONOCHROME2 as required for segmentation objects");
     colorModel = "MONOCHROME2";
   }
   if (rows == 0)

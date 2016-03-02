@@ -50,6 +50,18 @@ DcmSegTypes::E_SegmentationType DcmSegTypes::OFString2Segtype(const OFString& va
 }
 
 
+OFString DcmSegTypes::segtype2OFString(const DcmSegTypes::E_SegmentationType& value)
+{
+  switch(value)
+  {
+    case DcmSegTypes::ST_BINARY: return "BINARY";
+    case DcmSegTypes::ST_FRACTIONAL: return "FRACTIONAL";
+    case DcmSegTypes::ST_UNKNOWN: return "UNKNOWN";
+    default: return "Invalid segmentation type (internal error)";
+  }
+}
+
+
 DcmSegTypes::E_SegmentationFractionalType DcmSegTypes::OFString2FractionalType(const OFString& value)
 {
   if (value == "PROBABILITY")
