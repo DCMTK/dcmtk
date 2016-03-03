@@ -627,7 +627,7 @@ movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
 sends the attributes contained in the DICOM file "q.dcm" as part of a C-MOVE
 request to application entity ARCHIVE on the host caesar at port 104 using the
 Patient Root query model.  \b movescu itself uses the default AE title MOVESCU.
-The C-MOVE request will specifiy that images should be transferred to the
+The C-MOVE request will specify that images should be transferred to the
 destination AE title TEST_AE (via the \e --move option).  How the SCP
 interprets this request depends on its configuration.  \b movescu will listen
 on part 9876 for incoming associations in order to receive the requested images

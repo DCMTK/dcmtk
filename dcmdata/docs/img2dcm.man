@@ -335,8 +335,8 @@ such data. JFIF information is \b always removed by \b img2dcm.
 
 \subsubsection bmp_input_plugin BMP Input Plugin
 
-\b img2dcm supports BMP as input format. However, so far only the most commmon
-BMP images are supported.  In particular, BMP images which use bitfields or
+\b img2dcm supports BMP as input format. However, so far only the most common
+BMP images are supported.  In particular, BMP images which use bit fields or
 run length encoding will be rejected. Such images are uncommon. All input images
 will be converted into a DICOM image with RGB color model and a bit depth of 24.
 There are no specific options for fine-tuning BMP format conversion.
@@ -386,7 +386,7 @@ left empty.
 <li>
 img2dcm image.jpg out.dcm --series-from template.dcm -k
 "PatientName=Bond^James"
-<br>Same as 1), but imports patient/study/series infomation from DICOM file
+<br>Same as 1), but imports patient/study/series information from DICOM file
 "template.dcm". Please note that attribute PatientName will contain
 "Bond^James" at the end, any value from "template.dcm" will be overwritten.
 That is, because the -k option is applied at the very end of the conversion
@@ -491,6 +491,6 @@ images
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

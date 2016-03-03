@@ -24,8 +24,8 @@ Currently, the following profiles are supported:
 \li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
 
 \b dcmmkdir is an extended version of this tool which also supports other
-Media Storage Application Profiles than the general purpose one (e.g. both
-cardio profiles requiring the use of icon images).
+Media Storage Application Profiles than the general purpose one (e.g. the
+cardio profiles require the use of icon images).
 
 \section parameters PARAMETERS
 
@@ -296,6 +296,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

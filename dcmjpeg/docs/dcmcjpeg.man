@@ -376,14 +376,14 @@ VOI windowing for monochrome images (not with +tl):
           compute VOI window using min-max algorithm
 
   # Compute and apply a window center and width that covers the
-  # range from the smallest to the largest occuring pixel value.
+  # range from the smallest to the largest occurring pixel value.
 
   +Wn   --min-max-window-n
           compute VOI window using min-max algorithm,
           ignoring extreme values
 
   # Compute and apply a window center and width that covers the
-  # range from the second smallest to the second largest occuring
+  # range from the second smallest to the second largest occurring
   # pixel value. This is useful if the background is set to an
   # artificial black (padding value) or if white overlays are burned
   # into the image data which should not be considered for the window
@@ -417,7 +417,7 @@ pixel scaling for monochrome images (--no-windowing; ignored by +tl):
   # Monochrome image pixel values are always scaled to make use of the
   # pixel range available with the selected JPEG process as good as
   # possible. This option selects a scaling based on the minimum and
-  # maximum pixel value occuring in the image.  This often leads to
+  # maximum pixel value occurring in the image.  This often leads to
   # significantly better image quality, but may cause different
   # compressed images within one series to have different values for
   # rescale slope and intercept, which is a problem if a presentation
@@ -549,7 +549,7 @@ are compliant with the DICOM standard.  If in question, the \b dcmcjpeg utility
 allows one to convert an image to secondary capture - this SOP class does not pose
 restrictions as the ones mentioned above.
 
-With version DCMTK 3.5.4 a new encoder for truely lossless JPEG compression was
+With version DCMTK 3.5.4 a new encoder for truly lossless JPEG compression was
 added (\e --true-lossless).  Compared to the old (\e --pseudo-lossless) encoder,
 that creates slightly lossy images caused from internal color space conversions,
 windowing etc., there are a some issues to consider:
@@ -668,6 +668,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
