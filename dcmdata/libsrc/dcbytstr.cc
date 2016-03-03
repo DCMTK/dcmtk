@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,7 +151,7 @@ int DcmByteString::compare(const DcmElement& rhs) const
             OFString rhsVal;
             if (myRhs->getOFString(rhsVal, count).good())
             {
-                int result = val.compare(rhsVal);
+                result = val.compare(rhsVal);
                 if (result != 0)
                 {
                     return result;

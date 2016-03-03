@@ -203,7 +203,7 @@ int DcmSequenceOfItems::compare(const DcmElement& rhs) const
             DcmItem* rhsVal = myRhs->getItem(count);
             if (rhsVal)
             {
-                int result = val->compare(*rhsVal);
+                result = val->compare(*rhsVal);
                 if (result != 0)
                 {
                     return result;
