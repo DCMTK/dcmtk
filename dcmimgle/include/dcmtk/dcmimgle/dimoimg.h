@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -219,7 +219,7 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  thresh  threshhold value specifying percentage of histogram border which shall be ignored
+     ** @param  thresh  threshold value specifying percentage of histogram border which shall be ignored
      *
      ** @return true if successful, false otherwise
      */
@@ -683,7 +683,7 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
      *  @param  padding     align each line to a 32-bit address if true (default)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createDIB(void *&data,
                             const unsigned long size,
@@ -699,7 +699,7 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
      *  @param  frame  index of frame to be converted (starting from 0)
      *  @param  bits   number of bits per pixel used for the output bitmap (8 or 32)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createAWTBitmap(void *&data,
                                   const unsigned long frame,
@@ -1120,7 +1120,7 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
     unsigned int MinDensity;
     /// maximum density of a print-out (ditto)
     unsigned int MaxDensity;
-    /// reflected ambient light (in candela per squaremeter)
+    /// reflected ambient light (in candela per square meter)
     unsigned int Reflection;
     /// illumination (ditto)
     unsigned int Illumination;

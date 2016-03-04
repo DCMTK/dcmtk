@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,7 +117,7 @@ class DCMTK_DCMIMAGE_EXPORT DiColorPixel
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
      *  @param  padding     align each line to a 32-bit address if true
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     virtual unsigned long createDIB(void *&data,
                                     const unsigned long size,
@@ -139,7 +139,7 @@ class DCMTK_DCMIMAGE_EXPORT DiColorPixel
      *  @param  fromBits  number of bits per sample used for internal representation of the image
      *  @param  toBits    number of bits per sample used for the output bitmap (<= 8)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     virtual unsigned long createAWTBitmap(void *&data,
                                           const Uint16 width,

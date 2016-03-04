@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -251,7 +251,7 @@ class DCMTK_DCMIMAGE_EXPORT DiColorImage
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
      *  @param  padding     align each line to a 32-bit address if true (default)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createDIB(void *&data,
                             const unsigned long size,
@@ -267,7 +267,7 @@ class DCMTK_DCMIMAGE_EXPORT DiColorImage
      *  @param  frame  index of frame to be converted (default: first frame)
      *  @param  bits   number of bits per pixel used for the output bitmap (32)
      *
-     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occurred
      */
     unsigned long createAWTBitmap(void *&data,
                                   const unsigned long frame,
