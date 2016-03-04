@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2015, OFFIS e.V.
+ *  Copyright (C) 2002-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -257,7 +257,6 @@ OFTEST(ofstd_OFStandard_removeRootDirFromPathname)
     OFCHECK(OFStandard::removeRootDirFromPathname(result, nullPtr, nullPtr).good());
 }
 
-
 OFTEST(ofstd_safeSubtractAndAdd)
 {
   // --------------- Subtraction ----------------
@@ -271,7 +270,7 @@ OFTEST(ofstd_safeSubtractAndAdd)
 
   a = OFnumeric_limits<unsigned int>::max();
   b = OFnumeric_limits<unsigned int>::max()-1;
-  // check whether no underflow occured (it shouldnt)
+  // check whether no underflow occurred (it shouldn't)
   OFCHECK(OFStandard::safeSubtract(a, b, a) == OFTrue);
   // check whether the result a was computed as expected
   OFCHECK_EQUAL(a, 1);
@@ -280,16 +279,16 @@ OFTEST(ofstd_safeSubtractAndAdd)
 
   a = OFnumeric_limits<unsigned int>::max()-1;
   b = OFnumeric_limits<unsigned int>::max()-1;
-  // check whether overflow occured (it should)
+  // check whether overflow occurred (it should)
   OFCHECK(OFStandard::safeAdd(a, b, a) == OFFalse);
   // check whether a has not been modified
   OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max()-1);
 
   b = 1; // a still equals max-1
-  // check whether no overflow occured (it shouldnt)
+  // check whether no overflow occurred (it shouldn't)
   OFCHECK(OFStandard::safeAdd(a, b, a) == OFTrue);
   // check whether the result a was computed as expected.
-  // dividing and then multiplying by 2 is required since max may be be an
+  // dividing and then multiplying by 2 is required since max may be an
   // odd number so that max/2 is rounded to the floor number.
   OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max());
 }
