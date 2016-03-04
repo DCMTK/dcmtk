@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -317,8 +317,11 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
 
     /** get width height ratio (pixel aspect ratio: x/y).
      *  If present in the dataset and not overwritten using setWidthHeightRatio(), the following
-     *  attributes are supported in order to determine this value:
-     *  - Pixel Spacing, Imager Pixel Spacing, Nominal Scanned Pixel Spacing, Pixel Aspect Ratio
+     *  attributes are checked in order to determine this value:
+     *  - Pixel Spacing, Imager Pixel Spacing, Nominal Scanned Pixel Spacing, Pixel Aspect Ratio.
+     *  The first attribute (Pixel Spacing) is checked both on the main dataset level and within
+     *  the Pixel Measures Sequence of the Shared Functional Groups Sequence (if present).
+     *
      ** @return pixel aspect ratio (floating point value)
      */
     inline double getWidthHeightRatio() const
@@ -329,8 +332,10 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
 
     /** get height width ratio (pixel aspect ratio: y/x).
      *  If present in the dataset and not overwritten using setWidthHeightRatio(), the following
-     *  attributes are supported in order to determine this value:
+     *  attributes are checked in order to determine this value:
      *  - Pixel Spacing, Imager Pixel Spacing, Nominal Scanned Pixel Spacing, Pixel Aspect Ratio
+     *  The first attribute (Pixel Spacing) is checked both on the main dataset level and within
+     *  the Pixel Measures Sequence of the Shared Functional Groups Sequence (if present).
      *
      ** @return pixel aspect ratio (floating point value)
      */
@@ -626,7 +631,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  thresh  threshhold value specifying percentage of histogram border which
+     ** @param  thresh  threshold value specifying percentage of histogram border which
      *                  shall be ignored (defaut: 5%).
      *
      ** @return true if successful, false otherwise

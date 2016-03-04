@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2015, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -147,12 +147,37 @@ DiImage::DiImage(const DiDocument *docu,
             }
             if (!(Document->getFlags() & CIF_UsePresentationState))
             {
+                /* check whether pixels are non-square (start with pixel spacing attribute) */
                 hasPixelSpacing = (Document->getValue(DCM_PixelSpacing, PixelHeight, 0) > 0);
                 if (hasPixelSpacing)
                 {
                     if (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) < 2)
                         DCMIMGLE_WARN("missing second value for 'PixelSpacing' ... assuming 'Width' = " << PixelWidth);
                 } else {
+                    /* then check for functional groups sequence */
+                    DcmSequenceOfItems *seq = NULL;
+                    if (docu->getSequence(DCM_SharedFunctionalGroupsSequence, seq))
+                    {
+                        DcmItem *item = seq->getItem(0);
+                        if ((item != NULL) && docu->getSequence(DCM_PixelMeasuresSequence, seq, item))
+                        {
+                            item = seq->getItem(0);
+                            if (item != NULL)
+                            {
+                                hasPixelSpacing = (docu->getValue(DCM_PixelSpacing, PixelHeight, 0, item) > 0);
+                                if (hasPixelSpacing)
+                                {
+                                    DCMIMGLE_DEBUG("found 'PixelSpacing' in 'SharedFunctionalGroupsSequence'");
+                                    if (docu->getValue(DCM_PixelSpacing, PixelWidth, 1, item) < 2)
+                                        DCMIMGLE_WARN("missing second value for 'PixelSpacing' ... assuming 'Width' = " << PixelWidth);
+                                }
+                            }
+                        }
+                    }
+                }
+                /* if there is no pixel spacing, check for various other attributes */
+                if (!hasPixelSpacing)
+                {
                     hasImagerPixelSpacing = (Document->getValue(DCM_ImagerPixelSpacing, PixelHeight, 0) > 0);
                     if (hasImagerPixelSpacing)
                     {
