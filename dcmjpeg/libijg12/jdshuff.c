@@ -156,11 +156,16 @@ static const int extend_test[16] =   /* entry n is 2**(n-1) */
   { 0, 0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080,
     0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000 };
 
+/*
+ * Originally, a -1 was shifted but since shifting a negative value is
+ * undefined behavior, now "~0U" (bit-wise NOT unsigned int 0) is used,
+ * shifted and casted to an int. The result is the same, of course.
+ */
 static const int extend_offset[16] = /* entry n is (-1 << n) + 1 */
-  { 0, ((-1)<<1) + 1, ((-1)<<2) + 1, ((-1)<<3) + 1, ((-1)<<4) + 1,
-    ((-1)<<5) + 1, ((-1)<<6) + 1, ((-1)<<7) + 1, ((-1)<<8) + 1,
-    ((-1)<<9) + 1, ((-1)<<10) + 1, ((-1)<<11) + 1, ((-1)<<12) + 1,
-    ((-1)<<13) + 1, ((-1)<<14) + 1, ((-1)<<15) + 1 };
+  { 0, (int)((~0U)<<1) + 1, (int)((~0U)<<2) + 1, (int)((~0U)<<3) + 1, (int)((~0U)<<4) + 1,
+    (int)((~0U)<<5) + 1, (int)((~0U)<<6) + 1, (int)((~0U)<<7) + 1, (int)((~0U)<<8) + 1,
+    (int)((~0U)<<9) + 1, (int)((~0U)<<10) + 1, (int)((~0U)<<11) + 1, (int)((~0U)<<12) + 1,
+    (int)((~0U)<<13) + 1, (int)((~0U)<<14) + 1, (int)((~0U)<<15) + 1 };
 
 #endif /* AVOID_TABLES */
 
@@ -278,10 +283,10 @@ decode_mcu (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
     /* Since zeroes are skipped, output area must be cleared beforehand */
     for (k = 1; k < DCTSIZE2; k++) {
       HUFF_DECODE(s, br_state, actbl, return FALSE, label2);
-      
+
       r = s >> 4;
       s &= 15;
-      
+
       if (s) {
         k += r;
         CHECK_BIT_BUFFER(br_state, s, return FALSE);
@@ -305,10 +310,10 @@ decode_mcu (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
     /* In this path we just discard the values */
     for (k = 1; k < DCTSIZE2; k++) {
       HUFF_DECODE(s, br_state, actbl, return FALSE, label3);
-      
+
       r = s >> 4;
       s &= 15;
-      
+
       if (s) {
         k += r;
         CHECK_BIT_BUFFER(br_state, s, return FALSE);

@@ -211,11 +211,16 @@ static const int extend_test[16] =   /* entry n is 2**(n-1) */
   { 0, 0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080,
     0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000 };
 
+/*
+ * Originally, a -1 was shifted but since shifting a negative value is
+ * undefined behavior, now "~0U" (bit-wise NOT unsigned int 0) is used,
+ * shifted and casted to an int. The result is the same, of course.
+ */
 static const int extend_offset[16] = /* entry n is (-1 << n) + 1 */
-  { 0, ((-1)<<1) + 1, ((-1)<<2) + 1, ((-1)<<3) + 1, ((-1)<<4) + 1,
-    ((-1)<<5) + 1, ((-1)<<6) + 1, ((-1)<<7) + 1, ((-1)<<8) + 1,
-    ((-1)<<9) + 1, ((-1)<<10) + 1, ((-1)<<11) + 1, ((-1)<<12) + 1,
-    ((-1)<<13) + 1, ((-1)<<14) + 1, ((-1)<<15) + 1 };
+  { 0, (int)((~0U)<<1) + 1, (int)((~0U)<<2) + 1, (int)((~0U)<<3) + 1, (int)((~0U)<<4) + 1,
+    (int)((~0U)<<5) + 1, (int)((~0U)<<6) + 1, (int)((~0U)<<7) + 1, (int)((~0U)<<8) + 1,
+    (int)((~0U)<<9) + 1, (int)((~0U)<<10) + 1, (int)((~0U)<<11) + 1, (int)((~0U)<<12) + 1,
+    (int)((~0U)<<13) + 1, (int)((~0U)<<14) + 1, (int)((~0U)<<15) + 1 };
 
 #endif /* AVOID_TABLES */
 
@@ -265,7 +270,7 @@ process_restart (j_decompress_ptr cinfo)
 /*
  * Huffman MCU decoding.
  * Each of these routines decodes and returns one MCU's worth of
- * Huffman-compressed coefficients. 
+ * Huffman-compressed coefficients.
  * The coefficients are reordered from zigzag order into natural array order,
  * but are not dequantized.
  *
@@ -286,7 +291,7 @@ process_restart (j_decompress_ptr cinfo)
 
 METHODDEF(boolean)
 decode_mcu_DC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
-{   
+{
   j_lossy_d_ptr lossyd = (j_lossy_d_ptr) cinfo->codec;
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int Al = cinfo->Al;
@@ -358,7 +363,7 @@ decode_mcu_DC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
 
 METHODDEF(boolean)
 decode_mcu_AC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
-{   
+{
   j_lossy_d_ptr lossyd = (j_lossy_d_ptr) cinfo->codec;
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int Se = cinfo->Se;
@@ -444,7 +449,7 @@ decode_mcu_AC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
 
 METHODDEF(boolean)
 decode_mcu_DC_refine (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
-{   
+{
   j_lossy_d_ptr lossyd = (j_lossy_d_ptr) cinfo->codec;
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int p1 = 1 << cinfo->Al;  /* 1 in the bit position being coded */
@@ -494,12 +499,18 @@ decode_mcu_DC_refine (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
 
 METHODDEF(boolean)
 decode_mcu_AC_refine (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
-{   
+{
   j_lossy_d_ptr lossyd = (j_lossy_d_ptr) cinfo->codec;
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int Se = cinfo->Se;
   int p1 = 1 << cinfo->Al;  /* 1 in the bit position being coded */
-  int m1 = (-1) << cinfo->Al;   /* -1 in the bit position being coded */
+
+  /* Originally, a -1 was shifted but since shifting a negative value is
+   * undefined behavior, now "~0U" (bit-wise NOT unsigned int 0) is used,
+   * shifted and casted to an int. The result is the same, of course.
+   */
+  int m1 = (int)((~0U) << cinfo->Al);   /* -1 in the bit position being coded */
+
   register int s, k, r;
   unsigned int EOBRUN;
   JBLOCKROW block;
@@ -667,7 +678,7 @@ jinit_phuff_decoder (j_decompress_ptr cinfo)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                 (size_t)cinfo->num_components*DCTSIZE2*SIZEOF(int));
   coef_bit_ptr = & cinfo->coef_bits[0][0];
-  for (ci = 0; ci < cinfo->num_components; ci++) 
+  for (ci = 0; ci < cinfo->num_components; ci++)
     for (i = 0; i < DCTSIZE2; i++)
       *coef_bit_ptr++ = -1;
 }
