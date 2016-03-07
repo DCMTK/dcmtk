@@ -28,8 +28,6 @@
 
 #include "dcmtk/dcmsr/dsrdocst.h"
 
-#include "dcmtk/dcmdata/dcitem.h"
-
 
 /*---------------------*
  *  class declaration  *

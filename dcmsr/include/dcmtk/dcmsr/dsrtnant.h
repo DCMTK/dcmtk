@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -25,8 +25,6 @@
 #define DSRTNANT_H
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/ofstring.h"
 
 #include "dcmtk/dcmsr/dsdefine.h"
 #include "dcmtk/dcmsr/dsrtypes.h"

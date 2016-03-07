@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,8 +36,6 @@
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrimgvl.h"
 #include "dcmtk/dcmsr/dsrwavvl.h"
-
-#include "dcmtk/ofstd/ofstring.h"
 
 
 /*---------------------*
@@ -99,7 +97,7 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     E_RelationshipType getRelationshipType() const;
 
     /** get ID of the referenced node.
-     *  Applicable to: byReference relationships
+     *  Applicable to: by-reference relationships
      ** @return ID of the referenced node if valid, 0 otherwise
      */
     size_t getReferencedNodeID() const;

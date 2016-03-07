@@ -25,6 +25,9 @@
 
 #include "dcmtk/dcmsr/dsrtcodt.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
+
 /* declared in class DSRListOfItems<T> */
 DCMTK_EXPLICIT_SPECIALIZATION
 const OFString DSRListOfItems<OFString>::EmptyItem;

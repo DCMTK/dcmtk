@@ -28,7 +28,6 @@
 
 #include "dcmtk/dcmsr/dsrtree.h"
 #include "dcmtk/dcmsr/dsrcodvl.h"
-#include "dcmtk/dcmdata/dcitem.h"
 
 
 /*-----------------------*

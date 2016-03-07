@@ -6,7 +6,7 @@
  *  Header file for class CID11_RouteOfAdministration
  *
  *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:20:57 by J. Riesmeier
+ *  File created on 2016-03-07 11:39:54 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,8 @@
 
 #include "dcmtk/dcmsr/dsrctxgr.h"
 #include "dcmtk/dcmsr/cmr/define.h"
+
+#include "dcmtk/ofstd/ofmap.h"
 
 
 /*---------------------*

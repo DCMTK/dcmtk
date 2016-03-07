@@ -26,11 +26,11 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofstack.h"
-
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrposcn.h"
 #include "dcmtk/dcmsr/dsrtnant.h"
+
+#include "dcmtk/ofstd/ofstack.h"
 
 
 /*-----------------------*

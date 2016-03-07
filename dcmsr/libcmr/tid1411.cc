@@ -24,6 +24,7 @@
 #include "dcmtk/dcmsr/codes/umls.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 
 // helper macros for checking the return value of API calls

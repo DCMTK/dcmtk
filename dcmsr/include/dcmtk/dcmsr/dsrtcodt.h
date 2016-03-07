@@ -29,8 +29,6 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrtlist.h"
 
-#include "dcmtk/ofstd/ofstring.h"
-
 
 /*---------------------*
  *  class declaration  *

@@ -32,7 +32,6 @@
 #include "dcmtk/dcmsr/dsrcitem.h"
 
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/dcmdata/dcitem.h"
 
 
 /*------------------------*
@@ -190,7 +189,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     /** get a cursor to the root node of this document tree.
      *  This cursor can be used to iterate over the nodes of the document tree without
      *  changing the internal cursor.  Please note that the cursor might become invalid,
-     *  e.g. by pointing to a non-existing node, if the content of the document tree is
+     *  e.g. by pointing to a non-existing node if the content of the document tree is
      *  modified after the cursor has been retrieved.
      *  Included sub-templates are not supported by this type of cursor, i.e. the subtree
      *  that is managed by an instance of DSRIncludedTemplateTreeNode is not iterated.
@@ -202,7 +201,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     /** get a cursor to the root node of this document tree.
      *  This cursor can be used to iterate over the nodes of the document tree without
      *  changing the internal cursor.  Please note that the cursor might become invalid,
-     *  e.g. by pointing to a non-existing node, if the content of the document tree is
+     *  e.g. by pointing to a non-existing node if the content of the document tree is
      *  modified after the cursor has been retrieved.
      *  This type of cursor also supports included sub-templates, i.e. the subtree that
      *  is managed by an instance of DSRIncludedTemplateTreeNode is also iterated.

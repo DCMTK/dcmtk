@@ -28,8 +28,6 @@
 
 #include "dcmtk/dcmsr/dsrtypes.h"
 
-#include "dcmtk/ofstd/ofstring.h"
-
 
 /*---------------------*
  *  class declaration  *

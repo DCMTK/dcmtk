@@ -29,6 +29,8 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrtncsr.h"
 
+#include "dcmtk/ofstd/ofutil.h"
+
 
 /*-----------------------*
  *  forward declaration  *

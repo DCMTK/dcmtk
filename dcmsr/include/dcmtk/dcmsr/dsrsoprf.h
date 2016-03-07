@@ -27,13 +27,6 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofcond.h"
-
-#include "dcmtk/dcmdata/dcitem.h"
-#include "dcmtk/dcmdata/dctagkey.h"
-
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrcodvl.h"
 

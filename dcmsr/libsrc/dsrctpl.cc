@@ -26,6 +26,9 @@
 #include "dcmtk/dcmsr/dsrctpl.h"
 #include "dcmtk/dcmsr/dsrdocst.h"
 
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+
 
 DSRTemplateCommon::DSRTemplateCommon(const OFString &templateIdentifier,
                                      const OFString &mappingResource,

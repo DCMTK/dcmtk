@@ -29,8 +29,12 @@
 #include "dcmtk/dcmsr/dsrxmld.h"
 #include "dcmtk/dcmsr/dsriodcc.h"
 
-#include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcvrul.h"
 
 
 DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipType,

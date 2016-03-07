@@ -27,6 +27,9 @@
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrds.h"
+
 
 DSRNumericMeasurementValue::DSRNumericMeasurementValue()
   : NumericValue(),

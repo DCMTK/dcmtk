@@ -25,6 +25,9 @@
 
 #include "dcmtk/dcmsr/dsrtcosp.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrul.h"
+
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 

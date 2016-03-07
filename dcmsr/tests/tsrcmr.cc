@@ -25,6 +25,9 @@
 
 #include "dcmtk/ofstd/oftest.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+
 #include "dcmtk/dcmsr/dsrdoc.h"
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"

@@ -22,8 +22,10 @@
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/codes/srt.h"
 #include "dcmtk/dcmsr/codes/ucum.h"
-
 #include "dcmtk/dcmsr/dsrdattn.h"
+
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 
 // helper macros for checking the return value of API calls

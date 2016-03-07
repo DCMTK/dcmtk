@@ -26,6 +26,8 @@
 #include "dcmtk/dcmsr/dsrtcovl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+
 
 DSRTemporalCoordinatesValue::DSRTemporalCoordinatesValue()
   : TemporalRangeType(DSRTypes::TRT_invalid),

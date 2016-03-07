@@ -28,7 +28,6 @@
 
 #include "dcmtk/dcmsr/dsrtypes.h"
 
-#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofexbl.h"
 
 

@@ -28,6 +28,11 @@
 #include "dcmtk/dcmsr/dsrxmld.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvrae.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrui.h"
 
 
 // --- DSRSOPInstanceReferenceList::InstanceStruct ---

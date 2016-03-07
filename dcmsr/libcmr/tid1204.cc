@@ -15,6 +15,8 @@
 #include "dcmtk/dcmsr/cmr/tid1204.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 
+#include "dcmtk/dcmdata/dcuid.h"
+
 
 // helper macros for checking the return value of API calls
 #define CHECK_RESULT(call) if (result.good()) result = call

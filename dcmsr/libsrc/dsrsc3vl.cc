@@ -26,6 +26,9 @@
 #include "dcmtk/dcmsr/dsrsc3vl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+
 
 DSRSpatialCoordinates3DValue::DSRSpatialCoordinates3DValue()
   : GraphicType(DSRTypes::GT3_invalid),

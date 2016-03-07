@@ -6,7 +6,7 @@
  *  Header file for class CID7453_PerformingRoles
  *
  *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:21:19 by J. Riesmeier
+ *  File created on 2016-03-07 11:40:16 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,8 @@
 
 #include "dcmtk/dcmsr/dsrctxgr.h"
 #include "dcmtk/dcmsr/cmr/define.h"
+
+#include "dcmtk/ofstd/ofmap.h"
 
 
 /*---------------------*

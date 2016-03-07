@@ -22,11 +22,10 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmsr/dsrdoc.h"       /* for main interface class DSRDocument */
 #include "dcmtk/dcmsr/codes/ucum.h"
-#include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
+
+#include "dcmtk/dcmdata/dctk.h"       /* for typical set of "dcmdata" headers */
 
 
 // forward declarations

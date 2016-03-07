@@ -27,6 +27,10 @@
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+
 
 DSRCompositeReferenceValue::DSRCompositeReferenceValue()
   : SOPClassUID(),

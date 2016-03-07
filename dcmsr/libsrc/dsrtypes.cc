@@ -56,6 +56,12 @@
 #include "dcmtk/dcmsr/dsrrrdcc.h"
 #include "dcmtk/dcmsr/dsracqcc.h"
 
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/dcmdata/dcvrpn.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+
 #include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO

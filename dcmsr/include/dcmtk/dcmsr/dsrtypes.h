@@ -26,14 +26,17 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmsr/dsdefine.h"
+
+#include "dcmtk/dcmdata/dcelem.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcsequen.h"
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/oflog/oflog.h"
-
-#include "dcmtk/dcmsr/dsdefine.h"
 
 
 // global definitions for logging mechanism provided by the oflog module

@@ -27,6 +27,9 @@
 #include "dcmtk/dcmsr/dsrreftn.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrul.h"
+
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType)
   : DSRDocumentTreeNode(relationshipType, VT_byReference),

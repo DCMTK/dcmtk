@@ -24,6 +24,10 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrscogr.h"
+
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrfl.h"
+
 #include "dcmtk/ofstd/ofstd.h"
 
 /* declared in class DSRListOfItems<T> */

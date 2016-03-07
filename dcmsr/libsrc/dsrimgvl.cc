@@ -25,10 +25,14 @@
 
 #include "dcmtk/dcmsr/dsrimgvl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
+
 #include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/dcmimage/diregist.h"  /* add support for color images */
 #include "dcmtk/dcmimage/diquant.h"   /* for DcmQuant */
+
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 
 DSRImageReferenceValue::DSRImageReferenceValue()

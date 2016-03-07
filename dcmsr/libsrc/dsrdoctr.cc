@@ -29,6 +29,9 @@
 #include "dcmtk/dcmsr/dsrxmld.h"
 #include "dcmtk/dcmsr/dsriodcc.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+
 
 DSRDocumentTree::DSRDocumentTree(const E_DocumentType documentType)
   : DSRDocumentSubTree(),

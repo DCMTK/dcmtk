@@ -32,6 +32,15 @@
 #include "dcmtk/dcmsr/dsrrefin.h"
 #include "dcmtk/dcmsr/dsrcsidl.h"
 
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvris.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmdata/dcvrpn.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+
 #include "dcmtk/ofstd/ofstream.h"
 
 

@@ -26,6 +26,8 @@
 #include "dcmtk/dcmsr/dsrwavvl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcuid.h"
+
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue()
   : DSRCompositeReferenceValue(),

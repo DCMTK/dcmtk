@@ -26,10 +26,10 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
+#include "dcmtk/dcmsr/dsdefine.h"
+
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oflist.h"
-
-#include "dcmtk/dcmsr/dsdefine.h"
 
 
 /*---------------------*

@@ -28,7 +28,9 @@
 
 #include "dcmtk/dcmsr/dsrcodvl.h"
 
-#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmdata/dcvrfd.h"
+#include "dcmtk/dcmdata/dcvrsl.h"
+#include "dcmtk/dcmdata/dcvrul.h"
 
 
 /*---------------------*

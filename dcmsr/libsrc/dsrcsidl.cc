@@ -26,6 +26,14 @@
 #include "dcmtk/dcmsr/dsrcsidl.h"
 #include "dcmtk/dcmsr/dsrxmld.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrst.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+
 
 DSRCodingSchemeIdentificationList::DSRCodingSchemeIdentificationList()
   : ItemList(),

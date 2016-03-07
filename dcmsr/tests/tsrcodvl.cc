@@ -24,6 +24,10 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftest.h"
+
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+
 #include "dcmtk/dcmsr/dsrcodvl.h"
 
 
