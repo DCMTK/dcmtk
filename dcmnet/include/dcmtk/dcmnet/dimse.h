@@ -602,7 +602,7 @@ struct DCMTK_DCMNET_EXPORT T_DIMSE_Message {
 
 
 /*
- * Globale Variables
+ * Global Variables
  */
 
 /*
@@ -648,7 +648,7 @@ extern DCMTK_DCMNET_EXPORT OFBool            g_dimse_save_dimse_data;           
  * If the parameter blockMode is DIMSE_NONBLOCKING then the DIMSE routine
  * will wait at most timeout seconds for a response and if no response arrives
  * will return DIMSE_NODATAAVAILABLE.  In both cases waiting will be
- * interupted by association release, and abort messages, or network
+ * interrupted by association release, and abort messages, or network
  * disruption.
  */
 
@@ -677,16 +677,16 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
  */
 
 typedef enum {
-    DIMSE_StoreBegin,   /* before data set */
+    DIMSE_StoreBegin,       /* before data set */
     DIMSE_StoreProgressing, /* during data set */
-    DIMSE_StoreEnd              /* after data set */
+    DIMSE_StoreEnd          /* after data set */
 } T_DIMSE_StoreProgressState;
 
 struct DCMTK_DCMNET_EXPORT T_DIMSE_StoreProgress { /* progress structure for store callback routines */
     T_DIMSE_StoreProgressState state;   /* current state */
     long callbackCount; /* callback execution count */
     long progressBytes; /* sent/received so far */
-    long totalBytes;            /* total/estimated total to send/receive */
+    long totalBytes;    /* total/estimated total to send/receive */
 } ;
 
 
@@ -743,8 +743,8 @@ DIMSE_storeProvider(/* in */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_StoreRQ *request, /* send response to this request */
-        T_DIMSE_C_StoreRSP *response, /* response structure */
+        T_DIMSE_C_StoreRQ *request,     /* send response to this request */
+        T_DIMSE_C_StoreRSP *response,   /* response structure */
         DcmDataset *statusDetail);
 
 /*

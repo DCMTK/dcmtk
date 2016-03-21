@@ -71,7 +71,7 @@
 **      This file contains the routines which provide association management
 **      for DICOM V.3 applications.  It maintains structures which describe
 **      active associations and provides access to association specific
-**      informtion.  Also provided are routines for performing association
+**      information.  Also provided are routines for performing association
 **      negotiation (presentation contexts, abstract syntaxes, transfer
 **      syntaxes, maximum PDU length, and other extended negotiation).
 **
@@ -1976,7 +1976,7 @@ ASC_requestAssociation(T_ASC_Network * network,
         strcpy(params->theirImplementationVersionName,
            params->DULparams.calledImplementationVersionName);
 
-        /* make sure accepted PCs are marked as such in the requsted PC list */
+        /* make sure accepted PCs are marked as such in the requested PC list */
         cond = updateRequestedPCListFromAcceptedPCList(&params->DULparams);
     }
     return cond;

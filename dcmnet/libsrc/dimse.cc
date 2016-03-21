@@ -115,7 +115,7 @@
 #include "dcmtk/dcmdata/dcvrobow.h"    /* for class DcmOtherByteOtherWord */
 #include "dcmtk/dcmdata/dcvrsh.h"      /* for class DcmShortString */
 #include "dcmtk/dcmdata/dcvrae.h"      /* for class DcmApplicationEntity */
-#include "dcmtk/dcmdata/dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
+#include "dcmtk/dcmdata/dcdicent.h"    /* for class DcmDictEntry, needed for MSVC5 */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 #include "dcmtk/dcmdata/dcvrui.h"      /* for class DcmUniqueIdentifier */
 

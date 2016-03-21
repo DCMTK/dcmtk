@@ -71,7 +71,7 @@
 **      This file contains the routines which provide association management
 **      for DICOM applications.  It maintains structures which describe
 **      active associations and provides access to association specific
-**      informtion.  Also provided are routines for aiding association
+**      information.  Also provided are routines for aiding association
 **      negotiation (presentation contexts, abstract syntaxes, transfer
 **      syntaxes, maximum PDU length, and other extended negotiation).
 **
@@ -122,9 +122,9 @@
 
 enum T_ASC_NetworkRole
 {
-    NET_ACCEPTOR,   /* Provider Only */
-    NET_REQUESTOR,    /* User Only */
-    NET_ACCEPTORREQUESTOR /* User and Provider */
+    NET_ACCEPTOR,           /* Provider Only */
+    NET_REQUESTOR,          /* User Only */
+    NET_ACCEPTORREQUESTOR   /* User and Provider */
 };
 
 struct DCMTK_DCMNET_EXPORT T_ASC_Network
@@ -245,7 +245,7 @@ struct DCMTK_DCMNET_EXPORT T_ASC_Association
     DUL_ASSOCIATIONKEY *DULassociation;
     T_ASC_Parameters *params;
 
-    unsigned short nextMsgID;         /* should be incremented by user */
+    unsigned short nextMsgID;     /* should be incremented by user */
     unsigned long sendPDVLength;  /* max length of PDV to send out */
     unsigned char *sendPDVBuffer; /* buffer of size sendPDVLength */
 };
@@ -493,7 +493,7 @@ DCMTK_DCMNET_EXPORT OFCondition ASC_setIdentAC(
     const Uint16& length );
 
 /** Returns a copy of the User Identity Negotiation response value.
- *  CAUTION: The returned buffer (copy of orginal data) must be freed by the
+ *  CAUTION: The returned buffer (copy of original data) must be freed by the
  *  caller!
  *  @param params - [in]  The association parameters to get response from
  *  @param buffer - [out] The buffer to write to. Memory is allocated inside
@@ -636,7 +636,7 @@ DCMTK_DCMNET_EXPORT void
 ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream);
 
 /** Converts given ASC role to string (e.g. for printing)
- *  @param  role The role to vconvert
+ *  @param  role The role to convert
     @return The role as a string
  */
 DCMTK_DCMNET_EXPORT const char*
