@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-03-21 12:52:46
+**   Date: 2016-03-21 13:46:31
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-03-21 12:52:46"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-03-21 13:46:31"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4043
+** Number of entries: 4079
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2941,17 +2941,30 @@
 #define DCM_SelectorSequencePointer              DcmTagKey(0x0072, 0x0052)
 #define DCM_SelectorSequencePointerPrivateCreator DcmTagKey(0x0072, 0x0054)
 #define DCM_SelectorAttributePrivateCreator      DcmTagKey(0x0072, 0x0056)
+#define DCM_SelectorAEValue                      DcmTagKey(0x0072, 0x005e)
+#define DCM_SelectorASValue                      DcmTagKey(0x0072, 0x005f)
 #define DCM_SelectorATValue                      DcmTagKey(0x0072, 0x0060)
+#define DCM_SelectorDAValue                      DcmTagKey(0x0072, 0x0061)
 #define DCM_SelectorCSValue                      DcmTagKey(0x0072, 0x0062)
+#define DCM_SelectorDTValue                      DcmTagKey(0x0072, 0x0063)
 #define DCM_SelectorISValue                      DcmTagKey(0x0072, 0x0064)
+#define DCM_SelectorOBValue                      DcmTagKey(0x0072, 0x0065)
 #define DCM_SelectorLOValue                      DcmTagKey(0x0072, 0x0066)
+#define DCM_SelectorOFValue                      DcmTagKey(0x0072, 0x0067)
 #define DCM_SelectorLTValue                      DcmTagKey(0x0072, 0x0068)
+#define DCM_SelectorOWValue                      DcmTagKey(0x0072, 0x0069)
 #define DCM_SelectorPNValue                      DcmTagKey(0x0072, 0x006a)
+#define DCM_SelectorTMValue                      DcmTagKey(0x0072, 0x006b)
 #define DCM_SelectorSHValue                      DcmTagKey(0x0072, 0x006c)
+#define DCM_SelectorUNValue                      DcmTagKey(0x0072, 0x006d)
 #define DCM_SelectorSTValue                      DcmTagKey(0x0072, 0x006e)
+#define DCM_SelectorUCValue                      DcmTagKey(0x0072, 0x006f)
 #define DCM_SelectorUTValue                      DcmTagKey(0x0072, 0x0070)
+#define DCM_SelectorURValue                      DcmTagKey(0x0072, 0x0071)
 #define DCM_SelectorDSValue                      DcmTagKey(0x0072, 0x0072)
+#define DCM_SelectorODValue                      DcmTagKey(0x0072, 0x0073)
 #define DCM_SelectorFDValue                      DcmTagKey(0x0072, 0x0074)
+#define DCM_SelectorOLValue                      DcmTagKey(0x0072, 0x0075)
 #define DCM_SelectorFLValue                      DcmTagKey(0x0072, 0x0076)
 #define DCM_SelectorULValue                      DcmTagKey(0x0072, 0x0078)
 #define DCM_SelectorUSValue                      DcmTagKey(0x0072, 0x007a)
@@ -3149,6 +3162,29 @@
 #define DCM_VValueData                           DcmTagKey(0x0080, 0x0011)
 #define DCM_ReferencedTextureSequence            DcmTagKey(0x0080, 0x0012)
 #define DCM_ReferencedSurfaceDataSequence        DcmTagKey(0x0080, 0x0013)
+#define DCM_AssessmentSummary                    DcmTagKey(0x0082, 0x0001)
+#define DCM_AssessmentSummaryDescription         DcmTagKey(0x0082, 0x0003)
+#define DCM_AssessedSOPInstanceSequence          DcmTagKey(0x0082, 0x0004)
+#define DCM_ReferencedComparisonSOPInstanceSequence DcmTagKey(0x0082, 0x0005)
+#define DCM_NumberOfAssessmentObservations       DcmTagKey(0x0082, 0x0006)
+#define DCM_AssessmentObservationsSequence       DcmTagKey(0x0082, 0x0007)
+#define DCM_ObservationSignificance              DcmTagKey(0x0082, 0x0008)
+#define DCM_ObservationDescription               DcmTagKey(0x0082, 0x000a)
+#define DCM_StructuredContraintObservationSequence DcmTagKey(0x0082, 0x000c)
+#define DCM_AssessedAttributeValueSequence       DcmTagKey(0x0082, 0x0010)
+#define DCM_AssessmentSetID                      DcmTagKey(0x0082, 0x0016)
+#define DCM_AssessmentRequesterSequence          DcmTagKey(0x0082, 0x0017)
+#define DCM_SelectorAttributeName                DcmTagKey(0x0082, 0x0018)
+#define DCM_SelectorAttributeKeyword             DcmTagKey(0x0082, 0x0019)
+#define DCM_AssessmentTypeCodeSequence           DcmTagKey(0x0082, 0x0021)
+#define DCM_ObservationBasisCodeSequence         DcmTagKey(0x0082, 0x0022)
+#define DCM_AssessmentLabel                      DcmTagKey(0x0082, 0x0023)
+#define DCM_ConstraintType                       DcmTagKey(0x0082, 0x0032)
+#define DCM_SpecificationSelectionGuidance       DcmTagKey(0x0082, 0x0033)
+#define DCM_ConstraintValueSequence              DcmTagKey(0x0082, 0x0034)
+#define DCM_RecommendedDefaultValueSequence      DcmTagKey(0x0082, 0x0035)
+#define DCM_ConstraintViolationSignificance      DcmTagKey(0x0082, 0x0036)
+#define DCM_ConstraintViolationCondition         DcmTagKey(0x0082, 0x0037)
 #define DCM_StorageMediaFileSetID                DcmTagKey(0x0088, 0x0130)
 #define DCM_StorageMediaFileSetUID               DcmTagKey(0x0088, 0x0140)
 #define DCM_IconImageSequence                    DcmTagKey(0x0088, 0x0200)

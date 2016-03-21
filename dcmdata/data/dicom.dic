@@ -27,6 +27,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
+# - Supplement 185
 # - CP 1492, 1525, 1531
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
@@ -4153,6 +4154,47 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 185 (Content Assessment Results IOD)
+#
+(0082,0001)	CS	AssessmentSummary	1	Supplement_185
+(0082,0003)	UT	AssessmentSummaryDescription	1	Supplement_185
+(0082,0004)	SQ	AssessedSOPInstanceSequence	1	Supplement_185
+(0082,0005)	SQ	ReferencedComparisonSOPInstanceSequence	1	Supplement_185
+(0082,0006)	UL	NumberOfAssessmentObservations	1	Supplement_185
+(0082,0007)	SQ	AssessmentObservationsSequence	1	Supplement_185
+(0082,0008)	CS	ObservationSignificance	1	Supplement_185
+(0082,000A)	UT	ObservationDescription	1	Supplement_185
+(0082,000C)	SQ	StructuredContraintObservationSequence	1	Supplement_185
+(0082,0010)	SQ	AssessedAttributeValueSequence	1	Supplement_185
+(0082,0016)	LO	AssessmentSetID	1	Supplement_185
+(0082,0017)	SQ	AssessmentRequesterSequence	1	Supplement_185
+(0082,0018)	LO	SelectorAttributeName	1	Supplement_185
+(0082,0019)	LO	SelectorAttributeKeyword	1	Supplement_185
+(0082,0021)	SQ	AssessmentTypeCodeSequence	1	Supplement_185
+(0082,0022)	SQ	ObservationBasisCodeSequence	1	Supplement_185
+(0082,0023)	LO	AssessmentLabel	1	Supplement_185
+(0082,0032)	CS	ConstraintType	1	Supplement_185
+(0082,0033)	UT	SpecificationSelectionGuidance	1	Supplement_185
+(0082,0034)	SQ	ConstraintValueSequence	1	Supplement_185
+(0082,0035)	SQ	RecommendedDefaultValueSequence	1	Supplement_185
+(0082,0036)	CS	ConstraintViolationSignificance	1	Supplement_185
+(0082,0037)	UT	ConstraintViolationCondition	1	Supplement_185
+(0072,005E)	AE	SelectorAEValue	1-n	Supplement_185
+(0072,005F)	AS	SelectorASValue	1-n	Supplement_185
+(0072,0061)	DA	SelectorDAValue	1-n	Supplement_185
+(0072,0063)	DT	SelectorDTValue	1-n	Supplement_185
+(0072,0065)	OB	SelectorOBValue	1	Supplement_185
+(0072,0067)	OF	SelectorOFValue	1	Supplement_185
+(0072,0069)	OW	SelectorOWValue	1	Supplement_185
+(0072,006B)	TM	SelectorTMValue	1-n	Supplement_185
+(0072,006D)	UN	SelectorUNValue	1	Supplement_185
+(0072,006F)	UC	SelectorUCValue	1-n	Supplement_185
+(0072,0071)	UR	SelectorURValue	1	Supplement_185
+(0072,0073)	OD	SelectorODValue	1	Supplement_185
+(0072,0075)	OL	SelectorOLValue	1	Supplement_185
 #
 #---------------------------------------------------------------------------
 #
