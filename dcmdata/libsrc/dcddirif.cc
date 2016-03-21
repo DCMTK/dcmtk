@@ -2053,7 +2053,7 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
         if (!checkExistsWithMinMaxValue(dataset, DCM_Columns, 1, 1024, filename, ResolutionCheck))
             result = EC_ApplicationProfileViolated;
         if (!checkExistsWithValue(dataset, DCM_BitsStored, filename))
-            result = EC_InvalidTag;
+            result = EC_MissingAttribute;
         else
         {
             long bs;
@@ -2125,7 +2125,7 @@ OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
     else if (!checkExistsWithValue(dataset, DCM_BitsAllocated, filename) ||
              !checkExistsWithValue(dataset, DCM_BitsStored, filename))
     {
-        result = EC_InvalidTag;
+        result = EC_MissingAttribute;
     } else {
         long bs;
         dataset->findAndGetLongInt(DCM_BitsStored, bs);
@@ -2160,7 +2160,7 @@ OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
     if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
         !checkExistsWithValue(dataset, DCM_Columns, filename))
     {
-        result = EC_InvalidTag;
+        result = EC_MissingAttribute;
     }
     /* requirements depend on SOP class */
     if (compare(sopClass, UID_CTImageStorage))
@@ -2181,7 +2181,7 @@ OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
         if (!checkExistsWithValue(dataset, DCM_BitsStored, filename) ||
             !checkExistsWithValue(dataset, DCM_HighBit, filename))
         {
-            result = EC_InvalidTag;
+            result = EC_MissingAttribute;
         } else {
             long bs;
             dataset->findAndGetLongInt(DCM_BitsStored, bs);
@@ -2218,7 +2218,7 @@ OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
                     !checkExistsWithValue(dataset, DCM_BitsStored, filename) ||
                     !checkExistsWithValue(dataset, DCM_HighBit, filename))
                 {
-                    result = EC_InvalidTag;
+                    result = EC_MissingAttribute;
                 } else {
                     long ba;
                     dataset->findAndGetLongInt(DCM_BitsAllocated, ba);
@@ -2277,7 +2277,7 @@ OFCondition DicomDirInterface::checkUltrasoundAttributes(DcmItem *dataset,
     OFCondition result = EC_Normal;
     /* a US image */
     if (!checkExistsWithValue(dataset, DCM_PhotometricInterpretation, filename))
-        result = EC_InvalidTag;
+        result = EC_MissingAttribute;
     else
     {
         OFString pi;
@@ -2402,59 +2402,59 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         {
             /* check whether all type 1 elements are really present */
             if (!checkExistsWithValue(dataset, DCM_HangingProtocolName, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_HangingProtocolDescription, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_HangingProtocolLevel, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_HangingProtocolCreator, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_HangingProtocolCreationDateTime, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_HangingProtocolDefinitionSequence, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_NumberOfPriorsReferenced, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
         }
         else if (recordType == ERT_Palette)
         {
             /* check whether all type 1 elements are really present */
             if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
         }
         else if (recordType == ERT_Implant)
         {
             /* check whether all type 1 elements are really present */
             if (!checkExistsWithValue(dataset, DCM_Manufacturer, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_ImplantName, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_ImplantPartNumber, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
         }
         else if (recordType == ERT_ImplantGroup)
         {
             /* check whether all type 1 elements are really present */
             if (!checkExistsWithValue(dataset, DCM_ImplantAssemblyTemplateName, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_ImplantAssemblyTemplateIssuer, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_ProcedureTypeCodeSequence, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
         }
         else if (recordType == ERT_ImplantAssy)
         {
             /* check whether all type 1 elements are really present */
             if (!checkExistsWithValue(dataset, DCM_ImplantTemplateGroupName, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             if (!checkExistsWithValue(dataset, DCM_ImplantTemplateGroupIssuer, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
         } else {
             /* PatientID is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
             {
                 if (!checkExistsWithValue(dataset, DCM_PatientID, filename))
-                    result = EC_InvalidTag;
+                    result = EC_MissingAttribute;
             }
             /* PatientName is type 2 in DICOMDIR and images */
             if (!checkExists(dataset, DCM_PatientName, filename))
@@ -2463,40 +2463,40 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
             if (!InventMode)
             {
                 if (!checkExistsWithValue(dataset, DCM_StudyDate, filename))
-                    result = EC_InvalidTag;
+                    result = EC_MissingAttribute;
             }
             /* StudyTime is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
             {
                 if (!checkExistsWithValue(dataset, DCM_StudyTime, filename))
-                    result = EC_InvalidTag;
+                    result = EC_MissingAttribute;
             }
             /* StudyDescription is type 2 in DICOMDIR and type 3 in images.
                We can create an empty attribute in the directory
              */
             /* StudyInstanceUID is type 1 in DICOMDIR and images */
             if (!checkExistsWithValue(dataset, DCM_StudyInstanceUID, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             /* StudyID is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
             {
                 if (!checkExistsWithValue(dataset, DCM_StudyID, filename))
-                    result = EC_InvalidTag;
+                    result = EC_MissingAttribute;
             }
             /* AccessionNumber is type 2 in DICOMDIR and type 3 in images
                We can create an empty attribute in the directory
             */
             /* Modality is type 1 in DICOMDIR and type 1 in images */
             if (!checkExistsWithValue(dataset, DCM_Modality, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             /* SeriesInstanceUID is type 1 in DICOMDIR and type 1 in images */
             if (!checkExistsWithValue(dataset, DCM_SeriesInstanceUID, filename))
-                result = EC_InvalidTag;
+                result = EC_MissingAttribute;
             /* SeriesNumber is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
             {
                 if (!checkExistsWithValue(dataset, DCM_SeriesNumber, filename))
-                    result = EC_InvalidTag;
+                    result = EC_MissingAttribute;
             }
             /* image and other numbers are type 1 in DICOMDIR but type 2 in images */
             /* (basically, check whether all type 1 elements are really present) */
@@ -2506,43 +2506,43 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_RETIRED_OverlayNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     break;
                 case ERT_ModalityLut:
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_RETIRED_LUTNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     break;
                 case ERT_VoiLut:
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_RETIRED_LUTNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     break;
                 case ERT_Curve:
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_RETIRED_CurveNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     break;
                 case ERT_SRDocument:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_CompletionFlag, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_VerificationFlag, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     {
                         OFString tmpString;
                         if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
@@ -2554,7 +2554,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                             if (l_status.good())
                             {
                                 if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
-                                    result = EC_InvalidTag;
+                                    result = EC_MissingAttribute;
                             } else
                                 result = l_status;
                         }
@@ -2562,98 +2562,98 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     break;
                 case ERT_Presentation:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_PresentationCreationDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_PresentationCreationTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_Waveform:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_RTDose:
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     if (!checkExistsWithValue(dataset, DCM_DoseSummationType, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_RTStructureSet:
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     if (!checkExistsWithValue(dataset, DCM_StructureSetLabel, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_RTPlan:
                     if (!InventMode)
                     {
                         if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                            result = EC_InvalidTag;
+                            result = EC_MissingAttribute;
                     }
                     if (!checkExistsWithValue(dataset, DCM_RTPlanLabel, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_RTTreatRecord:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_StoredPrint:
                     /* (nothing to do) */
                     break;
                 case ERT_KeyObjectDoc:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_RawData:
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     /* InstanceNumber is type 2 in IOD and directory record! */
                     break;
                 case ERT_Spectroscopy:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ImageType, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_NumberOfFrames, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_Rows, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_Columns, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_DataPointRows, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_DataPointColumns, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_EncapDoc:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_MIMETypeOfEncapsulatedDocument, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_Stereometric:
                 case ERT_Plan:
@@ -2666,25 +2666,25 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 case ERT_Measurement:
                 case ERT_Tract:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_SurfaceScan:
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_Assessment:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_InstanceCreationDate, filename))
-                        result = EC_InvalidTag;
+                        result = EC_MissingAttribute;
                     break;
                 case ERT_Image:
                 default:
@@ -2694,7 +2694,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         if (!InventMode)
                         {
                             if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                                result = EC_InvalidTag;
+                                result = EC_MissingAttribute;
                         }
                         /* check profile specific requirements */
                         if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
@@ -2716,7 +2716,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                             if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
                                 !checkExistsWithValue(dataset, DCM_Columns, filename))
                             {
-                                result = EC_InvalidTag;
+                                result = EC_MissingAttribute;
                             }
                         }
                         else if (ApplicationProfile == AP_BasicCardiac)
