@@ -625,6 +625,9 @@ OFString DicomDirInterface::recordTypeToName(const E_DirRecType recordType)
         case ERT_Tract:
             recordName = "Tract";
             break;
+        case ERT_Assessment:
+            recordName = "Assessment";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -766,6 +769,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     }
     else if (compare(sopClass, UID_TractographyResultsStorage))
         result = ERT_Tract;
+    else if (compare(sopClass, UID_ContentAssessmentResultsStorage))
+        result = ERT_Assessment;
     return result;
 }
 
@@ -953,6 +958,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_Measurement:
             case ERT_SurfaceScan:
             case ERT_Tract:
+            case ERT_Assessment:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1642,7 +1648,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_HangingProtocolStorage) ||
                                 compare(mediaSOPClassUID, UID_StereometricRelationshipStorage) ||
                                 compare(mediaSOPClassUID, UID_ColorPaletteStorage) ||
-                                compare(mediaSOPClassUID, UID_TractographyResultsStorage);
+                                compare(mediaSOPClassUID, UID_TractographyResultsStorage) ||
+                                compare(mediaSOPClassUID, UID_ContentAssessmentResultsStorage);
                     }
                     /* the following SOP classes have been retired with previous editions of the DICOM standard */
                     if (!found && RetiredSOPClassSupport)
@@ -2673,6 +2680,12 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
                         result = EC_InvalidTag;
                     break;
+                case ERT_Assessment:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_InstanceCreationDate, filename))
+                        result = EC_InvalidTag;
+                    break;
                 case ERT_Image:
                 default:
                     {
@@ -2925,6 +2938,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Plan:
             case ERT_SurfaceScan:
             case ERT_Tract:
+            case ERT_Assessment:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -4116,6 +4130,37 @@ DcmDirectoryRecord *DicomDirInterface::buildTractRecord(DcmDirectoryRecord *reco
 }
 
 
+// create or update assessment record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildAssessmentRecord(DcmDirectoryRecord *record,
+                                                             DcmFileFormat *fileformat,
+                                                             const OFString &referencedFileID,
+                                                             const OFFilename &sourceFilename)
+{
+    /* create new surface record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Assessment, referencedFileID.c_str(), sourceFilename, fileformat);
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            /* copy attribute values from dataset to surface record */
+            copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
+            copyElementType1(dataset, DCM_InstanceCreationDate, record, sourceFilename);
+            copyElementType2(dataset, DCM_InstanceCreationTime, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Assessment, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Assessment, "create");
+    return record;
+}
+
+
 // create or update image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
                                                         DcmFileFormat *fileformat,
@@ -4546,6 +4591,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Tract:
                     record = buildTractRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
+                case ERT_Assessment:
+                    record = buildAssessmentRecord(record, fileformat, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(record, fileformat, referencedFileID, sourceFilename);
@@ -4728,6 +4776,7 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_Plan:
                 case ERT_SurfaceScan:
                 case ERT_Tract:
+                case ERT_Assessment:
                     /* nothing to do */
                     break;
                 default:

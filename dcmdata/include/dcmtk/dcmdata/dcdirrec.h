@@ -124,7 +124,9 @@ typedef enum {
     /// surface scan
     ERT_SurfaceScan = 45,
     /// tractography
-    ERT_Tract = 46
+    ERT_Tract = 46,
+    /// assessment
+    ERT_Assessment = 47
 } E_DirRecType;
 
 
