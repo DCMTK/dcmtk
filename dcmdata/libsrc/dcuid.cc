@@ -156,6 +156,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_Comprehensive3DSRStorage,                            "Comprehensive3DSRStorage" },
     { UID_ComprehensiveSRStorage,                              "ComprehensiveSRStorage" },
     { UID_ComputedRadiographyImageStorage,                     "ComputedRadiographyImageStorage" },
+    { UID_ContentAssessmentResultsStorage,                     "ContentAssessmentResultsStorage" },
     { UID_CornealTopographyMapStorage,                         "CornealTopographyMapStorage" },
     { UID_CTImageStorage,                                      "CTImageStorage" },
     { UID_DeformableSpatialRegistrationStorage,                "DeformableSpatialRegistrationStorage" },
@@ -558,6 +559,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_Comprehensive3DSRStorage,
     UID_ComprehensiveSRStorage,
     UID_ComputedRadiographyImageStorage,
+    UID_ContentAssessmentResultsStorage,
     UID_CornealTopographyMapStorage,
     UID_CTImageStorage,
     UID_DeformableSpatialRegistrationStorage,
@@ -818,7 +820,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_AcquisitionContextSRStorage,
 //  UID_BreastProjectionXRayImageStorageForPresentation,
 //  UID_BreastProjectionXRayImageStorageForProcessing,
-//  UID_CompositingPlanarMPRVolumetricPresentationStateStorage
+//  UID_CompositingPlanarMPRVolumetricPresentationStateStorage,
+//  UID_ContentAssessmentResultsStorage,
 //  UID_CornealTopographyMapStorage,
 //  UID_ExtensibleSRStorage,
 //  UID_GrayscalePlanarMPRVolumetricPresentationStateStorage
@@ -1080,6 +1083,7 @@ static const DcmModalityTable modalities[] = {
     { UID_Comprehensive3DSRStorage,                                "SR3", 4096 },
     { UID_ComprehensiveSRStorage,                                  "SRc", 4096 },
     { UID_ComputedRadiographyImageStorage,                         "CR",  2048 * 2048 * 2 },
+    { UID_ContentAssessmentResultsStorage,                         "AS",  4096 },
     { UID_CornealTopographyMapStorage,                             "CM",  512 * 512 },
     { UID_CTImageStorage,                                          "CT",  512 * 512 * 2 },
     { UID_DeformableSpatialRegistrationStorage,                    "RGd", 4096 },
