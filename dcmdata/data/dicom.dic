@@ -23,10 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2016a and PS 3.7-2016a
 # File created on 2016-02-20 11:44:45 by J. Riesmeier on thinkpad.
+# File updated manually on 2016-03-21 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - CP 1492, 1525, 1531
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4152,6 +4153,22 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1492, 1525, 1531
+#
+(0010,0033)	LO	PatientBirthDateInAlternativeCalendar	1	CP_1492
+(0010,0034)	LO	PatientDeathDateInAlternativeCalendar	1	CP_1492
+(0010,0035)	CS	PatientAlternativeCalendar	1	CP_1492
+(0018,1271)	FD	WaterEquivalentDiameter	1	CP_1525
+(0018,1272)	SQ	WaterEquivalentDiameterCalculationMethodCodeSequence	1	CP_1525
+(300A,0150)	CS	FixationEye	1	CP_1531
+(300A,0151)	DS	ChairHeadFramePosition	1	CP_1531
+(300A,0152)	DS	HeadFixationAngleTolerance	1	CP_1531
+(300A,0153)	DS	ChairHeadFramePositionTolerance	1	CP_1531
+(300A,0154)	DS	FixationLightAzimuthalAngleTolerance	1	CP_1531
+(300A,0155)	DS	FixationLightPolarAngleTolerance	1	CP_1531
 #
 #---------------------------------------------------------------------------
 #

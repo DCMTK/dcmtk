@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-02-20 11:48:18
+**   Date: 2016-03-21 12:52:46
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-02-20 11:48:18"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-03-21 12:52:46"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4032
+** Number of entries: 4043
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -306,6 +306,9 @@
 #define DCM_SubjectRelativePositionInImage       DcmTagKey(0x0010, 0x0028)
 #define DCM_PatientBirthDate                     DcmTagKey(0x0010, 0x0030)
 #define DCM_PatientBirthTime                     DcmTagKey(0x0010, 0x0032)
+#define DCM_PatientBirthDateInAlternativeCalendar DcmTagKey(0x0010, 0x0033)
+#define DCM_PatientDeathDateInAlternativeCalendar DcmTagKey(0x0010, 0x0034)
+#define DCM_PatientAlternativeCalendar           DcmTagKey(0x0010, 0x0035)
 #define DCM_PatientSex                           DcmTagKey(0x0010, 0x0040)
 #define DCM_PatientInsurancePlanCodeSequence     DcmTagKey(0x0010, 0x0050)
 #define DCM_PatientPrimaryLanguageCodeSequence   DcmTagKey(0x0010, 0x0101)
@@ -752,6 +755,8 @@
 #define DCM_TransmitCoilName                     DcmTagKey(0x0018, 0x1251)
 #define DCM_PlateType                            DcmTagKey(0x0018, 0x1260)
 #define DCM_PhosphorType                         DcmTagKey(0x0018, 0x1261)
+#define DCM_WaterEquivalentDiameter              DcmTagKey(0x0018, 0x1271)
+#define DCM_WaterEquivalentDiameterCalculationMethodCodeSequence DcmTagKey(0x0018, 0x1272)
 #define DCM_ScanVelocity                         DcmTagKey(0x0018, 0x1300)
 #define DCM_WholeBodyTechnique                   DcmTagKey(0x0018, 0x1301)
 #define DCM_ScanLength                           DcmTagKey(0x0018, 0x1302)
@@ -3679,6 +3684,12 @@
 #define DCM_GantryPitchAngle                     DcmTagKey(0x300a, 0x014a)
 #define DCM_GantryPitchRotationDirection         DcmTagKey(0x300a, 0x014c)
 #define DCM_GantryPitchAngleTolerance            DcmTagKey(0x300a, 0x014e)
+#define DCM_FixationEye                          DcmTagKey(0x300a, 0x0150)
+#define DCM_ChairHeadFramePosition               DcmTagKey(0x300a, 0x0151)
+#define DCM_HeadFixationAngleTolerance           DcmTagKey(0x300a, 0x0152)
+#define DCM_ChairHeadFramePositionTolerance      DcmTagKey(0x300a, 0x0153)
+#define DCM_FixationLightAzimuthalAngleTolerance DcmTagKey(0x300a, 0x0154)
+#define DCM_FixationLightPolarAngleTolerance     DcmTagKey(0x300a, 0x0155)
 #define DCM_PatientSetupSequence                 DcmTagKey(0x300a, 0x0180)
 #define DCM_PatientSetupNumber                   DcmTagKey(0x300a, 0x0182)
 #define DCM_PatientSetupLabel                    DcmTagKey(0x300a, 0x0183)

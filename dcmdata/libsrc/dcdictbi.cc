@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-02-20 11:48:24
+**   Date: 2016-03-21 12:52:47
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -1992,6 +1992,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0010, 0x0032, 0x0010, 0x0032,
       EVR_TM, "PatientBirthTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0033, 0x0010, 0x0033,
+      EVR_LO, "PatientBirthDateInAlternativeCalendar", 1, 1, "CP_1492",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0034, 0x0010, 0x0034,
+      EVR_LO, "PatientDeathDateInAlternativeCalendar", 1, 1, "CP_1492",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x0035, 0x0010, 0x0035,
+      EVR_CS, "PatientAlternativeCalendar", 1, 1, "CP_1492",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0040, 0x0010, 0x0040,
@@ -4358,6 +4370,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x1261, 0x0018, 0x1261,
       EVR_LO, "PhosphorType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x1271, 0x0018, 0x1271,
+      EVR_FD, "WaterEquivalentDiameter", 1, 1, "CP_1525",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x1272, 0x0018, 0x1272,
+      EVR_SQ, "WaterEquivalentDiameterCalculationMethodCodeSequence", 1, 1, "CP_1525",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x1300, 0x0018, 0x1300,
@@ -25706,6 +25726,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x014e, 0x300a, 0x014e,
       EVR_FL, "GantryPitchAngleTolerance", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0150, 0x300a, 0x0150,
+      EVR_CS, "FixationEye", 1, 1, "CP_1531",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0151, 0x300a, 0x0151,
+      EVR_DS, "ChairHeadFramePosition", 1, 1, "CP_1531",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0152, 0x300a, 0x0152,
+      EVR_DS, "HeadFixationAngleTolerance", 1, 1, "CP_1531",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0153, 0x300a, 0x0153,
+      EVR_DS, "ChairHeadFramePositionTolerance", 1, 1, "CP_1531",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0154, 0x300a, 0x0154,
+      EVR_DS, "FixationLightAzimuthalAngleTolerance", 1, 1, "CP_1531",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0155, 0x300a, 0x0155,
+      EVR_DS, "FixationLightPolarAngleTolerance", 1, 1, "CP_1531",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0180, 0x300a, 0x0180,
