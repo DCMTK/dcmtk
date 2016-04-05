@@ -200,7 +200,7 @@ Time::localtime(tm* t) const
 }
 
 
-namespace 
+namespace
 {
 
 
@@ -234,7 +234,7 @@ build_q_value (log4cplus::tstring & q_str, long tv_usec)
 
 
 static
-void 
+void
 build_uc_q_value (log4cplus::tstring & uc_q_str, long tv_usec,
     log4cplus::tstring & tmp)
 {
@@ -257,19 +257,19 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     if (fmt_orig.empty () || fmt_orig[0] == 0)
         return log4cplus::tstring ();
 
-    tm time;
-    
+    tm time = {};
+
     if (use_gmtime)
         gmtime(&time);
-    else 
+    else
         localtime(&time);
-    
+
     enum State
     {
         TEXT,
         PERCENT_SIGN
     };
-    
+
     internal::gft_scratch_pad & gft_sp = internal::get_gft_scratch_pad ();
     gft_sp.reset ();
 
@@ -278,7 +278,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     State state = TEXT;
 
     // Walk the format string and process all occurences of %q and %Q.
-    
+
     for (log4cplus::tstring::const_iterator fmt_it = gft_sp.fmt.begin ();
          fmt_it != gft_sp.fmt.end (); ++fmt_it)
     {
@@ -292,7 +292,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
                 gft_sp.ret.append(1, *fmt_it);
         }
         break;
-            
+
         case PERCENT_SIGN:
         {
             switch (*fmt_it)
@@ -308,7 +308,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
                 state = TEXT;
             }
             break;
-            
+
             case DCMTK_LOG4CPLUS_TEXT ('Q'):
             {
                 if (! gft_sp.uc_q_str_valid)
@@ -356,7 +356,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     // Limit how far can the buffer grow. This is necessary so that we
     // catch bad format string. Some implementations of strftime() signal
     // both too small buffer and invalid format string by returning 0
-    // without changing errno. 
+    // without changing errno.
     size_t const buffer_size_max
         = MAX(OFstatic_cast(size_t, 1024), buffer_size * 16);
 
@@ -382,7 +382,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
                     + convertIntegerToString (eno), true);
             }
         }
-    } 
+    }
     while (len == 0);
 
     return tstring (&*gft_sp.buffer.begin (), len);
@@ -424,7 +424,7 @@ Time::operator/=(long rhs)
 {
     long rem_secs = OFstatic_cast(long, tv_sec % rhs);
     tv_sec /= rhs;
-    
+
     tv_usec /= rhs;
     tv_usec += OFstatic_cast(long, (rem_secs * ONE_SEC_IN_USEC) / rhs);
 
@@ -483,7 +483,7 @@ bool
 operator<(const Time& lhs, const Time& rhs)
 {
     return (   (lhs.sec() < rhs.sec())
-            || (   (lhs.sec() == rhs.sec()) 
+            || (   (lhs.sec() == rhs.sec())
                 && (lhs.usec() < rhs.usec())) );
 }
 
@@ -499,7 +499,7 @@ bool
 operator>(const Time& lhs, const Time& rhs)
 {
     return (   (lhs.sec() > rhs.sec())
-            || (   (lhs.sec() == rhs.sec()) 
+            || (   (lhs.sec() == rhs.sec())
                 && (lhs.usec() > rhs.usec())) );
 }
 
