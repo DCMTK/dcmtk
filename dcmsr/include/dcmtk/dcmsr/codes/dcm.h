@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 11:44:24 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:07:54 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3358
+// total number of codes: 3379
 // - retired: 143
 // - no name: 27
 // - not unique: 14
@@ -157,7 +157,7 @@
 #define CODE_DCM_RadioFrequencyAblation_power                              DSRBasicCodedEntry("109010", "DCM", "Radio frequency ablation, power")
 #define CODE_DCM_VoltageMeasurementByBasketCatheter                        DSRBasicCodedEntry("109011", "DCM", "Voltage measurement by basket catheter")
 #define CODE_DCM_VoltageMeasurementByMappingCatheter                       DSRBasicCodedEntry("109012", "DCM", "Voltage measurement by mapping catheter")
-#define CODE_DCM_VoltageMeasurement_NOS                                    DSRBasicCodedEntry("109013", "DCM", "Voltage measurement, NOS")
+#define CODE_DCM_VoltageMeasurement                                        DSRBasicCodedEntry("109013", "DCM", "Voltage measurement")
 #define CODE_DCM_35PercentOfThermalCO                                      DSRBasicCodedEntry("109014", "DCM", "35% of thermal CO")
 #define CODE_DCM_70PercentOfThermalCO                                      DSRBasicCodedEntry("109015", "DCM", "70% of thermal CO")
 #define CODE_DCM_AWavePeakPressure                                         DSRBasicCodedEntry("109016", "DCM", "A wave peak pressure")
@@ -502,6 +502,7 @@
 #define CODE_DCM_ResourceInadequate                                        DSRBasicCodedEntry("110527", "DCM", "Resource inadequate")
 #define CODE_DCM_DiscontinuedProcedureStepRescheduled                      DSRBasicCodedEntry("110528", "DCM", "Discontinued Procedure Step rescheduled")
 #define CODE_DCM_DiscontinuedProcedureStepReschedulingRecommended          DSRBasicCodedEntry("110529", "DCM", "Discontinued Procedure Step rescheduling recommended")
+#define CODE_DCM_WorkitemAssignmentRejectedByAssignedResource              DSRBasicCodedEntry("110530", "DCM", "Workitem assignment rejected by assigned resource")
 #define CODE_DCM_VentralDiencephalon                                       DSRBasicCodedEntry("110700", "DCM", "Ventral Diencephalon")
 #define CODE_DCM_WhiteMatterT1Hypointensity                                DSRBasicCodedEntry("110701", "DCM", "White Matter T1 Hypointensity")
 #define CODE_DCM_WhiteMatterT2Hyperintensity                               DSRBasicCodedEntry("110702", "DCM", "White Matter T2 Hyperintensity")
@@ -2066,6 +2067,14 @@
 #define CODE_DCM_FilteredBackProjection                                    DSRBasicCodedEntry("113962", "DCM", "Filtered Back Projection")
 #define CODE_DCM_IterativeReconstruction                                   DSRBasicCodedEntry("113963", "DCM", "Iterative Reconstruction")
 #define CODE_DCM_ProcedureStepToThisPoint                                  DSRBasicCodedEntry("113970", "DCM", "Procedure Step To This Point")
+#define CODE_DCM_WaterEquivalentDiameter                                   DSRBasicCodedEntry("113980", "DCM", "Water Equivalent Diameter")
+#define CODE_DCM_WaterEquivalentDiameterRepresentativeValue                DSRBasicCodedEntry("113981", "DCM", "Water Equivalent Diameter Representative Value")
+#define CODE_DCM_WaterEquivalentDiameterIntegratedAcrossScanRange          DSRBasicCodedEntry("113982", "DCM", "Water Equivalent Diameter Integrated Across Scan Range")
+#define CODE_DCM_WaterEquivalentDiameterFromRawData                        DSRBasicCodedEntry("113983", "DCM", "Water Equivalent Diameter From Raw Data")
+#define CODE_DCM_WaterEquivalentDiameterFromLocalizer                      DSRBasicCodedEntry("113984", "DCM", "Water Equivalent Diameter From Localizer")
+#define CODE_DCM_SeriesOrInstanceUsedForWaterEquivalentDiameterEstimation  DSRBasicCodedEntry("113985", "DCM", "Series or Instance used for Water Equivalent Diameter estimation")
+#define CODE_DCM_ZValueOfLocationOfWaterEquivalentDiameterEstimation       DSRBasicCodedEntry("113986", "DCM", "Z value of location of Water Equivalent Diameter estimation")
+#define CODE_DCM_AAPM220                                                   DSRBasicCodedEntry("113987", "DCM", "AAPM 220")
 #define CODE_DCM_NotANumber                                                DSRBasicCodedEntry("114000", "DCM", "Not a number")
 #define CODE_DCM_NegativeInfinity                                          DSRBasicCodedEntry("114001", "DCM", "Negative Infinity")
 #define CODE_DCM_PositiveInfinity                                          DSRBasicCodedEntry("114002", "DCM", "Positive Infinity")
@@ -2299,6 +2308,7 @@
 #define CODE_DCM_SimultaneousRespiratoryWaveform                           DSRBasicCodedEntry("121305", "DCM", "Simultaneous Respiratory Waveform")
 #define CODE_DCM_SimultaneousArterialPulseWaveform                         DSRBasicCodedEntry("121306", "DCM", "Simultaneous Arterial Pulse Waveform")
 #define CODE_DCM_SimultaneousPhonocardiographicWaveform                    DSRBasicCodedEntry("121307", "DCM", "Simultaneous Phonocardiographic Waveform")
+#define CODE_DCM_RTTreatmentPlanForThePositionBeingVerified                DSRBasicCodedEntry("121310", "DCM", "RT treatment plan for the position being verified")
 #define CODE_DCM_Localizer                                                 DSRBasicCodedEntry("121311", "DCM", "Localizer")
 #define CODE_DCM_BiopsyLocalizer                                           DSRBasicCodedEntry("121312", "DCM", "Biopsy localizer")
 #define CODE_DCM_OtherPartialViews                                         DSRBasicCodedEntry("121313", "DCM", "Other partial views")
@@ -2345,6 +2355,10 @@
 #define CODE_DCM_ComposedFromPriorDoses                                    DSRBasicCodedEntry("121370", "DCM", "Composed from prior doses")
 #define CODE_DCM_ComposedFromPriorDosesAndCurrentPlan                      DSRBasicCodedEntry("121371", "DCM", "Composed from prior doses and current plan")
 #define CODE_DCM_SourceDoseForComposingCurrentDose                         DSRBasicCodedEntry("121372", "DCM", "Source dose for composing current dose")
+#define CODE_DCM_RTPreTreatmentDoseCheck                                   DSRBasicCodedEntry("121373", "DCM", "RT Pre-Treatment Dose Check")
+#define CODE_DCM_RTPreTreatmentConsistencyCheck                            DSRBasicCodedEntry("121374", "DCM", "RT Pre-Treatment Consistency Check")
+#define CODE_DCM_AssessmentByComparison                                    DSRBasicCodedEntry("121375", "DCM", "Assessment By Comparison")
+#define CODE_DCM_AssessmentByRules                                         DSRBasicCodedEntry("121376", "DCM", "Assessment By Rules")
 #define CODE_DCM_ActiveIngredientUndilutedConcentration                    DSRBasicCodedEntry("121380", "DCM", "Active Ingredient Undiluted Concentration")
 #define CODE_DCM_ContrastBolusIngredientOpaque                             DSRBasicCodedEntry("121381", "DCM", "Contrast/Bolus Ingredient Opaque")
 #define CODE_DCM_QuantityAdministered                                      DSRBasicCodedEntry("121382", "DCM", "Quantity administered")
@@ -3164,8 +3178,11 @@
 #define CODE_DCM_StandardToftsModel                                        DSRBasicCodedEntry("126340", "DCM", "Standard Tofts Model")
 #define CODE_DCM_ExtendedToftsModel                                        DSRBasicCodedEntry("126341", "DCM", "Extended Tofts Model")
 #define CODE_DCM_ModelFreeConcentrationTimeQuantitification                DSRBasicCodedEntry("126342", "DCM", "Model-free concentration-time quantitification")
-#define CODE_DCM_FirstPassLeakageProfile_FPLP                              DSRBasicCodedEntry("126343", "DCM", "First Pass Leakage Profile (FPLP)")
+#define CODE_DCM_FirstPassLeakageProfile_FPLP_Model                        DSRBasicCodedEntry("126343", "DCM", "First Pass Leakage Profile (FPLP) Model")
 #define CODE_DCM_ShutterSpeedModel_SSM                                     DSRBasicCodedEntry("126344", "DCM", "Shutter-Speed Model (SSM)")
+#define CODE_DCM_GammaCapillaryTransitTime_GCCT_Model                      DSRBasicCodedEntry("126345", "DCM", "Gamma Capillary Transit Time (GCCT) Model")
+#define CODE_DCM_AdiabaticTissueHomogeneity_ATH_Model                      DSRBasicCodedEntry("126346", "DCM", "Adiabatic Tissue Homogeneity (ATH) Model")
+#define CODE_DCM_TwoCompartmentExchange_2CX_Model                          DSRBasicCodedEntry("126347", "DCM", "Two Compartment Exchange (2CX) Model")
 #define CODE_DCM_T1ByMultipleFlipAngles                                    DSRBasicCodedEntry("126350", "DCM", "T1 by Multiple Flip Angles")
 #define CODE_DCM_T1ByInversionRecovery                                     DSRBasicCodedEntry("126351", "DCM", "T1 by Inversion Recovery")
 #define CODE_DCM_T1ByFixedValue                                            DSRBasicCodedEntry("126352", "DCM", "T1 by Fixed Value")
@@ -3194,10 +3211,12 @@
 #define CODE_DCM_SUVlbm                                                    DSRBasicCodedEntry("126402", "DCM", "SUVlbm")
 #define CODE_DCM_SUVbsa                                                    DSRBasicCodedEntry("126403", "DCM", "SUVbsa")
 #define CODE_DCM_SUVibw                                                    DSRBasicCodedEntry("126404", "DCM", "SUVibw")
+#define CODE_DCM_SUVlbmJanma                                               DSRBasicCodedEntry("126405", "DCM", "SUVlbm(Janma)")
 #define CODE_DCM_SUVBodyWeightCalculationMethod                            DSRBasicCodedEntry("126410", "DCM", "SUV body weight calculation method")
 #define CODE_DCM_SUVLeanBodyMassCalculationMethod                          DSRBasicCodedEntry("126411", "DCM", "SUV lean body mass calculation method")
 #define CODE_DCM_SUVBodySurfaceAreaCalculationMethod                       DSRBasicCodedEntry("126412", "DCM", "SUV body surface area calculation method")
 #define CODE_DCM_SUVIdealBodyWeightCalculationMethod                       DSRBasicCodedEntry("126413", "DCM", "SUV ideal body weight calculation method")
+#define CODE_DCM_SUVLeanBodyMassCalculationJanmahasatianMethod             DSRBasicCodedEntry("126414", "DCM", "SUV lean body mass calculation Janmahasatian method")
 #define CODE_DCM_PittsburghCompoundB_C11                                   DSRBasicCodedEntry("126500", "DCM", "Pittsburgh compound B C^11^")
 #define CODE_DCM_Florbetaben_F18                                           DSRBasicCodedEntry("126501", "DCM", "Florbetaben F^18^")
 #define CODE_DCM_T807_F18                                                  DSRBasicCodedEntry("126502", "DCM", "T807 F^18^")
@@ -3403,6 +3422,8 @@
 #define CODE_DCM_MouseAlphaSynucleinPreformedFibrils                       DSRBasicCodedEntry("127852", "DCM", "Mouse alpha synuclein preformed fibrils")
 #define CODE_DCM_HumanTauPreformedFibrils                                  DSRBasicCodedEntry("127853", "DCM", "Human Tau preformed fibrils")
 #define CODE_DCM_MouseTauPreformedFibrils                                  DSRBasicCodedEntry("127854", "DCM", "Mouse Tau preformed fibrils")
+#define CODE_DCM_NonIonicIodinatedContrastAgent                            DSRBasicCodedEntry("127855", "DCM", "Non-ionic iodinated contrast agent")
+#define CODE_DCM_HeartValveFlail                                           DSRBasicCodedEntry("127856", "DCM", "Heart valve flail")
 #define CODE_DCM_SPECTOfWholeBody                                          DSRBasicCodedEntry("127901", "DCM", "SPECT of whole body")
 #define CODE_DCM_SPECTCTOfWholeBody                                        DSRBasicCodedEntry("127902", "DCM", "SPECT CT of whole body")
 

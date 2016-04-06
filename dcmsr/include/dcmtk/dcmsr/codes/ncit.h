@@ -5,8 +5,8 @@
  *
  *  Header file with NCIt Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 11:44:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:08:01 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 12
+// total number of codes: 16
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -49,9 +49,13 @@
 
 #define CODE_NCIt_RANO                                                     DSRBasicCodedEntry("C114879", "NCIt", "RANO")
 #define CODE_NCIt_BronchioloalveolarAdenocarcinoma                         DSRBasicCodedEntry("C2923", "NCIt", "Bronchioloalveolar adenocarcinoma")
+#define CODE_NCIt_ExtraluminalRoute                                        DSRBasicCodedEntry("C38213", "NCIt", "Extraluminal route")
+#define CODE_NCIt_IntraepithelialRoute                                     DSRBasicCodedEntry("C38244", "NCIt", "Intraepithelial route")
+#define CODE_NCIt_TransluminalRoute                                        DSRBasicCodedEntry("C38306", "NCIt", "Transluminal route")
 #define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
 #define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
 #define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
+#define CODE_NCIt_Erect                                                    DSRBasicCodedEntry("C86043", "NCIt", "erect")
 #define CODE_NCIt_BeddingChange                                            DSRBasicCodedEntry("C90365", "NCIt", "Bedding change")
 #define CODE_NCIt_BeddingMaterial                                          DSRBasicCodedEntry("C90366", "NCIt", "Bedding material")
 #define CODE_NCIt_EnvironmentalTemperature                                 DSRBasicCodedEntry("C90380", "NCIt", "Environmental temperature")

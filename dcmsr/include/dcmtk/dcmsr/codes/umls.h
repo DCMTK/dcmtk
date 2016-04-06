@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 11:44:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:08:00 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 38
+// total number of codes: 39
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -53,6 +53,7 @@
 #define CODE_UMLS_Heating                                                  DSRBasicCodedEntry("C0018851", "UMLS", "Heating")
 #define CODE_UMLS_H2Antagonist                                             DSRBasicCodedEntry("C0019593", "UMLS", "H2 antagonist")
 #define CODE_UMLS_EthidiumBromide                                          DSRBasicCodedEntry("C0019873", "UMLS", "Ethidium Bromide")
+#define CODE_UMLS_Mastectomy                                               DSRBasicCodedEntry("C0024881", "UMLS", "Mastectomy")
 #define CODE_UMLS_Metomidate                                               DSRBasicCodedEntry("C0025856", "UMLS", "Metomidate")
 #define CODE_UMLS_NarcoticAnalgesic                                        DSRBasicCodedEntry("C0027409", "UMLS", "Narcotic analgesic")
 #define CODE_UMLS_QualitativeEvaluations                                   DSRBasicCodedEntry("C0034375", "UMLS", "Qualitative Evaluations")
