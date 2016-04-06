@@ -119,10 +119,10 @@ struct dcmtk_config_math
     return ::isinf( d );
 #else
 #ifdef HAVE_WINDOWS_H
-    return (! _finite(x)) && (! _isnan(x));
+    return (! _finite(d)) && (! _isnan(d));
 #else
     // Solaris 2.5.1 has finite() and isnan() but not isinf().
-    return (! finite(x)) && (! isnan(x));
+    return (! finite(d)) && (! isnan(d));
 #endif
 #endif
   }
