@@ -21,14 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2016a and PS 3.7-2016a
-# File created on 2016-02-20 11:44:45 by J. Riesmeier on thinkpad.
-# File updated manually on 2016-03-21 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2016b and PS 3.7-2016b
+# File created on 2016-04-06 15:59:06 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 185
-# - CP 1492, 1525, 1531
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -273,6 +271,9 @@
 (0010,0028)	US	SubjectRelativePositionInImage	3	DICOM
 (0010,0030)	DA	PatientBirthDate	1	DICOM
 (0010,0032)	TM	PatientBirthTime	1	DICOM
+(0010,0033)	LO	PatientBirthDateInAlternativeCalendar	1	DICOM
+(0010,0034)	LO	PatientDeathDateInAlternativeCalendar	1	DICOM
+(0010,0035)	CS	PatientAlternativeCalendar	1	DICOM
 (0010,0040)	CS	PatientSex	1	DICOM
 (0010,0050)	SQ	PatientInsurancePlanCodeSequence	1	DICOM
 (0010,0101)	SQ	PatientPrimaryLanguageCodeSequence	1	DICOM
@@ -703,6 +704,8 @@
 (0018,1251)	SH	TransmitCoilName	1	DICOM
 (0018,1260)	SH	PlateType	1	DICOM
 (0018,1261)	LO	PhosphorType	1	DICOM
+(0018,1271)	FD	WaterEquivalentDiameter	1	DICOM
+(0018,1272)	SQ	WaterEquivalentDiameterCalculationMethodCodeSequence	1	DICOM
 (0018,1300)	DS	ScanVelocity	1	DICOM
 (0018,1301)	CS	WholeBodyTechnique	1-n	DICOM
 (0018,1302)	IS	ScanLength	1	DICOM
@@ -2645,17 +2648,30 @@
 (0072,0052)	AT	SelectorSequencePointer	1-n	DICOM
 (0072,0054)	LO	SelectorSequencePointerPrivateCreator	1-n	DICOM
 (0072,0056)	LO	SelectorAttributePrivateCreator	1	DICOM
+(0072,005E)	AE	SelectorAEValue	1-n	DICOM
+(0072,005F)	AS	SelectorASValue	1-n	DICOM
 (0072,0060)	AT	SelectorATValue	1-n	DICOM
+(0072,0061)	DA	SelectorDAValue	1-n	DICOM
 (0072,0062)	CS	SelectorCSValue	1-n	DICOM
+(0072,0063)	DT	SelectorDTValue	1-n	DICOM
 (0072,0064)	IS	SelectorISValue	1-n	DICOM
+(0072,0065)	OB	SelectorOBValue	1	DICOM
 (0072,0066)	LO	SelectorLOValue	1-n	DICOM
+(0072,0067)	OF	SelectorOFValue	1	DICOM
 (0072,0068)	LT	SelectorLTValue	1	DICOM
+(0072,0069)	OW	SelectorOWValue	1	DICOM
 (0072,006A)	PN	SelectorPNValue	1-n	DICOM
+(0072,006B)	TM	SelectorTMValue	1-n	DICOM
 (0072,006C)	SH	SelectorSHValue	1-n	DICOM
+(0072,006D)	UN	SelectorUNValue	1	DICOM
 (0072,006E)	ST	SelectorSTValue	1	DICOM
+(0072,006F)	UC	SelectorUCValue	1-n	DICOM
 (0072,0070)	UT	SelectorUTValue	1	DICOM
+(0072,0071)	UR	SelectorURValue	1	DICOM
 (0072,0072)	DS	SelectorDSValue	1-n	DICOM
+(0072,0073)	OD	SelectorODValue	1	DICOM
 (0072,0074)	FD	SelectorFDValue	1-n	DICOM
+(0072,0075)	OL	SelectorOLValue	1	DICOM
 (0072,0076)	FL	SelectorFLValue	1-n	DICOM
 (0072,0078)	UL	SelectorULValue	1-n	DICOM
 (0072,007A)	US	SelectorUSValue	1-n	DICOM
@@ -2848,6 +2864,29 @@
 (0080,0011)	OF	VValueData	1-n	DICOM
 (0080,0012)	SQ	ReferencedTextureSequence	1	DICOM
 (0080,0013)	SQ	ReferencedSurfaceDataSequence	1	DICOM
+(0082,0001)	CS	AssessmentSummary	1	DICOM
+(0082,0003)	UT	AssessmentSummaryDescription	1	DICOM
+(0082,0004)	SQ	AssessedSOPInstanceSequence	1	DICOM
+(0082,0005)	SQ	ReferencedComparisonSOPInstanceSequence	1	DICOM
+(0082,0006)	UL	NumberOfAssessmentObservations	1	DICOM
+(0082,0007)	SQ	AssessmentObservationsSequence	1	DICOM
+(0082,0008)	CS	ObservationSignificance	1	DICOM
+(0082,000A)	UT	ObservationDescription	1	DICOM
+(0082,000C)	SQ	StructuredContraintObservationSequence	1	DICOM
+(0082,0010)	SQ	AssessedAttributeValueSequence	1	DICOM
+(0082,0016)	LO	AssessmentSetID	1	DICOM
+(0082,0017)	SQ	AssessmentRequesterSequence	1	DICOM
+(0082,0018)	LO	SelectorAttributeName	1	DICOM
+(0082,0019)	LO	SelectorAttributeKeyword	1	DICOM
+(0082,0021)	SQ	AssessmentTypeCodeSequence	1	DICOM
+(0082,0022)	SQ	ObservationBasisCodeSequence	1	DICOM
+(0082,0023)	LO	AssessmentLabel	1	DICOM
+(0082,0032)	CS	ConstraintType	1	DICOM
+(0082,0033)	UT	SpecificationSelectionGuidance	1	DICOM
+(0082,0034)	SQ	ConstraintValueSequence	1	DICOM
+(0082,0035)	SQ	RecommendedDefaultValueSequence	1	DICOM
+(0082,0036)	CS	ConstraintViolationSignificance	1	DICOM
+(0082,0037)	UT	ConstraintViolationCondition	1	DICOM
 (0088,0130)	SH	StorageMediaFileSetID	1	DICOM
 (0088,0140)	UI	StorageMediaFileSetUID	1	DICOM
 (0088,0200)	SQ	IconImageSequence	1	DICOM
@@ -3330,6 +3369,12 @@
 (300A,014A)	FL	GantryPitchAngle	1	DICOM
 (300A,014C)	CS	GantryPitchRotationDirection	1	DICOM
 (300A,014E)	FL	GantryPitchAngleTolerance	1	DICOM
+(300A,0150)	CS	FixationEye	1	DICOM
+(300A,0151)	DS	ChairHeadFramePosition	1	DICOM
+(300A,0152)	DS	HeadFixationAngleTolerance	1	DICOM
+(300A,0153)	DS	ChairHeadFramePositionTolerance	1	DICOM
+(300A,0154)	DS	FixationLightAzimuthalAngleTolerance	1	DICOM
+(300A,0155)	DS	FixationLightPolarAngleTolerance	1	DICOM
 (300A,0180)	SQ	PatientSetupSequence	1	DICOM
 (300A,0182)	IS	PatientSetupNumber	1	DICOM
 (300A,0183)	LO	PatientSetupLabel	1	DICOM
@@ -4154,63 +4199,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 185 (Content Assessment Results IOD)
-#
-(0082,0001)	CS	AssessmentSummary	1	Supplement_185
-(0082,0003)	UT	AssessmentSummaryDescription	1	Supplement_185
-(0082,0004)	SQ	AssessedSOPInstanceSequence	1	Supplement_185
-(0082,0005)	SQ	ReferencedComparisonSOPInstanceSequence	1	Supplement_185
-(0082,0006)	UL	NumberOfAssessmentObservations	1	Supplement_185
-(0082,0007)	SQ	AssessmentObservationsSequence	1	Supplement_185
-(0082,0008)	CS	ObservationSignificance	1	Supplement_185
-(0082,000A)	UT	ObservationDescription	1	Supplement_185
-(0082,000C)	SQ	StructuredContraintObservationSequence	1	Supplement_185
-(0082,0010)	SQ	AssessedAttributeValueSequence	1	Supplement_185
-(0082,0016)	LO	AssessmentSetID	1	Supplement_185
-(0082,0017)	SQ	AssessmentRequesterSequence	1	Supplement_185
-(0082,0018)	LO	SelectorAttributeName	1	Supplement_185
-(0082,0019)	LO	SelectorAttributeKeyword	1	Supplement_185
-(0082,0021)	SQ	AssessmentTypeCodeSequence	1	Supplement_185
-(0082,0022)	SQ	ObservationBasisCodeSequence	1	Supplement_185
-(0082,0023)	LO	AssessmentLabel	1	Supplement_185
-(0082,0032)	CS	ConstraintType	1	Supplement_185
-(0082,0033)	UT	SpecificationSelectionGuidance	1	Supplement_185
-(0082,0034)	SQ	ConstraintValueSequence	1	Supplement_185
-(0082,0035)	SQ	RecommendedDefaultValueSequence	1	Supplement_185
-(0082,0036)	CS	ConstraintViolationSignificance	1	Supplement_185
-(0082,0037)	UT	ConstraintViolationCondition	1	Supplement_185
-(0072,005E)	AE	SelectorAEValue	1-n	Supplement_185
-(0072,005F)	AS	SelectorASValue	1-n	Supplement_185
-(0072,0061)	DA	SelectorDAValue	1-n	Supplement_185
-(0072,0063)	DT	SelectorDTValue	1-n	Supplement_185
-(0072,0065)	OB	SelectorOBValue	1	Supplement_185
-(0072,0067)	OF	SelectorOFValue	1	Supplement_185
-(0072,0069)	OW	SelectorOWValue	1	Supplement_185
-(0072,006B)	TM	SelectorTMValue	1-n	Supplement_185
-(0072,006D)	UN	SelectorUNValue	1	Supplement_185
-(0072,006F)	UC	SelectorUCValue	1-n	Supplement_185
-(0072,0071)	UR	SelectorURValue	1	Supplement_185
-(0072,0073)	OD	SelectorODValue	1	Supplement_185
-(0072,0075)	OL	SelectorOLValue	1	Supplement_185
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1492, 1525, 1531
-#
-(0010,0033)	LO	PatientBirthDateInAlternativeCalendar	1	CP_1492
-(0010,0034)	LO	PatientDeathDateInAlternativeCalendar	1	CP_1492
-(0010,0035)	CS	PatientAlternativeCalendar	1	CP_1492
-(0018,1271)	FD	WaterEquivalentDiameter	1	CP_1525
-(0018,1272)	SQ	WaterEquivalentDiameterCalculationMethodCodeSequence	1	CP_1525
-(300A,0150)	CS	FixationEye	1	CP_1531
-(300A,0151)	DS	ChairHeadFramePosition	1	CP_1531
-(300A,0152)	DS	HeadFixationAngleTolerance	1	CP_1531
-(300A,0153)	DS	ChairHeadFramePositionTolerance	1	CP_1531
-(300A,0154)	DS	FixationLightAzimuthalAngleTolerance	1	CP_1531
-(300A,0155)	DS	FixationLightPolarAngleTolerance	1	CP_1531
 #
 #---------------------------------------------------------------------------
 #
