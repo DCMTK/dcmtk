@@ -5,8 +5,8 @@
  *
  *  Header file for class CID11_RouteOfAdministration
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-03-07 11:39:54 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:32 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 11 - Route of Administration.
- *  (type: extensible, version: 20151110)
+ *  (type: extensible, version: 20160314)
  */
 class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
   : public DSRContextGroup
@@ -48,7 +48,7 @@ class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
         IntramuscularRoute,
         /// (G-D104,SRT,"Subcutaneous route")
         SubcutaneousRoute,
-        /// (G-D105,SRT,"Intracutaneous route")
+        /// (G-D17D,SRT,"Intracutaneous route")
         IntracutaneousRoute,
         /// (G-D106,SRT,"Intraperitoneal route")
         IntraperitonealRoute,
@@ -58,19 +58,19 @@ class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
         IntrathecalRoute,
         /// (G-D109,SRT,"Intra-articular route")
         IntraArticularRoute,
-        /// (G-D111,SRT,"Intraepithelial route")
+        /// (C38244,NCIt,"Intraepithelial route")
         IntraepithelialRoute,
         /// (G-D112,SRT,"Topical route")
         TopicalRoute,
         /// (G-D140,SRT,"Oral route")
         OralRoute,
-        /// (G-D142,SRT,"Transluminal route")
+        /// (C38306,NCIt,"Transluminal route")
         TransluminalRoute,
         /// (G-D144,SRT,"Intraluminal route")
         IntraluminalRoute,
-        /// (G-D146,SRT,"Extraluminal route")
+        /// (C38213,NCIt,"Extraluminal route")
         ExtraluminalRoute,
-        /// (G-D150,SRT,"By inhalation")
+        /// (R-40B32,SRT,"By inhalation")
         ByInhalation,
         /// (G-D160,SRT,"Per rectum")
         PerRectum,

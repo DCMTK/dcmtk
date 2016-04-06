@@ -5,8 +5,8 @@
  *
  *  Source file for class CID11_RouteOfAdministration
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:20:57 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:32 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 11 (Route of Administration)
 #define CONTEXT_GROUP_NUMBER  "11"
-#define CONTEXT_GROUP_VERSION "20151110"
+#define CONTEXT_GROUP_VERSION "20160314"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.9"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -153,18 +153,18 @@ CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
         Codes->insert(OFMake_pair(IntraArterialRoute, DSRBasicCodedEntry("G-D102", "SRT", "Intra-arterial route")));
         Codes->insert(OFMake_pair(IntramuscularRoute, DSRBasicCodedEntry("G-D103", "SRT", "Intramuscular route")));
         Codes->insert(OFMake_pair(SubcutaneousRoute, DSRBasicCodedEntry("G-D104", "SRT", "Subcutaneous route")));
-        Codes->insert(OFMake_pair(IntracutaneousRoute, DSRBasicCodedEntry("G-D105", "SRT", "Intracutaneous route")));
+        Codes->insert(OFMake_pair(IntracutaneousRoute, DSRBasicCodedEntry("G-D17D", "SRT", "Intracutaneous route")));
         Codes->insert(OFMake_pair(IntraperitonealRoute, DSRBasicCodedEntry("G-D106", "SRT", "Intraperitoneal route")));
         Codes->insert(OFMake_pair(IntramedullaryRoute, DSRBasicCodedEntry("G-D107", "SRT", "Intramedullary route")));
         Codes->insert(OFMake_pair(IntrathecalRoute, DSRBasicCodedEntry("G-D108", "SRT", "Intrathecal route")));
         Codes->insert(OFMake_pair(IntraArticularRoute, DSRBasicCodedEntry("G-D109", "SRT", "Intra-articular route")));
-        Codes->insert(OFMake_pair(IntraepithelialRoute, DSRBasicCodedEntry("G-D111", "SRT", "Intraepithelial route")));
+        Codes->insert(OFMake_pair(IntraepithelialRoute, DSRBasicCodedEntry("C38244", "NCIt", "Intraepithelial route")));
         Codes->insert(OFMake_pair(TopicalRoute, DSRBasicCodedEntry("G-D112", "SRT", "Topical route")));
         Codes->insert(OFMake_pair(OralRoute, DSRBasicCodedEntry("G-D140", "SRT", "Oral route")));
-        Codes->insert(OFMake_pair(TransluminalRoute, DSRBasicCodedEntry("G-D142", "SRT", "Transluminal route")));
+        Codes->insert(OFMake_pair(TransluminalRoute, DSRBasicCodedEntry("C38306", "NCIt", "Transluminal route")));
         Codes->insert(OFMake_pair(IntraluminalRoute, DSRBasicCodedEntry("G-D144", "SRT", "Intraluminal route")));
-        Codes->insert(OFMake_pair(ExtraluminalRoute, DSRBasicCodedEntry("G-D146", "SRT", "Extraluminal route")));
-        Codes->insert(OFMake_pair(ByInhalation, DSRBasicCodedEntry("G-D150", "SRT", "By inhalation")));
+        Codes->insert(OFMake_pair(ExtraluminalRoute, DSRBasicCodedEntry("C38213", "NCIt", "Extraluminal route")));
+        Codes->insert(OFMake_pair(ByInhalation, DSRBasicCodedEntry("R-40B32", "SRT", "By inhalation")));
         Codes->insert(OFMake_pair(PerRectum, DSRBasicCodedEntry("G-D160", "SRT", "Per rectum")));
         Codes->insert(OFMake_pair(VaginalRoute, DSRBasicCodedEntry("G-D164", "SRT", "Vaginal route")));
         Codes->insert(OFMake_pair(IntracoronaryRoute, DSRBasicCodedEntry("G-D17C", "SRT", "Intracoronary route")));

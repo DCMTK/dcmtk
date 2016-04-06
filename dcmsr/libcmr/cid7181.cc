@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:21:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:49 by J. Riesmeier
  *
  */
 
@@ -167,10 +167,11 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(CubicCentimeter, DSRBasicCodedEntry("cm3", "UCUM", "cubic centimeter")));
         Codes->insert(OFMake_pair(CubicMillimeter, DSRBasicCodedEntry("mm3", "UCUM", "cubic millimeter")));
         Codes->insert(OFMake_pair(CubicMicrometer, DSRBasicCodedEntry("um3", "UCUM", "cubic micrometer")));
-        Codes->insert(OFMake_pair(StandardizedUptakeValueBodyWeight, DSRBasicCodedEntry("{SUVbw}g/ml", "UCUM", "Standardized Uptake Value body weight")));
-        Codes->insert(OFMake_pair(StandardizedUptakeValueLeanBodyMass, DSRBasicCodedEntry("{SUVlbm}g/ml", "UCUM", "Standardized Uptake Value lean body mass")));
-        Codes->insert(OFMake_pair(StandardizedUptakeValueBodySurfaceArea, DSRBasicCodedEntry("{SUVbsa}cm2/ml", "UCUM", "Standardized Uptake Value body surface area")));
-        Codes->insert(OFMake_pair(StandardizedUptakeValueIdealBodyWeight, DSRBasicCodedEntry("{SUVibw}g/ml", "UCUM", "Standardized Uptake Value ideal body weight")));
+        Codes->insert(OFMake_pair(StandardizedUptakeValueBodyWeight, DSRBasicCodedEntry("g/ml{SUVbw}", "UCUM", "Standardized Uptake Value body weight")));
+        Codes->insert(OFMake_pair(StandardizedUptakeValueLeanBodyMassJames, DSRBasicCodedEntry("g/ml{SUVlbm}", "UCUM", "Standardized Uptake Value lean body mass (James)")));
+        Codes->insert(OFMake_pair(StandardizedUptakeValueLeanBodyMassJanma, DSRBasicCodedEntry("g/ml{SUVlbm(Janma)}", "UCUM", "Standardized Uptake Value lean body mass (Janma)")));
+        Codes->insert(OFMake_pair(StandardizedUptakeValueBodySurfaceArea, DSRBasicCodedEntry("cm2/ml{SUVbsa}", "UCUM", "Standardized Uptake Value body surface area")));
+        Codes->insert(OFMake_pair(StandardizedUptakeValueIdealBodyWeight, DSRBasicCodedEntry("g/ml{SUVibw}", "UCUM", "Standardized Uptake Value ideal body weight")));
         Codes->insert(OFMake_pair(Counts, DSRBasicCodedEntry("{counts}", "UCUM", "Counts")));
         Codes->insert(OFMake_pair(CountsPerSecond, DSRBasicCodedEntry("{counts}/s", "UCUM", "Counts per second")));
         Codes->insert(OFMake_pair(ProportionalToCounts, DSRBasicCodedEntry("{propcounts}", "UCUM", "Proportional to counts")));

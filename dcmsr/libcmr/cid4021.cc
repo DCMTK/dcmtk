@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:21:07 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:42 by J. Riesmeier
  *
  */
 

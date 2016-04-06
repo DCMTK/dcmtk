@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7452_OrganizationalRoles
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:21:17 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:53 by J. Riesmeier
  *
  */
 

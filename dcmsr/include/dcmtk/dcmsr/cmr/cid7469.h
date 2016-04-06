@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-03-07 11:40:19 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:59 by J. Riesmeier
  *
  */
 
@@ -40,7 +40,7 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
      */
     enum EnumType
     {
-        /// (F-6175A,SRT,"N-acetylaspartate"), included from CID 4033
+        /// (F-65C50,SRT,"N-acetylaspartate"), included from CID 4033
         NAcetylaspartate,
         /// (F-61080,SRT,"Citrate"), included from CID 4033
         Citrate,
@@ -276,11 +276,13 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         SUVbw,
         /// (126402,DCM,"SUVlbm"), included from CID 7180
         SUVlbm,
+        /// (126405,DCM,"SUVlbm(Janma)"), included from CID 7180
+        SUVlbmJanma,
         /// (126403,DCM,"SUVbsa"), included from CID 7180
         SUVbsa,
         /// (126404,DCM,"SUVibw"), included from CID 7180
         SUVibw,
-        /// (G-A22A,SRT,"Length"), included from CID 7470
+        /// (G-D7FE,SRT,"Length"), included from CID 7470
         Length,
         /// (121211,DCM,"Path length"), included from CID 7470
         PathLength,

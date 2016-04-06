@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-03-07 11:40:11 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:49 by J. Riesmeier
  *
  */
 
@@ -76,13 +76,15 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
         CubicMillimeter,
         /// (um3,UCUM,"cubic micrometer"), included from CID 7462
         CubicMicrometer,
-        /// ({SUVbw}g/ml,UCUM,"Standardized Uptake Value body weight"), included from CID 85
+        /// (g/ml{SUVbw},UCUM,"Standardized Uptake Value body weight"), included from CID 85
         StandardizedUptakeValueBodyWeight,
-        /// ({SUVlbm}g/ml,UCUM,"Standardized Uptake Value lean body mass"), included from CID 85
-        StandardizedUptakeValueLeanBodyMass,
-        /// ({SUVbsa}cm2/ml,UCUM,"Standardized Uptake Value body surface area"), included from CID 85
+        /// (g/ml{SUVlbm},UCUM,"Standardized Uptake Value lean body mass (James)"), included from CID 85
+        StandardizedUptakeValueLeanBodyMassJames,
+        /// (g/ml{SUVlbm(Janma)},UCUM,"Standardized Uptake Value lean body mass (Janma)"), included from CID 85
+        StandardizedUptakeValueLeanBodyMassJanma,
+        /// (cm2/ml{SUVbsa},UCUM,"Standardized Uptake Value body surface area"), included from CID 85
         StandardizedUptakeValueBodySurfaceArea,
-        /// ({SUVibw}g/ml,UCUM,"Standardized Uptake Value ideal body weight"), included from CID 85
+        /// (g/ml{SUVibw},UCUM,"Standardized Uptake Value ideal body weight"), included from CID 85
         StandardizedUptakeValueIdealBodyWeight,
         /// ({counts},UCUM,"Counts"), included from CID 84
         Counts,

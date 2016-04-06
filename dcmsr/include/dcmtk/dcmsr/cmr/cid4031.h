@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-03-07 11:40:06 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:44 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4031 - Common Anatomic Regions.
- *  (type: extensible, version: 20130617)
+ *  (type: extensible, version: 20160314)
  */
 class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
   : public DSRContextGroup
@@ -210,7 +210,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         Skull,
         /// (T-58000,SRT,"Small intestine")
         SmallIntestine,
-        /// (T-D0146,SRT,"Spine")
+        /// (T-D04FF,SRT,"Spine")
         Spine,
         /// (T-15610,SRT,"Sternoclavicular joint")
         SternoclavicularJoint,
@@ -240,7 +240,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         UpperArm,
         /// (T-D8000,SRT,"Upper limb")
         UpperLimb,
-        /// (T-70010,SRT,"Upper urinary tract")
+        /// (T-7000B,SRT,"Upper urinary tract")
         UpperUrinaryTract,
         /// (T-73000,SRT,"Ureter")
         Ureter,

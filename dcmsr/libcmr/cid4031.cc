@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:21:09 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:44 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4031 (Common Anatomic Regions)
 #define CONTEXT_GROUP_NUMBER  "4031"
-#define CONTEXT_GROUP_VERSION "20130617"
+#define CONTEXT_GROUP_VERSION "20160314"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.308"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -234,7 +234,7 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Shoulder, DSRBasicCodedEntry("T-D2220", "SRT", "Shoulder")));
         Codes->insert(OFMake_pair(Skull, DSRBasicCodedEntry("T-11100", "SRT", "Skull")));
         Codes->insert(OFMake_pair(SmallIntestine, DSRBasicCodedEntry("T-58000", "SRT", "Small intestine")));
-        Codes->insert(OFMake_pair(Spine, DSRBasicCodedEntry("T-D0146", "SRT", "Spine")));
+        Codes->insert(OFMake_pair(Spine, DSRBasicCodedEntry("T-D04FF", "SRT", "Spine")));
         Codes->insert(OFMake_pair(SternoclavicularJoint, DSRBasicCodedEntry("T-15610", "SRT", "Sternoclavicular joint")));
         Codes->insert(OFMake_pair(Sternum, DSRBasicCodedEntry("T-11210", "SRT", "Sternum")));
         Codes->insert(OFMake_pair(Stomach, DSRBasicCodedEntry("T-57000", "SRT", "Stomach")));
@@ -249,7 +249,7 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Trachea, DSRBasicCodedEntry("T-25000", "SRT", "Trachea")));
         Codes->insert(OFMake_pair(UpperArm, DSRBasicCodedEntry("T-D8200", "SRT", "Upper arm")));
         Codes->insert(OFMake_pair(UpperLimb, DSRBasicCodedEntry("T-D8000", "SRT", "Upper limb")));
-        Codes->insert(OFMake_pair(UpperUrinaryTract, DSRBasicCodedEntry("T-70010", "SRT", "Upper urinary tract")));
+        Codes->insert(OFMake_pair(UpperUrinaryTract, DSRBasicCodedEntry("T-7000B", "SRT", "Upper urinary tract")));
         Codes->insert(OFMake_pair(Ureter, DSRBasicCodedEntry("T-73000", "SRT", "Ureter")));
         Codes->insert(OFMake_pair(Urethra, DSRBasicCodedEntry("T-75000", "SRT", "Urethra")));
         Codes->insert(OFMake_pair(UterusAndFallopianTubes, DSRBasicCodedEntry("T-88920", "SRT", "Uterus and fallopian tubes")));

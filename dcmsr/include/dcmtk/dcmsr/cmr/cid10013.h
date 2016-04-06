@@ -5,8 +5,8 @@
  *
  *  Header file for class CID10013_CTAcquisitionType
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-03-07 11:40:21 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:27:00 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 10013 - CT Acquisition Type.
- *  (type: extensible, version: 20071031)
+ *  (type: extensible, version: 20160314)
  */
 class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
   : public DSRContextGroup
@@ -49,7 +49,9 @@ class DCMTK_CMR_EXPORT CID10013_CTAcquisitionType
         /// (113806,DCM,"Stationary Acquisition")
         StationaryAcquisition,
         /// (113807,DCM,"Free Acquisition")
-        FreeAcquisition
+        FreeAcquisition,
+        /// (R-FB8F1,SRT,"Cone Beam Acquisition")
+        ConeBeamAcquisition
     };
 
     /** (default) constructor

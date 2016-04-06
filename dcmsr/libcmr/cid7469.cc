@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2016a
- *  File created on 2016-02-20 12:21:23 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016b
+ *  File created on 2016-04-06 16:26:59 by J. Riesmeier
  *
  */
 
@@ -149,7 +149,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(NAcetylaspartate, DSRBasicCodedEntry("F-6175A", "SRT", "N-acetylaspartate")));
+        Codes->insert(OFMake_pair(NAcetylaspartate, DSRBasicCodedEntry("F-65C50", "SRT", "N-acetylaspartate")));
         Codes->insert(OFMake_pair(Citrate, DSRBasicCodedEntry("F-61080", "SRT", "Citrate")));
         Codes->insert(OFMake_pair(Choline, DSRBasicCodedEntry("F-61620", "SRT", "Choline")));
         Codes->insert(OFMake_pair(Creatine, DSRBasicCodedEntry("F-61380", "SRT", "Creatine")));
@@ -267,9 +267,10 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(StandardizedUptakeValue, DSRBasicCodedEntry("126400", "DCM", "Standardized Uptake Value")));
         Codes->insert(OFMake_pair(SUVbw, DSRBasicCodedEntry("126401", "DCM", "SUVbw")));
         Codes->insert(OFMake_pair(SUVlbm, DSRBasicCodedEntry("126402", "DCM", "SUVlbm")));
+        Codes->insert(OFMake_pair(SUVlbmJanma, DSRBasicCodedEntry("126405", "DCM", "SUVlbm(Janma)")));
         Codes->insert(OFMake_pair(SUVbsa, DSRBasicCodedEntry("126403", "DCM", "SUVbsa")));
         Codes->insert(OFMake_pair(SUVibw, DSRBasicCodedEntry("126404", "DCM", "SUVibw")));
-        Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("G-A22A", "SRT", "Length")));
+        Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("G-D7FE", "SRT", "Length")));
         Codes->insert(OFMake_pair(PathLength, DSRBasicCodedEntry("121211", "DCM", "Path length")));
         Codes->insert(OFMake_pair(Distance, DSRBasicCodedEntry("121206", "DCM", "Distance")));
         Codes->insert(OFMake_pair(Width, DSRBasicCodedEntry("G-A220", "SRT", "Width")));
