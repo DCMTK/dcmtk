@@ -297,7 +297,7 @@ DIMSE_storeUser(
 OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc,
 	T_ASC_PresentationContextID presID,
-	T_DIMSE_C_StoreRQ *request,
+    const T_DIMSE_C_StoreRQ *request,
 	T_DIMSE_C_StoreRSP *response,
 	DcmDataset *statusDetail)
     /*

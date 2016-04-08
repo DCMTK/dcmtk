@@ -669,7 +669,7 @@ DIMSE_echoUser(
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendEchoResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_EchoRQ *request, DIC_US status, DcmDataset *statusDetail);
+        const T_DIMSE_C_EchoRQ *request, DIC_US status, DcmDataset *statusDetail);
 
 
 /*
@@ -743,8 +743,8 @@ DIMSE_storeProvider(/* in */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_StoreRQ *request,     /* send response to this request */
-        T_DIMSE_C_StoreRSP *response,   /* response structure */
+        const T_DIMSE_C_StoreRQ *request, /* send response to this request */
+        T_DIMSE_C_StoreRSP *response,     /* response structure */
         DcmDataset *statusDetail);
 
 /*
@@ -796,7 +796,7 @@ DIMSE_findProvider(
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendFindResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_FindRQ *request,
+        const T_DIMSE_C_FindRQ *request,
         T_DIMSE_C_FindRSP *response, DcmDataset *responseIdentifiers,
         DcmDataset *statusDetail);
 
@@ -852,7 +852,7 @@ DIMSE_moveProvider(
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendMoveResponse(T_ASC_Association * assoc,
-        T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request,
+        T_ASC_PresentationContextID presID, const T_DIMSE_C_MoveRQ *request,
         T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds,
         DcmDataset *statusDetail);
 
@@ -907,7 +907,7 @@ DIMSE_getProvider(
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendGetResponse(T_ASC_Association * assoc,
-        T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request,
+        T_ASC_PresentationContextID presID, const T_DIMSE_C_GetRQ *request,
         T_DIMSE_C_GetRSP *response, DcmDataset *rspIds,
         DcmDataset *statusDetail);
 

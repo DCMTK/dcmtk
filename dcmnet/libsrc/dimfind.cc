@@ -274,7 +274,7 @@ DIMSE_findUser(
 OFCondition
 DIMSE_sendFindResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_FindRQ *request,
+        const T_DIMSE_C_FindRQ *request,
         T_DIMSE_C_FindRSP *response, DcmDataset *rspIds,
         DcmDataset *statusDetail)
     /*

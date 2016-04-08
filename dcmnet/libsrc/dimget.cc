@@ -224,7 +224,7 @@ DIMSE_getUser(
 
 OFCondition
 DIMSE_sendGetResponse(T_ASC_Association * assoc, 
-        T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request, 
+        T_ASC_PresentationContextID presID, const T_DIMSE_C_GetRQ *request,
         T_DIMSE_C_GetRSP *response, DcmDataset *rspIds, 
         DcmDataset *statusDetail)
 {

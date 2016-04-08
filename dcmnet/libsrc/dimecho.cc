@@ -155,7 +155,7 @@ DIMSE_echoUser(
 OFCondition
 DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 	T_ASC_PresentationContextID presID,
-	T_DIMSE_C_EchoRQ *req, DIC_US status, DcmDataset *statusDetail)
+    const T_DIMSE_C_EchoRQ *req, DIC_US status, DcmDataset *statusDetail)
 {
     T_DIMSE_Message rsp;
 

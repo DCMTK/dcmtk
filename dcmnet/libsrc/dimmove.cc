@@ -300,7 +300,7 @@ OFCondition
 DIMSE_sendMoveResponse(
     T_ASC_Association *assoc,
     T_ASC_PresentationContextID presID,
-    T_DIMSE_C_MoveRQ *request,
+    const T_DIMSE_C_MoveRQ *request,
     T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds,
     DcmDataset *statusDetail)
 {
