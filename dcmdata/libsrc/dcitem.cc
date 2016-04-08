@@ -313,7 +313,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream &inStream)
             /* VR, we need to find out which of the two tags was valid */
             if (taglittle.error().bad())
             {
-                /* if the litte endian tag was invalid, the transfer syntax is big endian explicit */
+                /* if the little endian tag was invalid, the transfer syntax is big endian explicit */
                 transferSyntax = EXS_BigEndianExplicit;
             }
             else if (tagbig.error().bad())
@@ -722,7 +722,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         beginning = OFFalse;
 
                         /* if the current element is a group length element and its data type */
-                        /* is not UL replace this element with one that has a UL datatype since */
+                        /* is not UL replace this element with one that has a UL data type since */
                         /* group length elements are supposed to have this data type */
                         if (dO->getETag() == 0x0000 && dO->ident() != EVR_UL)
                         {
@@ -1325,7 +1325,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     if (errorFlag.good())
                         lastElementComplete = OFTrue;
                     /* in data or command sets, group 0x0001 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed. */
-                    /* (we cannot check for group 0x0000 since we do not now whether we read a data or command set.)*/
+                    /* (we cannot check for group 0x0000 since we do not know whether we read a data or command set.)*/
                     if (!newTag.hasValidGroup() || (newTag.getGroup() == 0x0002))
                         DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
                 }
