@@ -318,9 +318,13 @@ IF(WIN32)   # special handling for Windows systems
     # Avoid auto-importing warnings on MinGW
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-auto-import")
   ELSE(MINGW)
-    # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security warnings.
     IF(NOT BORLAND)
       IF(NOT CYGWIN)
+        # Disable min() and max() macros pre-defined by Microsoft. We define our own
+        # version in oflimits.h and on Windows that could result in name clashes in
+        # Visual Studio.
+        ADD_DEFINITIONS(-DNOMINMAX)
+        # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security warnings.
         IF(NOT DCMTK_ENABLE_VISUAL_STUDIO_DEPRECATED_C_WARNINGS)
           ADD_DEFINITIONS(
             -D_CRT_FAR_MAPPINGS_NO_DEPRECATE

@@ -876,7 +876,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
     safeAdd(T a, T b, T& sum)
     {
       assert(!OFnumeric_limits<T>::is_signed);
-      if (OFnumeric_limits<T>::max() - a < b) {
+      if ((OFnumeric_limits<T>::max)() - a < b) {
         return OFFalse;
       } else {
         sum = a + b;

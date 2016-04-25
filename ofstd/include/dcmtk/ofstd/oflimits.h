@@ -948,9 +948,9 @@ struct OFnumeric_limits
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = OFFalse;
     static const OFBool tinyness_before             = OFFalse;
-    static inline T min()                           { return T(); }
+    static inline T (min)()                         { return T(); }
     static inline T lowest()                        { return T(); }
-    static inline T max()                           { return T(); }
+    static inline T (max)()                         { return T(); }
     static inline T epsilon()                       { return T(); }
     static inline T round_error()                   { return T(); }
     static inline T infinity()                      { return T(); }
@@ -986,9 +986,9 @@ struct OFnumeric_limits<bool>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = OFFalse;
     static const OFBool tinyness_before             = OFFalse;
-    static inline bool min()                        { return OFFalse; }
+    static inline bool (min)()                      { return OFFalse; }
     static inline bool lowest()                     { return OFFalse; }
-    static inline bool max()                        { return OFTrue; }
+    static inline bool (max)()                      { return OFTrue; }
     static inline bool epsilon()                    { return OFFalse; }
     static inline bool round_error()                { return OFFalse; }
     static inline bool infinity()                   { return OFFalse; }
@@ -1028,9 +1028,9 @@ struct OFnumeric_limits<char>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_CHAR_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline char min()                        { return OFstatic_cast( char, CHAR_MIN ); }
+    static inline char (min)()                      { return OFstatic_cast( char, CHAR_MIN ); }
     static inline char lowest()                     { return OFstatic_cast( char, CHAR_MIN ); }
-    static inline char max()                        { return OFstatic_cast( char, CHAR_MAX ); }
+    static inline char (max)()                      { return OFstatic_cast( char, CHAR_MAX ); }
     static inline char epsilon()                    { return OFstatic_cast( char, 0 ); }
     static inline char round_error()                { return OFstatic_cast( char, 0 ); }
     static inline char infinity()                   { return OFstatic_cast( char, 0 ); }
@@ -1065,9 +1065,9 @@ struct OFnumeric_limits<signed char>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_SIGNED_CHAR_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline signed char min()                 { return OFstatic_cast( signed char, SCHAR_MIN ); }
+    static inline signed char (min)()               { return OFstatic_cast( signed char, SCHAR_MIN ); }
     static inline signed char lowest()              { return OFstatic_cast( signed char, SCHAR_MIN ); }
-    static inline signed char max()                 { return OFstatic_cast( signed char, SCHAR_MAX ); }
+    static inline signed char (max)()               { return OFstatic_cast( signed char, SCHAR_MAX ); }
     static inline signed char epsilon()             { return OFstatic_cast( signed char, 0 ); }
     static inline signed char round_error()         { return OFstatic_cast( signed char, 0 ); }
     static inline signed char infinity()            { return OFstatic_cast( signed char, 0 ); }
@@ -1102,9 +1102,9 @@ struct OFnumeric_limits<unsigned char>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_UNSIGNED_CHAR_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline unsigned char min()               { return OFstatic_cast( unsigned char, 0 ); }
+    static inline unsigned char (min)()             { return OFstatic_cast( unsigned char, 0 ); }
     static inline unsigned char lowest()            { return OFstatic_cast( unsigned char, 0 ); }
-    static inline unsigned char max()               { return OFstatic_cast( unsigned char, UCHAR_MAX ); }
+    static inline unsigned char (max)()             { return OFstatic_cast( unsigned char, UCHAR_MAX ); }
     static inline unsigned char epsilon()           { return OFstatic_cast( unsigned char, 0 ); }
     static inline unsigned char round_error()       { return OFstatic_cast( unsigned char, 0 ); }
     static inline unsigned char infinity()          { return OFstatic_cast( unsigned char, 0 ); }
@@ -1139,9 +1139,9 @@ struct OFnumeric_limits<signed short>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_SIGNED_SHORT_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline signed short min()                { return OFstatic_cast( signed short, SHRT_MIN ); }
+    static inline signed short (min)()              { return OFstatic_cast( signed short, SHRT_MIN ); }
     static inline signed short lowest()             { return OFstatic_cast( signed short, SHRT_MIN ); }
-    static inline signed short max()                { return OFstatic_cast( signed short, SHRT_MAX ); }
+    static inline signed short (max)()              { return OFstatic_cast( signed short, SHRT_MAX ); }
     static inline signed short epsilon()            { return OFstatic_cast( signed short, 0 ); }
     static inline signed short round_error()        { return OFstatic_cast( signed short, 0 ); }
     static inline signed short infinity()           { return OFstatic_cast( signed short, 0 ); }
@@ -1176,9 +1176,9 @@ struct OFnumeric_limits<unsigned short>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_UNSIGNED_SHORT_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline unsigned short min()              { return OFstatic_cast( unsigned short, 0 ); }
+    static inline unsigned short (min)()            { return OFstatic_cast( unsigned short, 0 ); }
     static inline unsigned short lowest()           { return OFstatic_cast( unsigned short, 0 ); }
-    static inline unsigned short max()              { return OFstatic_cast( unsigned short, USHRT_MAX ); }
+    static inline unsigned short (max)()            { return OFstatic_cast( unsigned short, USHRT_MAX ); }
     static inline unsigned short epsilon()          { return OFstatic_cast( unsigned short, 0 ); }
     static inline unsigned short round_error()      { return OFstatic_cast( unsigned short, 0 ); }
     static inline unsigned short infinity()         { return OFstatic_cast( unsigned short, 0 ); }
@@ -1213,9 +1213,9 @@ struct OFnumeric_limits<signed int>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_SIGNED_INT_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline signed int min()                  { return OFstatic_cast( signed int, INT_MIN ); }
+    static inline signed int (min)()                { return OFstatic_cast( signed int, INT_MIN ); }
     static inline signed int lowest()               { return OFstatic_cast( signed int, INT_MIN ); }
-    static inline signed int max()                  { return OFstatic_cast( signed int, INT_MAX ); }
+    static inline signed int (max)()                { return OFstatic_cast( signed int, INT_MAX ); }
     static inline signed int epsilon()              { return OFstatic_cast( signed int, 0 ); }
     static inline signed int round_error()          { return OFstatic_cast( signed int, 0 ); }
     static inline signed int infinity()             { return OFstatic_cast( signed int, 0 ); }
@@ -1250,9 +1250,9 @@ struct OFnumeric_limits<unsigned int>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_UNSIGNED_INT_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline unsigned int min()                { return OFstatic_cast( unsigned int, 0 ); }
+    static inline unsigned int (min)()              { return OFstatic_cast( unsigned int, 0 ); }
     static inline unsigned int lowest()             { return OFstatic_cast( unsigned int, 0 ); }
-    static inline unsigned int max()                { return OFstatic_cast( unsigned int, UINT_MAX ); }
+    static inline unsigned int (max)()              { return OFstatic_cast( unsigned int, UINT_MAX ); }
     static inline unsigned int epsilon()            { return OFstatic_cast( unsigned int, 0 ); }
     static inline unsigned int round_error()        { return OFstatic_cast( unsigned int, 0 ); }
     static inline unsigned int infinity()           { return OFstatic_cast( unsigned int, 0 ); }
@@ -1287,9 +1287,9 @@ struct OFnumeric_limits<signed long>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_SIGNED_LONG_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline signed long min()                 { return OFstatic_cast( signed long, LONG_MIN ); }
+    static inline signed long (min)()               { return OFstatic_cast( signed long, LONG_MIN ); }
     static inline signed long lowest()              { return OFstatic_cast( signed long, LONG_MIN ); }
-    static inline signed long max()                 { return OFstatic_cast( signed long, LONG_MAX ); }
+    static inline signed long (max)()               { return OFstatic_cast( signed long, LONG_MAX ); }
     static inline signed long epsilon()             { return OFstatic_cast( signed long, 0 ); }
     static inline signed long round_error()         { return OFstatic_cast( signed long, 0 ); }
     static inline signed long infinity()            { return OFstatic_cast( signed long, 0 ); }
@@ -1324,9 +1324,9 @@ struct OFnumeric_limits<unsigned long>
     static const int max_exponent10                 = 0;
     static const OFBool traps                       = DCMTK_UNSIGNED_LONG_TRAPS;
     static const OFBool tinyness_before             = OFFalse;
-    static inline unsigned long min()               { return OFstatic_cast( unsigned long, 0 ); }
+    static inline unsigned long (min)()             { return OFstatic_cast( unsigned long, 0 ); }
     static inline unsigned long lowest()            { return OFstatic_cast( unsigned long, 0 ); }
-    static inline unsigned long max()               { return OFstatic_cast( unsigned long, ULONG_MAX ); }
+    static inline unsigned long (max)()             { return OFstatic_cast( unsigned long, ULONG_MAX ); }
     static inline unsigned long epsilon()           { return OFstatic_cast( unsigned long, 0 ); }
     static inline unsigned long round_error()       { return OFstatic_cast( unsigned long, 0 ); }
     static inline unsigned long infinity()          { return OFstatic_cast( unsigned long, 0 ); }
@@ -1361,9 +1361,9 @@ struct OFnumeric_limits<float>
     static const int max_exponent10                 = FLT_MAX_10_EXP;
     static const OFBool traps                       = DCMTK_FLOAT_TRAPS;
     static const OFBool tinyness_before             = DCMTK_FLOAT_TINYNESS_BEFORE;
-    static inline float min()                       { return OFstatic_cast( float, FLT_MIN ); }
+    static inline float (min)()                     { return OFstatic_cast( float, FLT_MIN ); }
     static inline float lowest()                    { return OFstatic_cast( float, -FLT_MAX ); }
-    static inline float max()                       { return OFstatic_cast( float, FLT_MAX ); }
+    static inline float (max)()                     { return OFstatic_cast( float, FLT_MAX ); }
     static inline float epsilon()                   { return OFstatic_cast( float, FLT_EPSILON ); }
     static inline float round_error()               { return OFstatic_cast( float, 0.5f ); }
     static inline float infinity()                  { return DCMTK_FLOAT_INFINITY; }
@@ -1398,9 +1398,9 @@ struct OFnumeric_limits<double>
     static const int max_exponent10                 = DBL_MAX_10_EXP;
     static const OFBool traps                       = DCMTK_DOUBLE_TRAPS;
     static const OFBool tinyness_before             = DCMTK_DOUBLE_TINYNESS_BEFORE;
-    static inline double min()                      { return OFstatic_cast( double, DBL_MIN ); }
+    static inline double (min)()                    { return OFstatic_cast( double, DBL_MIN ); }
     static inline double lowest()                   { return OFstatic_cast( double, -DBL_MAX ); }
-    static inline double max()                      { return OFstatic_cast( double, DBL_MAX ); }
+    static inline double (max)()                    { return OFstatic_cast( double, DBL_MAX ); }
     static inline double epsilon()                  { return OFstatic_cast( double, DBL_EPSILON ); }
     static inline double round_error()              { return OFstatic_cast( double, 0.5 ); }
     static inline double infinity()                 { return DCMTK_DOUBLE_INFINITY; }

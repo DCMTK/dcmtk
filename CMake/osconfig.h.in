@@ -1024,11 +1024,6 @@ typedef unsigned long ulong;
     #pragma warning( disable : 4996 )  /* disable warnings about "deprecated" C runtime functions */
     #pragma warning( disable : 4351 )  /* disable warnings about "new behavior" when initializing the elements of an array */
 #endif /* _MSC_VER >= 1400 */
-/* Disable min() and max() macros pre-defined by Microsoft. We define our own
- * version in oflimits.h and on Windows that could result in name clashes in
- * Visual Studio.
- */
-#define NOMINMAX
 #endif /* _MSC_VER */
 
 /* Define if your system defines ios::nocreate in iostream.h */
