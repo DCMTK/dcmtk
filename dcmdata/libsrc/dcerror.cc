@@ -72,7 +72,9 @@ makeOFConditionConst(EC_MissingValue,                    OFM_dcmdata, 46, OF_err
 makeOFConditionConst(EC_MissingAttribute,                OFM_dcmdata, 47, OF_error, "Missing attribute");
 makeOFConditionConst(EC_InternalError,                   OFM_dcmdata, 48, OF_error, "Internal error");
 makeOFConditionConst(EC_InvalidCharacter,                OFM_dcmdata, 49, OF_error, "Invalid character");
+// error code 50 is reserved for determine start fragment error messages (see below)
 
-const unsigned short EC_CODE_CannotSelectCharacterSet  = 35;
-const unsigned short EC_CODE_CannotConvertCharacterSet = 36;
-const unsigned short EC_CODE_CannotConvertToXML        = 37;
+const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
+const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
+const unsigned short EC_CODE_CannotConvertToXML           = 37;
+const unsigned short EC_CODE_CannotDetermineStartFragment = 50;

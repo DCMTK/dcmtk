@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -231,7 +231,8 @@ OFCondition DcmCodec::determineStartFragment(
   Uint32& currentItem)
 {
   Uint32 numberOfFragments = OFstatic_cast(Uint32, fromPixSeq->card());
-  if (numberOfFrames < 1 || numberOfFragments <= OFstatic_cast(Uint32, numberOfFrames) || frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+  if (numberOfFrames < 1 || numberOfFragments <= OFstatic_cast(Uint32, numberOfFrames) || frameNo >= OFstatic_cast(Uint32, numberOfFrames))
+    return EC_IllegalCall;
 
   if (frameNo == 0)
   {
@@ -250,7 +251,7 @@ OFCondition DcmCodec::determineStartFragment(
   // non-standard case: multiple fragments per frame.
   // We now try to consult the offset table.
   DcmPixelItem *pixItem = NULL;
-  Uint8 * rawOffsetTable = NULL;
+  Uint8 *rawOffsetTable = NULL;
 
   // get first pixel item, i.e. the fragment containing the offset table
   OFCondition result = fromPixSeq->getItem(pixItem, 0);
@@ -260,45 +261,54 @@ OFCondition DcmCodec::determineStartFragment(
     result = pixItem->getUint8Array(rawOffsetTable);
     if (result.good())
     {
+      // check if the offset table is empty
+      if (tableLength == 0)
+        result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotDetermineStartFragment, OF_error, "Cannot determine start fragment: basic offset table is empty");
       // check if the offset table has the right size: 4 bytes for each frame (not fragment!)
-      if (tableLength != 4* OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+      else if (tableLength != 4 * OFstatic_cast(Uint32, numberOfFrames))
+        result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotDetermineStartFragment, OF_error, "Cannot determine start fragment: basic offset table has wrong size");
+      else {
 
-      // byte swap offset table into local byte order. In file, the offset table is always in little endian
-      swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));
+        // byte swap offset table into local byte order. In file, the offset table is always in little endian
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));
 
-      // cast offset table to Uint32.
-      Uint32 *offsetTable = OFreinterpret_cast(Uint32 *, rawOffsetTable);
+        // cast offset table to Uint32.
+        Uint32 *offsetTable = OFreinterpret_cast(Uint32 *, rawOffsetTable);
 
-      // now access offset of the frame we're looking for
-      Uint32 offset = offsetTable[frameNo];
+        // now access offset of the frame we're looking for
+        Uint32 offset = offsetTable[frameNo];
 
-      // OK, now let's look if we can find a fragment that actually corresponds to that offset.
-      // In counter we compute the offset for each frame by adding all fragment lenghts
-      Uint32 counter = 0;
-      // now iterate over all fragments except the index table. The start of the first fragment
-      // is defined as zero.
-      for (Uint32 idx = 1; idx < numberOfFragments; ++idx)
-      {
-        if (counter == offset)
+        // OK, now let's look if we can find a fragment that actually corresponds to that offset.
+        // In counter we compute the offset for each frame by adding all fragment lengths
+        Uint32 counter = 0;
+        // now iterate over all fragments except the index table. The start of the first fragment
+        // is defined as zero.
+        for (Uint32 idx = 1; idx < numberOfFragments; ++idx)
         {
-          // hooray, we are lucky. We have found the fragment we're looking for
-          currentItem = idx;
-          return EC_Normal;
+          if (counter == offset)
+          {
+            // hooray, we are lucky. We have found the fragment we're looking for
+            currentItem = idx;
+            return EC_Normal;
+          }
+
+          // access pixel item in order to determine its length
+          result = fromPixSeq->getItem(pixItem, idx);
+          if (result.bad())
+            return makeOFCondition(OFM_dcmdata, EC_CODE_CannotDetermineStartFragment, OF_error, "Cannot determine start fragment: cannot access referenced pixel item");
+
+          // add pixel item length plus 8 bytes overhead for the item tag and length field
+          counter += pixItem->getLength() + 8;
         }
 
-        // access pixel item in order to determine its length
-        result = fromPixSeq->getItem(pixItem, idx);
-        if (result.bad()) return result;
-
-        // add pixel item length plus 8 bytes overhead for the item tag and length field
-        counter += pixItem->getLength() + 8;
+        // bad luck. We have not found a fragment corresponding to the offset in the offset table.
+        // Either we cannot correctly add numbers, or they cannot :-)
+        result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotDetermineStartFragment, OF_error, "Cannot determine start fragment: possibly wrong value in basic offset table");
       }
-
-      // bad luck. We have not found a fragment corresponding to the offset in the offset table.
-      // Either we cannot correctly add numbers, or they cannot :-)
-      return EC_TagNotFound;
-    }
-  }
+    } else
+      result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotDetermineStartFragment, OF_error, "Cannot determine start fragment: cannot access content of basic offset table");
+  } else
+    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotDetermineStartFragment, OF_error, "Cannot determine start fragment: cannot access basic offset table (first item)");
   return result;
 }
 
