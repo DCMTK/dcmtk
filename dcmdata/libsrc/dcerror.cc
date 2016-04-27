@@ -76,8 +76,3 @@ makeOFConditionConst(EC_InvalidCharacter,                OFM_dcmdata, 49, OF_err
 const unsigned short EC_CODE_CannotSelectCharacterSet  = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet = 36;
 const unsigned short EC_CODE_CannotConvertToXML        = 37;
-
-const char *dcmErrorConditionToString(OFCondition cond)
-{
-  return cond.text();
-}
