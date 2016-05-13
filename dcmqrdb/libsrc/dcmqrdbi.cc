@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2015, OFFIS e.V.
+ *  Copyright (C) 1993-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -624,19 +624,20 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_unlock()
 
 static OFCondition DB_FreeUidList (DB_UidList *lst)
 {
-    if (lst == NULL) return EC_Normal;
-
-    OFCondition cond = DB_FreeUidList (lst -> next);
-    if (lst -> patient)
-        free (lst -> patient);
-    if (lst -> study)
-        free (lst -> study);
-    if (lst -> serie)
-        free (lst -> serie);
-    if (lst -> image)
-        free (lst -> image);
-    free (lst);
-    return (cond);
+    while (lst != NULL) {
+        if (lst -> patient)
+            free (lst -> patient);
+        if (lst -> study)
+            free (lst -> study);
+        if (lst -> serie)
+            free (lst -> serie);
+        if (lst -> image)
+            free (lst -> image);
+        DB_UidList *curlst = lst;
+        lst = lst->next;
+        free (curlst);
+    }
+    return EC_Normal;
 }
 
 
