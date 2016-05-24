@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -413,9 +413,13 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
         const OFString TransferSyntaxUID;
         /// transfer syntax that was used to send this SOP instance
         E_TransferSyntax NetworkTransferSyntax;
-        /// flag indicating whether the SOP instance is uncompressed, i.e.\ uses any of the
-        /// three uncompressed transfer syntaxes
+        /// flag indicating whether the SOP instance is uncompressed, i.e.\ uses any of
+        /// the three uncompressed transfer syntaxes
         OFBool Uncompressed;
+        /// size of the dataset of the SOP instance (in bytes, 0 = not yet determined).
+        /// NB: The number of bytes that are actually transferred might deviate because
+        /// of minor changes to the DICOM dataset when appended to the C-STORE request.
+        unsigned long DatasetSize;
         /// association number that was used to send this SOP instance (0 = not sent)
         unsigned long AssociationNumber;
         /// presentation context ID to be used for sending this SOP instance
@@ -477,15 +481,21 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
                                          const OFString &transferSyntaxUID,
                                          const OFBool checkValues);
 
-    /** This method is called each time a SOP instance is sent to a peer.  Since it is called
-     *  after the SOP instance has been processed, the transfer entry passed to this method
-     *  contains current information, e.g. the DIMSE status of the C-STORE response.  This
-     *  also allows for counting the number of successful and failed transfers.
+    /** this method is called each time before a SOP instance is sent to a peer.  Therefore,
+     *  the transfer entry passed to this method does not yet contain all information.
+     *  @param  transferEntry  reference to current transfer entry that will be processed
+     */
+    virtual void notifySOPInstanceToBeSent(const TransferEntry &transferEntry);
+
+    /** this method is called each time after a SOP instance has been sent to a peer.
+     *  Therefore, the transfer entry passed to this method contains current and usually
+     *  also complete information, e.g. the DIMSE status of the C-STORE response.  This
+     *  allows for counting the number of successful and failed transfers.
      *  @param  transferEntry  reference to current transfer entry that has been processed
      */
     virtual void notifySOPInstanceSent(const TransferEntry &transferEntry);
 
-    /** This method is called each time after a SOP instance is sent to a peer.  If the
+    /** this method is called each time after a SOP instance is sent to a peer.  If the
      *  return value is OFTrue, the SCU will stop the sending process after the current SOP
      *  instance.  This could for example make sense when transferring SOP instances due to
      *  a C-MOVE request, which is externally canceled by a C-CANCEL message.  The default

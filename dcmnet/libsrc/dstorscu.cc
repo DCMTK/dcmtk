@@ -75,6 +75,7 @@ DcmStorageSCU::TransferEntry::TransferEntry(const OFFilename &filename,
     TransferSyntaxUID(transferSyntaxUID),
     NetworkTransferSyntax(EXS_Unknown),
     Uncompressed(OFFalse),
+    DatasetSize(0),
     AssociationNumber(0),
     PresentationContextID(0),
     RequestSent(OFFalse),
@@ -98,6 +99,7 @@ DcmStorageSCU::TransferEntry::TransferEntry(DcmDataset *dataset,
     TransferSyntaxUID(transferSyntaxUID),
     NetworkTransferSyntax(EXS_Unknown),
     Uncompressed(OFFalse),
+    DatasetSize(0),
     AssociationNumber(0),
     PresentationContextID(0),
     RequestSent(OFFalse),
@@ -863,6 +865,10 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                             }
                         }
                     }
+                    // determine size of the dataset (in bytes) based on the original transfer syntax
+                    (*CurrentTransferEntry)->DatasetSize = dataset->calcElementLength(dataset->getOriginalXfer(), g_dimse_send_sequenceType_encoding);
+                    // notify user of this class that the current SOP instance is to be sent
+                    notifySOPInstanceToBeSent(**CurrentTransferEntry);
                     // call the inherited method from the base class doing the real work
                     status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
                         dataset, (*CurrentTransferEntry)->ResponseStatusCode,
@@ -918,6 +924,12 @@ OFCondition DcmStorageSCU::sendSOPInstances()
         status = NET_EC_NoSOPInstancesToSend;
     }
     return status;
+}
+
+
+void DcmStorageSCU::notifySOPInstanceToBeSent(const TransferEntry &transferEntry)
+{
+    // do nothing in the default implementation
 }
 
 
@@ -1053,6 +1065,7 @@ OFCondition DcmStorageSCU::createReportFile(const OFString &filename) const
                 stream << "SOP Class     : " << (*transferEntry)->SOPClassUID << " = "
                     << dcmFindNameOfUID((*transferEntry)->SOPClassUID.c_str(), "unknown") << OFendl;
                 stream << "Original Xfer : " << (*transferEntry)->TransferSyntaxUID << " = " << orgXfer.getXferName() << OFendl;
+                stream << "Dataset Size  : " << (*transferEntry)->DatasetSize << " bytes" << OFendl;
                 stream << "Association   : " << (*transferEntry)->AssociationNumber << OFendl;
                 stream << "Pres. Context : " << OFstatic_cast(unsigned int, (*transferEntry)->PresentationContextID) << OFendl;
                 stream << "Network Xfer  : ";
