@@ -3428,4 +3428,10 @@
 #define CODE_DCM_SPECTOfWholeBody                                          DSRBasicCodedEntry("127901", "DCM", "SPECT of whole body")
 #define CODE_DCM_SPECTCTOfWholeBody                                        DSRBasicCodedEntry("127902", "DCM", "SPECT CT of whole body")
 
+// new codes introduced with recently approved CPs
+
+#define CODE_DCM_Glucose_Measurement_Date                                  DSRBasicCodedEntry("127857", "DCM", "Glucose Measurement Date")
+#define CODE_DCM_Glucose_Measurement_Time                                  DSRBasicCodedEntry("127858", "DCM", "Glucose Measurement Time")
+
+
 #endif
