@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-04-06 16:01:28
+**   Date: 2016-05-31 14:45:29
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -682,6 +682,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x0121, 0x0008, 0x0121,
       EVR_SQ, "EquivalentCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0122, 0x0008, 0x0122,
+      EVR_LO, "MappingResourceName", 1, 1, "CP_1539",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0123, 0x0008, 0x0123,
+      EVR_SQ, "ContextGroupIdentificationSequence", 1, 1, "CP_1539",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0124, 0x0008, 0x0124,
+      EVR_SQ, "MappingResourceIdentificationSequence", 1, 1, "CP_1539",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0201, 0x0008, 0x0201,
@@ -26508,12 +26520,24 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SH, "ScanSpotTuneID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0391, 0x300a, 0x0391,
+      EVR_IS, "ScanSpotPrescribedIndices", 1, -1, "CP_1031",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0392, 0x300a, 0x0392,
       EVR_IS, "NumberOfScanSpotPositions", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0393, 0x300a, 0x0393,
+      EVR_CS, "ScanSpotReordered", 1, 1, "CP_1031",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0394, 0x300a, 0x0394,
       EVR_FL, "ScanSpotPositionMap", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0395, 0x300a, 0x0395,
+      EVR_CS, "ScanSpotReorderingAllowed", 1, 1, "CP_1031",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0396, 0x300a, 0x0396,

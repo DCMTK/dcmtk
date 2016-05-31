@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-04-06 16:01:33
+**   Date: 2016-05-31 14:45:25
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-04-06 16:01:33"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-05-31 14:45:25"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4079
+** Number of entries: 4085
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -177,6 +177,9 @@
 #define DCM_LongCodeValue                        DcmTagKey(0x0008, 0x0119)
 #define DCM_URNCodeValue                         DcmTagKey(0x0008, 0x0120)
 #define DCM_EquivalentCodeSequence               DcmTagKey(0x0008, 0x0121)
+#define DCM_MappingResourceName                  DcmTagKey(0x0008, 0x0122)
+#define DCM_ContextGroupIdentificationSequence   DcmTagKey(0x0008, 0x0123)
+#define DCM_MappingResourceIdentificationSequence DcmTagKey(0x0008, 0x0124)
 #define DCM_TimezoneOffsetFromUTC                DcmTagKey(0x0008, 0x0201)
 #define DCM_PrivateDataElementCharacteristicsSequence DcmTagKey(0x0008, 0x0300)
 #define DCM_PrivateGroupReference                DcmTagKey(0x0008, 0x0301)
@@ -3879,8 +3882,11 @@
 #define DCM_RangeModulatorGatingStopWaterEquivalentThickness DcmTagKey(0x300a, 0x0388)
 #define DCM_IsocenterToRangeModulatorDistance    DcmTagKey(0x300a, 0x038a)
 #define DCM_ScanSpotTuneID                       DcmTagKey(0x300a, 0x0390)
+#define DCM_ScanSpotPrescribedIndices            DcmTagKey(0x300a, 0x0391)
 #define DCM_NumberOfScanSpotPositions            DcmTagKey(0x300a, 0x0392)
+#define DCM_ScanSpotReordered                    DcmTagKey(0x300a, 0x0393)
 #define DCM_ScanSpotPositionMap                  DcmTagKey(0x300a, 0x0394)
+#define DCM_ScanSpotReorderingAllowed            DcmTagKey(0x300a, 0x0395)
 #define DCM_ScanSpotMetersetWeights              DcmTagKey(0x300a, 0x0396)
 #define DCM_ScanningSpotSize                     DcmTagKey(0x300a, 0x0398)
 #define DCM_NumberOfPaintings                    DcmTagKey(0x300a, 0x039a)
