@@ -312,7 +312,7 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStartDateTime(co
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    CHECK_RESULT(setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, dateTime, "TID 1607 - Row 4", check));
+    CHECK_RESULT(setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStartDateTime, dateTime, "TID 1607 - Row 4", check));
     /* in case of error, reset cursor to stored node */
     BAD_RESULT(setCursor(cursor));
     return result;
@@ -327,7 +327,7 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalStopDateTime(con
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    CHECK_RESULT(setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, dateTime, "TID 1607 - Row 5", check));
+    CHECK_RESULT(setStringContentItemFromValue(VT_DateTime, CODE_DCM_RadiopharmaceuticalStopDateTime, dateTime, "TID 1607 - Row 5", check));
     /* in case of error, reset cursor to stored node */
     BAD_RESULT(setCursor(cursor));
     return result;
@@ -675,9 +675,9 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 3 */
             CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideHalfLife, 0 /*pos*/, CODE_SRT_HalfLifeOfRadiopharmaceutical, CODE_UCUM_s, "TID 1607 - Row 3", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 4 */
-            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartTime /*DateTime*/, "TID 1607 - Row 4", check));
+            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartDateTime, "TID 1607 - Row 4", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 5 */
-            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopTime /*DateTime*/, "TID 1607 - Row 5", check));
+            CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStopDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStopDateTime, "TID 1607 - Row 5", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 6 */
             CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalVolume, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalVolume, CODE_UCUM_cm3 /*might change with a CP*/, "TID 1607 - Row 6", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 7 */

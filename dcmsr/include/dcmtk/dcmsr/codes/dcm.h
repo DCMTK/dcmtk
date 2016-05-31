@@ -7,6 +7,7 @@
  *
  *  Generated automatically from DICOM PS 3.16-2016b
  *  File created on 2016-04-06 16:07:54 by J. Riesmeier
+ *  File updated manually on 2016-05-31 by J. Riesmeier
  *
  */
 
@@ -1880,7 +1881,7 @@
 #define CODE_DCM_CalibrationProtocol                                       DSRBasicCodedEntry("113720", "DCM", "Calibration Protocol")
 #define CODE_DCM_IrradiationEventType                                      DSRBasicCodedEntry("113721", "DCM", "Irradiation Event Type")
 #define CODE_DCM_DoseAreaProductTotal                                      DSRBasicCodedEntry("113722", "DCM", "Dose Area Product Total")
-#define CODE_DCM_CalibrationDate                                           DSRBasicCodedEntry("113723", "DCM", "Calibration Date")
+#define CODE_DCM_CalibrationDateTime                                       DSRBasicCodedEntry("113723", "DCM", "Calibration DateTime")
 #define CODE_DCM_CalibrationResponsibleParty                               DSRBasicCodedEntry("113724", "DCM", "Calibration Responsible Party")
 #define CODE_DCM_Dose_RP_Total                                             DSRBasicCodedEntry("113725", "DCM", "Dose (RP) Total")
 #define CODE_DCM_FluoroDoseAreaProductTotal                                DSRBasicCodedEntry("113726", "DCM", "Fluoro Dose Area Product Total")
@@ -2564,7 +2565,7 @@
 #define CODE_DCM_SystemicFlow                                              DSRBasicCodedEntry("122162", "DCM", "Systemic Flow")
 #define CODE_DCM_DischargeDateTime                                         DSRBasicCodedEntry("122163", "DCM", "Discharge DateTime")
 #define CODE_DCM_CoronaryArteryBypassDuringThisAdmission                   DSRBasicCodedEntry("122164", "DCM", "Coronary Artery Bypass During This Admission")
-#define CODE_DCM_DateOfDeath                                               DSRBasicCodedEntry("122165", "DCM", "Date of Death")
+#define CODE_DCM_DateTimeOfDeath                                           DSRBasicCodedEntry("122165", "DCM", "DateTime of Death")
 #define CODE_DCM_DeathDuringThisAdmission                                  DSRBasicCodedEntry("122166", "DCM", "Death During This Admission")
 #define CODE_DCM_DeathDuringCatheterization                                DSRBasicCodedEntry("122167", "DCM", "Death During Catheterization")
 #define CODE_DCM_TypeOfMyocardialInfarction                                DSRBasicCodedEntry("122170", "DCM", "Type of Myocardial Infarction")
@@ -2920,7 +2921,7 @@
 #define CODE_DCM_ActivityWorkload                                          DSRBasicCodedEntry("122709", "DCM", "Activity workload")
 #define CODE_DCM_TimeSinceStartOfStage                                     DSRBasicCodedEntry("122710", "DCM", "Time since start of stage")
 #define CODE_DCM_ExerciseDurationAfterStressAgentInjection                 DSRBasicCodedEntry("122711", "DCM", "Exercise duration after stress agent injection")
-#define CODE_DCM_ImagingStartTime                                          DSRBasicCodedEntry("122712", "DCM", "Imaging Start Time")
+#define CODE_DCM_ImagingStartDateTime                                      DSRBasicCodedEntry("122712", "DCM", "Imaging Start DateTime")
 #define CODE_DCM_AttenuationCorrectionMethod                               DSRBasicCodedEntry("122713", "DCM", "Attenuation correction method")
 #define CODE_DCM_PharmacologicalStressAgentDose                            DSRBasicCodedEntry("122715", "DCM", "Pharmacological Stress Agent Dose")
 #define CODE_DCM_MaximumPowerOutputAchieved                                DSRBasicCodedEntry("122716", "DCM", "Maximum Power Output Achieved")
@@ -2979,8 +2980,8 @@
 #define CODE_DCM_PETMyocardialViability_RestAndStress                      DSRBasicCodedEntry("122797", "DCM", "PET Myocardial Viability, Rest and Stress")
 #define CODE_DCM_AnginalEquivalent                                         DSRBasicCodedEntry("122799", "DCM", "Anginal Equivalent")
 #define CODE_DCM_RETIRED_Radiopharmaceutical                               DSRBasicCodedEntry("123001", "DCM", "Radiopharmaceutical")
-#define CODE_DCM_RadiopharmaceuticalStartTime                              DSRBasicCodedEntry("123003", "DCM", "Radiopharmaceutical Start Time")
-#define CODE_DCM_RadiopharmaceuticalStopTime                               DSRBasicCodedEntry("123004", "DCM", "Radiopharmaceutical Stop Time")
+#define CODE_DCM_RadiopharmaceuticalStartDateTime                          DSRBasicCodedEntry("123003", "DCM", "Radiopharmaceutical Start DateTime")
+#define CODE_DCM_RadiopharmaceuticalStopDateTime                           DSRBasicCodedEntry("123004", "DCM", "Radiopharmaceutical Stop DateTime")
 #define CODE_DCM_RadiopharmaceuticalVolume                                 DSRBasicCodedEntry("123005", "DCM", "Radiopharmaceutical Volume")
 #define CODE_DCM_RadionuclideTotalDose                                     DSRBasicCodedEntry("123006", "DCM", "Radionuclide Total Dose")
 #define CODE_DCM_RadiopharmaceuticalSpecificActivity                       DSRBasicCodedEntry("123007", "DCM", "Radiopharmaceutical Specific Activity")
