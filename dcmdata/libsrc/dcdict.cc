@@ -137,9 +137,9 @@ stripWhitespace(char* s)
 {
   if (s)
   {
-    register unsigned char c;
-    register unsigned char *t;
-    register unsigned char *p;
+    unsigned char c;
+    unsigned char *t;
+    unsigned char *p;
     t=p=OFreinterpret_cast(unsigned char *, s);
     while ((c = *t++)) if (!isspace(c)) *p++ = c;
     *p = '\0';
@@ -164,9 +164,9 @@ stripLeadingWhitespace(char* s)
 {
   if (s)
   {
-    register unsigned char c;
-    register unsigned char *t;
-    register unsigned char *p;
+    unsigned char c;
+    unsigned char *t;
+    unsigned char *p;
     t=p=OFreinterpret_cast(unsigned char *, s);
     while (isspace(*t)) t++;
     while ((c = *t++)) *p++ = c;

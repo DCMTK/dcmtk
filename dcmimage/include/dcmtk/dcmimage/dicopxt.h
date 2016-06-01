@@ -197,10 +197,10 @@ class DiColorPixelTemplate
         if ((data != NULL) && (count >= Count * 3) && (frames > 0) && (frames * fcount <= Count) &&
             (Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
         {
-            register T *q = OFstatic_cast(T *, data);
-            register int j;
-            register unsigned long k;
-            register unsigned long offset = 0;
+            T *q = OFstatic_cast(T *, data);
+            int j;
+            unsigned long k;
+            unsigned long offset = 0;
             if (planar)
             {
                 /* for all frames ... */
@@ -215,7 +215,7 @@ class DiColorPixelTemplate
                     offset += fcount;
                 }
             } else {
-                register unsigned long i;
+                unsigned long i;
                 /* for all frames ... */
                 for (k = 0; k < frames; ++k)
                 {
@@ -266,11 +266,11 @@ class DiColorPixelTemplate
             const unsigned long start = count * frame + ((upsideDown) ?
                 OFstatic_cast(unsigned long, height - 1) * OFstatic_cast(unsigned long, width) : 0);
             const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, width) : 0;
-            register const T *r = Data[0] + start;
-            register const T *g = Data[1] + start;
-            register const T *b = Data[2] + start;
-            register Uint16 x;
-            register Uint16 y;
+            const T *r = Data[0] + start;
+            const T *g = Data[1] + start;
+            const T *b = Data[2] + start;
+            Uint16 x;
+            Uint16 y;
             if (mode == 24)     // 24 bits per pixel
             {
                 const unsigned long wid3 = OFstatic_cast(unsigned long, width) * 3;
@@ -283,7 +283,7 @@ class DiColorPixelTemplate
                         data = new Uint8[fsize];
                     if (data != NULL)
                     {
-                        register Uint8 *q = OFstatic_cast(Uint8 *, data);
+                        Uint8 *q = OFstatic_cast(Uint8 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -365,7 +365,7 @@ class DiColorPixelTemplate
                         data = new Uint32[count];
                     if (data != NULL)
                     {
-                        register Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint32 *q = OFstatic_cast(Uint32 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -465,11 +465,11 @@ class DiColorPixelTemplate
             if (data != NULL)
             {
                 const unsigned long start = count * frame;
-                register const T *r = Data[0] + start;
-                register const T *g = Data[1] + start;
-                register const T *b = Data[2] + start;
-                register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                register unsigned long i;
+                const T *r = Data[0] + start;
+                const T *g = Data[1] + start;
+                const T *b = Data[2] + start;
+                Uint32 *q = OFstatic_cast(Uint32 *, data);
+                unsigned long i;
                 if (fromBits == toBits)
                 {
                     /* copy pixel data as is */

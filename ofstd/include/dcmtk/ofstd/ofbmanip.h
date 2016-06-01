@@ -58,9 +58,9 @@ class OFBitmanipTemplate
 #ifdef HAVE_MEMCPY
         memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
 #else
-        register size_t i;
-        register const T *p = src;
-        register T *q = dest;
+        size_t i;
+        const T *p = src;
+        T *q = dest;
         for (i = count; i != 0; --i)
             *q++ = *p++;
 #endif
@@ -86,9 +86,9 @@ class OFBitmanipTemplate
         if (src == dest)
             return;
 
-        register size_t i;
-        register const T *p = src;
-        register T *q = dest;
+        size_t i;
+        const T *p = src;
+        T *q = dest;
         if (src > dest)
         {
             // src is above dest in memory, we start copying from the start
@@ -123,8 +123,8 @@ class OFBitmanipTemplate
         else
 #endif
         {
-            register size_t i;
-            register T *q = dest;
+            size_t i;
+            T *q = dest;
             for (i = count; i != 0; --i)
                 *q++ = value;
         }
@@ -142,8 +142,8 @@ class OFBitmanipTemplate
 #ifdef HAVE_MEMZERO
         memzero(dest, OFstatic_cast(size_t, count) * sizeof(T));
 #else
-        register size_t i;
-        register T *q = dest;
+        size_t i;
+        T *q = dest;
         for (i = count; i != 0; --i)
             *q++ = 0;
 #endif

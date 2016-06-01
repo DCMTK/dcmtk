@@ -85,7 +85,7 @@ unsigned long DcmQuantColorHashTable::addToHashTable(
   DcmQuantScaleTable scaletable;
   scaletable.createTable(maxval, newmaxval);
 
-  register DcmQuantComponent r, g, b;
+  DcmQuantComponent r, g, b;
 
   for (unsigned long ff=0; ff<frames; ff++)
   {

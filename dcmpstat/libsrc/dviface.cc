@@ -1982,7 +1982,7 @@ int DVInterface::findStudyIdx(StudyDescRecord *study,
 {
     if ((study != NULL) && (uid != NULL))
     {
-        register int i = 0;
+        int i = 0;
         for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
         {
             if ((study[i].StudyInstanceUID != NULL) &&
@@ -2133,7 +2133,7 @@ OFCondition DVInterface::deleteInstance(const char *studyUID,
             {
                 if (pHandle->DB_GetStudyDesc(study_desc).good())
                 {
-                    register int i = 0;
+                    int i = 0;
                     for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
                     {
                         if ((study_desc[i].StudyInstanceUID != NULL) &&

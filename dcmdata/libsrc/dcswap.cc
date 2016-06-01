@@ -79,15 +79,14 @@ void swapBytes(void * value, const Uint32 byteLength,
      *   valWidth     - [in] Specifies how many bytes shall be treated together as one element.
      */
 {
-    /* use register (if available) to increase speed */
-    register Uint8 save;
+    Uint8 save;
 
     /* in case valWidth equals 2, swap correspondingly */
     if (valWidth == 2)
     {
-        register Uint8 *first = &OFstatic_cast(Uint8*, value)[0];
-        register Uint8 *second = &OFstatic_cast(Uint8*, value)[1];
-        register Uint32 times = byteLength / 2;
+        Uint8 *first = &OFstatic_cast(Uint8*, value)[0];
+        Uint8 *second = &OFstatic_cast(Uint8*, value)[1];
+        Uint32 times = byteLength / 2;
         while(times--)
         {
             save = *first;
@@ -100,11 +99,11 @@ void swapBytes(void * value, const Uint32 byteLength,
     /* if valWidth is greater than 2, swap correspondingly */
     else if (valWidth > 2)
     {
-        register size_t i;
+        size_t i;
         const size_t halfWidth = valWidth / 2;
         const size_t offset = valWidth - 1;
-        register Uint8 *start;
-        register Uint8 *end;
+        Uint8 *start;
+        Uint8 *end;
 
         Uint32 times = OFstatic_cast(Uint32, byteLength / valWidth);
         Uint8  *base = OFstatic_cast(Uint8 *, value);

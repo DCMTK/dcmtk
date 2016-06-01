@@ -57,7 +57,7 @@ DiOverlayData::~DiOverlayData()
 {
     if (Planes != NULL)
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < ArrayEntries; ++i)
             delete Planes[i];
     }

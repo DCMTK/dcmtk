@@ -81,9 +81,9 @@ class DiCurveFitting
             T3_ *beta = new T3_[order];
             if ((basis != NULL) && (alpha != NULL) && (beta != NULL))
             {
-                register unsigned int i;
-                register unsigned int j;
-                register unsigned int k;
+                unsigned int i;
+                unsigned int j;
+                unsigned int k;
                 for (i = 0; i < order; ++i)
                 {
                     for (j = 0; j < n; ++j)
@@ -156,8 +156,8 @@ class DiCurveFitting
         int result = 0;
         if ((y != NULL) && (c != NULL) && (n > 0) && (xe > xs))
         {
-            register unsigned int i;
-            register unsigned int j;
+            unsigned int i;
+            unsigned int j;
             T3_ x;
             T3_ x2;
             T3_ w;
@@ -259,9 +259,9 @@ class DiCurveFitting
         int result = 0;
         if ((a != NULL) && (b != NULL) && (n > 0))
         {
-            register unsigned int i;
-            register unsigned int j;
-            register unsigned int k;
+            unsigned int i;
+            unsigned int j;
+            unsigned int k;
             signed int pivot;
             T3_ mag;
             T3_ mag2;

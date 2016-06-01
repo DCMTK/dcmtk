@@ -87,10 +87,10 @@ class DiPalettePixelTemplate
     {                                                                // can be optimized if necessary !
         if (this->Init(pixel))
         {
-            register const T1 *p = pixel;
-            register T2 value = 0;
-            register unsigned long i;
-            register int j;
+            const T1 *p = pixel;
+            T2 value = 0;
+            unsigned long i;
+            int j;
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;

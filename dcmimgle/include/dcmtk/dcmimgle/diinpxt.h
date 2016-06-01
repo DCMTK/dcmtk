@@ -182,8 +182,8 @@ class DiInputPixelTemplate
         if (Data != NULL)
         {
             DCMIMGLE_DEBUG("determining minimum and maximum pixel values for input data");
-            register T2 *p = Data;
-            register unsigned long i;
+            T2 *p = Data;
+            unsigned long i;
             const unsigned long ocnt = OFstatic_cast(unsigned long, getAbsMaxRange());
             Uint8 *lut = NULL;
             if ((sizeof(T2) <= 2) && (Count > 3 * ocnt))               // optimization criteria
@@ -193,7 +193,7 @@ class DiInputPixelTemplate
                 {
                     DCMIMGLE_DEBUG("using optimized routine with additional LUT");
                     OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
-                    register Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
+                    Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
                     for (i = Count; i != 0; --i)                       // fill lookup table
                         *(q + *(p++)) = 1;
                     q = lut;
@@ -247,7 +247,7 @@ class DiInputPixelTemplate
             }
             if (lut == NULL)                                           // use conventional method
             {
-                register T2 value = *p;
+                T2 value = *p;
                 MinValue[0] = value;
                 MaxValue[0] = value;
                 for (i = Count; i > 1; --i)
@@ -454,7 +454,7 @@ class DiInputPixelTemplate
             const Uint32 length_B2 = lengthBytes % bitsAllocated;
 //          # old code: Count = ((lengthBytes * 8) + bitsAllocated - 1) / bitsAllocated;
             Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
-            register unsigned long i;
+            unsigned long i;
 #ifdef HAVE_STD__NOTHROW
             /* use a non-throwing new here (if available) because the allocated buffer can be huge */
             Data = new (std::nothrow) T2[Count];
@@ -474,8 +474,8 @@ class DiInputPixelTemplate
                 DCMIMGLE_TRACE("Input length: " << lengthBytes << " bytes, Pixel count: " << Count
                     << " (" << PixelCount << "), In: " << bitsof_T1 << " bits, Out: " << bitsof_T2
                     << " bits (" << (this->isSigned() ? "signed" : "unsigned") << ")");
-                register const T1 *p = pixel;
-                register T2 *q = Data;
+                const T1 *p = pixel;
+                T2 *q = Data;
                 if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
                 {
                     if (bitsStored == bitsAllocated)
@@ -486,7 +486,7 @@ class DiInputPixelTemplate
                     }
                     else /* bitsStored < bitsAllocated */
                     {
-                        register T1 mask = 0;
+                        T1 mask = 0;
                         for (i = 0; i < bitsStored; ++i)
                             mask |= OFstatic_cast(T1, 1 << i);
                         const T2 sign = 1 << (bitsStored - 1);
@@ -511,11 +511,11 @@ class DiInputPixelTemplate
                 else if ((bitsof_T1 > bitsAllocated) && (bitsof_T1 % bitsAllocated == 0))   // case 2: divisor of 8/16 bit
                 {
                     const Uint16 times = bitsof_T1 / bitsAllocated;
-                    register T1 mask = 0;
+                    T1 mask = 0;
                     for (i = 0; i < bitsStored; ++i)
                         mask |= OFstatic_cast(T1, 1 << i);
-                    register Uint16 j;
-                    register T1 value;
+                    Uint16 j;
+                    T1 value;
                     if ((bitsStored == bitsAllocated) && (bitsStored == bitsof_T2))
                     {
                         if (times == 2)
@@ -571,9 +571,9 @@ class DiInputPixelTemplate
                 {
                     DCMIMGLE_DEBUG("convert input pixel data: case 3 (multi copy)");
                     const Uint16 times = bitsAllocated / bitsof_T1;
-                    register Uint16 j;
-                    register Uint16 shift;
-                    register T2 value;
+                    Uint16 j;
+                    Uint16 shift;
+                    T2 value;
                     for (i = length_T1; i != 0; --i)
                     {
                         shift = 0;
@@ -589,10 +589,10 @@ class DiInputPixelTemplate
                 else                                                                        // case 4: anything else
                 {
                     DCMIMGLE_DEBUG("convert input pixel data: case 4 (general)");
-                    register T2 value = 0;
-                    register Uint16 bits = 0;
-                    register Uint32 skip = highBit + 1 - bitsStored;
-                    register Uint32 times;
+                    T2 value = 0;
+                    Uint16 bits = 0;
+                    Uint32 skip = highBit + 1 - bitsStored;
+                    Uint32 times;
                     T1 mask[bitsof_T1];
                     mask[0] = 1;
                     for (i = 1; i < bitsof_T1; ++i)

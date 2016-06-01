@@ -132,14 +132,14 @@ class DiMonoInputPixelTemplate
                 if (this->Data != NULL)
                 {
                     DCMIMGLE_DEBUG("applying modality tranformation with LUT (" << mlut->getCount() << " entries)");
-                    register T2 value = 0;
+                    T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
                     const T3 firstvalue = OFstatic_cast(T3, mlut->getFirstValue());
                     const T3 lastvalue = OFstatic_cast(T3, mlut->getLastValue());
-                    register const T1 *p = pixel + input->getPixelStart();
-                    register T3 *q = this->Data;
-                    register unsigned long i;
+                    const T1 *p = pixel + input->getPixelStart();
+                    T3 *q = this->Data;
+                    unsigned long i;
                     T3 *lut = NULL;
                     const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
@@ -203,20 +203,20 @@ class DiMonoInputPixelTemplate
                 this->Data = new T3[this->Count];
             if (this->Data != NULL)
             {
-                register T3 *q = this->Data;
-                register unsigned long i;
+                T3 *q = this->Data;
+                unsigned long i;
                 if ((slope == 1.0) && (intercept == 0.0))
                 {
                     if (!useInputBuffer)
                     {
-                        register const T1 *p = pixel + input->getPixelStart();
+                        const T1 *p = pixel + input->getPixelStart();
                         for (i = this->InputCount; i != 0; --i)   // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                             *(q++) = OFstatic_cast(T3, *(p++));
                     }
                 } else {
                     DCMIMGLE_DEBUG("applying modality transformation with rescale slope = " << slope << ", intercept = " << intercept);
                     T3 *lut = NULL;
-                    register const T1 *p = pixel + input->getPixelStart();
+                    const T1 *p = pixel + input->getPixelStart();
                     const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization

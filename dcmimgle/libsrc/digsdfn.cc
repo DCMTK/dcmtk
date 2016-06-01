@@ -337,11 +337,11 @@ int DiGSDFunction::calculateGSDF()
         const double h = -3.1978977e-3;
         const double k =  1.2992634e-4;
         const double m =  1.3635334e-3;
-        register unsigned int i;
-        register double ln;
-        register double ln2;
-        register double ln3;
-        register double ln4;
+        unsigned int i;
+        double ln;
+        double ln2;
+        double ln3;
+        double ln4;
         for (i = 0; i < GSDFCount; ++i)
         {
             ln = log(OFstatic_cast(double, i + 1));
@@ -365,8 +365,8 @@ int DiGSDFunction::calculateGSDFSpline()
         unsigned int *jidx = new unsigned int[GSDFCount];
         if ((GSDFSpline != NULL) && (jidx != NULL))
         {
-            register unsigned int i;
-            register unsigned int *p = jidx;
+            unsigned int i;
+            unsigned int *p = jidx;
             for (i = 1; i <= GSDFCount; ++i)
                 *(p++) = i;
             status = DiCubicSpline<unsigned int, double>::Function(jidx, GSDFValue, GSDFCount, GSDFSpline);
@@ -421,7 +421,7 @@ double DiGSDFunction::getJNDIndex(const double lum)
         const double i = -0.017046845;
         double lg10[8];
         lg10[0] = log10(lum);
-        register unsigned int j;
+        unsigned int j;
         for (j = 0; j < 7; ++j)                         // reduce number of multiplications
             lg10[j + 1] = lg10[j] * lg10[0];
         return a + b*lg10[0] + c*lg10[1] + d*lg10[2] + e*lg10[3] + f*lg10[4] + g*lg10[5] + h*lg10[6] + i*lg10[7];

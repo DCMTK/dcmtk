@@ -688,7 +688,7 @@ OFString I2DJpegSource::jpegMarkerToString(const E_JPGMARKER& marker)
 /* Read one byte, testing for EOF */
 int I2DJpegSource::read1Byte(Uint8& result)
 {
-  register int c;
+  int c;
   c = jpegFile.fgetc();
   if (c == EOF)
     return EOF;

@@ -63,9 +63,9 @@ public:
    */
   inline void adjust(DcmQuantPixel& px, long col, long maxval)
   {
-    register long sr = px.getRed()   + thisrerr[col + 1] / DcmQuantFloydSteinbergScale;
-    register long sg = px.getGreen() + thisgerr[col + 1] / DcmQuantFloydSteinbergScale;
-    register long sb = px.getBlue()  + thisberr[col + 1] / DcmQuantFloydSteinbergScale;
+    long sr = px.getRed()   + thisrerr[col + 1] / DcmQuantFloydSteinbergScale;
+    long sg = px.getGreen() + thisgerr[col + 1] / DcmQuantFloydSteinbergScale;
+    long sb = px.getBlue()  + thisberr[col + 1] / DcmQuantFloydSteinbergScale;
     if ( sr < 0 ) sr = 0;
     else if ( sr > OFstatic_cast(long, maxval) ) sr = maxval;
     if ( sg < 0 ) sg = 0;
@@ -82,7 +82,7 @@ public:
    */
   inline void propagate(const DcmQuantPixel& px, const DcmQuantPixel& mapped, long col)
   {
-    register long err;
+    long err;
 
     /* Propagate Floyd-Steinberg error terms. */
     if ( fs_direction )

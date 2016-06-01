@@ -234,8 +234,8 @@ DcmVR::setVR(const char* vrName)
          * letters as "real" future VRs (and thus assume extended length).
          * All other VR strings are treated as "illegal" VRs.
          */
-        register char c1 = *vrName;
-        register char c2 = (c1) ? (*(vrName + 1)) : ('\0');
+        char c1 = *vrName;
+        char c2 = (c1) ? (*(vrName + 1)) : ('\0');
         if ((c1 == '?') && (c2 == '?')) vr = EVR_UNKNOWN2B;
         if (!found && ((c1 < 'A') || (c1 > 'Z') || (c2 < 'A') || (c2 > 'Z'))) vr = EVR_UNKNOWN2B;
     }

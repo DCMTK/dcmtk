@@ -86,7 +86,7 @@ class DiARGBPixelTemplate
     {                                             // not very much optimized, but no one really uses ARGB !!
         if (this->Init(pixel))
         {
-            register T2 value;
+            T2 value;
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
@@ -94,7 +94,7 @@ class DiARGBPixelTemplate
             if (this->PlanarConfiguration)
             {
 /*
-                register const T1 *a = pixel;                                   // points to alpha plane
+                const T1 *a = pixel;                                   // points to alpha plane
                 const T1 *rgb[3];
                 rgb[0] = a + this->InputCount;                                  // points to red plane
                 rgb[1] = rgb[0] + this->InputCount;                             // points to green plane
@@ -122,9 +122,9 @@ class DiARGBPixelTemplate
                     }
                 }
 */
-                register unsigned long l;
-                register unsigned long i = 0;
-                register const T1 *a = pixel;                                   // points to alpha plane
+                unsigned long l;
+                unsigned long i = 0;
+                const T1 *a = pixel;                                   // points to alpha plane
                 const T1 *rgb[3];
                 rgb[0] = a + planeSize;                                         // points to red plane
                 rgb[1] = rgb[0] + planeSize;                                    // points to green plane
@@ -160,8 +160,8 @@ class DiARGBPixelTemplate
                        rgb[j] += 2 * planeSize;
                 }
             } else {
-                register unsigned long i;
-                register const T1 *p = pixel;
+                unsigned long i;
+                const T1 *p = pixel;
                 for (i = 0; i < count; ++i)
                 {
                     value = OFstatic_cast(T2, *(p++));                          // get alpha value

@@ -767,11 +767,11 @@ OFCondition DJCodecDecoder::createPlanarConfigurationByte(
   if (buf)
   {
     memcpy(buf, imageFrame, 3*numPixels);
-    register Uint8 *s = buf;                        // source
-    register Uint8 *r = imageFrame;                 // red plane
-    register Uint8 *g = imageFrame + numPixels;     // green plane
-    register Uint8 *b = imageFrame + (2*numPixels); // blue plane
-    for (register size_t i=numPixels; i; i--)
+    Uint8 *s = buf;                        // source
+    Uint8 *r = imageFrame;                 // red plane
+    Uint8 *g = imageFrame + numPixels;     // green plane
+    Uint8 *b = imageFrame + (2*numPixels); // blue plane
+    for (size_t i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;
@@ -796,11 +796,11 @@ OFCondition DJCodecDecoder::createPlanarConfigurationWord(
   if (buf)
   {
     memcpy(buf, imageFrame, 3*numPixels*sizeof(Uint16));
-    register Uint16 *s = buf;                        // source
-    register Uint16 *r = imageFrame;                 // red plane
-    register Uint16 *g = imageFrame + numPixels;     // green plane
-    register Uint16 *b = imageFrame + (2*numPixels); // blue plane
-    for (register size_t i=numPixels; i; i--)
+    Uint16 *s = buf;                        // source
+    Uint16 *r = imageFrame;                 // red plane
+    Uint16 *g = imageFrame + numPixels;     // green plane
+    Uint16 *b = imageFrame + (2*numPixels); // blue plane
+    for (size_t i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;

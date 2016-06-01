@@ -179,9 +179,9 @@ class DiColorOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register T2 *p = Data;
-            register unsigned long i;
-            register int j;
+            T2 *p = Data;
+            unsigned long i;
+            int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
                     stream << OFstatic_cast(unsigned long, *(p++)) << " ";     // typecast to resolve problems with 'char'
@@ -200,9 +200,9 @@ class DiColorOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register T2 *p = Data;
-            register unsigned long i;
-            register int j;
+            T2 *p = Data;
+            unsigned long i;
+            int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
                     fprintf(stream, "%lu ", OFstatic_cast(unsigned long, *(p++)));
@@ -243,12 +243,12 @@ class DiColorOutputPixelTemplate
             if (Data != NULL)
             {
                 DCMIMAGE_DEBUG("converting color pixel data to output format");
-                register T2 *q = Data;
-                register unsigned long i;
+                T2 *q = Data;
+                unsigned long i;
                 const T2 max2 = OFstatic_cast(T2, DicomImageClass::maxval(bits2));
                 if (planar)
                 {
-                    register const T1 *p;
+                    const T1 *p;
                     if (bits1 == bits2)
                     {
                         for (int j = 0; j < 3; ++j)
@@ -332,7 +332,7 @@ class DiColorOutputPixelTemplate
                 }
                 else /* not planar */
                 {
-                    register int j;
+                    int j;
                     if (bits1 == bits2)
                     {
                         /* invert output data */

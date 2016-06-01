@@ -102,7 +102,7 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
         LODValue = new double[ValueCount];
         if ((DDLValue != NULL) && (LODValue != NULL))
         {
-            register unsigned int i;
+            unsigned int i;
             for (i = 0; i <= MaxDDLValue; ++i)
             {
                 DDLValue[i] = OFstatic_cast(Uint16, i);     // set DDL values
@@ -170,7 +170,7 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
         LODValue = new double[ValueCount];
         if ((DDLValue != NULL) && (LODValue != NULL))
         {
-            register Uint16 i;
+            Uint16 i;
             const double min = ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner)) ? val_max : val_min;
             const double max = ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner)) ? val_min : val_max;
             const double val = (max - min) / OFstatic_cast(double, MaxDDLValue);
@@ -197,7 +197,7 @@ DiDisplayFunction::~DiDisplayFunction()
 {
     delete[] DDLValue;
     delete[] LODValue;
-    register int i;
+    int i;
     for (i = 0; i < MAX_NUMBER_OF_TABLES; ++i)
         delete LookupTable[i];
 }
@@ -218,7 +218,7 @@ Uint16 DiDisplayFunction::getDDLforValue(const double value) const
 {
     if ((LODValue != NULL) && (ValueCount > 0))
     {
-        register unsigned long j = 0;
+        unsigned long j = 0;
         /* search for closest index, assuming monotony */
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
@@ -269,7 +269,7 @@ int DiDisplayFunction::deleteLookupTable(const int bits)
     if (bits == 0)
     {
         /* delete all LUTs */
-        register int i;
+        int i;
         for (i = 0; i < MAX_NUMBER_OF_TABLES; ++i)
         {
             delete LookupTable[i];
@@ -475,7 +475,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
         if ((DDLValue != NULL) && (LODValue != NULL) && (sort_tab != NULL))
         {
             OFBitmanipTemplate<Sint32>::setMem(sort_tab, -1, count);                // initialize array
-            register unsigned long i;
+            unsigned long i;
             for (i = 0; i < ValueCount; ++i)
             {
                 if (ddl_tab[i] <= MaxDDLValue)                                      // calculate sort table
@@ -543,7 +543,7 @@ int DiDisplayFunction::interpolateValues()
                 if ((DDLValue != NULL) && (LODValue != NULL))
                 {
                     /* set x values linearly */
-                    register unsigned int i;
+                    unsigned int i;
                     for (i = 0; i <= MaxDDLValue; ++i)
                         DDLValue[i] = OFstatic_cast(Uint16, i);
                     /* compute new y values */
@@ -569,7 +569,7 @@ int DiDisplayFunction::interpolateValues()
                 if ((DDLValue != NULL) && (LODValue != NULL))
                 {
                     /* set x values linearly */
-                    register unsigned int i;
+                    unsigned int i;
                     for (i = 0; i <= MaxDDLValue; ++i)
                         DDLValue[i] = OFstatic_cast(Uint16, i);
                     /* compute new y values */
@@ -594,7 +594,7 @@ int DiDisplayFunction::calculateMinMax()
     {
         MinValue = LODValue[0];
         MaxValue = LODValue[0];
-        register unsigned long i;
+        unsigned long i;
         for (i = 1; i < ValueCount; ++i)
         {
             if (LODValue[i] < MinValue)
@@ -645,7 +645,7 @@ double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
         if (lum_tab != NULL)
         {
             /* compute luminance values from optical density */
-            register unsigned int i;
+            unsigned int i;
             if (useAmb)
             {
                 for (i = 0; i < count; ++i)

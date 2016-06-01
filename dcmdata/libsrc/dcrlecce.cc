@@ -212,8 +212,8 @@ OFCondition DcmRLECodecEncoder::encode(
       Uint32 offsetBetweenSamples = 0;
       Uint32 sample = 0;
       Uint32 byte = 0;
-      register Uint32 pixel = 0;
-      register Uint32 columnCounter = 0;
+      Uint32 pixel = 0;
+      Uint32 columnCounter = 0;
 
       DcmRLEEncoder *rleEncoder = NULL;
       Uint32 rleSize = 0;

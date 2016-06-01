@@ -300,10 +300,10 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
 {
     if (temp != NULL)
     {
-        register Uint16 x;
-        register Uint16 y;
-        register Uint16 *q = temp;
-        register const Uint16 mask = 1 << bit;
+        Uint16 x;
+        Uint16 y;
+        Uint16 *q = temp;
+        const Uint16 mask = 1 << bit;
         const Uint16 skip_x = width - plane->Columns;
         const unsigned long skip_f = OFstatic_cast(unsigned long, height - plane->Rows) * OFstatic_cast(unsigned long, width);
         for (unsigned long f = 0; f < NumberOfFrames; ++f)
@@ -363,11 +363,11 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                 if ((fore & mask) != (back & mask))
                 {
                     OFBitmanipTemplate<Uint8>::setMem(data, 0x0, count8);
-                    register Uint16 x;
-                    register Uint16 y;
-                    register Uint8 value = 0;
-                    register Uint8 *q = data;
-                    register int bit = 0;
+                    Uint16 x;
+                    Uint16 y;
+                    Uint8 value = 0;
+                    Uint8 *q = data;
+                    int bit = 0;
                     if (reset(frame + ImageFrameOrigin))
                     {
                         for (y = ymin; y < ymax; ++y)
@@ -410,9 +410,9 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                 OFBitmanipTemplate<Uint8>::setMem(data, back8, count);
                 if (fore8 != back8)                                     // optimization
                 {
-                    register Uint16 x;
-                    register Uint16 y;
-                    register Uint8 *q = data;
+                    Uint16 x;
+                    Uint16 y;
+                    Uint8 *q = data;
                     if (reset(frame + ImageFrameOrigin))
                     {
                         for (y = ymin; y < ymax; ++y)
@@ -439,9 +439,9 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                 OFBitmanipTemplate<Uint16>::setMem(data, back16, count);
                 if (fore16 != back16)                                   // optimization
                 {
-                    register Uint16 x;
-                    register Uint16 y;
-                    register Uint16 *q = data;
+                    Uint16 x;
+                    Uint16 y;
+                    Uint16 *q = data;
                     if (reset(frame + ImageFrameOrigin))
                     {
                         for (y = ymin; y < ymax; ++y)
@@ -480,11 +480,11 @@ unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
         if (buffer != NULL)
         {
             OFBitmanipTemplate<Uint8>::setMem(buffer, 0x0, count8);
-            register Uint16 x;
-            register Uint16 y;
-            register Uint8 value = 0;
-            register Uint8 *q = buffer;
-            register int bit = 0;
+            Uint16 x;
+            Uint16 y;
+            Uint8 value = 0;
+            Uint8 *q = buffer;
+            int bit = 0;
             for (unsigned long f = 0; f < NumberOfFrames; ++f)
             {
                 if (reset(f + ImageFrameOrigin))

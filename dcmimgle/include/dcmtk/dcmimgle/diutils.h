@@ -393,7 +393,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImageClass
     {
         if (tb_value > 0)
             tb_value -= tb_pos;
-        register unsigned int tb_bits = 0;
+        unsigned int tb_bits = 0;
         while (tb_value > 0)
         {
             ++tb_bits;

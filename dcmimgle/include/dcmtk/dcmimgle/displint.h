@@ -76,7 +76,7 @@ class DiCubicSpline
             T3_ *u = new T3_[n];                            // temporary vector
             if (u != NULL)
             {
-                register unsigned int i;
+                unsigned int i;
                 T3_ p, qn, sig, un;
                 if (yp1 > 0.99e30)                          // ignore value for first derivative at point 1
                     y2[0] = u[0] = 0.0;
@@ -145,9 +145,9 @@ class DiCubicSpline
     {
         if ((xa != NULL) && (ya != NULL) && (y2a != NULL) && (na > 0) && (x != NULL) && (y != NULL) && (n > 0))
         {
-            register unsigned int k, i;
-            register unsigned int klo = 0;
-            register unsigned int khi = na - 1;
+            unsigned int k, i;
+            unsigned int klo = 0;
+            unsigned int khi = na - 1;
             T3_ h, b, a;
             for (i = 0; i < n; ++i)
             {

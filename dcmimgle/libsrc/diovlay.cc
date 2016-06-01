@@ -59,7 +59,7 @@ DiOverlay::DiOverlay(const DiDocument *docu,
     Data = new DiOverlayData(MaxOverlayCount);                                         // can't determine number of overlays :-(
     if ((docu != NULL) && (Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < MaxOverlayCount; ++i)
         {
             Data->Planes[Data->Count] = new DiOverlayPlane(docu, convertToGroupNumber(i), alloc, stored, high);
@@ -95,7 +95,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     Uint16 *temp = Init(overlay);
     if (temp != NULL)
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
@@ -131,7 +131,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         flip.flipData(OFconst_cast(const Uint16 **, &temp), &(Data->DataBuffer), horz, vert);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
@@ -165,7 +165,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         rotate.rotateData(OFconst_cast(const Uint16 **, &temp), &(Data->DataBuffer), degree);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
@@ -201,7 +201,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
             OFstatic_cast(unsigned long, overlay->Height) * overlay->Frames;
         if ((Data != NULL) && (Data->Planes != NULL) && (count > 0))
         {
-            register unsigned int i;
+            unsigned int i;
             Data->DataBuffer = new Uint16[OFstatic_cast(unsigned long, Width) * OFstatic_cast(unsigned long, Height) * Frames];
             if (Data->DataBuffer != NULL)
             {
@@ -249,7 +249,7 @@ int DiOverlay::convertToPlaneNumber(unsigned int &plane,
                     return 2;                                                           // plane alreay exists
                 return 1;                                                               // ... is new
             } else {
-                register unsigned int i;
+                unsigned int i;
                 for (i = 0; i < Data->Count; ++i)
                 {
                     if ((Data->Planes[i] != NULL) && (Data->Planes[i]->getGroupNumber() == plane))
@@ -340,7 +340,7 @@ int DiOverlay::showAllPlanes()
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
@@ -360,7 +360,7 @@ int DiOverlay::showAllPlanes(const double fore,
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if ((Data->Planes[i] != NULL))
@@ -391,7 +391,7 @@ int DiOverlay::hideAllPlanes()
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
@@ -456,7 +456,7 @@ int DiOverlay::hasEmbeddedData() const
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i;
+        unsigned int i;
         for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if ((Data->Planes[i] != NULL) && (Data->Planes[i]->isEmbedded()))

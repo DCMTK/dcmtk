@@ -82,9 +82,9 @@ public:
     long limitcol;
     long col; // must be signed!
     long maxval_l = OFstatic_cast(long, maxval);
-    register int ind;
+    int ind;
     const DcmQuantComponent *currentpixel;
-    register DcmQuantComponent cr, cg, cb;
+    DcmQuantComponent cr, cg, cb;
 
     // create scale table
     DcmQuantScaleTable scaletable;

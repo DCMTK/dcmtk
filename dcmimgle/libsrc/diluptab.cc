@@ -183,7 +183,7 @@ void DiLookupTable::checkTable(unsigned long count,
 {
     if (count > 0)                                                            // valid LUT
     {
-        register unsigned long i;
+        unsigned long i;
         if (count > MAX_TABLE_ENTRY_COUNT)                                    // cut LUT length to maximum
             count = MAX_TABLE_ENTRY_COUNT;
         if (count != Count)                                                   // length of LUT differs from number of LUT entries
@@ -195,8 +195,8 @@ void DiLookupTable::checkTable(unsigned long count,
                 DataBuffer = new Uint16[Count];                               // create new LUT
                 if ((DataBuffer != NULL) && (Data != NULL))
                 {
-                    register const Uint8 *p = OFreinterpret_cast(const Uint8 *, Data);
-                    register Uint16 *q = DataBuffer;
+                    const Uint8 *p = OFreinterpret_cast(const Uint8 *, Data);
+                    Uint16 *q = DataBuffer;
                     if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering
                     {
                         DCMIMGLE_DEBUG("local machine has big endian byte ordering ... swapping 8 bit LUT entries");
@@ -218,8 +218,8 @@ void DiLookupTable::checkTable(unsigned long count,
             }
         }
         MinValue = OFstatic_cast(Uint16, DicomImageClass::maxval(MAX_TABLE_ENTRY_SIZE));  // set minimum to maximum value
-        register const Uint16 *p = Data;
-        register Uint16 value;
+        const Uint16 *p = Data;
+        Uint16 value;
         if (DataBuffer != NULL)                                               // LUT entries have been copied 8 -> 16 bits
         {
             for (i = Count; i != 0; --i)
@@ -258,7 +258,7 @@ void DiLookupTable::checkTable(unsigned long count,
             if (DataBuffer != NULL)
             {
                 p = Data;
-                register Uint16 *q = DataBuffer;
+                Uint16 *q = DataBuffer;
                 for (i = Count; i != 0; --i)
                     *(q++) = *(p++) & mask;
             }
@@ -323,7 +323,7 @@ int DiLookupTable::invertTable(const int flag)
     int result = 0;
     if ((Data != NULL) && (Count > 0) && (flag & 0x3))
     {
-        register Uint32 i;
+        Uint32 i;
         if (flag & 0x2)
         {
             if (OriginalData != NULL)
@@ -332,16 +332,16 @@ int DiLookupTable::invertTable(const int flag)
                 {
                     if (Bits <= 8)
                     {
-                        register const Uint8 *p = OFconst_cast(const Uint8 *, OFstatic_cast(Uint8 *, OriginalData));
-                        register Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
+                        const Uint8 *p = OFconst_cast(const Uint8 *, OFstatic_cast(Uint8 *, OriginalData));
+                        Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
                         const Uint8 max = OFstatic_cast(Uint8, DicomImageClass::maxval(Bits));
                         for (i = Count; i != 0; --i)
                             *(q++) = max - *(p++);
                         result |= 0x2;
                     }
                 } else {
-                    register const Uint16 *p = OFconst_cast(const Uint16 *, OFstatic_cast(Uint16 *, OriginalData));
-                    register Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
+                    const Uint16 *p = OFconst_cast(const Uint16 *, OFstatic_cast(Uint16 *, OriginalData));
+                    Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
                     const Uint16 max = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));
                     for (i = Count; i != 0; --i)
                         *(q++) = max - *(p++);
@@ -353,8 +353,8 @@ int DiLookupTable::invertTable(const int flag)
         {
             if (DataBuffer != NULL)
             {
-                register const Uint16 *p = OFconst_cast(const Uint16 *, DataBuffer);
-                register Uint16 *q = DataBuffer;
+                const Uint16 *p = OFconst_cast(const Uint16 *, DataBuffer);
+                Uint16 *q = DataBuffer;
                 const Uint16 max = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));
                 for (i = Count; i != 0; --i)
                     *(q++) = max - *(p++);
@@ -365,8 +365,8 @@ int DiLookupTable::invertTable(const int flag)
                 DataBuffer = new Uint16[Count];
                 if (DataBuffer != NULL)
                 {
-                    register const Uint16 *p = Data;
-                    register Uint16 *q = DataBuffer;
+                    const Uint16 *p = Data;
+                    Uint16 *q = DataBuffer;
                     const Uint16 max = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));
                     for (i = Count; i != 0; --i)
                         *(q++) = max - *(p++);
@@ -385,7 +385,7 @@ int DiLookupTable::mirrorTable(const int flag)
     int result = 0;
     if ((Data != NULL) && (Count > 0) && (flag & 0x3))
     {
-        register Uint32 i;
+        Uint32 i;
         if (flag & 0x2)
         {
             if (OriginalData != NULL)
@@ -394,9 +394,9 @@ int DiLookupTable::mirrorTable(const int flag)
                 {
                     if (Bits <= 8)
                     {
-                        register Uint8 *p = OFstatic_cast(Uint8 *, OriginalData) + (Count - 1);
-                        register Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
-                        register Uint8 val;
+                        Uint8 *p = OFstatic_cast(Uint8 *, OriginalData) + (Count - 1);
+                        Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
+                        Uint8 val;
                         const unsigned long mid = Count / 2;
                         for (i = mid; i != 0; --i)
                         {
@@ -407,9 +407,9 @@ int DiLookupTable::mirrorTable(const int flag)
                         result |= 0x2;
                     }
                 } else {
-                    register Uint16 *p = OFstatic_cast(Uint16 *, OriginalData) + (Count - 1);
-                    register Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
-                    register Uint16 val;
+                    Uint16 *p = OFstatic_cast(Uint16 *, OriginalData) + (Count - 1);
+                    Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
+                    Uint16 val;
                     const unsigned long mid = Count / 2;
                     for (i = mid; i != 0; --i)
                     {
@@ -425,9 +425,9 @@ int DiLookupTable::mirrorTable(const int flag)
         {
             if (DataBuffer != NULL)
             {
-                register Uint16 *p = DataBuffer + (Count - 1);
-                register Uint16 *q = DataBuffer;
-                register Uint16 val;
+                Uint16 *p = DataBuffer + (Count - 1);
+                Uint16 *q = DataBuffer;
+                Uint16 val;
                 const unsigned long mid = Count / 2;
                 for (i = mid; i != 0; --i)
                 {
@@ -442,9 +442,9 @@ int DiLookupTable::mirrorTable(const int flag)
                 DataBuffer = new Uint16[Count];
                 if (DataBuffer != NULL)
                 {
-                    register Uint16 *p = OFconst_cast(Uint16 *, Data) + (Count - 1);
-                    register Uint16 *q = DataBuffer;
-                    register Uint16 val;
+                    Uint16 *p = OFconst_cast(Uint16 *, Data) + (Count - 1);
+                    Uint16 *q = DataBuffer;
+                    Uint16 val;
                     const unsigned long mid = Count / 2;
                     for (i = mid; i != 0; --i)
                     {
@@ -474,7 +474,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
         if ((data != NULL) && (valid != NULL))
         {
             OFBitmanipTemplate<Uint8>::zeroMem(valid, count);   // initialize array
-            register Uint32 i;
+            Uint32 i;
             for (i = 0; i < Count; ++i)                         // 'copy' values to new array
             {
                 if (!valid[Data[i]])
@@ -489,7 +489,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
                     last = i;
                 else
                 {
-                    register Uint32 j = i + 1;
+                    Uint32 j = i + 1;
                     while ((j < count) && !valid[j])            // find next valid value
                         ++j;
                     if (valid[last])                            // check for starting conditions

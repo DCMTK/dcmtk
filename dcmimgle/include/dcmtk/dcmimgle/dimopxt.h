@@ -229,15 +229,15 @@ class DiMonoPixelTemplate
         int result = 0;
         if ((Data != NULL) && (left_pos < columns) && (top_pos < rows))
         {
-            register T *p = Data + (columns * rows * frame) + (top_pos * columns) + left_pos;
+            T *p = Data + (columns * rows * frame) + (top_pos * columns) + left_pos;
             const unsigned long right_pos = (left_pos + width < columns) ? left_pos + width : columns;
             const unsigned long bottom = (top_pos + height < rows) ? top_pos + height : rows;
             const unsigned long skip_x = left_pos + (columns - right_pos);
-            register unsigned long x;
-            register unsigned long y;
-            register T value = 0;
-            register T min = *p;                    // get first pixel as initial value for min ...
-            register T max = min;                   // ... and max
+            unsigned long x;
+            unsigned long y;
+            T value = 0;
+            T min = *p;                    // get first pixel as initial value for min ...
+            T max = min;                   // ... and max
             for (y = top_pos; y < bottom; ++y)
             {
                 for (x = left_pos; x < right_pos; ++x)
@@ -278,7 +278,7 @@ class DiMonoPixelTemplate
             Uint32 *quant = new Uint32[count];
             if (quant != NULL)
             {
-                register unsigned long i;
+                unsigned long i;
                 OFBitmanipTemplate<Uint32>::zeroMem(quant, count);                  // initialize array
                 for (i = 0; i < Count; ++i)
                 {
@@ -290,7 +290,7 @@ class DiMonoPixelTemplate
 #endif
                 }
                 const Uint32 threshvalue = OFstatic_cast(Uint32, thresh * OFstatic_cast(double, Count));
-                register Uint32 t = 0;
+                Uint32 t = 0;
                 i = 0;
                 while ((i < count) && (t < threshvalue))
                     t += quant[i++];
@@ -368,9 +368,9 @@ class DiMonoPixelTemplate
                 if ((minvalue == 0) && (maxvalue == 0))
                 {
                     DCMIMGLE_DEBUG("determining global minimum and maximum pixel values for monochrome image");
-                    register T *p = Data;
-                    register T value = *p;
-                    register unsigned long i;
+                    T *p = Data;
+                    T value = *p;
+                    unsigned long i;
                     minvalue = value;
                     maxvalue = value;
                     for (i = Count; i > 1; --i)                 // could be optimized if necessary (see diinpxt.h) !
@@ -393,11 +393,11 @@ class DiMonoPixelTemplate
             if (mode & 0x2)
             {
                 DCMIMGLE_DEBUG("determining next minimum and maximum pixel values for monochrome image");
-                register T *p = Data;
-                register T value;
-                register int firstmin = 1;
-                register int firstmax = 1;
-                register unsigned long i;
+                T *p = Data;
+                T value;
+                int firstmin = 1;
+                int firstmax = 1;
+                unsigned long i;
                 for (i = Count; i != 0; --i)                    // could be optimized if necessary (see diinpxt.h) !
                 {
                     value = *(p++);

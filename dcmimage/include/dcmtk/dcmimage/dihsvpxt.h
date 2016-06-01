@@ -82,9 +82,9 @@ class DiHSVPixelTemplate
     {
         if (this->Init(pixel))
         {
-            register T2 *r = this->Data[0];
-            register T2 *g = this->Data[1];
-            register T2 *b = this->Data[2];
+            T2 *r = this->Data[0];
+            T2 *g = this->Data[1];
+            T2 *b = this->Data[2];
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
@@ -93,18 +93,18 @@ class DiHSVPixelTemplate
             if (this->PlanarConfiguration)
             {
 /*
-                register const T1 *h = pixel;
-                register const T1 *s = h + this->InputCount;
-                register const T1 *v = s + this->InputCount;
+                const T1 *h = pixel;
+                const T1 *s = h + this->InputCount;
+                const T1 *v = s + this->InputCount;
                 for (i = count; i != 0; --i)
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
 */
-                register unsigned long l;
-                register unsigned long i = count;
-                register const T1 *h = pixel;
-                register const T1 *s = h + planeSize;
-                register const T1 *v = s + planeSize;
+                unsigned long l;
+                unsigned long i = count;
+                const T1 *h = pixel;
+                const T1 *s = h + planeSize;
+                const T1 *v = s + planeSize;
                 while (i != 0)
                 {
                     /* convert a single frame */
@@ -121,11 +121,11 @@ class DiHSVPixelTemplate
             }
             else
             {
-                register const T1 *p = pixel;
-                register T2 h;
-                register T2 s;
-                register T2 v;
-                register unsigned long i;
+                const T1 *p = pixel;
+                T2 h;
+                T2 s;
+                T2 v;
+                unsigned long i;
                 for (i = count; i != 0; --i)
                 {
                     h = removeSign(*(p++), offset);

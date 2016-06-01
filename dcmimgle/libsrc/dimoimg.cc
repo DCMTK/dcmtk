@@ -1674,7 +1674,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
             const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, Columns) : 0;
-            register const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData()) + ((upsideDown) ?
+            const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData()) + ((upsideDown) ?
                 OFstatic_cast(unsigned long, Rows - 1) * OFstatic_cast(unsigned long, Columns) : 0);
             if (bits == 8)                                  // -- for idx color model (byte)
             {
@@ -1689,9 +1689,9 @@ unsigned long DiMonoImage::createDIB(void *&data,
                             data = new Uint8[count];            // allocated memory buffer
                         if (data != NULL)
                         {
-                            register Uint8 *q = OFstatic_cast(Uint8 *, data);
-                            register Uint16 x;
-                            register Uint16 y;
+                            Uint8 *q = OFstatic_cast(Uint8 *, data);
+                            Uint16 x;
+                            Uint16 y;
                             for (y = Rows; y != 0; --y)
                             {
                                 for (x = Columns; x != 0; --x)
@@ -1720,11 +1720,11 @@ unsigned long DiMonoImage::createDIB(void *&data,
                         data = new Uint8[count];               // allocated memory buffer
                     if (data != NULL)
                     {
-                        register Uint8 *q = OFstatic_cast(Uint8 *, data);
-                        register Uint8 value;
-                        register Uint16 x;
-                        register Uint16 y;
-                        register int j;
+                        Uint8 *q = OFstatic_cast(Uint8 *, data);
+                        Uint8 value;
+                        Uint16 x;
+                        Uint16 y;
+                        int j;
                         for (y = Rows; y != 0; --y)
                         {
                             for (x = Columns; x != 0; --x)
@@ -1749,10 +1749,10 @@ unsigned long DiMonoImage::createDIB(void *&data,
                         data = new Uint32[count];               // allocated memory buffer
                     if (data != NULL)
                     {
-                        register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                        register Uint32 value;
-                        register Uint16 x;
-                        register Uint16 y;
+                        Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint32 value;
+                        Uint16 x;
+                        Uint16 y;
                         for (y = Rows; y != 0; --y)
                         {
                             for (x = Columns; x != 0; --x)
@@ -1804,10 +1804,10 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
             data = new Uint32[count];
             if (data != NULL)
             {
-                register const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData());
-                register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                register Uint32 value;
-                register unsigned long i;
+                const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData());
+                Uint32 *q = OFstatic_cast(Uint32 *, data);
+                Uint32 value;
+                unsigned long i;
                 for (i = count; i != 0; --i)
                 {
                     value = *(p++);                     // store gray value
@@ -1848,11 +1848,11 @@ void *DiMonoImage::createPackedBitmap(const void *buffer,
                 data = new Uint16[((count + 1) * stored - 1) / 16];     // create new memory buffer
                 if (data != NULL)
                 {
-                    register const Uint16 *p = OFstatic_cast(const Uint16 *, buffer);
-                    register Uint16 *q = data;
-                    register unsigned long i;
-                    register Uint16 value1;
-                    register Uint16 value2;
+                    const Uint16 *p = OFstatic_cast(const Uint16 *, buffer);
+                    Uint16 *q = data;
+                    unsigned long i;
+                    Uint16 value1;
+                    Uint16 value2;
                     for (i = 0; i < count - 3; i += 4)                  // make 3 items out of 4
                     {
                         value1 = *(p++);
