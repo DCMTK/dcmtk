@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -94,7 +94,7 @@ class DiARGBPixelTemplate
             if (this->PlanarConfiguration)
             {
 /*
-                const T1 *a = pixel;                                   // points to alpha plane
+                const T1 *a = pixel;                                            // points to alpha plane
                 const T1 *rgb[3];
                 rgb[0] = a + this->InputCount;                                  // points to red plane
                 rgb[1] = rgb[0] + this->InputCount;                             // points to green plane
@@ -124,7 +124,7 @@ class DiARGBPixelTemplate
 */
                 unsigned long l;
                 unsigned long i = 0;
-                const T1 *a = pixel;                                   // points to alpha plane
+                const T1 *a = pixel;                                            // points to alpha plane
                 const T1 *rgb[3];
                 rgb[0] = a + planeSize;                                         // points to red plane
                 rgb[1] = rgb[0] + planeSize;                                    // points to green plane

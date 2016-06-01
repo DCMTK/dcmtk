@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,7 +104,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
             const double dist = (jnd_max - jnd_min) / (gin_ctn - 1);    // distance between two entries
             unsigned long i;
             double *s = jidx;
-            double value = jnd_min;                            // first value is fixed !
+            double value = jnd_min;                                     // first value is fixed !
             for (i = gin_ctn; i > 1; --i)                               // initialize scaled JND index array
             {
                 *(s++) = value;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -384,7 +384,7 @@ class DiMonoOutputPixelTemplate
                     {
                         DCMIMGLE_DEBUG("applying presentation LUT transformation");
                         createDisplayLUT(dlut, disp, plut->getBits());
-                        Uint32 value2;                                         // presentation LUT is always unsigned
+                        Uint32 value2;                                                  // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
                         const double gradient1 = OFstatic_cast(double, pcnt) / OFstatic_cast(double, vlut->getAbsMaxRange());
                         const Uint32 firstvalue = OFstatic_cast(Uint32, OFstatic_cast(double, vlut->getFirstValue()) * gradient1);
@@ -632,7 +632,7 @@ class DiMonoOutputPixelTemplate
                 {
                     DCMIMGLE_DEBUG("applying presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
-                    Uint32 value;                                            // presentation LUT is always unsigned
+                    Uint32 value;                                                     // presentation LUT is always unsigned
                     const double gradient1 = OFstatic_cast(double, plut->getCount()) / inter->getAbsMaxRange();
                     const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
                     if (initOptimizationLUT(lut, ocnt))
@@ -794,7 +794,7 @@ class DiMonoOutputPixelTemplate
                 {
                     DCMIMGLE_DEBUG("applying presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
-                    Uint32 value2;                                           // presentation LUT is always unsigned
+                    Uint32 value2;                                                    // presentation LUT is always unsigned
                     const double plutcnt_1 = OFstatic_cast(double, plut->getCount() - 1);
                     const double plutmax_1 = OFstatic_cast(double, plut->getAbsMaxRange() - 1);
                     if (initOptimizationLUT(lut, ocnt))
@@ -956,7 +956,7 @@ class DiMonoOutputPixelTemplate
                 {
                     DCMIMGLE_DEBUG("applying presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
-                    Uint32 value2;                                           // presentation LUT is always unsigned
+                    Uint32 value2;                                                    // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
                     const double plutmax_1 = OFstatic_cast(double, plut->getAbsMaxRange()) - 1;
                     const double gradient1 = (width_1 == 0) ? 0 : OFstatic_cast(double, pcnt - 1) / width_1;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -236,8 +236,8 @@ class DiMonoPixelTemplate
             unsigned long x;
             unsigned long y;
             T value = 0;
-            T min = *p;                    // get first pixel as initial value for min ...
-            T max = min;                   // ... and max
+            T min = *p;                             // get first pixel as initial value for min ...
+            T max = min;                            // ... and max
             for (y = top_pos; y < bottom; ++y)
             {
                 for (x = left_pos; x < right_pos; ++x)

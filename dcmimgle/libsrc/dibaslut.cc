@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,7 +87,7 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
         result = 2;                                     // descriptor differs (2)
         if ((Count == lut->getCount()) && (FirstEntry == lut->getFirstEntry()) && (Bits == lut->getBits()))
         {                                               // special case: if Count == 0 LUT data is equal
-            Uint32 i = Count;                  // ... but normally not Valid !
+            Uint32 i = Count;                           // ... but normally not Valid !
             if ((MinValue == lut->getMinValue()) && (MaxValue == lut->getMaxValue()))
             {                                           // additional check for better performance
                 const Uint16 *p = Data;
