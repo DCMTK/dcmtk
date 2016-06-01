@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1406,58 +1406,6 @@ DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
     delete params->reqUserIdentNeg; params->reqUserIdentNeg = NULL;
     delete params->ackUserIdentNeg; params->ackUserIdentNeg = NULL;
     return EC_Normal;
-}
-
-
-/* DUL_DefaultServiceParameters
-**
-** Purpose:
-**      DUL_DefaultServiceParameters is used to set a number of default
-**      parameters in a DUL_ASSOCIATESERVICEPARAMETERS structure.  These
-**      parameters are the default MIR parameters (which should be
-**      adequate for most Unix installations).
-**
-** Parameter Dictionary:
-**      params  Pointer to a DUL_ASSOCIATESERVICEPARAMETERS structure
-**              to be set.
-**
-** Return Values:
-**      none
-** Notes:
-**
-** Algorithm:
-*/
-void
-DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
-{
-    static DUL_ASSOCIATESERVICEPARAMETERS p = {
-        DICOM_STDAPPLICATIONCONTEXT,    /* Application Ctx Name */
-        "Calling AP Title",     /* Calling AP Title */
-        "Called AP Title",      /* Called AP Title */
-        "",                     /* Responding AP Title */
-        16384,                  /* Max PDU */
-        0,                      /* result */
-        0,                      /* result source */
-        0,                      /* diagnostic */
-        "localhost",            /* Calling presentation addr */
-        "localhost:104",        /* Called presentation addr */
-        NULL,                   /* Requested presentation ctx list */
-        NULL,                   /* Accepted presentation ctx list */
-        0,                      /* Maximum operations invoked */
-        0,                      /* Maximum operations performed */
-        DICOM_NET_IMPLEMENTATIONCLASSUID, /* Calling implementation class UID */
-        DICOM_NET_IMPLEMENTATIONVERSIONNAME, /* Calling implementation vers name */
-        "",                     /* Called implementation class UID */
-        "",                     /* Called implementation vers name */
-        0,                      /* peer max pdu */
-        NULL,                   /* Requested Extended Negotiation List */
-        NULL,                   /* Accepted Extended Negotiation List */
-        NULL,                   /* Requested User Identify Negotiation */
-        NULL,                   /* Accepted User Identify Negotiation */
-        OFFalse                 /* don't use Secure Transport Layer */
-    };
-
-    *params = p;
 }
 
 

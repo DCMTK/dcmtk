@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -98,7 +98,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/dcmnet/cond.h"		/* condition typedefs */
-#include "dcmtk/dcmnet/dcompat.h"	/* compatability routines */
+#include "dcmtk/dcmnet/dcompat.h"	/* compatibility routines */
 #include "dcmtk/dcmdata/dctypes.h"	/* dcmdata toolkit basic types */
 #include "dcmtk/dcmdata/dcuid.h"	/* dcmdata UID definitions */
 
@@ -113,8 +113,6 @@ typedef Uint32	MASK_32;	/* for bit masks */
 
 
 #define DICOM_STDAPPLICATIONCONTEXT UID_StandardApplicationContext
-#define DICOM_NET_IMPLEMENTATIONCLASSUID OFFIS_IMPLEMENTATION_CLASS_UID
-#define DICOM_NET_IMPLEMENTATIONVERSIONNAME OFFIS_DTK_IMPLEMENTATION_VERSION_NAME
 
 /* network type constants as used by the DUL layer */
 #define	DICOM_APPLICATION_ACCEPTOR	0x01

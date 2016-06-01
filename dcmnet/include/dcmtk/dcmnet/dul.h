@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -429,7 +429,6 @@ DCMTK_DCMNET_EXPORT OFString& DUL_DumpParams(OFString& str, DUL_ASSOCIATESERVICE
 DCMTK_DCMNET_EXPORT OFString& DUL_DumpConnectionParameters(OFString& str, DUL_ASSOCIATIONKEY *association);
 
 DCMTK_DCMNET_EXPORT OFCondition DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
-DCMTK_DCMNET_EXPORT void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 DCMTK_DCMNET_EXPORT OFString& dumpExtNegList(OFString& str, SOPClassExtendedNegotiationSubItemList& lst);
 
 /*
