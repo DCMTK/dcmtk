@@ -7,7 +7,7 @@
  *
  *  Generated automatically from DICOM PS 3.16-2016b
  *  File created on 2016-04-06 16:07:54 by J. Riesmeier
- *  File updated manually on 2016-05-31 by J. Riesmeier
+ *  File updated manually on 2016-06-02 by J. Riesmeier
  *
  */
 
@@ -3430,8 +3430,8 @@
 
 // new codes introduced with recently approved CPs
 
-#define CODE_DCM_Glucose_Measurement_Date                                  DSRBasicCodedEntry("127857", "DCM", "Glucose Measurement Date")
-#define CODE_DCM_Glucose_Measurement_Time                                  DSRBasicCodedEntry("127858", "DCM", "Glucose Measurement Time")
+#define CODE_DCM_GlucoseMeasurementDate                                    DSRBasicCodedEntry("127857", "DCM", "Glucose Measurement Date")
+#define CODE_DCM_GlucoseMeasurementTime                                    DSRBasicCodedEntry("127858", "DCM", "Glucose Measurement Time")
 
 
 #endif
