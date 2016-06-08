@@ -121,6 +121,14 @@ public:
    */
   virtual DcmSegTypes::E_SegmentAlgoType getSegmentAlgorithmType();
 
+  /** Get the Segment Algorithm Name
+   *  @param  value Reference to variable in which the value should be stored
+   *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition getSegmentAlgorithmName(OFString& value,
+                                              const signed long pos = 0);
+
   /** Get General Anatomy Code
    *  @return Reference to the General Anatomy Macro, may be unset
    */

@@ -197,6 +197,12 @@ DcmSegTypes::E_SegmentAlgoType DcmSegment::getSegmentAlgorithmType()
   return m_SegmentDescription.getSegmentAlgorithmType();
 }
 
+OFCondition DcmSegment::getSegmentAlgorithmName(OFString& value,
+                                                const signed long pos)
+{
+  return DcmIODUtil::getStringValueFromElement(m_SegmentAlgorithmName, value, pos);
+}
+
 
 GeneralAnatomyMacro& DcmSegment::getGeneralAnatomyCode()
 {
