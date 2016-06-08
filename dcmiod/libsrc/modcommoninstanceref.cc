@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -61,11 +61,18 @@ OFVector< IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem* >& IODCommon
 }
 
 
+OFVector<IODCommonInstanceReferenceModule::StudiesOtherInstancesItem *> & IODCommonInstanceReferenceModule::getStudiesContainingOtherReferences()
+{
+  return m_StudiesContainingOtherReferencedInstancesSequence;
+}
+
+
 void IODCommonInstanceReferenceModule::clearData()
 {
   DcmIODUtil::freeContainer(m_StudiesContainingOtherReferencedInstancesSequence);
   DcmIODUtil::freeContainer(m_ReferenceSeriesItems);
 }
+
 
 
 OFCondition IODCommonInstanceReferenceModule::read(DcmItem& source,
@@ -74,11 +81,11 @@ OFCondition IODCommonInstanceReferenceModule::read(DcmItem& source,
   if (clearOldData)
     clearData();
 
-  DcmIODUtil::readSubSequence<OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> >(source, DCM_ReferencedSeriesSequence, m_ReferenceSeriesItems, m_Rules->getByTag(DCM_ReferencedSeriesSequence));
-  DcmIODUtil::readSubSequence<OFVector<StudiesOtherInstancesItem*> >(source,
-                                                                     DCM_StudiesContainingOtherReferencedInstancesSequence,
-                                                                     m_StudiesContainingOtherReferencedInstancesSequence,
-                                                                     m_Rules->getByTag(DCM_StudiesContainingOtherReferencedInstancesSequence));
+  DcmIODUtil::readSubSequence(source, DCM_ReferencedSeriesSequence, m_ReferenceSeriesItems, m_Rules->getByTag(DCM_ReferencedSeriesSequence));
+  DcmIODUtil::readSubSequence(source,
+                              DCM_StudiesContainingOtherReferencedInstancesSequence,
+                              m_StudiesContainingOtherReferencedInstancesSequence,
+                              m_Rules->getByTag(DCM_StudiesContainingOtherReferencedInstancesSequence));
 
   return EC_Normal;
 }
@@ -88,21 +95,162 @@ OFCondition IODCommonInstanceReferenceModule::write(DcmItem& destination)
 {
   OFCondition result = EC_Normal;
 
-  DcmIODUtil::writeSubSequence<OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> >(result, DCM_ReferencedSeriesSequence, m_ReferenceSeriesItems, destination, m_Rules->getByTag(DCM_ReferencedSeriesSequence));
+  DcmIODUtil::writeSubSequence<OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> >(result, DCM_ReferencedSeriesSequence, m_ReferenceSeriesItems, *m_Item, m_Rules->getByTag(DCM_ReferencedSeriesSequence));
   DcmIODUtil::writeSubSequence<OFVector<StudiesOtherInstancesItem*> >(result,
                                                                       DCM_StudiesContainingOtherReferencedInstancesSequence,
                                                                       m_StudiesContainingOtherReferencedInstancesSequence,
                                                                       *m_Item,
                                                                       m_Rules->getByTag(DCM_StudiesContainingOtherReferencedInstancesSequence));
+  if (result.good()) result = IODModule::write(destination);
   return result;
+}
+
+
+size_t IODCommonInstanceReferenceModule::addReferences(
+  const IODReferences& references,
+  const OFString& studyInstanceUID,
+  const OFBool clearOldData)
+{
+  if (clearOldData)
+  {
+    clearData();
+  }
+  OFString ourStudy = studyInstanceUID;
+  if (ourStudy.empty())
+  {
+    m_Item->findAndGetOFString(DCM_StudyInstanceUID, ourStudy);
+    if (ourStudy.empty())
+    {
+      DCMIOD_ERROR("Could not add references: No Study Instance UID specified for \"this\" object");
+      return 0;
+    }
+  }
+
+  const OFVector<IODReference*> refs = references.get();
+  OFVector<IODReference*>::const_iterator ref = refs.begin();
+  size_t count = 0;
+  while (ref != refs.end())
+  {
+    OFCondition result;
+    // If reference belongs into "this" study, add it to Referenced Series Sequence
+    OFString refStudy = (*ref)->m_StudyInstanceUID;
+    if ( refStudy == ourStudy )
+    {
+     result = addSeriesReference(m_ReferenceSeriesItems, **ref);
+    }
+    else
+    {
+      // Reference lies outside of "this" study, put it into Studies Containing
+      // Other Referenced Instances Sequence
+      OFVector<StudiesOtherInstancesItem*>::iterator it = m_StudiesContainingOtherReferencedInstancesSequence.begin();
+      while (it != m_StudiesContainingOtherReferencedInstancesSequence.end())
+      {
+        OFString studyEntry;
+        (*it)->getStudyInstanceUID(studyEntry);
+        if (studyEntry == refStudy)
+        {
+          result = addSeriesReference(
+            (*it)->getReferencedSeriesAndInstanceReferences().getReferencedSeriesItems(),
+            **ref);
+          break;
+        }
+        else
+        {
+          it++;
+        }
+      }
+      // We did not find an entry for this study, add new one
+      if (it == m_StudiesContainingOtherReferencedInstancesSequence.end())
+      {
+        StudiesOtherInstancesItem* newItem = new StudiesOtherInstancesItem();
+        if (newItem)
+        {
+          result = newItem->setStudyInstanceUID(refStudy);
+          if (result.good())
+          {
+            result = addSeriesReference(newItem->getReferencedSeriesAndInstanceReferences().getReferencedSeriesItems(), **ref);
+          }
+          if (result.good())
+          {
+            m_StudiesContainingOtherReferencedInstancesSequence.push_back(newItem);
+          }
+          else
+          {
+            delete newItem;
+          }
+        }
+        else
+        {
+          DCMIOD_ERROR("Memory exhausted while adding references to Common Instance Reference Module");
+          return count;
+        }
+      }
+    }
+    if (result.good())
+    {
+      count++;
+    }
+    ref++;
+  }
+  return count;
 }
 
 
 void IODCommonInstanceReferenceModule::resetRules()
 {
   // Parameters for Rule are tag, VM, type (1,1C,2,2C,3), module name and logical IOD level
-  m_Rules->addRule(new IODRule(DCM_ReferencedSeriesSequence, "1-n", "1C", m_ComponentName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_StudiesContainingOtherReferencedInstancesSequence, "1-n", "1C", m_ComponentName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedSeriesSequence, "1-n", "1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudiesContainingOtherReferencedInstancesSequence, "1-n", "1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+}
+
+
+
+OFCondition IODCommonInstanceReferenceModule::addSeriesReference(
+  OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& container,
+  const IODReference& ref)
+{
+  OFCondition result;
+  OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>::iterator series = container.begin();
+  while ( series != container.end() )
+  {
+    OFString s;
+    (*series)->getSeriesInstanceUID(s);
+    if (s == ref.m_SeriesInstanceUID)
+    {
+      // There is already an entry for this series
+      result = (*series)->addReference(ref.m_SOPClassUID, ref.m_SOPInstanceUID);
+      if (result.good())
+      {
+        return EC_Normal;
+      }
+      else
+      {
+        DCMIOD_ERROR("Could not add reference to Common Instance Reference Module: " << ref.toString());
+        return IOD_EC_InvalidElementValue;
+      }
+    }
+    series++;
+  }
+  // If we do not have such a series Referenced Series Sequence, add it
+  if (series == container.end())
+  {
+    IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem* newseries = new IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem();
+    if (!newseries)
+    {
+      return EC_MemoryExhausted;
+    }
+    result = newseries->setSeriesInstanceUID( ref.m_SeriesInstanceUID);
+    if (result.good()) result = newseries->addReference(ref.m_SOPClassUID, ref.m_SOPInstanceUID);
+    if (result.good())
+    {
+      container.push_back(newseries);
+    }
+    else
+    {
+      DCMIOD_ERROR("Could not add reference to Common Instance Reference Module: " << ref.toString());
+    }
+  }
+  return result;
 }
 
 
@@ -164,7 +312,6 @@ OFCondition IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::read(Dc
 OFCondition IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::write(DcmItem& destination)
 {
   OFCondition result = EC_Normal;
-
   result = IODComponent::write(destination);
 
   if (result.good()) result = m_ReferencedSeriesAndInstance.write(destination);
@@ -176,7 +323,7 @@ OFCondition IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::write(D
 void IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::resetRules()
 {
   // Parameters for Rule are tag, VM, type (1,1C,2,2C,3), module name and logical IOD level
-  m_Rules->addRule(new IODRule(DCM_StudyInstanceUID, "1", "1", m_ComponentName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudyInstanceUID, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -61,23 +61,23 @@ IODGeneralImageModule::~IODGeneralImageModule()
 void IODGeneralImageModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_InstanceNumber, "1", "2", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientOrientation, "2", "2C", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ContentDate, "1", "2C", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ContentTime, "1", "2C", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ImageType, "2-n", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_AcquisitionNumber, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_AcquisitionDate, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_AcquisitionTime, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_AcquisitionDateTime, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ImageComments, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_BurnedInAnnotation, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_RecognizableVisualFeatures, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_LossyImageCompression, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_LossyImageCompressionRatio, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_LossyImageCompressionMethod, "1-n", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PresentationLUTShape, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_IrradiationEventUID, "1-n", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstanceNumber, "1", "2", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientOrientation, "2", "2C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ContentDate, "1", "2C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ContentTime, "1", "2C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ImageType, "2-n", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AcquisitionNumber, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AcquisitionDate, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AcquisitionTime, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AcquisitionDateTime, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ImageComments, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_BurnedInAnnotation, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_RecognizableVisualFeatures, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_LossyImageCompression, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_LossyImageCompressionRatio, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_LossyImageCompressionMethod, "1-n", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PresentationLUTShape, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_IrradiationEventUID, "1-n", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
 

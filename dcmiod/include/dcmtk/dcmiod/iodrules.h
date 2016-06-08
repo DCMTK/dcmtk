@@ -181,7 +181,7 @@ public:
   virtual OFString getVM() const;
 
   /** Get module (or component name) the related attribute belongs to
-   *  @return The module or component name (e.g.\ "PatientName" or
+   *  @return The module or component name (e.g.\ "PatientModule" or
    *          "CodeSequenceMacro")
    */
   virtual OFString getModule() const;
@@ -195,6 +195,16 @@ public:
    *  @return The Information Entity (might be empty)
    */
   virtual DcmIODTypes::IOD_IE getIE() const;
+
+  virtual OFBool setPrivateCreator(const OFString& val);
+
+  virtual OFBool setType(const OFString& val);
+
+  virtual OFBool setVM(const OFString& val);
+
+  virtual OFBool setModule(const OFString& val);
+
+  virtual OFBool setDefaultValue(const OFString& val);
 
   /** Check whether the given item fulfills the requirements of
    *  this rule, i.e.\ the related attribute is checked within the

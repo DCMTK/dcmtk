@@ -231,6 +231,7 @@ fgbase.o: fgbase.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
@@ -243,7 +244,8 @@ fgbase.o: fgbase.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralseries.h \
  ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsopcommon.h \
- ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h
+ ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h
 fgderimg.o: fgderimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -363,6 +365,7 @@ fgderimg.o: fgderimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/dcmfg/fgbase.h \
  ../include/dcmtk/dcmfg/fgtypes.h ../include/dcmtk/dcmfg/fgdefine.h \
@@ -432,6 +435,7 @@ fgfact.o: fgfact.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgfact.h ../include/dcmtk/dcmfg/fgtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
@@ -563,6 +567,7 @@ fgfracon.o: fgfracon.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
@@ -685,6 +690,7 @@ fgframevoilut.o: fgframevoilut.cc \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgframevoilut.h ../include/dcmtk/dcmfg/fgbase.h \
  ../include/dcmtk/dcmfg/fgtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -807,6 +813,7 @@ fgimagedatatype.o: fgimagedatatype.cc \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgimagedatatype.h ../include/dcmtk/dcmfg/fgbase.h \
  ../include/dcmtk/dcmfg/fgtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -929,6 +936,7 @@ fginterface.o: fginterface.cc \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fginterface.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
@@ -1106,7 +1114,8 @@ fgpixmsr.o: fgpixmsr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h
+ ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h
 fgplanor.o: fgplanor.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmfg/fgplanor.h ../include/dcmtk/dcmfg/fgbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -1227,7 +1236,8 @@ fgplanor.o: fgplanor.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h
+ ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h
 fgplanorvol.o: fgplanorvol.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
@@ -1296,6 +1306,7 @@ fgplanorvol.o: fgplanorvol.cc \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgplanorvol.h ../include/dcmtk/dcmfg/fgbase.h \
  ../include/dcmtk/dcmfg/fgtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -1470,7 +1481,8 @@ fgplanpo.o: fgplanpo.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h
+ ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h
 fgplanposvol.o: fgplanposvol.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
@@ -1538,6 +1550,7 @@ fgplanposvol.o: fgplanposvol.cc \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgplanposvol.h ../include/dcmtk/dcmfg/fgbase.h \
  ../include/dcmtk/dcmfg/fgtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -1715,6 +1728,7 @@ fgrealworldvaluemapping.o: fgrealworldvaluemapping.cc \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h
@@ -1838,7 +1852,8 @@ fgseg.o: fgseg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h
+ ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h
 fgtypes.o: fgtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmfg/fgtypes.h ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -1957,6 +1972,7 @@ fgtypes.o: fgtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
@@ -1969,7 +1985,8 @@ fgtypes.o: fgtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralseries.h \
  ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsopcommon.h \
- ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h
+ ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h
 fgusimagedescription.o: fgusimagedescription.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
@@ -2037,6 +2054,7 @@ fgusimagedescription.o: fgusimagedescription.cc \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/fgusimagedescription.h \
  ../include/dcmtk/dcmfg/fgtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -2173,6 +2191,7 @@ stackinterface.o: stackinterface.cc \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmfg/stackinterface.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \

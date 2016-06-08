@@ -328,7 +328,7 @@ public:
    *          (as possible)
    */
   virtual OFCondition setContentIdentification(const ContentIdentificationMacro& contentIdentification,
-                                                const OFBool checkValue = OFTrue);
+                                               const OFBool checkValue = OFTrue);
 
 protected:
 

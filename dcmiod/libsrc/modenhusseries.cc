@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -52,9 +52,9 @@ OFString IODEnhancedUSSeriesModule::getName() const
 void IODEnhancedUSSeriesModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_Modality, "1","1", m_ModuleName, DcmIODTypes::IE_SERIES, "US"), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedPerformedProcedureStepSequence, "1","1C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PerformedProtocolCodeSequence, "1","1C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Modality, "1","1", getName(), DcmIODTypes::IE_SERIES, "US"), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedPerformedProcedureStepSequence, "1","1C", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PerformedProtocolCodeSequence, "1","1C", getName(), DcmIODTypes::IE_SERIES), OFTrue);
 }
 
 

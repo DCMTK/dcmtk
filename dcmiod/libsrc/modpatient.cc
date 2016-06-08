@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -52,10 +52,10 @@ IODPatientModule::IODPatientModule()
 void IODPatientModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_PatientName, "1","2",m_ModuleName, DcmIODTypes::IE_PATIENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientID, "1","2", m_ModuleName, DcmIODTypes::IE_PATIENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientBirthDate, "1","2", m_ModuleName, DcmIODTypes::IE_PATIENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientSex, "1","2", m_ModuleName, DcmIODTypes::IE_PATIENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientName, "1","2",getName(), DcmIODTypes::IE_PATIENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientID, "1","2", getName(), DcmIODTypes::IE_PATIENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientBirthDate, "1","2", getName(), DcmIODTypes::IE_PATIENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientSex, "1","2", getName(), DcmIODTypes::IE_PATIENT), OFTrue);
 }
 
 

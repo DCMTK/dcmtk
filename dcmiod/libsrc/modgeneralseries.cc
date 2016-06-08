@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -70,19 +70,19 @@ void IODGeneralSeriesModule::inventMissing()
 void IODGeneralSeriesModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_Modality, "1","1", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SeriesInstanceUID, "1","1", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SeriesNumber, "1","2", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_Laterality, "1","2C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SeriesDate, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SeriesTime, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PerformingPhysicianName, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ProtocolName, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SeriesDescription, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_OperatorsName, "1-n","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_BodyPartExamined, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientPosition, "1","2C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedPerformedProcedureStepSequence, "1","3", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Modality, "1","1", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesInstanceUID, "1","1", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesNumber, "1","2", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Laterality, "1","2C", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesDate, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesTime, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PerformingPhysicianName, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ProtocolName, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesDescription, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_OperatorsName, "1-n","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_BodyPartExamined, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientPosition, "1","2C", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedPerformedProcedureStepSequence, "1","3", getName(), DcmIODTypes::IE_SERIES), OFTrue);
 }
 
 
@@ -263,7 +263,8 @@ OFCondition IODGeneralSeriesModule::setLaterality(const DcmIODTypes::IOD_LATERAL
   {
     case DcmIODTypes::LATERALITY_L: result = m_Item->putAndInsertOFStringArray(DCM_Laterality, "L"); break;
     case DcmIODTypes::LATERALITY_R: result = m_Item->putAndInsertOFStringArray(DCM_Laterality, "R"); break;
-    case DcmIODTypes::LATERALITY_UNDEFINED: result = IOD_EC_InvalidLaterality; break;
+    case DcmIODTypes::LATERALITY_UNDEFINED:
+    default: result = IOD_EC_InvalidLaterality;
   }
   return result;
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -55,17 +55,17 @@ IODImagePixelModule::IODImagePixelModule()
 void IODImagePixelModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_SamplesPerPixel, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PhotometricInterpretation, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_Rows, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_Columns, "1", "1n", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_BitsAllocated, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_BitsStored, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_HighBit, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PixelRepresentation, "1", "1", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PlanarConfiguration, "1", "1C", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PixelAspectRatio, "2", "1C", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ICCProfile, "1", "3", m_ModuleName, DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SamplesPerPixel, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PhotometricInterpretation, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Rows, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Columns, "1", "1n", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_BitsAllocated, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_BitsStored, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_HighBit, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PixelRepresentation, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PlanarConfiguration, "1", "1C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PixelAspectRatio, "2", "1C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ICCProfile, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
 

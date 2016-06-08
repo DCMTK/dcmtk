@@ -37,6 +37,14 @@ QIICR: The work on various DCMTK modules was supported in part by funding from
   Cancer Research (ITCR) initiative to the Quantitative Image Informatics for
   Cancer Research (QIICR) project, award U24 CA180918.
 
+SlicerDMRI: The work on DCMTK Tractography modules was supported in part by
+  funding from the National Institutes of Health National Institute of
+  Biomedical Imaging and Bioengineering (NIBIB), to project Neuroimage Analysis
+  Center, award P41 EB015902; and the National Institutes of Health National
+  Cancer Institute (NCI) Informatics Technology for Cancer Research (ITCR)
+  initiative, to project Open Source Diffusion MRI Technology For Brain Cancer
+  Research, award U01 CA199459.
+
 VISUS: The work on various extensions of the DCMTK was supported in part by
   funding from the VISUS Technology Transfer GmbH (Bochum, Germany).
 
@@ -47,4 +55,4 @@ YXLON: The work on the initial version of the DICONDE data dictionary was
 Please note that this list does not claim to be exhaustive.  Just send us an
 email if you think that you or your company/organization should also be listed.
 
-DCMTK Team, 2015-09-12
+DCMTK Team, 2016-06-08

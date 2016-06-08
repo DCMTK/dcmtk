@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -48,8 +48,8 @@ IODFoRModule::IODFoRModule()
 void IODFoRModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_FrameOfReferenceUID, "1","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PositionReferenceIndicator, "1","2", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_FrameOfReferenceUID, "1","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PositionReferenceIndicator, "1","2", getName(), DcmIODTypes::IE_FOR), OFTrue);
 }
 
 

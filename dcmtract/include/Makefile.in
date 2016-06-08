@@ -1,0 +1,27 @@
+#
+#	Makefile for dcmtract/include
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+
+all:
+
+install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmtract
+	for file in dcmtk/dcmtract/*.h ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmtract ;\
+	done
+
+clean:
+	rm -f $(TRASH)
+
+distclean:
+	rm -f $(DISTTRASH)

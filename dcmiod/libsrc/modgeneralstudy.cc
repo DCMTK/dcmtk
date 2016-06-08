@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -65,16 +65,16 @@ void IODGeneralStudyModule::inventMissing()
 void IODGeneralStudyModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_StudyInstanceUID, "1","1", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_StudyDate, "1","2", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_StudyTime, "1","2", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferringPhysicianName, "1","2", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_StudyID, "1","2", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_AccessionNumber, "1","2", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_StudyDescription, "1","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_IssuerOfAccessionNumberSequence, "1","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ProcedureCodeSequence, "1-n","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReasonForPerformedProcedureCodeSequence, "1-n","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudyInstanceUID, "1","1", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudyDate, "1","2", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudyTime, "1","2", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferringPhysicianName, "1","2", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudyID, "1","2", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AccessionNumber, "1","2", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StudyDescription, "1","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_IssuerOfAccessionNumberSequence, "1","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ProcedureCodeSequence, "1-n","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReasonForPerformedProcedureCodeSequence, "1-n","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
 }
 
 

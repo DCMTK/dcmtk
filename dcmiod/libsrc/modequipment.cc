@@ -48,14 +48,14 @@ void IODGeneralEquipmentModule::resetRules()
 {
 
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_Manufacturer, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_InstitutionName, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_InstitutionAddress, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_StationName, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_InstitutionalDepartmentName, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ManufacturerModelName, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_DeviceSerialNumber, "1","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SoftwareVersions, "1-n","3", m_ModuleName, DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Manufacturer, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstitutionName, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstitutionAddress, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_StationName, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstitutionalDepartmentName, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ManufacturerModelName, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DeviceSerialNumber, "1","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SoftwareVersions, "1-n","3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
 }
 
 

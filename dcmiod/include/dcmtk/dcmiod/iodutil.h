@@ -418,10 +418,10 @@ public:
     checkElementValue(source, seqKey, cardinality, type, exists, module.c_str());
     if (source)
     {
-      const unsigned long card = source->card();
-      for (unsigned long count = 0; count < card; count++)
+      DcmItem *item = OFstatic_cast(DcmItem*, source->nextInContainer(NULL));
+      size_t count = 0;
+      while (item != NULL)
       {
-        DcmItem *item = source->getItem(count);
         if (item != NULL)
         {
           // define the element type
@@ -450,6 +450,8 @@ public:
         {
           DCMIOD_WARN("Could not get item #" << count << " from " <<  DcmTag(source->getTag()).getTagName() << " (malformed data or internal error), skipping item");
         }
+        item = OFstatic_cast(DcmItem*, source->nextInContainer(item));
+        count++;
       }
     }
     else
@@ -547,7 +549,7 @@ public:
     result = source.findAndGetSequenceItem(seqKey, item, 0);
     if (item != NULL)
     {
-      // read into Code Sequence Macro (clears old data first)
+      // read into Container (clears old data first)
       result = destination.read(*item, OFTrue /* clear old data */);
     }
     return result;
@@ -759,10 +761,9 @@ public:
       {
         DCMIOD_TRACE("Skipping type 1C sequence " << seqKey << ": No data or incomplete data available");
       }
+      /* Check outcome */
+      checkSubSequence(result, destination, seqKey, "1", type, module);
     }
-
-    /* Check outcome */
-    checkSubSequence(result, destination, seqKey, "1", type, module);
   }
 
   /** Writes given container into a DICOM item of a specific sequence.
@@ -785,12 +786,15 @@ public:
                               DcmItem& destination,
                               IODRule *rule)
   {
-    if (rule == NULL)
+    if (result.good())
     {
-      DCMIOD_ERROR("Cannot write sequence " << seqKey << " (no rule supplied)");
-      result = EC_CannotCheck;
+      if (rule == NULL)
+      {
+        DCMIOD_ERROR("Cannot write sequence " << seqKey << " (no rule supplied)");
+        result = EC_CannotCheck;
+      }
+      writeSingleItem(result, seqKey, source, destination, rule->getType(), rule->getModule());
     }
-    writeSingleItem(result, seqKey, source, destination, rule->getType(), rule->getModule());
   }
 
 

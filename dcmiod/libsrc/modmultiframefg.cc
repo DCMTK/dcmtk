@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -55,11 +55,11 @@ IODMultiFrameFGModule::IODMultiFrameFGModule()
 
 void IODMultiFrameFGModule::resetRules()
 {
-  m_Rules->addRule(new IODRule(DCM_InstanceNumber, "1", "1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ContentDate, "1", "1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ContentTime, "1", "1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_NumberOfFrames, "1", "1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_RepresentativeFrameNumber, "1", "3", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstanceNumber, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ContentDate, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ContentTime, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_NumberOfFrames, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_RepresentativeFrameNumber, "1", "3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_ConcatenationInfo.resetRules();
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -52,13 +52,13 @@ IODSOPCommonModule::IODSOPCommonModule()
 void IODSOPCommonModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_SOPClassUID, "1","1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SOPInstanceUID, "1","1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SpecificCharacterSet, "1-n","1C", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_InstanceCreationDate, "1","3", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_InstanceCreationTime, "1","3", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_InstanceCreatorUID, "1","3", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_TimezoneOffsetFromUTC, "1","3", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SOPClassUID, "1","1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SOPInstanceUID, "1","1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SpecificCharacterSet, "1-n","1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstanceCreationDate, "1","3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstanceCreationTime, "1","3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_InstanceCreatorUID, "1","3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_TimezoneOffsetFromUTC, "1","3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 
 }
 

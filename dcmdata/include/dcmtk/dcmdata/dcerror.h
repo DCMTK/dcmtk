@@ -69,6 +69,7 @@ const unsigned short OFM_dcmenc   = 28;
 const unsigned short OFM_dcmiod   = 29;
 const unsigned short OFM_dcmseg   = 30;
 const unsigned short OFM_dcmfg    = 31;
+const unsigned short OFM_dcmtract = 32;
 
 
 // condition constants

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -26,7 +26,7 @@
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
-#include "dcmtk/dcmdata/dcpath.h" // for private tag reservation checking // TODO move to DcmItem?
+#include "dcmtk/dcmdata/dcpath.h" // for private tag reservation checking
 #include "dcmtk/dcmiod/iodutil.h" // for static helpers
 
 const OFString IODMultiframeDimensionModule::m_ModuleName = "MultiframeDimensionModule";
@@ -140,9 +140,9 @@ OFCondition IODMultiframeDimensionModule::write(DcmItem& destination)
 void IODMultiframeDimensionModule::resetRules()
 {
   // Parameters for Rule are tag, VM, type (1,1C,2,2C,3), module name and logical IOD level
-  m_Rules->addRule(new IODRule(DCM_DimensionOrganizationSequence, "1-n", "1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_DimensionOrganizationType, "1", "3", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_DimensionIndexSequence, "1-n", "1", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DimensionOrganizationSequence, "1-n", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DimensionOrganizationType, "1", "3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DimensionIndexSequence, "1-n", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
 

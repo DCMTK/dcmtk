@@ -5,6 +5,7 @@ DCMTK_ADD_LIBRARY(dcmiod
   iodmacro
   iodimage
   iodrules
+  iodreferences
   iodutil
   iodtypes
   modacquisitioncontext

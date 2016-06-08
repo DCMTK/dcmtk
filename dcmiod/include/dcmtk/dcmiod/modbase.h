@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -73,7 +73,6 @@ public:
    */
   IODComponent& operator=(const IODComponent& rhs);
 
-
   /** Copy constructor, copies reference to contained item and
    *  rule set to "this" attribute set.
    *  @param  rhs The component to be assigned
@@ -108,6 +107,12 @@ public:
   {
     return m_Rules;
   }
+
+  /** Make component optional by turning all attributes requirement types of it
+   *  to type 3. In order to reset to the attribute's original types,
+   *  resetRules() can be used.
+   */
+  virtual void makeOptional();
 
   /** Get name of component
    *  @return Name of the module
@@ -223,6 +228,8 @@ public:
    *  on top level.
    */
   IODModule();
+
+  ~IODModule() {};
 };
 
 #endif //MODBASE_H

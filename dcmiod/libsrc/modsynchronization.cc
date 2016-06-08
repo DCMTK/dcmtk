@@ -52,14 +52,14 @@ IODSynchronizationModule::IODSynchronizationModule()
 void IODSynchronizationModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_SynchronizationFrameOfReferenceUID, "1","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SynchronizationTrigger, "1","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_TriggerSourceOrType, "1","3", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SynchronizationChannel, "2","1C", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_AcquisitionTimeSynchronized, "1","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_TimeSource, "1","3", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_TimeDistributionProtocol, "1","3", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_NTPSourceAddress, "1","3", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SynchronizationFrameOfReferenceUID, "1","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SynchronizationTrigger, "1","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_TriggerSourceOrType, "1","3", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SynchronizationChannel, "2","1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AcquisitionTimeSynchronized, "1","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_TimeSource, "1","3", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_TimeDistributionProtocol, "1","3", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_NTPSourceAddress, "1","3", getName(), DcmIODTypes::IE_FOR), OFTrue);
 }
 
 

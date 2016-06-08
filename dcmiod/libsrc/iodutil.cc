@@ -165,7 +165,10 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
         {
           delem = newDicomElement(rule->getTagKey());
           if (delem == NULL)
-            return EC_MemoryExhausted;
+          {
+            result = EC_MemoryExhausted;
+            return result;
+          };
         } else if (type != "1")
         {
           // Not type 1 or type 2 means the is type 1C, 2C or 3. For those it is
@@ -175,23 +178,25 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
         else
         {
           // type 1 is missing
-          DCMIOD_WARN(DcmTag(rule->getTagKey()).getTagName() << " " << rule->getTagKey() << " absent in " << rule->getModule() << " (type " << rule->getType() << ")");
-          return IOD_EC_MissingAttribute;
+          DCMIOD_ERROR(DcmTag(rule->getTagKey()).getTagName() << " " << rule->getTagKey() << " absent in " << rule->getModule() << " (type " << rule->getType() << ")");
+          result = IOD_EC_MissingAttribute;
+          return result;
         }
       }
-
-      // We have an element at this position, check its value
+      // At this point, we certainly have an element. Check its value (empty ok for type 2)
       if ((type == "2") || !delem->isEmpty())
       {
-        /* insert non-empty element or empty "type 2" element */
-        result = dataset.insert(delem, OFTrue /*replaceOld*/);
-        checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
+        result = checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
+        // Insert non-empty element or empty "type 2" element
         if (result.good())
-          insertionOK = OFTrue;
+        {
+          result = dataset.insert(delem, OFTrue /*replaceOld*/);
+          if (result.good()) insertionOK = OFTrue;
+        }
       }
       else if (type == "1")
       {
-        /* empty element value not allowed for "type 1" */
+        // Empty element value not allowed for "type 1"
         result = EC_InvalidValue;
         checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
       }

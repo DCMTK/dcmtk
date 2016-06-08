@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmiod/ioddef.h"
+#include "dcmtk/dcmiod/cielabutil.h"
 
 // ----------------------------------------------------------------------------
 // Define the loggers for this module
@@ -55,6 +56,8 @@ extern DCMTK_DCMIOD_EXPORT   const OFConditionConst     IOD_EC_CannotDecompress;
 extern DCMTK_DCMIOD_EXPORT   const OFConditionConst     IOD_EC_NoSuchRule;
 extern DCMTK_DCMIOD_EXPORT   const OFConditionConst     IOD_EC_InvalidLaterality;
 extern DCMTK_DCMIOD_EXPORT   const OFConditionConst     IOD_EC_InvalidElementValue;
+extern DCMTK_DCMIOD_EXPORT   const OFConditionConst     IOD_EC_InvalidReference;
+extern DCMTK_DCMIOD_EXPORT   const OFConditionConst     IOD_EC_ReferencesOmitted;
 
 
 /** Class that wraps some constant definitions in the context of IODs
@@ -121,6 +124,7 @@ public:
     /// DERIVED
     IMAGETYPE_DERIVED
   };
+
 
 private:
 

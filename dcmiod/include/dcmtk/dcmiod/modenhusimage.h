@@ -483,7 +483,6 @@ public:
 
   /** Set Lossy Image Compression Method
    *  @param  value Value to be set
-   *  @param  pos Index of the value to set (0..vm-1)
    *  @param  checkValue Check 'value' for conformance if enabled, including VR (CS)
    *  @return EC_Normal if successful, an error code otherwise
    */

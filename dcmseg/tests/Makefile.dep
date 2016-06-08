@@ -162,5 +162,6 @@ tutils.o: tutils.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h

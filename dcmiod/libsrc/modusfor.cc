@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -51,14 +51,14 @@ IODUSFoRModule::IODUSFoRModule()
 void IODUSFoRModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_VolumeFrameOfReferenceUID, "1","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_UltrasoundAcquisitionGeometry, "1","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ApexPosition, "3","1C", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_VolumeToTransducerRelationship, "1","1C", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_VolumeToTransducerMappingMatrix, "16","1", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientFrameOfReferenceSource, "1","1C", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_TableFrameOfReferenceUID, "1","1C", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_VolumeToTableMappingMatrix, "16","1C", m_ModuleName, DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_VolumeFrameOfReferenceUID, "1","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_UltrasoundAcquisitionGeometry, "1","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ApexPosition, "3","1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_VolumeToTransducerRelationship, "1","1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_VolumeToTransducerMappingMatrix, "16","1", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientFrameOfReferenceSource, "1","1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_TableFrameOfReferenceUID, "1","1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_VolumeToTableMappingMatrix, "16","1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
 }
 
 

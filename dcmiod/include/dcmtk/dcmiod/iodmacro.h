@@ -52,6 +52,12 @@ public:
    */
   CodeSequenceMacro(IODComponent* parent = NULL);
 
+  /** Copy Constructor, performs deep copy
+   *  @param  rhs The parent of the IOD component (NULL if none or unknown)
+   */
+  CodeSequenceMacro(const CodeSequenceMacro& rhs);
+
+
   /** Convenience constructor to set initial values
    *  @param  item The item to be used for data storage. If NULL, the
    *          class creates an empty data container.
@@ -177,6 +183,128 @@ public:
                           const OFString &schemeVersion = "",
                           const OFBool checkValue = OFTrue);
 
+};
+
+
+/** Code with Modifier(s). Represents the combination of a Code Sequence Macro
+ *  that is amended by a Modifier Code Sequence with one or more items. The
+ *  VM and requirement type of the Modifier Code Sequence can be configured.
+ *  Overall, the class reads and write the following structure from an item:
+ *
+ *  Coding Scheme Designator, 1, 1C
+ *  Coding Scheme Version, 1, 1C
+ *  Code Value, 1, 1C
+ *  Code Meaning, 1, 1C
+ *  Modifier Code Sequence, VM, requirement type
+ *  > Code Sequence Macro
+ *
+ *  Note that the Code Sequence Macro does not support Long Code Value and
+ *  URN Code Value, so that Coding Scheme Designator and Code Value are
+ *  handled as type 1 (and not 1C as denoted now in the standard and above).
+ */
+class DCMTK_DCMIOD_EXPORT CodeWithModifiers : public CodeSequenceMacro
+{
+
+public:
+
+  /** Constructor
+   *  @param  modifierType Denotes type of Modifier Code Sequence (i.e. 1, 1C,
+   *          2, 2C or 3), default is 3
+   *  @param  modifierVM Denotes how many items are allowed in the Modifier Code
+   *          Sequence
+   */
+  CodeWithModifiers(const OFString& modifierType = "3",
+                    const OFString& modifierVM = "1-n");
+
+  /** Copy constructor, performs deep copy.
+   *  @param  rhs The component to be copied from
+   */
+  CodeWithModifiers(const CodeWithModifiers& rhs);
+
+  /** Assignment operator, performs deep copy.
+   *  @param  rhs The component to be assigned from
+   */
+  CodeWithModifiers& operator=(const CodeWithModifiers& rhs);
+
+  /** Virtual Destructor, frees memory
+   */
+  virtual ~CodeWithModifiers();
+
+  /** Clear all attributes from the data that are handled by this component.
+   *  An attribute is considered belonging to the module if there are rules
+   *  marked as belonging to this module via the rule's module name.
+   */
+  void clearData();
+
+  /** Resets rules to their original values
+   */
+  virtual void resetRules();
+
+  /** Get rules handled by this module
+   *  @return The rules
+   */
+  OFshared_ptr<IODRules> getRules()
+  {
+    return m_Rules;
+  }
+
+  /** Get name of component
+   *  @return Name of the component
+   */
+  virtual OFString getName() const;
+
+  /** Get modifier code denoted by index
+   *  @param  index Index of modifier code to get (first modifier = 0)
+   *  @return Code if modifier with index exists, NULL otherwise
+   */
+  virtual CodeSequenceMacro* getModifier(const size_t index = 0);
+
+  /** Adds modifier code
+   *  @param  modifier The code to be added
+   *  @return EC_Normal if adding was successful, error otherwise
+   */
+  virtual OFCondition addModifier(const CodeSequenceMacro& modifier);
+
+  /** Read attributes from given item into this class
+   *  @param source  The source to read from
+   *  @param clearOldData If OFTrue, old data is cleared before reading. Otherwise
+   *         old data is overwritten (or amended)
+   *  @result EC_Normal if reading was successful, error otherwise
+   */
+  virtual OFCondition read(DcmItem& source,
+                           const OFBool clearOldData = OFTrue);
+
+  /** Write attributes from this class into given item
+   *  @param  destination The item to write to
+   *  @result EC_Normal if writing was successful, error otherwise
+   */
+  virtual OFCondition write(DcmItem& destination);
+
+  /** Check whether this component's data satisfies the underlying
+   *  rules
+   *  @param  quiet If OFTrue, not error / warning messages will be produced. Only
+   *                the returned error code will indicate error or OK. Per default,
+   *                logging output is produced (OFFalse).
+   *  @result EC_Normal if rules are satisfied, error otherwise
+   */
+  virtual OFCondition check(const OFBool quiet = OFFalse);
+
+  /** Comparison operator for IOD Components
+   *  @param  rhs The right hand side of the comparison
+   *  @return 0, if the given object is equal to this object, other value otherwise
+   */
+  virtual int compare(const IODComponent& rhs) const;
+
+private:
+
+  /// Items of Modifier Code Sequence
+  OFVector<CodeSequenceMacro*> m_Modifiers;
+
+  // Type 1,2,3,1C or 2C
+  OFString m_ModifierType;
+
+  // 1, 1-n, 2-2n, ...
+  OFString m_ModifierVM;
 };
 
 
@@ -400,6 +528,9 @@ public:
   virtual OFCondition setSeriesInstanceUID(const OFString& value,
                                            const OFBool checkValue = OFTrue);
 
+  virtual OFCondition addReference(const OFString& sopClassUID,
+                                   const OFString& sopInstanceUID);
+
   /** Get content of the Referenced Instance Sequence
    *  @return Reference to the Referenced Instance Sequence content
   */
@@ -431,6 +562,36 @@ public:
   /** Virtual Destructor
    */
   virtual ~ImageSOPInstanceReferenceMacro();
+
+  /** Creates an ImageSOPInstanceReferenceMacro object without frame/segment
+   *  reference from required information.
+   *  @param  sopClassUID The SOP Class UID of the reference
+   *  @param  sopInstanceUID The SOP Instance UID of the reference
+   *  @param  result Returns the resulting object if successful, NULL otherwise
+   *  @return EC_Normal if creation was successful, error code otherwise
+   */
+  static OFCondition create(const OFString& sopClassUID,
+                            const OFString& sopInstanceUID,
+                            ImageSOPInstanceReferenceMacro*& result);
+
+  /** Creates an ImageSOPInstanceReferenceMacro object with frame or segment
+   *  references from required information.
+   *  @param  sopClassUID The SOP Class UID of the reference
+   *  @param  sopInstanceUID The SOP Instance UID of the reference
+   *  @param  refFramesOrSegments Reference to specific frames of an image or
+   *          segments of a Segmentation object. The decision (image or
+   *          segmentation) is based on the SOP Class; in case it is the
+   *          Segmentation Storage SOP Class, the parameter is interpreted
+   *          as segment references, otherwise as frame references. If this
+   *          parameter is provided empty, then no frame/segment reference is
+   *          set at all.
+   *  @param  result Returns the resulting object if successful, NULL otherwise
+   *  @return EC_Normal if creation was successful, error code otherwise
+   */
+  static OFCondition create(const OFString& sopClassUID,
+                            const OFString& sopInstanceUID,
+                            const OFVector<Uint16>& refFramesOrSegments,
+                            ImageSOPInstanceReferenceMacro*& result);
 
   /** Comparison operator that compares the normalized value of this object
    *  with a given object of the same type
@@ -969,10 +1130,35 @@ public:
    */
   ContentIdentificationMacro();
 
+  /** Constructor initializing basic data
+   *  @param  instanceNumber Instance Number
+   *  @param  contentLabel Content Label
+   *  @param  contentDescription Content Description, may be empty
+   *  @param  contentCreatorName Content Creator's Name, may be empty
+   */
+  ContentIdentificationMacro(const OFString& instanceNumber,
+                             const OFString& contentLabel,
+                             const OFString& contentDescription,
+                             const OFString& contentCreatorName);
+
   /** Copy constructor
    *  @param  rhs The macro to copy from (deep copy)
    */
   ContentIdentificationMacro(const ContentIdentificationMacro& rhs);
+
+  /** Create Content Identification Macro with minimally required data.
+   *  @param  instanceNumber Instance Number
+   *  @param  contentLabel Content Label
+   *  @param  contentDescription Content Description, may be empty
+   *  @param  contentCreatorName Content Creator's Name, may be empty
+   *  @param  result Returns created macro if successful, NULL otherwise
+   *  @return EC_Normal if creation was successful, error otherwise
+   */
+  static OFCondition create(const OFString& instanceNumber,
+                            const OFString& contentLabel,
+                            const OFString& contentDescription,
+                            const OFString& contentCreatorName,
+                            ContentIdentificationMacro*& result);
 
   /** Assignment operator (deep copy)
    *  @param  rhs The macro to copy from
@@ -996,6 +1182,12 @@ public:
   /** Resets rules to their original values
    */
   virtual void resetRules();
+
+  /** Get name of macro
+   *  @return Name of the module ("ContentIdentificationMacro")
+   */
+  virtual OFString getName() const;
+
 
   /** Check whether this component's data satisfies the underlying
    *  rules
@@ -1102,7 +1294,7 @@ private:
   /// Content Label: (CS, VM 1, Type 1)
   DcmCodeString m_ContentLabel;
 
-  /// Content Description: (LO, VM1, Type 1)
+  /// Content Description: (LO, VM 1, Type 1)
   DcmLongString m_ContentDescription;
 
   // Alternate Content Description Sequence (VM 1-n, Type 3)

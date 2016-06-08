@@ -24,6 +24,7 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmiod/iodrules.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 
 IODComponent::IODComponent(OFshared_ptr<DcmItem> item,
@@ -122,6 +123,18 @@ void IODComponent::clearData()
   while (rule != modRules.end())
   {
     m_Item->findAndDeleteElement( (*rule)->getTagKey() );
+    rule++;
+  }
+}
+
+
+void IODComponent::makeOptional()
+{
+  OFVector<IODRule*> modRules = m_Rules->getByModule(getName());
+  OFVector<IODRule*>::iterator rule = modRules.begin();
+  while (rule != modRules.end())
+  {
+    (*rule)->setType("3");
     rule++;
   }
 }

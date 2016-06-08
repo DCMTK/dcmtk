@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -53,7 +53,7 @@ OFString IODAcquisitionContextModule::getName() const
 void IODAcquisitionContextModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_AcquisitionContextSequence, "1-n","2", m_ModuleName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AcquisitionContextSequence, "1-n","2", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
 

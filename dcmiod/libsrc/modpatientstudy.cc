@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -50,10 +50,10 @@ IODPatientStudyModule::IODPatientStudyModule()
 void IODPatientStudyModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_AdmittingDiagnosesDescription, "1-n","3",m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientAge, "1","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientSize, "1","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_PatientWeight, "1","3", m_ModuleName, DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_AdmittingDiagnosesDescription, "1-n","3",getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientAge, "1","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientSize, "1","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_PatientWeight, "1","3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
 }
 
 

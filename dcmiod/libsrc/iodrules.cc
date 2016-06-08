@@ -257,6 +257,58 @@ DcmIODTypes::IOD_IE  IODRule::getIE() const
 }
 
 
+OFBool IODRule::setType(const OFString& val)
+{
+  if ( (val != "1") && (val != "1C") && (val != "2") && (val != "2C") && (val != "3") )
+  {
+    return OFFalse;
+  }
+  m_Type = val;
+  return OFTrue;
+}
+
+
+OFBool IODRule::setModule(const OFString& val)
+{
+  if (val.empty())
+  {
+    return OFFalse;
+  }
+  m_Module = val;
+  return OFTrue;
+}
+
+
+
+OFBool IODRule::setPrivateCreator(const OFString& val)
+{
+  if (val.empty())
+  {
+    return OFFalse;
+  }
+  m_PrivateCreator = val;
+  return OFTrue;
+}
+
+
+OFBool IODRule::setDefaultValue(const OFString& val)
+{
+  if (val.empty())
+  {
+    return OFFalse;
+  }
+  m_DefaultValue = val;
+  return OFTrue;
+}
+
+
+OFBool IODRule::setVM(const OFString& val)
+{
+  // One could check whether this is a valid VM string...
+  m_VM = val;
+  return OFTrue;
+}
+
 
 OFCondition IODRule::check(DcmItem& item,
                            const OFBool quiet)

@@ -51,6 +51,7 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -130,6 +131,7 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsopcommon.h \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralimage.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h \
@@ -216,6 +218,7 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../include/dcmtk/dcmseg/segment.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
@@ -287,6 +290,7 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsopcommon.h \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralimage.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h \
@@ -364,6 +368,7 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
@@ -540,5 +545,6 @@ segutils.o: segutils.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h

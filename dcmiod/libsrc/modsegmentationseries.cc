@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -56,10 +56,10 @@ OFString IODSegmentationSeriesModule::getName() const
 void IODSegmentationSeriesModule::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_Modality, "1","1", m_ModuleName, DcmIODTypes::IE_SERIES, "SEG"), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SeriesNumber, "1","1", m_ModuleName, DcmIODTypes::IE_SERIES, "1"), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedSOPClassUID, "1","1C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedSOPInstanceUID, "1","1C", m_ModuleName, DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Modality, "1","1", getName(), DcmIODTypes::IE_SERIES, "SEG"), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesNumber, "1","1", getName(), DcmIODTypes::IE_SERIES, "1"), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedSOPClassUID, "1","1C", getName(), DcmIODTypes::IE_SERIES), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedSOPInstanceUID, "1","1C", getName(), DcmIODTypes::IE_SERIES), OFTrue);
 }
 
 

@@ -1,0 +1,159 @@
+/*!
+
+\page mod_dcmtract dcmtract: a library for working with Tractography Results
+
+This module contains classes to deal with DICOM Tractography Results objects.
+It is able to create, load and access the contained fiber tracks and the related
+meta information.
+
+The module fully supports Measurements and Statistics (on a per-track and track
+set) basis as defined in the standard.
+
+Several checks (as possible) make sure that only valid Tractography objects can
+be written. However, this module is not meant to \e modify existing
+Tractography Result objects but only to create them from scratch. This means
+that loading a file and then modify it \e may lead to inconsistent DICOM objects
+when saved.
+
+This module makes heavy use of the \ref mod_dcmiod "dcmiod" module for managing
+common IOD attributes as found in the Patient, General Study or General Series
+Module.
+
+The main class of this module is:
+\li \b TrcTractographyResults
+
+
+\section Examples
+
+The following (complete) example shows how to load a DICOM Tractography Results
+object and dump an overview of the contained data:
+
+\code
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmtract/trctractographyresults.h"
+#include "dcmtk/dcmtract/trctrack.h"
+
+// Main routine of test app
+int main(int argc, char *argv[])
+{
+  if (argc < 2)
+  {
+    CERR << "Usage: read <inputfile>" << OFendl;
+    return 1;
+  }
+  OFCondition result;
+  TrcTractographyResults *trc = NULL;
+  result = TrcTractographyResults::loadFile(argv[1], trc);
+  if (result.bad())
+  {
+    CERR << "Unable to load Tractography Results file: " << result.text();
+    return 1;
+  }
+  OFString val;
+  trc->getPatient().getPatientName(val);
+  COUT << "Patient Name: " <<  val << OFendl;
+  trc->getStudy().getStudyInstanceUID(val);
+  COUT << "Study       : " << val << OFendl;
+  trc->getSeries().getSeriesInstanceUID(val);
+  COUT << "Series      : " << val << OFendl;
+  trc->getSOPCommon().getSOPInstanceUID(val);
+  COUT << "Instance    : " << val << OFendl;
+  COUT << "-------------------------------------------------------------------------" << OFendl;
+  size_t numTrackSets = trc->getNumberOfTrackSets();
+  COUT << "Track Sets (total: " << numTrackSets  << ")" << OFendl;
+  OFVector<TrcTrackSet*>& sets = trc->getTrackSets();
+  for (size_t ts = 0; ts < numTrackSets; ts++)
+  {
+    size_t numTracks = sets[ts]->getNumberOfTracks();
+    COUT << "  Track Set #" << ts << ": " << numTracks << " Tracks, "
+         << sets[ts]->getNumberOfTrackSetStatistics() << " Track Set Statistics, "
+         << sets[ts]->getNumberOfTrackStatistics() << " Track Statistics, "
+         << sets[ts]->getNumberOfMeasurements() << " Measurements " << OFendl;
+    for (size_t t = 0; t < numTracks; t++)
+    {
+      TrcTrack* track = sets[ts]->getTracks()[t];
+      const Float32* vals = NULL;
+      size_t numPoints = track->getTrackData(vals);
+      COUT << "    Track #" << t << "'s first 3/" <<  numTracks << " points: ";
+      for (size_t v = 0; (v < 3) && (v < numPoints); v++)
+      {
+        COUT << "(" << vals[v]  << "," << vals[v+1]  << "," << vals[v+2]  << ") " ;
+      }
+      COUT << OFendl;
+    }
+  }
+  delete trc;
+  return 0;
+}
+\endcode
+
+The following (complete) example demonstrates creation of a minimal Tractography
+Results object (single TrackSet with one Track and no Statistics or
+Measurements). All IDs, UIDs and Track values are, of course, just meaningless
+examples:
+
+\code
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmtract/trctractographyresults.h"
+
+// Main routine of test app
+int main(int argc, char *argv[])
+{
+  // Create tractography results object
+  OFCondition result;
+  // Instance Number, Label, Description, Creator's Name
+  ContentIdentificationMacro id("1", "MINI_TRACT", "Minimal Tractography object for demonstration", "Open Connections GmbH");
+  // Manufacturer, model name, serial number, software version(s)
+  IODEnhGeneralEquipmentModule::EquipmentInfo equipment("Open Connections Gmbh", "dcmtract library", "0815", OFFIS_DCMTK_VERSION_STRING);
+  IODReferences refs;
+  // We need at least one image reference this Tractography Results object is based on.
+  // We provide: Patient ID, Study Instance UID, Series Instance UID, SOP Instance UID, SOP Class UID
+  IODImageReference* ref = new IODImageReference("PAT_ID_4711", "1.2.3", "4.5.6", "7.8.9", UID_MRImageStorage);
+  refs.add(ref);
+  OFString contentDate = "20160601";
+  OFString contentTime = "120000";
+  TrcTractographyResults *trc = NULL;
+  TrcTractographyResults::create(id, contentDate, contentTime, equipment, refs, trc);
+
+  // Create track set
+  CodeWithModifiers anatomy;
+  anatomy.set("T-A0095", "SRT", "White matter of brain and spinal cord");
+  // Every CodeSequenceMacro has: Code Value, Coding Scheme Designator, Code Meaning
+  CodeSequenceMacro diffusionModel("113231", "DCM", "Single Tensor");
+  CodeSequenceMacro algorithmId("113211", "DCM", "Deterministic");
+  TrcTrackSet *set = NULL;
+  trc->addTrackSet("First and last Track Set", "Mini description", anatomy, diffusionModel, algorithmId, set);
+
+  // Create track
+  Uint16 cieLabColor[3]; // color the whole track with this color; we use some blue
+  cieLabColor[0] = 30000; // L
+  cieLabColor[1] = 0 ; // a
+  cieLabColor[2] = 0 ; // b
+  Float32 pointData[30]; // actual data, 10 data points with x,y,z coordinates
+  for (size_t f = 0; f < 10; f++)
+  {
+    // x coordinate, varies
+    pointData[f*3] = f;
+    // static y coordinate
+    pointData[f*3+1] = 1;
+    // static z coordinate
+    pointData[f*3+2] = 2;
+  }
+  TrcTrack* track = NULL;
+  set->addTrack(pointData, 10, cieLabColor, 1 /* numColors */, track);
+
+  // Frame of Reference is required; could be the same as from related MR series
+  trc->getFrameOfReference().setFrameOfReferenceUID("10.11.12");
+
+  // Set some optional data
+  trc->getPatient().setPatientID("4711");
+  trc->getPatient().setPatientName("Doe^John");
+  trc->getSeries().setSeriesDescription("This is just a test series with a single Tractography Results object inside");
+
+  // Save file
+  trc->saveFile("/tmp/create_demo.dcm");
+  delete trc;
+  return 0;
+}
+\endcode
+*/

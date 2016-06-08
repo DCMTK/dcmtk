@@ -29,6 +29,7 @@
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmiod/iodmacro.h"
+#include "dcmtk/dcmiod/iodreferences.h"
 
 
 /** Class representing the Common Instance Reference Module:
@@ -71,6 +72,14 @@ public:
    */
   virtual ~IODCommonInstanceReferenceModule();
 
+  /** Add references
+   *  @result EC_Normal if successful, error otherwise
+   */
+  virtual size_t addReferences(const IODReferences& references,
+                               const OFString& studyInstanceUID,
+                               const OFBool clearOldData = OFTrue);
+
+
   /** Read data of this module from given source item
    *  @param  source The item to read from
    *  @param  clearOldData If OFTrue, old data is cleared before reading, otherwise
@@ -99,6 +108,17 @@ public:
    *  @return Reference to list of Reference Series Items
    */
   OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& getReferencedSeriesItems();
+
+  /** Return reference to content of Studies Containing Other Referenced Instances Sequence
+   *  @return Reference to content of Studies Containing Other Referenced Instances Sequence
+   */
+  OFVector<StudiesOtherInstancesItem*>& getStudiesContainingOtherReferences();
+
+protected:
+
+  virtual OFCondition addSeriesReference(
+    OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& container,
+    const IODReference& ref);
 
 private:
 

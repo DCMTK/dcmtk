@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -44,6 +44,30 @@ public:
      */
     struct EquipmentInfo
     {
+
+      /** Default Constructor
+       */
+      EquipmentInfo() :
+        m_Manufacturer(),
+        m_ManufacturerModelName(),
+        m_DeviceSerialNumber(),
+        m_SoftwareVersions() {};
+
+      /** Convenience Constructor setting all values
+       *  @param manufacturer Manufacturer
+       *  @param modelName Model name
+       *  @param deviceSerialNumber Serial number
+       * *@param softwareVersions Software versions
+       */
+      EquipmentInfo(const OFString& manufacturer,
+                    const OFString& modelName,
+                    const OFString& deviceSerialNumber,
+                    const OFString& softwareVersions) :
+        m_Manufacturer(manufacturer),
+        m_ManufacturerModelName(modelName),
+        m_DeviceSerialNumber(deviceSerialNumber),
+        m_SoftwareVersions(softwareVersions) {};
+
       // Manufacturer (VM 1)
       OFString m_Manufacturer;
 
@@ -73,6 +97,9 @@ public:
     /** Destructor
      */
     virtual ~IODEnhGeneralEquipmentModule();
+
+    static OFCondition create(const EquipmentInfo& info,
+                              IODEnhGeneralEquipmentModule* equipment);
 
    /** Resets rules to their original values.
     */
@@ -146,6 +173,8 @@ public:
      */
     virtual OFCondition setSoftwareVersions(const OFString &value,
                                             const OFBool checkValue = OFTrue);
+
+    virtual OFCondition set(const EquipmentInfo& info);
 
 private:
 

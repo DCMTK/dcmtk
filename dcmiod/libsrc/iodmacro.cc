@@ -46,6 +46,13 @@ CodeSequenceMacro::CodeSequenceMacro(IODComponent* parent) : IODComponent(parent
 }
 
 
+CodeSequenceMacro::CodeSequenceMacro(const CodeSequenceMacro& rhs)
+: IODComponent(rhs)
+{
+}
+
+
+
 CodeSequenceMacro::~CodeSequenceMacro()
 {
   // nothing to do
@@ -99,10 +106,10 @@ OFString CodeSequenceMacro::getName() const
 
 void CodeSequenceMacro::resetRules()
 {
-  m_Rules->addRule(new IODRule(DCM_CodeValue, "1", "1", "CodeSequenceMacro", DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
-  m_Rules->addRule(new IODRule(DCM_CodingSchemeDesignator, "1", "1", "CodeSequenceMacro", DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
-  m_Rules->addRule(new IODRule(DCM_CodingSchemeVersion, "1", "1C", "CodeSequenceMacro", DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
-  m_Rules->addRule(new IODRule(DCM_CodeMeaning, "1", "1", "CodeSequenceMacro", DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
+  m_Rules->addRule(new IODRule(DCM_CodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
+  m_Rules->addRule(new IODRule(DCM_CodingSchemeDesignator, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
+  m_Rules->addRule(new IODRule(DCM_CodingSchemeVersion, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
+  m_Rules->addRule(new IODRule(DCM_CodeMeaning, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue /*overwrite old rule*/);
 }
 
 
@@ -197,6 +204,167 @@ OFCondition CodeSequenceMacro::set(const OFString& value,
   return result;
 }
 
+// ---------------------- CodeWithModifiers----------------------
+
+CodeWithModifiers::CodeWithModifiers(const OFString& modifierType,
+                                     const OFString& modifierVM)
+: CodeSequenceMacro(),
+  m_ModifierType(modifierType),
+  m_ModifierVM(modifierVM)
+{
+  resetRules();
+}
+
+
+CodeWithModifiers::CodeWithModifiers(const CodeWithModifiers& rhs)
+: CodeSequenceMacro(rhs),
+  m_Modifiers()
+{
+  if (&rhs == this)
+    return;
+
+  *this = rhs;
+}
+
+
+CodeWithModifiers& CodeWithModifiers::operator=(const CodeWithModifiers& rhs)
+{
+  if (&rhs == this)
+    return *this;
+
+  CodeSequenceMacro::operator=(rhs);
+
+  const CodeWithModifiers* r = OFstatic_cast(const CodeWithModifiers*, &rhs);
+  if (r)
+  {
+    OFVector<CodeSequenceMacro*>::const_iterator it = r->m_Modifiers.begin();
+    while ((it != r->m_Modifiers.end()))
+    {
+      m_Modifiers.push_back(new CodeSequenceMacro(*it));
+      it++;
+    }
+  }
+
+  return *this;
+}
+
+
+OFCondition CodeWithModifiers::check(const OFBool quiet)
+{
+  OFCondition result = CodeSequenceMacro::check(quiet);
+  if (result.good())
+  {
+    OFVector<CodeSequenceMacro*>::iterator it = m_Modifiers.begin();
+    while (result.good() && (it != m_Modifiers.end()))
+    {
+      result = (*it)->check(quiet);
+      it++;
+    }
+  }
+  if (result.bad())
+  {
+    DCMIOD_ERROR("Invalid code in Code Sequence Macro or its modifiers");
+  }
+  return result;
+}
+
+
+void CodeWithModifiers::clearData()
+{
+  CodeSequenceMacro::clearData();
+  DcmIODUtil::freeContainer(m_Modifiers);
+}
+
+
+int CodeWithModifiers::compare(const IODComponent& rhs) const
+{
+  const CodeWithModifiers* r = OFstatic_cast(const CodeWithModifiers*, &rhs);
+  if (!r)
+    return -1;
+
+  if (m_Modifiers.size() < r->m_Modifiers.size())
+    return -1;
+  else if (m_Modifiers.size() > r->m_Modifiers.size())
+    return 1;
+
+  int result = IODComponent::compare(*r);
+  if (result == 0)
+  {
+    for (size_t n = 0; (n < m_Modifiers.size()) && (result == 0);  n++)
+    {
+      result = m_Modifiers[n]->compare(*r->m_Modifiers[n]);
+    }
+  }
+  return result;
+}
+
+
+OFString CodeWithModifiers::getName() const
+{
+  return "CodeWithModifiers";
+}
+
+
+OFCondition CodeWithModifiers::addModifier(const CodeSequenceMacro& modifier)
+{
+  OFCondition result = OFconst_cast(CodeSequenceMacro*, &modifier)->check();
+  if (result.good())
+  {
+    m_Modifiers.push_back(new CodeSequenceMacro(modifier));
+  }
+  return result;
+}
+
+
+CodeSequenceMacro* CodeWithModifiers::getModifier(const size_t index)
+{
+  if (index > m_Modifiers.size())
+    return NULL;
+  else
+    return m_Modifiers[index];
+}
+
+
+OFCondition CodeWithModifiers::read(DcmItem& source,
+                                    const OFBool clearOldData)
+{
+  OFCondition result = CodeSequenceMacro::read(source, clearOldData);
+  if (result.good() && clearOldData)
+  {
+    DcmIODUtil::freeContainer(m_Modifiers);
+  }
+  if (result.good())
+  {
+    DcmIODUtil::readSubSequence(source, DCM_ModifierCodeSequence, m_Modifiers, getRules()->getByTag(DCM_ModifierCodeSequence));
+  }
+  return result;
+}
+
+
+void CodeWithModifiers::resetRules()
+{
+  CodeSequenceMacro::resetRules();
+  m_Rules->addRule(new IODRule(DCM_ModifierCodeSequence, m_ModifierVM, m_ModifierType, getName(), DcmIODTypes::IE_UNDEFINED));
+}
+
+
+OFCondition CodeWithModifiers::write(DcmItem& destination)
+{
+  OFCondition result;
+  DcmIODUtil::writeSubSequence(result, DCM_ModifierCodeSequence, m_Modifiers, getData(), getRules()->getByTag(DCM_ModifierCodeSequence));
+  if (result.good())
+  {
+    result = CodeSequenceMacro::write(destination);
+  }
+  return result;
+}
+
+
+CodeWithModifiers::~CodeWithModifiers()
+{
+  DcmIODUtil::freeContainer(m_Modifiers);
+}
+
 
 // ---------------------- SeriesAndInstanceReferenceMacro----------------------
 
@@ -256,7 +424,7 @@ void IODSeriesAndInstanceReferenceMacro::clearData()
 
 void IODSeriesAndInstanceReferenceMacro::resetRules()
 {
-  m_Rules->addRule(new IODRule(DCM_ReferencedSeriesSequence, "1-n", "1", m_ComponentName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedSeriesSequence, "1-n", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
 
@@ -338,8 +506,8 @@ OFCondition IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::write(DcmI
 void IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::resetRules()
 {
   // Parameters for Rule are tag, VM, type (1,1C,2,2C,3), module name and logical IOD level
-  m_Rules->addRule(new IODRule(DCM_SeriesInstanceUID, "1", "1", m_ComponentName, DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedInstanceSequence, "1-n", "1", m_ComponentName, DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SeriesInstanceUID, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedInstanceSequence, "1-n", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
 
@@ -365,6 +533,45 @@ OFCondition IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::setSeriesI
   return result;
 }
 
+OFCondition IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::addReference(
+  const OFString& sopClassUID,
+  const OFString& sopInstanceUID)
+{
+  OFVector<SOPInstanceReferenceMacro*>::iterator instance = m_ReferencedInstanceSequence.begin();
+  while (instance != m_ReferencedInstanceSequence.end())
+  {
+    OFString c,i;
+    (*instance)->getReferencedSOPClassUID(c);
+    (*instance)->getReferencedSOPInstanceUID(i);
+    if ( i == sopInstanceUID)
+    {
+      DCMIOD_DEBUG("Skipping doubled instance reference when adding to Series and Instance Reference Macro");
+      return EC_Normal;
+    }
+    else
+    {
+      instance++;
+    }
+  }
+  // We get here in case that we do not have this reference, add new one
+  SOPInstanceReferenceMacro* macro = new SOPInstanceReferenceMacro();
+  if (!macro)
+  {
+    return EC_MemoryExhausted;
+  }
+  OFCondition result = macro->setReferencedSOPClassUID(sopClassUID);
+  if (result.good()) result = macro->setReferencedSOPInstanceUID(sopInstanceUID);
+  if (result.good())
+  {
+    m_ReferencedInstanceSequence.push_back(macro);
+  }
+  else
+  {
+    delete macro;
+    result = IOD_EC_InvalidElementValue;
+  }
+  return result;
+}
 
 
 // ---------------------- SOPInstanceReferenceMacro ----------------------
@@ -403,8 +610,8 @@ OFString SOPInstanceReferenceMacro::getName() const
 void SOPInstanceReferenceMacro::resetRules()
 {
   // Parameters for Rule are tag, VM, type (1,1C,2,2C,3), module name and logical IOD level
-  m_Rules->addRule(new IODRule(DCM_ReferencedSOPClassUID, "1", "1", "SOPInstanceReferenceMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedSOPInstanceUID, "1", "1",  "SOPInstanceReferenceMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedSOPClassUID, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedSOPInstanceUID, "1", "1",  getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
 }
 
 
@@ -452,6 +659,58 @@ ImageSOPInstanceReferenceMacro::ImageSOPInstanceReferenceMacro()
     ReferencedSegmentNumber(DCM_ReferencedSegmentNumber)
 {
 
+}
+
+
+OFCondition ImageSOPInstanceReferenceMacro::create(const OFString& sopClassUID,
+                                                   const OFString& sopInstanceUID,
+                                                   ImageSOPInstanceReferenceMacro*& result)
+{
+  result = new ImageSOPInstanceReferenceMacro();
+  if (!result)
+    return EC_MemoryExhausted;
+
+  OFCondition cond = result->setReferencedSOPClassUID(sopClassUID);
+  if (cond.good())
+  {
+    cond = result->setReferencedSOPInstanceUID(sopInstanceUID);
+  }
+  if (cond.bad())
+  {
+    delete result;
+    result = NULL;
+  }
+  return cond;
+}
+
+
+OFCondition ImageSOPInstanceReferenceMacro::create(const OFString& sopClassUID,
+                                                   const OFString& sopInstanceUID,
+                                                   const OFVector< Uint16 >& refFramesOrSegments,
+                                                   ImageSOPInstanceReferenceMacro*& result
+                                                   )
+{
+  OFCondition cond = create(sopClassUID, sopInstanceUID, result);
+  if (cond.good())
+  {
+    if (!refFramesOrSegments.empty())
+    {
+      if (sopClassUID == UID_SegmentationStorage)
+      {
+        cond = result->setReferencedSegmentNumber(refFramesOrSegments);
+      }
+      else
+      {
+        cond = result->setReferencedFrameNumber(refFramesOrSegments);
+      }
+    }
+    if (cond.bad())
+    {
+      delete result;
+      result = NULL;
+    }
+  }
+  return cond;
 }
 
 
@@ -560,9 +819,7 @@ OFCondition ImageSOPInstanceReferenceMacro::addReferencedSegmentNumber(const Uin
 }
 
 
-
 // ---------------------- GeneralAnatomyMacro ----------------------
-
 
 
 GeneralAnatomyMacro::GeneralAnatomyMacro(const OFString& type) :
@@ -595,7 +852,6 @@ GeneralAnatomyMacro::GeneralAnatomyMacro(const GeneralAnatomyMacro& rhs)
     }
   }
 }
-
 
 
 GeneralAnatomyMacro::~GeneralAnatomyMacro()
@@ -1189,14 +1445,40 @@ ContentIdentificationMacro::ContentIdentificationMacro() :
 }
 
 
+ContentIdentificationMacro::ContentIdentificationMacro(const OFString& instanceNumber,
+                                                       const OFString& contentLabel,
+                                                       const OFString& contentDescription,
+                                                       const OFString& contentCreatorName) :
+  m_InstanceNumber(DCM_InstanceNumber),
+  m_ContentLabel(DCM_ContentLabel),
+  m_ContentDescription(DCM_ContentDescription),
+  m_AlternateContentDescription(),
+  m_ContentCreatorName(DCM_ContentCreatorName),
+  m_ContentCreatorIdentificationCode(),
+  m_IODRules()
+{
+  resetRules();
+  setInstanceNumber(instanceNumber);
+  setContentLabel(contentLabel);
+  setContentDescription(contentDescription);
+  setContentCreatorName(contentCreatorName);
+}
+
+
 void ContentIdentificationMacro::resetRules()
 {
-  m_IODRules.addRule(new IODRule(DCM_InstanceNumber,     "1", "1", "ContentIdentificationMacro", DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_IODRules.addRule(new IODRule(DCM_ContentLabel,       "1", "1", "ContentIdentificationMacro", DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_IODRules.addRule(new IODRule(DCM_ContentDescription, "1", "2", "ContentIdentificationMacro", DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_IODRules.addRule(new IODRule(DCM_ContentCreatorName, "1", "2", "ContentIdentificationMacro", DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_IODRules.addRule(new IODRule(DCM_AlternateContentDescriptionSequence, "1-n", "3", "ContentIdentificationMacro", DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_IODRules.addRule(new IODRule(DCM_ContentCreatorIdentificationCodeSequence, "1", "3", "ContentIdentificationMacro", DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_IODRules.addRule(new IODRule(DCM_InstanceNumber,     "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_IODRules.addRule(new IODRule(DCM_ContentLabel,       "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_IODRules.addRule(new IODRule(DCM_ContentDescription, "1", "2", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_IODRules.addRule(new IODRule(DCM_ContentCreatorName, "1", "2", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_IODRules.addRule(new IODRule(DCM_AlternateContentDescriptionSequence, "1-n", "3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_IODRules.addRule(new IODRule(DCM_ContentCreatorIdentificationCodeSequence, "1", "3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+}
+
+
+OFString ContentIdentificationMacro::getName() const
+{
+  return "ContentIdentificationMacro";
 }
 
 
@@ -1232,6 +1514,42 @@ ContentIdentificationMacro::ContentIdentificationMacro(const ContentIdentificati
     }
   }
 }
+
+
+OFCondition ContentIdentificationMacro::create(const OFString& instanceNumber,
+                                               const OFString& contentLabel,
+                                               const OFString& contentDescription,
+                                               const OFString& contentCreatorName,
+                                               ContentIdentificationMacro*& result)
+{
+  result = new ContentIdentificationMacro();
+  if (!result)
+    return EC_MemoryExhausted;
+  OFCondition cond = result->setInstanceNumber(instanceNumber);
+  if (cond.good())
+  {
+    cond = result->setContentLabel(contentLabel);
+  }
+  if (cond.good())
+  {
+    cond = result->setContentDescription(contentDescription);
+  }
+  if (cond.good())
+  {
+    cond = result->setContentCreatorName(contentCreatorName);
+  }
+  if (cond.good())
+  {
+    cond = result->check();
+  }
+  if (cond.bad())
+  {
+    delete result;
+    result = NULL;
+  }
+  return cond;
+}
+
 
 
 ContentIdentificationMacro& ContentIdentificationMacro::operator=(const ContentIdentificationMacro& rhs)
@@ -1605,9 +1923,9 @@ OFString HL7HierarchicDesignatorMacro::getName() const
 void HL7HierarchicDesignatorMacro::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_UniversalEntityID, "1","1C", "HL7HierarchicDesignatorMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_LocalNamespaceEntityID, "1","1C", "HL7HierarchicDesignatorMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_UniversalEntityIDType, "1","1C", "HL7HierarchicDesignatorMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_UniversalEntityID, "1","1C", "getName()", DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_LocalNamespaceEntityID, "1","1C", "getName()", DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_UniversalEntityIDType, "1","1C", "getName()", DcmIODTypes::IE_UNDEFINED), OFTrue);
 }
 
 
@@ -1637,8 +1955,8 @@ OFCondition HL7HierarchicDesignatorMacro::setUniversalEntityIDType(const OFStrin
 }
 
 
-
 // -------------------- Mandatory View and Slice Progression Direction Macro --------------------
+
 
 MandatoryViewAndSliceProgressionDirectionMacro::MandatoryViewAndSliceProgressionDirectionMacro(OFshared_ptr< DcmItem > item,
                                                                                                OFshared_ptr< IODRules > rules,
@@ -1665,9 +1983,9 @@ OFString MandatoryViewAndSliceProgressionDirectionMacro::getName() const
 
 void MandatoryViewAndSliceProgressionDirectionMacro::resetRules()
 {
-  m_Rules->addRule(new IODRule(DCM_ViewCodeSequence, "1","1", "MandatoryViewAndSliceProgressionDirectionMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ViewModifierCodeSequence, "1-n","2C", "MandatoryViewAndSliceProgressionDirectionMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SliceProgressionDirection, "1","1C", "MandatoryViewAndSliceProgressionDirectionMacro", DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ViewCodeSequence, "1","1", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ViewModifierCodeSequence, "1-n","2C", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SliceProgressionDirection, "1","1C", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
 }
 
 
@@ -1677,7 +1995,6 @@ void MandatoryViewAndSliceProgressionDirectionMacro::clearData()
   m_ViewCodeSequence.clearData();
   IODComponent::clearData();
 }
-
 
 
 OFCondition MandatoryViewAndSliceProgressionDirectionMacro::read(DcmItem& source,
