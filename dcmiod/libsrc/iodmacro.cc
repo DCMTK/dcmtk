@@ -207,10 +207,12 @@ OFCondition CodeSequenceMacro::set(const OFString& value,
 // ---------------------- CodeWithModifiers----------------------
 
 CodeWithModifiers::CodeWithModifiers(const OFString& modifierType,
-                                     const OFString& modifierVM)
+                                     const OFString& modifierVM,
+                                     const DcmTagKey& modifierSeq)
 : CodeSequenceMacro(),
   m_ModifierType(modifierType),
-  m_ModifierVM(modifierVM)
+  m_ModifierVM(modifierVM),
+  m_CodeModifierSeq(modifierSeq)
 {
   resetRules();
 }
@@ -335,7 +337,7 @@ OFCondition CodeWithModifiers::read(DcmItem& source,
   }
   if (result.good())
   {
-    DcmIODUtil::readSubSequence(source, DCM_ModifierCodeSequence, m_Modifiers, getRules()->getByTag(DCM_ModifierCodeSequence));
+    result = DcmIODUtil::readSubSequence(source, m_CodeModifierSeq, m_Modifiers, getRules()->getByTag(m_CodeModifierSeq));
   }
   return result;
 }
@@ -344,14 +346,14 @@ OFCondition CodeWithModifiers::read(DcmItem& source,
 void CodeWithModifiers::resetRules()
 {
   CodeSequenceMacro::resetRules();
-  m_Rules->addRule(new IODRule(DCM_ModifierCodeSequence, m_ModifierVM, m_ModifierType, getName(), DcmIODTypes::IE_UNDEFINED));
+  m_Rules->addRule(new IODRule(m_CodeModifierSeq, m_ModifierVM, m_ModifierType, getName(), DcmIODTypes::IE_UNDEFINED));
 }
 
 
 OFCondition CodeWithModifiers::write(DcmItem& destination)
 {
   OFCondition result;
-  DcmIODUtil::writeSubSequence(result, DCM_ModifierCodeSequence, m_Modifiers, getData(), getRules()->getByTag(DCM_ModifierCodeSequence));
+  DcmIODUtil::writeSubSequence(result, m_CodeModifierSeq, m_Modifiers, getData(), getRules()->getByTag(m_CodeModifierSeq));
   if (result.good())
   {
     result = CodeSequenceMacro::write(destination);

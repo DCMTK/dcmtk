@@ -188,8 +188,10 @@ public:
 
 /** Code with Modifier(s). Represents the combination of a Code Sequence Macro
  *  that is amended by a Modifier Code Sequence with one or more items. The
- *  VM and requirement type of the Modifier Code Sequence can be configured.
- *  Overall, the class reads and write the following structure from an item:
+ *  VM and requirement type of the Modifier Code Sequence can be configured, as
+ *  well as the tag of the sequence holding the modifiers (default: Modifier
+ *  Code Sequence). Overall, the class reads and write the following structure
+ *  from an item:
  *
  *  Coding Scheme Designator, 1, 1C
  *  Coding Scheme Version, 1, 1C
@@ -212,9 +214,12 @@ public:
    *          2, 2C or 3), default is 3
    *  @param  modifierVM Denotes how many items are allowed in the Modifier Code
    *          Sequence
+   *  @param  modifierSeq Tag of the sequence that holds the modifier codes.
+   *          The default is the Modifier Code Sequence.
    */
   CodeWithModifiers(const OFString& modifierType = "3",
-                    const OFString& modifierVM = "1-n");
+                    const OFString& modifierVM = "1-n",
+                    const DcmTagKey& modifierSeq = DCM_ModifierCodeSequence);
 
   /** Copy constructor, performs deep copy.
    *  @param  rhs The component to be copied from
@@ -300,11 +305,14 @@ private:
   /// Items of Modifier Code Sequence
   OFVector<CodeSequenceMacro*> m_Modifiers;
 
-  // Type 1,2,3,1C or 2C
+  /// Type 1,2,3,1C or 2C
   OFString m_ModifierType;
 
-  // 1, 1-n, 2-2n, ...
+  /// 1, 1-n, 2-2n, ...
   OFString m_ModifierVM;
+
+  /// The sequence tag key that contains the modifier codes
+  DcmTagKey m_CodeModifierSeq;
 };
 
 
