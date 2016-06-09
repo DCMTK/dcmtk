@@ -43,4 +43,4 @@ makeOFConditionConst(IOD_EC_NoSuchRule,            OFM_dcmiod,  9, OF_error, "No
 makeOFConditionConst(IOD_EC_InvalidLaterality,     OFM_dcmiod, 10, OF_error, "Invalid value for 'Laterality' (only 'L' or 'R' permitted)");
 makeOFConditionConst(IOD_EC_InvalidElementValue,   OFM_dcmiod, 11, OF_error, "Value not allowed for element");
 makeOFConditionConst(IOD_EC_InvalidReference,      OFM_dcmiod, 12, OF_error, "One or more invalid SOP references");
-makeOFConditionConst(IOD_EC_ReferencesOmitted,      OFM_dcmiod, 12, OF_error, "One or more SOP references have been omitted");
+makeOFConditionConst(IOD_EC_ReferencesOmitted,     OFM_dcmiod, 13, OF_error, "One or more SOP references have been omitted");
