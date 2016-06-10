@@ -47,25 +47,9 @@ class DCMTK_DCMTRACT_EXPORT TrcTrackSet
 
 public:
 
-  /** Allow DcmIODUtil access to non-public members. This is only used so that
-   *  readSubSequence() can access the protected TrcStatistic()
-   *  constructor when reading from a sequence.
-   *  @param  source The sequence to read from
-   *  @param  seqKey The tag key of the sequence to write
-   *  @param  destination The container (e.g. OFVector) to read into
-   *  @param  cardinality The cardinality of items in the sequence
-   *          (1, 1-n, ...)
-   *  @param  type Type (1, 1C, 2, 2C, 3) of the sequence
-   *  @param  module The module the sequence belongs to
-   *  @return EC_Normal if reading was successful, error otherwise
-   */
-  template<class Container>
-  friend OFCondition DcmIODUtil::readSubSequence(DcmSequenceOfItems* source,
-                                                 const DcmTagKey& seqKey,
-                                                 Container& destination,
-                                                 const OFString& cardinality,
-                                                 const OFString& type,
-                                                 const OFString& module);
+  // Allow read/write functions in DcmIODUtil to access class internals
+  friend class DcmIODUtil;
+
   /** Create TrcTrackSet object by proving required data
    *  @param  trackSetLabel Label for the Track Set (256 chars max, VR=LO)
    *  @param  trackSetDescription Description for the Track Set (2^32-2 bytes

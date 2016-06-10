@@ -47,25 +47,7 @@ public:
   {
     public:
 
-      /** Allow DcmIODUtil access to non-public members. This is only used so that
-       *  readSubSequence() can access the protected TrcMeasurement::Values()
-       *  constructor when reading from a sequence.
-       *  @param  source The sequence to read from
-       *  @param  seqKey The tag key of the sequence to write
-       *  @param  destination The container (e.g. OFVector) to read into
-       *  @param  cardinality The cardinality of items in the sequence
-       *          (1, 1-n, ...)
-       *  @param  type Type (1, 1C, 2, 2C, 3) of the sequence
-       *  @param  module The module the sequence belongs to
-       *  @return EC_Normal if reading was successful, error otherwise
-       */
-      template<class Container>
-      friend OFCondition DcmIODUtil::readSubSequence(DcmSequenceOfItems* source,
-                                                     const DcmTagKey& seqKey,
-                                                     Container& destination,
-                                                     const OFString& cardinality,
-                                                     const OFString& type,
-                                                     const OFString& module);
+      friend class DcmIODUtil;
 
       /** Create TrcMeasurement::Values from minimal data.
        *  @param  dataValues The measurement values
@@ -128,25 +110,8 @@ public:
       Values();
   };
 
-  /** Allow DcmIODUtil access to non-public members. This is only used so that
-   *  readSubSequence() can access the protected TrcMeasurement()
-   *  constructor when reading from a sequence.
-   *  @param  source The sequence to read from
-   *  @param  seqKey The tag key of the sequence to write
-   *  @param  destination The container (e.g. OFVector) to read into
-   *  @param  cardinality The cardinality of items in the sequence
-   *          (1, 1-n, ...)
-   *  @param  type Type (1, 1C, 2, 2C, 3) of the sequence
-   *  @param  module The module the sequence belongs to
-   *  @return EC_Normal if reading was successful, error otherwise
-   */
-  template<class Container>
-  friend OFCondition DcmIODUtil::readSubSequence(DcmSequenceOfItems* source,
-                                                 const DcmTagKey& seqKey,
-                                                 Container& destination,
-                                                 const OFString& cardinality,
-                                                 const OFString& type,
-                                                 const OFString& module);
+   // Allow read/write functions in DcmIODUtil to access class internals
+   friend class DcmIODUtil;
 
   /** Create TrcMeasurement from minimal data
    *  @param  measurementCode Code describing what is measured. Code must be
