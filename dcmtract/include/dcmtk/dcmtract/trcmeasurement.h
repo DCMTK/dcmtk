@@ -47,6 +47,7 @@ public:
   {
     public:
 
+      // Allow read/write functions in DcmIODUtil to access class internals
       friend class DcmIODUtil;
 
       /** Create TrcMeasurement::Values from minimal data.
