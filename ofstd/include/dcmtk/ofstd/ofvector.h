@@ -232,7 +232,11 @@ public:
     iterator insert(iterator it, const T& v)
     {
         size_type idx = it - begin();
-        reserve(size_ + 1);
+
+        if (size_ == allocated_) {
+            reserve(size_ * 2);
+        }
+
         if (idx < size_)
             for (size_type i = size_; i > idx; i--) {
                 values_[i] = values_[i - 1];
