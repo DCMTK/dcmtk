@@ -305,8 +305,8 @@ OFCondition TrcTractographyResults::getContentDate(OFString& value,
 }
 
 
-OFCondition TrcTractographyResults::TrcTractographyResults::getContentTime(OFString& value,
-                                                                           const long pos)
+OFCondition TrcTractographyResults::getContentTime(OFString& value,
+                                                   const long pos)
 {
   return m_TractographyResultsModule.getContentTime(value, pos);
 }
