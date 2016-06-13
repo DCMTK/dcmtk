@@ -5,9 +5,8 @@
  *
  *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2016b
- *  File created on 2016-04-06 16:07:54 by J. Riesmeier
- *  File updated manually on 2016-06-02 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016c
+ *  File created on 2016-06-13 09:53:55 by J. Riesmeier
  *
  */
 
@@ -34,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3379
+// total number of codes: 3400
 // - retired: 143
 // - no name: 27
 // - not unique: 14
@@ -3425,13 +3424,28 @@
 #define CODE_DCM_MouseTauPreformedFibrils                                  DSRBasicCodedEntry("127854", "DCM", "Mouse Tau preformed fibrils")
 #define CODE_DCM_NonIonicIodinatedContrastAgent                            DSRBasicCodedEntry("127855", "DCM", "Non-ionic iodinated contrast agent")
 #define CODE_DCM_HeartValveFlail                                           DSRBasicCodedEntry("127856", "DCM", "Heart valve flail")
-#define CODE_DCM_SPECTOfWholeBody                                          DSRBasicCodedEntry("127901", "DCM", "SPECT of whole body")
-#define CODE_DCM_SPECTCTOfWholeBody                                        DSRBasicCodedEntry("127902", "DCM", "SPECT CT of whole body")
-
-// new codes introduced with recently approved CPs
-
 #define CODE_DCM_GlucoseMeasurementDate                                    DSRBasicCodedEntry("127857", "DCM", "Glucose Measurement Date")
 #define CODE_DCM_GlucoseMeasurementTime                                    DSRBasicCodedEntry("127858", "DCM", "Glucose Measurement Time")
-
+#define CODE_DCM_SPECTOfWholeBody                                          DSRBasicCodedEntry("127901", "DCM", "SPECT of whole body")
+#define CODE_DCM_SPECTCTOfWholeBody                                        DSRBasicCodedEntry("127902", "DCM", "SPECT CT of whole body")
+#define CODE_DCM_AddAddendumToReport                                       DSRBasicCodedEntry("128001", "DCM", "Add Addendum to Report")
+#define CODE_DCM_ModalityToRead                                            DSRBasicCodedEntry("128002", "DCM", "Modality to Read")
+#define CODE_DCM_ReaderSpecialty                                           DSRBasicCodedEntry("128003", "DCM", "Reader Specialty")
+#define CODE_DCM_ReportRequested                                           DSRBasicCodedEntry("128004", "DCM", "Report Requested")
+#define CODE_DCM_FinalReport                                               DSRBasicCodedEntry("128005", "DCM", "Final Report")
+#define CODE_DCM_AbdominalImagingSpecialty                                 DSRBasicCodedEntry("128006", "DCM", "Abdominal Imaging Specialty")
+#define CODE_DCM_CardiacImagingSpecialty                                   DSRBasicCodedEntry("128007", "DCM", "Cardiac Imaging Specialty")
+#define CODE_DCM_HeadAndNeckImagingSpecialty                               DSRBasicCodedEntry("128008", "DCM", "Head and Neck Imaging Specialty")
+#define CODE_DCM_MusculoskeletalImagingSpecialty                           DSRBasicCodedEntry("128009", "DCM", "Musculoskeletal Imaging Specialty")
+#define CODE_DCM_NeurologySpecialty                                        DSRBasicCodedEntry("128010", "DCM", "Neurology Specialty")
+#define CODE_DCM_NeuroradiologicImagingSpecialty                           DSRBasicCodedEntry("128011", "DCM", "Neuroradiologic Imaging Specialty")
+#define CODE_DCM_OBGynImagingSpecialty                                     DSRBasicCodedEntry("128012", "DCM", "OB/Gyn Imaging Specialty")
+#define CODE_DCM_OncologicImagingSpecialty                                 DSRBasicCodedEntry("128013", "DCM", "Oncologic Imaging Specialty")
+#define CODE_DCM_OncologySpecialty                                         DSRBasicCodedEntry("128014", "DCM", "Oncology Specialty")
+#define CODE_DCM_ThoracicImagingSpecialty                                  DSRBasicCodedEntry("128015", "DCM", "Thoracic Imaging Specialty")
+#define CODE_DCM_PediatricImagingSpecialty                                 DSRBasicCodedEntry("128016", "DCM", "Pediatric Imaging Specialty")
+#define CODE_DCM_VascularImagingSpecialty                                  DSRBasicCodedEntry("128017", "DCM", "Vascular Imaging Specialty")
+#define CODE_DCM_FWPByGA_Campbell_1991                                     DSRBasicCodedEntry("128040", "DCM", "FWP by GA, Campbell, 1991")
+#define CODE_DCM_FWPByGA_Hadlock_1991                                      DSRBasicCodedEntry("128041", "DCM", "FWP by GA, Hadlock, 1991")
 
 #endif
