@@ -207,16 +207,14 @@ OFCondition IODReferences::writeTractographyReferencedInstanceSequence(DcmItem& 
           IODImageReference* ref = OFstatic_cast(IODImageReference*, *it);
           if (ref && !ref->m_ReferencedFrameNumber.empty())
           {
-            OFString frameRefs;
+            OFStringStream oss;
             for (size_t f = 0; f < ref->m_ReferencedFrameNumber.size(); f++)
             {
-              char buf[100];
-              sprintf(buf, "%u", ref->m_ReferencedFrameNumber[f]);
-              frameRefs += buf;
-              frameRefs += "\\";
+              oss << ref->m_ReferencedFrameNumber[f] << "\\";
             }
-            // and insert all references into Referenced Frame Number attribute.
-            // Remove last "\" which is superfluous
+            OFSTRINGSTREAM_GETOFSTRING(oss, frameRefs)
+            // Insert all references into Referenced Frame Number attribute.
+            // Remove superfluous "\" at the end of the string.
             result = seqItem->putAndInsertOFStringArray(DCM_ReferencedFrameNumber, frameRefs.substr(0, frameRefs.size() - 1));
           }
         }
