@@ -1415,7 +1415,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if ( (pixelData == NULL) || (numValues%samplesPerPixel != 0) )
+  if ( (pixelData == NULL) )
     return EC_IllegalParameter;
   // allocate target buffer
   Uint8* px8 = new Uint8[numValues];
@@ -1451,7 +1451,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if ( (pixelData == NULL) || (numValues%samplesPerPixel != 0) )
+  if ( (pixelData == NULL) )
     return EC_IllegalParameter;
   // allocate target buffer
   Uint16* px16 = new Uint16[numValues];
