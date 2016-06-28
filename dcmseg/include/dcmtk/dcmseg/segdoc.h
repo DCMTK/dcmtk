@@ -213,6 +213,11 @@ public:
    */
   virtual IODGeneralEquipmentModule& getEquipment();
 
+  /** Get Segmentation Series Module
+   *  @return Segmentation Series Module
+   */
+  virtual IODSegmentationSeriesModule& getSegmentationSeriesModule();
+
   /** Get modality (overwrite from DcmIODCommon. We always return "SEG" here)
    *  @param  value  Reference to variable in which the value should be stored
    *  @param  pos    Index of the value to get. Not evaluated (here for

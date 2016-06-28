@@ -365,6 +365,12 @@ IODGeneralEquipmentModule& DcmSegmentation::getEquipment()
 }
 
 
+IODSegmentationSeriesModule & DcmSegmentation::getSegmentationSeriesModule()
+{
+  return m_SegmentationSeries;
+}
+
+
 OFCondition DcmSegmentation::addSegment(DcmSegment* seg,
                                         Uint16& segmentNumber)
 {
