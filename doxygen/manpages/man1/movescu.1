@@ -1,4 +1,4 @@
-.TH "movescu" 1 "Tue Feb 16 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "Thu Jun 30 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 movescu \- DICOM retrieve (C-MOVE) SCU
@@ -392,12 +392,14 @@ DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+LegacyConvertedEnhancedCTImageStorage                1.2.840.10008.5.1.4.1.1.2.2
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
 EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
+LegacyConvertedEnhancedMRImageStorage                1.2.840.10008.5.1.4.1.1.4.4
 RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
@@ -426,6 +428,8 @@ ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.
 PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
 BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
 XAXRFGrayscaleSoftcopyPresentationStateStorage       1.2.840.10008.5.1.4.1.1.11.5
+GrayscalePlanarMPRVolumetricPresentationStateStorage 1.2.840.10008.5.1.4.1.1.11.6
+CompositingPlanarMPRVolumetricPresentationStateStor. 1.2.840.10008.5.1.4.1.1.11.7
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
@@ -434,15 +438,19 @@ RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.
 XRay3DAngiographicImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.1
 XRay3DCraniofacialImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.2
 BreastTomosynthesisImageStorage                      1.2.840.10008.5.1.4.1.1.13.1.3
+BreastProjectionXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.13.1.4
+BreastProjectionXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.13.1.5
 IntravascularOpt.Coh.Tom.ImageStorageForPresentation 1.2.840.10008.5.1.4.1.1.14.1
 IntravascularOpt.Coh.Tom.ImageStorageForProcessing   1.2.840.10008.5.1.4.1.1.14.2
 NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
+ParametricMapStorage                                 1.2.840.10008.5.1.4.1.1.30
 RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
 SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
 SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
 DeformableSpatialRegistrationStorage                 1.2.840.10008.5.1.4.1.1.66.3
 SegmentationStorage                                  1.2.840.10008.5.1.4.1.1.66.4
 SurfaceSegmentationStorage                           1.2.840.10008.5.1.4.1.1.66.5
+TractographyResultsStorage                           1.2.840.10008.5.1.4.1.1.66.6
 RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
 SurfaceScanMeshStorage                               1.2.840.10008.5.1.4.1.1.68.1
 SurfaceScanPointCloudStorage                         1.2.840.10008.5.1.4.1.1.68.2
@@ -458,6 +466,8 @@ OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.
 OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
 StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
 OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
+WideFieldOphthalmicPhoto.Stereogr.Proj.ImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.5
+WideFieldOphthalmicPhotogr.3DCoordinatesImageStorage 1.2.840.10008.5.1.4.1.1.77.1.5.6
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
@@ -471,6 +481,7 @@ IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
+CornealTopographyMapStorage                          1.2.840.10008.5.1.4.1.1.82.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
@@ -479,16 +490,21 @@ BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
 ComprehensiveSRStorage                               1.2.840.10008.5.1.4.1.1.88.33
 Comprehensive3DSRStorage                             1.2.840.10008.5.1.4.1.1.88.34
+ExtensibleSRStorage                                  1.2.840.10008.5.1.4.1.1.88.35
 ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
+RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
+AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
+ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
+LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
@@ -505,10 +521,14 @@ DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
 DICOS_ThreatDetectionReportStorage                   1.2.840.10008.5.1.4.1.1.501.3
+DICOS_2DAITStorage                                   1.2.840.10008.5.1.4.1.1.501.4
+DICOS_3DAITStorage                                   1.2.840.10008.5.1.4.1.1.501.5
+DICOS_QuadrupoleResonanceStorage                     1.2.840.10008.5.1.4.1.1.501.6
 DICONDE_EddyCurrentImageStorage                      1.2.840.10008.5.1.4.1.1.601.1
 DICONDE_EddyCurrentMultiframeImageStorage            1.2.840.10008.5.1.4.1.1.601.2
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
+RTBrachyApplicationSetupDeliveryInstructionStorage   1.2.840.10008.5.1.4.34.10
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
 ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
 ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
@@ -561,7 +581,7 @@ movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
 .fi
 .PP
 .PP
-sends the attributes contained in the DICOM file 'q\&.dcm' as part of a C-MOVE request to application entity ARCHIVE on the host caesar at port 104 using the Patient Root query model\&. \fBmovescu\fP itself uses the default AE title MOVESCU\&. The C-MOVE request will specifiy that images should be transferred to the destination AE title TEST_AE (via the \fI--move\fP option)\&. How the SCP interprets this request depends on its configuration\&. \fBmovescu\fP will listen on part 9876 for incoming associations in order to receive the requested images from the SCP\&.
+sends the attributes contained in the DICOM file 'q\&.dcm' as part of a C-MOVE request to application entity ARCHIVE on the host caesar at port 104 using the Patient Root query model\&. \fBmovescu\fP itself uses the default AE title MOVESCU\&. The C-MOVE request will specify that images should be transferred to the destination AE title TEST_AE (via the \fI--move\fP option)\&. How the SCP interprets this request depends on its configuration\&. \fBmovescu\fP will listen on part 9876 for incoming associations in order to receive the requested images from the SCP\&.
 .PP
 Images can be copied to a third party by using a different destination AE title (e\&.g\&. \fI--move\fP ANOTHER_AE)\&. Of course, the SCP must 'know' this AE title and the destination must be acting as an SCP of the Storage Service Class (the \fBstorescp\fP application can be used for this purpose)\&.
 .SH "LOGGING"
@@ -586,4 +606,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBfindscu\fP(1), \fBstorescp\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
