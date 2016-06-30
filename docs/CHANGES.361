@@ -1,6 +1,1214 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2016.06.30 (schlamelcher)
+
+- Updated CHANGES.361 for new development snapshot.
+  Affects: docs/CHANGES.361
+
+- DCMTK_ABI_VERSION for new development snapshot.
+  Affects: CMake/dcmtkPrepare.cmake
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/dcm2pdf.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdjpls.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcml2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmqridx.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrti.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmrecv.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsend.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/drtdump.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/getscu.1
+           doxygen/manpages/man1/img2dcm.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/pdf2dcm.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/termscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+**** Changes from 2016.06.29 (schlamelcher)
+
+- Updated Makefile dependencies.
+  Affects: ofstd/libsrc/Makefile.dep
+
+**** Changes from 2016.06.28 (onken)
+
+- Add get() for Segmentation Series Module:
+  Thanks to Christian Herz <cherz@bwh.harvard.edu>for the hint and suggested
+  patch.
+  Affects: dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/libsrc/segdoc.cc
+
+**** Changes from 2016.06.21 (hasenpusch)
+
+- Removed unnecessary buffer size divisibility check:
+  This fixes DCMTK bug #667.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
+**** Changes from 2016.06.14 (onken)
+
+- Fixed 32 bit long int warning:
+  Fixed warning in integer to string conversion originating from different
+  size of type Uint32 on 32 and 64 bit systems.
+  Affects: dcmiod/libsrc/iodreferences.cc
+
+**** Changes from 2016.06.13 (riesmeier)
+
+- Updated code definitions for DICOM 2016c:
+  Updated automatically generated code definitions of "DCM" coding scheme for
+  the latest release of the DICOM standard, i.e. DICOM 2016c. All other coding
+  schemes are not updated since there were no changes or the header files are
+  not (yet) generated automatically.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+
+- Updated data dictionary for DICOM 2016c edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2016-06-10. Since DCMTK's data dictionary was already
+  up-to-date regarding the recently approved Supplements and CPs, there are no
+  changes apart from the "Version" column.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2016.06.10 (onken)
+
+- Added another comment.
+  Affects: dcmtract/include/dcmtk/dcmtract/trcmeasurement.h
+
+**** Changes from 2016.06.10 (hasenpusch)
+
+- Modified OFVector's re-allocation strategy:
+  Upon insert() into a vector whose resulting size is greater than its capacity,
+  the vector's allocated space will now be doubled, like with most STL implemen-
+  tations.
+  Affects: ofstd/include/dcmtk/ofstd/ofvector.h
+
+**** Changes from 2016.06.10 (onken)
+
+- Fixed doubled class name in function definition:
+  Fixed double class name that breaks Visual Studio (and does not make much sense
+  at all).
+  Affects: dcmtract/libsrc/trctractographyresults.cc
+
+- Fix friend declaration to work in Visual Studio.
+  Affects: dcmtract/include/dcmtk/dcmtract/trcmeasurement.h
+           dcmtract/include/dcmtk/dcmtract/trcstatistic.h
+           dcmtract/include/dcmtk/dcmtract/trctrack.h
+           dcmtract/include/dcmtk/dcmtract/trctrackset.h
+
+**** Changes from 2016.06.09 (onken)
+
+- Corrected error from merging in tractography code.
+  Affects: dcmiod/libsrc/iodtypes.cc
+
+- Modifier Code Sequence exchangable:
+  Very often in DICOM as combination of a code with modifiers is used. The
+  modifiers are often stored in the Modifier Code Sequence. However, sometimes
+  another sequence is used for the same purpose. For those cases the sequence
+  being used in the CodeWithModifiers class has been made configurable.
+  Affects: dcmiod/include/dcmtk/dcmiod/iodmacro.h
+           dcmiod/libsrc/iodmacro.cc
+
+**** Changes from 2016.06.08 (onken)
+
+- New module dcmtract for Tractography Results:
+  Added new module dcmtract that offers a dedicated API to create and read DICOM
+  Tractography Results objects as introduced in DICOM Supplement 181. The commit
+  also includes enhancements and minor fixes for the dcmiod and dcmfg modules.
+  Acknowledgement: This work has been supported by the "SlicerDMRI" project.
+  SlicerDMRI is in part supported by funding from the National Institutes of
+  Health National Institute of Biomedical Imaging and Bioengineering (NIBIB), to
+  project Neuroimage Analysis Center, award P41 EB015902; and the National
+  Institutes of Health National Cancer Institute (NCI) Informatics Technology for
+  Cancer Research (ITCR) initiative, to project Open Source Diffusion MRI
+  Technology For Brain Cancer Research, award U01 CA199459.
+  Added:   dcmiod/include/dcmtk/dcmiod/iodreferences.h
+           dcmiod/libsrc/iodreferences.cc
+           dcmtract/CMakeLists.txt
+           dcmtract/Makefile.in
+           dcmtract/configure
+           dcmtract/data/Makefile.in
+           dcmtract/docs/Makefile.in
+           dcmtract/docs/dcmtract.dox
+           dcmtract/etc/Makefile.in
+           dcmtract/include/CMakeLists.txt
+           dcmtract/include/Makefile.in
+           dcmtract/include/dcmtk/dcmtract/trcdef.h
+           dcmtract/include/dcmtk/dcmtract/trcmeasurement.h
+           dcmtract/include/dcmtk/dcmtract/trcmodtractresults.h
+           dcmtract/include/dcmtk/dcmtract/trcstatistic.h
+           dcmtract/include/dcmtk/dcmtract/trctrack.h
+           dcmtract/include/dcmtk/dcmtract/trctrackset.h
+           dcmtract/include/dcmtk/dcmtract/trctractographyresults.h
+           dcmtract/include/dcmtk/dcmtract/trctypes.h
+           dcmtract/libsrc/CMakeLists.txt
+           dcmtract/libsrc/Makefile.dep
+           dcmtract/libsrc/Makefile.in
+           dcmtract/libsrc/trcmeasurement.cc
+           dcmtract/libsrc/trcmodtractresults.cc
+           dcmtract/libsrc/trcstatistic.cc
+           dcmtract/libsrc/trctrack.cc
+           dcmtract/libsrc/trctrackset.cc
+           dcmtract/libsrc/trctractographyresults.cc
+           dcmtract/libsrc/trctypes.cc
+           dcmtract/tests/Makefile.dep
+           dcmtract/tests/Makefile.in
+  Affects: CMakeLists.txt
+           CREDITS
+           Makefile
+           config/modules
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmfg/libsrc/Makefile.dep
+           dcmfg/libsrc/fgrealworldvaluemapping.cc
+           dcmiod/include/dcmtk/dcmiod/iodmacro.h
+           dcmiod/include/dcmtk/dcmiod/iodrules.h
+           dcmiod/include/dcmtk/dcmiod/iodtypes.h
+           dcmiod/include/dcmtk/dcmiod/iodutil.h
+           dcmiod/include/dcmtk/dcmiod/modbase.h
+           dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h
+           dcmiod/include/dcmtk/dcmiod/modenhequipment.h
+           dcmiod/include/dcmtk/dcmiod/modenhusimage.h
+           dcmiod/include/dcmtk/dcmiod/modgeneralimage.h
+           dcmiod/libsrc/CMakeLists.txt
+           dcmiod/libsrc/Makefile.dep
+           dcmiod/libsrc/iodmacro.cc
+           dcmiod/libsrc/iodrules.cc
+           dcmiod/libsrc/iodtypes.cc
+           dcmiod/libsrc/iodutil.cc
+           dcmiod/libsrc/modacquisitioncontext.cc
+           dcmiod/libsrc/modbase.cc
+           dcmiod/libsrc/modcommoninstanceref.cc
+           dcmiod/libsrc/modenhequipment.cc
+           dcmiod/libsrc/modenhusimage.cc
+           dcmiod/libsrc/modenhusseries.cc
+           dcmiod/libsrc/modequipment.cc
+           dcmiod/libsrc/modfor.cc
+           dcmiod/libsrc/modgeneralimage.cc
+           dcmiod/libsrc/modgeneralseries.cc
+           dcmiod/libsrc/modgeneralstudy.cc
+           dcmiod/libsrc/modimagepixel.cc
+           dcmiod/libsrc/modmultiframedimension.cc
+           dcmiod/libsrc/modmultiframefg.cc
+           dcmiod/libsrc/modpatient.cc
+           dcmiod/libsrc/modpatientstudy.cc
+           dcmiod/libsrc/modsegmentationseries.cc
+           dcmiod/libsrc/modsopcommon.cc
+           dcmiod/libsrc/modsynchronization.cc
+           dcmiod/libsrc/modusfor.cc
+           dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/libsrc/Makefile.dep
+           dcmseg/tests/Makefile.dep
+           doxygen/htmldocs.dox
+
+- Added missing access to Segment Algorithm Name:
+  Thanks to Christian Herz for the report and patch.
+  Affects: dcmseg/include/dcmtk/dcmseg/segment.h
+           dcmseg/libsrc/segment.cc
+
+**** Changes from 2016.06.03 (eichelberg)
+
+- Fixed overflow issue in JPEG-LS encoder:
+  Fixed overflow issue in JPEG-LS encoder by porting the corrected
+  implementation of EncoderStrategy::AppendToBitStream() from CharLS 1.1.0.
+  This closes DCMTK Bug #687.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmjpls/libcharls/encodstr.h
+
+**** Changes from 2016.06.02 (riesmeier)
+
+- Changed name of recently added "DCM" codes:
+  Removed additional "_" characters from new DCM code constant.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+
+**** Changes from 2016.06.01 (riesmeier)
+
+- Removed unused "dcmnet" function and definitions:
+  Removed unused function DUL_DefaultServiceParameters() and unused macros
+  DICOM_NET_IMPLEMENTATIONCLASSUID and DICOM_NET_IMPLEMENTATIONVERSIONNAME,
+  which were probably used in the past in the ancient network implementation.
+  Affects: dcmnet/include/dcmtk/dcmnet/dicom.h
+           dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/dul.cc
+
+**** Changes from 2016.06.01 (onken)
+
+- Adapted copyright date and fixed formatting:
+  Adapted copyright date and fixed formatting errors caused by last commit
+  removing the "register" keyword.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmdata/libsrc/dcswap.cc
+           dcmimage/include/dcmtk/dcmimage/diargpxt.h
+           dcmimage/include/dcmtk/dcmimage/dicmypxt.h
+           dcmimage/include/dcmtk/dcmimage/dicomot.h
+           dcmimage/include/dcmtk/dcmimage/dicoopxt.h
+           dcmimage/include/dcmtk/dcmimage/dicopxt.h
+           dcmimage/include/dcmtk/dcmimage/dihsvpxt.h
+           dcmimage/include/dcmtk/dcmimage/dipalpxt.h
+           dcmimage/include/dcmtk/dcmimage/diqtcmap.h
+           dcmimage/include/dcmtk/dcmimage/diqtctab.h
+           dcmimage/include/dcmtk/dcmimage/diqtfs.h
+           dcmimage/include/dcmtk/dcmimage/dirgbpxt.h
+           dcmimage/include/dcmtk/dcmimage/diybrpxt.h
+           dcmimage/include/dcmtk/dcmimage/diyf2pxt.h
+           dcmimage/include/dcmtk/dcmimage/diyp2pxt.h
+           dcmimage/libsrc/diqtctab.cc
+           dcmimage/libsrc/diqthash.cc
+           dcmimage/libsrc/diquant.cc
+           dcmimgle/include/dcmtk/dcmimgle/dicrvfit.h
+           dcmimgle/include/dcmtk/dcmimgle/diflipt.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dirotat.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmimgle/include/dcmtk/dcmimgle/displint.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/dibaslut.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovdat.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodecd.cc
+           dcmpstat/libsrc/dviface.cc
+           ofstd/include/dcmtk/ofstd/ofbmanip.h
+
+- Remove deprecated "register" keyword in C++ code:
+  See also http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4193.html#809
+  Thanks to Hans Johnson <hans-johnson@uiowa.edu> for the hint and suggested
+  patch.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmdata/libsrc/dcswap.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmimage/include/dcmtk/dcmimage/diargpxt.h
+           dcmimage/include/dcmtk/dcmimage/dicmypxt.h
+           dcmimage/include/dcmtk/dcmimage/dicomot.h
+           dcmimage/include/dcmtk/dcmimage/dicoopxt.h
+           dcmimage/include/dcmtk/dcmimage/dicopxt.h
+           dcmimage/include/dcmtk/dcmimage/dihsvpxt.h
+           dcmimage/include/dcmtk/dcmimage/dipalpxt.h
+           dcmimage/include/dcmtk/dcmimage/diqtcmap.h
+           dcmimage/include/dcmtk/dcmimage/diqtctab.h
+           dcmimage/include/dcmtk/dcmimage/diqtfs.h
+           dcmimage/include/dcmtk/dcmimage/dirgbpxt.h
+           dcmimage/include/dcmtk/dcmimage/diybrpxt.h
+           dcmimage/include/dcmtk/dcmimage/diyf2pxt.h
+           dcmimage/include/dcmtk/dcmimage/diyp2pxt.h
+           dcmimage/libsrc/diqtctab.cc
+           dcmimage/libsrc/diqthash.cc
+           dcmimage/libsrc/diquant.cc
+           dcmimgle/include/dcmtk/dcmimgle/dicrvfit.h
+           dcmimgle/include/dcmtk/dcmimgle/diflipt.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dirotat.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmimgle/include/dcmtk/dcmimgle/displint.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/dibaslut.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovdat.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodecd.cc
+           dcmpstat/libsrc/dviface.cc
+           ofstd/include/dcmtk/ofstd/ofbmanip.h
+           ofstd/libsrc/ofstd.cc
+
+**** Changes from 2016.05.31 (riesmeier)
+
+- Added codes introduced with recently approved CPs:
+  Added new "DCM" codes introduced with the recently approved CP-1543
+  (PET image library corrections).
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+
+- Made use of DateTime consistent in concept names:
+  Implemented changes introduced with CP-1545 (Make use of DateTime consistent
+  in concept names), which was approved as Final Text only recently.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/libcmr/tid1600.cc
+
+- Added support for recently approved CPs:
+  Added support for CP-1031 and CP-1539 to the data dictionary.
+  These CPs were approved during this weeks WG-06 meeting.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2016.05.24 (riesmeier)
+
+- Added size of DICOM dataset to transfer entry:
+  Added information on the size of the dataset (in bytes) to the transfer entry,
+  i.e. to the list of SOP instances to be transferred. Also added a new notifier
+  method that is called _before_ a SOP instance is transferred. This allows for
+  implementing a more accurate progress bar in a derived class.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
+**** Changes from 2016.05.13 (riesmeier)
+
+- Avoided recursion in DB_FreeUidList():
+  Replaced recursive call in DB_FreeUidList() by a while loop in order
+  to fix a possible issue (crash) when freeing a very long UID list.
+  Thanks to Stacy Loesch <Stacy.Loesch@varian.com> for the report.
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
+**** Changes from 2016.05.03 (riesmeier)
+
+- Updated latest tested CMake version:
+  Updated information on latest CMake version that has been tested to "3.5.2".
+  Affects: CMake/dcmtkPrepare.cmake
+
+**** Changes from 2016.04.27 (riesmeier)
+
+- Enhanced return value of determineStartFragment():
+  Enhanced error conditions returned by DcmCodec::determineStartFragment().
+  This avoids getting a meaningless EC_IllegalCall when trying to access a
+  particular frame of a compressed and fragmented pixel data element, e.g.
+  if the basic offset table is empty. This is particularly reasonable since
+  the codec rountines are usually hidden to the user of the toolkit, e.g. by
+  the DicomImage class.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcerror.cc
+
+- Removed unused local function:
+  The (local) function dcmErrorConditionToString() is not used any longer,
+  so remove it from the source file.
+  Affects: dcmdata/libsrc/dcerror.cc
+
+**** Changes from 2016.04.25 (schlamelcher)
+
+- Removed definition of Visual Studio macro NOMINMAX:
+  A previous commit introduced the definition of NOMINMAX inside osconfig.h to
+  fix problems regarding the min()/max() functions declared as part of
+  OFnumeric_limits. However, this is problematic for users that declare
+  NOMINMAX themselves or don't want to declare NOMINMAX at all.
+  This commit removes the NOMINMAX definition from osconfig.h and modifies
+  OFnumeric_limits and related header files in a way that they may be included
+  without the need to declare NOMINMAX. The NOMINMAX macro is then only defined
+  when compiling the DCMTK itself, DCMTK users may or may not declare NOMINMAX
+  themselves as needed/appropriate.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
+  Affects: CMake/dcmtkPrepare.cmake
+           CMake/osconfig.h.in
+           ofstd/include/dcmtk/ofstd/oflimits.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+
+**** Changes from 2016.04.08 (schlamelcher)
+
+- Improved const handling of some DCMNET functions:
+  Added the const modifier to so DCMNET function arguments for ease of use.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the suggested patch.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimecho.cc
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimget.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimstore.cc
+
+**** Changes from 2016.04.08 (riesmeier)
+
+- Fixed typos in comments.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2016.04.07 (riesmeier)
+
+- Fixed an incorrect warning for command sets:
+  Fixed an incorrect warning on invalid data elements in a command set
+  (i.e. group 0x0000) caused by a previous commit (4636d9c).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2016.04.06 (riesmeier)
+
+- Updated context group classes for DICOM 2016b:
+  Updated automatically generated context group classes from the DICOM Content
+  Mapping Resource (DCMR) based on PS 3.16 from DICOM 2016b standard.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2016b:
+  Updated automatically generated code definitions of "DCM", "NCIt" and "UMLS"
+  coding scheme for the latest release of the DICOM standard, i.e. DICOM 2016b.
+  The other coding schemes like "SRT" or "UCUM" are not updated since their
+  header files are not (yet) generated automatically.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+- Updated data dictionary for DICOM 2016b edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2016-04-01. Since the data dictionary was already
+  up-to-date regarding the recently approved Supplements and CPs, there are no
+  changes apart from the "Version" column.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2016.04.06 (schlamelcher)
+
+- Fixed some configuration tests for VS2015 and later:
+  Some changes in the runtime of Visual Studio 2015 and later lead to false
+  configuration test results regarding some secure printf functions
+  (e.g. vsprintf_s).
+  Thanks to DCMTK forum user Shaeto for providing related information and the
+  suggested patch.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
+- Fixed a problem with yesterday's commit:
+  The previous commit regarding ofmath.cc resp. math.cc contained a copy and
+  paste error leading to problems under Windows.
+  Affects: config/math.cc
+
+**** Changes from 2016.04.05 (schlamelcher)
+
+- Fixed a warning and some whitespace errors:
+  Fixed a warning about an uninitialized variable and some whitespace errors in
+  oflog (timehelp.cc).
+  Affects: oflog/libsrc/timehelp.cc
+
+- Refactored OFMath/arith.cc dependencies:
+  Moved ofmath.cc to the config module (with slight modifications) so arith.cc
+  depending on it becomes less messy.
+  Added a new ofmath.cc for ofstd, adapting between both APIs (the low level
+  API used in config and the one provided by ofstd).
+  Modified arith.cc as necessary.
+  Added:   config/math.cc
+  Affects: config/arith.cc
+           ofstd/libsrc/ofmath.cc
+
+**** Changes from 2016.03.31 (schlamelcher)
+
+- Fixed touching arith.h on every CMake cache rebuild:
+  Regarding the CMake setup, the file config/arith.h is now only generated once
+  during the initial cache setup, similar to the other configure tests only
+  being run once.
+  This may potentially miss changes induced by changed compiler flags, however,
+  this is of course also a problem regarding all the other configure test and
+  should be addressed some time in the future in general.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
+**** Changes from 2016.03.21 (riesmeier)
+
+- Replaced EC_InvalidTag by EC_MissingAttribute:
+  Now using more appropriate status code EC_MissingAttribute instead of
+  EC_InvalidTag when checkExistsWithValue() fails for Type 1 attributes.
+  This change should have no effect to user code (internal use only).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Added support for Directory Record "ASSESSMENT":
+  Added support for new Directory Record Type "ASSESSMENT", which has been
+  introduced with Supplement 185 (Content Assessment Results IOD).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+
+- Added support for new UID from Supplement 185:
+  Added support for new Storage SOP Class UID from Supplement 185 (Content
+  Assessment Results IOD).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added support for Supplement 185 to dictionary:
+  Added support for the final text version "FT2" of Supplement 185 (Content
+  Assessment Results IOD) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+- Added support for recently approved CPs:
+  Added support for CP-1492, CP-1525 and CP-1531 to the data dictionary.
+  These CPs were approved during last weeks WG-06 meeting.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+- Fixed typos and other minor issues in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dimse.cc
+
+**** Changes from 2016.03.07 (riesmeier)
+
+- Cleaned up header inclusion in module "dcmsr":
+  Made sure that only "required" header files are actually included.
+  This should reduce the dependencies significantly.
+  Affects: dcmpstat/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid5000.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid5001.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrcomvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrnumvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrposcn.h
+           dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmsr/include/dcmtk/dcmsr/dsrstrvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtcodt.h
+           dcmsr/include/dcmtk/dcmsr/dsrtlist.h
+           dcmsr/include/dcmtk/dcmsr/dsrtnant.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtree.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/include/dcmtk/dcmsr/dsrxmlc.h
+           dcmsr/include/dcmtk/dcmsr/dsrxmld.h
+           dcmsr/libcmr/Makefile.dep
+           dcmsr/libcmr/tid1001.cc
+           dcmsr/libcmr/tid1204.cc
+           dcmsr/libcmr/tid1411.cc
+           dcmsr/libcmr/tid1500.cc
+           dcmsr/libcmr/tid1600.cc
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrctpl.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrimgse.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrrefin.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrsc3gr.cc
+           dcmsr/libsrc/dsrsc3vl.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrtcovl.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavch.cc
+           dcmsr/libsrc/dsrwavtn.cc
+           dcmsr/libsrc/dsrwavvl.cc
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/mkreport.cc
+           dcmsr/tests/tsrcmr.cc
+           dcmsr/tests/tsrcodvl.cc
+           dcmsr/tests/tsrdoc.cc
+           dcmsr/tests/tsrdoctr.cc
+           dcmsr/tests/tsrnumvl.cc
+           dcmsr/tests/tsrtpl.cc
+           dcmsr/tests/tsrtree.cc
+
+**** Changes from 2016.03.04 (riesmeier)
+
+- Check for PixelSpacing in SharedFunctionalGroups:
+  Also check for the Pixel Spacing (0028,0030) attribute in the Pixel Measures
+  Sequence (0028,9110) of the Shared Functional Groups Sequence (5200,9229).
+  By doing so, non-square pixels are supported for the family of Enhanced
+  Multiframe Image IODs, too.
+  Please note that support for Pixel Spacing within the Per-frame Functional
+  Groups Sequence (5200,9230) is still missing.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/libsrc/diimage.cc
+
+- Fixed typos in comments (API documentation).
+  Affects: dcmimage/include/dcmtk/dcmimage/dicoimg.h
+           dcmimage/include/dcmtk/dcmimage/dicopx.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+
+- Fixed shifting negative value: undefined behavior:
+  Fixed shifting a negative value (-1) since this is undefined behavior
+  according to the C standard. See comment in the source code for details.
+  This memory leak has been detected by "cppcheck" (version 1.72).
+  Thanks to Andrei Terechko <andrei@vectorfabrics.com> for the report
+  Affects: dcmjpeg/libijg12/jdlhuff.c
+           dcmjpeg/libijg12/jdphuff.c
+           dcmjpeg/libijg12/jdshuff.c
+           dcmjpeg/libijg16/jdlhuff.c
+           dcmjpeg/libijg16/jdphuff.c
+           dcmjpeg/libijg16/jdshuff.c
+           dcmjpeg/libijg8/jdlhuff.c
+           dcmjpeg/libijg8/jdphuff.c
+           dcmjpeg/libijg8/jdshuff.c
+
+- Fixed typos in comments.
+  Affects: ofstd/tests/tofstd.cc
+
+**** Changes from 2016.03.03 (riesmeier)
+
+- Fixed warnings reported by gcc with -Wshadow:
+  Fixed warning messages on declaration of a local variable that shadows a
+  previous declaration. This issue was reported by gcc with option -Wshadow.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcsequen.cc
+
+**** Changes from 2016.03.03 (onken)
+
+- Removed test duplicate:
+  Removed test that was present as a separate file (but not used) in favor
+  of the same test being part of tofstd.cc which has already been in use.
+  Removed: ofstd/tests/taddsub.cc
+  Affects: ofstd/tests/Makefile.dep
+
+**** Changes from 2016.03.03 (riesmeier)
+
+- Fixed wrong module name in comment header.
+  Affects: dcmrt/tests/tests.cc
+
+- Fixed typos in man pages.
+  Affects: dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/img2dcm.man
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpls/docs/dcmcjpls.man
+           dcmnet/docs/movescu.man
+
+**** Changes from 2016.03.02 (onken)
+
+- Better warnings when reading segmentation objects:
+  Enhanced warnings when reading segmentation objects if pixel data-related
+  attributes have invalid values.
+  Affects: dcmseg/include/dcmtk/dcmseg/segtypes.h
+           dcmseg/libsrc/segdoc.cc
+           dcmseg/libsrc/segtypes.cc
+
+- Fixed warning message:
+  Fixed warning printed if the High Bit attribute does not have a valid value.
+  Affects: dcmseg/libsrc/segdoc.cc
+
+**** Changes from 2016.02.26 (riesmeier)
+
+- Fixed typos etc. in module "dcmseg":
+  Fixed typos and other minor issues in comments and log output.
+  Affects: dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/include/dcmtk/dcmseg/segment.h
+           dcmseg/include/dcmtk/dcmseg/segtypes.h
+           dcmseg/include/dcmtk/dcmseg/segutils.h
+           dcmseg/libsrc/segdoc.cc
+           dcmseg/libsrc/segment.cc
+           dcmseg/libsrc/segtypes.cc
+           dcmseg/libsrc/segutils.cc
+
+- Fixed typos etc. in module "dcmiod":
+  Fixed typos and other minor issues in comments, log output and return values.
+  Affects: dcmiod/include/dcmtk/dcmiod/cielabutil.h
+           dcmiod/include/dcmtk/dcmiod/iodmacro.h
+           dcmiod/include/dcmtk/dcmiod/iodrules.h
+           dcmiod/include/dcmtk/dcmiod/iodutil.h
+           dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h
+           dcmiod/include/dcmtk/dcmiod/modenhusimage.h
+           dcmiod/include/dcmtk/dcmiod/modenhusseries.h
+           dcmiod/include/dcmtk/dcmiod/modequipment.h
+           dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h
+           dcmiod/include/dcmtk/dcmiod/modmultiframefg.h
+           dcmiod/include/dcmtk/dcmiod/modpatientstudy.h
+           dcmiod/include/dcmtk/dcmiod/modsopcommon.h
+           dcmiod/include/dcmtk/dcmiod/modsynchronisation.h
+           dcmiod/libsrc/iodmacro.cc
+           dcmiod/libsrc/iodutil.cc
+           dcmiod/libsrc/modbase.cc
+           dcmiod/libsrc/modequipment.cc
+           dcmiod/libsrc/modsynchronization.cc
+           dcmiod/tests/tcielabutil.cc
+
+**** Changes from 2016.02.25 (riesmeier)
+
+- Fixed numerous typos etc. in module "dcmfg":
+  Fixed numerous typos and other minor issues like e.g. double semicolons,
+  missing or extra space characters. This affects both comments and strings
+  that are output to the logger. Of course, the latter are more important.
+  Affects: dcmfg/include/dcmtk/dcmfg/fg.h
+           dcmfg/include/dcmtk/dcmfg/fgbase.h
+           dcmfg/include/dcmtk/dcmfg/fgderimg.h
+           dcmfg/include/dcmtk/dcmfg/fgfracon.h
+           dcmfg/include/dcmtk/dcmfg/fgframevoilut.h
+           dcmfg/include/dcmtk/dcmfg/fgimagedatatype.h
+           dcmfg/include/dcmtk/dcmfg/fginterface.h
+           dcmfg/include/dcmtk/dcmfg/fgpixmsr.h
+           dcmfg/include/dcmtk/dcmfg/fgplanor.h
+           dcmfg/include/dcmtk/dcmfg/fgplanorvol.h
+           dcmfg/include/dcmtk/dcmfg/fgplanpo.h
+           dcmfg/include/dcmtk/dcmfg/fgplanposvol.h
+           dcmfg/include/dcmtk/dcmfg/fgrealworldvaluemapping.h
+           dcmfg/include/dcmtk/dcmfg/fgseg.h
+           dcmfg/include/dcmtk/dcmfg/fgtypes.h
+           dcmfg/include/dcmtk/dcmfg/fgusimagedescription.h
+           dcmfg/include/dcmtk/dcmfg/stack.h
+           dcmfg/libsrc/fg.cc
+           dcmfg/libsrc/fgbase.cc
+           dcmfg/libsrc/fgfact.cc
+           dcmfg/libsrc/fgfracon.cc
+           dcmfg/libsrc/fginterface.cc
+           dcmfg/libsrc/fgplanpo.cc
+           dcmfg/libsrc/fgtypes.cc
+           dcmfg/libsrc/fgusimagedescription.cc
+           dcmfg/libsrc/stackinterface.cc
+
+**** Changes from 2016.02.25 (onken)
+
+- Fixed NULL pointer dereference:
+  This memory leak has been detected by "cppcheck".
+  Thanks to Andrei Terechko <andrei@vectorfabrics.com> for the report.
+  Affects: dcmfg/libsrc/fgimagedatatype.cc
+
+**** Changes from 2016.02.24 (riesmeier)
+
+- Fixed possible issue in OFStandard helper function:
+  Fixed possible issue in OFStandard::removeRootDirFromPathname() that could
+  occur when passing a NULL pointer as the "rootDir" parameter, and thus
+  calling strncmp() or wcsncmp() with an invalid value. This is mainly a
+  theoretical scenario, since most implementations of these standard string
+  functions will not crash when a 0 length value is passed at the same time
+  (see test case "ofstd_OFStandard_removeRootDirFromPathname").
+  This possible issue has been found with Pareon Verify.
+  Thanks to Andrei Terechko <andrei@vectorfabrics.com> for the report.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Fixed memory leak in ASC_addPresentationContext():
+  Memory of presentation context data structure was not freed when empty
+  transfer syntax list was passed to ASC_addPresentationContext(). Also
+  removed an unused local variable and fixed various typos in comments.
+  This memory leak has been detected by "cppcheck".
+  Thanks to Andrei Terechko <andrei@vectorfabrics.com> for the report.
+  Affects: dcmnet/libsrc/assoc.cc
+
+**** Changes from 2016.02.22 (riesmeier)
+
+- Made use of definitions from "dcmsr/codes/ucum.h":
+  Made use of code and coding scheme definitions from the header file
+  "dcmsr/codes/ucum.h". Also removed coding scheme version ("1.4") since
+  it is not used any longer by DICOM PS 3.16 for UCUM codes.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/ucum.h
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/mkreport.cc
+
+- Added comment on mapping of code meanings:
+  Added comment on the mapping of code meanings to a compiler-friendly
+  representention, which is the reason why the SRT and UCUM coding schemes
+  are not yet complete (with regard to the definitions in DICOM PS 3.16).
+  Please note that the commit message for the previous commit (168662c)
+  was incorrect: not the UCUM but the UMLS codes definitions were updated.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/srt.h
+           dcmsr/include/dcmtk/dcmsr/codes/ucum.h
+
+- Updated "UCUM" codes for DICOM 2016a edition:
+  Updated Unified Code for Units of Measure (Coding Scheme "UCUM") code
+  definitions for the official 2016a edition of the DICOM standard. The
+  header file has been generated automatically from a machine-readable
+  version of DICOM PS 3.16.
+  There is now a total of 38 codes defined for this coding scheme.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+- Updated "NCIt" codes for DICOM 2016a edition:
+  Updated NCI Thesaurus (Coding Scheme "NCIt") for the official 2016a edition
+  of the DICOM standard. The header file has been generated automatically from
+  a machine-readable version of DICOM PS 3.16.
+  There is now a total of 12 codes defined for this coding scheme.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+
+- Fixed source code formatting.
+  Affects: dcmsr/libsrc/dsrimgse.cc
+
+- Updated copyright header.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/srt.h
+           dcmsr/include/dcmtk/dcmsr/codes/ucum.h
+           dcmsr/include/dcmtk/dcmsr/dsrdncsr.h
+
+**** Changes from 2016.02.20 (riesmeier)
+
+- Updated "DCM" codes for DICOM 2016a edition:
+  Updated DICOM Controlled Terminology Definitions (Coding Scheme "DCM") for
+  the official 2016a edition of the DICOM standard. The header file has been
+  generated automatically from a machine-readable version of DICOM PS 3.16.
+  There is now a total of 3358 codes for this coding scheme (i.e. DICOM codes).
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+
+- Updated context group classes for DICOM 2016a:
+  Updated automatically generated context group classes from the DICOM Content
+  Mapping Resource (DCMR) based on PS 3.16 from DICOM 2016a standard.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated data dictionary for DICOM 2016a edition:
+  Updated data dictionary for the latest edition of the DICOM standard, which
+  has been released on 2016-02-19. This includes the new tags from Supplement
+  156, 181 and 184 as well as those from CP 1364, 1431, 1432, 1441, 1454,
+  1457, 1458, 1460, 1461, 1478 (WC), 1487, 1496, 1499, 1504 and 1516. Please
+  note that some attributes changed their names and/or value multiplicity.
+  In addition, new and modified tags from ASTM's DICONDE (Digital Imaging and
+  Communication in Nondestructive Evaluation) standard have been incorporated.
+  The total number of entries in the DICOM data dictionary is now 4032.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+           dcmrt/libsrc/drtbvcps.cc
+
+**** Changes from 2016.02.18 (riesmeier)
+
+- Added three new Storage SOP Classes from DICOS:
+  Added three new Storage SOP Classes from DICOS (Digital Imaging and
+  Communications in Security) standard: 2D AIT, 3D AIT and Quadrupole
+  Resonance (QR). Actually, these SOP Classes were already introduced
+  to the DICOM standard back in 2013 but have been added to the DCMTK
+  just now. Further details on the underlying IODs are not known.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added missing Storage SOP Classes to manpage:
+  Added missing Storage SOP Classes that are actually supported by the SCP
+  (within the "movescu" tool). These SOP Classes were added during the
+  previous months to the global list stored in "dcmAllStorageSOPClassUIDs".
+  Affects: dcmnet/docs/movescu.man
+
+- Changed type of parameter to avoid warnings:
+  Changed type of parameter/variable from Uint32 to size_t in order to avoid
+  warnings reported by MSVC++ on Windows 64-bit systems.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/libsrc/dcbytstr.cc
+
+**** Changes from 2016.02.17 (riesmeier)
+
+- Updated Makefile dependencies for module "dcmsr".
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/libcmr/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+
+- Fixed issue with shared library build (MSVC++):
+  Fixed issue with shared library build on Windows with Microsoft Visual C++.
+  Now, the CMake option BUILD_SHARED_LIBS works again on both Linux with gcc
+  and Windows with Visual C++, i.e. for ".so" and ".dll" files.
+  C++ templates with explicit specialization and shared library support are
+  really a nightmare, especially when the implementation of the C++ template
+  class is not completely contained in a header file.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdncsr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+
+- Enhanced support for by-reference relationships:
+  Further enhanced support for by-reference relationships: Now, the position
+  string that is used to reference the target content item is also generated
+  correctly when the document tree contains included (i.e. non-expanded)
+  sub-templates. Also enhanced the existing test cases in order to check that
+  it really works.
+  Please pay attention to the new comment on updateByReferenceRelationships()
+  and to the optional parameter that allows for updating subtrees managed by
+  "included template" tree nodes.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrrtpl.h
+           dcmsr/include/dcmtk/dcmsr/dsrstpl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/tsrtpl.cc
+
+- Further simplified DSRDocumentSubTree::print():
+  Further simplified implementation of DSRDocumentSubTree::print() by making
+  use of the new DSRIncludedTemplateNodeCursor class. Also added a new print
+  flag that disables the counting of "included template" nodes. This flag is
+  also passed to the tree node cursor class in order to correctly generate
+  the position string.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdncsr.cc
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Made more use of new "included template" cursor:
+  Made more use of the new DSRIncludedTemplateNodeCursor class (where
+  appropriate).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/libsrc/dsrdoctr.cc
+
+- Added methods to get external cursor to root node:
+  Added two methods that allow for getting an (external) cursor to the root
+  node of the document tree, either an instance of DSRDocumentTreeNodeCursor
+  or an instance of the recently introduced DSRIncludedTemplateNodeCursor.
+  These cursors can be used to iterate over the nodes of the document tree
+  without changing the internal cursor.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+
+- Introduced new document tree node cursor:
+  Introduced new DSRIncludedTemplateNodeCursor class, which allows for
+  iterating "included template" tree nodes as if the subtree managed by
+  them was already expanded. This will make iteration over such document
+  trees much easier (but the implementation looks a bit more complex).
+  This new class is just a specialization of the existing, but now also
+  extended, C++ template class DSRTreeNodeCursor, which has received a
+  second template parameter for this purpose.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrdncsr.h
+           dcmsr/libsrc/dsrdncsr.cc
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrctpl.h
+           dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+           dcmsr/include/dcmtk/dcmsr/dsrstpl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtncsr.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrdoctn.cc
+
+- Enhanced output of print() for invalid references:
+  Enhanced output of DSRByReferenceTreeNode::print() for unknown/invalid
+  references. Now, a question mark "?" is printed if the position string
+  of the referenced content item is empty.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrreftn.h
+           dcmsr/libsrc/dsrreftn.cc
+
+- Added optional flags to position counter:
+  Added support for optional flags parameter to class DSRPositionCounter.
+  This parameter can be used to customize the processing of the counter.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrposcn.h
+           dcmsr/libsrc/dsrposcn.cc
+
+- Added getCurrentNode() method to tree class:
+  Added getCurrentNode() method to document (sub)tree class. This new method
+  allows for accessing the current tree node by means of a (constant) pointer,
+  i.e. read-only. Also added a new test case for this particular method.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdocst.h
+           dcmsr/libsrc/dsrdocst.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoctr.cc
+
+- Enhanced check for invalid characters:
+  Now, the static function checkStringValue() - and all methods that use it -
+  check for invalid characters in the given value. Currently, this only works
+  for ASCII strings (default character repertoire) that contain non-ASCII
+  characters, i.e. character codes > 127.
+  This change requires that the Specific Character Set value is passed to the
+  respective function/method since the default is ASCII (as it was before).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/tests/tchval.cc
+           dcmiod/libsrc/iodrules.cc
+           dcmiod/libsrc/iodutil.cc
+           dcmrt/include/dcmtk/dcmrt/drttypes.h
+           dcmrt/libsrc/drttypes.cc
+           dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/tsrdoc.cc
+
+- Set ASCII as default Specific Character Set:
+  Now, the default value for the Specific Character Set is ASCII (empty
+  Defined Term) and not "invalid".
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/tsrdoc.cc
+
+- Passed character set value to checkStringValue():
+  Made sure that the current value of the Specific Character Set (0008,0005)
+  is passed to the calls of checkStringValue() where applicable. There are
+  still a few remaining calls where the placeholder "UNKNOWN" is used, which
+  disables the underlying VR checker.
+  Closes DCMTK Bug #565 (partially).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/tests/tests.cc
+           dcmsr/tests/tsrdoc.cc
+
+- Fixed issue in one of the SR constraint checkers:
+  Fixed issue in class DSRRadiopharmaceuticalRadiationDoseConstraintChecker:
+  for Row 5 of the Table, the "targetValueType" was checked for "VT_PName"
+  instead of the "sourceValueType".
+  Thanks to forum user "Luuk" for the report and suggested fix.
+  Affects: dcmsr/libsrc/dsrrrdcc.cc
+
 **** Changes from 2016.02.16 (schlamelcher)
 
 - Updated CHANGES.361 for new development snapshot.
