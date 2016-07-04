@@ -315,31 +315,6 @@ OFCondition DcmSegmentation::write(DcmItem &dataset)
 }
 
 
-OFCondition DcmSegmentation::importPatientStudyFoR(const OFString& filename,
-                                                   const OFBool usePatient,
-                                                   const OFBool useStudy,
-                                                   const OFBool useSeries,
-                                                   const OFBool useFoR)
-{
-  DcmFileFormat dcmff;
-  OFCondition result = dcmff.loadFile(filename.c_str());
-  if ( result.good() )
-  {
-    DcmDataset *dset = dcmff.getDataset();
-    if (dset != NULL)
-    {
-      result = import(*dset, usePatient, useStudy, useSeries, useFoR);
-    }
-    else
-    {
-      DCMSEG_ERROR("Unable to get dataset from file for copying patient, study, series and/or frame of reference information");
-      result = EC_IllegalCall;
-    }
-  }
-  return result;
-}
-
-
 FGInterface& DcmSegmentation::getFunctionalGroups()
 {
   return m_FGInterface;

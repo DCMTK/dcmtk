@@ -146,22 +146,6 @@ public:
   static FGDerivationImage* createDerivationImageFG(const OFVector<ImageSOPInstanceReferenceMacro>& derivationImages,
                                                     const OFString& derivationDescription);
 
-  /** Take over general information for Patient, Study, Series and/or Frame of Reference
-   *  from existing file
-   *  @param  filename The filename to read from
-   *  @param  usePatient If OFTrue, Patient level information is imported
-   *  @param  useStudy If OFTrue, Study level information is imported
-   *  @param  useSeries If OFTrue, Series level information is imported
-   *  @param  useFoR If OFTrue, Frame of Reference information is imported
-   *  @return EC_Normal if reading was successful (i.e.\ if any information could
-   *          be read), otherwise an error is returned
-   */
-  OFCondition importPatientStudyFoR(const OFString& filename,
-                                    const OFBool usePatient,
-                                    const OFBool useStudy,
-                                    const OFBool useSeries,
-                                    const OFBool useFoR = OFFalse);
-
   // -------------------- access ---------------------
 
   /** Get number of frames, based on the number of items in the shared

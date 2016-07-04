@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -175,6 +175,42 @@ OFCondition DcmIODCommon::import(DcmItem& dataset,
   }
 
   return EC_Normal;
+}
+
+
+OFCondition DcmIODCommon::importPatientStudyFoR(const OFString& filename,
+                                                const OFBool usePatient,
+                                                const OFBool useStudy,
+                                                const OFBool useSeries,
+                                                const OFBool useFoR)
+{
+  DCMIOD_WARN("This function is deprecated and will be removed in later versions of DCMTK, please use import()");
+  return import(filename, usePatient, useStudy, useSeries, useFoR);
+}
+
+
+OFCondition DcmIODCommon::import(const OFString& filename,
+                                 const OFBool usePatient,
+                                 const OFBool useStudy,
+                                 const OFBool useSeries,
+                                 const OFBool useFoR)
+{
+  DcmFileFormat dcmff;
+  OFCondition result = dcmff.loadFile(filename.c_str());
+  if ( result.good() )
+  {
+    DcmDataset *dset = dcmff.getDataset();
+    if (dset != NULL)
+    {
+      result = import(*dset, usePatient, useStudy, useSeries, useFoR);
+    }
+    else
+    {
+      DCMIOD_ERROR("Unable to get dataset from file for copying patient, study, series and/or frame of reference information");
+      result = EC_IllegalCall;
+    }
+  }
+  return result;
 }
 
 
