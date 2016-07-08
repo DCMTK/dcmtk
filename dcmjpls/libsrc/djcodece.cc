@@ -657,24 +657,20 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
   if (result.good())
   {
-    // We have no idea how big the compressed pixel data will be and we have no
-    // way to find out, so we just allocate a buffer large enough for the raw data
-    // plus a little more for JPEG metadata.
-    // Yes, this is way too much for just a little JPEG metadata, but some
-    // test-images showed that the buffer previously was too small. Plus, at some
-    // places charls fails to do proper bounds checking and writes behind the end
-    // of the buffer (sometimes way behind its end...).
+    // The buffer is going to be dynamically reallocated if it's too small, so it doesn't matter that
+    // much what initial size we use.
     size_t size = frameSize + 1024;
-    Uint8 *buffer = new Uint8[size];
+    BYTE *buffer = new BYTE[size];
 
-    JLS_ERROR err = JpegLsEncode(buffer, size, &size, framePointer, frameSize, &jls_params);
+    size_t bytesWritten = 0;
+
+    JLS_ERROR err = JpegLsEncode(&buffer, &size, &bytesWritten, framePointer, frameSize, &jls_params);
     result = DJLSError::convert(err);
 
     if (result.good())
     {
-      // 'size' now contains the size of the compressed data in buffer
-      compressedSize = size;
-      result = pixelSequence->storeCompressedFrame(offsetList, buffer, size, fragmentSize);
+      compressedSize = bytesWritten;
+      result = pixelSequence->storeCompressedFrame(offsetList, buffer, compressedSize, fragmentSize);
     }
 
     delete[] buffer;
@@ -1053,25 +1049,19 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
   }
 
-  // We have no idea how big the compressed pixel data will be and we have no
-  // way to find out, so we just allocate a buffer large enough for the raw data
-  // plus a little more for JPEG metadata.
-  // Yes, this is way too much for just a little JPEG metadata, but some
-  // test-images showed that the buffer previously was too small. Plus, at some
-  // places charls fails to do proper bounds checking and writes behind the end
-  // of the buffer (sometimes way behind its end...).
   size_t compressed_buffer_size = buffer_size + 1024;
-  Uint8 *compressed_buffer = new Uint8[compressed_buffer_size];
+  BYTE *compressed_buffer = new BYTE[compressed_buffer_size];
 
-  JLS_ERROR err = JpegLsEncode(compressed_buffer, compressed_buffer_size,
-      &compressed_buffer_size, framePointer, buffer_size, &jls_params);
+  size_t bytesWritten = 0;
+
+  JLS_ERROR err = JpegLsEncode(&compressed_buffer, &compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params);
   result = DJLSError::convert(err);
 
   if (result.good())
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
-    compressedSize = compressed_buffer_size;
-    result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressed_buffer_size, fragmentSize);
+    compressedSize = bytesWritten;
+    result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressedSize, fragmentSize);
   }
 
   delete[] buffer;

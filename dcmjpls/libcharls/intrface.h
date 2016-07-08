@@ -25,8 +25,8 @@
 extern "C" 
 {
 #endif
-  CHARLS_IMEXPORT(enum JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedLength, size_t* pcbyteWritten, 
-	    const void* uncompressedData, size_t uncompressedLength, struct JlsParameters* pparams);
+  CHARLS_IMEXPORT(enum JLS_ERROR) JpegLsEncode(BYTE **ptr, size_t *size, size_t* pcbyteWritten,
+		const void* uncompressedData, size_t uncompressedLength, struct JlsParameters* pparams);
 
   CHARLS_IMEXPORT(enum JLS_ERROR) JpegLsDecode(void* uncompressedData, size_t uncompressedLength, 
 		const void* compressedData, size_t compressedLength, 

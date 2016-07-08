@@ -19,10 +19,13 @@ class DecoderStrategy
 public:
 	DecoderStrategy(const JlsParameters& info) :
 		  _info(info),
-	      _processLine(0),
+		  _processLine(0),
 		  _readCache(0),
 		  _validBits(0),
-		  _position(0)
+		  _position(0),
+		  _size(0),
+		  _current_offset(0),
+		  _nextFFPosition(0)
 	  {
 	  }
 
@@ -31,14 +34,15 @@ public:
 	  }
 
 	  virtual void SetPresets(const JlsCustomParameters& presets) = 0;
-	  virtual size_t DecodeScan(void* outputData, const JlsRect& size, const void* compressedData, size_t byteCount, bool bCheck) = 0;
+	  virtual size_t DecodeScan(void* outputData, const JlsRect& size, BYTE **buf, size_t *buf_size, size_t offset, bool bCheck) = 0;
 
-	  void Init(BYTE* compressedBytes, size_t byteCount)
+	  void Init(BYTE **ptr, size_t *size, size_t offset)
 	  {
 		  _validBits = 0;
 		  _readCache = 0;
-		  _position = compressedBytes;
-		  _endPosition = compressedBytes + byteCount;
+		  _position = ptr;
+		  _size = size;
+		  _current_offset = offset;
 		  _nextFFPosition = FindNextFF();
 		  MakeValid();
 	  }
@@ -61,11 +65,11 @@ public:
 
 	  void EndScan()
 	  {
-		  if ((*_position) != 0xFF)
+		  if (current_value() != 0xFF)
 		  {
 			  ReadBit();
 
-			  if ((*_position) != 0xFF)
+			  if (current_value() != 0xFF)
 				throw JlsException(TooMuchCompressedData);
 		  }
 
@@ -77,11 +81,11 @@ public:
 	  inlinehint bool OptimizedRead()
 	  {
 		  // Easy & fast: if there is no 0xFF byte in sight, we can read without bitstuffing
-		  if (_position < _nextFFPosition - (sizeof(bufType)-1))
+		  if (_current_offset < _nextFFPosition - (sizeof(bufType)-1))
 		  {
-			  _readCache		 |= FromBigEndian<sizeof(bufType)>::Read(_position) >> _validBits;
+			  _readCache		 |= FromBigEndian<sizeof(bufType)>::Read(*_position + _current_offset) >> _validBits;
 			  int bytesToRead = (bufferbits - _validBits) >> 3;
-			  _position += bytesToRead;
+			  _current_offset += bytesToRead;
 			  _validBits += bytesToRead * 8;
 			  ASSERT(_validBits >= bufferbits - 8);
 			  return true;
@@ -104,7 +108,7 @@ public:
 
 		  do
 		  {
-			  if (_position >= _endPosition)
+			  if (_current_offset >= *_size)
 			  {
 				  if (_validBits <= 0)
 					  throw JlsException(InvalidCompressedData);
@@ -112,12 +116,12 @@ public:
 				  return;
 			  }
 
-			  bufType valnew	  = _position[0];
+			  bufType valnew	  = current_value();
 			  
 			  if (valnew == 0xFF)		
 			  {
 				  // JPEG bitstream rule: no FF may be followed by 0x80 or higher	    			 
-				 if (_position == _endPosition - 1 || (_position[1] & 0x80) != 0)
+				 if (_current_offset == *_size - 1 || ((*_position)[_current_offset + 1] & 0x80) != 0)
 				 {
 					 if (_validBits <= 0)
 					 	throw JlsException(InvalidCompressedData);
@@ -127,7 +131,7 @@ public:
 			  }
 
 			  _readCache		 |= valnew << (bufferbits - 8  - _validBits);
-			  _position   += 1;				
+			  _current_offset   += 1;
 			  _validBits		 += 8; 
 
 			  if (valnew == 0xFF)		
@@ -143,39 +147,39 @@ public:
 	  }
 
 
-	  BYTE* FindNextFF()
+	  size_t FindNextFF()
 	  {
-		  BYTE* pbyteNextFF = _position;
+		  size_t off = _current_offset;
 
-		  while (pbyteNextFF < _endPosition)
+		  while (off < *_size)
 	      {
-			  if (*pbyteNextFF == 0xFF) 
+			  if ((*_position)[off] == 0xFF)
 			  {				  
 				  break;
 			  }
-    		  pbyteNextFF++;
+		  off++;
 		  }
 		  
 
-		  return pbyteNextFF;
+		  return off;
 	  }
 
 
-	  BYTE* GetCurBytePos() const
+	  BYTE *GetCurBytePos() const
 	  {
 		  LONG  validBits = _validBits;
-		  BYTE* compressedBytes = _position;
+		  size_t off = _current_offset;
 
 		  for (;;)
 		  {
-			  LONG cbitLast = compressedBytes[-1] == 0xFF ? 7 : 8;
+			  LONG cbitLast = (*_position)[off - 1] == 0xFF ? 7 : 8;
 
 			  if (validBits < cbitLast )
-				  return compressedBytes;
+				  return (*_position) + off;
 
 			  validBits -= cbitLast; 
-			  compressedBytes--;
-		  }	
+			  off--;
+		  }
 	  }
 
 
@@ -273,12 +277,18 @@ protected:
 	OFauto_ptr<ProcessLine> _processLine;
 
 private:
+	BYTE current_value() const
+	{
+		return (*_position)[_current_offset];
+	}
+
 	// decoding
 	bufType _readCache;
 	LONG _validBits;
-	BYTE* _position;
-	BYTE* _nextFFPosition;
-	BYTE* _endPosition;
+	BYTE **_position;
+	size_t *_size;
+	size_t _current_offset;
+	size_t _nextFFPosition;
 };
 
 

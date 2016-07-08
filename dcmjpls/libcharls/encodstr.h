@@ -5,7 +5,11 @@
 #ifndef CHARLS_ENCODERSTRATEGY
 #define CHARLS_ENCODERSTRATEGY
 
+#define INCLUDE_NEW
+#include "dcmtk/ofstd/ofstdinc.h"
+
 #include "dcmtk/ofstd/ofaptr.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 #include "procline.h"
 #include "decodstr.h"
 
@@ -42,16 +46,17 @@ public:
 
     virtual void SetPresets(const JlsCustomParameters& presets) = 0;
     
-  virtual size_t EncodeScan(const void* pvoid, void* pvoidOut, size_t byteCount, void* pvoidCompare) = 0;
+  virtual size_t EncodeScan(const void* rawData, BYTE **ptr, size_t *size, size_t offset, bool compare) = 0;
 
 protected:
 
-  void Init(BYTE* compressedBytes, size_t byteCount)
+  void Init(BYTE **ptr, size_t *size, size_t offset)
   {
     bitpos = 32;
     valcurrent = 0;
-    _position = compressedBytes;
-      _compressedLength = byteCount;
+    _position = ptr;
+    _size = size;
+    _current_offset = offset;
   }
 
 
@@ -114,22 +119,18 @@ protected:
       if (_isFFWritten)
       {
         // JPEG-LS requirement (T.87, A.1) to detect markers: after a xFF value a single 0 bit needs to be inserted.
-        *_position = BYTE(valcurrent >> 25);
-        valcurrent = valcurrent << 7;     
-        bitpos += 7;  
+        write(BYTE(valcurrent >> 25));
+        valcurrent = valcurrent << 7;
+        bitpos += 7;
         _isFFWritten = false;
       }
       else
       {
-        *_position = BYTE(valcurrent >> 24);
+        write(BYTE(valcurrent >> 24));
+        _isFFWritten = (*_position)[_current_offset - 1] == 0xFF;
         valcurrent = valcurrent << 8;     
-        bitpos += 8;      
-        _isFFWritten = *_position == 0xFF;      
+        bitpos += 8;
       }
-      
-      _position++;
-      _compressedLength--;
-      _bytesWritten++;
 
     }
     
@@ -153,13 +154,45 @@ protected:
   JlsParameters _info;
   OFauto_ptr<ProcessLine> _processLine;
 private:
+  static BYTE *re_alloc(BYTE *old_ptr, size_t *old_size)
+  {
+    size_t new_size = *old_size * 2;
+#ifdef HAVE_STD__NOTHROW
+    BYTE *new_ptr = new(std::nothrow) BYTE[new_size];
+#else
+    BYTE *new_ptr = new BYTE[new_size];
+#endif
+    if (new_ptr == NULL) {
+      throw alloc_fail();
+    }
+
+    OFBitmanipTemplate<BYTE>::copyMem(old_ptr, new_ptr, *old_size);
+
+    delete[] old_ptr;
+
+    *old_size = new_size;
+
+    return new_ptr;
+  }
+
+  void write(BYTE value)
+  {
+    if (_current_offset == *_size) {
+      *_position = re_alloc(*_position, _size);
+    }
+
+    (*_position)[_current_offset] = value;
+    ++_current_offset;
+    ++_bytesWritten;
+  }
 
   unsigned int valcurrent;
   LONG bitpos;
-  size_t _compressedLength;
   
   // encoding
-  BYTE* _position;
+  BYTE **_position;
+  size_t *_size;
+  size_t _current_offset;
   bool _isFFWritten;
   size_t _bytesWritten;
 

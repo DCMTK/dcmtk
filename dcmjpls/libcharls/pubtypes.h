@@ -17,7 +17,8 @@ enum JLS_ERROR
 	TooMuchCompressedData,
 	ImageTypeNotSupported,
 	UnsupportedBitDepthForTransform,
-	UnsupportedColorTransform
+	UnsupportedColorTransform,
+	MemoryAllocationFailure
 };
 
 

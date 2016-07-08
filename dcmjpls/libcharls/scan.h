@@ -262,15 +262,15 @@ public:
 
 	  void DoLine(SAMPLE* pdummy);
 	  void DoLine(Triplet<SAMPLE>* pdummy);
-	  void DoScan(BYTE* compressedBytes, size_t compressedLength);         
+	  void DoScan(BYTE **ptr, size_t *size, size_t offset);
 
 public:
 	ProcessLine* CreateProcess(void* pvoidOut);
 	void InitDefault();
 	void InitParams(LONG t1, LONG t2, LONG t3, LONG nReset);
 
-	size_t  EncodeScan(const void* rawData, void* pvoidOut, size_t compressedLength, void* pvoidCompare);
-	size_t  DecodeScan(void* rawData, const JlsRect& size, const void* compressedData, size_t compressedLength, bool bCompare);
+	size_t  EncodeScan(const void* rawData, BYTE **ptr, size_t *size, size_t offset, bool compare);
+	size_t  DecodeScan(void* rawData, const JlsRect& size, BYTE **buf, size_t *buf_size, size_t offset, bool bCompare);
 
 protected:
 	// codec parameters 
@@ -698,11 +698,11 @@ void JlsCodec<TRAITS,STRATEGY>::DoLine(Triplet<SAMPLE>*)
 // In ILV_NONE mode, DoScan is called for each component 
 
 template<class TRAITS, class STRATEGY>
-void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* compressedBytes, size_t compressedLength)
+void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE **ptr, size_t *size, size_t offset)
 {		
 	_width = Info().width;
 
-	STRATEGY::Init(compressedBytes, compressedLength);
+	STRATEGY::Init(ptr, size, offset);
 
 	LONG pixelstride = _width + 4;
 	int components = Info().ilv == ILV_LINE ? Info().components : 1;
@@ -788,19 +788,17 @@ ProcessLine* JlsCodec<TRAITS,STRATEGY>::CreateProcess(void* pvoidOut)
 // Setup codec for encoding and calls DoScan
 
 template<class TRAITS, class STRATEGY>
-size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* rawData, void* compressedData, size_t compressedLength, void* pvoidCompare)
+size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* rawData, BYTE **ptr, size_t *size, size_t offset, bool compare)
 {
 	STRATEGY::_processLine = OFauto_ptr<ProcessLine>(CreateProcess(const_cast<void*>(rawData)));
-	
-	BYTE* compressedBytes = static_cast<BYTE*>(compressedData);
 
-	if (pvoidCompare != NULL)
+	if (compare)
 	{
-		STRATEGY::_qdecoder = OFauto_ptr<DecoderStrategy>(new JlsCodec<TRAITS,DecoderStrategy>(traits, Info()));		
-		STRATEGY::_qdecoder->Init((BYTE*)pvoidCompare, compressedLength); 
+		STRATEGY::_qdecoder = OFauto_ptr<DecoderStrategy>(new JlsCodec<TRAITS,DecoderStrategy>(traits, Info()));
+		STRATEGY::_qdecoder->Init(ptr, size, offset);
 	}
 
-	DoScan(compressedBytes, compressedLength);
+	DoScan(ptr, size, offset);
 	
 	return	STRATEGY::GetLength();
 
@@ -809,17 +807,16 @@ size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* rawData, void* compress
 // Setup codec for decoding and calls DoScan
 
 template<class TRAITS, class STRATEGY>
-size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* rawData, const JlsRect& rect, const void* compressedData, size_t compressedLength, bool bCompare)
+size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* rawData, const JlsRect& rect, BYTE **ptr, size_t *size, size_t offset, bool bCompare)
 {
 	STRATEGY::_processLine = OFauto_ptr<ProcessLine>(CreateProcess(rawData));
 
-	BYTE* compressedBytes	= const_cast<BYTE*>(static_cast<const BYTE*>(compressedData));
 	_bCompare = bCompare;
 
 	BYTE rgbyte[20];
 
 	size_t readBytes = 0;
-	::memcpy(rgbyte, compressedBytes, 4);
+	::memcpy(rgbyte, *ptr + offset + readBytes, 4);
 	readBytes += 4;
 
 	size_t cbyteScanheader = rgbyte[3] - 2;
@@ -827,14 +824,14 @@ size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* rawData, const JlsRect& rect,
 	if (cbyteScanheader > sizeof(rgbyte))
 		throw JlsException(InvalidCompressedData);
 
-	::memcpy(rgbyte, compressedBytes, cbyteScanheader);
+	::memcpy(rgbyte, *ptr + offset + readBytes, cbyteScanheader);
 	readBytes += cbyteScanheader;
 
 	_rect = rect;
 
-	DoScan(compressedBytes + readBytes, compressedLength - readBytes);
+	DoScan(ptr, size, offset + readBytes);
 	
-	return STRATEGY::GetCurBytePos() - compressedBytes;
+	return STRATEGY::GetCurBytePos() - (*ptr + offset);
 }
 
 // Initialize the codec data structures. Depends on JPEG-LS parameters like T1-T3.

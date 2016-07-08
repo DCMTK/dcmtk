@@ -145,9 +145,7 @@ JpegSegment* CreateMarkerStartOfFrame(Size size, LONG bitsPerSample, LONG ccomp)
 //
 JLSOutputStream::JLSOutputStream() :
 	_bCompare(false),
-	_pdata(NULL),
-	_cbyteOffset(0),
-	_cbyteLength(0),
+	_cbytesWritten(0),
 	_icompLast(0)
 {
 }
@@ -194,12 +192,14 @@ void JLSOutputStream::AddColorTransform(int i)
 //
 // Write()
 //
-size_t JLSOutputStream::Write(BYTE* pdata, size_t cbyteLength)
+size_t JLSOutputStream::Write(BYTE **ptr, size_t *size, size_t offset)
 {
-	_pdata = pdata;
-	_cbyteLength = cbyteLength;
+	_position = ptr;
+	_size = size;
+	_current_offset = offset;
 
 	WriteByte(0xFF);
+
 	WriteByte(JPEG_SOI);
 	
 	for (size_t i = 0; i < _segments.size(); ++i)
@@ -212,7 +212,7 @@ size_t JLSOutputStream::Write(BYTE* pdata, size_t cbyteLength)
 	WriteByte(0xFF);
 	WriteByte(JPEG_EOI);
 
-	return _cbyteOffset;
+	return _cbytesWritten;
 }
 
 
@@ -531,7 +531,9 @@ void JLSInputStream::ReadScan(void* pvout)
 {
 	OFauto_ptr<DecoderStrategy> qcodec = JlsCodecFactory<DecoderStrategy>().GetCodec(_info, _info.custom);
 	
-	_cbyteOffset += qcodec->DecodeScan(pvout, _rect, _pdata + _cbyteOffset, _cbyteLength - _cbyteOffset, _bCompare); 
+	BYTE **ptr = (BYTE **)&_pdata;
+	size_t *size = &_cbyteLength;
+	_cbyteOffset += qcodec->DecodeScan(pvout, _rect, ptr, size, _cbyteOffset, _bCompare);
 }
 
 
@@ -551,8 +553,8 @@ public:
 		JlsParameters info = _info;
 		info.components = _ccompScan;	
 		OFauto_ptr<EncoderStrategy> qcodec =JlsCodecFactory<EncoderStrategy>().GetCodec(info, _info.custom);
-		size_t cbyteWritten = qcodec->EncodeScan((BYTE*)_pvoidRaw, pstream->GetPos(), pstream->GetLength(), pstream->_bCompare ? pstream->GetPos() : NULL); 
-		pstream->Seek(cbyteWritten);
+		size_t cbyteWritten = qcodec->EncodeScan((BYTE*)_pvoidRaw, pstream->get_pos(), pstream->get_size(), pstream->get_offset(), pstream->_bCompare);
+		pstream->seek(cbyteWritten);
 	}
 
 

@@ -37,13 +37,37 @@ JLS_ERROR CheckInput(const void* compressedData, size_t compressedLength, const 
 	return CheckParameterCoherent(pparams);
 }
 
+JLS_ERROR CheckInput(const void* uncompressedData, size_t uncompressedLength, const JlsParameters* pparams)
+{
+	if (pparams == NULL)
+		return InvalidJlsParameters;
+
+	if (uncompressedData == NULL)
+		return InvalidJlsParameters;
+
+	if (pparams->width < 1 || pparams->width > 65535)
+		return ParameterValueNotSupported;
+
+	if (pparams->height < 1 || pparams->height > 65535)
+		return ParameterValueNotSupported;
+
+	int bytesperline = pparams->bytesperline < 0 ? -pparams->bytesperline : pparams->bytesperline;
+
+	if (uncompressedLength < size_t(bytesperline * pparams->height))
+		return InvalidJlsParameters;
+
+	return CheckParameterCoherent(pparams);
+}
+
 
 
 extern "C"
 {
 
-CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedLength, size_t* pcbyteWritten, const void* uncompressedData, size_t uncompressedLength, struct JlsParameters* pparams)
+CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(BYTE **buf, size_t *buf_size, size_t* pcbyteWritten, const void* uncompressedData, size_t uncompressedLength, struct JlsParameters* pparams)
 {
+	*pcbyteWritten = 0;
+
 	JlsParameters info = *pparams;
 	if(info.bytesperline == 0)
 	{
@@ -54,7 +78,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedL
 		}
 	}
 	
-	JLS_ERROR parameterError = CheckInput(compressedData, compressedLength, uncompressedData, uncompressedLength, &info);
+	JLS_ERROR parameterError = CheckInput(uncompressedData, uncompressedLength, &info);
 
 	if (parameterError != OK)
 		return parameterError;
@@ -86,9 +110,15 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* compressedData, size_t compressedL
 		stream.AddScan(uncompressedData, &info);
 	}
 
-	
-	stream.Write((BYTE*)compressedData, compressedLength);
-	
+	try
+	{
+		stream.Write(buf, buf_size, 0);
+	}
+	catch (const alloc_fail& e)
+	{
+		return MemoryAllocationFailure;
+	}
+
 	*pcbyteWritten = stream.GetBytesWritten();	
 	return OK;
 }
@@ -169,14 +199,23 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* uncompressedData, size
 	{
 		stream.AddScan(uncompressedData, &info);
 	}
+	
+	size_t buf_size = compressedLength + 16;
+	BYTE *buf = new BYTE[buf_size];
 
-	OFVector<BYTE> rgbyteCompressed(compressedLength + 16);
-	
-	memcpy(&rgbyteCompressed[0], compressedData, compressedLength);
-	
+	memcpy(buf, compressedData, compressedLength);
+
 	stream.EnableCompare(true);
-	stream.Write(&rgbyteCompressed[0], compressedLength);
-	
+
+	try
+	{
+		stream.Write(&buf, &buf_size, 0);
+	}
+	catch (const alloc_fail& e)
+	{
+		return MemoryAllocationFailure;
+	}
+
 	return OK;
 }
 

@@ -4,6 +4,9 @@
 #ifndef CHARLS_STREAMS
 #define CHARLS_STREAMS
 
+#define INCLUDE_NEW
+#include "dcmtk/ofstd/ofstdinc.h"
+
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "util.h"
@@ -48,24 +51,30 @@ public:
 	void AddLSE(const JlsCustomParameters* pcustom);
 	void AddColorTransform(int i);
 	size_t GetBytesWritten()
-		{ return _cbyteOffset; }
+		{ return _cbytesWritten; }
 
-	size_t GetLength()
-		{ return _cbyteLength - _cbyteOffset; }
+	size_t Write(BYTE **ptr, size_t *size, size_t offset);
 
-	size_t Write(BYTE* pdata, size_t cbyteLength);
-	
+	BYTE **get_pos() { return _position; }
+
+	size_t *get_size() { return _size; }
+
+	size_t get_offset() { return _current_offset; }
+
 	void EnableCompare(bool bCompare) 
 	{ _bCompare = bCompare; }
 private:
-	BYTE* GetPos() const
-		{ return _pdata + _cbyteOffset; }
-
 	void WriteByte(BYTE val)
 	{ 
-		ASSERT(!_bCompare || _pdata[_cbyteOffset] == val);
+		ASSERT(!_bCompare || (*_position)[_current_offset] == val);
 		
-		_pdata[_cbyteOffset++] = val; 
+		if (_current_offset == *_size) {
+			*_position = re_alloc(*_position, _size);
+		}
+
+		(*_position)[_current_offset++] = val;
+
+		_cbytesWritten++;
 	}
 
 	void WriteBytes(const OFVector<BYTE>& rgbyte)
@@ -82,16 +91,40 @@ private:
 		WriteByte(BYTE(val % 0x100));
 	}
 
-
-    void Seek(size_t byteCount)
-		{ _cbyteOffset += byteCount; }
+	void seek(size_t n)
+	{
+		_cbytesWritten += n;
+		_current_offset += n;
+	}
 
 	bool _bCompare;
 
 private:
-	BYTE* _pdata;
-	size_t _cbyteOffset;
-	size_t _cbyteLength;
+	static BYTE *re_alloc(BYTE *old_ptr, size_t *old_size)
+	{
+		size_t new_size = *old_size * 2;
+#ifdef HAVE_STD__NOTHROW
+		BYTE *new_ptr = new BYTE[new_size];
+#else
+		BYTE *new_ptr = new BYTE[new_size];
+#endif
+		if (new_ptr == NULL) {
+			throw alloc_fail();
+		}
+
+		OFBitmanipTemplate<BYTE>::copyMem(old_ptr, new_ptr, *old_size);
+
+		delete[] old_ptr;
+
+		*old_size = new_size;
+
+		return new_ptr;
+	}
+
+	BYTE **_position;
+	size_t *_size;
+	size_t _current_offset;
+	size_t _cbytesWritten;
 	LONG _icompLast;
 	OFVector<JpegSegment*> _segments;
 };
