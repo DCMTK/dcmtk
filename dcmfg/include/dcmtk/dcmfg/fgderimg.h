@@ -169,40 +169,75 @@ public:
    */
   virtual OFCondition check() const;
 
-  /** Convenience function to add item representing reference to a file. No
+  /** Convenience function to add item representing reference to an object. No
    *  restrictions are set which frames or segments from this image has been
    *  actually used. However, such information could be added to the source
    *  image item later by modifying the resulting item being handed back to the
    *  caller.
-   * @param file Files that should be referenced by their UID, must be readable.
-   * @param purposeOfReference Code representing the purpose of reference
-   *        (Defined CID 7202)
-   * @param resultSourceImageItem The created derivation image item if
-   *        successful, NULL otherwise
-   * @return EC_Normal if adding works, error code otherwise
+   *  @param  file Files that should be referenced by their UID, must be readable.
+   *  @param  purposeOfReference Code representing the purpose of reference
+   *          (Defined CID 7202)
+   *  @param  resultSourceImageItem The created derivation image item if
+   *          successful, NULL otherwise
+   *  @return EC_Normal if adding works, error code otherwise
    */
   virtual OFCondition addSourceImageItem(const OFString& file,
                                          const CodeSequenceMacro& purposeOfReference,
                                          SourceImageItem*& resultSourceImageItem);
 
-  /** Convenience function to add items representing references to some files
+  /** Convenience function to add item representing reference to an object. No
+   *  restrictions are set which frames or segments from this image has been
+   *  actually used. However, such information could be added to the source
+   *  image item later by modifying the resulting item being handed back to the
+   *  caller.
+   *  @param  dataset DICOM dataset that should be referenced by their UID
+   *  @param  purposeOfReference Code representing the purpose of reference
+   *          (Defined CID 7202)
+   *  @param  resultSourceImageItem The created derivation image item if
+   *          successful, NULL otherwise
+   *  @return EC_Normal if adding works, error code otherwise
+   */
+  virtual OFCondition addSourceImageItem(DcmDataset *dataset,
+                                         const CodeSequenceMacro& purposeOfReference,
+                                         SourceImageItem*& resultSourceImageItem);
+
+  /** Convenience function to add items representing references to some objects
    *  which all have the same purpose of reference (code). No restrictions are
    *  set which frames or segments from those images have been actually used.
    *  However, such information could be added to the source image item later by
-    * modifying the resulting item handed back to the caller.
-    * @param files List of files that should be referenced by their UIDs.
-    * @param purposeOfReference Code representing the purpose of reference
-    *        (Defined CID 7202)
-    * @param resultSourceImageItems The created derivation image items (one per
-    *        file) if successful, NULL otherwise
-    * @param skipFileErrors If OFTrue, then files that could not be added will
-    *        not lead to error.
-    * @return EC_Normal if adding works, error code otherwise
+   *  modifying the resulting item handed back to the caller.
+   *  @param  files List of files that should be referenced by their UIDs.
+   *  @param  purposeOfReference Code representing the purpose of reference
+    *         (Defined CID 7202)
+   *  @param  resultSourceImageItems The created derivation image items (one per
+   *          file) if successful, NULL otherwise
+   *  @param  skipFileErrors If OFTrue, then files that could not be added will
+   *          not lead to error.
+   *  @return EC_Normal if adding works, error code otherwise
    */
   virtual OFCondition addSourceImageItems(const OFVector<OFString>& files,
                                           const CodeSequenceMacro& purposeOfReference,
                                           OFVector<SourceImageItem*>& resultSourceImageItems,
                                           const OFBool skipFileErrors = OFFalse);
+
+  /** Convenience function to add items representing references to some objects
+   *  which all have the same purpose of reference (code). No restrictions are
+   *  set which frames or segments from those images have been actually used.
+   *  However, such information could be added to the source image item later by
+   *  modifying the resulting item handed back to the caller.
+   *  @param  datasets List of datasets that should be referenced by their UIDs.
+   *  @param  purposeOfReference Code representing the purpose of reference
+   *          (Defined CID 7202)
+   *  @param  resultSourceImageItems The created derivation image items (one per
+   *          file) if successful, NULL otherwise
+   *  @param  skipErrors If OFTrue, then files that could not be added will not
+   *          lead to error.
+   *  @return EC_Normal if adding works, error code otherwise
+   */
+  virtual OFCondition addSourceImageItems(const OFVector<DcmDataset*>& datasets,
+                                          const CodeSequenceMacro& purposeOfReference,
+                                          OFVector<SourceImageItem*>& resultSourceImageItems,
+                                          const OFBool skipErrors = OFFalse);
 
    /** Get Derivation Description
     *  @param  value Reference to variable in which the value should be stored

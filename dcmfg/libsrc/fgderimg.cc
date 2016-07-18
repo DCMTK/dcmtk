@@ -464,7 +464,6 @@ OFCondition DerivationImageItem::check() const
 }
 
 
-
 DerivationImageItem::~DerivationImageItem()
 {
   clearData();
@@ -472,6 +471,23 @@ DerivationImageItem::~DerivationImageItem()
 
 
 OFCondition DerivationImageItem::addSourceImageItem(const OFString& file,
+                                                    const CodeSequenceMacro& purposeOfReference,
+                                                    SourceImageItem*& resultSourceImageItem)
+{
+  DcmFileFormat dcmff;
+  DcmDataset *dataset = NULL;
+  OFCondition result = dcmff.loadFile(file.c_str());
+  if (result.bad())
+  {
+    DCMFG_ERROR("Could not load file " << file << ": " << result.text());
+    return result;
+  }
+  dataset = dcmff.getDataset();
+  return addSourceImageItem(dataset, purposeOfReference, resultSourceImageItem);
+}
+
+
+OFCondition DerivationImageItem::addSourceImageItem(DcmDataset *dataset,
                                                     const CodeSequenceMacro& purposeOfReference,
                                                     SourceImageItem*& resultSourceImageItem)
 {
@@ -485,7 +501,7 @@ OFCondition DerivationImageItem::addSourceImageItem(const OFString& file,
   // TODO: Check code for completeness, and context group?
   resultSourceImageItem = NULL;
   OFString sopClass, sopInstance, ts;
-  OFCondition result = DcmDataUtil::getSOPInstanceFromFile(file, sopClass, sopInstance, ts /*ignored*/);
+  OFCondition result = DcmDataUtil::getSOPInstanceFromDataset(dataset, EXS_Unknown, sopClass, sopInstance, ts /*ignored*/);
   {
     if ( result.good() ) result = item->getImageSOPInstanceReference().setReferencedSOPClassUID(sopClass);
     if ( result.good() ) result = item->getImageSOPInstanceReference().setReferencedSOPInstanceUID(sopInstance);
@@ -495,6 +511,11 @@ OFCondition DerivationImageItem::addSourceImageItem(const OFString& file,
     m_SourceImageItems.push_back(item);
     resultSourceImageItem = item;
   }
+  else
+  {
+    delete item;
+  }
+
   return result;
 }
 
@@ -504,10 +525,35 @@ OFCondition DerivationImageItem::addSourceImageItems(const OFVector< OFString >&
                                                      OFVector<SourceImageItem*>& resultSourceImageItems,
                                                      const OFBool skipErrors)
 {
-  // Add files
+  DcmFileFormat dcmff;
   OFCondition result;
+  DcmDataset *dataset = NULL;
+  OFVector<DcmDataset*> datasets;
   OFVector<OFString>::const_iterator it = files.begin();
   while (it != files.end())
+  {
+    result = dcmff.loadFile((*it).c_str());
+    if (result.bad())
+    {
+      DCMFG_ERROR("Could not load file " << (*it) << ": " << result.text());
+      return result;
+    }
+    dataset = dcmff.getDataset();
+    datasets.push_back(dataset);
+    it++;
+  }
+  return addSourceImageItems(datasets, purposeOfReference, resultSourceImageItems, skipErrors);
+}
+
+
+OFCondition DerivationImageItem::addSourceImageItems(const OFVector<DcmDataset*>& datasets,
+                                                     const CodeSequenceMacro& purposeOfReference,
+                                                     OFVector<SourceImageItem*>& resultSourceImageItems,
+                                                     const OFBool skipErrors)
+  {
+  OFCondition result;
+  OFVector<DcmDataset*>::const_iterator it = datasets.begin();
+  while (it != datasets.end())
   {
     SourceImageItem* resultItem = NULL;
     result = addSourceImageItem((*it), purposeOfReference, resultItem);
