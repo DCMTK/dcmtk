@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,7 +63,7 @@ public:
         ERROR_LOG_LEVEL = dcmtk::log4cplus::ERROR_LOG_LEVEL,
         /// fatal: very severe error events that will presumably lead the application to abort
         FATAL_LOG_LEVEL = dcmtk::log4cplus::FATAL_LOG_LEVEL,
-        /// internal: turn off logging competely
+        /// internal: turn off logging completely
         OFF_LOG_LEVEL = dcmtk::log4cplus::OFF_LOG_LEVEL
     };
 

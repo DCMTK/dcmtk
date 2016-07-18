@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID5000_Languages
@@ -147,7 +147,7 @@ CID5000_Languages::CodeList &CID5000_Languages::getCodes()
     {
         /* create a new code list (should never fail) */
         Codes = new CodeList();
-        /*Codes and initialize it by adding the coded entries */
+        /* and initialize it by adding the coded entries */
         Codes->insert(OFMake_pair(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
         Codes->insert(OFMake_pair(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
         Codes->insert(OFMake_pair(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));

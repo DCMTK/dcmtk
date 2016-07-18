@@ -139,7 +139,7 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
                         const OFBool check = OFTrue);
 
     /** add item from specified DICOM dataset to the list of references.
-     *  Internally an item representing the given dataset is inserted into the hierarchical
+     *  Internally, an item representing the given dataset is inserted into the hierarchical
      *  structure of studies, series and instances, if not already contained in the list.
      *  In any case, the specified item is selected as the current one.
      ** @param  dataset  reference to DICOM dataset from which the relevant UIDs are retrieved

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -184,7 +184,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd,
 
         app.checkValue(cmd.getValue(logConfig));
 
-        // check wether config file exists at all and is readable
+        // check whether config file exists at all and is readable
         if (!OFStandard::fileExists(logConfig))
             app.printError("Specified --log-config file does not exist");
         if (!OFStandard::isReadable(logConfig))
