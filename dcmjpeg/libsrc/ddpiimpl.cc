@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,7 +79,7 @@ OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
     /* check parameters (at least the pointers) */
     if ((dataset != NULL) && (pixel != NULL) && (frame > 0))
     {
-        size_t flags = CIF_UsePartialAccessToPixelData | CIF_NeverAccessEmbeddedOverlays;
+        unsigned long flags = CIF_UsePartialAccessToPixelData | CIF_NeverAccessEmbeddedOverlays;
         if (decompressAll)
             flags |= CIF_DecompressCompletePixelData;
         /* open referenced image */
