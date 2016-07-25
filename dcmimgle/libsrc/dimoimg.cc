@@ -1901,7 +1901,7 @@ DiImage *DiMonoImage::createOutputImage(const unsigned long frame,
     if ((OutputData != NULL) && (OutputData->getData() != NULL))
     {
 
-        DiImage *image = new DiMono2Image(this, OutputData, frame, bits, OutputData->getItemSize() * 8);
+        DiImage *image = new DiMono2Image(this, OutputData, frame, bits, OFstatic_cast(int, OutputData->getItemSize() * 8));
         if (image != NULL)
             OutputData->removeDataReference();              // output data is now handled by new mono image
         return image;
