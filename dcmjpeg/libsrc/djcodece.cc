@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2015, OFFIS e.V.
+ *  Copyright (C) 2001-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -515,7 +515,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
 
     /* Set and check photometric interpretation (up to now: EPI_RGB)
-     * Only photometric interpretations, that are explicetly "supported" by the
+     * Only photometric interpretations, that are explicitly "supported" by the
      * IJG lib are set. For all others "unknown" is set. Some are even rejected here.
      */
     if (photometricInterpretation == "MONOCHROME1")
@@ -929,7 +929,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   if (result.good()) result = adjustOverlays(dataset, dimage);
 
   // VOI transformations should only be applied on the dataset level, not
-  // in nested items such as the Icon Image Sequence where we don't exect
+  // in nested items such as the Icon Image Sequence where we don't expect
   // a VOI window or LUT to be present
   size_t windowType = 0;
   if (dataset->ident() == EVR_dataset)
@@ -958,7 +958,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           if (classUID && ! cp->getConvertToSC())
           {
             // these three SOP classes use the X-Ray Image Module in which the meaning
-            // of the Modality LUT transformation is "inversersed" and, therefore,
+            // of the Modality LUT transformation is "inversed" and, therefore,
             // needs special handling.  This is not an issue if we're converting to
             // secondary capture anyway.
             if ((0 == strcmp(classUID, UID_XRayAngiographicImageStorage)) ||
@@ -1415,7 +1415,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if ( (pixelData == NULL) )
+  if (pixelData == NULL)
     return EC_IllegalParameter;
   // allocate target buffer
   Uint8* px8 = new Uint8[numValues];
@@ -1451,7 +1451,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if ( (pixelData == NULL) )
+  if (pixelData == NULL)
     return EC_IllegalParameter;
   // allocate target buffer
   Uint16* px16 = new Uint16[numValues];
