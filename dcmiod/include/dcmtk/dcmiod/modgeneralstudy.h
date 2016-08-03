@@ -36,7 +36,7 @@
   * Study ID: (SH, 1, 2)
   * Accession Number: (SH, 1, 2)
   * Study Description: (LO, 1, 3)
-  * Issuer of Accession Number Sequence: (SQ, 3, 1)
+  * Issuer of Accession Number Sequence: (SQ, 1, 3)
   * Procedure Code Sequence: (SQ, 1-n, 3)
   * Reason for Performed Procedure Code Sequence: (SQ, 1-n, 3)
   */
