@@ -53,7 +53,8 @@ FGBase* FunctionalGroups::find(const DcmFGTypes::E_FGType fgType)
 {
   FGBase* group = NULL;
   FunctionalGroups::iterator it = m_groups.find(fgType);
-  if ( it != m_groups.end() )
+  FunctionalGroups::iterator end = m_groups.end();
+  if ( it != end )
   {
     group = (*it).second;
   }
