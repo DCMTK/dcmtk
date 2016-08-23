@@ -56,7 +56,7 @@ GLOBALDEFS = @DEFS@ -DUSE_NULL_SAFE_OFSTRING -DDCMTK_BUILD_IN_PROGRESS
 # -DDCMTK_BUILD_DATE=\"YYYY-MM-DD\"
 
 #
-# ARCH defines special machine archtecture compiler settings
+# ARCH defines special machine architecture compiler settings
 # (e.g. -arch i386 on NeXT)
 #
 

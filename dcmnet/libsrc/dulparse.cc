@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -466,7 +466,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
     userInfo->type = *buf++;
     // skip unused ("reserved") field
     userInfo->rsv1 = *buf++;
-    // get and remeber announced length of user data
+    // get and remember announced length of user data
     EXTRACT_SHORT_BIG(buf, userInfo->length);
     // .. and skip over the two length field bytes
     buf += 2;
@@ -838,7 +838,7 @@ makeUnderflowError(const char *pdu, unsigned long minuend,
         unsigned long subtrahend)
 {
   OFStringStream stream;
-  stream << "DUL Illegal " << pdu << ". Got " << minuend << " bytes of data and told to subtrat " << subtrahend << " bytes of data";
+  stream << "DUL Illegal " << pdu << ". Got " << minuend << " bytes of data and told to subtract " << subtrahend << " bytes of data";
   stream << "." << OFStringStream_ends;
 
   OFCondition ret;
